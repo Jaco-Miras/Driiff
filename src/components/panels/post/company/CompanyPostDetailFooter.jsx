@@ -166,7 +166,6 @@ const CompanyPostDetailFooter = (props) => {
   const {
     className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
     userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
-    isMember,
   } = props;
 
   const ref = {
@@ -246,53 +245,49 @@ const CompanyPostDetailFooter = (props) => {
           <CommentQuote commentActions={commentActions} commentId={commentId}/>
         </Dflex>
       }
-      {isMember && (
-        <>
-          <Dflex className="d-flex align-items-end">
-            {post.is_read_only ? (
-              <NoReply className="d-flex align-items-center">
-                <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
-              </NoReply>
-            ) : (
-              <React.Fragment>
-                  <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
-                  <CompanyPostInput
-                    handleClearSent={handleClearSent}
-                    sent={sent}
-                    commentId={commentId}
-                    userMention={userMention}
-                    handleClearUserMention={handleClearUserMention}
-                    commentActions={commentActions}
-                    parentId={parentId}
-                    post={post}
-                    selectedGif={selectedGif}
-                    onClearGif={onClearGif}
-                    selectedEmoji={selectedEmoji}
-                    onClearEmoji={onClearEmoji}
-                    dropAction={dropAction}
-                      members={post.members}
-                      onActive={onActive}
-                      onClosePicker={onClosePicker}
-                  />
-                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
-                              icon="smile"/>
-                  <IconButton onClick={handleSend} icon="send"/>
-                </ChatInputContainer>
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
-                  <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
-                </Tooltip>
-              </React.Fragment>
-            )}
-            {showEmojiPicker === true &&
-            <PickerContainer
-              handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji}
-              onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker}/>}
-          </Dflex>
-          {editPostComment && editPostComment.files.length > 0 &&
-          <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
-          <Dflex/>
-        </>
-      )}
+        <Dflex className="d-flex align-items-end">
+          {post.is_read_only ? (
+            <NoReply className="d-flex align-items-center">
+              <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
+            </NoReply>
+          ) : (
+            <React.Fragment>
+                <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+                <CompanyPostInput
+                  handleClearSent={handleClearSent}
+                  sent={sent}
+                  commentId={commentId}
+                  userMention={userMention}
+                  handleClearUserMention={handleClearUserMention}
+                  commentActions={commentActions}
+                  parentId={parentId}
+                  post={post}
+                  selectedGif={selectedGif}
+                  onClearGif={onClearGif}
+                  selectedEmoji={selectedEmoji}
+                  onClearEmoji={onClearEmoji}
+                  dropAction={dropAction}
+                    members={post.users_responsible}
+                    onActive={onActive}
+                    onClosePicker={onClosePicker}
+                />
+                <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
+                            icon="smile"/>
+                <IconButton onClick={handleSend} icon="send"/>
+              </ChatInputContainer>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
+                <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
+              </Tooltip>
+            </React.Fragment>
+          )}
+          {showEmojiPicker === true &&
+          <PickerContainer
+            handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji}
+            onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker}/>}
+        </Dflex>
+        {editPostComment && editPostComment.files.length > 0 &&
+        <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
+        <Dflex/>
     </Wrapper>
   );
 };

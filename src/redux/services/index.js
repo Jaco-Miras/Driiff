@@ -153,6 +153,7 @@ export {
 } from "./files";
 
 export {
+  addPostRecipients,
   deleteComment,
   deletePost,
   fetchPost,

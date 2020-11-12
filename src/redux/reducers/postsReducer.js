@@ -488,6 +488,17 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: companyPosts
       };
     }
+    case "ADD_USER_TO_POST_RECIPIENTS": {
+      let companyPosts = {...state.companyPosts};
+      if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        companyPosts.posts[action.data.post_id].recipients = [...companyPosts.posts[action.data.post_id].recipients, ...action.data.recipients];
+        companyPosts.posts[action.data.post_id].recipient_ids = [...companyPosts.posts[action.data.post_id].recipient_ids, ...action.data.recipient_ids];
+      }
+      return {
+        ...state,
+        companyPosts: companyPosts
+      }
+    }
     default:
       return state;
   }
