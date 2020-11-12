@@ -22,14 +22,6 @@ const useCompanyPosts = () => {
   }
 
   useEffect(() => {
-    if (params.postId && posts[params.postId]) {
-      setPost(posts[params.postId]);
-    } else {
-      setPost(null);
-    }
-  }, [params, posts]);
-
-  useEffect(() => {
     if (!init) {
       init = true;
       fetchMore();

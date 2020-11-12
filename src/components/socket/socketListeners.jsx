@@ -390,7 +390,10 @@ class SocketListeners extends Component {
           case "ADD_RECIPIENTS": {
             this.props.fetchPost({post_id: e.post_id}, (err,res) => {
               if (err) return;
-              let post = res.data;
+              let post = {
+                ...res.data,
+                clap_user_ids: []
+              }
               this.props.incomingPost(post)
             })
             break;
