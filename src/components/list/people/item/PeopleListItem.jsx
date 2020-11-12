@@ -6,8 +6,8 @@ import { MoreOptions } from "../../../panels/common";
 const Wrapper = styled.div`
   .avatar {
     cursor: pointer;
-    height: 2.5rem !important;
-    width: 2.5rem !important;
+    // height: 2.5rem !important;
+    // width: 2.5rem !important;
   }
   .user-name {
     display: flex;
