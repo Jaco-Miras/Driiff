@@ -85,7 +85,7 @@ export default (state = INITIAL_STATE, action) => {
           prev_skip: action.data.prev_skip,
           next_skip: action.data.next_skip,
           total_take: action.data.total_take,
-          has_more: action.data.total_take === (action.data.next_skip - action.data.prev_skip),
+          has_more: action.data.total_take === state.companyPosts.limit,
           posts: {
             ...state.companyPosts.posts,
             ...action.data.posts.reduce((res, obj) => {
