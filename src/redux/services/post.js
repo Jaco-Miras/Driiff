@@ -278,7 +278,7 @@ export function postClap(payload) {
  * @returns {Promise<*>}
  */
 export function getCompanyPosts(payload) {
-  const {skip = 0, limit = 100, search = "", filters = []} = payload;
+  const {skip = 0, limit = 25, search = "", filters = []} = payload;
   let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
   if (search !== "") {
     url += `&search=${search}`;
