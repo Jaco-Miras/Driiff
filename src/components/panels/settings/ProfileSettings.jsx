@@ -328,8 +328,8 @@ const ProfileSettings = (props) => {
             </div>
           </div>
           {
-            ["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com", "rtuerlings@zuid.com", "rt@make24.nl", "sander@zuid.com"].includes(loggedUser.email) &&
-            (
+            // ["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com", "rtuerlings@zuid.com", "rt@make24.nl", "sander@zuid.com"].includes(loggedUser.email) &&
+            // (
               <div className="row mb-3">
                 <div className="col-12">
                   <CustomInput
@@ -344,7 +344,7 @@ const ProfileSettings = (props) => {
                 />
               </div>
             </div>
-            )
+            //)
           }
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
