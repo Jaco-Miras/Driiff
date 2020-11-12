@@ -41,10 +41,6 @@ const Wrapper = styled.div`
       height: 16px;
     }
   }
-  .timeline-avatar {
-    height: 2.5rem;
-    width: 2.5rem;
-  }
 `;
 
 const PostTimeline = (props) => {
@@ -61,7 +57,7 @@ const PostTimeline = (props) => {
   return (
     <Wrapper className={`post-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="timeline-avatar mr-3" name={data.user.name}
+        <Avatar className="mr-3" name={data.user.name}
                 imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link}
                 id={data.user.id}/>
       </div>
