@@ -45,6 +45,10 @@ body {
   padding-left: 0.3rem;
 }
 
+.post-modal {
+  max-width: calc(100% - 20rem) !important;
+}
+
 .time-stamp {
   cursor: default;
 }
