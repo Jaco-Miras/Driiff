@@ -999,12 +999,12 @@ const CreateEditCompanyPostModal = (props) => {
           attachedFiles={attachedFiles}
         />
         <WrapperDiv className={"modal-input mt-0"}>
-          <div>
+          <div className="w-100">
             <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
           </div>
-          <div>
+          <div className="w-100">
             <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
-            <Input style={{ borderRadius: "5px" }} value={form.title}
+            <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title}
                    onChange={handleNameChange} innerRef={inputRef}/>
           </div>
         </WrapperDiv>

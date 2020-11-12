@@ -982,12 +982,14 @@ const CreateEditWorkspacePostModal = (props) => {
           attachedFiles={attachedFiles}
         />
         <WrapperDiv className={"modal-input mt-0"}>
-          <Label className={"w-100 modal-info pb-3"}>{dictionary.postInfo}</Label>
-        </WrapperDiv>
-        <WrapperDiv className={"modal-input"}>
-          <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
-          <Input className="w-100" style={{ borderRadius: "5px" }} defaultValue={mode === "edit" ? form.title : ""}
-                 onChange={handleNameChange} innerRef={inputRef}/>
+          <div className="w-100">
+            <Label className={"w-100 modal-info pb-3"}>{dictionary.postInfo}</Label>
+          </div>
+          <div className="w-100">
+            <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
+            <Input className="w-100" style={{ borderRadius: "5px" }} defaultValue={mode === "edit" ? form.title : ""}
+                   onChange={handleNameChange} innerRef={inputRef}/>
+          </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
           <Label className={"modal-label"} for="workspace">{dictionary.addressedTo}</Label>
