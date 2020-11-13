@@ -943,6 +943,9 @@ export default (state = INITIAL_STATE, action) => {
               }
             }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
+
+            if (action.data.author.id === state.user.id)
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].has_replied = true;
           }
         });
       }

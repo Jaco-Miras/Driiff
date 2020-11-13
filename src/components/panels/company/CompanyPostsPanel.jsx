@@ -159,7 +159,10 @@ const CompanyPostsPanel = (props) => {
     showMore: _t("SHOW_MORE", "Show more"),
     showLess: _t("SHOW_LESS", "Show less"),
     markAll: _t("POST.MARK_ALL_AS_READ", "Mark all as read"),
-    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all")
+    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all"),
+    noComment: _t("POST.NO_COMMENT", "no comment"),
+    oneComment: _t("POST.ONE_COMMENT", "1 comment"),
+    comments: _t("POST.NUMBER_COMMENTS", "::comment_count:: comments"),
   };
 
   /**

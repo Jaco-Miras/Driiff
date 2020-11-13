@@ -2,19 +2,44 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
-import { ModalHeaderSection } from "./index";
+// import { ModalHeaderSection } from "./index";
 import styled from "styled-components";
 import { useTranslation, useUserActions } from "../hooks";
-import { getDriffName } from "../hooks/useDriff";
+// import { getDriffName } from "../hooks/useDriff";
+import { SvgIconFeather } from "../common";
 
-const Wrapper = styled(Modal)`
-  position: fixed;
-  right: 20px;
-  display: block;
-  top: 1px;
+// const Wrapper = styled(Modal)`
+//   position: fixed;
+//   right: 20px;
+//   display: block;
+//   top: 1px;
   
-  .modal-content {
-    border: 1px solid #ffffff14 !important;
+//   .modal-content {
+//     border: 1px solid #ffffff14 !important;
+//   }
+// `;
+
+const NotificationBar = styled.div`
+  padding: 10px;
+  width: 100%;
+  background: #000;
+  color: #fff;
+  height: 40px;
+  display: flex;
+  place-content: center;
+  .feather {
+      cursor: pointer;
+  }
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+
+  .button-notification {
+    background: #8c48ae;
+    border: none;
+    padding: 0 1rem;
+    margin: 0 6px;
+  }
   }
 `;
 
@@ -26,13 +51,10 @@ const DriffUpdateModal = (props) => {
   const { _t } = useTranslation();
 
   const dictionary = {
-    update: _t("DRIFF.DRIFF_VERSION_UPDATE", "Update"),
-    remindMeAboutThis: _t("DRIFF.REMIND_ME_ABOUT_THIS", "Remind me about this in 30 minutes"),
-    updateReload: _t("DRIFF.UPDATE_BODY_RELOAD", `Good news, a new version of Driff is available.<br/>
-          Would you like to reload the page?`),
-    updateLogout: _t("DRIFF.UPDATE_BODY_LOGOUT", `<p>Good news, a new version of Driff is available.<br/>
-            This will force to logout you out.</p>
-          <p>Would you like to apply the change?</p>`)
+    update: _t("DRIFF.DRIFF_VERSION_UPDATE", "Go!"),
+    remindMeAboutThis: _t("DRIFF.REMIND_ME_ABOUT_THIS", "Not right now"),
+    updateReload: _t("DRIFF.UPDATE_BODY_RELOAD", `🎉  Driff is updated. Reload now?`),
+    updateLogout: _t("DRIFF.UPDATE_BODY_LOGOUT", `🎉 Driff is updated. Logout now?`)
   };
 
   const [modal, setModal] = useState(true);
@@ -79,18 +101,16 @@ const DriffUpdateModal = (props) => {
   }, []);
 
   return (
-    <Wrapper isOpen={modal} toggle={toggle} size={"m"} centered>
-      <ModalHeaderSection toggle={toggle}>{getDriffName()} Driff - Update</ModalHeaderSection>
-      <ModalBody dangerouslySetInnerHTML={{ __html: getContent() }}/>
-      <ModalFooter>
-        <Button color="primary" onClick={handleConfirm}>
+    <NotificationBar isOpen={modal} toggle={toggle} size={"m"} centered>
+      <div dangerouslySetInnerHTML={{ __html: getContent() }}/>
+        <Button className="button-notification" onClick={handleConfirm}>
           {dictionary.update}
         </Button>{" "}
-        <Button outline color="secondary" onClick={handleRemind}>
+        {/* <Button className="button-notification" onClick={handleRemind}>
           {dictionary.remindMeAboutThis}
-        </Button>
-      </ModalFooter>
-    </Wrapper>
+        </Button> */}
+        <SvgIconFeather className="ml-3 align-self-center" icon="x" onClick={handleRemind}/>
+    </NotificationBar>
   );
 };
 
