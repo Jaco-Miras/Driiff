@@ -94,7 +94,9 @@ import {
   incomingPostRecipients,
   incomingPostViewer,
   incomingReadUnreadReducer,
-  incomingUpdatedPost
+  incomingUpdatedPost,
+  refetchPosts,
+  refetchPostComments
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -133,6 +135,16 @@ class SocketListeners extends Component {
     };
 
     this.onlineUsers = React.createRef(null);
+  }
+
+  refetchPosts = () => {
+    this.props.refetchPosts();
+  }
+
+  refetchPostComments = () => {
+    Object.keys(this.props.postComments).forEach((post_id) => {
+      this.props.refetchPostComments({post_id: post_id})
+    })
   }
 
   refetch = () => {
@@ -193,6 +205,8 @@ class SocketListeners extends Component {
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000)});
       this.refetch();
       this.refetchOtherMessages();
+      this.refetchPosts();
+      this.refetchPostComments();
     });
     window.Echo.connector.socket.on("reconnecting", function () {
       console.log("socket reconnecting");
@@ -1307,7 +1321,7 @@ function mapStateToProps({
                            session: { user },
                            settings: { userSettings },
                            chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
-                           workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded },
+                           workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
                            global: { isBrowserActive, unreadCounter, todos, recipients },
                            users: { mentions, users }
                          }) {
@@ -1328,7 +1342,8 @@ function mapStateToProps({
     lastReceivedMessage,
     unreadCounter,
     todos,
-    recipients
+    recipients,
+    postComments
   };
 }
 
@@ -1436,7 +1451,9 @@ function mapDispatchToProps(dispatch) {
     getChannelDetail: bindActionCreators(getChannelDetail, dispatch),
     incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch),
     getLatestReply: bindActionCreators(getLatestReply, dispatch),
-    incomingPostRecipients: bindActionCreators(incomingPostRecipients, dispatch)
+    incomingPostRecipients: bindActionCreators(incomingPostRecipients, dispatch),
+    refetchPosts: bindActionCreators(refetchPosts, dispatch),
+    refetchPostComments: bindActionCreators(refetchPostComments, dispatch),
   };
 }
 
