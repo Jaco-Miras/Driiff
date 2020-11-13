@@ -160,7 +160,11 @@ const CommentHeader = styled.div`
     }
   }
 `;
-const CommentBody = styled.div``;
+const CommentBody = styled.div`
+  img {
+    width: 100%;
+  }
+`;
 
 const CommentInput = styled(PostDetailFooter)``;
 

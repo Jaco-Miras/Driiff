@@ -132,7 +132,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             })
             .then(result => {
               console.log(result);
-              setImageFileIds([result.data.id])
+              if (setImageFileIds) setImageFileIds([result.data.id])
               resolve(result.data.view_link);
             })
             .catch(error => {

@@ -36,7 +36,7 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  padding-right: 80px;
+  padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
   .feather-send,
@@ -192,6 +192,7 @@ const PostDetailFooter = (props) => {
   const dispatch = useDispatch();
   const ref = {
     picker: useRef(),
+    postInput: useRef(null)
   };
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -316,6 +317,14 @@ const PostDetailFooter = (props) => {
     setCursor(sendButtonValues[1]);
     setFillSend(sendButtonValues[2]);
   }
+
+  const handleQuillImage = () => {
+    if (ref.postInput) {
+      const imgBtn = ref.postInput.current.parentNode.querySelector("button.ql-image");
+      if (imgBtn) imgBtn.click();
+    }
+  }
+
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
   return (
@@ -360,8 +369,9 @@ const PostDetailFooter = (props) => {
                     members={workspace ? workspace.members : []}
                     onActive={onActive}
                     onClosePicker={onClosePicker}
+                    ref={ref.postInput}
                   />
-                  {/* <IconButton icon="image"/> */}
+                  <IconButton icon="image" onClick={handleQuillImage} />
                   <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                               icon="smile"/>
                   <IconButton onClick={handleSend} icon="send"/>

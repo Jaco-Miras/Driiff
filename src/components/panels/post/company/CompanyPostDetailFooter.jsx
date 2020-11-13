@@ -33,7 +33,7 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  padding-right: 80px;
+  padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
   .feather-send,
@@ -185,6 +185,7 @@ const CompanyPostDetailFooter = (props) => {
 
   const ref = {
     picker: useRef(),
+    postInput: useRef(null)
   };
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -253,6 +254,13 @@ const CompanyPostDetailFooter = (props) => {
     attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
   };
 
+  const handleQuillImage = () => {
+    if (ref.postInput) {
+      const imgBtn = ref.postInput.current.parentNode.querySelector("button.ql-image");
+      if (imgBtn) imgBtn.click();
+    }
+  }
+
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
@@ -285,8 +293,9 @@ const CompanyPostDetailFooter = (props) => {
                     members={post.users_responsible}
                     onActive={onActive}
                     onClosePicker={onClosePicker}
+                    ref={ref.postInput}
                 />
-                {/* <IconButton icon="image"/> */}
+                <IconButton icon="image" onClick={handleQuillImage} />
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                             icon="smile"/>
                 <IconButton onClick={handleSend} icon="send"/>
