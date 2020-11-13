@@ -374,7 +374,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         unreadCounter: {
-          ...state.companyPosts,
+          ...state.companyPosts.unreadCounter,
           general_post: action.data.result,
           unread_posts: action.data.result,
         }

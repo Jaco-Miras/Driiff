@@ -542,3 +542,14 @@ export function refetchPostComments(payload) {
     url: `/v2/re-fetch-module/get-comments?current_post_id=${payload.post_id}`,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function getUnreadPostComments(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/post-unread-comments-entries`,
+  });
+}
