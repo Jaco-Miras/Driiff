@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
@@ -31,7 +31,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     position: static;
   }
   .ql-toolbar {
-    display: none;
+    display: hidden;
   }
   .ql-editor {
     padding: 11px 9px;
@@ -109,7 +109,7 @@ const CloseButton = styled(SvgIconFeather)`
 `;
 
 /***  Commented out code are to be visited/refactored ***/
-const PostInput = (props) => {
+const PostInput = forwardRef((props, ref) => {
   const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
           post, parentId, commentActions, userMention, handleClearUserMention, commentId, members,
           onClosePicker, onActive
@@ -131,6 +131,7 @@ const PostInput = (props) => {
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
+  const [imageFileIds, setImageFileIds] = useState([]);
 
   const [quote] = useCommentQuote(commentId);
 
@@ -171,7 +172,7 @@ const PostInput = (props) => {
       post_id: post.id,
       body: text,
       mention_ids: mention_ids,
-      file_ids: [],
+      file_ids: [...imageFileIds],
       post_file_ids: [],
       reference_id: reference_id,
       personalized_for_id: null,
@@ -257,6 +258,7 @@ const PostInput = (props) => {
     setTextOnly("");
     setText("");
     setQuillContents([]);
+    setImageFileIds([]);
     if (reactQuillRef.current) {
       reactQuillRef.current.getEditor().setContents([]);
     }
@@ -281,13 +283,16 @@ const PostInput = (props) => {
       }
     }
 
-    textOnly.trim() === "" ? onActive(false) : onActive(true);
-
     setText(content);
     setTextOnly(textOnly);
     setQuillContents(editor.getContents());
 
+    let hasMention = false;
+    let hasImage = false
+
     if (editor.getContents().ops && editor.getContents().ops.length) {
+      hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length
+      hasImage = editor.getContents().ops.filter((m) => m.insert.image).length
       handleMentionUser(
         editor
           .getContents()
@@ -295,6 +300,7 @@ const PostInput = (props) => {
           .map((i) => i.insert.mention.id)
       );
     }
+    textOnly.trim() === "" && !hasMention && !hasImage ? onActive(false) : onActive(true);
   };
 
   const handleMentionUser = (mention_ids) => {
@@ -467,15 +473,15 @@ const PostInput = (props) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  const [modules, formats] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, members);
+  const [modules] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, members, false, setImageFileIds);
 
   return (
-    <Wrapper className="chat-input-wrapper">
+    <Wrapper className="chat-input-wrapper" ref={ref}>
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>
   );
-};
+});
 
 export default PostInput;
