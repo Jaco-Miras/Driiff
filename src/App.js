@@ -8,14 +8,11 @@ import { AppRoute } from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
 import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 import { Slide, ToastContainer } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { isIPAddress } from "./helpers/commonFunctions";
 
 import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
-import { addToModals } from "./redux/actions/globalActions";
-
-import { driffData } from "./config/environment.json";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -25,8 +22,6 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-
-  const dispatch = useDispatch();
 
   const { driffSettings } = useSettings();
   const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
@@ -54,18 +49,6 @@ function App() {
     };
   };
 
-  // const showUpdateModal = () => {
-  //   dispatch(
-  //     addToModals({
-  //       type: "update_found",
-  //       id: driffData.version,
-  //       requirement: driffData.requirement,
-  //       handleReminder: () => {
-  //       },
-  //     })
-  //   );
-  // };
-
   useEffect(() => {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
       session.checked && initUserSnap !== session.authenticated) {
@@ -77,8 +60,6 @@ function App() {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
       driffActions.checkUpdateVersion();
     }
-
-    // showUpdateModal();
 
     const handleResize = () => {
       let vh = window.innerHeight * 0.01;

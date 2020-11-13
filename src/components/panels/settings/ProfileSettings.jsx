@@ -10,6 +10,7 @@ import { useSettings, useToaster, useTranslation } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
+import { driffData } from "../../../config/environment.json";
 
 const Wrapper = styled.div`
   .card {
@@ -466,7 +467,7 @@ const ProfileSettings = (props) => {
       :
       <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
       }
-      <span className="version-number">Driff version: 2.17.3</span>
+      <span className="version-number">Driff version: {driffData.version}</span>
     </Wrapper>
   );
 };
