@@ -7,7 +7,7 @@ import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
 import QuillEditor from "./QuillEditor";
-import { setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
+import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
   &.chat-input-wrapper:focus-within  {
@@ -105,10 +105,12 @@ const CompanyPostInput = (props) => {
     post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive, onClosePicker } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
-  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  //const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const slugs = useSelector(state => state.global.slugs);
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const users = useSelector((state) => state.users.users);
+  const recipients = useSelector(state => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
   const [text, setText] = useState("");
@@ -252,9 +254,10 @@ const CompanyPostInput = (props) => {
     }
   };
 
-  const handleQuillChange = (content, delta, source, editor) => {
-    const textOnly = editor.getText(content);
 
+  const handleQuillChange = (content, delta, source, editor) => {
+    console.log(reactQuillRef.current)
+    const textOnly = editor.getText(content);
     if (textOnly.trim() === "" && userMention) {
       handleClearUserMention();
     }
@@ -281,29 +284,31 @@ const CompanyPostInput = (props) => {
           .ops.filter((m) => m.insert.mention)
           .map((i) => i.insert.mention.id)
       );
+      // if (reactQuillRef) {
+      //   reactQuillRef.current.editor.options.modules.toolbar.handlers.image()
+      // }
     }
   };
 
   const handleMentionUser = (mention_ids) => {
-    // mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
-    // if (mention_ids.length) {
-    //     //check for recipients/type
-    //     if (selectedChannel.type === "PERSONAL_BOT") return;
-    //     let ignoreIds = [user.id, ...selectedChannel.members.map(m => m.id), ...ignoredMentionedUserIds];
-    //     let userIds = mention_ids.filter(id => {
-    //         let userFound = false;
-    //         ignoreIds.forEach(pid => {
-    //             if (pid === parseInt(id)) {
-    //                 userFound = true;
-    //             }
-    //         });
-    //         return !userFound;
-    //     });
-    //     setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
-    // } else {
-    //     setIgnoredMentionedUserIds([]);
-    //     setMentionedUserIds([]);
-    // }
+    mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
+    if (mention_ids.length) {
+        //check for recipients/type
+        let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...members.map(m => m.id)];
+        let userIds = mention_ids.filter(id => {
+            let userFound = false;
+            ignoreIds.forEach(pid => {
+                if (pid === parseInt(id)) {
+                    userFound = true;
+                }
+            });
+            return !userFound;
+        });
+        setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
+    } else {
+        setIgnoredMentionedUserIds([]);
+        setMentionedUserIds([]);
+    }
   };
 
   const handleSetEditMessageStates = (reply) => {
@@ -424,12 +429,29 @@ const CompanyPostInput = (props) => {
   // };
 
   const handleAddMentionedUsers = (users) => {
-    let memberPayload = {
-      channel_id: selectedChannel.id,
-      recipient_ids: users.map((u) => u.type_id),
+    const userIds = users.map((u) => u.id);
+    const userRecipients = recipients.filter((r) => r.type === "USER");
+
+    const newRecipients = userRecipients.filter((r) => {
+      return userIds.some((id) => id === r.type_id)
+    })
+    let payload = {
+      post_id: post.id,
+      recipient_ids: newRecipients.map((u) => u.id),
+      recipients: newRecipients
     };
 
-    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
+    console.log(users, payload)
+    dispatch(
+      addPostRecipients(payload, (err,res) => {
+        if (err) return;
+        dispatch(
+          addUserToPostRecipients(payload)
+        )
+      })
+    );
+
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
 
     setMentionedUserIds([]);
   };
@@ -449,13 +471,13 @@ const CompanyPostInput = (props) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  const [modules, formats] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, members);
+  const [modules] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, users);
 
   return (
     <Wrapper className="chat-input-wrapper">
       {mentionedUserIds.length > 0 &&
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
-                   userIds={mentionedUserIds} type={"chat"} basedOnId={false}/>}
+                   userIds={mentionedUserIds} basedOnId={false}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef}
                          onChange={handleQuillChange}
                          editMode={editMode}/>

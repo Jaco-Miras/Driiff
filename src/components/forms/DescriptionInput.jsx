@@ -185,7 +185,9 @@ const PickerContainer = styled(CommonPicker)`
 `;
 
 const DescriptionInput = (props) => {
-  const {className = "", onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", ...otherProps} = props;
+  const {className = "", onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, 
+        members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", setImageFileIds = null, 
+        ...otherProps} = props;
 
   const {_t} = useTranslation();
   const reactQuillRef = useRef();
@@ -227,7 +229,7 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const [modules, formats] = useQuillModules("description", () => {}, "top", reactQuillRef, members, disableMention);
+  const [modules] = useQuillModules("description", () => {}, "top", reactQuillRef, members, disableMention, setImageFileIds);
 
   return (
     <WrapperDiv className={`description-input ${className}`}>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
@@ -9,6 +9,7 @@ import {
   CompanyPostItemPanel,
   CompanyPostSidebar
 } from "../post/company";
+import { throttle } from "lodash";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -78,18 +79,18 @@ const PostsBtnWrapper = styled.div`
     margin-left: 10px;
   }
 `;
-
+let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
 
   const params = useParams();
   const history = useHistory();
-  const refs = {
-    posts: useRef(null),
-    btnLoadMore: useRef(null)
-  };
+  // const refs = {
+  //   posts: useRef(null),
+  //   btnLoadMore: useRef(null)
+  // };
 
-  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
 
@@ -158,49 +159,78 @@ const CompanyPostsPanel = (props) => {
     showMore: _t("SHOW_MORE", "Show more"),
     showLess: _t("SHOW_LESS", "Show less"),
     markAll: _t("POST.MARK_ALL_AS_READ", "Mark all as read"),
-    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all")
+    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all"),
+    noComment: _t("POST.NO_COMMENT", "no comment"),
+    oneComment: _t("POST.ONE_COMMENT", "1 comment"),
+    comments: _t("POST.NUMBER_COMMENTS", "::comment_count:: comments"),
   };
 
   /**
    * @todo: must fill-out the entire screen with items
    */
-  const initLoading = () => {
-    let el = refs.posts.current;
-    if (el.scrollHeight > el.querySelector(".list-group").scrollHeight) {
-      loadMore();
-    }
-  };
+  // const initLoading = () => {
+  //   let el = refs.posts.current;
+  //   if (el.scrollHeight > el.querySelector(".list-group").scrollHeight) {
+  //     loadMore();
+  //   }
+  // };
 
-  const loadMore = (callback = () => {
-  }) => {
-    if (!loading) {
+  // const loadMore = (callback = () => {
+  // }) => {
+  //   if (!loading) {
+  //     setLoading(true);
+
+  //     fetchMore((err, res) => {
+  //       setLoading(false);
+  //       callback(err, res);
+  //     });
+  //   }
+  // };
+
+  // const handleScroll = (e) => {
+  //   if (e.target.dataset.loading === "false") {
+  //     if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
+  //       if (refs.btnLoadMore.current)
+  //         refs.btnLoadMore.current.click();
+  //     }
+  //   }
+  // };
+
+  const handleLoadMore = () => {
+    if (!fetching) {
       setLoading(true);
+      fetching = true;
 
       fetchMore((err, res) => {
         setLoading(false);
-        callback(err, res);
+        fetching = false;
+        //callback(err, res);
       });
     }
-  };
+  }
 
-  const handleScroll = (e) => {
-    if (e.target.dataset.loading === "false") {
-      if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
-        if (refs.btnLoadMore.current)
-          refs.btnLoadMore.current.click();
-      }
+  const bodyScroll = throttle((e) => {
+    // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
+    const offset = 500;
+    if ((e.srcElement.scrollHeight - e.srcElement.scrollTop) < (1000 + offset)) {
+      handleLoadMore()
     }
-  };
+  }, 200);
 
   useEffect(() => {
-    let el = refs.posts.current;
-    if (el && el.dataset.loaded === "0") {
-      initLoading();
+    document.body.addEventListener("scroll", bodyScroll, false);
+    return () => document.body.removeEventListener("scroll", bodyScroll, false);
+  }, [skip])
 
-      el.dataset.loaded = "1";
-      refs.posts.current.addEventListener("scroll", handleScroll, false);
-    }
-  }, [refs.posts.current]);
+  // useEffect(() => {
+  //   let el = refs.posts.current;
+  //   if (el && el.dataset.loaded === "0") {
+  //     initLoading();
+
+  //     el.dataset.loaded = "1";
+  //     refs.posts.current.addEventListener("scroll", handleScroll, false);
+  //   }
+  // }, [refs.posts.current]);
 
   const handleMarkAllAsRead = () => {
     actions.readAll();
@@ -215,7 +245,7 @@ const CompanyPostsPanel = (props) => {
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
-      <span className="d-none" ref={refs.btnLoadMore} onClick={loadMore}>Load more</span>
+      {/* <span className="d-none" ref={refs.btnLoadMore} onClick={loadMore}>Load more</span> */}
       <div className="row app-block">
         <CompanyPostSidebar filter={filter} tag={tag}
                             postActions={actions} count={count} counters={counters} onGoBack={handleGoback}
@@ -261,7 +291,7 @@ const CompanyPostsPanel = (props) => {
                     </PostsBtnWrapper>
                   }
                   <div className="card card-body app-content-body mb-4">
-                    <div ref={refs.posts} className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
+                    <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
                       {search !== null && (
                         <>
                           {posts.length === 0 ? (

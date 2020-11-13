@@ -361,6 +361,7 @@ const PostDetailFooter = (props) => {
                     onActive={onActive}
                     onClosePicker={onClosePicker}
                   />
+                  {/* <IconButton icon="image"/> */}
                   <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                               icon="smile"/>
                   <IconButton onClick={handleSend} icon="send"/>

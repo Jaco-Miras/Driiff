@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { useGoogleApis, useTimeFormat } from "../../../hooks";
+import { useGoogleApis, useTimeFormat, useWindowSize } from "../../../hooks";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
@@ -14,10 +14,10 @@ const Wrapper = styled.div`
     margin-right: 5px;
   }
   
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-  }
+  // .author-avatar {
+  //   width: 2.7rem;
+  //   height: 2.7rem;
+  // }
   
   .author-name {
     display: block;
@@ -115,6 +115,7 @@ const CompanyPostBody = (props) => {
   const [star, setStar] = useState(post.is_favourite);
   const { fromNow, localizeDate } = useTimeFormat();
   const googleApis = useGoogleApis();
+  const winSize = useWindowSize();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -141,8 +142,9 @@ const CompanyPostBody = (props) => {
     let recipient_names = "to ";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
     const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`)
         .join(`, `);
     }
@@ -156,8 +158,8 @@ const CompanyPostBody = (props) => {
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`).join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
@@ -171,7 +173,7 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
-            <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
+            <Avatar className="mr-2" id={post.author.id} name={post.author.name}
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <div>
               <span className="author-name">{post.author.first_name}</span>

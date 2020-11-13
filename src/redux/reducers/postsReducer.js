@@ -85,7 +85,7 @@ export default (state = INITIAL_STATE, action) => {
           prev_skip: action.data.prev_skip,
           next_skip: action.data.next_skip,
           total_take: action.data.total_take,
-          has_more: action.data.total_take === (action.data.next_skip - action.data.prev_skip),
+          has_more: action.data.total_take === state.companyPosts.limit,
           posts: {
             ...state.companyPosts.posts,
             ...action.data.posts.reduce((res, obj) => {
@@ -428,12 +428,15 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[action.data.post_id].is_archived = 0;
         }
         if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
-          companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author]
+          companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author];
         }
         if (action.data.author.id !== state.user.id) {
           companyPosts.posts[action.data.post_id].unread_count = companyPosts.posts[action.data.post_id].unread_count + 1;
         }
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
+
+        if (action.data.author.id === state.user.id)
+          companyPosts.posts[action.data.post_id].has_replied = true;
       }
       
       return {
@@ -486,6 +489,43 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         companyPosts: companyPosts
+      };
+    }
+    case "ADD_USER_TO_POST_RECIPIENTS": {
+      let companyPosts = {...state.companyPosts};
+      if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        companyPosts.posts[action.data.post_id].recipients = [...companyPosts.posts[action.data.post_id].recipients, ...action.data.recipients];
+        companyPosts.posts[action.data.post_id].recipient_ids = [...companyPosts.posts[action.data.post_id].recipient_ids, ...action.data.recipient_ids];
+      }
+      return {
+        ...state,
+        companyPosts: companyPosts
+      }
+    }
+    case "REFETCH_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj
+                };
+              }
+              return res;
+            }, {})
+          }
+        }
       };
     }
     default:

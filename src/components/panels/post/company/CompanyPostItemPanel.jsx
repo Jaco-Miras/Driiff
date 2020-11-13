@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
-import { useTimeFormat, useTouchActions, useTranslation } from "../../../hooks";
+import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
@@ -92,8 +92,8 @@ const Wrapper = styled.li`
     left: -1.25rem;
     top: 1.3rem;
     img {
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 100%;
+      height: 100%;
     }
     @media (max-width: 768px) {
       position: absolute;
@@ -235,6 +235,7 @@ const CompanyPostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
 
+  const winSize = useWindowSize();
   const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
@@ -251,11 +252,12 @@ const CompanyPostItemPanel = (props) => {
   );
 
   const renderUserResponsibleNames = () => {
+    const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
-    const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
@@ -267,17 +269,15 @@ const CompanyPostItemPanel = (props) => {
 
     if (hasMe) {
       if (otherPostRecipients.length >= 1) {
-        // recipient_names += `, ${dictionary.me}`;
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       } else {
-        // recipient_names += dictionary.me;
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       }
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
@@ -330,7 +330,7 @@ const CompanyPostItemPanel = (props) => {
     handleSwipeRight
   });
 
-  const hasUnread = post.unread_count > 0 || post.is_unread === 1;
+  const hasUnread = post.is_unread === 1;
 
   return (
     <Wrapper
@@ -362,7 +362,8 @@ const CompanyPostItemPanel = (props) => {
             <PostReplyCounter>
               {post.unread_count !== 0 &&
               <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
-              <div className="text-muted">{post.reply_count} comments</div>
+              <div
+                className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
               <span className="time-stamp text-muted">
                 <span>{fromNow(post.created_at.timestamp)}</span>
               </span>

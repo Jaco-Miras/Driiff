@@ -6,6 +6,7 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { addToModals, deleteDraft } from "../../redux/actions/globalActions";
 import {
+  addUserToPostRecipients,
   archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
@@ -692,7 +693,17 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const addUserToPost = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        addUserToPostRecipients(payload, callback)
+      );
+    },
+    [dispatch]
+  );
+
   return {
+    addUserToPost,
     starPost,
     markPost,
     openPost,

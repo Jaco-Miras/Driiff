@@ -20,9 +20,37 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     }
   };
 
+  let recipients = [];
   let results = Object.values(channels)
+    .sort((a, b) => {
+      if (a.last_reply && b.last_reply) {
+        if (settings.order_channel.sort_by === "DESC") {
+          return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
+        } else {
+          return a.last_reply.created_at.timestamp - b.last_reply.created_at.timestamp;
+        }
+      }
+
+      if (a.last_reply && !b.last_reply) {
+        return -1;
+      }
+
+      if (!a.last_reply && b.last_reply) {
+        return 1;
+      }
+    })
     .filter((channel) => {
       let isMember = channel.members.some(m => m.id === user.id);
+
+      if (channel.type === "DIRECT" && channel.members.length == 2) {
+        const id = channel.members.find(m => m.id !== user.id).id;
+        if (recipients.includes(id)) {
+          console.log(channel);
+          return false;
+        }
+
+        recipients.push(id);
+      }
 
       if (typeof channel.add_user === "undefined")
         channel.add_user = false;
@@ -60,6 +88,9 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       if (search === "") {
         return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
       } else {
+        if (channel.members.length === 2) {
+          console.log(channel);
+        }
         if (channel.type === "DIRECT" && channel.members.length === 2) {
 
           return channel.members.filter(m => m.id !== user.id).some(m => {
@@ -73,9 +104,13 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           })
         }
 
-        return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1
+        if ((channel.search.toLowerCase().search(search.toLowerCase()) !== -1
           || channel.title.toLowerCase().search(search.toLowerCase()) !== -1
-          || channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase() !== -1)))
+          || channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase() !== -1)))) {
+          return true;
+        } else {
+          return false;
+        }
       }
     })
     .sort((a, b) => {

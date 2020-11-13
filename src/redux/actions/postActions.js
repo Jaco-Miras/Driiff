@@ -1,5 +1,6 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
+  addPostRecipients as addPostRecipientsService,
   archiveAllPosts as archiveAllPostsService,
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
@@ -30,6 +31,8 @@ import {
   putComment as putCommentService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
+  refetchPosts as refetchPostsService,
+  refetchPostComments as refetchPostCommentsService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -246,4 +249,24 @@ export function readAllCallback(payload, callback) {
 
 export function archiveAllCallback(payload, callback) {
   return SimpleDispatchActionToReducer("ARCHIVE_ALL_POSTS", payload, callback);
+}
+
+export function addPostRecipients(payload, callback) {
+  return dispatchActionToReducer(addPostRecipientsService(payload), "ADD_POST_RECIPIENTS_START", "ADD_POST_RECIPIENTS_SUCCESS", "ADD_POST_RECIPIENTS_FAIL", callback);
+}
+
+export function addUserToPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_USER_TO_POST_RECIPIENTS", payload, callback);
+}
+
+export function incomingPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_RECIPIENTS", payload, callback);
+}
+
+export function refetchPosts(payload, callback) {
+  return dispatchActionToReducer(refetchPostsService(payload), "REFETCH_POSTS_START", "REFETCH_POSTS_SUCCESS", "REFETCH_POSTS_FAIL", callback);
+}
+
+export function refetchPostComments(payload, callback) {
+  return dispatchActionToReducer(refetchPostCommentsService(payload), "REFETCH_POST_COMMENTS_START", "REFETCH_POST_COMMENTS_SUCCESS", "REFETCH_POST_COMMENTS_FAIL", callback);
 }

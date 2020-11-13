@@ -153,6 +153,7 @@ export {
 } from "./files";
 
 export {
+  addPostRecipients,
   deleteComment,
   deletePost,
   fetchPost,
@@ -183,6 +184,8 @@ export {
   getUnreadPostEntries,
   archiveAllPosts,
   markAllPostAsRead,
+  refetchPosts,
+  refetchPostComments,
 } from "./post";
 
 export {

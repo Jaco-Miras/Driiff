@@ -278,7 +278,7 @@ export function postClap(payload) {
  * @returns {Promise<*>}
  */
 export function getCompanyPosts(payload) {
-  const {skip = 0, limit = 100, search = "", filters = []} = payload;
+  const {skip = 0, limit = 25, search = "", filters = []} = payload;
   let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
   if (search !== "") {
     url += `&search=${search}`;
@@ -504,5 +504,41 @@ export function archiveAllPosts(payload) {
     method: "PUT",
     url: `/v2/archived-post/all`,
     data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {array} payload.recipient_ids
+ * @returns {Promise<*>}
+ */
+export function addPostRecipients(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/add-post-recipients`,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function refetchPosts() {
+  return apiCall({
+    method: "POST",
+    url: `/v2/re-fetch-module/posts`,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function refetchPostComments(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/re-fetch-module/get-comments?current_post_id=${payload.post_id}`,
   });
 }

@@ -6,7 +6,9 @@ const CompanyPostBadge = (props) => {
     className = "", isBadgePill = false, post, dictionary, user, cbGetWidth = () => {
     }
   } = props;
+
   const hasRead = post.user_reads.some(u => u.id === user.id);
+  const hasReplied = typeof post.has_replied === "undefined" || !post.has_replied ? false : true;
 
   const refs = {
     container: useRef(null)
@@ -43,11 +45,11 @@ const CompanyPostBadge = (props) => {
             </div>
           )}
           {post.is_must_read && (post.author.id === user.id || !hasRead) && (
-            <div className={`${className} mr-3 d-sm-inline d-none ${hasRead ? "opacity-2" : ""}`}>
+            <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}
-          {post.is_must_reply && (
+          {post.is_must_reply && (post.author.id === user.id || !hasReplied) && (
             <div className={`${className} mr-3 d-sm-inline d-none`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>

@@ -5,14 +5,14 @@ import { Avatar, SvgIconFeather } from "../../common";
 const Wrapper = styled.div`
   line-height: 0;
   > span {
-    font-size: 11px;
+    font-size: 13px;
     background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")};
     color: #fff;
     display: inline-flex;
     padding: 5px; 
     border-radius: 100%;
-    width: 2.3rem;
-    height: 2.3rem;
+    width: 2.7rem;
+    height: 2.7rem;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -37,8 +37,8 @@ const StyledAvatar = styled(Avatar)``;
 
 const Icon = styled(SvgIconFeather)`
   color: #ffffff !important;
-  height: 2.3rem;
-  width: 2.3rem;
+  height: 2.7rem;
+  width: 2.7rem;
   &.feather-home {
     background: #7a1b8b;
     padding: 6px 0;    

@@ -584,6 +584,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "FETCH_COMMENTS_SUCCESS": {
+      let postComments = {...state.postComments};
       let comments = {};
       if (action.data.messages.length) {
         action.data.messages.forEach((c) => {
@@ -597,15 +598,41 @@ export default (state = INITIAL_STATE, action) => {
           };
         });
       }
+      postComments[action.data.post_id] = {
+        ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id]),
+        skip: action.data.next_skip,
+        hasMore: action.data.messages.length === 20,
+        comments: {...comments, ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id].comments)}
+      }
       return {
         ...state,
-        postComments: {
-          [action.data.post_id]: {
-            skip: action.data.next_skip,
-            hasMore: action.data.messages.length === 20,
-            comments: comments,
-          },
-        },
+        postComments: postComments
+      };
+    }
+    case "REFETCH_POST_COMMENTS_SUCCESS": {
+      let postComments = {...state.postComments};
+      let comments = {};
+      if (action.data.messages.length) {
+        action.data.messages.forEach((c) => {
+          comments[c.id] = {
+            ...c,
+            clap_user_ids: [],
+            replies: convertArrayToObject(c.replies.map((r) => { return {...r, clap_user_ids:[]} }), "id"),
+            skip: c.replies.length,
+            hasMore: c.replies.length === 10,
+            limit: 10,
+          };
+        });
+      }
+      postComments[action.data.post_id] = {
+        ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id]),
+        skip: action.data.next_skip,
+        hasMore: action.data.messages.length === 20,
+        comments: {...comments, ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id].comments)}
+      }
+      return {
+        ...state,
+        postComments: postComments
       };
     }
     case "GET_REPLY_CLAP_HOVER_SUCCESS": {
@@ -916,6 +943,9 @@ export default (state = INITIAL_STATE, action) => {
               }
             }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
+
+            if (action.data.author.id === state.user.id)
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].has_replied = true;
           }
         });
       }

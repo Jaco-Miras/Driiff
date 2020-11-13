@@ -123,7 +123,7 @@ const Avatar = (props) => {
 
   return (
     <Wrapper {...rest}
-             className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`}
+             className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`}
              onClick={handleOnClick}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0}/>}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={rest.title ? rest.title : name}>

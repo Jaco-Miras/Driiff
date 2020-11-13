@@ -178,51 +178,51 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
-const SelectPostVisibility = styled(PostVisibilitySelect)`
-  flex: 1 0 0;
-  width: 1%;
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
+// const SelectPostVisibility = styled(PostVisibilitySelect)`
+//   flex: 1 0 0;
+//   width: 1%;
+//   @media all and (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
-const SelectWorkspace = styled(FolderSelect)`
-  flex: 1 0 0;
-  width: 1%;
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
+// const SelectWorkspace = styled(FolderSelect)`
+//   flex: 1 0 0;
+//   width: 1%;
+//   @media all and (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
-const SelectPeople = styled(PeopleSelect)`
-  flex: 1 0 0;
-  width: 1%;
-  .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
-    box-shadow: none;
-  }
-  .react-select__option {
-    background-color: #ffffff;
-  }
-  .react-select__menu-list--is-multi > div {
-    &:hover {
-      background: #8c3b9b;
-      color: #ffffff;
-      cursor: pointer;
-      .react-select__option {
-        background: #8c3b9b;
-        cursor: pointer;
-      }
-    }
-  }
-  .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
-    box-shadow: none;
-  }
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
+// const SelectPeople = styled(PeopleSelect)`
+//   flex: 1 0 0;
+//   width: 1%;
+//   .react-select__control--menu-is-open {
+//     border-color: #7a1b8b !important;
+//     box-shadow: none;
+//   }
+//   .react-select__option {
+//     background-color: #ffffff;
+//   }
+//   .react-select__menu-list--is-multi > div {
+//     &:hover {
+//       background: #8c3b9b;
+//       color: #ffffff;
+//       cursor: pointer;
+//       .react-select__option {
+//         background: #8c3b9b;
+//         cursor: pointer;
+//       }
+//     }
+//   }
+//   .react-select__control--is-focused {
+//     border-color: #7a1b8b !important;
+//     box-shadow: none;
+//   }
+//   @media all and (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
 const CheckBoxGroup = styled.div`
   overflow: hidden;
@@ -311,6 +311,7 @@ const CreateEditCompanyPostModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+  const [imageFileIds, setImageFileIds] = useState([]);
 
   const [form, setForm] = useState({
     must_read: false,
@@ -578,7 +579,7 @@ const CreateEditCompanyPostModal = (props) => {
       show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
       end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
       tag_ids: [],
-      file_ids: [],
+      file_ids: [...imageFileIds],
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`
       }
@@ -1025,6 +1026,7 @@ const CreateEditCompanyPostModal = (props) => {
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
+          setImageFileIds={setImageFileIds}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />

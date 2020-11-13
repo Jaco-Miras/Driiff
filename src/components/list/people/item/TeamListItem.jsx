@@ -19,8 +19,6 @@ const Wrapper = styled.li`
   }
   .avatar {
     cursor: pointer;
-    height: 2.5rem;
-    width: 2.5rem;
   }
   .profile-name {
     cursor: pointer;
