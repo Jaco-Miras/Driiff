@@ -14,7 +14,7 @@ import { postCreate, putPost } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
-import { useToaster, useTranslation, useWorkspaceAndUserOptions } from "../hooks";
+import { useToaster, useTranslation, useWindowSize, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
@@ -274,7 +274,6 @@ const MoreOption = styled.div`
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
     height: ${props => props.height > 80 ? props.height : 80}px;
-    min-height: 400px;
   }
 
   label {
@@ -289,6 +288,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const { type, mode, item = {} } = props.data;
 
+  const winSize = useWindowSize();
   const inputRef = useRef();
   const dispatch = useDispatch();
   const { _t } = useTranslation();
@@ -999,7 +999,7 @@ const CreateEditWorkspacePostModal = (props) => {
         </WrapperDiv>
         <StyledDescriptionInput
           className="modal-description"
-          height={window.innerHeight - 660}
+          height={winSize.height - 660}
           showFileButton={true}
           onChange={handleQuillChange}
           onOpenFileDialog={handleOpenFileDialog}
