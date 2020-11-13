@@ -4,6 +4,7 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {useTranslation} from "../hooks";
 import MagicUrl from 'quill-magic-url';
+import ImageUploader from "quill-image-uploader";
 
 const QuillEditor = forwardRef((props, ref) => {
   const {className = "", theme = "snow", placeholder = "", ...otherProps} = props;
@@ -40,3 +41,5 @@ class QuillPlainClipboard extends Clipboard {
 Quill.register('modules/magicUrl', MagicUrl);
 
 Quill.register("modules/clipboard", QuillPlainClipboard, true);
+
+Quill.register("modules/imageUploader", ImageUploader);

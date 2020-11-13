@@ -37,7 +37,8 @@ const ChatInputContainer = styled.div`
   margin-right: 8px;
   min-height: 48px;
   .feather-send,
-  .feather-smile {
+  .feather-smile, 
+  .feather-image {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -53,6 +54,20 @@ const ChatInputContainer = styled.div`
   }
   .feather-smile {
     right: 44px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
+  .feather-image {
+    right: 80px;
     margin: 4px 0;
     background: transparent;
     border-color: transparent;
@@ -271,6 +286,7 @@ const CompanyPostDetailFooter = (props) => {
                     onActive={onActive}
                     onClosePicker={onClosePicker}
                 />
+                {/* <IconButton icon="image"/> */}
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                             icon="smile"/>
                 <IconButton onClick={handleSend} icon="send"/>
