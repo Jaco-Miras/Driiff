@@ -31,6 +31,8 @@ import {
   putComment as putCommentService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
+  refetchPosts as refetchPostsService,
+  refetchPostComments as refetchPostCommentsService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -259,4 +261,12 @@ export function addUserToPostRecipients(payload, callback) {
 
 export function incomingPostRecipients(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_RECIPIENTS", payload, callback);
+}
+
+export function refetchPosts(payload, callback) {
+  return dispatchActionToReducer(refetchPostsService(payload), "REFETCH_POSTS_START", "REFETCH_POSTS_SUCCESS", "REFETCH_POSTS_FAIL", callback);
+}
+
+export function refetchPostComments(payload, callback) {
+  return dispatchActionToReducer(refetchPostCommentsService(payload), "REFETCH_POST_COMMENTS_START", "REFETCH_POST_COMMENTS_SUCCESS", "REFETCH_POST_COMMENTS_FAIL", callback);
 }

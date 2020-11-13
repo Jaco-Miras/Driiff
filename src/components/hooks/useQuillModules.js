@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import { replaceChar } from "../../helpers/stringFormatter";
+import { uploadDocument } from "../../redux/services/global";
 
-const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = [], disableMention = false) => {
+const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = [], disableMention = false, setImageFileIds = null) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
   const userMentions = useSelector((state) => state.users.mentions);
+  const user = useSelector((state) => state.session.user);
 
   const savedCallback = useRef(callback);
 
@@ -117,6 +119,29 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
         },
       },
       toolbar: ["bold", "italic", "link", "image"],
+      imageUploader: {
+        upload: file => {
+          return new Promise((resolve, reject) => {
+            var formData = new FormData();
+            formData.append("file", file);
+            uploadDocument({
+              user_id: user.id,
+              file: formData,
+              file_type: "private",
+              folder_id: null,
+            })
+            .then(result => {
+              console.log(result);
+              setImageFileIds([result.data.id])
+              resolve(result.data.view_link);
+            })
+            .catch(error => {
+              reject("Upload failed");
+              console.error("Error:", error);
+            });
+          });
+        }
+      },
       keyboard: {
         bindings: {
           tab: false,
