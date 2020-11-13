@@ -182,6 +182,7 @@ export {
   getPostClapHover,
   getReplyClapHover,
   getUnreadPostEntries,
+  getUnreadPostComments,
   archiveAllPosts,
   markAllPostAsRead,
   refetchPosts,
