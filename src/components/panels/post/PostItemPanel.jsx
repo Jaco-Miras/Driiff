@@ -330,7 +330,7 @@ const PostItemPanel = (props) => {
     handleSwipeRight
   });
 
-  const hasUnread = post.unread_count > 0 || post.is_unread === 1;
+  const hasUnread = post.is_unread === 1;
 
   return (
     <Wrapper
@@ -362,7 +362,8 @@ const PostItemPanel = (props) => {
             <PostReplyCounter>
               {post.unread_count !== 0 &&
               <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
-              <div className="text-muted">{post.reply_count} comments</div>
+              <div
+                className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
               <span className="time-stamp text-muted">
                 <span>{fromNow(post.created_at.timestamp)}</span>
               </span>
