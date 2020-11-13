@@ -8,6 +8,12 @@ import quillHelper from "../../../helpers/quillHelper";
 import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../hooks";
 
 const Wrapper = styled.li`
+  .feather-eye-off {
+    position: relative;
+    top: -1px;
+    margin-right: 0.25rem;
+    width: 12px;
+  }
   &.has-unread {
     background-color: #f7f7f7 !important;
     
@@ -355,7 +361,7 @@ const PostItemPanel = (props) => {
                 <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
               }
             </AuthorRecipients>
-            <span>{post.title}</span>
+            <span>{post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off"/>}{post.title}</span>
             <div className='text-truncate post-partialBody'>
               <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>
             </div>

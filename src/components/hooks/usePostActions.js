@@ -35,6 +35,7 @@ import {
   putPost,
   readAllCallback,
   removePost,
+  setPostUnfollow,
   starPostReducer,
   updateCompanyPostFilterSort,
 } from "../../redux/actions/postActions";
@@ -389,6 +390,9 @@ const usePostActions = () => {
             if (err) return;
             let notification = `${dictionary.notificationStopFollow} ${post.title}`;
             toaster.info(notification);
+            dispatch(
+              setPostUnfollow({ post_id: post.id })
+            );
           })
         );
       } else {

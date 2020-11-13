@@ -1275,6 +1275,40 @@ export default (state = INITIAL_STATE, action) => {
         } : state.activeTopic
       };
     }
+    case "INCOMING_POST_UNFOLLOW": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts)
+            .filter(wsId => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .map(wsId => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                      is_followed: false,
+                    }
+                  }
+                }
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {})
+        },
+        activeTopic: {
+          ...state.activeTopic,
+          ...(state.workspacePosts.hasOwnProperty(state.workspacePosts) &&
+            state.workspacePosts[state.activeTopic.id].posts.hasOwnProperty(action.data.post_id) && {
+              is_followed: false,
+            })
+        },
+      };
+    }
     case "INCOMING_READ_UNREAD_REDUCER": {
       return {
         ...state,
