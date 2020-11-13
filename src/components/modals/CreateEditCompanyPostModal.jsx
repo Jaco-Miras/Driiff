@@ -13,7 +13,7 @@ import {
 import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
-import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
+import { CheckBox, DescriptionInput, FolderSelect } from "../forms";
 import { useToaster, useTranslation, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
@@ -1103,7 +1103,7 @@ const CreateEditCompanyPostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <button className="btn btn-primary"
-                  disabled={form.selectedAddressTo.length === 0 || form.title === ""}
+                  disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>"}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}

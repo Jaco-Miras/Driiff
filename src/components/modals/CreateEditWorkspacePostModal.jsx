@@ -1086,7 +1086,7 @@ const CreateEditWorkspacePostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <button className="btn btn-primary"
-                  disabled={form.selectedAddressTo.length === 0 || form.title === ""}
+                  disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>"}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
