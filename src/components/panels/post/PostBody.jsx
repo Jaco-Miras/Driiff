@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useGoogleApis, useTimeFormat } from "../../hooks";
+import { useGoogleApis, useTimeFormat, useWindowSize } from "../../hooks";
 import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
@@ -116,6 +116,7 @@ const PostBody = (props) => {
   const [star, setStar] = useState(post.is_favourite);
   const { fromNow, localizeDate } = useTimeFormat();
   const googleApis = useGoogleApis();
+  const winSize = useWindowSize();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -142,8 +143,9 @@ const PostBody = (props) => {
     let recipient_names = "to ";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
     const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`)
         .join(`, `);
     }
@@ -157,8 +159,8 @@ const PostBody = (props) => {
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`).join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;

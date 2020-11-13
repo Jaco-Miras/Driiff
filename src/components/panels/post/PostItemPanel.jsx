@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
-import { useTimeFormat, useTouchActions, useTranslation } from "../../hooks";
+import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
@@ -235,6 +235,7 @@ const PostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
 
+  const winSize = useWindowSize();
   const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
@@ -251,11 +252,12 @@ const PostItemPanel = (props) => {
   );
 
   const renderUserResponsibleNames = () => {
+    const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
-    const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
@@ -267,17 +269,15 @@ const PostItemPanel = (props) => {
 
     if (hasMe) {
       if (otherPostRecipients.length >= 1) {
-        // recipient_names += `, ${dictionary.me}`;
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       } else {
-        // recipient_names += dictionary.me;
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       }
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
