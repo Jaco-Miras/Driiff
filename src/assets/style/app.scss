@@ -45,6 +45,10 @@ body {
   padding-left: 0.3rem;
 }
 
+.post-modal {
+  max-width: calc(100% - 20rem) !important;
+}
+
 .time-stamp {
   cursor: default;
 }
@@ -616,7 +620,6 @@ body.dark {
 .modal-info {
   opacity: 0.8;
   margin-bottom: 1rem;
-  max-width: 530px;
 }
 
 .folder-searchbar {
@@ -14237,13 +14240,6 @@ body.modal-open .modal.show .modal-dialog {
 .modal .modal-dialog .modal-content .modal-header .modal-title {
   font-size: 17px;
   font-weight: 600;
-}
-
-@media (min-width: 992px) {
-  .modal-lg,
-  .modal-xl {
-    max-width: 600px;
-  }
 }
 
 .custom-control-label {

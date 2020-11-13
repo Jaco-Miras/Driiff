@@ -10,7 +10,7 @@ const useComments = (post, workspace) => {
   const [fetchingComments, setFetchingComments] = useState(false);
 
   useEffect(() => {
-    if (!fetchingComments) {
+    if (post && !fetchingComments) {
       setFetchingComments(true);
       let url = `/v1/messages?post_id=${post.id}&skip=${0}&limit=${20}`;
       let payload = {
