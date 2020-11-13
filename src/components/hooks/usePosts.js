@@ -84,6 +84,7 @@ const usePosts = () => {
     starred: 0,
     archived: 0,
     drafts: 0,
+    new_reply: 0
   };
 
   if (Object.keys(recentPosts).length && recentPosts.hasOwnProperty(params.workspaceId)) {
@@ -98,6 +99,7 @@ const usePosts = () => {
       starred: Object.values(posts).filter((p) => p.is_favourite).length,
       archived: Object.values(posts).filter((p) => p.is_archived).length,
       drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
+      new_reply: Object.values(posts).filter((p) => p.unread_reply_ids.length > 0).length,
     };
 
     if (posts.hasOwnProperty(params.postId)) {
@@ -119,6 +121,8 @@ const usePosts = () => {
               return p.is_archived === 1;
             } else if (filter === "all") {
               return !p.is_archived;
+            } else if (filter === "new_reply") {
+              return p.unread_reply_ids.length > 0;
             }
           } else if (tag) {
             if (tag === "is_must_reply") {
