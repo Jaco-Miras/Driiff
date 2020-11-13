@@ -428,12 +428,15 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[action.data.post_id].is_archived = 0;
         }
         if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
-          companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author]
+          companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author];
         }
         if (action.data.author.id !== state.user.id) {
           companyPosts.posts[action.data.post_id].unread_count = companyPosts.posts[action.data.post_id].unread_count + 1;
         }
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
+
+        if (action.data.author.id === state.user.id)
+          companyPosts.posts[action.data.post_id].has_replied = true;
       }
       
       return {
