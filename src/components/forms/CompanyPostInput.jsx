@@ -254,9 +254,10 @@ const CompanyPostInput = (props) => {
     }
   };
 
-  const handleQuillChange = (content, delta, source, editor) => {
-    const textOnly = editor.getText(content);
 
+  const handleQuillChange = (content, delta, source, editor) => {
+    console.log(reactQuillRef.current)
+    const textOnly = editor.getText(content);
     if (textOnly.trim() === "" && userMention) {
       handleClearUserMention();
     }
@@ -283,6 +284,9 @@ const CompanyPostInput = (props) => {
           .ops.filter((m) => m.insert.mention)
           .map((i) => i.insert.mention.id)
       );
+      // if (reactQuillRef) {
+      //   reactQuillRef.current.editor.options.modules.toolbar.handlers.image()
+      // }
     }
   };
 

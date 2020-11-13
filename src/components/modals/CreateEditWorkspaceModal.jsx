@@ -195,6 +195,7 @@ const CreateEditWorkspaceModal = (props) => {
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [imageFileIds, setImageFileIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState({
     name: null,
@@ -393,6 +394,7 @@ const CreateEditWorkspaceModal = (props) => {
       member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id),
       is_lock: form.is_private ? 1 : 0,
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
+      file_ids: imageFileIds
     };
 
     if (invitedEmails.length) {
@@ -1047,6 +1049,7 @@ const CreateEditWorkspaceModal = (props) => {
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
+          setImageFileIds={setImageFileIds}
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
