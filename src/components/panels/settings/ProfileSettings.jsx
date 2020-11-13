@@ -60,6 +60,11 @@ const Wrapper = styled.div`
       }
     }
   }
+  .version-number {
+    display: flex;
+    place-content: center;
+    font-size: 13px;
+  }
 `;
 
 const ProfileSettings = (props) => {
@@ -464,6 +469,7 @@ const ProfileSettings = (props) => {
       :
       <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
       }
+      <span className="version-number">Driff version: 2.17.3</span>
     </Wrapper>
   );
 };
