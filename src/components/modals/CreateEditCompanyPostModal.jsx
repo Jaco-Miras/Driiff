@@ -973,7 +973,7 @@ const CreateEditCompanyPostModal = (props) => {
   }, [company]);
 
   return (
-    <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
+    <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection
         toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
