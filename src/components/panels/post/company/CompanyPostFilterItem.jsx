@@ -49,6 +49,12 @@ const CompanyPostFilterItem = (props) => {
         {dictionary.inbox}
         <span className="small ml-auto">{unreadCounter.general_post}</span>
       </span>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "new_reply" ? "active" : ""}`}
+            data-value="new_reply" onClick={handleClickFilter}>
+        <SvgIconFeather className="mr-2" icon="mail"/>
+        {dictionary.newReply}
+        <span className="small ml-auto">{counters.all > 0 && counters.new_reply}</span>
+      </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
             data-value="my_posts" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="send-post"/>

@@ -111,6 +111,7 @@ const WorkspacePostsPanel = (props) => {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     all: _t("POST.ALL", "All"),
     inbox: _t("POST.INBOX", "Inbox"),
+    newReply: _t("POST.NEW_REPLY", "New reply"),
     myPosts: _t("POST.MY_POSTS", "My posts"),
     starred: _t("POST.STARRED", "Starred"),
     archived: _t("POST.ARCHIVED", "Archived"),
