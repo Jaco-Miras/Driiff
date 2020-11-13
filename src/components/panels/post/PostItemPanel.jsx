@@ -330,7 +330,7 @@ const PostItemPanel = (props) => {
     handleSwipeRight
   });
 
-  const hasUnread = post.unread_count > 0 || post.is_unread === 1;
+  const hasUnread = post.is_unread === 1;
 
   return (
     <Wrapper
