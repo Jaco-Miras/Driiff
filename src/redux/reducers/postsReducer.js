@@ -399,6 +399,24 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
+    case "INCOMING_POST_UNFOLLOW": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            flipper: !state.flipper,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                is_followed: false
+              }
+            }
+          },
+        })
+      };
+    }
     case "INCOMING_READ_UNREAD_REDUCER": {
       return {
         ...state,

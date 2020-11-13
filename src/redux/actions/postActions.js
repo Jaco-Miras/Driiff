@@ -31,8 +31,8 @@ import {
   putComment as putCommentService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
-  refetchPosts as refetchPostsService,
   refetchPostComments as refetchPostCommentsService,
+  refetchPosts as refetchPostsService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -61,6 +61,10 @@ export function postFollow(payload, callback) {
 
 export function postUnfollow(payload, callback) {
   return dispatchActionToReducer(postUnfollowService(payload), "POST_UNFOLLOW_START", "POST_UNFOLOW_SUCCESS", "POST_UNFOLOW_FAIL", callback);
+}
+
+export function setPostUnfollow(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_UNFOLLOW", payload, callback);
 }
 
 export function postSnooze(payload, callback) {
