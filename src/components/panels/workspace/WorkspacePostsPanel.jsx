@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from "react";
-//import { useSelector } from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
@@ -23,6 +22,25 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
+    
+    .app-lists {    
+      overflow: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  }
+
+  .all-action-button {
+    background: none;
+    color: #828282;
+    padding: 10px 5px 5px 5px;
+    font-weight: 500;
+     .dark & {
+      color: rgba(255, 255, 255, 0.5);
+    }
   }
 `;
 
@@ -61,13 +79,14 @@ const WorkspacePostsPanel = (props) => {
 
   const params = useParams();
   const history = useHistory();
+  const refs = {
+    posts: useRef(null),
+    btnLoadMore: useRef(null)
+  };
 
-  // const workspace = useSelector((state) => state.workspaces.activeTopic);
-
-  // const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
-
-  const { actions, posts, filter, tag, sort, post, user, search, count, counters } = usePosts();
+  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
+  const [loading, setLoading] = useState(false);
 
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create");
@@ -139,20 +158,65 @@ const WorkspacePostsPanel = (props) => {
     showMore: _t("SHOW_MORE", "Show more"),
     showLess: _t("SHOW_LESS", "Show less"),
     markAll: _t("POST.MARK_ALL_AS_READ", "Mark all as read"),
-    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all")
+    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all"),
+    noComment: _t("POST.NO_COMMENT", "no comment"),
+    oneComment: _t("POST.ONE_COMMENT", "1 comment"),
+    comments: _t("POST.NUMBER_COMMENTS", "::comment_count:: comments"),
   };
 
+  /**
+   * @todo: must fill-out the entire screen with items
+   */
+  const initLoading = () => {
+    let el = refs.posts.current;
+    if (el.scrollHeight > el.querySelector(".list-group").scrollHeight) {
+      loadMore();
+    }
+  };
+
+  const loadMore = (callback = () => {
+  }) => {
+    if (!loading) {
+      setLoading(true);
+
+      fetchMore((err, res) => {
+        setLoading(false);
+        callback(err, res);
+      });
+    }
+  };
+
+  const handleScroll = (e) => {
+    if (e.target.dataset.loading === "false") {
+      if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
+        if (refs.btnLoadMore.current)
+          refs.btnLoadMore.current.click();
+      }
+    }
+  };
+
+  useEffect(() => {
+    let el = refs.posts.current;
+    if (el && el.dataset.loaded === "0") {
+      initLoading();
+
+      el.dataset.loaded = "1";
+      refs.posts.current.addEventListener("scroll", handleScroll, false);
+    }
+  }, [refs.posts.current]);
+
   const handleMarkAllAsRead = () => {
-    actions.readAll({topic_id: workspace.id});
+    actions.readAll({ topic_id: workspace.id });
   };
 
   const handleArchiveAll = () => {
-    actions.archiveAll({topic_id: workspace.id});
+    actions.archiveAll({ topic_id: workspace.id });
   };
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
-  if (posts === null) return <></>;
+  if (posts === null)
+    return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
@@ -184,45 +248,47 @@ const WorkspacePostsPanel = (props) => {
                     <PostDetail
                       readByUsers={readByUsers}
                       post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback}
-                      workspace={workspace} isMember={isMember} dictionary={dictionary}
+                      dictionary={dictionary}
+                      workspace={workspace} isMember={isMember}
                       disableOptions={disableOptions}/>
                   </PostDetailWrapper>
                 </div>
               ) : (
                 <>
-                {
-                  filter === "all" &&
-                  <PostsBtnWrapper>
-                    <button className="btn btn-primary" onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
-                    <button className="btn btn-primary" onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
-                  </PostsBtnWrapper>
-                }
-                <div className="card card-body app-content-body mb-4">
-                  <div className="app-lists" tabIndex="1">
-                    {search !== null && (
-                      <>
-                        {posts.length === 0 ? (
-                          <h6
-                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
-                        ) : posts.length === 1 ? (
-                          <h6
-                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
-                        ) : (
-                          <h6
-                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
-                        )}
-                      </>
-                    )}
-                    <ul className="list-group list-group-flush ui-sortable fadeIn">
-                      {posts &&
-                      posts.map((p) => {
-                        return <PostItemPanel
-                          key={p.id} post={p} postActions={actions} dictionary={dictionary}
-                          disableOptions={disableOptions}/>;
-                      })}
-                    </ul>
+                  {
+                    filter === "all" &&
+                    <PostsBtnWrapper>
+                      <button className="btn all-action-button"
+                              onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                      <button className="btn all-action-button"
+                              onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                    </PostsBtnWrapper>
+                  }
+                  <div className="card card-body app-content-body mb-4">
+                    <div ref={refs.posts} className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
+                      {search !== null && (
+                        <>
+                          {posts.length === 0 ? (
+                            <h6
+                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
+                          ) : posts.length === 1 ? (
+                            <h6
+                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
+                          ) : (
+                            <h6
+                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
+                          )}
+                        </>
+                      )}
+                      <ul className="list-group list-group-flush ui-sortable fadeIn">
+                        {posts && posts.map((p) => {
+                          return <PostItemPanel
+                            key={p.id} post={p} postActions={actions} dictionary={dictionary}
+                            disableOptions={disableOptions}/>;
+                        })}
+                      </ul>
+                    </div>
                   </div>
-                </div>
                 </>
               )}
             </>

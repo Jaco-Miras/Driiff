@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useGoogleApis, useTimeFormat } from "../../hooks";
+import { useGoogleApis, useTimeFormat, useWindowSize } from "../../hooks";
 import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
@@ -21,20 +21,22 @@ const Wrapper = styled.div`
 
   .author-name {
     display: block;
-    color: #505050;
     font-size: 14px;   
     font-weight: 500;
     color: rgb(80, 80, 80);
     .dark & {
-      color: #c7c7c7;   
+      color: #c7c7c7;
+    }
   }
+    
   .recipients {
     color: #8b8b8b;
     font-size: 10px;
   }
-  
+
   .ellipsis-hover {
     position: relative;
+    cursor: pointer;
     
     &:hover {
       .recipient-names {
@@ -43,6 +45,7 @@ const Wrapper = styled.div`
       }
     }
   }
+
   .recipient-names {
     transition: all 0.5s ease;
     position: absolute;
@@ -113,6 +116,7 @@ const PostBody = (props) => {
   const [star, setStar] = useState(post.is_favourite);
   const { fromNow, localizeDate } = useTimeFormat();
   const googleApis = useGoogleApis();
+  const winSize = useWindowSize();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -139,8 +143,9 @@ const PostBody = (props) => {
     let recipient_names = "to ";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
     const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`)
         .join(`, `);
     }
@@ -154,8 +159,8 @@ const PostBody = (props) => {
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`).join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
@@ -180,7 +185,7 @@ const PostBody = (props) => {
             </div>
           </div>
           <div className="d-inline-flex">
-            <PostBadge post={post} isBadgePill={true} dictionary={dictionary}/>
+            <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user}/>
             {post.files.length > 0 && <Icon className="mr-2" icon="paperclip"/>}
             <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"}
                   stroke={star ? "#ffc107" : "currentcolor"}/>

@@ -1,5 +1,7 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
+  addPostRecipients as addPostRecipientsService,
+  archiveAllPosts as archiveAllPostsService,
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
   fetchComments as fetchCommentsService,
@@ -10,6 +12,8 @@ import {
   getCompanyPosts as getCompanyPostsService,
   getPostClapHover as getPostClapHoverService,
   getReplyClapHover as getReplyClapHoverService,
+  getUnreadPostEntries as getUnreadPostEntriesService,
+  markAllPostAsRead as markAllPostAsReadService,
   postArchive as postArchiveService,
   postClap as postClapService,
   postComment as postCommentService,
@@ -27,9 +31,6 @@ import {
   putComment as putCommentService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
-  getUnreadPostEntries as getUnreadPostEntriesService,
-  markAllPostAsRead as markAllPostAsReadService,
-  archiveAllPosts as archiveAllPostsService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -204,10 +205,6 @@ export function postMarkRead(payload, callback) {
   return dispatchActionToReducer(postMarkReadService(payload), "POST_VISIT_START", "POST_VISIT_SUCCESS", "POST_VISIT_FAIL", callback);
 }
 
-export function mustReadReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("MUST_READ_REDUCER", payload, callback);
-}
-
 export function deleteComment(payload, callback) {
   return dispatchActionToReducer(deleteCommentService(payload), "DELETE_COMMENT_START", "DELETE_COMMENT_SUCCESS", "DELETE_COMMENT_FAIL", callback);
 }
@@ -250,4 +247,16 @@ export function readAllCallback(payload, callback) {
 
 export function archiveAllCallback(payload, callback) {
   return SimpleDispatchActionToReducer("ARCHIVE_ALL_POSTS", payload, callback);
+}
+
+export function addPostRecipients(payload, callback) {
+  return dispatchActionToReducer(addPostRecipientsService(payload), "ADD_POST_RECIPIENTS_START", "ADD_POST_RECIPIENTS_SUCCESS", "ADD_POST_RECIPIENTS_FAIL", callback);
+}
+
+export function addUserToPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_USER_TO_POST_RECIPIENTS", payload, callback);
+}
+
+export function incomingPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_RECIPIENTS", payload, callback);
 }

@@ -178,51 +178,51 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
-const SelectPostVisibility = styled(PostVisibilitySelect)`
-  flex: 1 0 0;
-  width: 1%;
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
+// const SelectPostVisibility = styled(PostVisibilitySelect)`
+//   flex: 1 0 0;
+//   width: 1%;
+//   @media all and (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
-const SelectWorkspace = styled(FolderSelect)`
-  flex: 1 0 0;
-  width: 1%;
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
+// const SelectWorkspace = styled(FolderSelect)`
+//   flex: 1 0 0;
+//   width: 1%;
+//   @media all and (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
-const SelectPeople = styled(PeopleSelect)`
-  flex: 1 0 0;
-  width: 1%;
-  .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
-    box-shadow: none;
-  }
-  .react-select__option {
-    background-color: #ffffff;
-  }
-  .react-select__menu-list--is-multi > div {
-    &:hover {
-      background: #8c3b9b;
-      color: #ffffff;
-      cursor: pointer;
-      .react-select__option {
-        background: #8c3b9b;
-        cursor: pointer;
-      }
-    }
-  }
-  .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
-    box-shadow: none;
-  }
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
+// const SelectPeople = styled(PeopleSelect)`
+//   flex: 1 0 0;
+//   width: 1%;
+//   .react-select__control--menu-is-open {
+//     border-color: #7a1b8b !important;
+//     box-shadow: none;
+//   }
+//   .react-select__option {
+//     background-color: #ffffff;
+//   }
+//   .react-select__menu-list--is-multi > div {
+//     &:hover {
+//       background: #8c3b9b;
+//       color: #ffffff;
+//       cursor: pointer;
+//       .react-select__option {
+//         background: #8c3b9b;
+//         cursor: pointer;
+//       }
+//     }
+//   }
+//   .react-select__control--is-focused {
+//     border-color: #7a1b8b !important;
+//     box-shadow: none;
+//   }
+//   @media all and (max-width: 480px) {
+//     width: 100%;
+//   }
+// `;
 
 const CheckBoxGroup = styled.div`
   overflow: hidden;
@@ -972,7 +972,7 @@ const CreateEditCompanyPostModal = (props) => {
   }, [company]);
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
+    <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered>
       <ModalHeaderSection
         toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
@@ -999,10 +999,12 @@ const CreateEditCompanyPostModal = (props) => {
           attachedFiles={attachedFiles}
         />
         <WrapperDiv className={"modal-input mt-0"}>
-          <div>
+          <div className="w-100">
             <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
+          </div>
+          <div className="w-100">
             <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
-            <Input style={{ borderRadius: "5px" }} value={form.title}
+            <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title}
                    onChange={handleNameChange} innerRef={inputRef}/>
           </div>
         </WrapperDiv>

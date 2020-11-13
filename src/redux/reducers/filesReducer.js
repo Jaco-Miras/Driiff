@@ -862,21 +862,17 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SET_VIEW_FILES": {
-      let channelFiles = {...state.channelFiles};
-      let existingFiles = []
-      if (action.data !== null && typeof action.data.channel_id !== "undefined" && typeof action.data.files !== "undefined") {
-        if (typeof channelFiles[action.data.channel_id] !== "undefined") {
-          existingFiles = [...channelFiles[action.data.channel_id]]
-        }
-        channelFiles = {
-          ...channelFiles,
-          [action.data.channel_id]: [...action.data.files, ...existingFiles]
-        }
-      }
       return {
         ...state,
         viewFiles: action.data,
-        channelFiles: channelFiles
+        channelFiles: {
+          ...state.channelFiles,
+          ...(action.data !== null && typeof action.data.channel_id !== "undefined" && typeof action.data.files !== "undefined" && {
+            [action.data.channel_id]: typeof state.channelFiles[action.data.channel_id] === "undefined" ?
+              action.data.files :
+              [...state.channelFiles[action.data.channel_id].filter(f1 => !action.data.files.some(f2 => f2.id === f1.id)), ...action.data.files]
+          })
+        }
       };
     }
     case "PREPARE_WORKSPACE_FILES_UPLOAD": {

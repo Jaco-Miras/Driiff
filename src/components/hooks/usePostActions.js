@@ -6,6 +6,9 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { addToModals, deleteDraft } from "../../redux/actions/globalActions";
 import {
+  addUserToPostRecipients,
+  archiveAllCallback,
+  archiveAllPosts,
   archiveReducer,
   deletePost,
   fetchPosts,
@@ -13,9 +16,10 @@ import {
   fetchTagCounter,
   getCompanyPosts,
   getPostClapHover,
+  getUnreadPostEntries,
   incomingPostMarkDone,
   incomingReadUnreadReducer,
-  mustReadReducer,
+  markAllPostAsRead,
   postArchive,
   postClap,
   postCompanyPosts,
@@ -29,14 +33,10 @@ import {
   postVisit,
   putCompanyPosts,
   putPost,
+  readAllCallback,
   removePost,
   starPostReducer,
   updateCompanyPostFilterSort,
-  getUnreadPostEntries,
-  markAllPostAsRead,
-  archiveAllPosts,
-  readAllCallback,
-  archiveAllCallback,
 } from "../../redux/actions/postActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
@@ -614,12 +614,6 @@ const usePostActions = () => {
       };
       let cb = (err, res) => {
         if (err) return;
-        dispatch(
-          mustReadReducer({
-            post_id: post.id,
-            topic_id: params.workspaceId,
-          })
-        );
       };
       dispatch(postMarkRead(payload, cb));
     },
@@ -699,7 +693,17 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const addUserToPost = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        addUserToPostRecipients(payload, callback)
+      );
+    },
+    [dispatch]
+  );
+
   return {
+    addUserToPost,
     starPost,
     markPost,
     openPost,

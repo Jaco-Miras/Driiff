@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar, PlusRecipients } from "../../common";
-import { useWIndowSize } from "../../hooks";
+import { useWindowSize } from "../../hooks";
 
 const MembersListContainer = styled.div`
   .people-list {
@@ -18,7 +18,7 @@ const StyledAvatar = styled(Avatar)`
 const MembersLists = (props) => {
   const { members, classNames = "" } = props;
 
-  const winSize = useWIndowSize();
+  const winSize = useWindowSize();
 
   let memberSize = 5;
   if (winSize.width <= 575) {

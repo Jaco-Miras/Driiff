@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { useGoogleApis, useTimeFormat } from "../../../hooks";
+import { useGoogleApis, useTimeFormat, useWindowSize } from "../../../hooks";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
@@ -14,10 +14,10 @@ const Wrapper = styled.div`
     margin-right: 5px;
   }
   
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-  }
+  // .author-avatar {
+  //   width: 2.7rem;
+  //   height: 2.7rem;
+  // }
   
   .author-name {
     display: block;
@@ -26,23 +26,25 @@ const Wrapper = styled.div`
     color: rgb(80, 80, 80);
     .dark & {
       color: #c7c7c7;
-    }
+    }    
   }
-    .recipients {
-      color: #8b8b8b;
-      font-size: 10px;
-    }
-    .ellipsis-hover {
-      position: relative;
-      
-      &:hover {
-        .recipient-names {
-          opacity: 1;
-          max-height: 300px;    
-        }
-      }  
-    }
-  
+  .recipients {
+    color: #8b8b8b;
+    font-size: 10px;
+  }
+
+  .ellipsis-hover {
+    position: relative;
+  cursor: pointer;
+    
+    &:hover {
+      .recipient-names {
+        opacity: 1;
+        max-height: 300px;    
+      }
+    }  
+  }
+
   .recipient-names {
     transition: all 0.5s ease;
     position: absolute;
@@ -51,6 +53,7 @@ const Wrapper = styled.div`
     width: 200px;    
     border-radius: 8px;
     overflow-y: auto;
+    border: 1px solid #fff;
     box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
     background: #fff;
     max-height: 0;
@@ -110,8 +113,9 @@ const CompanyPostBody = (props) => {
   );
 
   const [star, setStar] = useState(post.is_favourite);
-  const { localizeDate, fromNow } = useTimeFormat();
+  const { fromNow, localizeDate } = useTimeFormat();
   const googleApis = useGoogleApis();
+  const winSize = useWindowSize();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -138,8 +142,9 @@ const CompanyPostBody = (props) => {
     let recipient_names = "to ";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
     const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`)
         .join(`, `);
     }
@@ -153,8 +158,8 @@ const CompanyPostBody = (props) => {
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => `<span class="receiver">${r.name}</span>`).join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
@@ -168,7 +173,7 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
-            <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
+            <Avatar className="mr-2" id={post.author.id} name={post.author.name}
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <div>
               <span className="author-name">{post.author.first_name}</span>
@@ -179,7 +184,7 @@ const CompanyPostBody = (props) => {
             </div>
           </div>
           <div className="d-inline-flex">
-            <CompanyPostBadge post={post} isBadgePill={true} dictionary={dictionary}/>
+            <CompanyPostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user}/>
             {post.files.length > 0 && <Icon className="mr-2" icon="paperclip"/>}
             <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"}
                   stroke={star ? "#ffc107" : "currentcolor"}/>
@@ -194,7 +199,8 @@ const CompanyPostBody = (props) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <div className="mw-100" ref={handlePostBodyRef} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
+        <div className="mw-100" ref={handlePostBodyRef}
+             dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
       </div>
     </Wrapper>
   );

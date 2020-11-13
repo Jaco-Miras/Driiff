@@ -45,6 +45,10 @@ body {
   padding-left: 0.3rem;
 }
 
+.post-modal {
+  max-width: calc(100% - 20rem) !important;
+}
+
 .time-stamp {
   cursor: default;
 }
@@ -616,7 +620,6 @@ body.dark {
 .modal-info {
   opacity: 0.8;
   margin-bottom: 1rem;
-  max-width: 530px;
 }
 
 .folder-searchbar {
@@ -14239,13 +14242,6 @@ body.modal-open .modal.show .modal-dialog {
   font-weight: 600;
 }
 
-@media (min-width: 992px) {
-  .modal-lg,
-  .modal-xl {
-    max-width: 600px;
-  }
-}
-
 .custom-control-label {
   font-weight: 500;
 }
@@ -14434,6 +14430,22 @@ body.modal-open .modal.show .modal-dialog {
   height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
+}
+
+.avatar.avatar-md {
+  height: 2.7rem;
+  width: 2.7rem;
+  > div {
+    height: 100%;
+    width: 100%;
+    line-height: 1;
+  }
+  line-height: 1;
+  img {
+    line-height: 1;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .avatar.avatar-sm {
@@ -15025,7 +15037,7 @@ body.form-membership .form-wrapper hr {
   width: 1px;
   bottom: 0;
   top: 32px;
-  left: 15px;
+  left: 21px;
   background: #e1e1e1;
 }
 

@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
-import { useTimeFormat, useTouchActions, useTranslation } from "../../hooks";
+import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
@@ -35,6 +35,8 @@ const Wrapper = styled.li`
     color: #343a40;
     font-weight: normal;
     padding-left: 2.5rem;
+    overflow: inherit;
+    width: calc(100% - ${props => props.appListWidthDiff}px);
 
     &.has-unread {
       font-weight: bold;
@@ -87,13 +89,20 @@ const Wrapper = styled.li`
   }
   .author-avatar {
     position: absolute;
-    left: -1rem;
+    left: -1.25rem;
     top: 1.3rem;
-    // bottom: 0;
-    // margin: auto;
     img {
-      width: 2rem;
-      height: 2rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    @media (max-width: 768px) {
+      position: absolute;
+      left: -1rem;
+      top: 1.3rem;
+      img {
+        width: 2rem;
+        height: 2rem;
+      }
     }
   }
 
@@ -107,6 +116,7 @@ const Wrapper = styled.li`
 
   .ellipsis-hover {
     position: relative;
+    cursor: pointer;
     
     &:hover {
       .recipient-names {
@@ -147,6 +157,57 @@ const AuthorRecipients = styled.div`
   align-items: center;
   font-weight: 400;
   padding-bottom: 3px;
+  
+  .recipients {
+    color: #8b8b8b;
+    font-size: 10px;
+  }
+  
+  .ellipsis-hover {
+    position: relative;
+    
+    &:hover {
+      .recipient-names {
+        opacity: 1;
+        max-height: 300px;    
+      }
+    }
+  }
+  .recipient-names {
+    transition: all 0.5s ease;
+    position: absolute;
+    top: 20px;
+    left: -2px;
+    width: 200px;    
+    border-radius: 8px;
+    overflow-y: auto;
+    border: 1px solid #fff;
+    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+    background: #fff;
+    max-height: 0;
+    opacity: 0;
+    z-index: 1;
+    
+    &:hover {
+      max-height: 300px;
+      opacity: 1;    
+    }
+    
+    .dark & {
+      border: 1px solid #25282c;
+      background: #25282c;
+    }
+    
+    > span {
+      display: block;
+      width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 0.25rem 0.5rem;
+      border-radius: unset;
+    }    
+  }
 `;
 
 const CreatedBy = styled.div`
@@ -174,9 +235,11 @@ const PostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
 
+  const winSize = useWindowSize();
   const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
+  const [postBadgeWidth, setPostBadgeWidth] = useState(0);
   const postRecipients = useSelector((state) => state.global.recipients
     .filter((r) => post.recipient_ids && post.recipient_ids.includes(r.id))
     .sort((a, b) => {
@@ -189,11 +252,12 @@ const PostItemPanel = (props) => {
   );
 
   const renderUserResponsibleNames = () => {
+    const hasMe = postRecipients.some(r => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
-    const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
+      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
         .map(r => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
@@ -205,17 +269,15 @@ const PostItemPanel = (props) => {
 
     if (hasMe) {
       if (otherPostRecipients.length >= 1) {
-        // recipient_names += `, ${dictionary.me}`;
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       } else {
-        // recipient_names += dictionary.me;
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       }
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
+    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
+      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
         .map(r => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
@@ -248,7 +310,7 @@ const PostItemPanel = (props) => {
   };
   const handleTouchEnd = (e) => {
     e.preventDefault();
-    if (!touchActions) openPost(post, "/posts");
+    if (!touchActions) openPost(post);
   };
 
   const [showOptions, setShowOptions] = useState(false);
@@ -268,13 +330,15 @@ const PostItemPanel = (props) => {
     handleSwipeRight
   });
 
-  const hasUnread = post.unread_count > 0 || post.is_unread === 1;
+  const hasUnread = post.is_unread === 1;
 
   return (
-    <Wrapper data-toggle={flipper ? "1" : "0"}
-             className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
-             onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
-             onClick={() => openPost(post, "/posts")}>
+    <Wrapper
+      data-toggle={flipper ? "1" : "0"}
+      appListWidthDiff={postBadgeWidth + 50}
+      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
+      onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
+      onClick={() => openPost(post)}>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
@@ -298,14 +362,15 @@ const PostItemPanel = (props) => {
             <PostReplyCounter>
               {post.unread_count !== 0 &&
               <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
-              <div className="text-muted">{post.reply_count} comments</div>
+              <div
+                className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
               <span className="time-stamp text-muted">
                 <span>{fromNow(post.created_at.timestamp)}</span>
               </span>
             </PostReplyCounter>
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-            <PostBadge post={post} dictionary={dictionary}/>
+            <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
             {!disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"
@@ -329,7 +394,7 @@ const PostItemPanel = (props) => {
               <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           }
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-          {post.author.id !== user.id &&
+          {post.author && post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
           <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
         </MoreOptions>

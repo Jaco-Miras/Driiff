@@ -39,8 +39,6 @@ const CompanyPostFilterItem = (props) => {
 
   }, [filter, onGoBack]);
 
-  console.log(counters)
-
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`}

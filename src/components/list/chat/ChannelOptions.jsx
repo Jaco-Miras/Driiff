@@ -7,17 +7,16 @@ import { MoreOptions } from "../../panels/common";
 import { useTranslation } from "../../hooks";
 
 const Wrapper = styled(MoreOptions)`
-  // .more-options-tooltip {
-  //   &.orientation-left {
-  //     right: calc(100% - 20px);
-  //   }
-  //   &.orientation-bottom {
-  //     top: 100%;
-  //   }
-  //   &.orientation-top {
-  //     bottom: 20px;
-  //   }
-  // }
+  position: relative;
+  height: 18px;
+  width: 25px;
+  > svg {
+    position: absolute;
+    top: -1px;
+    height: 20px;
+    width: 20px;
+    left: 1.5px;
+  }
 `;
 
 const ChannelOptions = (props) => {
