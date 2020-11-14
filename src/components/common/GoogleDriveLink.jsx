@@ -63,7 +63,7 @@ const GoogleDriveLink = (props) => {
         typeof file !== "undefined" ?
           <>{file.title}</>
           :
-          <><span className="link"/><span className="preview-text">- Connect to preview</span></>
+          <><span className="link"/><span className="preview-text"/></>
       }
     </a>
     </Wrapper>

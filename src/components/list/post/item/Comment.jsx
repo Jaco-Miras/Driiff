@@ -272,9 +272,7 @@ const Comment = (props) => {
     if (e) {
       const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
-        let e = gl;
-        e.dataset.googleLinkRetrieve = 1;
-        googleApis.getFile(e, e.dataset.googleFileId);
+        googleApis.init(gl);
       });
     }
   };

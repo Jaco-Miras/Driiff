@@ -547,13 +547,7 @@ const ChatBubble = (props) => {
     if (e) {
       const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
-        let e = gl;
-        let linkText = e.querySelector(".link");
-        if (linkText) {
-          linkText.innerHTML = e.dataset.hrefLink;
-        }
-        e.dataset.googleLinkRetrieve = 1;
-        googleApis.getFile(e, e.dataset.googleFileId);
+        googleApis.init(gl);
       });
     }
   };
@@ -562,13 +556,7 @@ const ChatBubble = (props) => {
     if (e) {
       const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
-        let e = gl;
-        let linkText = e.querySelector(".link");
-        if (linkText) {
-          linkText.innerHTML = e.dataset.hrefLink;
-        }
-        e.dataset.googleLinkRetrieve = 1;
-        googleApis.getFile(e, e.dataset.googleFileId);
+        googleApis.init(gl);
       });
     }
   };

@@ -1,17 +1,36 @@
 import React from "react";
-import {useFileActions} from "./index";
+import { useFileActions, useTranslation } from "./index";
 
 const useGoogleApis = () => {
 
-  const {addGoogleDriveFile} = useFileActions();
+  const { _t } = useTranslation();
+  const { addGoogleDriveFile } = useFileActions();
 
   const CLIENT_ID = process.env.REACT_APP_google_client_id;
   const API_KEY = process.env.REACT_APP_google_key;
 
+  const dictionary = {
+    connectPreview: _t("GOOGLE_DRIVE.CONNECT_TO_PREVIEW", "Connect to preview"),
+    restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account")
+  };
+
+  const init = (e) => {
+    let text = e.querySelector(".link");
+    if (text) {
+      text.innerHTML = e.dataset.hrefLink;
+    }
+    text = e.querySelector(".preview-text");
+    if (text) {
+      text.innerHTML = `- ${dictionary.connectPreview}`;
+    }
+    e.dataset.googleLinkRetrieve = 1;
+    getFile(e, e.dataset.googleFileId);
+  };
+
   const attachSignIn = (e) => {
     e.preventDefault();
     window.gapi.auth2.getAuthInstance().signIn();
-  }
+  };
 
   const updateSigninStatus = (isSignedIn, element, fileId) => {
     if (isSignedIn) {
@@ -29,8 +48,8 @@ const useGoogleApis = () => {
                 title: <span className="link">{element.href}</span>
               }
             });
-            element.innerHTML = `<span class="link">${element.href}</span>`;
-            element.onclick = null;
+            element.innerHTML = `<span class="link">${element.href}</span><span className="preview-text"> - ${dictionary.restrictedLink}</span>`;
+            element.onclick = attachSignIn;
           } else {
             addGoogleDriveFile({
               file_id: fileId,
@@ -40,7 +59,6 @@ const useGoogleApis = () => {
             element.onclick = null;
           }
         });
-
       });
     } else {
       element.onclick = attachSignIn;
@@ -82,7 +100,7 @@ const useGoogleApis = () => {
 
 
   return {
-    getFile
+    init,
   }
 };
 
