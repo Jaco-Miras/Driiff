@@ -63,8 +63,8 @@ export function postUnfollow(payload, callback) {
   return dispatchActionToReducer(postUnfollowService(payload), "POST_UNFOLLOW_START", "POST_UNFOLOW_SUCCESS", "POST_UNFOLOW_FAIL", callback);
 }
 
-export function setPostUnfollow(payload, callback) {
-  return SimpleDispatchActionToReducer("INCOMING_POST_UNFOLLOW", payload, callback);
+export function setPostToggleFollow(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_TOGGLE_FOLLOW", payload, callback);
 }
 
 export function postSnooze(payload, callback) {

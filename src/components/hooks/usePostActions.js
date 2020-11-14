@@ -35,7 +35,7 @@ import {
   putPost,
   readAllCallback,
   removePost,
-  setPostUnfollow,
+  setPostToggleFollow,
   starPostReducer,
   updateCompanyPostFilterSort,
 } from "../../redux/actions/postActions";
@@ -391,7 +391,10 @@ const usePostActions = () => {
             let notification = `${dictionary.notificationStopFollow} ${post.title}`;
             toaster.info(notification);
             dispatch(
-              setPostUnfollow({ post_id: post.id })
+              setPostToggleFollow({
+                post_id: post.id,
+                is_followed: false
+              })
             );
           })
         );
@@ -402,6 +405,12 @@ const usePostActions = () => {
             if (err) return;
             let notification = `${dictionary.notificationStartFollow} ${post.title}`;
             toaster.info(notification);
+            dispatch(
+              setPostToggleFollow({
+                post_id: post.id,
+                is_followed: true
+              })
+            );
           })
         );
       }
