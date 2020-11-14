@@ -1275,7 +1275,7 @@ export default (state = INITIAL_STATE, action) => {
         } : state.activeTopic
       };
     }
-    case "INCOMING_POST_UNFOLLOW": {
+    case "INCOMING_POST_TOGGLE_FOLLOW": {
       return {
         ...state,
         workspacePosts: {
@@ -1290,7 +1290,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      is_followed: false,
+                      is_followed: action.data.is_followed,
                     }
                   }
                 }

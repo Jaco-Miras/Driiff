@@ -10,6 +10,12 @@ import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from ".
 import { MoreOptions } from "../../common";
 
 const MainHeader = styled.div`
+  .feather-eye-off {
+    position: relative;
+    top: -1px;
+    margin-right: 0.25rem;
+    width: 12px;
+  }
   min-height: 70px;
   > div {
     display: flex;
@@ -395,7 +401,7 @@ const CompanyPostDetail = (props) => {
             </li>
             <li>
               <h5 ref={refs.title} className="post-title mb-0">
-                <span>{post.title}</span>
+                <span>{post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off"/>}{post.title}</span>
               </h5>
             </li>
           </ul>
