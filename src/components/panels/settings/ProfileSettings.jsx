@@ -6,7 +6,7 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useToaster, useTranslation } from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
@@ -71,6 +71,7 @@ const Wrapper = styled.div`
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
+  const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
 
@@ -467,7 +468,7 @@ const ProfileSettings = (props) => {
       :
       <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
       }
-      <span className="version-number">Driff version: {driffData.version}</span>
+      <span className="version-number">Driff version: {driffData.version} {localizeDate(driffData.timestamp)}</span>
     </Wrapper>
   );
 };
