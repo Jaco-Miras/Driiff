@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   ${(props) => props.hide && "display: none;"}
   position: absolute;
   z-index: 9999;
-  background-color: #fff;
+  background-color: transparent;
 
   &.orientation-top {
     bottom: -10px;
@@ -36,7 +36,7 @@ const PickerEmoji = React.forwardRef((props, ref) => {
         onSelect={onSelectEmoji}
         theme="light"
         //autoFocus
-        //showPreview={false}
+        showPreview={false}
         showSkinTones={false}
         i18n={{
           search: "Search",
