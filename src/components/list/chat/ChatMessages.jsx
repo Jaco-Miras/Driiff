@@ -22,7 +22,7 @@ const ChatReplyContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  z-index: 1;
+  //z-index: 1;
   scrollbar-width: none;
   > ul {
     list-style: none;
