@@ -72,7 +72,7 @@ const useSystemMessage = ({dictionary, reply, recipients, selectedChannel, user}
         }
       } else if (reply.body.includes("CHANNEL_UPDATE::")) {
         const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
-        let author = recipients.find((r) => data.author && r.type_id === data.author.id);
+        let author = recipients.find((r) => data.author && r.type_id === data.author.id && r.type === "USER");
         if (author) {
           if (data.author && data.author.id === user.id) {
             author.name = dictionary.you;
@@ -93,59 +93,38 @@ const useSystemMessage = ({dictionary, reply, recipients, selectedChannel, user}
           );
         }
   
-        if (data.added_members.includes(user.id) && data.added_members.length >= 1) {
-          const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
-  
-          if (data.author && data.author.id === user.id) {
-            if (newBody === "") {
-              newBody = (
-                <>
-                  <b>{author.name}</b> {dictionary.joined}{" "}
-                </>
-              );
-            } else {
-              newBody = <>{newBody} {dictionary.andJoined}</>;
-            }
-  
-            if (am.length !== 0) {
-              newBody = (
-                <>
-                  {newBody} {dictionary.andAdded} <b>{am.join(", ")}</b>
-                  <br/>
-                </>
-              );
-            }
+        if (data.added_members.length >= 1) {
+          const am = recipients.filter((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" }).map((r) => r.name);
+
+          if (newBody === "") {
+            newBody = <>{author.name} {dictionary.added} </>;
           } else {
-            if (newBody === "") {
-              newBody = <>{author.name} {dictionary.added} </>;
-            } else {
-              newBody = <>{newBody} {dictionary.andAdded}</>;
-            }
-  
-            if (data.added_members.includes(user.id)) {
-              if (am.length !== 0) {
-                newBody = (
-                  <>
-                    {newBody} <b>{dictionary.youAnd} </b>
-                  </>
-                );
-              } else {
-                newBody = (
-                  <>
-                    {newBody} <b>{dictionary.you}</b>
-                  </>
-                );
-              }
-            }
-  
+            newBody = <>{newBody} {dictionary.andAdded}</>;
+          }
+
+          if (data.added_members.includes(user.id)) {
             if (am.length !== 0) {
               newBody = (
                 <>
-                  {newBody} <b>{am.join(", ")}</b>
-                  <br/>
+                  {newBody} <b>{dictionary.youAnd} </b>
+                </>
+              );
+            } else {
+              newBody = (
+                <>
+                  {newBody} <b>{dictionary.you}</b>
                 </>
               );
             }
+          }
+
+          if (am.length !== 0) {
+            newBody = (
+              <>
+                {newBody} <b>{am.join(", ")}</b>
+                <br/>
+              </>
+            );
           }
         }
   
