@@ -246,6 +246,7 @@ const CompanyPostDetail = (props) => {
   const commentActions = useCommentActions();
 
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
@@ -258,6 +259,10 @@ const CompanyPostDetail = (props) => {
   });
 
   const [usersReacted, setUsersReacted] = useState(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
+
+  const viewerIds = [...new Set(post.view_user_ids)];
+
+  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id))
 
   const handleClosePost = () => {
     onGoBack();
@@ -511,8 +516,25 @@ const CompanyPostDetail = (props) => {
             }
             <Icon className="mr-2" icon="message-square"/>
             {post.reply_count}
-            <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
-            {post.view_user_ids.length}
+            {
+              <div className="user-reads-container">
+                <span className="no-readers">
+                  <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
+                  {post.view_user_ids.length}
+                </span>
+                <span className="hover read-users-container">
+                  {
+                    viewers.map(u => {
+                      return <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name}
+                                imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
+                                id={u.id}/> <span className="name">{u.name}</span>
+                      </span>;
+                    })
+                  }
+                </span>
+              </div>
+            }
           </div>
         </Counters>
         {post.files.length > 0 && (
