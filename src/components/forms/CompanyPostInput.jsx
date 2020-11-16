@@ -472,12 +472,13 @@ const CompanyPostInput = forwardRef((props,ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
+  const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
   const [modules] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, users, false, setImageFileIds);
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {mentionedUserIds.length > 0 &&
+      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && 
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
                    userIds={mentionedUserIds} basedOnId={false}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef}
