@@ -78,7 +78,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
@@ -204,6 +204,12 @@ const ProfileSettings = (props) => {
         if (["log_rocket", "sentry"].includes(name)) {
           localStorage.setItem(name, checked ? "1" : "0");
           window.location.reload();
+        } else if (name === "logs") {
+          if (checked) {
+            localStorage.setItem("logger", "all");
+          } else {
+            localStorage.removeItem("logger");
+          }
         }
       });
       toaster.success(<span>{dataset.successMessage}</span>);
@@ -459,6 +465,18 @@ const ProfileSettings = (props) => {
                 data-success-message={`${sentry ? "Sentry is now enabled" : "Sentry is now disabled"}`}
                 onChange={handleGeneralSwitchToggle}
                 label={<span>Sentry</span>}
+              />
+            </div>
+            <div className="col-12 text-muted">
+              <CustomInput
+                className="cursor-pointer text-muted"
+                checked={logs === "1"}
+                type="switch"
+                id="logs"
+                name="logs"
+                data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
+                onChange={handleGeneralSwitchToggle}
+                label={<span>Logs</span>}
               />
             </div>
           </div>
