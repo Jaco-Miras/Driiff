@@ -18,7 +18,8 @@ const INITIAL_STATE = {
     chat_reminder_message: 0,
     unread_channel: 0,
     unread_posts: 0,
-    general_post: 0
+    general_post: 0,
+    generate_post_comment: 0
   },
   socketMounted: false,
   searchValue: "",
@@ -377,6 +378,15 @@ export default (state = INITIAL_STATE, action) => {
           ...state.unreadCounter,
           general_post: action.data.result,
           unread_posts: action.data.result,
+        }
+      }
+    }
+    case "GET_UNREAD_POST_COMMENTS_SUCCESS": {
+      return {
+        ...state,
+        unreadCounter: {
+          ...state.unreadCounter,
+          generate_post_comment: action.data.result
         }
       }
     }

@@ -223,6 +223,10 @@ const CompanyPostsPanel = (props) => {
     return () => document.body.removeEventListener("scroll", bodyScroll, false);
   }, [skip])
 
+  useEffect(() => {
+    actions.getUnreadPostCommentsCount();
+  }, [])
+
   // useEffect(() => {
   //   let el = refs.posts.current;
   //   if (el && el.dataset.loaded === "0") {
