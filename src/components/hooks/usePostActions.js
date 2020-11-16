@@ -4,7 +4,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { addToModals, deleteDraft } from "../../redux/actions/globalActions";
+import { addToModals, deleteDraft, getUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
 import {
   addUserToPostRecipients,
   archiveAllCallback,
@@ -16,6 +16,7 @@ import {
   fetchTagCounter,
   getCompanyPosts,
   getPostClapHover,
+  getUnreadPostComments,
   getUnreadPostEntries,
   incomingPostMarkDone,
   incomingReadUnreadReducer,
@@ -715,6 +716,24 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const getUnreadPostCommentsCount = useCallback(
+    () => {
+      dispatch(
+        getUnreadPostComments()
+      );
+    },
+    [dispatch]
+  );
+
+  const getUnreadNotificationEntries = useCallback(
+    (payload = {}) => {
+      dispatch(
+        getUnreadNotificationCounterEntries(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     addUserToPost,
     starPost,
@@ -742,6 +761,8 @@ const usePostActions = () => {
     getUnreadPostsCount,
     archiveAll,
     readAll,
+    getUnreadPostCommentsCount,
+    getUnreadNotificationEntries,
   };
 };
 

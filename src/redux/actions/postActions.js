@@ -12,6 +12,7 @@ import {
   getCompanyPosts as getCompanyPostsService,
   getPostClapHover as getPostClapHoverService,
   getReplyClapHover as getReplyClapHoverService,
+  getUnreadPostComments as getUnreadPostCommentsService,
   getUnreadPostEntries as getUnreadPostEntriesService,
   markAllPostAsRead as markAllPostAsReadService,
   postArchive as postArchiveService,
@@ -273,4 +274,8 @@ export function refetchPosts(payload, callback) {
 
 export function refetchPostComments(payload, callback) {
   return dispatchActionToReducer(refetchPostCommentsService(payload), "REFETCH_POST_COMMENTS_START", "REFETCH_POST_COMMENTS_SUCCESS", "REFETCH_POST_COMMENTS_FAIL", callback);
+}
+
+export function getUnreadPostComments(payload, callback) {
+  return dispatchActionToReducer(getUnreadPostCommentsService(payload), "GET_UNREAD_POST_COMMENTS_START", "GET_UNREAD_POST_COMMENTS_SUCCESS", "GET_UNREAD_POST_COMMENTS_FAIL", callback);
 }

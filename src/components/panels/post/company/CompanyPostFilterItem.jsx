@@ -47,13 +47,14 @@ const CompanyPostFilterItem = (props) => {
             data-value="all" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="inbox"/>
         {dictionary.inbox}
-        <span className="small ml-auto">{unreadCounter.general_post}</span>
+        { unreadCounter.general_post > 0 && <span className="small ml-auto">{unreadCounter.general_post}</span> }
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "new_reply" ? "active" : ""}`}
             data-value="new_reply" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="mail"/>
         {dictionary.newReply}
-        <span className="small ml-auto">{counters.all > 0 && counters.new_reply}</span>
+        { unreadCounter.generate_post_comment > 0 && <span className="small ml-auto">{unreadCounter.generate_post_comment}</span> }
+        {/* <span className="small ml-auto">{counters.all > 0 && counters.new_reply}</span> */}
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
             data-value="my_posts" onClick={handleClickFilter}>

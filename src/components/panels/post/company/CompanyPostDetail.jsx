@@ -373,7 +373,8 @@ const CompanyPostDetail = (props) => {
       const clap_user_ids = res.data.claps.map(c => c.user_id);
       setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
     });
-    postActions.getUnreadPostsCount();
+    postActions.getUnreadNotificationEntries({add_unread_comment: 1})
+    // postActions.getUnreadPostsCount();
   }, []);
 
   useEffect(() => {

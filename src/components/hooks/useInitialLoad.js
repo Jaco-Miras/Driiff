@@ -39,7 +39,7 @@ const useInitialLoad = () => {
       if (Object.keys(notifications).length === 0) {
         dispatch(getNotifications({skip: 0, limit: 50}));
       }
-      dispatch(getUnreadNotificationCounterEntries());
+      dispatch(getUnreadNotificationCounterEntries({}));
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());

@@ -106,7 +106,7 @@ export function getPushNotification(payload) {
 }
 
 export function getUnreadNotificationCounterEntries(payload) {
-  let url = "/v2/notification-counter-entries";
+  let url = `/v2/notification-counter-entries?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
