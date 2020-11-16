@@ -1,11 +1,37 @@
 import React from "react";
 import {SvgIconFeather} from "../common";
 import {renderToString} from "react-dom/server";
+import { useParams } from "react-router-dom";
+import quillHelper from "../../helpers/quillHelper";
 
 const useSystemMessage = ({dictionary, reply, recipients, selectedChannel, user}) => {
 
+    const params = useParams();
     let parseBody = "";
-    if (reply.body.includes("JOIN_CHANNEL")) {
+    if (reply.body.includes("POST_CREATE::")) {
+      let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
+      let link = "";
+      if (params && params.workspaceId) {
+        if (params.folderId) {
+          link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        } else {
+          link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        }
+      } else {
+        link = `/posts/${item.post.id}/${item.post.title}`;
+      }
+
+      let description = quillHelper.parseToText(item.post.description);
+      parseBody = renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
+        <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+        {
+          description.trim() !== "" &&
+          <span className="card card-body"
+                dangerouslySetInnerHTML={{__html: description}}/>
+        }
+        <span className="open-post">{dictionary.openPost} <SvgIconFeather icon="arrow-right"/></span>
+      </a>);
+    } else if (reply.body.includes("JOIN_CHANNEL")) {
         let ids = /\d+/g;
         let extractedIds = reply.body.match(ids);
         let newMembers = recipients
