@@ -23,7 +23,7 @@ const ChatBubbleContainer = styled.div`
   color: ${(props) => (props.isAuthor ? "#ffffff" : "#000000")};
   font-size: 0.835rem;
   overflow: visible;
-  z-index: 1;
+  //z-index: 1;
   //min-height: 40px;
   min-height: ${(props) => (props.hasGif ? "150px" : "33px")};
 
@@ -354,8 +354,8 @@ const ChatContentClap = styled.div`
   //margin-top: 10px;
   display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-  z-index: 2;
-
+  //z-index: 2;
+  
   .chat-content {
     width: 100%;
     padding-left: 0;
