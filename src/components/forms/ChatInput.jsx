@@ -11,6 +11,8 @@ import {
   postChatMessage,
   putChatMessage,
   setEditChatMessage,
+  addToChannels,
+  setSelectedChannel
 } from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
@@ -26,6 +28,7 @@ import {
 } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
+import { useHistory } from "react-router-dom";
 
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
@@ -144,13 +147,15 @@ const FileIcon = styled(SvgIconFeather)`
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
   const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
+  const history = useHistory();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const { localizeDate } = useTimeFormat();
-  const { setSidebarSearch } = useChannelActions();
+  const { setSidebarSearch, create } = useChannelActions();
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const slugs = useSelector((state) => state.global.slugs);
+  const recipients = useSelector((state) => state.global.recipients);
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
@@ -572,19 +577,87 @@ const ChatInput = (props) => {
   };
 
   const handleAddMentionedUsers = (users) => {
-    let memberPayload = {
-      channel_id: selectedChannel.id,
-      recipient_ids: users.map((u) => u.id),
-    };
-    dispatch(
-      postChannelMembers(memberPayload, (err, res) => {
+    if (selectedChannel.type === "DIRECT") {
+      let placeholderId = require("shortid").generate();
+      let timestamp = Math.round(+new Date() / 1000);
+      let members = [...selectedChannel.members, ...users];
+      let title = members.map(m => m.first_name).join(", ");
+      let channel = {
+        id: placeholderId,
+        entity_id: 0,
+        type: "GROUP",
+        title: title,
+        code: placeholderId,
+        is_archived: false,
+        is_pinned: false,
+        is_hidden: false,
+        is_muted: false,
+        total_unread: 0,
+        profile: null,
+        selected: true,
+        inviter: null,
+        hasMore: false,
+        skip: 0,
+        isFetching: false,
+        members: members,
+        replies: [],
+        created_at: {
+          timestamp: timestamp,
+        },
+        updated_at: {
+          timestamp: timestamp,
+        },
+        last_reply: null,
+        reference_id: placeholderId,
+      };
+      let old_channel = channel;
+      const createCallback = (err, res) => {
+        
         if (err) return;
+        let payload = {
+          ...channel,
+          id: res.data.channel.id,
+          old_id: old_channel.id,
+          code: res.data.code,
+          members: res.data.channel.members ? res.data.channel.members : channel.members,
+          profile: null,
+          type: "GROUP",
+          last_reply: null,
+          replies: [],
+          selected: true,
+          search: res.data.search,
+        };
 
-        if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
-      })
-    );
-
-    setMentionedUserIds([]);
+        dispatch(addToChannels(payload));
+        dispatch(setSelectedChannel(payload));
+        history.push(`/chat/${res.data.code}`);
+      };
+      let recipient_ids = recipients
+        .filter((r) => r.type === "USER")
+        .filter((r) => {
+          return members.some((m) => m.id === r.type_id)
+        })
+        .map((r) => r.id);
+      let payload = {
+        recipient_ids: recipient_ids,
+        title: title,
+      };
+      create(payload, createCallback);
+    } else {
+      let memberPayload = {
+        channel_id: selectedChannel.id,
+        recipient_ids: users.map((u) => u.id),
+      };
+      dispatch(
+        postChannelMembers(memberPayload, (err, res) => {
+          if (err) return;
+  
+          if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+        })
+      );
+  
+      setMentionedUserIds([]);
+    }
   };
 
   const handleIgnoreMentionedUsers = (users) => {

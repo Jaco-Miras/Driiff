@@ -57,3 +57,4 @@ export { default as useInitialLoad } from "./useInitialLoad";
 export { default as useChatReply } from "./useChatReply";
 export { default as useWindowSize } from "./useWindowSize";
 export { default as useTouchActions } from "./useTouchActions";
+export { default as useSystemMessage } from "./useSystemMessage";
