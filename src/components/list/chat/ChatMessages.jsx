@@ -13,6 +13,7 @@ import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
+import { FindGifRegex } from "../../../helpers/stringFormatter";
 
 const ChatReplyContainer = styled.div`
   background: transparent;
@@ -811,10 +812,8 @@ class ChatMessages extends React.PureComponent {
                               lastReplyUserId = reply.user.id;
                             }
 
-                            if (typeof reply.body !== "undefined" && reply.body !== null) {
-                              if (reply.body.match(/\.(gif)/g) !== null) {
-                                showGifPlayer = true;
-                              }
+                            if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
+                              showGifPlayer = true;
                             }
                             let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
                             isBot = botCodes.includes(reply.user.code);

@@ -71,17 +71,19 @@ const BlobGifPlayer = (props) => {
 
   useEffect(() => {
     let gifUrls = body.match(FindGifRegex);
-    gifUrls.forEach(gifUrl => {
-      const gifLink = gifUrl.replace("&amp;rid=giphy.gif", "&rid=giphy.gif");
-      const tbr = "&rid=giphy.gif";
-      let cid = gifLink.substring(gifLink.indexOf("cid") + 4);
-      cid = cid.substring(0, cid.length - tbr.length);
+    if (gifUrls) {
+      gifUrls.forEach(gifUrl => {
+        const gifLink = gifUrl.replace("&amp;rid=giphy.gif", "&rid=giphy.gif");
+        const tbr = "&rid=giphy.gif";
+        let cid = gifLink.substring(gifLink.indexOf("cid") + 4);
+        cid = cid.substring(0, cid.length - tbr.length);
 
-      fetchBlob({
-        id: cid,
-        src: gifLink,
+        fetchBlob({
+          id: cid,
+          src: gifLink,
+        });
       });
-    });
+    }
   }, []);
 
   let gifItems = Object.values(gifs);
