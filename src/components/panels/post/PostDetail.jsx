@@ -59,6 +59,11 @@ const MainBody = styled.div`
   width: 100%;
   flex-flow: column;
   
+  a {
+    color: #7a1b8b;
+    text-decoration: underline;
+  }
+  
    .clap-count-wrapper {
     position: relative;
     display: flex;
