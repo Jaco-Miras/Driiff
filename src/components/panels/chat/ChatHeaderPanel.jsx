@@ -89,12 +89,16 @@ const BackButtonChevron = styled(SvgIconFeather)`
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
-  border: 1px solid #e1e1e1;
+  border: 1px solid #fff;
   border-radius: 8px;
-  height: 36px;
   width: 40px;
   align-items: center;
   justify-content: center;
+  
+  .dark  & {
+    border: 1px solid #25282c;  
+    background: #25282c;  
+  }  
   .feather-more-horizontal {
     width: 25px;
     height: 36px;
@@ -102,12 +106,16 @@ const StyledMoreOptions = styled(MoreOptions)`
   .more-options-tooltip {
     left: auto;
     right: 0;
-    top: 25px;
+    top: -25px;
     width: 250px;
 
     svg {
       width: 14px;
     }
+  }
+  
+  @media (max-width: 480px) {
+    margin: 0 0 0.75rem !important;
   }
 `;
 
