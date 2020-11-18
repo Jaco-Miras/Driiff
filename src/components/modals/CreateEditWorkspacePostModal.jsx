@@ -1044,10 +1044,11 @@ const CreateEditWorkspacePostModal = (props) => {
             <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
-              <StyledDatePicker className="mr-2 start-date" onChange={handleSelectStartDate}
+              <StyledDatePicker className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate}
                                 value={form.show_at}
                                 minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
-              <StyledDatePicker className="end-date" onChange={handleSelectEndDate} value={form.end_at}
+              <StyledDatePicker className="react-datetime-picker end-date" onChange={handleSelectEndDate}
+                                value={form.end_at}
                                 minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
             </WrapperDiv>
           </CheckBoxGroup>
