@@ -10,7 +10,19 @@ const Wrapper = styled.div`
     cursor: hand;
 
     &.active {
-      border-color: #ebebeb !important;
+      border-color: #ebebeb !important;     
+      
+      &:after {
+        content: '';
+        width: 3px;
+        height: 100%;
+        background: #7a1b8b;
+        display: block;
+        position: absolute;
+        top: 0;
+        animation: fadeIn 0.15s linear;
+        left: 0;
+      }
     }
 
     svg {

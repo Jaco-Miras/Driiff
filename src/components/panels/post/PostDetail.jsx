@@ -58,6 +58,15 @@ const MainBody = styled.div`
   flex-grow: 1;
   width: 100%;
   flex-flow: column;
+
+  .receiver {
+    border-radius: 6px;
+    padding: 3px 5px;
+    background-color: rgba(210, 210, 210, 0.2);
+    font-size: 11px;
+    margin-right: 3px;
+    cursor: pointer;
+  }
   
   a {
     color: #7a1b8b;

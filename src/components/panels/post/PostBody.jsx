@@ -138,7 +138,7 @@ const PostBody = (props) => {
   };
 
   const renderUserResponsibleNames = () => {
-    let recipient_names = "to ";
+    let recipient_names = "";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
     const hasMe = postRecipients.some(r => r.type_id === user.id);
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);

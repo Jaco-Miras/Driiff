@@ -70,6 +70,15 @@ const WrapperDiv = styled(InputGroup)`
         color: #c7ced6;
       }
     }
+    
+    .dark & {
+      input {
+        color: #ffffff;
+        &::-webkit-input-placeholder {
+          color: #c7ced6;
+        }
+      }    
+    }
   }
   &.file-attachment-wrapper {
     margin-top: 0;
@@ -687,7 +696,7 @@ const CreateEditCompanyPostModal = (props) => {
         } else {
           return ad.member_ids;
         }
-      }).flat()
+      }).flat();
       let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
@@ -887,7 +896,7 @@ const CreateEditCompanyPostModal = (props) => {
           file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
         };
         dispatch(
-          putPost(payload,() => {
+          putPost(payload, () => {
             setLoading(false);
             toggleAll(false);
           })
@@ -1061,11 +1070,13 @@ const CreateEditCompanyPostModal = (props) => {
             <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
-              <StyledDatePicker className="mr-2 start-date" onChange={handleSelectStartDate}
-                                value={form.show_at}
-                                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
-              <StyledDatePicker className="end-date" onChange={handleSelectEndDate} value={form.end_at}
-                                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
+              <StyledDatePicker
+                className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate}
+                value={form.show_at}
+                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
+              <StyledDatePicker
+                className="react-datetime-picker end-date" onChange={handleSelectEndDate} value={form.end_at}
+                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
             </WrapperDiv>
           </CheckBoxGroup>
         </WrapperDiv>
