@@ -87,7 +87,7 @@ const ChatReactionButton = (props) => {
   let timeout = null;
 
   const chatMessageAction = useChatMessageActions();
-
+  const scrollEl = document.getElementById("component-chat-thread");
   const refs = {
     container: useRef(null),
     picker: useRef(null),
@@ -112,7 +112,7 @@ const ChatReactionButton = (props) => {
     }, 1000);
   };
 
-  const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollRef, showEmojiPicker);
+  const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollEl, showEmojiPicker);
 
   useEffect(() => {
     if (showEmojiSwitcher !== null) {

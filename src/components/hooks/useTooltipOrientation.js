@@ -16,8 +16,8 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
     }
 
     const elPos = mainRef.current.getBoundingClientRect();
-
-    if (elPos.y - tooltipRef.current.clientHeight < tooltipRef.current.clientHeight) {
+    
+    if ((elPos.y + tooltipRef.current.clientHeight / 1.25) - tooltipRef.current.clientHeight < tooltipRef.current.clientHeight) {
       return "bottom"
     } else {
       return "top"
@@ -62,7 +62,6 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
 
   const calculatePosition = lodash.debounce(() => {
     if (tooltipRef.current) {
-      console.log(tooltipRef.current.clientHeight)
       setOrientation({
         vertical: verticalOrientation(),
         horizontal: horizontalOrientation(),

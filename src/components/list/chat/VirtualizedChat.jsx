@@ -366,7 +366,7 @@ const VirtualizedChat = (props) => {
               dictionary={props.dictionary}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply}/>}
+                {<ChatReactionButton isAuthor={isAuthor} reply={reply}/>}
                 {!isNaN(reply.id) && !reply.is_deleted &&
                 <MessageOptions dictionary={props.dictionary} className={"chat-message-options"}
                                 selectedChannel={props.selectedChannel} isAuthor={isAuthor} replyData={reply}/>}
@@ -426,7 +426,7 @@ const VirtualizedChat = (props) => {
                 />
               ) : null}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply}/>}
+                {<ChatReactionButton isAuthor={isAuthor} reply={reply}/>}
                 {!isNaN(reply.id) && !reply.is_deleted &&
                 <MessageOptions dictionary={props.dictionary} replyData={reply} className={"chat-message-options"}
                                 selectedChannel={props.selectedChannel} isAuthor={isAuthor}/>}
