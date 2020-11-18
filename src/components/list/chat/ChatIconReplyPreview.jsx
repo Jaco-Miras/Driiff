@@ -11,6 +11,7 @@ const Wrapper = styled.span`
   display: table;
   table-layout: fixed;
   width: 100%;
+  font-weight: ${props => props.hasUnRead ? "bold" : "normal"};
 `;
 const LastReplyContent = styled.span``;
 const DraftContent = styled.span``;
@@ -137,8 +138,10 @@ const ReplyPreview = (props) => {
     }
   }, [refs.icons, channel]);
 
+  const hasUnRead = channel.add_user === false && (!channel.is_read || channel.total_unread > 0);
+
   return (
-    <Wrapper className={"d-flex justify-content-between align-items-center small text-muted "}>
+    <Wrapper hasUnRead={hasUnRead} className={"d-flex justify-content-between align-items-center small text-muted "}>
       <LastReplyBody
         iconWidth={iconWidth}
         isUnread={channel.total_unread > 0}
@@ -151,7 +154,7 @@ const ReplyPreview = (props) => {
            className="chat-timestamp d-inline-flex justify-content-center align-items-end flex-row-reverse">
         <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
         {
-          channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
+          hasUnRead && (
             <Badge
               className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
           )
