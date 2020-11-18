@@ -47,7 +47,7 @@ const ButtonDropdown = (props) => {
   return (
     <Wrapper className={`button-dropdown ${className}`} ref={wrapperRef}>
       <span className={`btn btn-outline-light dropdown-toggle d-flex justify-content-between ${show ? "show" : ""} ${value !== null ? "active" : ""}`} data-toggle="dropdown" onClick={toggle}>
-        {dropdown.label}
+        {dropdown.label} {dropdown.items.find((i) => i.value === value).label}
       </span>
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
         {dropdown.items.map((item) => {

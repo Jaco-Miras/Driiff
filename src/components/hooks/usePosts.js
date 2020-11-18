@@ -70,7 +70,7 @@ const usePosts = () => {
   let posts = null;
   let filter = null;
   let tag = null;
-  let sort = null;
+  let sort = "recent";
   let post = null;
   let search = null;
   let count = {
@@ -142,7 +142,7 @@ const usePosts = () => {
           if (sort === "favorite") {
             return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
           } else if (sort === "unread") {
-            return a.is_updated === b.is_updated ? 0 : a.is_updated ? 1 : -1;
+            return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
           } else {
             return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
           }
@@ -184,7 +184,7 @@ const usePosts = () => {
             if (sort === "favorite") {
               return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
             } else if (sort === "unread") {
-              return a.is_updated === b.is_updated ? 0 : a.is_updated ? 1 : -1;
+              return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
             } else {
               return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
             }
@@ -199,7 +199,7 @@ const usePosts = () => {
             if (sort === "favorite") {
               return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
             } else if (sort === "unread") {
-              return a.is_updated === b.is_updated ? 0 : a.is_updated ? 1 : -1;
+              return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
             } else {
               return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
             }
