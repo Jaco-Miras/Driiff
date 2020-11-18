@@ -52,9 +52,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   .ql-editor {
     padding: 11px 9px;
     ${(props) => props.showFileIcon && `padding-left: 30px`};
-    ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
-      color: #7a1b8b;
-    }
+    ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} 
     &:focus {
       box-shadow: none;
       border-color: rgba(122, 27, 139, 0.8);

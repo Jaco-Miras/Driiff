@@ -118,16 +118,21 @@ body {
 }
 
 .mention {
+  font-weight: bold;
   color: $color-primary;
+}
+
+.mention a {
+  text-decoration: none;
+  color: $color-primary !important;
 }
 
 .mention:hover {
   color: black !important;
 }
 
-.mention a {
-  font-weight: bold;
-  color: $color-primary;
+.chat-right .mention, .chat-right .mention a {
+  color: #fff !important;
 }
 
 .ql-mention-denotation-char {
@@ -227,7 +232,8 @@ body.dark {
   }
 
   .mention {
-    color: rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+    color: $color-primary;
   }
 
   .mention:hover {
@@ -237,10 +243,17 @@ body.dark {
   .mention a {
     font-weight: bold;
     color: $color-primary;
+    text-decoration: none;
+  }
+
+  .chat-right .mention, .chat-right .mention a {
+    color: $color-primary !important;
   }
 
   .ql-mention-denotation-char {
-    font-weight: bold;
+    //font-weight: normal;
+    color: $dm-text-color;
+    // font-weight: bold;
     cursor: default;
   }
 

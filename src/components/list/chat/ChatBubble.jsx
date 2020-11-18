@@ -102,25 +102,25 @@ const ChatBubbleContainer = styled.div`
     font-style: italic;
     color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#AAB0C8")};
   }
-  .mention {
-    font-weight: ${(props) => (props.isAuthor ? "none" : "bold")};
-    color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")};
-    text-decoration: none;
-    &[data-value="All"],
-    &.is-author {
-      box-shadow: none;
-      padding: 0 4px;
-      border-radius: 8px;
-      text-decoration: underline;
-      display: inline-block;
-      width: auto;
-      height: auto;
-    }
-    a {
-      color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")} !important;
-      text-decoration: none;
-    }
-  }
+  // .mention {
+  //   font-weight: ${(props) => (props.isAuthor ? "none" : "bold")};
+  //   color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")};
+  //   text-decoration: none;
+  //   &[data-value="All"],
+  //   &.is-author {
+  //     box-shadow: none;
+  //     padding: 0 4px;
+  //     border-radius: 8px;
+  //     text-decoration: underline;
+  //     display: inline-block;
+  //     width: auto;
+  //     height: auto;
+  //   }
+  //   a {
+  //     color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")} !important;
+  //     text-decoration: none;
+  //   }
+  // }
   a.call-button {
     display: block;
   }
@@ -578,6 +578,19 @@ const ChatBubble = (props) => {
         lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
     };
   }, []);
+
+  // useEffect(() => {
+  //   console.log(history)
+  //   if (typeof history.location.state === "object") {
+  //     console.log(history.location.state)
+  //     if (history.location.state && history.location.state.focusOn === reply.id && refs.container.current) {
+  //       refs.container.current.scrollIntoView();
+  //       //refs.main.current.classList.add("bounceIn");
+  //       //history.push(history.location.pathname, null);
+  //       console.log('trigger scroll to chat')
+  //     }
+  //   }
+  // }, [history.location.state]);
 
   useEffect(() => {
     if (addMessageRef && loadInView) {

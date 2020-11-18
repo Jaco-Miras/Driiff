@@ -35,17 +35,17 @@ const ChatReplyContainer = styled.div`
   &.is-processed {
     opacity: 0;
   }
-  .mention {
-    background: transparent;
-    display: inline-block;
-    width: auto;
-    height: auto;
-    padding: 0;
-  }
-  .mention.is-author {
-    background: transparent;
-    padding: 0;
-  }
+  // .mention {
+  //   background: transparent;
+  //   display: inline-block;
+  //   width: auto;
+  //   height: auto;
+  //   padding: 0;
+  // }
+  // .mention.is-author {
+  //   background: transparent;
+  //   padding: 0;
+  // }
 `;
 
 const ChatList = styled.li`
