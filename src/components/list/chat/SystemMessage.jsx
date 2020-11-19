@@ -1,8 +1,8 @@
-import React, {forwardRef, useEffect} from "react";
-import {useHistory} from "react-router-dom";
+import React, { forwardRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {useInView} from "react-intersection-observer";
-import {useSystemMessage} from "../../hooks";
+import { useInView } from "react-intersection-observer";
+import { useSystemMessage } from "../../hooks";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -20,7 +20,7 @@ const SystemMessageContainer = styled.span`
       bottom: 0;
       width: 6px;
       height: calc(100% - 12px);
-      background: #ffa341;
+      background: linear-gradient(180deg, rgba(106,36,126,1) 0%, rgba(216,64,113,1) 100%);
       content: "";
       border-radius: 6px 0 0 6px;
     }
@@ -48,7 +48,7 @@ const SystemMessageContainer = styled.span`
 
 const SystemMessageContent = styled.span`
   display: block;
-  max-width: ${(props) => props.isPostNotification ? "400px" : "100%"};
+  max-width: 100%;
 `;
 const ChatTimeStamp = styled.div`
   color: #a7abc3;
