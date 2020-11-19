@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useTimeFormat } from "../../hooks";
+import { ToolTip } from "../../common";
 
 const Wrapper = styled.div`  
   max-width: 100%;
@@ -14,6 +15,10 @@ const ChannelTitleContainer = styled.h6`
   ${(props) => props.channel.total_unread && "color: #7a1b8b"};
   flex-grow: 1;
   ${(props) => props.selectedChannel !== null && props.channel.id === props.selectedChannel.id && "font-weight: bold;"};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 100px);
 `;
 
 const ChatTitleDate = (props) => {
@@ -28,12 +33,14 @@ const ChatTitleDate = (props) => {
       const parts = title.split(new RegExp(`(${search})`, 'gi'));
       return <span>{parts.map(part => part.toLowerCase() === search.toLowerCase() ? <b>{part}</b> : part)}</span>;
     }
-  }
+  };
+
+  const chatTitle = getHighlightedSearchTitle(channel.title);
 
   return (
     <Wrapper className="d-flex justify-content-between align-items-center">
       <ChannelTitleContainer className={`mb-1 ${className}`} selectedChannel={selectedChannel} channel={channel}>
-        {getHighlightedSearchTitle(channel.title)}
+        <ToolTip direction="up-start" arrow={false} content={chatTitle}>{chatTitle}</ToolTip>
       </ChannelTitleContainer>
       <span className={"small text-muted chat-timestamp_text"}
             dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>

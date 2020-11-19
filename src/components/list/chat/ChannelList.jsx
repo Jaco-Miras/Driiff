@@ -104,13 +104,9 @@ const Wrapper = styled.li`
 
 const ChannelTitlePreview = styled.div``;
 
-const Timestamp = styled.div`
-  position: relative;
-`;
-
 const ChannelList = (props) => {
 
-  const { className = "", search = "", channel, selectedChannel, channelDrafts, dictionary, show = false } = props;
+  const { className = "", channel, selectedChannel, channelDrafts, dictionary, show = false } = props;
 
   const channelActions = useChannelActions();
   const { channelPreviewDate } = useTimeFormat();
