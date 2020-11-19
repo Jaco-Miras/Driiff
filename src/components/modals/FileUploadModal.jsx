@@ -10,7 +10,7 @@ import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
-
+import {osName} from "react-device-detect";
 
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
@@ -36,6 +36,9 @@ const StyledQuillEditor = styled(QuillEditor)`
     border: none;
     .ql-formats {
       margin-right: 10px;
+    }
+    .ql-image {
+      display: none;
     }
   }
   .ql-container {
@@ -279,6 +282,25 @@ const FileUploadModal = (props) => {
         ...droppedFiles,
       ]);
     }
+    
+    const handleKeyDown = e => {
+      if (e.keyCode === 27) {
+        dispatch(clearModal({ type: type }));
+      }
+      if (osName.includes("Mac")) {
+        if (e.metaKey && e.keyCode === 13) {
+            handleUpload();
+        }
+      } else {
+        if (e.ctrlKey && e.keyCode === 13) {
+            handleUpload();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown, false);
+    return () => {
+        document.removeEventListener("keydown", handleKeyDown, false);
+    };
   }, []);
 
   const toggle = () => {
