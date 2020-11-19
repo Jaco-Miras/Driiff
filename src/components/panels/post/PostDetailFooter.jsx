@@ -39,6 +39,7 @@ const ChatInputContainer = styled.div`
   padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
+  .feather-image,
   .feather-send,
   .feather-smile {
     position: absolute;
@@ -56,6 +57,20 @@ const ChatInputContainer = styled.div`
   }
   .feather-smile {
     right: 44px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
+  .feather-image {
+    right: 80px;
     margin: 4px 0;
     background: transparent;
     border-color: transparent;

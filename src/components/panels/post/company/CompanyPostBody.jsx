@@ -197,7 +197,7 @@ const CompanyPostBody = (props) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <div className="mw-100" ref={handlePostBodyRef}
+        <div className="w-100 post-body-content" ref={handlePostBodyRef}
              dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
       </div>
     </Wrapper>

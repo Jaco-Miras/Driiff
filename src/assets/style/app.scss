@@ -160,6 +160,13 @@ body {
   color: #4d4d4d;
 }
 
+.post-body-content img, .ql-snow .ql-editor img {
+  max-width: 50%;
+  @media (max-width: 991.99px) {
+    max-width: 100%;
+  }
+}
+
 body.dark {
   // #111417 // sidebar
   // #25282c // bg

@@ -162,7 +162,10 @@ const CommentHeader = styled.div`
 `;
 const CommentBody = styled.div`
   img {
-    width: 100%;
+    max-width: 50%;
+    @media (max-width: 991.99px) {
+      max-width: 100%;
+    }
   }
 `;
 
