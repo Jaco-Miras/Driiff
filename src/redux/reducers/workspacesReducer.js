@@ -671,6 +671,112 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "ADD_POST_REACT": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts)
+            .filter(wsId => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .map(wsId => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                      clap_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].clap_user_ids, state.user.id],
+                      clap_count: state.workspacePosts[wsId].posts[action.data.post_id].clap_count + 1,
+                      user_clap_count: 1
+                    }
+                  }
+                }
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {})
+        },
+      };
+    }
+    case "REMOVE_POST_REACT": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts)
+            .filter(wsId => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .map(wsId => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                      clap_user_ids: state.workspacePosts[wsId].posts[action.data.post_id].clap_user_ids.filter((id) => id !== state.user.id),
+                      clap_count: state.workspacePosts[wsId].posts[action.data.post_id].clap_count - 1,
+                      user_clap_count: 0
+                    }
+                  }
+                }
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {})
+        },
+      };
+    }
+    case "REMOVE_POST_REACT": {
+      return {
+        ...state,
+        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                clap_user_ids: state.companyPosts.posts[action.data.post_id].clap_user_ids.filter((id) => id !== state.user.id),
+                clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
+                user_clap_count: 0
+              }
+            }
+          }
+        })
+      };
+    }
+    case "GET_POST_CLAP_HOVER_SUCCESS": {
+      const user_ids = action.data.claps.map(c => c.user_id);
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts)
+            .filter(wsId => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .map(wsId => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                      fetchedReact: true,
+                      clap_user_ids: user_ids,
+                    }
+                  }
+                }
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {})
+        },
+      };
+    }
     case "ADD_COMMENT": {
       let postComment = { ...state.postComments[action.data.post_id] };
       if (action.data.parent_id) {

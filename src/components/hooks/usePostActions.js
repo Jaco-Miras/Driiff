@@ -6,6 +6,7 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { addToModals, deleteDraft, getUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
 import {
+  addPostReact,
   addUserToPostRecipients,
   archiveAllCallback,
   archiveAllPosts,
@@ -36,6 +37,7 @@ import {
   putPost,
   readAllCallback,
   removePost,
+  removePostReact,
   setPostToggleFollow,
   starPostReducer,
   updateCompanyPostFilterSort,
@@ -734,6 +736,24 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const like = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        addPostReact(payload, callback)
+      );
+    },
+    [dispatch]
+  );
+
+  const unlike = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        removePostReact(payload, callback)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     addUserToPost,
     starPost,
@@ -763,6 +783,8 @@ const usePostActions = () => {
     readAll,
     getUnreadPostCommentsCount,
     getUnreadNotificationEntries,
+    like,
+    unlike,
   };
 };
 

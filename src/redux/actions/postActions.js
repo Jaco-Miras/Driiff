@@ -279,3 +279,11 @@ export function refetchPostComments(payload, callback) {
 export function getUnreadPostComments(payload, callback) {
   return dispatchActionToReducer(getUnreadPostCommentsService(payload), "GET_UNREAD_POST_COMMENTS_START", "GET_UNREAD_POST_COMMENTS_SUCCESS", "GET_UNREAD_POST_COMMENTS_FAIL", callback);
 }
+
+export function addPostReact(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_POST_REACT", payload, callback);
+}
+
+export function removePostReact(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_POST_REACT", payload, callback);
+}
