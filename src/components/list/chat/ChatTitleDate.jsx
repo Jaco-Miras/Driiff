@@ -13,12 +13,13 @@ const ChannelTitleContainer = styled.h6`
   color: #363636;;
   ${(props) => props.channel.total_unread && "color: #7a1b8b"};
   flex-grow: 1;
+  ${(props) => props.selectedChannel !== null && props.channel.id === props.selectedChannel.id && "font-weight: bold;"};
 `;
 
 const ChatTitleDate = (props) => {
   const { channelPreviewDate } = useTimeFormat();
 
-  const {className = "", search = "", channel} = props;
+  const { className = "", search = "", selectedChannel, channel } = props;
 
   const getHighlightedSearchTitle = (title) => {
     if (search === "") {
@@ -31,7 +32,7 @@ const ChatTitleDate = (props) => {
 
   return (
     <Wrapper className="d-flex justify-content-between align-items-center">
-      <ChannelTitleContainer className={`mb-1 ${className}`} channel={channel}>
+      <ChannelTitleContainer className={`mb-1 ${className}`} selectedChannel={selectedChannel} channel={channel}>
         {getHighlightedSearchTitle(channel.title)}
       </ChannelTitleContainer>
       <span className={"small text-muted chat-timestamp_text"}
