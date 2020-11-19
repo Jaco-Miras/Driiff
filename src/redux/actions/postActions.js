@@ -287,3 +287,11 @@ export function addPostReact(payload, callback) {
 export function removePostReact(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_POST_REACT", payload, callback);
 }
+
+export function addCommentReact(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_COMMENT_REACT", payload, callback);
+}
+
+export function removeCommentReact(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_COMMENT_REACT", payload, callback);
+}

@@ -635,6 +635,86 @@ export default (state = INITIAL_STATE, action) => {
         postComments: postComments
       };
     }
+    case "ADD_COMMENT_REACT": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          [action.data.post_id]: {
+            ...state.postComments[action.data.post_id],
+            ...(action.data.parent_id ? {
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                [action.data.parent_id]: {
+                  ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                  replies: {
+                    ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                    [action.data.id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
+                      clap_user_ids: [...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids, state.user.id],
+                      clap_count: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
+                      user_clap_count: 1,
+                    },
+                  },
+                },
+              },
+            } : {
+              ...(state.postComments[action.data.post_id] && {
+                comments: {
+                  ...state.postComments[action.data.post_id].comments,
+                  [action.data.id]: {
+                    ...state.postComments[action.data.post_id].comments[action.data.id],
+                    clap_user_ids: [...state.postComments[action.data.post_id].comments[action.data.id].clap_user_ids, state.user.id],
+                    clap_count: state.postComments[action.data.post_id].comments[action.data.id].clap_count + 1,
+                    user_clap_count: 1,
+                  },
+                },
+              }),
+            })
+          },
+        },
+      };
+    }
+    case "REMOVE_COMMENT_REACT": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          [action.data.post_id]: {
+            ...state.postComments[action.data.post_id],
+            ...(action.data.parent_id && state.postComments[action.data.post_id] ? {
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                [action.data.parent_id]: {
+                  ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                  replies: {
+                    ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                    [action.data.id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
+                      clap_user_ids: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids.filter((id) => id !== state.user.id),
+                      clap_count: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
+                      user_clap_count: 0
+                    },
+                  },
+                },
+              },
+            } : {
+              ...(state.postComments[action.data.post_id] && {
+                comments: {
+                  ...state.postComments[action.data.post_id].comments,
+                  [action.data.id]: {
+                    ...state.postComments[action.data.post_id].comments[action.data.id],
+                    clap_user_ids: state.postComments[action.data.post_id].comments[action.data.id].clap_user_ids.filter((id) => id !== state.user.id),
+                    clap_count: state.postComments[action.data.post_id].comments[action.data.id].clap_count - 1,
+                    user_clap_count: 0
+                  },
+                },
+              }),
+            })
+          },
+        },
+      };
+    }
     case "GET_REPLY_CLAP_HOVER_SUCCESS": {
       return {
         ...state,
@@ -651,7 +731,8 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
                     [action.data.message_id]: {
                       ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id],
-                      clap_user_ids: action.data.claps.map(c => c.user_id)
+                      clap_user_ids: action.data.claps.map(c => c.user_id),
+                      fetchedReact: true
                     },
                   },
                 },
@@ -662,7 +743,8 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.postComments[action.data.post_id].comments,
                   [action.data.message_id]: {
                     ...state.postComments[action.data.post_id].comments[action.data.message_id],
-                    clap_user_ids: action.data.claps.map(c => c.user_id)
+                    clap_user_ids: action.data.claps.map(c => c.user_id),
+                    fetchedReact: true
                   },
                 },
               }),
