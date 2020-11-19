@@ -26,12 +26,16 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
+
+    &:focus {
+      border: none;
+    }
   }
   .ql-container {
     position: static;
   }
   .ql-toolbar {
-    display: hidden;
+    display: none;
   }
   .ql-editor {
     padding: 11px 9px;
@@ -56,7 +60,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
-    
+
     .dark & {
       background: #25282c;
       color: #c7c7c7;

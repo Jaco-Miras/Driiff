@@ -133,7 +133,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             .then(result => {
               console.log(result);
               if (setImageFileIds) setImageFileIds([result.data.id])
-              resolve(result.data.view_link);
+              resolve(result.data.thumbnail_link);
             })
             .catch(error => {
               reject("Upload failed");
