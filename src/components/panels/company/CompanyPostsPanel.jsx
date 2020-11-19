@@ -90,7 +90,7 @@ const CompanyPostsPanel = (props) => {
   //   btnLoadMore: useRef(null)
   // };
 
-  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
+  const { actions, archived, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
 
@@ -166,36 +166,7 @@ const CompanyPostsPanel = (props) => {
     comments: _t("POST.NUMBER_COMMENTS", "::comment_count:: comments"),
   };
 
-  /**
-   * @todo: must fill-out the entire screen with items
-   */
-  // const initLoading = () => {
-  //   let el = refs.posts.current;
-  //   if (el.scrollHeight > el.querySelector(".list-group").scrollHeight) {
-  //     loadMore();
-  //   }
-  // };
-
-  // const loadMore = (callback = () => {
-  // }) => {
-  //   if (!loading) {
-  //     setLoading(true);
-
-  //     fetchMore((err, res) => {
-  //       setLoading(false);
-  //       callback(err, res);
-  //     });
-  //   }
-  // };
-
-  // const handleScroll = (e) => {
-  //   if (e.target.dataset.loading === "false") {
-  //     if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
-  //       if (refs.btnLoadMore.current)
-  //         refs.btnLoadMore.current.click();
-  //     }
-  //   }
-  // };
+  
 
   const handleLoadMore = () => {
     if (!fetching) {
@@ -221,11 +192,11 @@ const CompanyPostsPanel = (props) => {
   useEffect(() => {
     document.body.addEventListener("scroll", bodyScroll, false);
     return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [skip])
+  }, [skip, archived, filter])
 
   useEffect(() => {
     actions.getUnreadPostCommentsCount();
-  }, [])
+  }, []);
 
   // useEffect(() => {
   //   let el = refs.posts.current;
