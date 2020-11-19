@@ -33,14 +33,15 @@ const SystemMessageContainer = styled.span`
     .open-post {
       display: flex;
       position: absolute;
-      right: 0;
+      right: -20px;
       bottom: -10px;
       justify-content: center;
-      align-items: center;      
+      align-items: center;
+      font-size: 12px;      
       
       svg {
-        margin-left: 0.5rem;
-        height: 16px;
+        margin-left: 0rem;
+        height: 12px;
       }
     }
   }
