@@ -219,14 +219,15 @@ const FilePill = forwardRef((props, ref) => {
             title={file.filename ? file.filename : file.search}
           />
         </>
-      ) : file.type.toLowerCase() === "video" ? (
+      ) : file.type.toLowerCase().includes("video") ? (
         <>
           {/* <ImgLoader ref={refVideoLoader}>
             <ImgLoaderDiv className={"img-loader"} />
           </ImgLoader> */}
           {/* <FileVideoOverlay onClick={handleViewFile} /> */}
-          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
-            <source src={file.view_link} type="video/mp4" />
+          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad}
+                     onError={handleVideoOnError}>
+            <source src={file.view_link} type={file.type}/>
             Your browser does not support the video tag.
           </FileVideo>
         </>

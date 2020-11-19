@@ -311,75 +311,75 @@ const FileRender = (props) => {
     }
   }, [file]);
 
-  switch (file.type.toLowerCase()) {
-    case "video":
-      return (
-        <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                          className={`file-item mfp-img ${className}`}>
-          {
-            isLoaded ? <>
-                <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
-                     alt={"File not found."}/>
-                <video
-                  className={`file opacity-0`}
-                  data-index={file.id}
-                  data-attempt={0}
-                  ref={(e) => (refFiles[file.id] = e)}
-                  controls
-                  playsInline
-                  key={file.id}
-                  autoPlay={false}
-                  onLoadStart={handleVideoOnLoad}
-                  onError={handleVideoOnError}
-                  src={fileBlobs[file.id]}
-                />
-              </> :
-              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
-          }
-        </StyledFileRender>
-      );
-    case "image":
-      return (
-        <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                          className={`file-item mfp-img ${className}`}>
-          {
-            isLoaded ? <>
-                <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
-                     onError={handleImageOnError}
-                     ref={(e) => (refFiles[file.id] = e)} key={file.id}
-                     src={fileBlobs[file.id]}
-                     alt={file.filename ? file.filename : file.search}/>
-              </> :
-              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
-          }
-        </StyledFileRender>
-      );
-    case "pdf":
-      return (
-        <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                          className={`file-item mfp-img ${className}`}>
-          {
-            isLoaded ? <>
-                <object className={`file file-pdf`} data={fileBlobs[file.id]} width={winSize.width * 0.9}
-                        height={winSize.height - 122} onLoad={handlePdfOnLoad}>
-                  <embed src={fileBlobs[file.id]} width="600" height="400"/>
-                </object>
-              </> :
-              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
-          }
-        </StyledFileRender>
-      );
-    default:
-      return (
-        <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                          className={`file-item mfp-img cannot-preview ${className}`}>
-          <Eye icon={"eye-off"}/>
-          <p>
-            {file.search ? file.search : file.filename}
-            We can't preview this file type. <br/>
-            Try downloading the file to view it.
-          </p>
-          {/* <FileIcon ref={e => refFiles[index] = e}
+  const fileType = file.type.toLowerCase();
+  if (fileType.includes("video")) {
+    return (
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
+                        className={`file-item mfp-img ${className}`}>
+        {
+          isLoaded ? <>
+              <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
+                   alt={"File not found."}/>
+              <video
+                className={`file opacity-0`}
+                data-index={file.id}
+                data-attempt={0}
+                ref={(e) => (refFiles[file.id] = e)}
+                controls
+                playsInline
+                key={file.id}
+                autoPlay={false}
+                onLoadStart={handleVideoOnLoad}
+                onError={handleVideoOnError}
+                src={fileBlobs[file.id]}
+              />
+            </> :
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+        }
+      </StyledFileRender>
+    );
+  } else if (fileType === "image") {
+    return (
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
+                        className={`file-item mfp-img ${className}`}>
+        {
+          isLoaded ? <>
+              <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
+                   onError={handleImageOnError}
+                   ref={(e) => (refFiles[file.id] = e)} key={file.id}
+                   src={fileBlobs[file.id]}
+                   alt={file.filename ? file.filename : file.search}/>
+            </> :
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+        }
+      </StyledFileRender>
+    );
+  } else if (fileType === "pdf") {
+    return (
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
+                        className={`file-item mfp-img ${className}`}>
+        {
+          isLoaded ? <>
+              <object className={`file file-pdf`} data={fileBlobs[file.id]} width={winSize.width * 0.9}
+                      height={winSize.height - 122} onLoad={handlePdfOnLoad}>
+                <embed src={fileBlobs[file.id]} width="600" height="400"/>
+              </object>
+            </> :
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+        }
+      </StyledFileRender>
+    );
+  } else {
+    return (
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
+                        className={`file-item mfp-img cannot-preview ${className}`}>
+        <Eye icon={"eye-off"}/>
+        <p>
+          {file.search ? file.search : file.filename}
+          We can't preview this file type. <br/>
+          Try downloading the file to view it.
+        </p>
+        {/* <FileIcon ref={e => refFiles[index] = e}
                             key={index} style={style} iconLeft={`documents`}
                             onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon> */}
           <button className="btn btn-primary" onClick={(e) => handleDownloadFile(e, file)}>
