@@ -1,6 +1,6 @@
-import React, {useCallback, useRef, useState} from "react";
+import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
-import {useOutsideClick} from "../hooks";
+import { useOutsideClick } from "../hooks";
 
 const Wrapper = styled.div`
   position: relative;
@@ -27,7 +27,6 @@ const Wrapper = styled.div`
   }
   .dropdown-item {
     cursor: pointer;
-    cursor: hand;
   }
 `;
 
@@ -44,10 +43,14 @@ const ButtonDropdown = (props) => {
 
   useOutsideClick(wrapperRef, toggle, show);
 
+  const dropDownItem = dropdown.items.find((i) => i.value === value);
+
   return (
     <Wrapper className={`button-dropdown ${className}`} ref={wrapperRef}>
-      <span className={`btn btn-outline-light dropdown-toggle d-flex justify-content-between ${show ? "show" : ""} ${value !== null ? "active" : ""}`} data-toggle="dropdown" onClick={toggle}>
-        {dropdown.label} {dropdown.items.find((i) => i.value === value).label}
+      <span
+        className={`btn btn-outline-light dropdown-toggle d-flex justify-content-between ${show ? "show" : ""} ${value !== null ? "active" : ""}`}
+        data-toggle="dropdown" onClick={toggle}>
+        {dropdown.label} {dropDownItem ? dropDownItem.label : ""}
       </span>
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
         {dropdown.items.map((item) => {
