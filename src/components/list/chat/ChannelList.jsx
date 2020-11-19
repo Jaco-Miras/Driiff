@@ -18,9 +18,12 @@ const Wrapper = styled.li`
   transition: all 0.15s linear;
   min-height: 64px;
   max-height: 64px;
-  // .channel-title-preview {
-  //   padding-right: ${props => props.paddingAdjustment}px;
-  // }
+  ${(props) => props.selected && `
+    background: #F0F0F050;
+    padding: 0 25px !important;
+    margin: 0 -25px;
+  `}
+  
   .channel-info {
     width: 100%;
     max-width: calc(100% - 55px);
@@ -43,6 +46,9 @@ const Wrapper = styled.li`
   }
   &:focus,
   &:hover {
+    background: #F0F0F050;
+    padding: 0 25px !important;
+    margin: 0 -25px;
     .more-options {
       display: inline-flex;
       opacity: 1;
@@ -56,10 +62,10 @@ const Wrapper = styled.li`
     }
   }
   h6 {
-    ${(props) => props.selected && "color: #7A1B8B"};
+    ${(props) => props.selected && "color: #7A1B8B;"}
   }
   &:after {
-    ${(props) => props.selected && "content: ''"};
+    ${(props) => props.selected && "content: '';"};
     width: 3px;
     height: 100%;
     background: #7a1b8b;
@@ -67,7 +73,7 @@ const Wrapper = styled.li`
     position: absolute;
     top: 0;
     animation: fadeIn 0.15s linear;
-    left: -24px;
+    left: 1px;
     @media (max-width: 991.99px) {
       left: -15px;
     }
@@ -170,12 +176,8 @@ const ChannelList = (props) => {
     yDown = null;
   };
 
-  let timeAdjustment = channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp).length * 8 : 0;
-  let iconAdjustment = (channel.is_pinned ? 18 : 0) + (channel.is_muted ? 18 : 0) + ((channel.add_user === false && (!channel.is_read || channel.total_unread > 0)) ? 18 : 0) + 18;
-  const paddingAdjustment = timeAdjustment > iconAdjustment ? timeAdjustment : iconAdjustment;
-
   return (
-    <Wrapper ref={refs.container} paddingAdjustment={paddingAdjustment}
+    <Wrapper ref={refs.container}
              className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
              selected={selectedChannel !== null && channel.id === selectedChannel.id}
              onClick={handleSelectChannel} onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
