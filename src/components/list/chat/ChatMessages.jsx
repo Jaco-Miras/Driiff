@@ -880,7 +880,7 @@ class ChatMessages extends React.PureComponent {
                                       dictionary={this.props.dictionary}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current}
+                                        {<ChatReactionButton isAuthor={isAuthor}
                                                              reply={reply}
                                                              showEmojiSwitcher={this.state.showEmoji[reply.id]}/>}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
@@ -931,7 +931,7 @@ class ChatMessages extends React.PureComponent {
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current}
+                                        {<ChatReactionButton isAuthor={isAuthor}
                                                              reply={reply}
                                                              showEmojiSwitcher={this.state.showEmoji[reply.id]}/>}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
