@@ -11,13 +11,25 @@ const useCompanyPosts = () => {
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
   const { flipper, limit, next_skip, has_more, posts, filter, tag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
-
+  const archived = useSelector((state) => state.posts.archived);
   const fetchMore = (callback) => {
-    if (has_more) {
-      actions.fetchCompanyPosts({
+    if (filter === "archive") {
+      let payload = {
+        skip: archived.skip,
+        limit: archived.limit,
+        filters: ["post", "archived"],
+      }
+      if (archived.has_more) {
+        actions.fetchCompanyPosts(payload, callback)
+      }
+    } else {
+      let payload = {
         skip: next_skip,
         limit: limit
-      }, callback)
+      }
+      if (has_more) {
+        actions.fetchCompanyPosts(payload, callback)
+      }
     }
   }
 
@@ -28,6 +40,8 @@ const useCompanyPosts = () => {
 
       actions.fetchCompanyPosts(
         {
+          skip: 0,
+          limit: 25,
           filters: ["post", "archived"],
         });
     }
@@ -114,6 +128,7 @@ const useCompanyPosts = () => {
   };
 
   return {
+    archived,
     flipper,
     actions,
     fetchMore,
@@ -126,7 +141,7 @@ const useCompanyPosts = () => {
     user,
     count: count,
     counters: counters,
-    skip: next_skip
+    skip: next_skip,
   };
 };
 

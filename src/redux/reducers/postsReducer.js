@@ -18,6 +18,11 @@ const INITIAL_STATE = {
     searchResults: [],
     unreadPosts: 0
   },
+  archived: {
+    skip: 0,
+    has_more: true,
+    limit: 25
+  },
   posts: {},
   drafts: [],
   totalPostsCount: 0,
@@ -78,14 +83,25 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_COMPANY_POSTS_SUCCESS": {
+      let isArchived = action.data.posts.filter((p) => p.is_archived === 1).length > 0;
       return {
         ...state,
+        archived: {
+          ...state.archived,
+          ...(isArchived && {
+            limit: 25,
+            skip: action.data.next_skip,
+            has_more: action.data.total_take === state.archived.limit,
+          })
+        },
         companyPosts: {
           ...state.companyPosts,
-          prev_skip: action.data.prev_skip,
-          next_skip: action.data.next_skip,
-          total_take: action.data.total_take,
-          has_more: action.data.total_take === state.companyPosts.limit,
+          ...(!isArchived && {
+            prev_skip: action.data.prev_skip,
+            next_skip: action.data.next_skip,
+            total_take: action.data.total_take,
+            has_more: action.data.total_take === state.companyPosts.limit,
+          }),
           posts: {
             ...state.companyPosts.posts,
             ...action.data.posts.reduce((res, obj) => {
