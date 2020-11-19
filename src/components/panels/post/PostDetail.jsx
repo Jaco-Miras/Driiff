@@ -258,7 +258,7 @@ const PostDetail = (props) => {
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
 
-  const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
 
@@ -266,16 +266,17 @@ const PostDetail = (props) => {
 
   const hasRead = readByUsers.some(u => u.id === user.id);
 
-  const [react, setReact] = useState({
-    user_clap_count: post.user_clap_count,
-    clap_count: post.clap_count,
-  });
+  // const [react, setReact] = useState({
+  //   user_clap_count: post.user_clap_count,
+  //   clap_count: post.clap_count,
+  // });
 
-  const [usersReacted, setUsersReacted] = useState(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
+  // const [usersReacted, setUsersReacted] = useState(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
   const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id))
+  const likers =  Object.values(users).filter((u) => post.clap_user_ids.some((id) => id === u.id))
 
   const handleClosePost = () => {
     onGoBack();
@@ -356,14 +357,6 @@ const PostDetail = (props) => {
   };
 
   const handleReaction = () => {
-    setReact((prevState) => ({
-      user_clap_count: !!prevState.user_clap_count ? 0 : 1,
-      clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
-    }));
-
-    setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
-      prevState.filter(r => r.type_id !== user.id) :
-      prevState.concat(recipients.find(r => r.type_id === user.id)));
 
     let payload = {
       post_id: post.id,
@@ -371,7 +364,17 @@ const PostDetail = (props) => {
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
     };
-    postActions.clap(payload);
+    postActions.clap(payload, (err,res) => {
+      if (err) {
+        if (payload.clap === 1) postActions.unlike(payload)
+        else postActions.like(payload)
+      }
+    });
+    if (post.user_clap_count === 0) {
+      postActions.like(payload)
+    } else {
+      postActions.unlike(payload)
+    }
   };
 
   //const isMember = post.users_responsible.some((u) => u.id === user.id);
@@ -388,22 +391,19 @@ const PostDetail = (props) => {
       postActions.markAsRead(post);
     }
 
-    postActions.fetchPostClapHover(post.id, (err, res) => {
-      const clap_user_ids = res.data.claps.map(c => c.user_id);
-      setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
-    });
+    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
   }, []);
 
-  useEffect(() => {
-    setReact({
-      user_clap_count: post.user_clap_count,
-      clap_count: post.clap_count,
-    });
-  }, [post]);
+  // useEffect(() => {
+  //   setReact({
+  //     user_clap_count: post.user_clap_count,
+  //     clap_count: post.clap_count,
+  //   });
+  // }, [post]);
 
-  useEffect(() => {
-    setUsersReacted(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
-  }, [post.clap_user_ids]);
+  // useEffect(() => {
+  //   setUsersReacted(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
+  // }, [post.clap_user_ids, recipients]);
 
   return (
     <>
@@ -502,15 +502,16 @@ const PostDetail = (props) => {
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div className="clap-count-wrapper">
-            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
+            <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
                   icon="thumbs-up" onClick={handleReaction}/>
-            {usersReacted.length}
+            {post.clap_count}
             {
-              usersReacted.length !== 0 && <span className="hover read-users-container">
+              likers.length !== 0 && <span className="hover read-users-container">
               {
-                usersReacted.map(u => {
+                likers.map(u => {
                   return <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link}
+                    <Avatar className="mr-2" key={u.id} name={u.name}
+                            imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
                             id={u.id}/> <span className="name">{u.name}</span>
                   </span>;
                 })

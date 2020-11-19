@@ -124,6 +124,44 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
     }
+    case "ADD_POST_REACT": {
+      return {
+        ...state,
+        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                clap_user_ids: [...state.companyPosts.posts[action.data.post_id].clap_user_ids, state.user.id],
+                clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
+                user_clap_count: 1
+              }
+            }
+          }
+        })
+      };
+    }
+    case "REMOVE_POST_REACT": {
+      return {
+        ...state,
+        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                clap_user_ids: state.companyPosts.posts[action.data.post_id].clap_user_ids.filter((id) => id !== state.user.id),
+                clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
+                user_clap_count: 0
+              }
+            }
+          }
+        })
+      };
+    }
     case "GET_POST_CLAP_HOVER_SUCCESS": {
       const user_ids = action.data.claps.map(c => c.user_id);
       return {
@@ -135,7 +173,8 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                clap_user_ids: [...state.companyPosts.posts[action.data.post_id].clap_user_ids.filter(id => !user_ids.includes(id)), ...user_ids]
+                clap_user_ids: [...user_ids],
+                fetchedReact: true
               }
             }
           }
