@@ -26,7 +26,7 @@ const WrapperDiv = styled(InputGroup)`
 
   label {
     margin: 0 20px 0 0;
-    min-width: 530px;
+    //min-width: 530px;
   }
   button {
     margin-left: auto;

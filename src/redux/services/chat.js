@@ -73,16 +73,17 @@ export function getLastVisitedChannel(payload) {
 export function getChatMessages(payload) {
   const { channel_id, skip, limit, topic_id, ...rest } = payload;
 
-  let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
-  if (payload.is_shared_topic) {
-    url += `&topic_id=${topic_id}`;
-  }
-
+  // let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
+  // if (payload.is_shared_topic) {
+  //   url += `&topic_id=${topic_id}`;
+  // }
+  let url = `/v2/post-channel-messages?${objToUrlParams(payload)}`
+  
   return apiCall({
     method: "GET",
     url: url,
-    is_shared: !!payload.topic_id,
-    data: rest,
+    //is_shared: !!payload.topic_id,
+    //data: rest,
   });
 }
 

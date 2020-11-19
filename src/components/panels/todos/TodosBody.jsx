@@ -7,7 +7,8 @@ import quillHelper from "../../../helpers/quillHelper";
 import { useFileActions, useSettings, useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
 import { setViewFiles } from "../../../redux/actions/fileActions";
-import { useDispatch } from "react-redux";
+import { getChatMessages, setSelectedChannel, setLastVisitedChannel } from "../../../redux/actions/chatActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const Wrapper = styled.div`
 .list-group {
@@ -121,6 +122,8 @@ const TodosBody = (props) => {
     loadMore.files();
   }
 
+  const channels = useSelector((state) => state.chat.channels);
+
   const handleScroll = (e) => {
     if (e.target.dataset.loading === "false") {
       if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
@@ -130,9 +133,37 @@ const TodosBody = (props) => {
     }
   }
 
-  const handleLinkClick = (e) => {
+  const handleLinkClick = (e, todo) => {
     e.preventDefault();
-    history.push(e.currentTarget.dataset.link);
+    if (todo.link_type === "CHAT") {
+      let payload = {
+        channel_id: todo.data.channel.id,
+        skip: 0,
+        after_chat_id: todo.data.chat_message.id,
+        limit: 20
+      }
+      if (channels.hasOwnProperty(todo.data.channel.id)) {
+        let channel = {...channels[todo.data.channel.id]};
+        if (channel.replies.find((r) => r.id === todo.data.chat_message.id)) {
+          let cb = () => {
+            history.push(e.currentTarget.dataset.link, {focusOn: todo.data.chat_message.id});
+            setTimeout(() => {
+              let chat = document.querySelector(`[data-message-id='${todo.data.chat_message.id}']`)
+              if (chat) chat.scrollIntoView()
+            }, 1000)
+          }
+          dispatch(setLastVisitedChannel(channel, cb));
+        } else {
+          dispatch(getChatMessages(payload, (err,res) => {
+            let chat = document.querySelector(`[data-message-id='${todo.data.chat_message.id}']`)
+            if (chat) chat.scrollIntoView()
+          }))
+          dispatch(
+            setLastVisitedChannel(channel, () => history.push(e.currentTarget.dataset.link, {focusOn: todo.data.chat_message.id}))
+          );
+        }
+      }
+    }
   }
 
   const getBadgeClass = (todo) => {
@@ -250,7 +281,7 @@ const TodosBody = (props) => {
                              target="_blank" data-link={todo.link} onClick={(e) => {
                             e.preventDefault();
                             if (todo.link_type)
-                              handleLinkClick(e);
+                              handleLinkClick(e, todo);
                             else
                               todoActions.updateFromModal(todo)
                           }}>
