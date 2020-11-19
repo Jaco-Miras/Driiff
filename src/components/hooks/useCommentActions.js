@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import {
+  addCommentReact,
   addComment,
   addCommentQuote,
   clearCommentQuote,
@@ -10,6 +11,7 @@ import {
   postComment,
   postCommentClap,
   putComment,
+  removeCommentReact,
   setEditComment
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
@@ -155,6 +157,24 @@ const useCommentActions = () => {
     );
   };
 
+  const like = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        addCommentReact(payload, callback)
+      );
+    },
+    [dispatch]
+  );
+
+  const unlike = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        removeCommentReact(payload, callback)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
@@ -166,7 +186,9 @@ const useCommentActions = () => {
     setToEdit,
     remove,
     remind,
-    fetchPostReplyHover
+    fetchPostReplyHover,
+    like,
+    unlike
   };
 };
 

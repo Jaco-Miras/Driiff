@@ -193,17 +193,20 @@ const Comment = (props) => {
   const history = useHistory();
   const googleApis = useGoogleApis();
 
-  const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  const users = useSelector((state) => state.users.users);
+  //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
 
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
-  const [react, setReact] = useState({
-    user_clap_count: comment.user_clap_count,
-    clap_count: comment.clap_count,
-  });
+  // const [react, setReact] = useState({
+  //   user_clap_count: comment.user_clap_count,
+  //   clap_count: comment.clap_count,
+  // });
 
-  const [usersReacted, setUsersReacted] = useState(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
+  // const [usersReacted, setUsersReacted] = useState(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
+
+  const likers =  Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id))
 
   const handleShowInput = useCallback(
     (commentId = null) => {
@@ -252,21 +255,33 @@ const Comment = (props) => {
   const handleReaction = () => {
     if (disableOptions) return;
 
-    setReact((prevState) => ({
-      user_clap_count: !!prevState.user_clap_count ? 0 : 1,
-      clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
-    }));
+    // setReact((prevState) => ({
+    //   user_clap_count: !!prevState.user_clap_count ? 0 : 1,
+    //   clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
+    // }));
 
-    setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
-      prevState.filter(r => r.type_id !== user.id) :
-      prevState.concat(recipients.find(r => r.type_id === user.id)));
+    // setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
+    //   prevState.filter(r => r.type_id !== user.id) :
+    //   prevState.concat(recipients.find(r => r.type_id === user.id)));
 
     let payload = {
       id: comment.id,
       reaction: "clap",
       counter: comment.user_clap_count === 0 ? 1 : 0,
+      post_id: post.id,
+      parent_id: type === "main" ? null : parentId
     };
-    commentActions.clap(payload);
+    commentActions.clap(payload, (err, res) => {
+      if (err) {
+        if (payload.counter === 1) commentActions.unlike(payload)
+        else commentActions.like(payload)
+      }
+    });
+    if (comment.user_clap_count === 0) {
+      commentActions.like(payload)
+    } else {
+      commentActions.unlike(payload)
+    }
   };
 
   const { fromNow } = useTimeFormat();
@@ -298,19 +313,20 @@ const Comment = (props) => {
     if (comment.body.match(/\.(gif)/g) !== null) {
       setShowGifPlayer(true);
     }
-    commentActions.fetchPostReplyHover(comment.id, (err, res) => {
-      const clap_user_ids = res.data.claps.map(c => c.user_id);
-      setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
-    });
+    if (typeof comment.fetchedReact === "undefined") commentActions.fetchPostReplyHover(comment.id);
+    // commentActions.fetchPostReplyHover(comment.id, (err, res) => {
+    //   const clap_user_ids = res.data.claps.map(c => c.user_id);
+    //   setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
+    // });
 
     return () => {
       history.push(history.location.pathname, null);
     };
   }, []);
 
-  useEffect(() => {
-    setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
-  }, [comment.clap_user_ids]);
+  // useEffect(() => {
+  //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
+  // }, [comment.clap_user_ids]);
 
   return (
     <>
@@ -349,13 +365,13 @@ const Comment = (props) => {
           <div className="d-flex align-items-center justify-content-start">
             <div className="clap-count-wrapper">
               <Icon
-                className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
+                className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
                 icon="thumbs-up" onClick={handleReaction}/>
-              {usersReacted.length}
+              {comment.clap_count}
               {
-                usersReacted.length !== 0 && <span className="hover read-users-container">
+                likers.length !== 0 && <span className="hover read-users-container">
               {
-                usersReacted.map(u => {
+                likers.map(u => {
                   return <span key={u.id}>
                     <Avatar className="mr-2" key={u.id} name={u.name}
                             imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}

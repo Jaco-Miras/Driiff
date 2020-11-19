@@ -569,7 +569,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
-            this.props.incomingCommentClap(e);
+            if (this.props.user.id !== e.author.id) this.props.incomingCommentClap(e);
             break;
           }
 
