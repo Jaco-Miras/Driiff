@@ -95,8 +95,8 @@ import {
   incomingPostViewer,
   incomingReadUnreadReducer,
   incomingUpdatedPost,
-  refetchPosts,
-  refetchPostComments
+  refetchPostComments,
+  refetchPosts
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -189,6 +189,24 @@ class SocketListeners extends Component {
   };
 
   componentDidMount() {
+    /* uncomment to test driff update notification bar
+    const handleReminder = () => {
+      setTimeout(() => {
+        this.props.addToModals({
+          id: "version",
+          type: "update_found",
+          requirement: "normal",
+          handleReminder: handleReminder,
+        });
+      }, [30 * 60 * 1000]);
+    };
+
+    this.props.addToModals({
+      id: "version",
+      type: "update_found",
+      requirement: "normal",
+      handleReminder: handleReminder,
+    });*/
 
     this.props.getLatestReply({}, (err, res) => {
       console.log(res, 'latest');
@@ -198,7 +216,7 @@ class SocketListeners extends Component {
     });
     window.Echo.connector.socket.on("disconnect", () => {
       console.log("socket disconnected");
-      this.setState({disconnectedTimestamp: Math.floor(Date.now() / 1000)});
+      this.setState({ disconnectedTimestamp: Math.floor(Date.now() / 1000) });
     });
     window.Echo.connector.socket.on("reconnect", () => {
       console.log("socket reconnected");
@@ -606,7 +624,7 @@ class SocketListeners extends Component {
                 }
               );
             }
-            if (message.user.id !== user.id && !message.is_muted) {
+            if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
               this.props.soundPlay();
             }
             if (this.props.user.id !== message.user.id) {

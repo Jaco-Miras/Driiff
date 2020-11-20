@@ -59,6 +59,7 @@ const INITIAL_STATE = {
       virtualization: false
     },
     GENERAL_SETTINGS: {
+      notification_sound: "jingle-bells",
       is_new: true,
       timezone: momentTZ.tz.guess(),
       dark_mode: "0",

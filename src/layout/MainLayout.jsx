@@ -5,14 +5,14 @@ import styled from "styled-components";
 import {
   useDriff,
   useFilesUpload,
+  useInitialLoad,
   useSettings,
   useSocketConnection,
   useTimeFormat,
   useToaster,
   useUserActions,
   useVisibilityChange,
-  useWorkspaceActions,
-  useInitialLoad
+  useWorkspaceActions
 } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
@@ -52,7 +52,7 @@ const MainLayout = (props) => {
   const {
     driffSettings: {isCompSettingsLoaded},
     chatSettings: {sound_enabled},
-    generalSettings: {notifications_on}
+    generalSettings: { notifications_on, notification_sound }
   } = useSettings();
 
   const history = useHistory();
@@ -97,9 +97,17 @@ const MainLayout = (props) => {
   return (
     <>
       <AudioStyle ref={refs.audio} controls>
-        <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg"/>
-        <source src={require("../assets/audio/appointed.mp3")} type="audio/mpeg"/>
-        <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r"/>
+        {
+          notification_sound === "jingle-bells" ? <>
+            <source src={require(`../assets/audio/jingle-bells.ogg`)} type="audio/ogg"/>
+            <source src={require(`../assets/audio/jingle-bells.mp3`)} type="audio/mpeg"/>
+            <source src={require(`../assets/audio/jingle-bells.m4r`)} type="audio/m4r"/>
+          </> : <>
+            <source src={require(`../assets/audio/appointed.ogg`)} type="audio/ogg"/>
+            <source src={require(`../assets/audio/appointed.mp3`)} type="audio/mpeg"/>
+            <source src={require(`../assets/audio/appointed.m4r`)} type="audio/m4r"/>
+          </>
+        }
         Your browser does not support the audio element.
       </AudioStyle>
       {

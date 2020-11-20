@@ -78,7 +78,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
@@ -95,12 +95,25 @@ const ProfileSettings = (props) => {
     sortChannelRecentActivityValue: _t("SETTINGS.SORT_CHANNEL_RECENT_ACTIVITY_VALUE", "Recent activity"),
     sortChannelNameValue: _t("SETTINGS.SORT_CHANNEL_NAME_VALUE", "Channel name"),
     allowNotifications: _t("SETTINGS.ALLOW_NOTIFICATIONS", "Allow notifications"),
-
+    notificationSound: _t("SETTINGS.NOTIFICATION_SOUND", "Notification sound"),
+    notificationSoundDefault: _t("SETTINGS.NOTIFICATION_SOUND_DEFAULT", "Default"),
+    notificationSoundJingleBells: _t("SETTINGS.NOTIFICATION_SOUND_JINGLE_BELLS", "Jingle bells"),
     localizationSettingsTitle: _t("SETTINGS.LOCALIZATION_TITLE", "Localization"),
     languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
     timezoneLabel: _t("SETTINGS.TIMEZONE_LABEL", "Timezone"),
     dateTimeFormatLabel: _t("SETTINGS.DATE_TIME_FORMAT_LABEL", "Date and time format"),
   };
+
+  const notificationSoundOptions = [
+    {
+      value: "appointed",
+      label: dictionary.notificationSoundDefault,
+    },
+    {
+      value: "jingle-bells",
+      label: dictionary.notificationSoundJingleBells,
+    },
+  ];
 
   const channelSortOptions = [
     {
@@ -246,6 +259,13 @@ const ProfileSettings = (props) => {
     },
     [setGeneralSetting]
   );
+
+  const handleNotificationSoundChange = (e) => {
+    setGeneralSetting({
+      notification_sound: e.value,
+    });
+    toaster.success(<span>You have successfully updated notification sound</span>);
+  };
 
   const handleSortChannelChange = (e) => {
     setChatSetting({
@@ -421,6 +441,14 @@ const ProfileSettings = (props) => {
                 onChange={handleNotificationsSwitchToggle}
                 label={<span>{dictionary.allowNotifications}</span>}
               />
+            </div>
+          </div>
+          <div className="row mb-2">
+            <div className="col-5 text-muted">{dictionary.notificationSound}</div>
+            <div className="col-7">
+              <Select styles={dark_mode === "0" ? lightTheme : darkTheme}
+                      value={notificationSoundOptions.find((o) => o.value === notification_sound)}
+                      onChange={handleNotificationSoundChange} options={notificationSoundOptions}/>
             </div>
           </div>
         </div>
