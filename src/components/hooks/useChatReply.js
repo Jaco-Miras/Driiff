@@ -250,6 +250,15 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
+    } else if (message.startsWith('{"Welk punt geef je ons"')) {
+      try {
+        const data = JSON.parse(message);
+        Object.keys(data).forEach(key => {
+          newBody += `${key} : ${data[key]}<br/>`;
+        });
+      } catch (e) {
+        return message;
+      }
     }
 
     return newBody === "" ? message : newBody;
