@@ -624,7 +624,7 @@ class SocketListeners extends Component {
                 }
               );
             }
-            if (message.user.id !== user.id && !message.is_muted) {
+            if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
               this.props.soundPlay();
             }
             if (this.props.user.id !== message.user.id) {
