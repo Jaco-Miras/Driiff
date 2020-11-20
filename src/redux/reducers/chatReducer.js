@@ -1231,7 +1231,7 @@ export default function (state = INITIAL_STATE, action) {
       let channels = {...state.channels};
       let channel = null;
       if (action.data.channel_detail && channels.hasOwnProperty(action.data.channel_detail.id)) {
-        let messages = [...channels[action.data.channel_detail.id].replies, ...action.data.current_latest_messages]
+        let messages = [...channels[action.data.channel_detail.id].replies, ...action.data.current_latest_messages.map((m) => { return {...m, channel_id: action.data.channel_detail.id} })]
         channel = {
           ...action.data.channel_detail,
           replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
@@ -1252,7 +1252,7 @@ export default function (state = INITIAL_STATE, action) {
       let channels = {...state.channels};
       channelsWithMessage.forEach((c) => {
         if (channels.hasOwnProperty(c.channel_id)) {
-          let newMessages = Object.values(c.messages);
+          let newMessages = Object.values(c.messages).map((m) => { return {...m, channel_id: c.channel_id} });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
           channels[c.channel_id].replies = uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
           // channels[c.channel_id].last_reply = newMessages[0];

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
-import { postChatMessage } from "../../redux/actions/chatActions";
+import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { uploadDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
@@ -345,6 +345,7 @@ const FileUploadModal = (props) => {
 
   const handleSubmit = (body, mention_ids) => {
     if (mode === "chat") {
+      dispatch(setSidebarSearch({ value: "" }));
       uploadedFiles.forEach((file, k) => {
         let payload = {};
         if (k === uploadedFiles.length - 1) {
