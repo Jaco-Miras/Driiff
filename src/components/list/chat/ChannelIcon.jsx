@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")};
     color: #fff;
     display: inline-flex;
-    padding: 5px; 
+    padding: 5px;
     border-radius: 100%;
     width: 2.7rem;
     height: 2.7rem;
@@ -41,7 +41,7 @@ const Icon = styled(SvgIconFeather)`
   width: 2.7rem;
   &.feather-home {
     background: #7a1b8b;
-    padding: 6px 0;    
+    padding: 6px 0;
   }
   .chat-header-icon-left & {
     height: 28px;
@@ -84,15 +84,17 @@ const ChannelIcon = (props) => {
           type={channel.type}
           imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
           userId={channel.profile.id}
-          id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name}
-          noDefaultClick={false}/>
+          id={channel.profile.id}
+          name={channel.profile.name}
+          partialName={channel.profile.partial_name}
+          noDefaultClick={false}
+        />
       )}
-      {channel.type === "GROUP" && <Icon icon="users" alt={channel.title}/>}
-      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
-      {channel.type === "POST" && <Icon icon="users" alt={channel.title}/>}
-      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title}/>}
-      {(channel.members && channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" &&
-        <span>{handleInitials(channel.title).substring(0, 3)}</span>)}
+      {channel.type === "GROUP" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
+      {channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
+      {(channel.members && channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" && <span>{handleInitials(channel.title).substring(0, 3)}</span>)}
     </Wrapper>
   );
 };

@@ -7,7 +7,7 @@ import {
   addToModals,
   // getQuickLinks,
   // getUnreadNotificationCounterEntries,
-  setNavMode
+  setNavMode,
 } from "../../../redux/actions/globalActions";
 import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
 import { useSettings, useTodos, useTranslation, useWorkspace } from "../../hooks";
@@ -241,6 +241,15 @@ const StyledTooltip = styled(Tooltip)`
   justify-content: center;
 `;
 
+// christmas
+const Hat = styled.div`
+  position: absolute;
+  z-index: 20;
+  transform: rotate(-41deg) scaleX(-1);
+  left: 51px;
+  top: 3px;
+`;
+
 const EmptyState = styled.div`
   display: flex;
   align-items: start;
@@ -262,15 +271,15 @@ const EmptyState = styled.div`
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const {className = "", isExternal} = props;
+  const { className = "", isExternal } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const {count} = useTodos();
-  const {actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded} = useWorkspace(true);
-  const {updateCompanyName, driffSettings, generalSettings} = useSettings();
+  const { count } = useTodos();
+  const { actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded } = useWorkspace(true);
+  const { updateCompanyName, driffSettings, generalSettings } = useSettings();
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -401,20 +410,23 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [editCompany]);
 
-  const hasUnreadCounter = Object.keys(unreadCounter)
-    .filter(k => k !== "chat_reminder_message")
-    .reduce((total, k) => {
-      total += unreadCounter[k];
-      return total;
-    }, 0) !== 0 || count.overdue !== 0;
+  const hasUnreadCounter =
+    Object.keys(unreadCounter)
+      .filter((k) => k !== "chat_reminder_message")
+      .reduce((total, k) => {
+        total += unreadCounter[k];
+        return total;
+      }, 0) !== 0 || count.overdue !== 0;
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
-             data-original-title="Driff">
+        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
+          <Hat>
+            <img width={"70px"} src={"http://clipart-library.com/images/yTkKxMznc.png"} />
+          </Hat>
           <div className="driff-logo">
-            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
           </div>
         </div>
       </div>
