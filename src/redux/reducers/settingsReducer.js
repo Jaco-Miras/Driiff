@@ -5,7 +5,7 @@ import { $_GET } from "../../helpers/commonFunctions";
 const INITIAL_STATE = {
   sessionUser: null,
   driff: {
-    i18n: null,
+    i18n: 1605864545,
     isSettingsLoaded: false,
     isCompSettingsLoaded: false,
     company_name: "ZUID Creatives",
