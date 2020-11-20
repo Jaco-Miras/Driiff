@@ -433,7 +433,7 @@ const CreateEditChatModal = (props) => {
       }
   }, 300);
 
-  const [modules] = useQuillModules("group_chat");
+  const {modules} = useQuillModules({mode: "group_chat"});
 
   // useEffect(() => {
   //   if (mode === "edit") {
