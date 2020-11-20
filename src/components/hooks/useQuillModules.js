@@ -5,14 +5,17 @@ import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
+import {usePreviousValue} from "./index";
 
-const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = [], disableMention = false, setImageFileIds = null) => {
+const useQuillModules = ({mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setImageFileIds = null, prioMentionIds = [], post = null}) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
   const userMentions = useSelector((state) => state.users.mentions);
   const user = useSelector((state) => state.session.user);
-
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const previousChannel = usePreviousValue(selectedChannel);
+  const previousPost = usePreviousValue(post);
   const savedCallback = useRef(callback);
 
   useEffect(() => {
@@ -24,6 +27,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
   };
   const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
   const handleSetModule = () => {
+    if (Object.keys(userMentions).length === 0) return;
     const all = {
       id: require("shortid").generate(),
       profile_image_link: require("../../assets/img/svgs/workspace.svg"),
@@ -66,6 +70,19 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
       setMentionValues(newAtValues);
     } else {
       newAtValues = [];
+    }
+
+    if (prioMentionIds.length) {
+      let prioIds = prioMentionIds.filter((id) => id !== user.id);
+      newAtValues.sort((a,b) => {
+        if (prioIds.some(id => id === a.id) && prioIds.some(id => id === b.id)) {
+          return 0;
+        } else if (prioIds.some(id => id === a.id)) {
+          return -1;
+        } else {
+          return 1;
+        }
+      })
     }
     
     const modules = {
@@ -180,15 +197,24 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
     handleSetModule();
   }, []);
 
-  useEffect(
-    () => {
-      if (Object.keys(userMentions).length && Object.keys(userMentions).length + 1 !== mentionValues.length) {
-        handleSetModule();
-      }
-    },
-    [Object.keys(userMentions).length],
-    mentionValues.length
-  );
+  useEffect(() => {
+    if (Object.keys(userMentions).length && Object.keys(userMentions).length + 1 !== mentionValues.length) {
+      handleSetModule();
+    }
+  }, [Object.keys(userMentions).length, mentionValues.length]);
+
+  useEffect(() => {
+    if (mode === "chat" && selectedChannel && previousChannel && previousChannel.id !== selectedChannel.id) {
+      handleSetModule();
+    }
+  }, [mode, selectedChannel, previousChannel]);
+
+  useEffect(() => {
+    console.log(previousPost, post)
+    if (mode === "post_comment" && post && typeof previousPost === "undefined") {
+      handleSetModule();
+    }
+  }, [mode, post, previousPost]);
 
   const formats = [
     "background",
@@ -211,7 +237,10 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
     "video"
   ];
 
-  return [modules, formats];
+  return {
+    modules,
+    formats
+  }
 };
 
 export default useQuillModules;

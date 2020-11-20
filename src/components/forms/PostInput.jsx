@@ -477,7 +477,16 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  const [modules] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, members, false, setImageFileIds);
+  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+                        .map((r) => {
+                          if (r.type === "USER") {
+                            return [r.type_id]
+                          } else {
+                            return r.participant_ids
+                          }
+                        }).flat();
+
+  const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef: reactQuillRef, members: user.type === "external" ? members : [], disableMention: false, setImageFileIds,  prioMentionIds: [...new Set(prioMentionIds)], post});
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>

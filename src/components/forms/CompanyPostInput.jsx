@@ -474,7 +474,16 @@ const CompanyPostInput = forwardRef((props,ref) => {
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
-  const [modules] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, users, false, setImageFileIds);
+  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+                        .map((r) => {
+                          if (r.type === "USER") {
+                            return [r.type_id]
+                          } else {
+                            return r.participant_ids
+                          }
+                        }).flat();
+                        
+  const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef:reactQuillRef, members: users, disableMention: false, setImageFileIds, prioMentionIds: [...new Set(prioMentionIds)], post});
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
