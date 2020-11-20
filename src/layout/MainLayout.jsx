@@ -98,8 +98,8 @@ const MainLayout = (props) => {
     <>
       <AudioStyle ref={refs.audio} controls>
         <source src={require(`../assets/audio/${notification_sound}.ogg`)} type="audio/ogg"/>
-        <source src={require(`../assets/audio/${notification_sound}.mp3`)} type="audio/ogg"/>
-        <source src={require(`../assets/audio/${notification_sound}.m4r`)} type="audio/ogg"/>
+        <source src={require(`../assets/audio/${notification_sound}.mp3`)} type="audio/mpeg"/>
+        <source src={require(`../assets/audio/${notification_sound}.m4r`)} type="audio/m4r"/>
         Your browser does not support the audio element.
       </AudioStyle>
       {

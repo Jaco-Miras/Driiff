@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Button } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 // import { ModalHeaderSection } from "./index";
 import styled from "styled-components";
@@ -40,7 +40,12 @@ const NotificationBar = styled.div`
     padding: 0 1rem;
     margin: 0 6px;
   }
-  }
+`;
+
+const AudioStyle = styled.audio`
+  display: none;
+  opacity: 0;
+  visibility: hidden;
 `;
 
 const DriffUpdateModal = (props) => {
@@ -49,6 +54,10 @@ const DriffUpdateModal = (props) => {
   const { logout, processBackendLogout } = useUserActions();
   const dispatch = useDispatch();
   const { _t } = useTranslation();
+
+  const refs = {
+    audio: useRef(null),
+  };
 
   const dictionary = {
     update: _t("DRIFF.DRIFF_VERSION_UPDATE", "Go!"),
@@ -90,7 +99,30 @@ const DriffUpdateModal = (props) => {
     }
   };
 
+  const handleSoundPlay = () => {
+    if (refs.audio.current) {
+      const promiseAudioPlay = refs.audio.current.play();
+
+      if (promiseAudioPlay !== undefined) {
+        promiseAudioPlay
+          .then(() => {
+            // Start whatever you need to do only after playback
+            // has begun.
+          })
+          .catch((error) => {
+            /**
+             * @todo need a fallback in case autoplay is not allowed
+             **/
+            if (error.name === "NotAllowedError") {
+            } else {
+            }
+          });
+      }
+    }
+  };
+
   useEffect(() => {
+    handleSoundPlay();
     const id = setInterval(() => {
       const el = document.querySelector(".modal-backdrop");
       if (el && el.classList.contains("show")) {
@@ -102,14 +134,20 @@ const DriffUpdateModal = (props) => {
 
   return (
     <NotificationBar isOpen={modal} toggle={toggle} size={"m"} centered>
+      <AudioStyle ref={refs.audio} controls>
+        <source src={require(`../../assets/audio/hohoho.ogg`)} type="audio/ogg"/>
+        <source src={require(`../../assets/audio/hohoho.mp3`)} type="audio/mpeg"/>
+        <source src={require(`../../assets/audio/hohoho.m4r`)} type="audio/m4r"/>
+        Your browser does not support the audio element.
+      </AudioStyle>
       <div dangerouslySetInnerHTML={{ __html: getContent() }}/>
-        <Button className="button-notification" onClick={handleConfirm}>
-          {dictionary.update}
-        </Button>{" "}
-        {/* <Button className="button-notification" onClick={handleRemind}>
+      <Button className="button-notification" onClick={handleConfirm}>
+        {dictionary.update}
+      </Button>{" "}
+      {/* <Button className="button-notification" onClick={handleRemind}>
           {dictionary.remindMeAboutThis}
         </Button> */}
-        <SvgIconFeather className="ml-3 align-self-center" icon="x" onClick={handleRemind}/>
+      <SvgIconFeather className="ml-3 align-self-center" icon="x" onClick={handleRemind}/>
     </NotificationBar>
   );
 };
