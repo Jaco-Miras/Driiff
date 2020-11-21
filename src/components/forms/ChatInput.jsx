@@ -677,7 +677,7 @@ const ChatInput = (props) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-  const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
+  const {modules} = useQuillModules({mode: "chat", callback: handleSubmit, mentionOrientation: "top", quillRef:reactQuillRef, members: user.type === "external" ? selectedChannel.members : [], prioMentionIds: selectedChannel.members.map(m => m.id)});
   return (
     <div className="chat-input-wrapper">
       {mentionedUserIds.length > 0 &&

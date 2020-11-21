@@ -229,7 +229,7 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const [modules] = useQuillModules("description", () => {}, "top", reactQuillRef, members, disableMention, setImageFileIds);
+  const {modules} = useQuillModules({mode:"description", mentionOrientation: "top", quillRef: reactQuillRef, members, disableMention, setImageFileIds});
 
   return (
     <WrapperDiv className={`description-input ${className}`}>

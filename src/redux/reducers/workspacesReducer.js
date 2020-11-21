@@ -420,12 +420,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      let convertedPosts = convertArrayToObject(action.data.posts.reduce((arr, obj) => {
-        return arr.concat({
-          ...obj,
-          clap_user_ids: []
-        });
-      }, []), "id");
+      // let convertedPosts = convertArrayToObject(action.data.posts.reduce((arr, obj) => {
+      //   return arr.concat({
+      //     ...obj,
+      //     clap_user_ids: []
+      //   });
+      // }, []), "id");
+      let convertedPosts = convertArrayToObject(action.data.posts.map((p) => { return Object.assign({}, p, {clap_user_ids: []}) }), "id");
       let postDrafts = [];
       if (state.drafts.length) {
         state.drafts.forEach((d) => {
@@ -444,6 +445,10 @@ export default (state = INITIAL_STATE, action) => {
             ...state.workspacePosts,
             [action.data.topic_id]: {
               ...state.workspacePosts[action.data.topic_id],
+              filters: {
+                ...state.workspacePosts[action.data.topic_id].filters,
+                ...action.data.filters,
+              },
               posts: {
                 ...state.workspacePosts[action.data.topic_id].posts,
                 ...convertedPosts,
@@ -458,6 +463,7 @@ export default (state = INITIAL_STATE, action) => {
           workspacePosts: {
             ...state.workspacePosts,
             [action.data.topic_id]: {
+              filters: action.data.filters,
               filter: "all",
               sort: "recent",
               tag: null,
