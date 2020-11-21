@@ -250,12 +250,16 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith('{"Welk punt geef je ons"')) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       try {
-        const data = JSON.parse(message);
+        const data = JSON.parse(message.replace("ZAP_SUBMIT::", ""));
+        newBody = "<span class='zap-submit'>";
         Object.keys(data).forEach(key => {
-          newBody += `${key} : ${data[key]}<br/>`;
+          if (data[key] !== "") {
+            newBody += `<span class="data-key">${key}</span> : <span class="data-value">${data[key]}</span><br/>`;
+          }
         });
+        newBody += '</span>';
       } catch (e) {
         return message;
       }
