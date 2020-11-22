@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {Route, Switch, useHistory, useLocation, withRouter} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route, Switch, useHistory, useLocation, withRouter } from "react-router-dom";
 import styled from "styled-components";
-import {SvgIcon} from "../components/common";
+import { SvgIcon } from "../components/common";
 import {
   DriffCreatePanel,
   ExternalRegisterPanel,
@@ -11,8 +11,8 @@ import {
   ResetPasswordPanel,
   UpdatePasswordPanel
 } from "../components/panels";
-import {useUserLogin} from "../components/hooks/useUserLogin";
-import {useSettings, useTranslation} from "../components/hooks";
+import { useUserLogin } from "../components/hooks/useUserLogin";
+import { useSettings, useTranslation } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 
 const Wrapper = styled.div``;
@@ -37,6 +37,7 @@ const GuestLayout = (props) => {
     loginSocialMedia: _t("LOGIN.SOCIAL_MEDIA_LOGIN", "Login with your social media account."),
     noAccount: _t("LOGIN.NO_ACCOUNT", "Don't have an account?"),
     registerNow: _t("LOGIN.REGISTER_NOW", "Register now!"),
+    logDifferent: _t("LOGIN.LOG_INTO_DIFFERENT_DRIFF", "Log into different Driff"),
     registerNewDriff: _t("DOMAIN.REGISTER_NEW_DRIFF", "Register new Driff"),
     submit: _t("RESET_PASSWORD.SUBMIT", "Submit"),
     login: _t("RESET_PASSWORD.LOGIN", "Login!"),
