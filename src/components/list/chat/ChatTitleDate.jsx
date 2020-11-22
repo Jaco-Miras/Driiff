@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useTimeFormat } from "../../hooks";
-import { ToolTip } from "../../common";
+import { Badge, ToolTip } from "../../common";
 
 const Wrapper = styled.div`  
   max-width: 100%;
@@ -19,6 +19,10 @@ const ChannelTitleContainer = styled.h6`
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: calc(100% - 100px);
+  
+  .badge-wrapper {
+    margin-right: 0.5rem !important;
+  }
 `;
 
 const ChatTitleDate = (props) => {
@@ -35,12 +39,19 @@ const ChatTitleDate = (props) => {
     }
   };
 
-  const chatTitle = getHighlightedSearchTitle(channel.title);
+  const chatTitle = <>
+    {!!channel.is_archived && (
+      <>
+        <Badge badgeClassName="bg-warning-bright" label="Archived"/>
+      </>
+    )}
+    {getHighlightedSearchTitle(channel.title)}
+  </>;
 
   return (
     <Wrapper className="d-flex justify-content-between align-items-center">
       <ChannelTitleContainer className={`mb-1 ${className}`} selectedChannel={selectedChannel} channel={channel}>
-        <ToolTip direction="up-start" arrow={false} content={chatTitle}>{chatTitle}</ToolTip>
+        <ToolTip direction="up-start" arrow={false} content={channel.title}>{chatTitle}</ToolTip>
       </ChannelTitleContainer>
       <span className={"small text-muted chat-timestamp_text"}
             dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>

@@ -190,11 +190,6 @@ const ChannelList = (props) => {
             </ChannelTitlePreview>
             <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
             <div className="d-flex">
-              {!!channel.is_archived && (
-                <>
-                  <Badge badgeClassName="bg-warning-bright" label="Archived"/>
-                </>
-              )}
               {channel.is_hidden && (
                 <>
                   <Badge label="Hidden"/>
