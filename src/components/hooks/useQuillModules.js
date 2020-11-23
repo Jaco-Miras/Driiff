@@ -210,7 +210,6 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
   }, [mode, selectedChannel, previousChannel]);
 
   useEffect(() => {
-    console.log(previousPost, post)
     if (mode === "post_comment" && post && typeof previousPost === "undefined") {
       handleSetModule();
     }

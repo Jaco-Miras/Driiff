@@ -601,6 +601,18 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
     }
+    case "GET_POST_DETAIL_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.id]: {...action.data, clap_user_ids: []}
+          }
+        }
+      }
+    }
     default:
       return state;
   }
