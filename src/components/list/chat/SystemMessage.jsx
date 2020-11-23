@@ -6,12 +6,14 @@ import { useSystemMessage } from "../../hooks";
 
 const SystemMessageContainer = styled.span`
   display: block;
+  width: 100%;
   
   .push-link {
     display: inline-block;
     position: relative;
     padding-bottom: 25px;
-    margin-bottom: -25px;
+    margin-bottom: -25px;    
+    width: 100%;
     
     &:before {
       position: absolute;
@@ -29,6 +31,12 @@ const SystemMessageContainer = styled.span`
       margin-top: 0.5rem;
       margin-bottom: 0.5rem;
       padding: 1rem;
+      max-width: 95%;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
     }
     .open-post {
       display: flex;
@@ -48,8 +56,8 @@ const SystemMessageContainer = styled.span`
 `;
 
 const SystemMessageContent = styled.span`
-  display: block;
-  max-width: 100%;
+  display: block;  
+  width: 100%;
 `;
 const ChatTimeStamp = styled.div`
   color: #a7abc3;

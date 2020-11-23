@@ -552,6 +552,10 @@ body.dark {
   }
   .system-message {
     background-color: #25282c !important;
+
+    > span {
+      width: 100%;
+    }
   }
   .chat-actions-container {
     background: #191c20;

@@ -157,9 +157,7 @@ const MessageOptions = styled(ChatMessageOptions)`
   }
 `;
 const ChatBubbleQuoteDiv = styled.div`
-  //width: 100%;
-  //overflow: hidden;
-  max-width: 75%;
+  max-width: 90%;
   position: relative;
   flex-flow: column;
   display: inherit;
