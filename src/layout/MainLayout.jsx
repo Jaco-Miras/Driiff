@@ -84,15 +84,22 @@ const MainLayout = (props) => {
   useEffect(() => {
     if (path === "/logout") {
       let redirectLink = `${getCurrentDriffUrl()}/logged-out`;
-      window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
+      window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/logout?redirect_link=${redirectLink}`;
     }
   }, [path, dispatch, history]);
 
   useEffect(() => {
     if (user.id && isCompSettingsLoaded) {
-      displayWelcomeBanner()
+      displayWelcomeBanner();
     }
   }, [user, isCompSettingsLoaded]);
+
+  useEffect(() => {
+    if (refs.audio.current) {
+      refs.audio.current.pause();
+      refs.audio.current.load();
+    }
+  }, [notification_sound]);
 
   return (
     <>
