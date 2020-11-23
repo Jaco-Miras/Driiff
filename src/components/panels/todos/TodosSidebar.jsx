@@ -65,22 +65,26 @@ const TodosSidebar = (props) => {
         <div>
           <div className="app-sidebar-menu" tabIndex="1">
             <div className="list-group list-group-flush">
-              <Filter onClick={() => setFilter("")}
+              <Filter onClick={setFilter}
+                      data-filter=""
                       className={`list-group-item d-flex align-items-center ${filter === "" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="list"/>
                 {dictionary.statusToday}
               </Filter>
-              <Filter onClick={() => setFilter(filter === "OVERDUE" ? "" : "OVERDUE")}
+              <Filter onClick={setFilter}
+                      data-filter="OVERDUE"
                       className={`list-group-item d-flex align-items-center ${filter === "OVERDUE" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="alert-circle"/>
                 {dictionary.statusOverdue} {/*{count.overdue}*/}
               </Filter>
-              <Filter onClick={() => setFilter(filter === "NEW" ? "" : "NEW")}
+              <Filter onClick={setFilter}
+                      data-filter="NEW"
                       className={`list-group-item d-flex align-items-center ${filter === "NEW" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="clock"/>
                 {dictionary.statusUpcoming} {/*{count.new}*/}
               </Filter>
-              <Filter onClick={() => setFilter(filter === "DONE" ? "" : "DONE")}
+              <Filter onClick={setFilter}
+                      data-filter="DONE"
                       className={`list-group-item d-flex align-items-center ${filter === "DONE" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="check"/>
                 {dictionary.statusDone} {/*{count.done}*/}

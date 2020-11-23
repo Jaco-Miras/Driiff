@@ -29,11 +29,11 @@ const NavBarLeft = styled.div`
       height: 16px;
     }
   }
-  @media (max-width: 992px) {
+  @media (max-width: 991.99px) {
     margin-right: 5px;
     padding-right: 10px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 991.99px) {
     .nav-item-folder,
     .nav-item-chevron {
       display: none;

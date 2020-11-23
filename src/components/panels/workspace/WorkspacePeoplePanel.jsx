@@ -1,13 +1,13 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {useFocusInput, useTranslation, useUserChannels} from "../../hooks";
-import {PeopleListItem} from "../../list/people/item";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {SvgIconFeather} from "../../common";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useDispatch, useSelector} from "react-redux";
+import { useFocusInput, useTranslation, useUserChannels } from "../../hooks";
+import { PeopleListItem } from "../../list/people/item";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { SvgIconFeather } from "../../common";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -29,7 +29,7 @@ const Search = styled(SearchForm)`
   margin-bottom: 1rem;
   min-width: 250px;
   padding-right: 14px;
-  @media all and (max-width: 768px) {
+  @media all and (max-width: 991.99px) {
     width: 100%;
     padding-right: 1rem;
   }

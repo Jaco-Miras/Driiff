@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -39,12 +39,16 @@ const Wrapper = styled.div`
 `;
 
 const TodosHeader = (props) => {
-  const {className = "", clearSearch, onEnter, dictionary, onSearchChange, onClickEmpty, searchValue} = props;
+  const { className = "", clearSearch, onEnter, dictionary, onSearchChange, onClickEmpty, searchValue } = props;
+
+  const openMobileModal = () => {
+    document.body.classList.toggle("mobile-modal-open");
+  };
 
   return (
     <Wrapper className={`todos-header app-action ${className}`}>
       <div className="action-left">
-        <span className="app-sidebar-menu-button btn btn-outline-light">
+        <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
           <SvgIconFeather icon="menu"/>
         </span>
       </div>

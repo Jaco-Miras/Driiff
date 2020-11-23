@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useCompanyFiles, useTranslation} from "../../hooks";
-import {CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar} from "../files/company";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useCompanyFiles, useTranslation } from "../../hooks";
+import { CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar } from "../files/company";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -209,8 +209,8 @@ const CompanyFilesPanel = (props) => {
           dictionary={dictionary}
           disableOptions={disableOptions}
         />
-        <div className="col-md-9 app-content mb-4">
-          <div className="app-content-overlay" />
+        <div className="col-lg-9 app-content mb-4">
+          <div className="app-content-overlay"/>
           <CompanyFilesHeader
             isMember={isMember}
             clearFilter={clearFilter}

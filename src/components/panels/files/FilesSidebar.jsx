@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {ProgressBar} from "../common";
-import {FolderList, GoogleDrive} from "./index";
-import {useTranslation} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { ProgressBar } from "../common";
+import { FolderList, GoogleDrive } from "./index";
+import { useTranslation } from "../../hooks";
 
 const Wrapper = styled.div`
   text-align: left;
-    @media (max-width: 768px) {
+    @media (max-width: 991.99px) {
         .card {
             margin-bottom: 0;
             border-bottom-left-radius: 0;

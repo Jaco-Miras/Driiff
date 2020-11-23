@@ -41,7 +41,7 @@ const Wrapper = styled.div`
     display: inline-flex;
     margin-left: 0;
 
-    @media (max-width: 992px) {
+    @media (max-width: 991.99px) {
       margin-left: 1.5rem;
     }
     @media (max-width: 480px) {

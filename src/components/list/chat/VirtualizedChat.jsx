@@ -193,7 +193,7 @@ const ChatBubbleQuoteDiv = styled.div`
       visibility: visible;
     }
   }
-  @media (max-width: 768px) {
+  @media (max-width: 991.99px) {
     max-width: calc(100% - 110px);
   }
 
