@@ -1,12 +1,14 @@
-import React, {useCallback, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Link, useHistory} from "react-router-dom";
+import React, { useCallback, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
-import {EmailRegex} from "../../helpers/stringFormatter";
-import {toggleLoading} from "../../redux/actions/globalActions";
-import {CheckBox, FormInput, PasswordInput} from "../forms";
-import {useSettings, useUserActions} from "../hooks";
+import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
+import { EmailRegex } from "../../helpers/stringFormatter";
+import { toggleLoading } from "../../redux/actions/globalActions";
+import { CheckBox, FormInput, PasswordInput } from "../forms";
+import { useSettings, useUserActions } from "../hooks";
+
+const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 
 const Wrapper = styled.form`
   margin: 50px auto;
@@ -20,10 +22,10 @@ const Wrapper = styled.form`
 
 const LoginPanel = (props) => {
 
-  const {dictionary} = props;
+  const { dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
-  const {driffSettings} = useSettings();
+  const { driffSettings } = useSettings();
 
   const userActions = useUserActions();
 
@@ -86,7 +88,7 @@ const LoginPanel = (props) => {
     });
 
     return (!Object.values(valid).some(v => v === false));
-  }
+  };
 
   const handleMagicLinkClick = useCallback(() => {
     history.push("/magic-link");
@@ -159,7 +161,7 @@ const LoginPanel = (props) => {
             userActions.login(res.data, returnUrl);
           }
         }
-      })
+      });
     } else {
       if (!formResponse.valid.email) {
         refs.email.current.focus();
@@ -227,6 +229,10 @@ const LoginPanel = (props) => {
           </Link>
         </>
       }
+      <hr/>
+      <a className={"btn btn-outline-light btn-sm"} href={`${REACT_APP_apiProtocol}${REACT_APP_localDNSName}`}>
+        {dictionary.logDifferent}
+      </a>
     </Wrapper>
   );
 };
