@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import { useGoogleApis, useTimeFormat, useWindowSize } from "../../hooks";
@@ -6,6 +6,7 @@ import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -102,6 +103,10 @@ const Icon = styled(SvgIconFeather)`
 const PostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions } = props;
 
+  const refs = {
+    container: useRef(null)
+  };
+
   const postRecipients = useSelector((state) => state.global.recipients
     .filter((r) => post.recipient_ids.includes(r.id))
     .sort((a, b) => {
@@ -117,6 +122,7 @@ const PostBody = (props) => {
   const { fromNow, localizeDate } = useTimeFormat();
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
+  const history = useHistory();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -137,6 +143,27 @@ const PostBody = (props) => {
     }
   };
 
+  const handleReceiverClick = (e) => {
+    const { id, type } = e.target.dataset;
+    switch (type) {
+      case "DEPARTMENT": {
+        history.push(`/chat`);
+        break;
+      }
+      case "TOPIC": {
+        history.push(`/workspace/chat/${id}/${e.target.innerHTML.toLowerCase().replace(/ /g, "-")}`);
+        break;
+      }
+      case "USER": {
+        history.push(`/profile/${id}/${e.target.innerHTML}`);
+        break;
+      }
+      default: {
+        console.log(id, type);
+      }
+    }
+  };
+
   const renderUserResponsibleNames = () => {
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
@@ -144,7 +171,7 @@ const PostBody = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
-        .map(r => `<span class="receiver">${r.name}</span>`)
+        .map(r => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
         .join(`, `);
     }
 
@@ -159,7 +186,8 @@ const PostBody = (props) => {
     let otherRecipientNames = "";
     if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
       otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
-        .map(r => `<span class="receiver">${r.name}</span>`).join("");
+        .map(r => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
+        .join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
     }
@@ -167,8 +195,17 @@ const PostBody = (props) => {
     return `${recipient_names} ${otherRecipientNames}`;
   };
 
+  useEffect(() => {
+    if (refs.container.current) {
+      refs.container.current.querySelectorAll(`.receiver[data-init="0"]`).forEach(e => {
+        e.dataset.init = 1;
+        e.addEventListener("click", handleReceiverClick);
+      });
+    }
+  });
+
   return (
-    <Wrapper className="card-body">
+    <Wrapper ref={refs.container} className="card-body">
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
