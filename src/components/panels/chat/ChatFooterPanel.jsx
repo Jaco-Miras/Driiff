@@ -225,10 +225,10 @@ const ChatFooterPanel = (props) => {
   const { _t } = useTranslation()
 
   const dictionary = {
-    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
-    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
+    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Un-archive workspace"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
-    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
   }
 
   const handleUnarchive = () => {
@@ -243,7 +243,7 @@ const ChatFooterPanel = (props) => {
     dispatch(putChannel(payload))
     toaster.success(
       <span>
-        <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is unarchived.` : `${selectedChannel.title} channel is unarchived.`}</b>
+        <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is una-rchived.` : `${selectedChannel.title} channel is un-archived.`}</b>
       </span>
     )
   }

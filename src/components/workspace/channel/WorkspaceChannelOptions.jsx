@@ -81,7 +81,7 @@ const WorkspaceChannelOptions = (props) => {
       payload = {
         ...payload,
         headerText: "Chat Un-archive",
-        submitText: "Unarchive",
+        submitText: "Un-archive",
         bodyText: "Are you sure you want to un-archive this chat?",
       };
     }
@@ -112,7 +112,7 @@ const WorkspaceChannelOptions = (props) => {
         <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{workspace.total_unread === 0 && workspace.is_read === 1 ? "Mark as unread" : "Mark as read"}</div>
         <div onClick={handleMuteChat}>{workspace.is_muted ? "Unmute" : "Mute"}</div>
         {workspace.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!workspace.is_hidden ? "Hide" : "Unhide"}</div>}
-        {(workspace.type !== "PERSONAL_BOT" || workspace.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{workspace.is_archived === 0 ? "Archive" : "Unarchive"}</div>}
+        {(workspace.type !== "PERSONAL_BOT" || workspace.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{workspace.is_archived === 0 ? "Archive" : "Un-archive"}</div>}
       </Wrapper>
     </>
   );

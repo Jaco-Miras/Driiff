@@ -58,13 +58,13 @@ const SettingsLink = (props) => {
 
   const dictionary = {
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
-    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
     archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
     archive: _t("BUTTON.ARCHIVE", "Archive"),
-    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Un-archive workspace"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
-    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
   };
 
   const wrapperRef = useRef();
@@ -129,7 +129,7 @@ const SettingsLink = (props) => {
     dispatch(putChannel(payload));
     toaster.success(
         <span>
-          <b>{topic.name} workspace is unarchived.</b>
+          <b>{topic.name} workspace is un-archived.</b>
         </span>
     );
   };
