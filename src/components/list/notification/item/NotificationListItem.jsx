@@ -10,13 +10,19 @@ const Wrapper = styled.li`
   .notification-container {
     max-width: calc(100% - 60px);
   }
-  .notification-title {
+  .notification-activity {
+    width: calc(100% - 10px);
+    line-height: 1.1;
     overflow: hidden;
     display: block !important;
     text-overflow: ellipsis;
+    white-space: nowrap;  
+  }
+  .notification-title {
     width: calc(100% - 10px);
-    white-space: nowrap;
     line-height: 1.1;
+    font-size: 12px;
+    margin: 0.25rem 0;
   }
   .list-group-item {
     border: none;
@@ -83,45 +89,49 @@ export const NotificationListItem = (props) => {
 
   const dictionary = {
     post: _t("NOTIFICATION.POST_POPUP", `Shared a post`),
-    comment: _t("NOTIFICATION.COMMENT_POPUP", `Made a comment in ::title::`, {title: notification.data.title}),
-    mention: _t("NOTIFICATION.MENTION_POPUP", `Mentioned you in ::title::`, {title: notification.data.title}),
-    reminder: _t("NOTIFICATION.REMINDER_POPUP", `You asked to be reminded about ::title::`, {title: notification.data.title})
+    comment: _t("NOTIFICATION.COMMENT_POPUP", `Made a comment in ::title::`, { title: "" }),
+    mention: _t("NOTIFICATION.MENTION_POPUP", `Mentioned you in ::title::`, { title: "" }),
+    reminder: _t("NOTIFICATION.REMINDER_POPUP", `You asked to be reminded about ::title::`, { title: "" })
   };
 
   const notifDisplay = () => {
     switch (notification.type) {
       case "POST_CREATE": {
         return (
-            <div className="notification-container flex-grow-1" onClick={handleRedirect}>
-              <span>{notification.author.name}</span>
-              <p className="notification-title text-link">{dictionary.post}</p>
-              <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
-            </div>
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-activity text-link">{dictionary.post}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
         );
       }
       case "POST_COMMENT": {
         return (
-            <div className="notification-container flex-grow-1" onClick={handleRedirect}>
-              <span>{notification.author.name}</span>
-              <p className="notification-title text-link">{dictionary.comment}</p>
-              <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
-            </div>
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="nnotification-activity text-link">{dictionary.comment}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
         );
       }
       case "POST_MENTION": {
         return (
-            <div className="notification-container flex-grow-1" onClick={handleRedirect}>
-              <span>{notification.author.name}</span>
-              <p className="notification-title text-link">{dictionary.mention}</p>
-              <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
-            </div>
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-activity text-link">{dictionary.mention}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
         );
       }
       case "NEW_TODO": {
         return (
           <div className="notification-container flex-grow-1" onClick={handleRedirect}>
             <span>{user.name}</span>
-            <p className="notification-title text-link">{dictionary.reminder}</p>
+            <p className="notification-activity text-link">{dictionary.reminder}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
             <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
           </div>
       );
