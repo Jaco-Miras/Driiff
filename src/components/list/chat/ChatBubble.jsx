@@ -309,7 +309,7 @@ const ReplyContent = styled.span`
         @media (max-width: 1380px) {
           max-width: 5vw;
         }
-        @media (max-width: 992px) {
+        @media (max-width: 991.99px) {
           max-width: 350px;
         }
         @media (max-width: 822px) {

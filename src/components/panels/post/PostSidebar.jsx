@@ -6,7 +6,7 @@ const Wrapper = styled.div`
   .app-sidebar-menu {
     overflow: hidden;
     outline: currentcolor none medium;
-    @media (max-width: 768px) {
+    @media (max-width: 991.99px) {
       border-bottom-left-radius: 0 !important;
       border-bottom-right-radius: 0 !important;
       display: flex;
@@ -24,8 +24,8 @@ const Wrapper = styled.div`
       }
     }
   }
-  @media (max-width: 768px) {
-    margin-bottom: 0px !important;
+  @media (max-width: 991.99px) {
+    margin-bottom: 0 !important;
   }
 `;
 

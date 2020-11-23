@@ -101,7 +101,7 @@ const Wrapper = styled.li`
       width: 100%;
       height: 100%;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 991.99px) {
       position: absolute;
     left: -1rem;
     top: 1.3rem;

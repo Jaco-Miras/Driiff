@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {useTranslation, useUserChannels} from "../../hooks";
-import {PeopleListItem} from "../../list/people/item";
+import { useTranslation, useUserChannels } from "../../hooks";
+import { PeopleListItem } from "../../list/people/item";
 
 const Wrapper = styled.div`
 overflow: auto;
@@ -25,7 +25,7 @@ const Search = styled(SearchForm)`
   margin-bottom: 1rem;
   min-width: 250px;
   padding-right: 14px;
-  @media all and (max-width: 768px) {
+  @media all and (max-width: 991.99px) {
     width: 100%;
     padding-right: 0;
   }

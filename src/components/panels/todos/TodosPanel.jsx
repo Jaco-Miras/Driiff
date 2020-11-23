@@ -41,28 +41,33 @@ const TodosPanel = (props) => {
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
 
+  const handleFilterFile = (e) => {
+    setFilter(e.target.dataset.filter);
+    document.body.classList.remove("mobile-modal-open");
+  };
+
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
-  }
+  };
 
   const clearSearch = () => {
     setSearch("");
-  }
+  };
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
         <TodosSidebar
-          className="col-md-3" dictionary={dictionary} todoActions={todoActions}
-          setFilter={setFilter} filter={filter} count={count}/>
-        <div className="col-md-9 app-content mb-4">
+          className="col-lg-3" dictionary={dictionary} todoActions={todoActions}
+          setFilter={handleFilterFile} filter={filter} count={count}/>
+        <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay"/>
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch}
                        searchValue={search}/>
           <TodosBody
             complete={false}
             isLoaded={isLoaded}
-            todoItems={getSortedItems({filter: {status: filter, search: search}})} dictionary={dictionary}
+            todoItems={getSortedItems({ filter: { status: filter, search: search } })} dictionary={dictionary}
             todoActions={todoActions} filter={filter}/>
         </div>
       </div>
