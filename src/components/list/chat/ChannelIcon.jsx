@@ -87,7 +87,8 @@ const ChannelIcon = (props) => {
           id={channel.profile.id}
           name={channel.profile.name}
           partialName={channel.profile.partial_name}
-          noDefaultClick={false}
+          type="USER"
+          //noDefaultClick={false}
         />
       )}
       {channel.type === "GROUP" && <Icon icon="users" alt={channel.title} />}
