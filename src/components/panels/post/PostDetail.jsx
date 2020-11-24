@@ -518,7 +518,9 @@ const PostDetail = (props) => {
           postActions={postActions}
           isAuthor={post.author.id === user.id}
           dictionary={dictionary}
-          disableOptions={disableOptions}/>
+          disableOptions={disableOptions}
+          workspaceId={workspace.id}
+          />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
             <MarkAsRead className="d-sm-inline d-none">

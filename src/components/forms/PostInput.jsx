@@ -135,7 +135,7 @@ const PostInput = forwardRef((props, ref) => {
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
-  const [imageFileIds, setImageFileIds] = useState([]);
+  const [inlineImages, setInlineImages] = useState([]);
 
   const [quote] = useCommentQuote(commentId);
 
@@ -176,7 +176,7 @@ const PostInput = forwardRef((props, ref) => {
       post_id: post.id,
       body: text,
       mention_ids: mention_ids,
-      file_ids: [...imageFileIds],
+      file_ids: inlineImages.map((i) => i.id),
       post_file_ids: [],
       reference_id: reference_id,
       personalized_for_id: null,
@@ -262,7 +262,7 @@ const PostInput = forwardRef((props, ref) => {
     setTextOnly("");
     setText("");
     setQuillContents([]);
-    setImageFileIds([]);
+    setInlineImages([]);
     if (reactQuillRef.current) {
       reactQuillRef.current.getEditor().setContents([]);
     }
@@ -486,7 +486,7 @@ const PostInput = forwardRef((props, ref) => {
                           }
                         }).flat();
 
-  const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef: reactQuillRef, members: user.type === "external" ? members : [], disableMention: false, setImageFileIds,  prioMentionIds: [...new Set(prioMentionIds)], post});
+  const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef: reactQuillRef, members: user.type === "external" ? members : [], disableMention: false, setInlineImages,  prioMentionIds: [...new Set(prioMentionIds)], post});
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>

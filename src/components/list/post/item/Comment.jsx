@@ -8,7 +8,8 @@ import { Quote, SubComments } from "./index";
 import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setViewFiles } from "../../../../redux/actions/fileActions";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -184,10 +185,13 @@ const Icon = styled(SvgIconFeather)`
 const Comment = (props) => {
   const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false } = props;
 
+  const dispatch = useDispatch();
+
   const refs = {
     input: useRef(null),
     body: useRef(null),
     main: useRef(null),
+    content: useRef(null)
   };
 
   const history = useHistory();
@@ -286,14 +290,33 @@ const Comment = (props) => {
 
   const { fromNow } = useTimeFormat();
 
-  const handleCommentBodyRef = (e) => {
-    if (e) {
-      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+  const handleInlineImageClick = (e) => {
+    let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc)
+    if (file) {
+      dispatch(
+        setViewFiles({
+          file_id: file.id,
+          files: comment.files,
+        })
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (refs.content.current) {
+      const googleLinks = refs.content.current.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
+      const images = refs.content.current.querySelectorAll("img");
+      images.forEach((img) => {
+        if (!img.classList.contains("has-listener")) {
+          img.addEventListener("click", handleInlineImageClick, false);
+          img.classList.add("has-listener");
+        }
+      })
     }
-  };
+  }, [comment.body, refs.content, comment.files]);
 
   useEffect(() => {
     inputFocus();
@@ -354,7 +377,7 @@ const Comment = (props) => {
               </MoreOptions>
             )}
           </CommentHeader>
-          <CommentBody ref={handleCommentBodyRef} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
+          <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
           {comment.files.length >= 1 && (
             <>
               <hr />

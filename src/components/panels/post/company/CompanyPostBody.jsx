@@ -5,8 +5,9 @@ import { useGoogleApis, useTimeFormat, useWindowSize } from "../../../hooks";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { setViewFiles } from "../../../../redux/actions/fileActions";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -102,8 +103,11 @@ const Icon = styled(SvgIconFeather)`
 const CompanyPostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions } = props;
 
+  const dispatch = useDispatch();
+
   const refs = {
-    container: useRef(null)
+    container: useRef(null),
+    body: useRef(null)
   };
 
   const postRecipients = useSelector((state) => state.global.recipients
@@ -133,14 +137,48 @@ const CompanyPostBody = (props) => {
     postActions.archivePost(post);
   };
 
-  const handlePostBodyRef = (e) => {
-    if (e) {
-      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+  const handleInlineImageClick = (e) => {
+    console.log(post.files, e.srcElement.currentSrc)
+    let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc)
+    if (file) {
+      dispatch(
+        setViewFiles({
+          file_id: file.id,
+          files: post.files,
+        })
+      )
+    }
+  }
+
+  // const handlePostBodyRef = (e) => {
+  //   if (e) {
+  //     const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+  //     googleLinks.forEach((gl) => {
+  //       googleApis.init(gl);
+  //     });
+  //     const images = e.querySelectorAll("img")
+  //     images.forEach((img) => {
+  //       img.addEventListener("click", handleInlineImageClick, false)
+  //     })
+  //     console.log(images, 'post body images')
+  //   }
+  // };
+
+  useEffect(() => {
+    if (refs.body.current) {
+      const googleLinks = refs.body.current.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
+      const images = refs.body.current.querySelectorAll("img");
+      images.forEach((img) => {
+        if (!img.classList.contains("has-listener")) {
+          img.addEventListener("click", handleInlineImageClick, false);
+          img.classList.add("has-listener");
+        }
+      })
     }
-  };
+  }, [post.body, refs.body, post.files]);
 
   const handleReceiverClick = (e) => {
     const { id, type } = e.target.dataset;
@@ -234,7 +272,7 @@ const CompanyPostBody = (props) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <div className="w-100 post-body-content" ref={handlePostBodyRef}
+        <div className="w-100 post-body-content" ref={refs.body}
              dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
       </div>
     </Wrapper>

@@ -7,7 +7,7 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
 import {usePreviousValue} from "./index";
 
-const useQuillModules = ({mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setImageFileIds = null, prioMentionIds = [], post = null}) => {
+const useQuillModules = ({mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null}) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -149,7 +149,7 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
             })
             .then(result => {
               console.log(result);
-              if (setImageFileIds) setImageFileIds([result.data.id])
+              if (setInlineImages) setInlineImages(prevState => [...prevState, result.data])
               resolve(result.data.thumbnail_link);
             })
             .catch(error => {
