@@ -32,7 +32,6 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
-      console.log(state.user, 'user data in global recipients success', action.data);
       let channels = { ...state.channels };
       action.data.result.filter((r) => {
         if (r.id) {

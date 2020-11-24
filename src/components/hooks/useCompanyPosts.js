@@ -36,6 +36,9 @@ const useCompanyPosts = () => {
   useEffect(() => {
     if (!init) {
       init = true;
+      if (params.postId) {
+        actions.fetchPostDetail({post_id: parseInt(params.postId)})
+      }
       fetchMore();
 
       actions.fetchCompanyPosts(

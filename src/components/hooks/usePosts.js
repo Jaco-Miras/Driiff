@@ -18,7 +18,9 @@ const usePosts = () => {
       //actions.getRecentPosts(params.workspaceId);
       if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
         setFetchingPost(true);
-
+        if (params.postId) {
+          actions.fetchPostDetail({post_id: parseInt(params.postId)})
+        }
         let cb = (err, res) => {
           setFetchingPost(false);
           if (err) return;

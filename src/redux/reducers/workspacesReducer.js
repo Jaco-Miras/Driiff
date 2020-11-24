@@ -1918,6 +1918,33 @@ export default (state = INITIAL_STATE, action) => {
         return state
       }
     }
+    case "GET_POST_DETAIL_SUCCESS": {
+      let newWorkspacePosts = { ...state.workspacePosts };
+      let post = {...action.data, clap_user_ids: []};
+      action.data.workspaces.forEach((ws) => {
+        if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
+          newWorkspacePosts[ws.topic_id].posts[post.id] = post;
+        } else {
+          newWorkspacePosts[ws.topic_id] = {
+            filters: {},
+            filter: "all",
+            sort: "recent",
+            tag: null,
+            search: null,
+            searchResults: [],
+            count: null,
+            posts: {
+              [post.id]: post
+            },
+            post_ids: [post.id],
+          }
+        }
+      });
+      return {
+        ...state,
+        workspacePosts: newWorkspacePosts,
+      };
+    }
     default:
       return state;
   }

@@ -12,6 +12,7 @@ import {
   archiveAllPosts,
   archiveReducer,
   deletePost,
+  fetchDetail,
   fetchPosts,
   fetchRecentPosts,
   fetchTagCounter,
@@ -754,6 +755,15 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const fetchPostDetail = useCallback(
+    (payload = {}) => {
+      dispatch(
+        fetchDetail(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     addUserToPost,
     starPost,
@@ -785,6 +795,7 @@ const usePostActions = () => {
     getUnreadNotificationEntries,
     like,
     unlike,
+    fetchPostDetail,
   };
 };
 
