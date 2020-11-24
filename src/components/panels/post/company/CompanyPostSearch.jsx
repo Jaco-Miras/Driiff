@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addCompanyPostSearchResult, getCompanyPosts } from "../../../../redux/actions/postActions";
+import { addCompanyPostSearchResult, searchCompanyPosts } from "../../../../redux/actions/postActions";
 import { SvgIconFeather } from "../../../common";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   .btn-cross {
@@ -26,18 +27,50 @@ const Wrapper = styled.div`
 const CompanyPostSearch = (props) => {
   const { search, placeholder } = props;
   const dispatch = useDispatch();
-  const [searchValue, setSearchValue] = useState(search === null ? "" : search);
+  const [searchValue, setSearchValue] = useState(search);
+
+  const handleSearch = useCallback(debounce((value) => {
+    dispatch(
+      addCompanyPostSearchResult({
+        search: value,
+        search_result: [],
+      })
+    );
+    if (value === "") return;
+    dispatch(
+      searchCompanyPosts(
+        {
+          search: value,
+        },
+        (err, res) => {
+          if (err) return;
+          dispatch(
+            addCompanyPostSearchResult({
+              search: value,
+              search_result: res.data.posts,
+            })
+          );
+        }
+      )
+    );
+  }, 500), []);
 
   const handleInputChange = (e) => {
-    if (e.target.value.trim() === "" && searchValue !== "") handleClearSearchPosts();
     setSearchValue(e.target.value);
+    // dispatch(
+    //   addCompanyPostSearchResult({
+    //     search: e.target.value,
+    //     search_result: [],
+    //   })
+    // );
+    handleSearch(e.target.value.trim())
   };
 
   const handleClearSearchPosts = () => {
     setSearchValue("");
     dispatch(
       addCompanyPostSearchResult({
-        search: null,
+        search: "",
         search_result: [],
       })
     );
@@ -45,33 +78,14 @@ const CompanyPostSearch = (props) => {
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
-      handleSearch();
+      handleSearch(searchValue);
     }
-  };
-
-  const handleSearch = () => {
-    dispatch(
-      getCompanyPosts(
-        {
-          search: searchValue,
-        },
-        (err, res) => {
-          if (err) return;
-          dispatch(
-            addCompanyPostSearchResult({
-              search: searchValue,
-              search_result: res.data.posts,
-            })
-          );
-        }
-      )
-    );
   };
 
   return (
     <Wrapper className="input-group">
       <input type="text" className="form-control" placeholder={placeholder} value={searchValue} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleInputChange} />
-      {searchValue.trim() !== "" && (
+      {search.trim() !== "" && (
         <button onClick={handleClearSearchPosts} className="btn-cross" type="button">
           <SvgIconFeather icon="x" />
         </button>

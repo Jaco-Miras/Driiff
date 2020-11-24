@@ -90,7 +90,7 @@ const usePosts = () => {
   let tag = null;
   let activeSort = "recent";
   let post = null;
-  let search = null;
+  let activeSearch = "";
   let count = {
     is_must_reply: 0,
     is_must_read: 0,
@@ -112,6 +112,7 @@ const usePosts = () => {
 
   if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
     let { filter, sort, tag, posts, search, searchResults, count, filters } = wsPosts[params.workspaceId];
+    activeSearch = search;
     activeSort = sort;
     activeFilter = filter;
     activeFilters = filters;
@@ -238,7 +239,7 @@ const usePosts = () => {
     tag: tag,
     sort: activeSort,
     post: post,
-    search: search,
+    search: activeSearch,
     user,
     recentPosts: rPosts,
     count: count,
