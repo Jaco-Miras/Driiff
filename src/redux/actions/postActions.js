@@ -295,3 +295,7 @@ export function addCommentReact(payload, callback) {
 export function removeCommentReact(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_COMMENT_REACT", payload, callback);
 }
+
+export function searchCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "SEARCH_COMPANY_POSTS_START", "SEARCH_COMPANY_POSTS_SUCCESS", "SEARCH_COMPANY_POSTS_FAIL", callback);
+}
