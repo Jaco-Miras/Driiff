@@ -236,11 +236,17 @@ const Counters = styled.div`
         margin-right: 0.5rem;
       }
       .user-reads-container {
+        .read-users-container {
+          right: -75px;
+        }
         &.read-by {
           width: 100%;        
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .read-users-container {
+            right: -20px;
+          }
         }
       }
     }   
@@ -407,7 +413,7 @@ const CompanyPostDetail = (props) => {
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
-   
+
     postActions.getUnreadNotificationEntries({add_unread_comment: 1})
     // postActions.getUnreadPostsCount();
   }, []);

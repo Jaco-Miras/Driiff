@@ -235,12 +235,19 @@ const Counters = styled.div`
         display: inline-block;
         margin-right: 0.5rem;
       }
-      .user-reads-container {
+      .user-reads-container {        
+        .read-users-container {
+          right: -75px;
+        }
+        
         &.read-by {
           width: 100%;        
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .read-users-container {
+            right: -20px;
+          }
         }
       }
     }   
