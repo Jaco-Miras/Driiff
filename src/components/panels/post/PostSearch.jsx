@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addPostSearchResult } from "../../../redux/actions/workspaceActions";
 import { fetchPosts } from "../../../redux/actions/postActions";
 import { SvgIconFeather } from "../../common";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   .btn-cross {
@@ -34,8 +35,8 @@ const PostSearch = (props) => {
   let topic_id = parseInt(params.workspaceId);
 
   const handleInputChange = (e) => {
-    if (e.target.value.trim() === "" && searchValue !== "") handleClearSearchPosts();
     setSearchValue(e.target.value);
+    handleSearch(e.target.value.trim());
   };
 
   const handleClearSearchPosts = () => {
@@ -43,7 +44,7 @@ const PostSearch = (props) => {
     dispatch(
       addPostSearchResult({
         topic_id: topic_id,
-        search: null,
+        search: "",
         search_result: [],
       })
     );
@@ -55,26 +56,34 @@ const PostSearch = (props) => {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(debounce((value) => {
+    dispatch(
+      addPostSearchResult({
+        topic_id: topic_id,
+        search: value,
+        search_result: [],
+      })
+    );
+    if (value === "") return;
     dispatch(
       fetchPosts(
         {
           topic_id: topic_id,
-          search: searchValue,
+          search: value,
         },
         (err, res) => {
           if (err) return;
           dispatch(
             addPostSearchResult({
               topic_id: topic_id,
-              search: searchValue,
+              search: value,
               search_result: res.data.posts,
             })
           );
         }
       )
     );
-  };
+  }, 500), []);
 
   return (
     <Wrapper className="input-group">

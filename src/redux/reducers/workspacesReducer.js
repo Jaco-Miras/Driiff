@@ -467,7 +467,7 @@ export default (state = INITIAL_STATE, action) => {
               filter: "all",
               sort: "recent",
               tag: null,
-              search: null,
+              search: "",
               searchResults: [],
               count: null,
               posts: {

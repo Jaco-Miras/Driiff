@@ -169,7 +169,7 @@ const CompanyPostsPanel = (props) => {
   
 
   const handleLoadMore = () => {
-    if (!fetching) {
+    if (!fetching && search === "") {
       setLoading(true);
       fetching = true;
 
@@ -192,7 +192,7 @@ const CompanyPostsPanel = (props) => {
   useEffect(() => {
     document.body.addEventListener("scroll", bodyScroll, false);
     return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [skip, archived, filter])
+  }, [skip, archived, filter, search])
 
   useEffect(() => {
     actions.getUnreadPostCommentsCount();
@@ -234,7 +234,7 @@ const CompanyPostsPanel = (props) => {
               activeSort={sort} search={search}
               dictionary={dictionary} className={"mb-3"}/>
           }
-          {posts.length === 0 && search === null ? (
+          {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252}/>
@@ -268,7 +268,7 @@ const CompanyPostsPanel = (props) => {
                   }
                   <div className="card card-body app-content-body mb-4">
                     <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
-                      {search !== null && (
+                      {search !== "" && (
                         <>
                           {posts.length === 0 ? (
                             <h6

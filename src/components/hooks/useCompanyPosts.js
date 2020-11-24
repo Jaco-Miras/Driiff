@@ -101,13 +101,13 @@ const useCompanyPosts = () => {
       return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
     }).length;
   }
-  if (searchResults.length > 0 && search) {
+  if (searchResults.length > 0 && search !== "") {
     filteredPosts = filteredPosts.filter((p) => {
       return searchResults.some((s) => {
         return p.id === s.id;
       });
     });
-  } else if (searchResults.length === 0 && search) {
+  } else if (searchResults.length === 0 && search !== "") {
     filteredPosts = [];
   }
 

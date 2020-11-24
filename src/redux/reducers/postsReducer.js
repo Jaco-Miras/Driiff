@@ -14,7 +14,7 @@ const INITIAL_STATE = {
     sort: "recent",
     tag: null,
     count: {},
-    search: null,
+    search: "",
     searchResults: [],
     unreadPosts: 0
   },
@@ -102,6 +102,33 @@ export default (state = INITIAL_STATE, action) => {
             total_take: action.data.total_take,
             has_more: action.data.total_take === state.companyPosts.limit,
           }),
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj
+                };
+              }
+
+              return res;
+            }, {})
+          }
+        }
+      };
+    }
+    case "SEARCH_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
             ...action.data.posts.reduce((res, obj) => {
