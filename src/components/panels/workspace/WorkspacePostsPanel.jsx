@@ -85,9 +85,11 @@ const WorkspacePostsPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, filters } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, count, counters, filters } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
+
+  console.log(search)
 
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create");
@@ -175,7 +177,7 @@ const WorkspacePostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching) {
+    if (!fetching && search === "") {
       fetching = true;
       setLoading(true);
       console.log(filters, filter)
@@ -238,7 +240,7 @@ const WorkspacePostsPanel = (props) => {
   useEffect(() => {
     document.body.addEventListener("scroll", bodyScroll, false);
     return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [filters, workspace, filter])
+  }, [filters, workspace, filter, search])
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
@@ -255,7 +257,7 @@ const WorkspacePostsPanel = (props) => {
           <div className="app-content-overlay"/>
           {!post &&
           <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"}/>}
-          {posts.length === 0 && search === null ? (
+          {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252}/>
@@ -293,7 +295,7 @@ const WorkspacePostsPanel = (props) => {
                   }
                   <div className="card card-body app-content-body mb-4">
                     <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
-                      {search !== null && (
+                      {search !== "" && (
                         <>
                           {posts.length === 0 ? (
                             <h6
