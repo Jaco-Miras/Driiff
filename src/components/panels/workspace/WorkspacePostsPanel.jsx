@@ -89,8 +89,6 @@ const WorkspacePostsPanel = (props) => {
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
 
-  console.log(search)
-
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create");
   };

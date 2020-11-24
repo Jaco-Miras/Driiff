@@ -311,7 +311,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
-  const [imageFileIds, setImageFileIds] = useState([]);
+  const [inlineImages, setInlineImages] = useState([]);
 
   const [form, setForm] = useState({
     must_read: false,
@@ -574,7 +574,7 @@ const CreateEditWorkspacePostModal = (props) => {
       }
     }
   };
-
+  console.log(inlineImages, 'inline images')
   const handleConfirm = () => {
     if (loading)
       return;
@@ -595,7 +595,7 @@ const CreateEditWorkspacePostModal = (props) => {
       show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
       end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
       tag_ids: [],
-      file_ids: [...imageFileIds],
+      file_ids: inlineImages.map((i) => i.id),
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`
       }
@@ -1009,7 +1009,7 @@ const CreateEditWorkspacePostModal = (props) => {
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
-          setImageFileIds={setImageFileIds}
+          setInlineImages={setInlineImages}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
