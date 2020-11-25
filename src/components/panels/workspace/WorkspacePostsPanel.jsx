@@ -178,7 +178,6 @@ const WorkspacePostsPanel = (props) => {
     if (!fetching && search === "") {
       fetching = true;
       setLoading(true);
-      console.log(filters, filter)
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : [],
         topic_id: workspace.id,
