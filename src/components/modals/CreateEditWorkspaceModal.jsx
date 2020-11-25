@@ -7,10 +7,10 @@ import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
-import { FileAttachments, SvgIconFeather } from "../common";
+import { Avatar, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
-import { useToaster, useTranslation } from "../hooks";
+import { useFileActions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 
@@ -18,6 +18,29 @@ const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  
+  .icon-wrapper {
+    width: 60px;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+    
+    .btn {
+      background: #fff;
+      position: absolute;
+      right: 5px;
+      bottom: -5px;
+      padding: 3px;
+      
+      &:hover {
+        background: #fff !important;      
+      }
+    } 
+  }
+  .name-wrapper {
+    width: calc(100% - 40px);
+  }
 
   > .form-control:not(:first-child) {
     border-radius: 5px;
@@ -154,10 +177,10 @@ const LockIcon = styled(SvgIconFeather)`
 `;
 
 const CreateEditWorkspaceModal = (props) => {
-  const {type, mode, item = null} = props.data;
+  const { type, mode, item = null } = props.data;
 
-  const {_t} = useTranslation();
-
+  const { uploadFiles } = useFileActions();
+  const { _t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -172,6 +195,8 @@ const CreateEditWorkspaceModal = (props) => {
   const [form, setForm] = useState({
     is_private: false,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
+    icon: null,
+    icon_link: item.channel ? item.channel.icon_link : null,
     name: "",
     selectedUsers: [],
     selectedFolder:
@@ -193,6 +218,7 @@ const CreateEditWorkspaceModal = (props) => {
   });
 
   const [showDropzone, setShowDropzone] = useState(false);
+  const [showIconDropzone, setShowIconDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
@@ -213,6 +239,7 @@ const CreateEditWorkspaceModal = (props) => {
     container: useRef(null),
     workspace_name: useRef(null),
     dropZone: useRef(null),
+    iconDropZone: useRef(null),
   };
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
@@ -272,33 +299,33 @@ const CreateEditWorkspaceModal = (props) => {
       })
     ) {
       setFeedback((prevState) => {
-        return {...prevState, name: dictionary.feedbackWorkspaceNameAlreadyExists};
+        return { ...prevState, name: dictionary.feedbackWorkspaceNameAlreadyExists };
       });
       setValid((prevState) => {
-        return {...prevState, name: true};
+        return { ...prevState, name: true };
       });
       return true;
     }
 
     setFeedback((prevState) => {
-      return {...prevState, name: ""};
+      return { ...prevState, name: "" };
     });
 
     setValid((prevState) => {
-      return {...prevState, name: true};
+      return { ...prevState, name: true };
     });
   }, [form.name, form.has_folder, form.selectedFolder, workspaces, setValid, setFeedback]);
 
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({type: type}));
+    dispatch(clearModal({ type: type }));
   };
 
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
     const checked = !form[name];
     setForm((prevState) => {
-      return {...prevState, [name]: checked};
+      return { ...prevState, [name]: checked };
     });
   };
 
@@ -369,7 +396,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleDeleteFileAttachements = () => {
     let removed_file_ids = [];
-    if (item.primary_files.length) {
+    if (item.primary_files && item.primary_files.length) {
       removed_file_ids = item.primary_files.filter((pf) => {
         return !uploadedFiles.some((f) => f.id === pf.id);
       });
@@ -382,6 +409,21 @@ const CreateEditWorkspaceModal = (props) => {
       };
       dispatch(deleteWorkspaceFiles(payload));
     }
+  };
+
+  const handleUpdateWorkspaceIcon = (payload, file) => {
+    let formData = new FormData();
+    formData.append("files[0]", file);
+    uploadFiles({
+      is_primary: 0,
+      topic_id: payload.topic_id,
+      files: formData,
+    }, (err, res) => {
+      dispatch(updateWorkspace({
+        ...payload,
+        file_id: res.data.files[0].id,
+      }));
+    });
   };
 
   const handleConfirm = () => {
@@ -467,7 +509,13 @@ const CreateEditWorkspaceModal = (props) => {
         toggle();
         const cb = (err, res) => {
           if (err) return;
+
+          if (form.icon) {
+            handleUpdateWorkspaceIcon(payload, form.icon);
+          }
+
           handleDeleteFileAttachements();
+
           if (attachedFiles.length) {
             let formData = new FormData();
             for (const i in attachedFiles) {
@@ -501,7 +549,7 @@ const CreateEditWorkspaceModal = (props) => {
           toggle();
         } else {
           if (removed_members.some((id) => id === user.id)) {
-            dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
+            dispatch(leaveWorkspace({ workspace_id: item.id, channel_id: item.channel.id }));
           }
           dispatch(updateWorkspace(payload, cb));
         }
@@ -527,7 +575,6 @@ const CreateEditWorkspaceModal = (props) => {
         handleSubmit();
       }
     } else {
-      console.log(payload, form);
       const handleShowConfirmation = () => {
         let confirmModal = {
           type: "confirmation",
@@ -613,6 +660,9 @@ const CreateEditWorkspaceModal = (props) => {
               };
 
               dispatch(setActiveTopic(newWorkspace));
+              if (form.icon) {
+                handleUpdateWorkspaceIcon(newWorkspace, form.icon);
+              }
 
               if (form.selectedFolder !== null) {
                 toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterWorkspaceIsCreated }}/>);
@@ -649,9 +699,9 @@ const CreateEditWorkspaceModal = (props) => {
           name: user.name,
           first_name: user.first_name,
           profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-        }
+        };
       }), ...form.selectedUsers]
-    })
+    });
     setMentionedUserIds([]);
   };
 
@@ -666,7 +716,7 @@ const CreateEditWorkspaceModal = (props) => {
       //check for recipients/type
       let ignoreIds = [user.id, ...form.selectedUsers.map((u) => u.id), ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
-        return !ignoreIds.some((iid) => iid === id)
+        return !ignoreIds.some((iid) => iid === id);
       });
       setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
     } else {
@@ -725,6 +775,14 @@ const CreateEditWorkspaceModal = (props) => {
     setShowDropzone(true);
   };
 
+  const handleHideIconDropzone = () => {
+    setShowIconDropzone(false);
+  };
+
+  const handleShowIconDropzone = () => {
+    setShowIconDropzone(true);
+  };
+
   const dropAction = (acceptedFiles) => {
     let selectedFiles = [];
     acceptedFiles.forEach((file) => {
@@ -765,6 +823,38 @@ const CreateEditWorkspaceModal = (props) => {
     setAttachedFiles((prevState) => [...prevState, ...selectedFiles]);
     handleHideDropzone();
   };
+
+  const handleUseWorkspaceIcon = useCallback((file, fileUrl) => {
+    setForm((prevState) => ({
+      ...prevState,
+      icon: file,
+      icon_link: fileUrl,
+    }));
+  }, []);
+
+  const dropIconAction = useCallback(
+    (uploadedFiles) => {
+      if (uploadedFiles.length === 0) {
+        toaster.error("File type not allowed. Please use an image file.");
+      } else if (uploadedFiles.length > 1) {
+        toaster.warning("Multiple files detected. First selected image will be used.");
+      }
+
+      let modal = {
+        type: "file_crop_upload",
+        imageFile: uploadedFiles[0],
+        mode: "profile",
+        handleSubmit: handleUseWorkspaceIcon,
+      };
+
+      dispatch(
+        addToModals(modal, () => {
+          handleHideIconDropzone();
+        })
+      );
+    },
+    [handleUseWorkspaceIcon, handleHideDropzone]
+  );
 
   const handleRemoveFile = (fileId) => {
     setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
@@ -971,6 +1061,10 @@ const CreateEditWorkspaceModal = (props) => {
     return true;
   };
 
+  const handleWorkspaceIconClick = () => {
+    refs.iconDropZone.current.open();
+  };
+
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection
@@ -980,7 +1074,7 @@ const CreateEditWorkspaceModal = (props) => {
           hide={!showDropzone}
           ref={refs.dropZone}
           onDragLeave={handleHideDropzone}
-          onDrop={({acceptedFiles}) => {
+          onDrop={({ acceptedFiles }) => {
             dropAction(acceptedFiles);
           }}
           onCancel={handleHideDropzone}
@@ -989,18 +1083,38 @@ const CreateEditWorkspaceModal = (props) => {
         <WrapperDiv className={"modal-input mt-0"}>
           <div>
             <Label className={"modal-info pb-3 pt-3"}>{dictionary.workspaceInfo}</Label>
-            <Label className={"modal-label"} for="chat">{dictionary.workspaceName}</Label>
-            <Input
-              name="name"
-              defaultValue={mode === "edit" ? item.name : ""}
-              onFocus={handleNameFocus}
-              onChange={handleNameChange}
-              onBlur={handleNameBlur}
-              valid={valid.name}
-              invalid={valid.name !== null && !valid.name}
-              innerRef={refs.workspace_name}
-            />
-            <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+            <div className="d-flex justify-content-start align-items-center">
+              <div className="icon-wrapper" onClick={handleWorkspaceIconClick}>
+                <DropDocument
+                  acceptType="imageOnly"
+                  hide={!showIconDropzone}
+                  ref={refs.iconDropZone}
+                  onDragLeave={handleHideIconDropzone}
+                  onDrop={({ acceptedFiles }) => {
+                    dropIconAction(acceptedFiles);
+                  }}
+                  onCancel={handleHideIconDropzone}
+                />
+                {<Avatar imageLink={form.icon_link} name={form.name} noDefaultClick={true} forceThumbnail={false}/>}
+                <span className="btn btn-outline-light btn-sm">
+                <SvgIconFeather icon="pencil"/>
+              </span>
+              </div>
+              <div className="name-wrapper">
+                <Label className={"modal-label"} for="chat">{dictionary.workspaceName}</Label>
+                <Input
+                  name="name"
+                  defaultValue={mode === "edit" ? item.name : ""}
+                  onFocus={handleNameFocus}
+                  onChange={handleNameChange}
+                  onBlur={handleNameBlur}
+                  valid={valid.name}
+                  invalid={valid.name !== null && !valid.name}
+                  innerRef={refs.workspace_name}
+                />
+                <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+              </div>
+            </div>
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
