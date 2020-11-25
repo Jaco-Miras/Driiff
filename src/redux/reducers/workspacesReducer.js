@@ -202,6 +202,7 @@ export default (state = INITIAL_STATE, action) => {
           if (item.topic.id === action.data.id) {
             return {
               ...item,
+              //...(action.data.channel && action.data.channel.icon_link && {icon_link: action.data.channel.icon_link}),
               members: action.data.members,
               topic: {
                 ...item.topic,
@@ -223,6 +224,7 @@ export default (state = INITIAL_STATE, action) => {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = {
           ...state.workspaces[action.data.id],
+          //...(action.data.channel && action.data.channel.icon_link && {icon_link: action.data.channel.icon_link}),
           name: action.data.name,
           member_ids: action.data.member_ids,
           members: action.data.members,
