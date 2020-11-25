@@ -279,6 +279,7 @@ const PostDetailFooter = (props) => {
     attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
     youAreViewing: _t("FOOTER.YOU_ARE_VIEWING", "You are viewing"),
     joinWorkspace: _t("BUTTON.JOIN_WORKSPACE", "Join workspace"),
+    lockedLabel: _t("CHAT.INFO_PRIVATE_WORKSPACE", "You are in a private workspace.")
   };
 
   const handleUnarchive = () => {
@@ -340,6 +341,8 @@ const PostDetailFooter = (props) => {
     }
   }
 
+  const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1});
+  console.log(privateWsOnly)
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
   return (
@@ -351,6 +354,11 @@ const PostDetailFooter = (props) => {
           <h4>{dictionary.thisIsAnArchivedWorkspace}</h4>
           <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>{dictionary.unarchiveWorkspace}</button>
         </ArchivedDiv>
+      }
+      {
+        isMember && !disableOptions &&
+        privateWsOnly.length === post.recipients.length &&
+        <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
       }
       {
         <Dflex className="d-flex pr-2 pl-2">

@@ -18,7 +18,9 @@ const usePosts = () => {
       //actions.getRecentPosts(params.workspaceId);
       if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
         setFetchingPost(true);
-
+        if (params.postId) {
+          actions.fetchPostDetail({post_id: parseInt(params.postId)})
+        }
         let cb = (err, res) => {
           setFetchingPost(false);
           if (err) return;
@@ -90,7 +92,7 @@ const usePosts = () => {
   let tag = null;
   let activeSort = "recent";
   let post = null;
-  let search = null;
+  let activeSearch = "";
   let count = {
     is_must_reply: 0,
     is_must_read: 0,
@@ -112,6 +114,7 @@ const usePosts = () => {
 
   if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
     let { filter, sort, tag, posts, search, searchResults, count, filters } = wsPosts[params.workspaceId];
+    activeSearch = search;
     activeSort = sort;
     activeFilter = filter;
     activeFilters = filters;
@@ -238,7 +241,7 @@ const usePosts = () => {
     tag: tag,
     sort: activeSort,
     post: post,
-    search: search,
+    search: activeSearch,
     user,
     recentPosts: rPosts,
     count: count,

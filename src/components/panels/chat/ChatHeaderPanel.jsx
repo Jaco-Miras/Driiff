@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -9,6 +9,7 @@ import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
 import { useSettings, useWorkspace } from "../../hooks";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   position: relative;
@@ -128,6 +129,7 @@ const ChatHeaderPanel = (props) => {
 
   const dispatch = useDispatch();
   const routeMatch = useRouteMatch();
+  const history = useHistory();
   const channelActions = useChannelActions();
 
   const [page, setPage] = useState("chat");
@@ -193,6 +195,11 @@ const ChatHeaderPanel = (props) => {
     workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
   };
 
+  const handleRedirectToProfile = (e, profile) => {
+    e.preventDefault();
+    history.push(`/profile/${profile.id}/${replaceChar(profile.name)}`);
+  }
+
   const getChannelTitle = () => {
     switch (chatChannel.type) {
       case "TOPIC": {
@@ -206,6 +213,12 @@ const ChatHeaderPanel = (props) => {
             data-href={channelActions.getChannelLink(chatChannel)}
             href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
         }
+      }
+      case "DIRECT": {
+        return <><a
+            onClick={(e) => handleRedirectToProfile(e, chatChannel.profile)}
+            data-href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}
+            href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}>{chatChannel.title}</a></>;
       }
       default: {
         return chatChannel.title;
@@ -240,6 +253,11 @@ const ChatHeaderPanel = (props) => {
       <h2 className="chat-header-title">
         {
           getChannelTitle()
+        }
+        {
+          channel.type === "TOPIC" && !channel.is_archived &&
+          workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 &&
+          <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
         }
       </h2>
       <div className="chat-header-right">
