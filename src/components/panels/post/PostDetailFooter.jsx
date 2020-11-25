@@ -356,6 +356,11 @@ const PostDetailFooter = (props) => {
         </ArchivedDiv>
       }
       {
+        isMember && !disableOptions &&
+        privateWsOnly.length === post.recipients.length &&
+        <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
+      }
+      {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId}/>
         </Dflex>
@@ -369,10 +374,6 @@ const PostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                {
-                  privateWsOnly.length === post.recipients.length &&
-                  <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
-                }
                 <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
                   <PostInput
                     handleClearSent={handleClearSent}
