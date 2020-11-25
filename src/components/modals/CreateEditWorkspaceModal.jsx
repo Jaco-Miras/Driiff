@@ -853,7 +853,7 @@ const CreateEditWorkspaceModal = (props) => {
         })
       );
     },
-    [handleUseWorkspaceIcon, handleHideDropzone]
+    [handleUseWorkspaceIcon, handleHideIconDropzone]
   );
 
   const handleRemoveFile = (fileId) => {
