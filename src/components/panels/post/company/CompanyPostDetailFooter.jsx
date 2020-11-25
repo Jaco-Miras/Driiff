@@ -252,6 +252,7 @@ const CompanyPostDetailFooter = (props) => {
   const dictionary = {
     noReplyAllowed:  _t("FOOTER.NO_REPLY_ALLOWED", "No reply allowed"),
     attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
+    lockedLabel: _t("CHAT.INFO_PRIVATE_WORKSPACE", "You are in a private workspace.")
   };
 
   const handleQuillImage = () => {
@@ -261,8 +262,14 @@ const CompanyPostDetailFooter = (props) => {
     }
   }
 
+  const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1})
+
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
+      {
+        privateWsOnly.length === post.recipients.length &&
+        <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
+      }
       {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId}/>

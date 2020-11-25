@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useGoogleApis, useTimeFormat, useWindowSize } from "../../hooks";
+import { useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../hooks";
 import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
@@ -111,6 +111,8 @@ const PostBody = (props) => {
     body: useRef(null)
   };
 
+  const redirect = useRedirect();
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const postRecipients = useSelector((state) => state.global.recipients
     .filter((r) => post.recipient_ids.includes(r.id))
     .sort((a, b) => {
@@ -190,7 +192,8 @@ const PostBody = (props) => {
         break;
       }
       case "TOPIC": {
-        history.push(`/workspace/chat/${id}/${e.target.innerHTML.toLowerCase().replace(/ /g, "-")}`);
+        let workspace = workspaces[id];
+        if (workspace) redirect.toWorkspace(workspace);
         break;
       }
       case "USER": {

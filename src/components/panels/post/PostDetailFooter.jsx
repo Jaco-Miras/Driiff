@@ -279,6 +279,7 @@ const PostDetailFooter = (props) => {
     attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
     youAreViewing: _t("FOOTER.YOU_ARE_VIEWING", "You are viewing"),
     joinWorkspace: _t("BUTTON.JOIN_WORKSPACE", "Join workspace"),
+    lockedLabel: _t("CHAT.INFO_PRIVATE_WORKSPACE", "You are in a private workspace.")
   };
 
   const handleUnarchive = () => {
@@ -340,6 +341,8 @@ const PostDetailFooter = (props) => {
     }
   }
 
+  const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1});
+  console.log(privateWsOnly)
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
   return (
@@ -366,6 +369,10 @@ const PostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
+                {
+                  privateWsOnly.length === post.recipients.length &&
+                  <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
+                }
                 <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
                   <PostInput
                     handleClearSent={handleClearSent}
