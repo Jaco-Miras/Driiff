@@ -1,11 +1,11 @@
 import "cropperjs/dist/cropper.css";
-import React, {useState} from "react";
+import React, { useRef, useState } from "react";
 import Cropper from "react-cropper";
-import {useDispatch} from "react-redux";
-import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
+import { useDispatch } from "react-redux";
+import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import {clearModal} from "../../redux/actions/globalActions";
-import {ModalHeaderSection} from "./index";
+import { clearModal } from "../../redux/actions/globalActions";
+import { ModalHeaderSection } from "./index";
 
 const Wrapper = styled(Modal)`
   &.modal-dialog {
@@ -27,7 +27,7 @@ const FileCropUploadModal = (props) => {
   const [modal, setModal] = useState(true);
 
   const refs = {
-    cropper: useState(null),
+    cropper: useRef(null),
   };
 
   const toggle = () => {
