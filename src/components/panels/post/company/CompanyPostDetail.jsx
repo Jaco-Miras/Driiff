@@ -418,6 +418,8 @@ const CompanyPostDetail = (props) => {
     // postActions.getUnreadPostsCount();
   }, []);
 
+  const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1})
+
   return (
     <>
       {
@@ -437,6 +439,12 @@ const CompanyPostDetail = (props) => {
             </li>
           </ul>
         </div>
+        {
+          privateWsOnly.length === post.recipients.length &&
+          <div>
+            <span>{dictionary.messageInSecureWs}</span>
+          </div>
+        }
         <div>
           {post.author.id === user.id && (
             <ul>
