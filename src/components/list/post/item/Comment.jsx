@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
-import { PostDetailFooter } from "../../../panels/post/index";
+import { PostDetailFooter, PostVideos } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
 import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
@@ -377,6 +377,9 @@ const Comment = (props) => {
               </MoreOptions>
             )}
           </CommentHeader>
+          {
+            comment.files.length > 0 && <PostVideos files={comment.files}/>
+          }
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
           {comment.files.length >= 1 && (
             <>

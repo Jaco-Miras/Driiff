@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import { useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../hooks";
-import { PostBadge } from "./index";
+import { PostBadge, PostVideos } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
@@ -276,6 +276,9 @@ const PostBody = (props) => {
           </div>
         </div>
       </div>
+      {
+        post.files.length > 0 && <PostVideos files={post.files}/>
+      }
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
       </div>

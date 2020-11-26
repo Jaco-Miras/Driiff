@@ -8,6 +8,7 @@ import Tooltip from "react-tooltip-lite";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
+import { PostVideos } from "../index";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -152,20 +153,6 @@ const CompanyPostBody = (props) => {
     }
   }
 
-  // const handlePostBodyRef = (e) => {
-  //   if (e) {
-  //     const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
-  //     googleLinks.forEach((gl) => {
-  //       googleApis.init(gl);
-  //     });
-  //     const images = e.querySelectorAll("img")
-  //     images.forEach((img) => {
-  //       img.addEventListener("click", handleInlineImageClick, false)
-  //     })
-  //     console.log(images, 'post body images')
-  //   }
-  // };
-
   useEffect(() => {
     if (refs.body.current) {
       const googleLinks = refs.body.current.querySelectorAll(`[data-google-link-retrieve="0"]`);
@@ -274,6 +261,9 @@ const CompanyPostBody = (props) => {
           </div>
         </div>
       </div>
+      {
+        post.files.length > 0 && <PostVideos files={post.files}/>
+      }
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body}
              dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
