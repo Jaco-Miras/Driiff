@@ -7,7 +7,7 @@ import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
 import QuillEditor from "./QuillEditor";
-import { setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
+import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
   ${"" /* border: 1px solid #dee2e6;
@@ -124,6 +124,7 @@ const PostInput = forwardRef((props, ref) => {
   //const slugs = useSelector(state => state.global.slugs);
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const recipients = useSelector(state => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
   const [text, setText] = useState("");
@@ -138,6 +139,17 @@ const PostInput = forwardRef((props, ref) => {
   const [inlineImages, setInlineImages] = useState([]);
 
   const [quote] = useCommentQuote(commentId);
+
+  const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
+
+  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+                        .map((r) => {
+                          if (r.type === "USER") {
+                            return [r.type_id]
+                          } else {
+                            return r.participant_ids
+                          }
+                        }).flat();
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
@@ -308,25 +320,24 @@ const PostInput = forwardRef((props, ref) => {
   };
 
   const handleMentionUser = (mention_ids) => {
-    // mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
-    // if (mention_ids.length) {
-    //     //check for recipients/type
-    //     if (selectedChannel.type === "PERSONAL_BOT") return;
-    //     let ignoreIds = [user.id, ...selectedChannel.members.map(m => m.id), ...ignoredMentionedUserIds];
-    //     let userIds = mention_ids.filter(id => {
-    //         let userFound = false;
-    //         ignoreIds.forEach(pid => {
-    //             if (pid === parseInt(id)) {
-    //                 userFound = true;
-    //             }
-    //         });
-    //         return !userFound;
-    //     });
-    //     setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
-    // } else {
-    //     setIgnoredMentionedUserIds([]);
-    //     setMentionedUserIds([]);
-    // }
+    mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
+    if (mention_ids.length) {
+        //check for recipients/type
+        let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map(m => m.id)];
+        let userIds = mention_ids.filter(id => {
+            let userFound = false;
+            ignoreIds.forEach(pid => {
+                if (pid === parseInt(id)) {
+                    userFound = true;
+                }
+            });
+            return !userFound;
+        });
+        setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
+    } else {
+        setIgnoredMentionedUserIds([]);
+        setMentionedUserIds([]);
+    }
   };
 
   const handleSetEditMessageStates = (reply) => {
@@ -446,24 +457,51 @@ const PostInput = forwardRef((props, ref) => {
   //     }
   // };
 
-  const handleAddMentionedUsers = (users) => {
-    let memberPayload = {
-      channel_id: selectedChannel.id,
-      recipient_ids: users.map((u) => u.type_id),
-    };
-    dispatch(
-      postChannelMembers(memberPayload, (err, res) => {
-        if (err) return;
+  // const handleAddMentionedUsers = (users) => {
+  //   let memberPayload = {
+  //     channel_id: selectedChannel.id,
+  //     recipient_ids: users.map((u) => u.type_id),
+  //   };
+  //   dispatch(
+  //     postChannelMembers(memberPayload, (err, res) => {
+  //       if (err) return;
 
-        if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
+  //       if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
+  //     })
+  //   );
+
+  //   setMentionedUserIds([]);
+  // };
+  const handleAddMentionedUsers = (users) => {
+    const userIds = users.map((u) => u.id);
+    const userRecipients = recipients.filter((r) => r.type === "USER");
+
+    const newRecipients = userRecipients.filter((r) => {
+      return userIds.some((id) => id === r.type_id)
+    })
+    let payload = {
+      post_id: post.id,
+      recipient_ids: newRecipients.map((u) => u.id),
+      recipients: newRecipients
+    };
+
+    console.log(users, payload)
+    dispatch(
+      addPostRecipients(payload, (err,res) => {
+        if (err) return;
+        dispatch(
+          addUserToPostRecipients(payload)
+        )
       })
     );
+
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
 
     setMentionedUserIds([]);
   };
 
   const handleIgnoreMentionedUsers = (users) => {
-    setIgnoredMentionedUserIds(users.map((u) => u.type_id));
+    setIgnoredMentionedUserIds(users.map((u) => u.id));
     setMentionedUserIds([]);
   };
 
@@ -477,20 +515,11 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
-                        .map((r) => {
-                          if (r.type === "USER") {
-                            return [r.type_id]
-                          } else {
-                            return r.participant_ids
-                          }
-                        }).flat();
-
   const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef: reactQuillRef, members: user.type === "external" ? members : [], disableMention: false, setInlineImages,  prioMentionIds: [...new Set(prioMentionIds)], post});
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"}/>}
+      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>

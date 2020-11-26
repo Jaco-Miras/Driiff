@@ -342,7 +342,6 @@ const PostDetailFooter = (props) => {
   }
 
   const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1});
-  console.log(privateWsOnly)
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
   return (

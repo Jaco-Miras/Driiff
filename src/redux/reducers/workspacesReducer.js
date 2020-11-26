@@ -202,6 +202,7 @@ export default (state = INITIAL_STATE, action) => {
           if (item.topic.id === action.data.id) {
             return {
               ...item,
+              ...action.data,
               members: action.data.members,
               topic: {
                 ...item.topic,
@@ -209,9 +210,9 @@ export default (state = INITIAL_STATE, action) => {
                 description: action.data.description,
                 is_locked: action.data.private === 1
               },
-              workspace: action.data.workspace_id === 0 ? 
-                null 
-                : {id: action.data.workspace_id, name: action.data.current_workspace_folder_name}
+              workspace: action.data.workspace_id === 0 ?
+                null
+                : { id: action.data.workspace_id, name: action.data.current_workspace_folder_name }
             }
           } else {
             return item;
@@ -223,15 +224,12 @@ export default (state = INITIAL_STATE, action) => {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = {
           ...state.workspaces[action.data.id],
-          name: action.data.name,
-          member_ids: action.data.member_ids,
-          members: action.data.members,
-          description: action.data.description,
-          updated_at: action.data.updated_at,
+          ...action.data,
           is_lock: action.data.private,
           folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
           folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name
         };
+        console.log(workspace);
         updatedWorkspaces[workspace.id] = workspace;
         if (state.activeTopic && state.activeTopic.id === workspace.id) {
           updatedTopic = workspace;
@@ -1177,15 +1175,29 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_PRIMARY_FILES": {
-      let newWorkspaces = { ...state.workspaces };
-      if (action.data.folder_id) {
-        newWorkspaces[action.data.folder_id].topics[action.data.id].primary_files = action.data.files;
-      } else {
-        newWorkspaces[action.data.id].primary_files = action.data.files;
-      }
       return {
         ...state,
-        workspaces: newWorkspaces,
+        workspaces: {
+          ...state.workspaces,
+          ...(action.data.folder_id && state.workspaces[action.data.folder_id] && state.workspaces[action.data.folder_id].topics[action.data.id] && {
+            [action.data.folder_id]: {
+              ...state.workspaces[action.data.folder_id],
+              topics: {
+                ...state.workspaces[action.data.folder_id].topics,
+                [action.data.id]: {
+                  ...state.workspaces[action.data.folder_id].topics[action.data.id],
+                  primary_files: action.data.files
+                }
+              }
+            }
+          }),
+          ...(state.workspaces[action.data.id] && {
+            [action.data.id]: {
+              ...state.workspaces[action.data.id],
+              primary_files: action.data.files
+            }
+          })
+        },
         activeTopic:
           state.activeTopic.id === action.data.id
             ? {
