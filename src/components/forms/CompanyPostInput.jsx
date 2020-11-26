@@ -124,6 +124,17 @@ const CompanyPostInput = forwardRef((props,ref) => {
 
   const [quote] = useCommentQuote(commentId);
 
+  const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
+
+  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+                        .map((r) => {
+                          if (r.type === "USER") {
+                            return [r.type_id]
+                          } else {
+                            return r.participant_ids
+                          }
+                        }).flat();
+
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
@@ -296,7 +307,7 @@ const CompanyPostInput = forwardRef((props,ref) => {
     mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
     if (mention_ids.length) {
         //check for recipients/type
-        let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...members.map(m => m.id)];
+        let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map(m => m.id)];
         let userIds = mention_ids.filter(id => {
             let userFound = false;
             ignoreIds.forEach(pid => {
@@ -459,7 +470,7 @@ const CompanyPostInput = forwardRef((props,ref) => {
   };
 
   const handleIgnoreMentionedUsers = (users) => {
-    setIgnoredMentionedUserIds(users.map((u) => u.type_id));
+    setIgnoredMentionedUserIds(users.map((u) => u.id));
     setMentionedUserIds([]);
   };
 
@@ -472,16 +483,6 @@ const CompanyPostInput = forwardRef((props,ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-  const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
-
-  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
-                        .map((r) => {
-                          if (r.type === "USER") {
-                            return [r.type_id]
-                          } else {
-                            return r.participant_ids
-                          }
-                        }).flat();
                         
   const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef:reactQuillRef, members: users, disableMention: false, setInlineImages, prioMentionIds: [...new Set(prioMentionIds)], post});
 
