@@ -423,16 +423,7 @@ const PostDetail = (props) => {
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
   }, []);
 
-  // useEffect(() => {
-  //   setReact({
-  //     user_clap_count: post.user_clap_count,
-  //     clap_count: post.clap_count,
-  //   });
-  // }, [post]);
-
-  // useEffect(() => {
-  //   setUsersReacted(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
-  // }, [post.clap_user_ids, recipients]);
+  const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1})
 
   return (
     <>
@@ -448,11 +439,21 @@ const PostDetail = (props) => {
             </li>
             <li>
               <h5 ref={refs.title} className="post-title mb-0">
-                <span>{post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off"/>}{post.title}</span>
+                <span>
+                  {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off"/>}
+                  {post.title}
+                  {privateWsOnly.length === post.recipients.length && <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={14} height={14} />} 
+                </span>
               </h5>
             </li>
           </ul>
         </div>
+        {
+          privateWsOnly.length === post.recipients.length &&
+          <div>
+            <span>{dictionary.messageInSecureWs}</span>
+          </div>
+        }
         <div>
           {post.author.id === user.id && !disableOptions && (
             <ul>

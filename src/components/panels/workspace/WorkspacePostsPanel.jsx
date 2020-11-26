@@ -164,6 +164,7 @@ const WorkspacePostsPanel = (props) => {
     noComment: _t("POST.NO_COMMENT", "no comment"),
     oneComment: _t("POST.ONE_COMMENT", "1 comment"),
     comments: _t("POST.NUMBER_COMMENTS", "::comment_count:: comments"),
+    messageInSecureWs: _t("POST.MESSAGE_IN_SECURE_WORKSPACE", "message in a secure workspace"),
   };
 
   const handleMarkAllAsRead = () => {
