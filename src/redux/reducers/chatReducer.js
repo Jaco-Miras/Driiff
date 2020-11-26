@@ -1028,63 +1028,66 @@ export default function (state = INITIAL_STATE, action) {
       }
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      if (Object.keys(state.channels).length && action.data.type === "WORKSPACE") {
-        let updatedChannels = { ...state.channels };
-        if (updatedChannels.hasOwnProperty(action.data.channel.id)) {
-          let channel = updatedChannels[action.data.channel.id];
-          if (action.data.system_message) {
-            let message = {
-              ...action.data.system_message,
-              created_at: action.data.updated_at,
-              editable: false,
-              is_read: true,
-              is_deleted: false,
-              files: [],
-              reactions: [],
-              unfurls: [],
-            }
-            updatedChannels[action.data.channel.id].replies = [...updatedChannels[action.data.channel.id].replies, message]
-          }
-          // if (action.data.new_member_ids.length) {
-          //   let newMembers = action.data.members
-          //     .filter((m) => {
-          //       const isNewMember = action.data.new_member_ids.some((id) => id === m.id);
-          //       return isNewMember;
-          //     })
-          //     .map((m) => {
-          //       return {
-          //         ...m,
-          //         bot_profile_image_link: null,
-          //         last_visited_at: null,
-          //       };
-          //     });
-          //   channel.members = [...channel.members, ...newMembers];
-          // }
-          channel.members = action.data.members.map((m) => {
-            return {
-              ...m,
-              bot_profile_image_link: null,
-              last_visited_at: null,
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...(action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && {
+            [action.data.channel.id]: {
+              ...state.channels[action.data.channel.id],
+              ...(action.data.system_message && {
+                replies: {
+                  ...state.channels[action.data.channel.id].replies,
+                  ...action.data.system_message,
+                  created_at: action.data.updated_at,
+                  editable: false,
+                  is_read: true,
+                  is_deleted: false,
+                  files: [],
+                  reactions: [],
+                  unfurls: [],
+                }
+              }),
+              icon_link: action.data.channel.icon_link,
+              title: action.data.name,
+              members: action.data.members.map((m) => {
+                return {
+                  ...m,
+                  bot_profile_image_link: null,
+                  last_visited_at: null,
+                };
+              })
             }
           })
-          channel.title = action.data.name;
-          // if (action.data.remove_member_ids.length) {
-          //   channel.members = channel.members.filter((m) => {
-          //     const isMember = action.data.remove_member_ids.some((id) => id === m.id);
-          //     return !isMember;
-          //   });
-          // }
-          return {
-            ...state,
-            channels: updatedChannels,
-            selectedChannel: state.selectedChannel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
-          };
-        } else {
-          return state;
-        }
-      } else {
-        return state;
-      }
+        },
+        ...(state.selectedChannel && state.selectedChannel.id === action.data.channel.id && {
+          selectedChannel: {
+            ...state.selectedChannel,
+            ...(action.data.system_message && {
+              replies: {
+                ...state.channels[action.data.channel.id].replies,
+                ...action.data.system_message,
+                created_at: action.data.updated_at,
+                editable: false,
+                is_read: true,
+                is_deleted: false,
+                files: [],
+                reactions: [],
+                unfurls: [],
+              }
+            }),
+            icon_link: action.data.channel.icon_link,
+            title: action.data.name,
+            members: action.data.members.map((m) => {
+              return {
+                ...m,
+                bot_profile_image_link: null,
+                last_visited_at: null,
+              };
+            })
+          }
+        })
+      };
     }
     case "REMOVE_UNFURL": {
       let channels = { ...state.channels };

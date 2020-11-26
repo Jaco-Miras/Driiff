@@ -91,7 +91,15 @@ const ChannelIcon = (props) => {
           //noDefaultClick={false}
         />
       )}
-      {channel.type === "GROUP" && <Icon icon="users" alt={channel.title}/>}
+      {channel.type === "GROUP" && (channel.icon_link ?
+        <StyledAvatar
+          forceThumbnail={false}
+          type={channel.type}
+          imageLink={channel.icon_link}
+          id={`ws_${channel.id}`}
+          name={channel.title}
+          noDefaultClick={false}
+        /> : <Icon icon="users" alt={channel.title}/>)}
       {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
       {channel.type === "POST" && <Icon icon="users" alt={channel.title}/>}
       {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title}/>}

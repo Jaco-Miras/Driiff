@@ -95,7 +95,7 @@ const useChannelActions = () => {
         }
         if (res) {
           toaster.success(<span
-            dangerouslySetInnerHTML={{__html: dictionary.createChannel.replace("::channel_title::", `<b>${payload.title}</b>`)}}/>)
+            dangerouslySetInnerHTML={{ __html: dictionary.createChannel.replace("::channel_title::", `<b>${payload.channel_name}</b>`) }}/>)
         }
         callback(err, res)
       }));
@@ -613,7 +613,7 @@ const useChannelActions = () => {
         }
         if (res) {
           toaster.success(<span
-            dangerouslySetInnerHTML={{__html: dictionary.updateChannel.replace("::channel_title::", `<b>${payload.title}</b>`)}}/>)
+            dangerouslySetInnerHTML={{ __html: dictionary.updateChannel.replace("::channel_title::", `<b>${payload.channel_name}</b>`) }}/>)
         }
 
         callback(err, res);
