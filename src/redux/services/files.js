@@ -1,8 +1,8 @@
-import {objToUrlParams} from "../../helpers/commonFunctions";
-import {apiCall} from "./index";
+import { objToUrlParams } from "../../helpers/commonFunctions";
+import { apiCall } from "./index";
 
 export function getFiles(payload) {
-  const {sort} = payload;
+  const { sort } = payload;
   let url = "/v1/files";
   if (payload.sort) {
     url += `?sort=${sort}`;
@@ -439,7 +439,8 @@ export function postCompanyUploadFiles(payload) {
   return apiCall({
     method: "POST",
     url: `/v2/company/upload-files`,
-    data: payload
+    data: payload,
+    hasFile: true
   });
 }
 

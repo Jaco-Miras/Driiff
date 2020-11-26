@@ -1,20 +1,51 @@
 import lodash from "lodash";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
 import { addToChannels, setSelectedChannel } from "../../redux/actions/chatActions";
-import { clearModal } from "../../redux/actions/globalActions";
+import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { FormInput, PeopleSelect } from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import { useChannelActions, useQuillModules, useTimeFormat, useTranslation } from "../hooks";
+import {
+  useChannelActions,
+  useFileActions,
+  useQuillModules,
+  useTimeFormat,
+  useToaster,
+  useTranslation
+} from "../hooks";
 import { ModalHeaderSection } from "./index";
+import { DropDocument } from "../dropzone/DropDocument";
+import { Avatar, SvgIconFeather } from "../common";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin: 20px 0;
+  .icon-wrapper {
+    width: 60px;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+    
+    .btn {
+      background: #fff;
+      position: absolute;
+      right: 5px;
+      bottom: -5px;
+      padding: 3px;
+      
+      &:hover {
+        background: #fff !important;      
+      }
+    } 
+  }
+  .name-wrapper {
+    width: calc(100% - 40px);
+  }
   .form-group {
     margin-bottom: 0;
   }
@@ -97,8 +128,9 @@ const CreateEditChatModal = (props) => {
   const reactQuillRef = useRef();
   const dispatch = useDispatch();
   const history = useHistory();
-  const {_t} = useTranslation();
-  const {searchExisting, create: createChannel, update: updateChannel} = useChannelActions();
+  const { _t } = useTranslation();
+  const toaster = useToaster();
+  const { searchExisting, create: createChannel, update: updateChannel } = useChannelActions();
   const {localizeDate} = useTimeFormat();
 
   const users = useSelector((state) => state.users.mentions);
@@ -113,6 +145,7 @@ const CreateEditChatModal = (props) => {
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [noChanges, setNoChanges] = useState(false);
+  const [showIconDropzone, setShowIconDropzone] = useState(false);
 
   const toggle = () => {
     setModal(!modal);
@@ -144,6 +177,11 @@ const CreateEditChatModal = (props) => {
   const defaultUser = options.filter(o => o.value === user.id);
 
   const [form, setForm] = useState({
+    icon: {
+      file: null,
+      file_id: null,
+      value: channel.icon_link,
+    },
     title: {
       value: mode === "edit" ? channel.title : ""
     },
@@ -187,6 +225,11 @@ const CreateEditChatModal = (props) => {
   };
 
   const handleConfirm = () => {
+    if (form.icon.file && !form.icon.file_id) {
+      handleUpdateGroupIcon(form.icon.file);
+      return;
+    }
+
     if (loading)
       return;
 
@@ -207,6 +250,7 @@ const CreateEditChatModal = (props) => {
 
       let payload = {
         id: channel.id,
+        ...(form.icon.file_id && { file_id: form.icon.file_id }),
         channel_id: channel.id,
         channel_name: form.title.value,
         remove_member_ids: removed_members,
@@ -329,6 +373,7 @@ const CreateEditChatModal = (props) => {
           ...channel,
           id: res.data.channel.id,
           old_id: old_channel.id,
+          ...(form.icon.file_id && { file_id: form.icon.file_id }),
           code: res.data.code,
           members: res.data.channel.members ? res.data.channel.members : channel.members,
           profile: res.data.channel.profile,
@@ -353,7 +398,6 @@ const CreateEditChatModal = (props) => {
           selected: true,
           search: res.data.search,
         };
-
         dispatch(addToChannels(payload));
         dispatch(setSelectedChannel(payload));
         history.push(`/chat/${res.data.code}`);
@@ -496,6 +540,81 @@ const CreateEditChatModal = (props) => {
     }
   };
 
+  const handleHideIconDropzone = () => {
+    setShowIconDropzone(false);
+  };
+
+  const handleUseGroupIcon = useCallback((file, fileUrl) => {
+    setForm((prevState) => ({
+      ...prevState,
+      icon: {
+        ...prevState.icon,
+        file: file,
+        value: fileUrl,
+      },
+    }));
+  }, []);
+
+  const dropIconAction = useCallback(
+    (uploadedFiles) => {
+      if (uploadedFiles.length === 0) {
+        toaster.error("File type not allowed. Please use an image file.");
+      } else if (uploadedFiles.length > 1) {
+        toaster.warning("Multiple files detected. First selected image will be used.");
+      }
+
+      let modal = {
+        type: "file_crop_upload",
+        imageFile: uploadedFiles[0],
+        mode: "profile",
+        handleSubmit: handleUseGroupIcon,
+      };
+
+      dispatch(
+        addToModals(modal, () => {
+          handleHideIconDropzone();
+        })
+      );
+    },
+    [handleUseGroupIcon, handleHideIconDropzone]
+  );
+
+  const refs = {
+    iconDropZone: useRef(null),
+  };
+
+  const { uploadCompanyFiles } = useFileActions();
+
+  const handleUpdateGroupIcon = (file) => {
+    uploadCompanyFiles({
+      file: file,
+    }, (err, res) => {
+      setForm((prevState) => ({
+        ...prevState,
+        icon: {
+          ...prevState.icon,
+          file_id: res.data.id,
+        },
+      }));
+    });
+  };
+
+  const handleGroupIconClick = () => {
+    refs.iconDropZone.current.open();
+  };
+
+  useEffect(() => {
+    if (form.icon.file) {
+      setNoChanges(false);
+    }
+  }, [form.icon.file]);
+
+  useEffect(() => {
+    if (form.icon.file_id) {
+      handleConfirm();
+    }
+  }, [form.icon.file_id]);
+
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
       <ModalHeaderSection
@@ -505,12 +624,33 @@ const CreateEditChatModal = (props) => {
           <div>
             <Label
               className={"modal-info mb-3"}>{mode === "edit" ? dictionary.chatInfoEdit : dictionary.chatInfo}</Label>
-            <Label className={"modal-label"} for="chat">{dictionary.chatTitle}</Label>
-            <FormInput
-              name="title"
-              style={{borderRadius: "5px"}} defaultValue={form.title.value}
-              onChange={handleInputChange} innerRef={inputRef}
-              isValid={form.title.valid} feedback={form.title.feedback}/>
+            <div className="d-flex justify-content-start align-items-center">
+              <div className="icon-wrapper" onClick={handleGroupIconClick}>
+                <DropDocument
+                  acceptType="imageOnly"
+                  hide={!showIconDropzone}
+                  ref={refs.iconDropZone}
+                  onDragLeave={handleHideIconDropzone}
+                  onDrop={({ acceptedFiles }) => {
+                    dropIconAction(acceptedFiles);
+                  }}
+                  onCancel={handleHideIconDropzone}
+                />
+                {<Avatar imageLink={form.icon.value} name={form.title.value} noDefaultClick={true}
+                         forceThumbnail={false}/>}
+                <span className="btn btn-outline-light btn-sm">
+                <SvgIconFeather icon="pencil"/>
+              </span>
+              </div>
+              <div className="name-wrapper">
+                <Label className={"modal-label"} for="chat">{dictionary.chatTitle}</Label>
+                <FormInput
+                  name="title"
+                  style={{ borderRadius: "5px" }} defaultValue={form.title.value}
+                  onChange={handleInputChange} innerRef={inputRef}
+                  isValid={form.title.valid} feedback={form.title.feedback}/>
+              </div>
+            </div>
           </div>
         </WrapperDiv>
         <WrapperDiv>
