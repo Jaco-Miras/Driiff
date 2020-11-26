@@ -126,13 +126,14 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  {user.contact !== "" && loggedUser.id !== user.id && (
+                  {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
                     <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                      <SvgIconFeather className="mr-2" icon="phone" />
+                      <SvgIconFeather className="mr-2" icon="phone"/>
                     </a>
                   )}
                   {
-                    (user.type !== "external" && loggedUser.id !== user.id) && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                    (user.type !== "external" && loggedUser.id !== user.id && user.active === 1) &&
+                    <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
                   }
                                     {
                     showOptions && user.type !== "external" && user.role.name !== "owner" &&
