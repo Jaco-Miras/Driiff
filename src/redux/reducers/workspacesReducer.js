@@ -1175,15 +1175,29 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_PRIMARY_FILES": {
-      let newWorkspaces = { ...state.workspaces };
-      if (action.data.folder_id) {
-        newWorkspaces[action.data.folder_id].topics[action.data.id].primary_files = action.data.files;
-      } else {
-        newWorkspaces[action.data.id].primary_files = action.data.files;
-      }
       return {
         ...state,
-        workspaces: newWorkspaces,
+        workspaces: {
+          ...state.workspaces,
+          ...(action.data.folder_id && state.workspaces[action.data.folder_id] && state.workspaces[action.data.folder_id].topics[action.data.id] && {
+            [action.data.folder_id]: {
+              ...state.workspaces[action.data.folder_id],
+              topics: {
+                ...state.workspaces[action.data.folder_id].topics,
+                [action.data.id]: {
+                  ...state.workspaces[action.data.folder_id].topics[action.data.id],
+                  primary_files: action.data.files
+                }
+              }
+            }
+          }),
+          ...(state.workspaces[action.data.id] && {
+            [action.data.id]: {
+              ...state.workspaces[action.data.id],
+              primary_files: action.data.files
+            }
+          })
+        },
         activeTopic:
           state.activeTopic.id === action.data.id
             ? {

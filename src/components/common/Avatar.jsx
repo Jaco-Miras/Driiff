@@ -6,7 +6,6 @@ import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import botIcon from "../../assets/img/gripp-bot.png";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { SvgIconFeather } from "./SvgIcon";
 
 const Wrapper = styled.div`
   position: relative;
@@ -134,8 +133,6 @@ const Avatar = (props) => {
           <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
             {handleInitials(name)}
           </Initials>
-        ) : type === "GROUP" ? (
-          <SvgIconFeather icon="users"/>
         ) : name === "Gripp Offerte Bot" ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError}
                  src={botIcon} alt={name}/>

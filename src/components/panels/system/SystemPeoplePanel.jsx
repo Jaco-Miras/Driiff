@@ -1,13 +1,13 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {useToaster, useTranslation, useUserChannels} from "../../hooks";
-import {PeopleListItem} from "../../list/people/item";
-import {SvgIconFeather} from "../../common";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useDispatch, useSelector} from "react-redux";
-import {CustomInput} from "reactstrap";
+import { useToaster, useTranslation, useUserChannels } from "../../hooks";
+import { PeopleListItem } from "../../list/people/item";
+import { SvgIconFeather } from "../../common";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useDispatch, useSelector } from "react-redux";
+import { CustomInput } from "reactstrap";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -39,8 +39,9 @@ const Search = styled(SearchForm)`
 const SystemPeoplePanel = (props) => {
   const {className = ""} = props;
 
-  const {users, userActions, loggedUser, selectUserChannel} = useUserChannels();
+  const { userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
+  const users = useSelector(state => state.global.recipients).filter(r => r.type === "USER");
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -85,7 +86,18 @@ const SystemPeoplePanel = (props) => {
         "gripp_police_bot",
         "driff_webhook_bot"].includes(user.email)) return false;
 
-      if (!showInactive && user.active !== 1) return false;
+      if (showInactive) {
+        if (user.active === 1) {
+          return false;
+        }
+        if (user.name.trim() === "") {
+          return false;
+        }
+      } else {
+        if (user.active !== 1) {
+          return false;
+        }
+      }
 
       if (search !== "") {
         if (user.name.toLowerCase().search(search.toLowerCase()) === -1
@@ -200,9 +212,9 @@ const SystemPeoplePanel = (props) => {
               <CustomInput
                 className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
                 checked={showInactive}
+                id="show_inactive"
+                name="show_inactive"
                 type="switch"
-                id="chat_sound_enabled"
-                name="sound_enabled"
                 onChange={handleShowInactiveToggle}
                 data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
                 label={<span>Show inactive members</span>}
@@ -217,8 +229,9 @@ const SystemPeoplePanel = (props) => {
           <div className="row">
             {userSort.map((user) => {
               return <PeopleListItem
-                loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick}
-                onChatClick={handleUserChat} dictionary={dictionary} 
+                loggedUser={loggedUser} key={user.id} user={{ ...user, id: user.type_id }}
+                onNameClick={handleUserNameClick}
+                onChatClick={handleUserChat} dictionary={dictionary}
                 onUpdateRole={userActions.updateUserRole}
                 showOptions={loggedUser.role.name === "admin" || loggedUser.role.name === "owner"}
                 roles={roles}/>;
