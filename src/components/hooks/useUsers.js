@@ -1,13 +1,9 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useUserActions } from "./index";
-
-let init = true;
 
 const useUsers = () => {
   const { users, getUserFilter } = useSelector((state) => state.users);
   const { user: loggedUser } = useSelector((state) => state.session);
-
   const userActions = useUserActions();
 
   // useEffect(() => {
