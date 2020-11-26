@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
 
-  const { recipients } = useSelector((state) => state.global);
+  const recipients = useSelector((state) => state.global.recipients);
   const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
   const { users: actualUsers } = useSelector((state) => state.users);
 
