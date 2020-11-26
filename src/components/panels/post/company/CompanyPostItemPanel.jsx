@@ -253,7 +253,7 @@ const CompanyPostItemPanel = (props) => {
         if (a.type === "TOPIC") return -1;
         if (b.type === "TOPIC") return 1;
       }
-      return a.name.localeCompare(b.name);
+      return a.name && a.name.localeCompare(b.name);
     })
   );
 
