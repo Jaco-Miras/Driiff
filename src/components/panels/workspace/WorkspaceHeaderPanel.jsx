@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
@@ -188,6 +188,14 @@ const SubWorkspaceName = styled.h3`
   color: #000000;
   font-weight: normal;
   font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .avatar {
+    height: 2rem;
+    width: 2rem;
+    margin-right: 0.25rem;
+  }
   svg {
     color: #64625c;
   }
@@ -355,7 +363,7 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
   }, [match.params.page, dispatch, activeTopic]);
-
+  console.log(activeTopic);
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -395,9 +403,17 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
+                          <Avatar
+                            forceThumbnail={false}
+                            type={activeTopic.type}
+                            imageLink={activeTopic.channel.icon_link}
+                            id={`ws_${activeTopic.id}`}
+                            name={activeTopic.name}
+                            noDefaultClick={false}
+                          />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/>}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -433,9 +449,17 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
+                          <Avatar
+                            forceThumbnail={false}
+                            type={activeTopic.type}
+                            imageLink={activeTopic.channel.icon_link}
+                            id={`ws_${activeTopic.id}`}
+                            name={activeTopic.name}
+                            noDefaultClick={false}
+                          />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/>}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
