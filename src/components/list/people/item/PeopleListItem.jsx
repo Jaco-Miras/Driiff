@@ -88,7 +88,7 @@ const PeopleListItem = (props) => {
     window.addEventListener("resize", handleResize);
     handleResize();
   }, []);
-
+  console.log(user);
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
       <div className="col-12">
