@@ -3,13 +3,8 @@ import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 import { useParams } from "react-router-dom";
 import quillHelper from "../../helpers/quillHelper";
-import { useTranslation } from "./index";
 
-const useSystemMessage = ({ reply, recipients, selectedChannel, user }) => {
-
-  const { _t } = useTranslation();
-
-  const dictionary = {};
+const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user }) => {
 
   const params = useParams();
   let parseBody = "";
@@ -83,7 +78,7 @@ const useSystemMessage = ({ reply, recipients, selectedChannel, user }) => {
     let author = recipients.find((r) => data.author && r.type_id === data.author.id && r.type === "USER");
     if (author) {
       if (data.author && data.author.id === user.id) {
-        author.name = dictionary.you;
+        author.name = <b>{dictionary.you}</b>;
       }
     } else {
       author = {
@@ -101,16 +96,24 @@ const useSystemMessage = ({ reply, recipients, selectedChannel, user }) => {
       );
     }
 
-    if (data.added_members.length >= 1) {
-      const am = recipients.filter((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" }).map((r) => r.name);
-
+    if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
+      //for adding one member without changes in title and for user who join the channel / workspace
+      const am = recipients.find((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" })
+      if (am && author.id === am.id) {
+        newBody = <>{user.id === author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b></>;
+      } else if (am) {
+        newBody = <><b>{author.name}</b> {dictionary.added} <b>{am.name}</b></>;
+      }
+    } else if (data.added_members.length >= 1) {
+      let am = recipients.filter((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" });
       if (newBody === "") {
-        newBody = <>{author.name} {dictionary.added} </>;
+        newBody = <><b>{author.name}</b> {dictionary.added} </>;
       } else {
         newBody = <>{newBody} {dictionary.andAdded}</>;
       }
 
       if (data.added_members.includes(user.id)) {
+        am = am.filter(m => m.type_id !== user.id)
         if (am.length !== 0) {
           newBody = (
             <>
@@ -129,7 +132,7 @@ const useSystemMessage = ({ reply, recipients, selectedChannel, user }) => {
       if (am.length !== 0) {
         newBody = (
           <>
-            {newBody} <b>{am.join(", ")}</b>
+            {newBody} <b>{am.map(m => m.name).join(", ")}</b>
             <br/>
           </>
         );
@@ -160,11 +163,11 @@ const useSystemMessage = ({ reply, recipients, selectedChannel, user }) => {
         if (newBody === "") {
           newBody = (
             <>
-              <b>{userLeft.length ? userLeft[0].name : null}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
+              {author.name} {dictionary.removed} <b>{userLeft.length ? userLeft[0].name : null}</b>
             </>
           );
         } else {
-          newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+          newBody = <>{newBody} {dictionary.andRemoved} <b>{userLeft.length ? userLeft[0].name : null}</b></>;
         }
       }
     } else if (data.removed_members.length > 1) {
