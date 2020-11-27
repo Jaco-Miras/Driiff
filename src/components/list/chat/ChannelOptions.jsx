@@ -45,7 +45,7 @@ const ChannelOptions = (props) => {
     chatArchiveConfirmation: _t("CHAT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this channel?"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     headerArchive: _t("HEADER.ARCHIVE", "Chat Archive"),
-    headerUnarchive: _t("HEADER.UNARCHIVE", "Chat Un-archive"),
+    headerUnarchive: _t("HEADER.UNARCHIVE", "Channel un-archive"),
   };
 
   const handlePinButton = () => {
