@@ -53,7 +53,9 @@ const useCompanyPosts = () => {
   let filteredPosts = Object.values(posts)
     .filter((p) => {
       if (filter) {
-        if (filter === "my_posts") {
+        if (filter === "all") {
+          return (!p.hasOwnProperty("author") || p.author.id !== user.id);
+        } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author")) return p.author.id === user.id;
           else return false;
         } else if (filter === "draft") {
