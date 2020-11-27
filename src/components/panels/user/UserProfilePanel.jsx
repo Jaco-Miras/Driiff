@@ -8,7 +8,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import { useToaster, useTranslation, useUserActions, useUsers } from "../../hooks";
+import { useToaster, useTranslation, useUserActions, useUserChannels, useUsers } from "../../hooks";
 import { FormInput } from "../../forms";
 
 const Wrapper = styled.div`
@@ -105,7 +105,7 @@ const Wrapper = styled.div`
 `;
 
 const UserProfilePanel = (props) => {
-  const { className = "", onChatClick = null } = props;
+  const { className = "" } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -113,6 +113,7 @@ const UserProfilePanel = (props) => {
   const toaster = useToaster();
   const { users, loggedUser } = useUsers();
   const { checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage } = useUserActions();
+  const { selectUserChannel } = useUserChannels();
 
   const user = users[props.match.params.id];
   const isLoggedUser = user && loggedUser.id === user.id;
@@ -170,11 +171,14 @@ const UserProfilePanel = (props) => {
     setPasswordVisibility((prevState) => !prevState);
   }, [setPasswordVisibility]);
 
-  useEffect(() => {
-    if (passwordUpdate && refs.password.current) {
-      refs.password.current.focus();
-    }
-  }, [passwordUpdate, refs.password]);
+  const handleUserChat = useCallback(
+    (user) => {
+      selectUserChannel(user, (channel) => {
+        history.push(`/chat/${channel.code}`);
+      });
+    },
+    [history, selectUserChannel]
+  );
 
   const toggleEditInformation = useCallback(() => {
     setEditInformation((prevState) => !prevState);
@@ -187,12 +191,6 @@ const UserProfilePanel = (props) => {
     setPasswordUpdate(false);
   }, [user, setForm, setPasswordUpdate, setEditInformation]);
 
-  useEffect(() => {
-    if (editInformation && refs.first_name.current) {
-      refs.first_name.current.focus();
-    }
-  }, [editInformation, refs.first_name]);
-
   const handleInputChange = useCallback((e) => {
     if (e.target !== null) {
       const { name, value } = e.target;
@@ -202,10 +200,6 @@ const UserProfilePanel = (props) => {
       }));
     }
   }, []);
-
-  const handleOnChatClick = () => {
-    if (onChatClick) onChatClick(user);
-  };
 
   const handleInputBlur = useCallback(
     (e) => {
@@ -444,6 +438,18 @@ const UserProfilePanel = (props) => {
     }
   }, [form, props.match.params.mode]);
 
+  useEffect(() => {
+    if (passwordUpdate && refs.password.current) {
+      refs.password.current.focus();
+    }
+  }, [passwordUpdate, refs.password]);
+
+  useEffect(() => {
+    if (editInformation && refs.first_name.current) {
+      refs.first_name.current.focus();
+    }
+  }, [editInformation, refs.first_name]);
+
   if (!form.id) {
     return <></>;
   }
@@ -508,16 +514,21 @@ const UserProfilePanel = (props) => {
               ) : (
                 <p className="text-muted small">{user.designation}</p>
               )}
-              {user.contact !== "" && loggedUser.id !== user.id && (
-              <div className="d-flex justify-content-center">
-                  <button className="btn btn-outline-light mr-1">
+              {loggedUser.id !== user.id && (
+                <div className="d-flex justify-content-center">
+                  {
+                    user.contact !== "" &&
+                    <button className="btn btn-outline-light mr-1">
                       <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                        <SvgIconFeather className="" icon="phone" />
+                        <SvgIconFeather className="" icon="phone"/>
                       </a>
-                  </button>
+                    </button>
+                  }
                   <button className="ml-1 btn btn-outline-light">
                     {
-                      (user.type !== "external") && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                      (user.type !== "external") && <SvgIconFeather onClick={() => {
+                        handleUserChat(user);
+                      }} icon="message-circle"/>
                     }
                   </button>
               </div>
