@@ -294,6 +294,8 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 
 const StyledDatePicker = styled(DatePicker)``;
 
+const initTimestamp = Math.floor(Date.now() / 1000);
+
 const CreateEditCompanyPostModal = (props) => {
 
   const { type, mode, item = {}, action } = props.data;
@@ -323,6 +325,9 @@ const CreateEditCompanyPostModal = (props) => {
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
   const [mounted, setMounted] = useState(null);
+  //const [savingDraft, setSavingDraft] = useState(false);
+
+  const savingDraft = useRef(null);
 
   const [form, setForm] = useState({
     must_read: false,
@@ -413,7 +418,8 @@ const CreateEditCompanyPostModal = (props) => {
             deleteDraftReducer({
               draft_type: "draft_post",
               draft_id: draftId,
-              post_id: item.draft.id
+              id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+              post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
             }, (err, res) => {
               toaster.success(<>Draft <b>{form.title}</b> successfully removed.</>);
             })
@@ -575,7 +581,8 @@ const CreateEditCompanyPostModal = (props) => {
         payload = {
           ...payload,
           draft_id: draftId,
-          id: item.draft.id,
+          id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+          post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
         };
         dispatch(updateDraft(payload));
       } else {
@@ -1000,8 +1007,7 @@ const CreateEditCompanyPostModal = (props) => {
 
   const autoUpdateDraft = useCallback(debounce((form, draftId) => {
     if (!(form.title === "" && form.textOnly === "")) {
-      console.log('save draft')
-      let timestamp = Math.floor(Date.now() / 1000);
+      savingDraft.current = true;
       let payload = {
         type: "draft_post",
         form: {
@@ -1012,9 +1018,11 @@ const CreateEditCompanyPostModal = (props) => {
           personal: is_personal,
           users_responsible: responsible_ids,
         },
-        timestamp: timestamp,
-        id: timestamp,
-        created_at: { timestamp: timestamp },
+        timestamp: initTimestamp,
+        id: initTimestamp,
+        post_id: initTimestamp,
+        created_at: { timestamp: initTimestamp },
+        updated_at: { timestamp: initTimestamp },
         title: form.title,
         partial_body: form.body,
         unread_reply_ids: [],
@@ -1035,11 +1043,16 @@ const CreateEditCompanyPostModal = (props) => {
         payload = {
           ...payload,
           draft_id: draftId,
-          //id: item.draft.id,
+          id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+          post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
         };
-        dispatch(updateDraft(payload));
+        dispatch(updateDraft(payload, (err,res) => {
+          savingDraft.current = false;
+          if (err) return;
+        }));
       } else {
         dispatch(saveDraft(payload, (err,res) => {
+          savingDraft.current = false;
           if (err) return;
           setDraftId(res.data.id)
         }));
@@ -1048,11 +1061,10 @@ const CreateEditCompanyPostModal = (props) => {
   }, 500), []);
 
   useEffect(() => {
-    if (mounted) {
-      console.log('useeffect', form)
-      //autoUpdateDraft(form, draftId)
+    if (mounted && !savingDraft.current) {
+      autoUpdateDraft(form, draftId)
     }
-  }, [form, draftId, mounted])
+  }, [form, draftId, mounted]);
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">

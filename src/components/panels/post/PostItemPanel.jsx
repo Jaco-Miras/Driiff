@@ -377,7 +377,7 @@ const PostItemPanel = (props) => {
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
             <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
-            {!disableOptions &&
+            {post.type !== "draft_post" && !disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"
                         title="" data-original-title="Archive post">

@@ -563,10 +563,10 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined" && typeof state.workspacePosts[action.data.data.topic_id] !== "undefined") {
         const workspacePosts = {...state.workspacePosts};
         workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
-          ...workspacePosts[action.data.data.topic_id].posts[action.data.data.id],
+          ...workspacePosts[action.data.data.topic_id].posts[action.data.data.post_id],
           ...action.data.data,
-          id: action.data.data.id, 
-          post_id: action.data.data.id, 
+          id: action.data.data.post_id, 
+          post_id: action.data.data.post_id, 
           draft_id: action.data.id,
         }
         return {

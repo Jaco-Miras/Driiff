@@ -433,20 +433,6 @@ export default (state = INITIAL_STATE, action) => {
             ...d.data,
             post_id: d.data.id,
             draft_id: d.id,
-            // partial_body: d.data.form.body,
-            // unread_reply_ids: [],
-            // clap_user_ids: [],
-            // unread_reply_ids: [],
-            // author: state.user,
-            // user_reads: [],
-            // is_archived: 0,
-            // is_must_read: !!d.data.is_must_read,
-            // is_must_reply: !!d.data.is_must_reply,
-            // is_read_only: !!d.data.is_read_only,
-            // unread_count: 0,
-            // reply_count: 0,
-            // recipients: d.data.form.selectedAddressTo,
-            // recipient_ids: d.data.form.selectedAddressTo.map((r) => r.id)
           })
         } else {
           return d;
@@ -454,7 +440,7 @@ export default (state = INITIAL_STATE, action) => {
       })
       let postDrafts = [];
       if (drafts.length) {
-        postDrafts = convertArrayToObject(drafts, "id");
+        postDrafts = convertArrayToObject(drafts, "post_id");
       }
       return {
         ...state,
@@ -508,13 +494,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UPDATE_DRAFT_SUCCESS": {
       if (action.data.data.type === "draft_post") {
-        const draft = {...state.companyPosts.posts[action.data.data.id]};
         const companyPosts = {...state.companyPosts};
-        companyPosts.posts[draft.id] = {
-          ...companyPosts.posts[draft.id],
+        companyPosts.posts[action.data.data.id] = {
+          ...companyPosts.posts[action.data.data.post_id],
           ...action.data.data,
-          id: action.data.data.id, 
-          post_id: action.data.data.id, 
+          id: action.data.data.post_id, 
+          post_id: action.data.data.post_id, 
           draft_id: action.data.id,
         }
         return {
