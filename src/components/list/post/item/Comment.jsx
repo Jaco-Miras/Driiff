@@ -168,6 +168,11 @@ const CommentBody = styled.div`
       max-width: 100%;
     }
   }
+  ul {
+    li {
+      list-style: initial;
+    }
+  }
 `;
 
 const CommentInput = styled(PostDetailFooter)``;
