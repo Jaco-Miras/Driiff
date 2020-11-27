@@ -78,7 +78,7 @@ const useCompanyPosts = () => {
           return true;
         }
       } else {
-        return true;
+        return (!p.hasOwnProperty("author") || p.author.id !== user.id);
       }
     })
     .sort((a, b) => {
@@ -122,7 +122,7 @@ const useCompanyPosts = () => {
   }).length;
 
   const counters = {
-    all: Object.values(posts).length,
+    all: Object.values(posts).filter((p) => p.author && p.author.id !== user.id).length,
     my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
     starred: Object.values(posts).filter((p) => p.is_favourite).length,
     archived: Object.values(posts).filter((p) => p.is_archived).length,
