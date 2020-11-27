@@ -147,6 +147,7 @@ const UserProfilePanel = (props) => {
     position: _t("PROFILE.POSITION", "Position:"),
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
+    zip_code: _t("PROFILE.ZIP_POST_CODE", "ZIP/POST code:"),
     phone: _t("PROFILE.Phone", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     edit: _t("BUTTON.EDIT", "Edit"),
@@ -447,7 +448,7 @@ const UserProfilePanel = (props) => {
   if (!form.id) {
     return <></>;
   }
-
+  console.log(user);
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
       <div className="row row-user-profile-panel">
@@ -493,7 +494,7 @@ const UserProfilePanel = (props) => {
                 </h5>
               )}
               {editInformation && !readOnlyFields.includes("designation") ? (
-                <p className="text-muted small d-flex align-items-center mt-2">
+                <div className="text-muted small d-flex align-items-center mt-2">
                   <FormInput
                     placeholder="Job Title eg. Manager, Team Leader, Designer"
                     className="designation"
@@ -504,7 +505,7 @@ const UserProfilePanel = (props) => {
                     isValid={formUpdate.feedbackState.designation}
                     valid={formUpdate.feedbackText.designation}
                   />
-                </p>
+                </div>
               ) : (
                 <p className="text-muted small">{user.designation}</p>
               )}
@@ -591,6 +592,12 @@ const UserProfilePanel = (props) => {
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.address}</div>
                     <div className="col col-form">{user.address}</div>
+                  </div>
+                )}
+                {user.zip_code && (
+                  <div className="row mb-2">
+                    <div className="col col-label text-muted">{dictionary.zip_code}</div>
+                    <div className="col col-form">{user.zip_code}</div>
                   </div>
                 )}
                 {user.contact && (
@@ -712,7 +719,23 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
+                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur}
+                                   defaultValue={user.address} isValid={formUpdate.feedbackState.address}
+                                   feedback={formUpdate.feedbackText.address}/>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="row mb-2">
+                  <div className="col col-label text-muted">{dictionary.zip_code}</div>
+                  <div className="col col-form">
+                    {readOnlyFields.includes("zip_code") ? (
+                      <Label>{user.zip_code}</Label>
+                    ) : (
+                      <>
+                        <FormInput name="zip_code" onChange={handleInputChange} onBlur={handleInputBlur}
+                                   defaultValue={user.zip_code} isValid={formUpdate.feedbackState.zip_code}
+                                   feedback={formUpdate.feedbackText.zip_code}/>
                       </>
                     )}
                   </div>
@@ -724,8 +747,10 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
-                        <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact"
+                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact}/>
+                        <InputFeedback
+                          valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}
                   </div>
