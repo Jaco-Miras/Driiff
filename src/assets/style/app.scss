@@ -36,9 +36,14 @@ body {
   color: #505050;
   height: 100%;
   overflow: auto;
+
   &.dark {
     color: #fff;
   }
+}
+
+.d-grid {
+  display: grid !important;
 }
 
 .emoji-counter {
@@ -62,7 +67,7 @@ body {
 }
 
 .todo-title {
-  max-width: 400px;
+  max-width: 100%;
   display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
