@@ -843,8 +843,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.id] };
         channel = {
           ...channel,
-          members: action.data.members,
-          title: action.data.title,
+          ...action.data,
           replies: [...channel.replies, action.data.message].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
         };
       }

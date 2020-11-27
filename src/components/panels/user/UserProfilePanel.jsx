@@ -8,7 +8,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import { useToaster, useTranslation, useUserActions, useUsers } from "../../hooks";
+import { useToaster, useTranslation, useUserActions, useUserChannels, useUsers } from "../../hooks";
 import { FormInput } from "../../forms";
 
 const Wrapper = styled.div`
@@ -105,7 +105,7 @@ const Wrapper = styled.div`
 `;
 
 const UserProfilePanel = (props) => {
-  const { className = "", onChatClick = null } = props;
+  const { className = "" } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -113,6 +113,7 @@ const UserProfilePanel = (props) => {
   const toaster = useToaster();
   const { users, loggedUser } = useUsers();
   const { checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage } = useUserActions();
+  const { selectUserChannel } = useUserChannels();
 
   const user = users[props.match.params.id];
   const isLoggedUser = user && loggedUser.id === user.id;
@@ -147,6 +148,7 @@ const UserProfilePanel = (props) => {
     position: _t("PROFILE.POSITION", "Position:"),
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
+    zip_code: _t("PROFILE.ZIP_POST_CODE", "ZIP/POST code:"),
     phone: _t("PROFILE.Phone", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     edit: _t("BUTTON.EDIT", "Edit"),
@@ -170,11 +172,14 @@ const UserProfilePanel = (props) => {
     setPasswordVisibility((prevState) => !prevState);
   }, [setPasswordVisibility]);
 
-  useEffect(() => {
-    if (passwordUpdate && refs.password.current) {
-      refs.password.current.focus();
-    }
-  }, [passwordUpdate, refs.password]);
+  const handleUserChat = useCallback(
+    (user) => {
+      selectUserChannel(user, (channel) => {
+        history.push(`/chat/${channel.code}`);
+      });
+    },
+    [history, selectUserChannel]
+  );
 
   const toggleEditInformation = useCallback(() => {
     setEditInformation((prevState) => !prevState);
@@ -187,12 +192,6 @@ const UserProfilePanel = (props) => {
     setPasswordUpdate(false);
   }, [user, setForm, setPasswordUpdate, setEditInformation]);
 
-  useEffect(() => {
-    if (editInformation && refs.first_name.current) {
-      refs.first_name.current.focus();
-    }
-  }, [editInformation, refs.first_name]);
-
   const handleInputChange = useCallback((e) => {
     if (e.target !== null) {
       const { name, value } = e.target;
@@ -202,10 +201,6 @@ const UserProfilePanel = (props) => {
       }));
     }
   }, []);
-
-  const handleOnChatClick = () => {
-    if (onChatClick) onChatClick(user);
-  };
 
   const handleInputBlur = useCallback(
     (e) => {
@@ -444,10 +439,22 @@ const UserProfilePanel = (props) => {
     }
   }, [form, props.match.params.mode]);
 
+  useEffect(() => {
+    if (passwordUpdate && refs.password.current) {
+      refs.password.current.focus();
+    }
+  }, [passwordUpdate, refs.password]);
+
+  useEffect(() => {
+    if (editInformation && refs.first_name.current) {
+      refs.first_name.current.focus();
+    }
+  }, [editInformation, refs.first_name]);
+
   if (!form.id) {
     return <></>;
   }
-
+  console.log(user);
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
       <div className="row row-user-profile-panel">
@@ -493,7 +500,7 @@ const UserProfilePanel = (props) => {
                 </h5>
               )}
               {editInformation && !readOnlyFields.includes("designation") ? (
-                <p className="text-muted small d-flex align-items-center mt-2">
+                <div className="text-muted small d-flex align-items-center mt-2">
                   <FormInput
                     placeholder="Job Title eg. Manager, Team Leader, Designer"
                     className="designation"
@@ -504,20 +511,25 @@ const UserProfilePanel = (props) => {
                     isValid={formUpdate.feedbackState.designation}
                     valid={formUpdate.feedbackText.designation}
                   />
-                </p>
+                </div>
               ) : (
                 <p className="text-muted small">{user.designation}</p>
               )}
-              {user.contact !== "" && loggedUser.id !== user.id && (
-              <div className="d-flex justify-content-center">
-                  <button className="btn btn-outline-light mr-1">
+              {loggedUser.id !== user.id && (
+                <div className="d-flex justify-content-center">
+                  {
+                    user.contact !== "" &&
+                    <button className="btn btn-outline-light mr-1">
                       <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                        <SvgIconFeather className="" icon="phone" />
+                        <SvgIconFeather className="" icon="phone"/>
                       </a>
-                  </button>
+                    </button>
+                  }
                   <button className="ml-1 btn btn-outline-light">
                     {
-                      (user.type !== "external") && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                      (user.type !== "external") && <SvgIconFeather onClick={() => {
+                        handleUserChat(user);
+                      }} icon="message-circle"/>
                     }
                   </button>
               </div>
@@ -591,6 +603,12 @@ const UserProfilePanel = (props) => {
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.address}</div>
                     <div className="col col-form">{user.address}</div>
+                  </div>
+                )}
+                {user.zip_code && (
+                  <div className="row mb-2">
+                    <div className="col col-label text-muted">{dictionary.zip_code}</div>
+                    <div className="col col-form">{user.zip_code}</div>
                   </div>
                 )}
                 {user.contact && (
@@ -712,7 +730,23 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
+                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur}
+                                   defaultValue={user.address} isValid={formUpdate.feedbackState.address}
+                                   feedback={formUpdate.feedbackText.address}/>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="row mb-2">
+                  <div className="col col-label text-muted">{dictionary.zip_code}</div>
+                  <div className="col col-form">
+                    {readOnlyFields.includes("zip_code") ? (
+                      <Label>{user.zip_code}</Label>
+                    ) : (
+                      <>
+                        <FormInput name="zip_code" onChange={handleInputChange} onBlur={handleInputBlur}
+                                   defaultValue={user.zip_code} isValid={formUpdate.feedbackState.zip_code}
+                                   feedback={formUpdate.feedbackText.zip_code}/>
                       </>
                     )}
                   </div>
@@ -724,8 +758,10 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
-                        <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact"
+                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact}/>
+                        <InputFeedback
+                          valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}
                   </div>
