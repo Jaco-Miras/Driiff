@@ -54,7 +54,7 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
-          return (!p.hasOwnProperty("author") || p.author.id !== user.id);
+          return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id);
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author")) return p.author.id === user.id;
           else return false;
@@ -89,7 +89,7 @@ const useCompanyPosts = () => {
       } else if (sort === "unread") {
         return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
       } else {
-        return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
+        return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
       }
     });
   if (count) {
@@ -124,7 +124,7 @@ const useCompanyPosts = () => {
   }).length;
 
   const counters = {
-    all: Object.values(posts).filter((p) => p.author && p.author.id !== user.id).length,
+    all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id)).length,
     my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
     starred: Object.values(posts).filter((p) => p.is_favourite).length,
     archived: Object.values(posts).filter((p) => p.is_archived).length,
