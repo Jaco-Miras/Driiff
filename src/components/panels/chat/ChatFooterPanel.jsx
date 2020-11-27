@@ -229,6 +229,8 @@ const ChatFooterPanel = (props) => {
     unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Un-archive workspace"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
+    chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
+    headerUnarchive: _t("HEADER.UNARCHIVE", "Channel un-archive"),
   }
 
   const handleUnarchive = () => {
@@ -243,7 +245,7 @@ const ChatFooterPanel = (props) => {
     dispatch(putChannel(payload))
     toaster.success(
       <span>
-        <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is una-rchived.` : `${selectedChannel.title} channel is un-archived.`}</b>
+        <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is un-archived.` : `${selectedChannel.title} channel is un-archived.`}</b>
       </span>
     )
   }
@@ -252,9 +254,9 @@ const ChatFooterPanel = (props) => {
     let payload = {
       type: "confirmation",
       cancelText: dictionary.cancel,
-      headerText: dictionary.unarchiveWorkspace,
-      submitText: dictionary.unarchiveWorkspace,
-      bodyText: dictionary.unarchiveBodyText,
+      headerText: selectedChannel.type === "TOPIC" ? dictionary.unarchiveWorkspace : dictionary.headerUnarchive,
+      submitText: selectedChannel.type === "TOPIC" ? dictionary.unarchiveWorkspace : dictionary.headerUnarchive,
+      bodyText: selectedChannel.type === "TOPIC" ? dictionary.unarchiveBodyText : dictionary.chatUnarchiveConfirmation,
       actions: {
         onSubmit: handleUnarchive,
       },
