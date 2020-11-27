@@ -63,7 +63,7 @@ const useCompanyPosts = () => {
         } else if (filter === "archive") {
           return p.is_archived === 1;
         } else if (filter === "all") {
-          return !p.is_archived;
+          return p.is_archived === 0;
         } else if (filter === "new_reply") {
           return p.unread_reply_ids.length > 0;
         }

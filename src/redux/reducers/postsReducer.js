@@ -415,14 +415,7 @@ export default (state = INITIAL_STATE, action) => {
       let convertedPosts = convertArrayToObject(action.data.posts, "id");
       let postDrafts = [];
       if (state.drafts.length) {
-        state.drafts.forEach((d) => {
-          if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-            postDrafts.push({ ...d.data, ...d.data.form, draft_id: d.id });
-          }
-        });
-      }
-      if (postDrafts.length) {
-        postDrafts = convertArrayToObject(postDrafts, "id");
+        postDrafts = convertArrayToObject(postDrafts, "post_id");
       }
       return {
         ...state,
@@ -434,10 +427,103 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_DRAFTS_SUCCESS": {
+      let drafts = action.data.map((d) => {
+        if (d.data.type === "draft_post") {
+          return Object.assign({}, d, {
+            ...d.data,
+            post_id: d.data.id,
+            draft_id: d.id,
+            // partial_body: d.data.form.body,
+            // unread_reply_ids: [],
+            // clap_user_ids: [],
+            // unread_reply_ids: [],
+            // author: state.user,
+            // user_reads: [],
+            // is_archived: 0,
+            // is_must_read: !!d.data.is_must_read,
+            // is_must_reply: !!d.data.is_must_reply,
+            // is_read_only: !!d.data.is_read_only,
+            // unread_count: 0,
+            // reply_count: 0,
+            // recipients: d.data.form.selectedAddressTo,
+            // recipient_ids: d.data.form.selectedAddressTo.map((r) => r.id)
+          })
+        } else {
+          return d;
+        }
+      })
+      let postDrafts = [];
+      if (drafts.length) {
+        postDrafts = convertArrayToObject(drafts, "id");
+      }
       return {
         ...state,
-        drafts: action.data,
+        drafts: drafts,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...postDrafts
+          }
+        }
       };
+    }
+    case "DELETE_DRAFT": {
+      if (action.data.draft_type === "draft_post") {
+        const drafts = [...state.drafts.filter(d => d.draft_id !== action.data.draft_id)];
+        const companyPosts = {...state.companyPosts};
+        delete companyPosts.posts[action.data.post_id];
+        return {
+          ...state,
+          drafts: drafts,
+          companyPosts: companyPosts
+        };
+      } else {
+        return state;
+      }
+    }
+    case "SAVE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "draft_post") {
+        const draft = {
+          ...action.data, 
+          ...action.data.data, 
+          id: action.data.data.id, 
+          post_id: action.data.data.id, 
+          draft_id: action.data.id,
+        };
+        return {
+          ...state,
+          drafts: [...state.drafts, draft],
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [draft.id]: draft
+            }
+          }
+        };
+      } else {
+        return state;
+      }
+    }
+    case "UPDATE_DRAFT_SUCCESS": {
+      if (action.data.data.type === "draft_post") {
+        const draft = {...state.companyPosts.posts[action.data.data.id]};
+        const companyPosts = {...state.companyPosts};
+        companyPosts.posts[draft.id] = {
+          ...companyPosts.posts[draft.id],
+          ...action.data.data,
+          id: action.data.data.id, 
+          post_id: action.data.data.id, 
+          draft_id: action.data.id,
+        }
+        return {
+          ...state,
+          companyPosts: companyPosts
+        };
+      } else {
+        return state;
+      }
     }
     case "INCOMING_POST_VIEWER": {
       return {

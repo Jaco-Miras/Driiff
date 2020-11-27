@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers } from "../../redux/actions/userAction";
-import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail } from "../../redux/actions/globalActions";
+import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 //import { getUnreadPostEntries } from "../../redux/actions/postActions";
 import { getChannels, getGlobalRecipients } from "../../redux/actions/chatActions";
 
@@ -43,6 +43,7 @@ const useInitialLoad = () => {
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
+      dispatch(getDrafts());
     }
     fetchChannels(fetchChannelCb);
   }, []);

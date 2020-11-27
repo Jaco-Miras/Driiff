@@ -229,7 +229,6 @@ export default (state = INITIAL_STATE, action) => {
           folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
           folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name
         };
-        console.log(workspace);
         updatedWorkspaces[workspace.id] = workspace;
         if (state.activeTopic && state.activeTopic.id === workspace.id) {
           updatedTopic = workspace;
@@ -427,14 +426,7 @@ export default (state = INITIAL_STATE, action) => {
       let convertedPosts = convertArrayToObject(action.data.posts.map((p) => { return Object.assign({}, p, {clap_user_ids: []}) }), "id");
       let postDrafts = [];
       if (state.drafts.length) {
-        state.drafts.forEach((d) => {
-          if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-            postDrafts.push({ ...d.data, ...d.data.form, draft_id: d.id });
-          }
-        });
-      }
-      if (postDrafts.length) {
-        postDrafts = convertArrayToObject(postDrafts, "id");
+        postDrafts = convertArrayToObject(state.drafts, "post_id");
       }
       if (state.workspacePosts.hasOwnProperty(action.data.topic_id)) {
         return {
@@ -527,28 +519,38 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_DRAFTS_SUCCESS": {
       return {
         ...state,
-        drafts: action.data,
+        drafts: action.data.map((d) => {
+          if (d.data.type === "draft_post") {
+            return Object.assign({}, d, {
+              ...d.data,
+              draft_id: d.id,
+              post_id: d.data.id,
+            })
+          } else {
+            return d;
+          }
+        }),
       };
     }
     case "SAVE_DRAFT_SUCCESS": {
-      if (action.data.data.draft_type === "draft_post") {
+      if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined") {
+        const draft = {
+          ...action.data, 
+          ...action.data.data, 
+          id: action.data.data.id, 
+          post_id: action.data.data.id, 
+          draft_id: action.data.id,
+        };
         return {
           ...state,
-          drafts: [...state.drafts, action.data],
+          drafts: [...state.drafts, draft],
           workspacePosts: {
             ...state.workspacePosts,
             [action.data.data.topic_id]: {
               ...state.workspacePosts[action.data.data.topic_id],
               posts: {
                 ...state.workspacePosts[action.data.data.topic_id].posts,
-                [action.data.data.id]: {
-                  ...action.data,
-                  ...action.data.data,
-                  ...action.data.data.form,
-                  id: action.data.data.id,
-                  draft_id: action.data.id,
-                  form: action.data.data.form,
-                },
+                [draft.id]: draft
               },
             },
           },
@@ -557,16 +559,33 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "DELETE_DRAFT": {
-      const draft = state.drafts.find(d => d.id === action.data.draft_id);
-
-      let posts = state.workspacePosts[action.data.topic_id].posts;
-      delete posts[draft.data.timestamp];
-
-      if (action.data.draft_type === "draft_post") {
+    case "UPDATE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined" && typeof state.workspacePosts[action.data.data.topic_id] !== "undefined") {
+        const workspacePosts = {...state.workspacePosts};
+        workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
+          ...workspacePosts[action.data.data.topic_id].posts[action.data.data.id],
+          ...action.data.data,
+          id: action.data.data.id, 
+          post_id: action.data.data.id, 
+          draft_id: action.data.id,
+        }
         return {
           ...state,
-          drafts: [...state.drafts.filter(d => d.id !== action.data.draft_id)],
+          workspacePosts: workspacePosts
+        }
+      } else {
+        return state
+      }
+    }
+    case "DELETE_DRAFT": {
+      if (action.data.draft_type === "draft_post" && action.data.topic_id && typeof state.workspacePosts[action.data.topic_id] !== "undefined") {
+        const drafts = [...state.drafts.filter(d => d.draft_id !== action.data.draft_id)];
+
+        let posts = {...state.workspacePosts[action.data.topic_id].posts};
+        delete posts[action.data.post_id];
+        return {
+          ...state,
+          drafts: drafts,
           workspacePosts: {
             ...state.workspacePosts,
             [action.data.topic_id]: {
