@@ -100,7 +100,7 @@ const PeopleListItem = (props) => {
                         onClick={handleOnNameClick} noDefaultClick={true}
                         imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}/>
                 <div className="user-info-wrapper ml-3">
-                  {user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
+                  {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
                     <h6 className="user-name mb-1 ">
                       <ToolTip content={user.email}>
                         <div className="mr-2 people-text-truncate">{user.email}</div>
@@ -117,7 +117,7 @@ const PeopleListItem = (props) => {
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" &&
                         <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white"/>}
-                        {user.active !== 1 && <Badge label="Inactive" badgeClassName="badge badge-light text-white"/>}
+                        {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white"/>}
                       </span>
                     </h6>
                   )}
