@@ -34,7 +34,7 @@ const Search = styled(SearchForm)`
 const CompanyPeoplePanel = (props) => {
   const {className = ""} = props;
 
-  const { users, loggedUser, userChannels, selectUserChannel } = useUserChannels();
+  const { users, loggedUser, selectUserChannel } = useUserChannels();
 
   const history = useHistory();
 
