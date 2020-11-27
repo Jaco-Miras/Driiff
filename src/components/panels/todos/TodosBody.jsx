@@ -7,7 +7,7 @@ import quillHelper from "../../../helpers/quillHelper";
 import { useFileActions, useSettings, useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
 import { setViewFiles } from "../../../redux/actions/fileActions";
-import { getChatMessages, setSelectedChannel, setLastVisitedChannel } from "../../../redux/actions/chatActions";
+import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
 
 const Wrapper = styled.div`
@@ -55,6 +55,11 @@ li.link-title {
 }
 
 .todo-title {
+  color: #343a40;
+  
+  &.description {
+    color: #b8b8b8;  
+  }
   svg {
     height: 16px;
   }
@@ -295,9 +300,9 @@ const TodosBody = (props) => {
                                     }}/>
                                 </ToolTip>
                               </span>
-                              <span className="mr-3 d-flex justify-content-center align-items-center">
+                              <span className="mr-3 d-grid justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
-                                <span className="todo-title"
+                                <span className="todo-title mr-2 description"
                                       dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(todo.description) }}/>
                                 {
                                   todo.files.map((file) => {
