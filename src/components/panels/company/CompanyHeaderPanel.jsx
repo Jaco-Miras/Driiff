@@ -123,8 +123,8 @@ const CompanyHeaderPanel = () => {
     pageTitleProfile: _t("PAGE_TITLE.PROFILE", "Profile"),
     pageTitleSearch: _t("PAGE_TITLE.SEARCH", "Search"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
-    pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
-    pageTitleSystemPeople: _t("PAGE_TITLE.SYSTEM_PEOPLE", "All People"),
+    pageTitleTodos: _t("PAGE_TITLE.TODOS", "Reminders"),
+    pageTitleSystemPeople: _t("PAGE_TITLE.SYSTEM_PEOPLE", "All people"),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {

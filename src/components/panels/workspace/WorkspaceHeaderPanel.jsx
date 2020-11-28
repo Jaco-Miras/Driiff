@@ -253,7 +253,7 @@ const WorspaceHeaderPanel = (props) => {
     pageTitleWorkspaceProfile: _t("PAGE_TITLE.WORKSPACE_PROFILE", "Profile"),
     pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search workspace"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
-    pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
+    pageTitleTodos: _t("PAGE_TITLE.TODOS", "Reminders"),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
