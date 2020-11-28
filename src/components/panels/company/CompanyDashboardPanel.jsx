@@ -48,7 +48,9 @@ const CompanyDashboardPanel = (props) => {
     revokeAsApprover: _t("TEAM.REVOKE_APPROVER", "Revoke as approver"),
     assignAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Assign as team lead"),
     assignAsApprover: _t("TEAM.REVOKE_APPROVER", "Assign as approver"),
-    remove: _t("TEAM.REMOVE", "Remove")
+    remove: _t("TEAM.REMOVE", "Remove"),
+    showMore: _t("SHOW_MORE", "Show more"),
+    showLess: _t("SHOW_LESS", "Show less"),
   };
 
   return (

@@ -39,8 +39,23 @@ const Wrapper = styled.li`
   }
 `;
 
+const ShowMoreBtn = styled.div`
+  text-align: center;
+  position: absolute;
+  bottom: -10px;
+  z-index: 2;
+  width: 100%;
+  > span {
+    background: #fff;
+    padding: 10px;
+    .dark & {
+      background: #191c20;
+    }
+  }
+`;
+
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary } = props;
+  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, showMore, toggleShow } = props;
 
   const history = useHistory();
 
@@ -89,6 +104,18 @@ const TeamListItem = (props) => {
         )}
         {member.type === "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
       </div>
+      {
+        showMoreButton && 
+        <ShowMoreBtn className="btn-toggle-show">
+          <span className="cursor-pointer" onClick={toggleShow}>{dictionary.showMore}</span>
+        </ShowMoreBtn>
+      }
+      {
+        showLessButton && 
+        <ShowMoreBtn className="btn-toggle-show">
+          <span className="cursor-pointer" onClick={toggleShow}>{dictionary.showLess}</span>
+        </ShowMoreBtn>
+      }
       {!hideOptions && (
         <MoreOptions moreButton="more-horizontal" scrollRef={parentRef}>
           {member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTeamLead}</div>}
