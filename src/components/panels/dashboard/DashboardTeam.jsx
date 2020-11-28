@@ -56,6 +56,8 @@ const DashboardTeam = (props) => {
   const {className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions} = props;
   const [scrollRef, setScrollRef] = useState(null);
 
+  const [showMore, setShowMore] = useState(false);
+
   const assignRef = useCallback((e) => {
     if (scrollRef === null) {
       setScrollRef(e);
@@ -66,6 +68,18 @@ const DashboardTeam = (props) => {
 
   const hideOptions = (isMember && isExternal) || workspace.active === 0;
   const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
+
+  const handleToggleShow = () => {
+    setShowMore(prevState => !prevState)
+  };
+
+  const slicedUsers = () => {
+    if (showMore) {
+      return members
+    } else {
+      return members.slice(0,5)
+    }
+  }
 
   return (
     <Wrapper className={`dashboard-team card ${className}`}>
@@ -79,10 +93,12 @@ const DashboardTeam = (props) => {
           <>{dictionary.emptyTeam}</>
           :
           <ul className="list-group list-group-flush">
-            {members.map((member) => {
+            {slicedUsers().map((member,i) => {
               return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick}
                                    hideOptions={hideOptions} actions={actions} workspace_id={workspace.id}
-                                   dictionary={dictionary}/>;
+                                   dictionary={dictionary} showMoreButton={i === 4 && members.length > 5 && !showMore}
+                                   showLessButton={i === members.length - 1 && members.length > 5 && showMore}
+                                   showMore={showMore} toggleShow={handleToggleShow}/>;
             })}
           </ul>}
       </div>

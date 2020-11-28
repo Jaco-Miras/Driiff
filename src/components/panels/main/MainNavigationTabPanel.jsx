@@ -283,8 +283,8 @@ const MainNavigationTabPanel = (props) => {
   const { _t } = useTranslation();
 
   const dictionary = {
-    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
-    people: _t("SIDEBAR.PEOPLE", "All People"),
+    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse workspaces"),
+    people: _t("SIDEBAR.PEOPLE", "All people"),
     workspace: _t("SIDEBAR.WORKSPACE", "Workspace"),
     workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
     chats: _t("SIDEBAR.CHATS", "Chats"),

@@ -58,6 +58,9 @@ const StyledQuillEditor = styled(QuillEditor)`
       border-color: rgba(122, 27, 139, 0.8);
     }
   }
+  .ql-editor.ql-blank::before {
+    ${(props) => props.showFileIcon && `left: 25px`};
+  }
   .ql-container {
     border: none;
   }

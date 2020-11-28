@@ -62,7 +62,7 @@ const ChatList = styled.li`
   position: relative;
   display: inline-block;
   width: 100%;
-  margin-bottom: ${(props) => props.isLastChat ? "15px" : "5px"};
+  margin-bottom: ${(props) => props.isLastChat ? "20px" : "5px"};
   text-align: center;
   .chat-actions-container {
     opacity: 0;
