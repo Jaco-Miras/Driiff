@@ -230,7 +230,7 @@ const ChatFooterPanel = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
     chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
-    headerUnarchive: _t("HEADER.UNARCHIVE", "Channel un-archive"),
+    headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
   }
 
   const handleUnarchive = () => {
