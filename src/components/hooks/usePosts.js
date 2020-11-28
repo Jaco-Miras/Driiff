@@ -119,7 +119,7 @@ const usePosts = () => {
     activeFilter = filter;
     activeFilters = filters;
     counters = {
-      all: Object.values(posts).length,
+      all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id)).length,
       my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
       starred: Object.values(posts).filter((p) => p.is_favourite).length,
       archived: Object.values(posts).filter((p) => p.is_archived).length,
@@ -145,7 +145,7 @@ const usePosts = () => {
             } else if (filter === "archive") {
               return p.is_archived === 1;
             } else if (filter === "all") {
-              return !p.is_archived;
+              return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id);
             } else if (filter === "new_reply") {
               return p.unread_reply_ids.length > 0;
             }
@@ -169,7 +169,7 @@ const usePosts = () => {
           } else if (sort === "unread") {
             return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
           } else {
-            return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
+            return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
           }
         });
 
