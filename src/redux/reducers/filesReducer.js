@@ -553,9 +553,10 @@ export default (state = INITIAL_STATE, action) => {
 
       action.data.files.forEach(f => {
         if (typeof companyFiles.items[f.id] === "undefined") {
-          companyFiles.count.all += 1;
-          companyFiles.count.stars += (f.is_favorite) ? 1 : 0;
-          companyFiles.count.storage += f.size;
+          //double count issue
+          // companyFiles.count.all += 1;
+          // companyFiles.count.stars += (f.is_favorite) ? 1 : 0;
+          // companyFiles.count.storage += f.size;
         }
 
         companyFiles.items[f.id] = f;
@@ -1574,23 +1575,23 @@ export default (state = INITIAL_STATE, action) => {
           workspaceFiles: newWorkspaceFiles,
         };
       } else {
-        let items = state.companyFiles.items;
+        let items = {...state.companyFiles.items};
 
         if (items[action.data.file_id]) {
           items[action.data.file_id].is_favorite = action.data.is_favorite;
         }
 
-        let favorite_files_items = state.companyFiles.favorite_files.items;
-        const index = favorite_files_items.findIndex(x => x.id === action.data.file_id);
-        if (index !== -1) {
-          if (action.data.is_favorite) {
-            favorite_files_items[index].is_favorite = action.data.is_favorite;
-          } else {
-            favorite_files_items.splice(index, 1);
-          }
-        } else if (action.data.is_favorite) {
-          favorite_files_items.push(items[action.data.file_id]);
-        }
+        // let favorite_files_items = state.companyFiles.favorite_files.items;
+        // const index = favorite_files_items.findIndex(x => x.id === action.data.file_id);
+        // if (index !== -1) {
+        //   if (action.data.is_favorite) {
+        //     favorite_files_items[index].is_favorite = action.data.is_favorite;
+        //   } else {
+        //     favorite_files_items.splice(index, 1);
+        //   }
+        // } else if (action.data.is_favorite) {
+        //   favorite_files_items.push(items[action.data.file_id]);
+        // }
 
         return {
           ...state,
@@ -1603,7 +1604,7 @@ export default (state = INITIAL_STATE, action) => {
             items: items,
             favorite_files: {
               ...state.companyFiles.favorite_files,
-              items: favorite_files_items
+              items: action.data.is_favorite ? [...state.companyFiles.favorite_files.items, action.data.file_id] : state.companyFiles.favorite_files.items.filter((id) => id !== action.data.file_id)
             }
           }
         };
