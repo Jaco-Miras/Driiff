@@ -18,12 +18,14 @@ const Wrapper = styled.li`
   transition: all 0.15s linear;
   min-height: 64px;
   max-height: 64px;
-  ${(props) => props.selected && `
+  ${(props) =>
+    props.selected &&
+    `
     background: #F0F0F050;
     padding: 0 25px !important;
     margin: 0 -25px;
   `}
-  
+
   .channel-info {
     width: 100%;
     max-width: calc(100% - 55px);
@@ -35,18 +37,18 @@ const Wrapper = styled.li`
     z-index: -1;
     background: transparent;
     border: 1px solid transparent;
-    svg {    
+    svg {
       transition: transform 0.5s;
     }
     &.more-options-active {
-      svg {        
-        transform: rotate(990deg);        
+      svg {
+        transform: rotate(990deg);
       }
     }
   }
   &:focus,
   &:hover {
-    background: #F0F0F050;
+    background: #f0f0f050;
     padding: 0 25px !important;
     margin: 0 -25px;
     .more-options {
@@ -79,7 +81,7 @@ const Wrapper = styled.li`
     }
   }
 
-  .chat-timestamp {    
+  .chat-timestamp {
     transition: opacity 0.3s ease;
     svg {
       margin-left: 4px;
@@ -90,7 +92,7 @@ const Wrapper = styled.li`
       &.feather-chevron-down {
         margin-left: 0;
       }
-    }    
+    }
   }
   .feather-more-horizontal {
     width: 25px;
@@ -105,7 +107,6 @@ const Wrapper = styled.li`
 const ChannelTitlePreview = styled.div``;
 
 const ChannelList = (props) => {
-
   const { className = "", channel, selectedChannel, channelDrafts, dictionary, show = false } = props;
 
   const channelActions = useChannelActions();
@@ -113,7 +114,7 @@ const ChannelList = (props) => {
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const refs = {
-    container: useRef(null)
+    container: useRef(null),
   };
 
   const handleSelectChannel = () => {
@@ -122,7 +123,7 @@ const ChannelList = (props) => {
     if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");
       if (scrollComponent) {
-        console.log('set historical');
+        console.log("set historical");
         channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
       }
     }
@@ -140,7 +141,7 @@ const ChannelList = (props) => {
   };
 
   const handleTouchEndChannel = (e) => {
-    if ((e.timeStamp - timerStart) <= 125) {
+    if (e.timeStamp - timerStart <= 125) {
       if (!(e.target && e.target.classList.contains("feather"))) {
         handleSelectChannel();
         setTimeout(() => {
@@ -157,7 +158,8 @@ const ChannelList = (props) => {
     let xDiff = xDown - xUp;
     let yDiff = yDown - yUp;
 
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+      /*most significant*/
       /* left swipe */
       if (xDiff > 0) {
         refs.container.current.focus();
@@ -173,33 +175,37 @@ const ChannelList = (props) => {
   };
 
   return (
-    <Wrapper ref={refs.container}
-             className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
-             selected={selectedChannel !== null && channel.id === selectedChannel.id}
-             onClick={handleSelectChannel} onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
-             onTouchMove={handleTouchMoveChannel}>
-      {
-        show && <>
-          <ChannelIcon channel={channel}/>
+    <Wrapper
+      ref={refs.container}
+      className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
+      selected={selectedChannel !== null && channel.id === selectedChannel.id}
+      onClick={handleSelectChannel}
+      onTouchStart={handleTouchStartChannel}
+      onTouchEnd={handleTouchEndChannel}
+      onTouchMove={handleTouchMoveChannel}
+    >
+      {show && (
+        <>
+          <ChannelIcon channel={channel} />
           <div className="channel-info">
             <ChannelTitlePreview className="channel-title-preview">
               {/* <ChannelTitle channel={channel} search={search}/> */}
               {/* <Timestamp className="text-right ml-auto"> */}
-              <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/>
+              <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} />
               {/* </Timestamp> */}
             </ChannelTitlePreview>
-            <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
+            <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} />
             <div className="d-flex">
               {channel.is_hidden && (
                 <>
-                  <Badge label="Hidden"/>
+                  <Badge label="Hidden" />
                 </>
               )}
               {/* <ChatIcon className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/> */}
             </div>
           </div>
         </>
-      }
+      )}
     </Wrapper>
   );
 };
