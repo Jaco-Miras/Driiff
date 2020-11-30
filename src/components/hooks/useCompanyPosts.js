@@ -141,7 +141,7 @@ const useCompanyPosts = () => {
     filter: filter,
     tag: tag,
     sort: sort,
-    post: filteredPosts.filter(p => p.id === parseInt(params.postId))[0],
+    post: Object.values(posts).filter(p => p.id === parseInt(params.postId))[0],
     search: search,
     user,
     count: count,

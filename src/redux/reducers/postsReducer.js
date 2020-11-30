@@ -433,6 +433,7 @@ export default (state = INITIAL_STATE, action) => {
             ...d.data,
             post_id: d.data.id,
             draft_id: d.id,
+            updated_at: d.data.created_at,
           })
         } else {
           return d;
