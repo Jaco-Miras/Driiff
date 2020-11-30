@@ -70,6 +70,7 @@ import {
   generateUnfurlReducer,
   getConnectedSlugs,
   getLatestReply,
+  getUnreadNotificationCounterEntries,
   incomingDoneToDo,
   incomingFavouriteItem,
   incomingRemoveToDo,
@@ -79,7 +80,7 @@ import {
   refetchOtherMessages,
   setBrowserTabStatus,
   setGeneralChat,
-  setUnreadNotificationCounterEntries
+  setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -536,6 +537,7 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
             this.props.incomingComment({...e, clap_user_ids: []});
+            this.props.getUnreadNotificationCounterEntries({add_unread_comment: 1});
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -1472,6 +1474,7 @@ function mapDispatchToProps(dispatch) {
     incomingPostRecipients: bindActionCreators(incomingPostRecipients, dispatch),
     refetchPosts: bindActionCreators(refetchPosts, dispatch),
     refetchPostComments: bindActionCreators(refetchPostComments, dispatch),
+    getUnreadNotificationCounterEntries: bindActionCreators(getUnreadNotificationCounterEntries, dispatch)
   };
 }
 
