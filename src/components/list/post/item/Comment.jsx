@@ -75,63 +75,62 @@ const Wrapper = styled.li`
       }
     }
   }
-  
-  
- .clap-count-wrapper {
-  position: relative;
-  
-  &:hover {
-    .read-users-container {
-      opacity: 1;
-      max-height: 300px;    
-    }
-  }
-  
-  .read-users-container {
-    position: absolute;
-    left: 22px;
-    z-index: 1;
-    bottom: 0;
-    border-radius: 8px;
-    opacity: 0;
-    max-height: 0;
-    transition: all 0.5s ease;
-    overflow-y: auto;
-    background: #fff;
-    border: 1px solid #fff;
-    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
-  
+
+  .clap-count-wrapper {
+    position: relative;
+
     &:hover {
-      max-height: 300px;
-      opacity: 1;    
-    }
-    
-    .dark & {
-      border: 1px solid #25282c;
-      background: #25282c;
-    }
-  
-    > span {
-      padding: 0.25rem 0.5rem 0.25rem 0.25rem;
-      display: flex;
-      justify-content: flex-start;
-      align-items: start;
-      
-      .avatar {
-        min-width: 1.5rem;
-        max-width: 1.5rem;
-        width: 1.5rem;
-        height: 1.5rem;
+      .read-users-container {
+        opacity: 1;
+        max-height: 300px;
       }
-      .name {
-        display: block;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
+    }
+
+    .read-users-container {
+      position: absolute;
+      left: 22px;
+      z-index: 1;
+      bottom: 0;
+      border-radius: 8px;
+      opacity: 0;
+      max-height: 0;
+      transition: all 0.5s ease;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #fff;
+      box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
+
+      &:hover {
+        max-height: 300px;
+        opacity: 1;
+      }
+
+      .dark & {
+        border: 1px solid #25282c;
+        background: #25282c;
+      }
+
+      > span {
+        padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: start;
+
+        .avatar {
+          min-width: 1.5rem;
+          max-width: 1.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+        .name {
+          display: block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
       }
     }
   }
- }
 `;
 
 const InputWrapper = styled.li`
@@ -140,12 +139,16 @@ const InputWrapper = styled.li`
 `;
 
 const CommentWrapper = styled.div`
+  img {
+    border-radius: 6px;
+    max-height: 250px;
+  }
   .comment-reaction {
     cursor: pointer;
   }
   .clap-true {
-    color: #f44;
-    fill: #f44;
+    color: #7a1b8b;
+    fill: #7a1b8b;
   }
 `;
 
@@ -196,7 +199,7 @@ const Comment = (props) => {
     input: useRef(null),
     body: useRef(null),
     main: useRef(null),
-    content: useRef(null)
+    content: useRef(null),
   };
 
   const history = useHistory();
@@ -215,7 +218,7 @@ const Comment = (props) => {
 
   // const [usersReacted, setUsersReacted] = useState(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
 
-  const likers =  Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id))
+  const likers = Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id));
 
   const handleShowInput = useCallback(
     (commentId = null) => {
@@ -278,38 +281,38 @@ const Comment = (props) => {
       reaction: "clap",
       counter: comment.user_clap_count === 0 ? 1 : 0,
       post_id: post.id,
-      parent_id: type === "main" ? null : parentId
+      parent_id: type === "main" ? null : parentId,
     };
     commentActions.clap(payload, (err, res) => {
       if (err) {
-        if (payload.counter === 1) commentActions.unlike(payload)
-        else commentActions.like(payload)
+        if (payload.counter === 1) commentActions.unlike(payload);
+        else commentActions.like(payload);
       }
     });
     if (comment.user_clap_count === 0) {
-      commentActions.like(payload)
+      commentActions.like(payload);
     } else {
-      commentActions.unlike(payload)
+      commentActions.unlike(payload);
     }
   };
 
   const { fromNow } = useTimeFormat();
 
   const handleInlineImageClick = (e) => {
-    let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc)
+    let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
     if (file) {
       dispatch(
         setViewFiles({
           file_id: file.id,
           files: comment.files,
         })
-      )
+      );
     }
-  }
+  };
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -319,7 +322,7 @@ const Comment = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
         }
-      })
+      });
     }
   }, [comment.body, refs.content, comment.files]);
 
@@ -359,32 +362,26 @@ const Comment = (props) => {
   return (
     <>
       <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
-        {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT"/>}
-        {comment.quote && <Quote quote={comment.quote} dictionary={dictionary}/>}
+        {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT" />}
+        {comment.quote && <Quote quote={comment.quote} dictionary={dictionary} />}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
-              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
-                      imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link}/>
+              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name} imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link} />
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
             {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
-                {comment.todo_reminder === null &&
-                <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
-                {user.id === comment.author.id &&
-                <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
+                {comment.todo_reminder === null && <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
+                {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
                 <div onClick={handleQuote}>{dictionary.quote}</div>
                 {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                {user.id === comment.author.id &&
-                <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
+                {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
               </MoreOptions>
             )}
           </CommentHeader>
-          {
-            comment.files.length > 0 && <PostVideos files={comment.files}/>
-          }
+          {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
           {comment.files.length >= 1 && (
             <>
@@ -395,23 +392,19 @@ const Comment = (props) => {
           )}
           <div className="d-flex align-items-center justify-content-start">
             <div className="clap-count-wrapper">
-              <Icon
-                className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
-                icon="thumbs-up" onClick={handleReaction}/>
+              <Icon className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="thumbs-up" onClick={handleReaction} />
               {comment.clap_count}
-              {
-                likers.length !== 0 && <span className="hover read-users-container">
-              {
-                likers.map(u => {
-                  return <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name}
-                            imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
-                            id={u.id}/> <span className="name">{u.name}</span>
-                  </span>;
-                })
-              }
-            </span>
-              }
+              {likers.length !== 0 && (
+                <span className="hover read-users-container">
+                  {likers.map((u) => {
+                    return (
+                      <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                      </span>
+                    );
+                  })}
+                </span>
+              )}
             </div>
             {!post.is_read_only && !disableOptions && (
               <Reply className="ml-3" onClick={handleShowInput}>
@@ -440,8 +433,7 @@ const Comment = (props) => {
       )}
       {showInput !== null && (
         <InputWrapper className="card">
-          {
-            isCompanyPost ? 
+          {isCompanyPost ? (
             <CompanyCommentInput
               innerRef={refs.input}
               user={user}
@@ -457,7 +449,7 @@ const Comment = (props) => {
               isMember={isMember}
               disableOptions={disableOptions}
             />
-            :
+          ) : (
             <CommentInput
               innerRef={refs.input}
               user={user}
@@ -473,7 +465,7 @@ const Comment = (props) => {
               isMember={isMember}
               disableOptions={disableOptions}
             />
-          }
+          )}
         </InputWrapper>
       )}
     </>
