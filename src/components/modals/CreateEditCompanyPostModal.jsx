@@ -584,9 +584,15 @@ const CreateEditCompanyPostModal = (props) => {
           id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
           post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
         };
-        dispatch(updateDraft(payload));
+        dispatch(updateDraft(payload, (err, res) => {
+          if (err) return;
+          toaster.success(<>Your post is still available as a draft</>);
+        }));
       } else {
-        dispatch(saveDraft(payload));
+        dispatch(saveDraft(payload, (err, res) => {
+          if (err) return;
+          toaster.success(<>Your post is still available as a draft</>);
+        }));
       }
     }
   };
