@@ -67,28 +67,28 @@ const MainBody = styled.div`
     margin-right: 3px;
     cursor: pointer;
   }
-  
+
   a {
     color: #7a1b8b;
     text-decoration: underline;
-    
-    .dark &{
-      color: #7a1b8b !important;    
+
+    .dark & {
+      color: #7a1b8b !important;
     }
   }
-  
-   .clap-count-wrapper {
+
+  .clap-count-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    
+
     &:hover {
       .read-users-container {
         opacity: 1;
-        max-height: 300px;    
+        max-height: 300px;
       }
     }
-    
+
     .read-users-container {
       position: absolute;
       left: 22px;
@@ -100,25 +100,25 @@ const MainBody = styled.div`
       transition: all 0.5s ease;
       overflow-y: auto;
       border: 1px solid #fff;
-      box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+      box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
       background: #fff;
-    
+
       &:hover {
         max-height: 300px;
-        opacity: 1;    
+        opacity: 1;
       }
-      
+
       .dark & {
         border: 1px solid #25282c;
         background: #25282c;
       }
-    
+
       > span {
         padding: 0.25rem 0.5rem 0.25rem 0.25rem;
         display: flex;
         justify-content: flex-start;
         align-items: start;
-        
+
         .avatar {
           min-width: 1.5rem;
           max-width: 1.5rem;
@@ -132,65 +132,65 @@ const MainBody = styled.div`
           overflow: hidden;
         }
       }
-    }   
-   }
-  
+    }
+  }
+
   .user-reads-container {
     position: relative;
     display: inline-flex;
     margin-right: 0.5rem;
-    
+
     .read-users-container {
       transition: all 0.5s ease;
       position: absolute;
       right: 0;
-      bottom: 30px;  
+      bottom: 30px;
       border: 1px solid #dee2e6;
       border-radius: 6px;
       background-color: #fff;
       overflow: auto;
       opacity: 0;
       max-height: 0;
-      
+
       &:hover {
         opacity: 1;
-        max-height: 165px;  
+        max-height: 165px;
       }
-      
+
       .dark & {
         background-color: #25282c;
         border: 1px solid #25282c;
       }
-      
+
       > span {
         padding: 0.5rem;
         display: flex;
         justify-content: flex-start;
         align-items: center;
-      
+
         .avatar {
           img {
             min-width: 2.3rem;
           }
         }
-      
+
         .name {
           width: 100%;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          display: block;      
+          display: block;
         }
       }
     }
   }
-  
-  .user-reads-container {         
+
+  .user-reads-container {
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
       max-height: 165px;
-    }                  
-  }  
+    }
+  }
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
@@ -224,6 +224,10 @@ const Counters = styled.div`
   .post-reaction {
     cursor: pointer;
   }
+  img {
+    border-radius: 6px;
+    max-height: 250px;
+  }
   .clap-true {
     color: #f44;
     fill: #f44;
@@ -240,7 +244,7 @@ const Counters = styled.div`
           right: -75px;
         }
         &.read-by {
-          width: 100%;        
+          width: 100%;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -249,7 +253,7 @@ const Counters = styled.div`
           }
         }
       }
-    }   
+    }
   }
 `;
 
@@ -280,7 +284,6 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-
   const { post, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
 
@@ -292,13 +295,13 @@ const CompanyPostDetail = (props) => {
 
   const { comments } = useComments(post);
 
-  const hasRead = readByUsers.some(u => u.id === user.id);
+  const hasRead = readByUsers.some((u) => u.id === user.id);
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
   const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
 
-  const likers =  Object.values(users).filter((u) => post.clap_user_ids.some((id) => id === u.id))
+  const likers = Object.values(users).filter((u) => post.clap_user_ids.some((id) => id === u.id));
 
   const handleClosePost = () => {
     onGoBack();
@@ -378,23 +381,22 @@ const CompanyPostDetail = (props) => {
   };
 
   const handleReaction = () => {
-
     let payload = {
       post_id: post.id,
       id: null,
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
     };
-    postActions.clap(payload, (err,res) => {
+    postActions.clap(payload, (err, res) => {
       if (err) {
-        if (payload.clap === 1) postActions.unlike(payload)
-        else postActions.like(payload)
+        if (payload.clap === 1) postActions.unlike(payload);
+        else postActions.like(payload);
       }
     });
     if (post.user_clap_count === 0) {
-      postActions.like(payload)
+      postActions.like(payload);
     } else {
-      postActions.unlike(payload)
+      postActions.unlike(payload);
     }
   };
 
@@ -414,70 +416,61 @@ const CompanyPostDetail = (props) => {
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
 
-    postActions.getUnreadNotificationEntries({add_unread_comment: 1})
+    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     // postActions.getUnreadPostsCount();
   }, []);
 
-  const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1})
+  const privateWsOnly = post.recipients.filter((r) => {
+    return r.type === "TOPIC" && r.private === 1;
+  });
 
   return (
     <>
-      {
-        post.todo_reminder !== null &&
-        <ReminderNote todoReminder={post.todo_reminder} type="POST"/>
-      }
+      {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
       <MainHeader className="card-header d-flex justify-content-between">
         <div>
           <ul>
             <li>
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
             </li>
             <li>
               <h5 ref={refs.title} className="post-title mb-0">
-                <span>{post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off"/>}{post.title}</span>
+                <span>
+                  {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
+                  {post.title}
+                </span>
               </h5>
             </li>
           </ul>
         </div>
-        {
-          privateWsOnly.length === post.recipients.length &&
+        {privateWsOnly.length === post.recipients.length && (
           <div>
             <span>{dictionary.messageInSecureWs}</span>
           </div>
-        }
+        )}
         <div>
           {post.author.id === user.id && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2"
-                     title="" data-toggle="tooltip" data-original-title="Edit Task">
-                    <Icon icon="edit-3"/>
+                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
+                    <Icon icon="edit-3" />
                   </a>
                 </span>
               </li>
               <li>
-                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
-                   title="" data-original-title="Delete Task">
-                  <Icon icon="trash"/>
+                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
+                  <Icon icon="trash" />
                 </a>
               </li>
             </ul>
           )}
           <div>
             <StyledMoreOptions className="ml-2" item={post} width={220} moreButton={"more-horizontal"}>
-              {
-                post.todo_reminder === null &&
-                <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
-              }
-              {
-                post.is_unread === 0 ?
-                  <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> :
-                  <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
-              }
+              {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
+              {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-              {post.author.id !== user.id &&
-              <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+              {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             </StyledMoreOptions>
           </div>
         </div>
@@ -492,14 +485,9 @@ const CompanyPostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody
-          post={post}
-          user={user}
-          postActions={postActions}
-          isAuthor={post.author.id === user.id}
-          dictionary={dictionary}/>
+        <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
+          {post.author.id !== user.id && post.is_must_read && !hasRead && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
@@ -507,82 +495,74 @@ const CompanyPostDetail = (props) => {
             </MarkAsRead>
           )}
         </div>
-        <hr className="m-0"/>
+        <hr className="m-0" />
         <Counters className="d-flex align-items-center">
           <div className="clap-count-wrapper d-none d-sm-flex">
-            <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
-                  icon="thumbs-up" onClick={handleReaction}/>
+            <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"} icon="thumbs-up" onClick={handleReaction} />
             {post.clap_count}
-            {
-              likers.length !== 0 && <span className="hover read-users-container">
-              {
-                likers.map(u => {
-                  return <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name}
-                            imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
-                            id={u.id}/> <span className="name">{u.name}</span>
-                  </span>;
-                })
-              }
-            </span>
-            }
+            {likers.length !== 0 && (
+              <span className="hover read-users-container">
+                {likers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            )}
           </div>
           <div className="readers-container ml-auto text-muted">
-            {
-              readByUsers.length > 0 &&
+            {readByUsers.length > 0 && (
               <div className="user-reads-container read-by">
-                {hasRead &&
-                <span className="mr-2"><Icon className="mr-2" icon="check"/> {dictionary.alreadyReadThis}</span>}
+                {hasRead && (
+                  <span className="mr-2">
+                    <Icon className="mr-2" icon="check" /> {dictionary.alreadyReadThis}
+                  </span>
+                )}
                 <span className="no-readers">{dictionary.readByNumberofUsers}</span>
                 <span className="hover read-users-container">
-                  {
-                    readByUsers.map(u => {
-                      return <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name}
-                                imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
-                                id={u.id}/> <span className="name">{u.name}</span>
-                      </span>;
-                    })
-                  }
+                  {readByUsers.map((u) => {
+                    return (
+                      <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                      </span>
+                    );
+                  })}
                 </span>
               </div>
-            }
+            )}
             <div className="clap-count-wrapper d-sm-none">
-              <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
-                    icon="thumbs-up" onClick={handleReaction}/>
+              <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"} icon="thumbs-up" onClick={handleReaction} />
               {post.clap_count}
-              {
-                likers.length !== 0 && <span className="hover read-users-container">
-              {
-                likers.map(u => {
-                  return <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name}
-                            imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
-                            id={u.id}/> <span className="name">{u.name}</span>
-                  </span>;
-                })
-              }
-            </span>
-              }
+              {likers.length !== 0 && (
+                <span className="hover read-users-container">
+                  {likers.map((u) => {
+                    return (
+                      <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                      </span>
+                    );
+                  })}
+                </span>
+              )}
             </div>
-            <Icon className="mr-2" icon="message-square"/>
+            <Icon className="mr-2" icon="message-square" />
             {post.reply_count}
             {
               <div className="user-reads-container">
                 <span className="no-readers">
-                  <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
+                  <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
                   {post.view_user_ids.length}
                 </span>
                 <span className="hover read-users-container">
-                  {
-                    viewers.map(u => {
-                      return <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name}
-                                imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
-                                id={u.id}/> <span className="name">{u.name}</span>
-                      </span>;
-                    })
-                  }
+                  {viewers.map((u) => {
+                    return (
+                      <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                      </span>
+                    );
+                  })}
                 </span>
               </div>
             }
@@ -592,21 +572,18 @@ const CompanyPostDetail = (props) => {
           <>
             <div className="card-body">
               <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
-              <PostFiles attachedFiles={post.files} type="company" post={post}/>
+              <PostFiles attachedFiles={post.files} type="company" post={post} />
             </div>
-            <hr className="m-0"/>
+            <hr className="m-0" />
           </>
         )}
         {comments && Object.keys(comments).length > 0 && (
           <>
-            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions}
-                                 onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}
-                                 dictionary={dictionary}/>
-            <hr className="m-0"/>
+            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} />
+            <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions}
-                                 onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
+        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
       </MainBody>
     </>
   );
