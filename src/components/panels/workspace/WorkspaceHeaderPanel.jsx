@@ -121,9 +121,9 @@ const NavBar = styled.ul`
     }
     svg.feather-compass {
       color: rgb(80, 80, 80);
-      
+
       .dark & {
-        color: #fff;    
+        color: #fff;
       }
     }
   }
@@ -151,24 +151,24 @@ const WorkspaceName = styled.h2`
 `;
 
 const WorkspacePageTitle = styled.h2`
-    letter-spacing: 0;
-    margin-bottom: 0;
-    color: rgb(80, 80, 80);
-    font-weight: 500;
-    font-size: 20px;
-    margin-right: 2px;
+  letter-spacing: 0;
+  margin-bottom: 0;
+  color: rgb(80, 80, 80);
+  font-weight: 500;
+  font-size: 20px;
+  margin-right: 2px;
 
-    .dark & {
-      color: #fff;    
-    }
+  .dark & {
+    color: #fff;
+  }
 
-    svg {
-      color: #64625c;
-    }
+  svg {
+    color: #64625c;
+  }
 
-    @media all and (max-width: 620px) {
-      font-size: 16px;
-    }
+  @media all and (max-width: 620px) {
+    font-size: 16px;
+  }
 `;
 
 const WorkspaceWrapper = styled.span`
@@ -232,15 +232,20 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const WorspaceHeaderPanel = (props) => {
-  const {isExternal} = props;
+  const { isExternal } = props;
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const {activeTopic, folders} = useSelector((state) => state.workspaces);
-  const {driff, user: {GENERAL_SETTINGS: {dark_mode}}} = useSelector((state) => state.settings);
+  const { activeTopic, folders } = useSelector((state) => state.workspaces);
+  const {
+    driff,
+    user: {
+      GENERAL_SETTINGS: { dark_mode },
+    },
+  } = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -257,7 +262,7 @@ const WorspaceHeaderPanel = (props) => {
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
-      mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode")
+      mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode"),
     }),
     actionWorkspaceNewWorkspace: _t("ACTION.NEW_WORKSPACE", "New workspace"),
     actionWorkspaceInvite: _t("ACTION.INVITE_WORKSPACE", "Invite"),
@@ -265,9 +270,9 @@ const WorspaceHeaderPanel = (props) => {
     statusWorkspacePrivate: _t("WORKSPACE.STATUS_PRIVATE", "Private"),
     statusWorkspaceArchived: _t("WORKSPACE.STATUS_ARCHIVED", "Archived"),
     toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
-      topic_name: activeTopic ? `<b>#{activeTopic.name}</b>` : ""
-    })
-  }
+      topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
+    }),
+  };
 
   const actions = useWorkspaceSearchActions();
 
@@ -305,9 +310,7 @@ const WorspaceHeaderPanel = (props) => {
         },
         (err, res) => {
           if (err) return;
-          toaster.success(
-            <span dangerouslySetInnerHTML={{__html: dictionary.toasterJoinWorkspace}}/>
-          );
+          toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterJoinWorkspace }} />);
         }
       )
     );
@@ -348,8 +351,7 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
 
-    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspacePosts,
-      dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
+    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspacePosts, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
       body.classList.remove("stretch-layout");
     } else {
       body.classList.add("stretch-layout");
@@ -372,11 +374,11 @@ const WorspaceHeaderPanel = (props) => {
             <>
               <li className="nav-item navigation-toggler mobile-toggler">
                 <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                  <SvgIconFeather icon="menu"/>
+                  <SvgIconFeather icon="menu" />
                 </a>
               </li>
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
-                <SvgIconFeather className="mr-2" icon="compass"/>
+                <SvgIconFeather className="mr-2" icon="compass" />
                 <WorkspacePageTitle>{dictionary.allWorkspaces}</WorkspacePageTitle>
               </li>
             </>
@@ -403,29 +405,21 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar
-                            forceThumbnail={false}
-                            type={activeTopic.type}
-                            imageLink={activeTopic.channel.icon_link}
-                            id={`ws_${activeTopic.id}`}
-                            name={activeTopic.name}
-                            noDefaultClick={false}
-                          />
+                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/>}
+                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspacePrivate}</div>
+                          <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (
                         <li className="nav-item">
-                          <div
-                            className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspaceArchived}</div>
+                          <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
@@ -449,29 +443,21 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar
-                            forceThumbnail={false}
-                            type={activeTopic.type}
-                            imageLink={activeTopic.channel.icon_link}
-                            id={`ws_${activeTopic.id}`}
-                            name={activeTopic.name}
-                            noDefaultClick={false}
-                          />
+                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/>}
+                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspacePrivate}</div>
+                          <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (
                         <li className="nav-item">
-                          <div
-                            className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspaceArchived}</div>
+                          <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
@@ -518,7 +504,7 @@ const WorspaceHeaderPanel = (props) => {
             <>
               <li className="nav-item">
                 <WorkspaceButton onClick={handleShowWorkspaceModal}>
-                  {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus"/>
+                  {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus" />
                 </WorkspaceButton>
               </li>
             </>
@@ -526,7 +512,7 @@ const WorspaceHeaderPanel = (props) => {
         </NavBar>
       </NavBarLeft>
       <div>
-        <HeaderProfileNavigation dictionary={dictionary}/>
+        <HeaderProfileNavigation dictionary={dictionary} />
       </div>
     </>
   );
