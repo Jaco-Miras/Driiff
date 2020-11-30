@@ -5,7 +5,7 @@ import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter, PostVideos } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
-import { useGoogleApis, useTimeFormat } from "../../../hooks";
+import { useGoogleApis, useTimeFormat, useFiles } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
@@ -202,6 +202,7 @@ const Comment = (props) => {
     content: useRef(null),
   };
 
+  const { fileBlobs, actions: { setFileSrc } } = useFiles();
   const history = useHistory();
   const googleApis = useGoogleApis();
 
@@ -222,7 +223,6 @@ const Comment = (props) => {
 
   const handleShowInput = useCallback(
     (commentId = null) => {
-      console.log(commentId);
       if (parentShowInput) {
         parentShowInput(commentId);
       } else {
@@ -310,6 +310,8 @@ const Comment = (props) => {
     }
   };
 
+  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
+
   useEffect(() => {
     if (refs.content.current) {
       const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
@@ -318,18 +320,66 @@ const Comment = (props) => {
       });
       const images = refs.content.current.querySelectorAll("img");
       images.forEach((img) => {
+        const imgSrc = img.getAttribute("src");
         if (!img.classList.contains("has-listener")) {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
+          const imgFile = comment.files.find((f) => imgSrc.includes(f.code))
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id])
+          }
+        } else {
+          const imgFile = comment.files.find((f) => imgSrc.includes(f.code))
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id])
+          }
         }
-      });
+      })
+    }
+    const imageFiles = comment.files.filter((f) => f.type.toLowerCase().includes("image"))
+    
+    if (imageFiles.length) {
+      imageFiles.forEach((file) => {
+        if (!fileBlobs[file.id] && comment.body.includes(file.code)) {
+          //setIsLoaded(false);
+          fetch(file.view_link, {
+            method: "GET", keepalive: true, headers: {
+              Authorization: `Bearer ${userAuth.access_token}`,
+              'Access-Control-Allow-Origin': "*",
+              Connection: "keep-alive",
+              crossorigin: true,
+            }
+          })
+            .then(function (response) {
+              return response.blob();
+            })
+            .then(function (data) {
+              const imgObj = URL.createObjectURL(data);
+              setFileSrc({
+                id: file.id,
+                src: imgObj
+              });
+              commentActions.updateCommentImages({
+                post_id: post.id,
+                id: comment.id,
+                parent_id: type === "main" ? null : parentId,
+                file: {
+                  ...file,
+                  blobUrl: imgObj
+                }
+              })
+            }, function (err) {
+              console.log(err, 'error');
+            });
+        }
+      })
     }
   }, [comment.body, refs.content, comment.files]);
 
   useEffect(() => {
     inputFocus();
   }, [inputFocus]);
-
+  
   useEffect(() => {
     if (typeof history.location.state === "object") {
       if (history.location.state && history.location.state.focusOnMessage === comment.id && refs.body.current) {

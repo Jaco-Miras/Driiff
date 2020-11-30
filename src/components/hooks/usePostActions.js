@@ -42,6 +42,7 @@ import {
   setPostToggleFollow,
   starPostReducer,
   updateCompanyPostFilterSort,
+  updatePostFiles,
 } from "../../redux/actions/postActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
@@ -764,6 +765,15 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const updatePostImages = useCallback(
+    (payload = {}) => {
+      dispatch(
+        updatePostFiles(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     addUserToPost,
     starPost,
@@ -796,6 +806,7 @@ const usePostActions = () => {
     like,
     unlike,
     fetchPostDetail,
+    updatePostImages
   };
 };
 

@@ -365,7 +365,7 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
   }, [match.params.page, dispatch, activeTopic]);
-  console.log(activeTopic);
+  
   return (
     <>
       <NavBarLeft className="navbar-left">
