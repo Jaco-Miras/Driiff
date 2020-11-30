@@ -43,7 +43,7 @@ const useInitialLoad = () => {
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
-      dispatch(getDrafts());
+      // dispatch(getDrafts());
     }
     fetchChannels(fetchChannelCb);
   }, []);
