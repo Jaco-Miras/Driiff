@@ -138,7 +138,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
             if (data.author.id === user.id && data.removed_members[0] === user.id) {
               newBody = (
                 <>
-                  {selectedChannel.type === "TOPIC" ? dictionary.youLeftWorkspace : dictionary.youLeftChat}{" "}
+                  <b>{dictionary.you}</b>{" "}{selectedChannel.type === "TOPIC" ? dictionary.leftTheWorkspace : dictionary.leftTheChat}{" "}
                 </>
               );
             } else {
