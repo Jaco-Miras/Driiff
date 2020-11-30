@@ -19,7 +19,7 @@ const INITIAL_STATE = {
     unread_channel: 0,
     unread_posts: 0,
     general_post: 0,
-    generate_post_comment: 0
+    generate_post_comment: 0,
   },
   socketMounted: false,
   searchValue: "",
@@ -38,8 +38,8 @@ const INITIAL_STATE = {
       overdue: 0,
       done: 0,
     },
-    items: {}
-  }
+    items: {},
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -53,7 +53,14 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_ALL_RECIPIENTS_SUCCESS": {
       return {
         ...state,
-        recipients: action.data.recipients.filter((r) => r.name !== null),
+        recipients: action.data.recipients.filter((r) => {
+          if (typeof r.name === "string" || r.name instanceof String) {
+            return true;
+          } else {
+            console.log(r.name);
+            return false;
+          }
+        }),
       };
     }
     case "SET_NAV_MODE": {
@@ -102,7 +109,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         user: action.data,
-        socketMounted: true
+        socketMounted: true,
       };
     }
     case "GET_TRANSLATION_OBJECT_SUCCESS": {
@@ -136,9 +143,9 @@ export default (state = INITIAL_STATE, action) => {
         ...(unreadType !== "" && {
           unreadCounter: {
             ...state.unreadCounter,
-            [unreadType]: state.unreadCounter[unreadType] + action.data.count
+            [unreadType]: state.unreadCounter[unreadType] + action.data.count,
           },
-        })
+        }),
       };
     }
     case "UPDATE_UNREAD_LIST_COUNTER": {
@@ -157,37 +164,38 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SEARCH_SUCCESS": {
-      let tabs = {...state.tabs};
+      let tabs = { ...state.tabs };
       if (action.data.hasOwnProperty("count_category")) {
         let keys = Object.keys(action.data.count_category);
-        keys.sort((a,b) => a.localeCompare(b)).map((k) => {
-          let items = action.data.result.filter((r) => r.type === k);
-          if (action.data.count_category[k] > 0) {
-            tabs[k] = {
-              count: items.length,
-              total_count: action.data.count_category[k],
-              page: 1,
-              items: items,
-              maxPage: Math.ceil(action.data.count_category[k] / 10)
+        keys
+          .sort((a, b) => a.localeCompare(b))
+          .map((k) => {
+            let items = action.data.result.filter((r) => r.type === k);
+            if (action.data.count_category[k] > 0) {
+              tabs[k] = {
+                count: items.length,
+                total_count: action.data.count_category[k],
+                page: 1,
+                items: items,
+                maxPage: Math.ceil(action.data.count_category[k] / 10),
+              };
             }
-          }
-        })
+          });
       } else {
         if (action.data.result.length) {
           let category = action.data.result[0].type;
           let items = action.data.result.filter((r) => r.type === category);
-          tabs[category].count = items.length + tabs[category].count
-          tabs[category].items = [...tabs[category].items, ...action.data.result]
+          tabs[category].count = items.length + tabs[category].count;
+          tabs[category].items = [...tabs[category].items, ...action.data.result];
         }
       }
       return {
         ...state,
-        searchResults: action.data.result.length ? {...state.searchResults, ...convertArrayToObject(action.data.result, "id")}
-                      : {},
+        searchResults: action.data.result.length ? { ...state.searchResults, ...convertArrayToObject(action.data.result, "id") } : {},
         searchCount: action.data.hasOwnProperty("count_category") ? action.data.total_result : state.searchCount,
         searching: false,
-        tabs: tabs
-      }
+        tabs: tabs,
+      };
     }
     case "SAVE_SEARCH_INPUT": {
       return {
@@ -196,47 +204,47 @@ export default (state = INITIAL_STATE, action) => {
         searchCount: 0,
         searchResults: {},
         searching: action.data.value !== "",
-        tabs: {}
-      }
+        tabs: {},
+      };
     }
     case "UPDATE_TAB": {
       return {
         ...state,
         tabs: {
           ...state.tabs,
-          [action.data.key]: action.data
-        }
-      }
+          [action.data.key]: action.data,
+        },
+      };
     }
     case "GET_QUICK_LINKS_SUCCESS": {
       return {
         ...state,
-        links: action.data
-      }
+        links: action.data,
+      };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
       let count = state.todos.count;
 
-      action.data.forEach(d => {
+      action.data.forEach((d) => {
         count[d.status.toLowerCase()] = d.count;
-      })
+      });
 
       return {
         ...state,
         todos: {
           ...state.todos,
-          count: count
-        }
-      }
+          count: count,
+        },
+      };
     }
     case "GET_TO_DO_SUCCESS": {
       let items = state.todos.items;
-      action.data.todos.forEach(t => {
+      action.data.todos.forEach((t) => {
         items[t.id] = t;
 
         switch (t.link_type) {
           case "CHAT": {
-            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`
+            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
             break;
           }
           case "POST": {
@@ -265,9 +273,9 @@ export default (state = INITIAL_STATE, action) => {
           isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
           limit: state.todos.limit + state.todos.limit,
-          items: items
-        }
-      }
+          items: items,
+        },
+      };
     }
     case "INCOMING_TO_DO": {
       let items = state.todos.items;
@@ -275,12 +283,14 @@ export default (state = INITIAL_STATE, action) => {
 
       switch (action.data.link_type) {
         case "CHAT": {
-          items[action.data.id].link = `/chat/${action.data.data.channel.code}/${action.data.data.chat_message.code}`
+          items[action.data.id].link = `/chat/${action.data.data.channel.code}/${action.data.data.chat_message.code}`;
           break;
         }
         case "POST": {
           if (action.data.data.workspaces.length) {
-            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
+            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title
+              .toLowerCase()
+              .replace(" ", "-")}`;
           } else {
             items[action.data.id].link = `/posts/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
           }
@@ -288,7 +298,9 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "POST_COMMENT": {
           if (action.data.data.workspaces.length) {
-            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}/${action.data.data.comment.code}`;
+            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title
+              .toLowerCase()
+              .replace(" ", "-")}/${action.data.data.comment.code}`;
           } else {
             items[action.data.id].link = `/posts/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}/${action.data.data.comment.code}`;
           }
@@ -302,11 +314,11 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           count: {
             ...state.todos.count,
-            [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1
+            [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1,
           },
-          items: items
-        }
-      }
+          items: items,
+        },
+      };
     }
     case "INCOMING_UPDATE_TO_DO": {
       let items = state.todos.items;
@@ -319,7 +331,7 @@ export default (state = INITIAL_STATE, action) => {
 
         items[action.data.id] = {
           ...items[action.data.id],
-          ...action.data
+          ...action.data,
         };
       }
       return {
@@ -327,9 +339,9 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           count: count,
-          items: items
-        }
-      }
+          items: items,
+        },
+      };
     }
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
@@ -349,9 +361,9 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           count: count,
-          items: items
-        }
-      }
+          items: items,
+        },
+      };
     }
     case "INCOMING_REMOVE_TO_DO": {
       let items = state.todos.items;
@@ -367,9 +379,9 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           count: count,
-          items: items
-        }
-      }
+          items: items,
+        },
+      };
     }
     case "GET_UNREAD_POST_ENTRIES_SUCCESS": {
       return {
@@ -378,44 +390,44 @@ export default (state = INITIAL_STATE, action) => {
           ...state.unreadCounter,
           general_post: action.data.result,
           unread_posts: action.data.result,
-        }
-      }
+        },
+      };
     }
     case "GET_UNREAD_POST_COMMENTS_SUCCESS": {
       return {
         ...state,
         unreadCounter: {
           ...state.unreadCounter,
-          generate_post_comment: action.data.result
-        }
-      }
+          generate_post_comment: action.data.result,
+        },
+      };
     }
     case "READ_ALL_POSTS": {
       if (action.data.topic_id) return state;
-      let unreadCounter = {...state.unreadCounter};
+      let unreadCounter = { ...state.unreadCounter };
       unreadCounter = {
         ...unreadCounter,
         general_post: 0,
         unread_posts: 0,
         workspace_post: 0,
-      }
+      };
       return {
         ...state,
-        unreadCounter: unreadCounter
+        unreadCounter: unreadCounter,
       };
     }
     case "ARCHIVE_ALL_POSTS": {
       if (action.data.topic_id) return state;
-      let unreadCounter = {...state.unreadCounter};
+      let unreadCounter = { ...state.unreadCounter };
       unreadCounter = {
         ...unreadCounter,
         general_post: 0,
         unread_posts: 0,
         workspace_post: 0,
-      }
+      };
       return {
         ...state,
-        unreadCounter: unreadCounter
+        unreadCounter: unreadCounter,
       };
     }
     default:

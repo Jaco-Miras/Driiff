@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   viewedProfile: null,
   onlineUsers: [],
   mentions: {},
-  roles: {}
+  roles: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -18,7 +18,7 @@ export default (state = INITIAL_STATE, action) => {
       let user = {
         contact: "",
         active: 1,
-        ...action.data
+        ...action.data,
       };
       delete user["SOCKET_TYPE"];
 
@@ -26,13 +26,16 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         users: {
           ...state.users,
-          [user.id]: user
+          [user.id]: {
+            ...user,
+            name: user.name.toString(),
+          },
         },
         mentions: {
           ...state.mentions,
-          [user.id]: user
-        }
-      }
+          [user.id]: user,
+        },
+      };
     }
     case "ADD_USER_TO_REDUCERS": {
       return {
@@ -61,12 +64,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_USERS_SUCCESS":
-      let users = {...state.users};
-      let mentions = { ...state.mentions};
+      let users = { ...state.users };
+      let mentions = { ...state.mentions };
       action.data.users.forEach((item) => {
         users[item.id] = {
           ...users[item.id],
           ...item,
+          name: item.name.toString(),
         };
         mentions[item.id] = {
           ...mentions[item.id],
@@ -104,6 +108,7 @@ export default (state = INITIAL_STATE, action) => {
           [id]: {
             id: id,
             ...user,
+            name: user.name.toString(),
             loaded: true,
           },
         },
@@ -120,6 +125,7 @@ export default (state = INITIAL_STATE, action) => {
             id: id,
             ...state.users[id],
             ...userData,
+            name: userData.name.toString(),
           },
         },
       };
@@ -134,7 +140,7 @@ export default (state = INITIAL_STATE, action) => {
           first_name: action.data.first_name,
           middle_name: action.data.middle_name,
           last_name: action.data.last_name,
-          name: action.data.name,
+          name: action.data.name.toString(),
           email: action.data.email,
           active: action.data.active,
           profile_image_link: action.data.profile_image_link,
@@ -167,6 +173,7 @@ export default (state = INITIAL_STATE, action) => {
       if (Object.keys(state.users).length) {
         updatedUsers[action.data.current_user.id] = {
           ...action.data.current_user,
+          name: action.data.current_user.name.toString(),
           address: "",
           role: null,
           designation: "",
@@ -192,14 +199,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_ROLES_SUCCESS": {
-      let roles = {...state.roles};
+      let roles = { ...state.roles };
       action.data.forEach((role) => {
-        roles[role.name] = role.id
+        roles[role.name] = role.id;
       });
       return {
         ...state,
-        roles: roles
-      }
+        roles: roles,
+      };
     }
     case "INCOMING_USER_ROLE": {
       return {
@@ -211,11 +218,11 @@ export default (state = INITIAL_STATE, action) => {
             role: {
               ...state.users[action.data.user_id].role,
               name: action.data.role.name,
-              display_name: action.data.role.name === "admin" ? "Site Admin" : "Employee"
-            }
-          }
-        }
-      }
+              display_name: action.data.role.name === "admin" ? "Site Admin" : "Employee",
+            },
+          },
+        },
+      };
     }
     default:
       return state;

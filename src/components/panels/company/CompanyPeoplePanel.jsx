@@ -6,18 +6,18 @@ import { useTranslation, useUserChannels } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 
 const Wrapper = styled.div`
-overflow: auto;
-&::-webkit-scrollbar {
-  display: none;
-}
--ms-overflow-style: none;
-scrollbar-width: none;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
-.people-search {
-  flex: 0 0 80%;
-  justify-content: flex-start;
-  padding-left: 0;
-}
+  .people-search {
+    flex: 0 0 80%;
+    justify-content: flex-start;
+    padding-left: 0;
+  }
 `;
 
 const Search = styled(SearchForm)`
@@ -32,7 +32,7 @@ const Search = styled(SearchForm)`
 `;
 
 const CompanyPeoplePanel = (props) => {
-  const {className = ""} = props;
+  const { className = "" } = props;
 
   const { users, loggedUser, selectUserChannel } = useUserChannels();
 
@@ -74,47 +74,40 @@ const CompanyPeoplePanel = (props) => {
 
   const userSort = Object.values(users)
     .sort((a, b) => {
-      return a.name.localeCompare(b.name);
+      return a.name.toString().localeCompare(b.name);
     })
     .filter((user) => {
-      if (["gripp_project_bot",
-        "gripp_account_activation",
-        "gripp_offerte_bot",
-        "gripp_invoice_bot",
-        "gripp_police_bot",
-        "driff_webhook_bot"].includes(user.email)) return false;
+      if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
 
       if (user.type !== "internal") return false;
       if (user.active !== 1) return false;
 
       if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) === -1
-          && user.email.toLowerCase().search(search.toLowerCase()) === -1)
-          return false;
+        if (user.name.toLowerCase().search(search.toLowerCase()) === -1 && user.email.toLowerCase().search(search.toLowerCase()) === -1) return false;
       }
 
       return true;
-    })
-    // .filter((user) => {
-    //   if (!userChannels.hasOwnProperty(user.id))
-    //     return false;
+    });
+  // .filter((user) => {
+  //   if (!userChannels.hasOwnProperty(user.id))
+  //     return false;
 
-    //   if (user.type !== "internal")
-    //     return false;
+  //   if (user.type !== "internal")
+  //     return false;
 
-    //   if (user.active !== 1)
-    //     return false;
+  //   if (user.active !== 1)
+  //     return false;
 
-    //   if (search !== "") {
-    //     if (search !== "") {
-    //       if (user.name.toLowerCase().search(search.toLowerCase()) === -1
-    //         && user.email.toLowerCase().search(search.toLowerCase()) === -1)
-    //         return false;
-    //     }
-    //   }
+  //   if (search !== "") {
+  //     if (search !== "") {
+  //       if (user.name.toLowerCase().search(search.toLowerCase()) === -1
+  //         && user.email.toLowerCase().search(search.toLowerCase()) === -1)
+  //         return false;
+  //     }
+  //   }
 
-    //   return true;
-    // });
+  //   return true;
+  // });
 
   const { _t } = useTranslation();
 
@@ -128,7 +121,7 @@ const CompanyPeoplePanel = (props) => {
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
         <div className="card-body">
-            <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
+          <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
           <div className="row">
             {userSort.map((user) => {
               return <PeopleListItem loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} />;
