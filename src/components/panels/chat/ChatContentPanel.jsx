@@ -143,6 +143,8 @@ const ChatContentPanel = (props) => {
     andHasLeftWorkspace: _t("SYSTEM.AND_HAS_LEFT_WORKSPACE", "and has left the workspace"),
     youLeftChat: _t("SYSTEM.YOU_LEFT_CHAT", "You left the chat"),
     youLeftWorkspace: _t("SYSTEM.YOU_LEFT_WORKSPACE", "You left the workspace"),
+    leftTheWorkspace: _t("SYSTEM.LEFT_THE_WORKSPACE", "left the workspace"),
+    leftTheChat: _t("SYSTEM.LEFT_THE_CHAT", "left the chat"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
