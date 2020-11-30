@@ -147,8 +147,8 @@ const CommentWrapper = styled.div`
     cursor: pointer;
   }
   .clap-true {
-    color: #f44;
-    fill: #f44;
+    color: #7a1b8b;
+    fill: #7a1b8b;
   }
 `;
 

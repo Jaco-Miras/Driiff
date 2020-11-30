@@ -229,8 +229,8 @@ const Counters = styled.div`
     max-height: 250px;
   }
   .clap-true {
-    color: #f44;
-    fill: #f44;
+    color: #7a1b8b;
+    fill: #7a1b8b;
   }
   .readers-container {
     @media (max-width: 575.99px) {
