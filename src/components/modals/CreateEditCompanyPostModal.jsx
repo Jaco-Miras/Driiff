@@ -561,6 +561,7 @@ const CreateEditCompanyPostModal = (props) => {
         timestamp: timestamp,
         id: timestamp,
         created_at: { timestamp: timestamp },
+        updated_at: { timestamp: timestamp },
         title: form.title,
         partial_body: form.body,
         unread_reply_ids: [],
