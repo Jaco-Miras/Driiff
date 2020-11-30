@@ -525,6 +525,7 @@ export default (state = INITIAL_STATE, action) => {
               ...d.data,
               draft_id: d.id,
               post_id: d.data.id,
+              updated_at: d.data.created_at,
             })
           } else {
             return d;
@@ -1975,6 +1976,78 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: newWorkspacePosts,
       };
+    }
+    case "UPDATE_POST_FILES": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.topic_id && {
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              posts: {
+                ...state.workspacePosts[action.data.topic_id].posts,
+                [action.data.post_id]: {
+                  ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
+                  files: state.workspacePosts[action.data.topic_id].posts[action.data.post_id].files.map((f) => {
+                    if (f.id === action.data.file.id) {
+                      return action.data.file;
+                    } else {
+                      return f;
+                    }
+                  })
+                }
+              }
+            }
+          })
+        }
+      }
+    }
+    case "UPDATE_COMMENT_FILES": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          ...(action.data.post_id && {
+            [action.data.post_id]: {
+              ...state.postComments[action.data.post_id],
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                ...(action.data.parent_id && {
+                  [action.data.parent_id]: {
+                    ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                    replies: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                      [action.data.id]: {
+                        ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
+                        files: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].files.map((f) => {
+                          if (f.id === action.data.file.id) {
+                            return action.data.file;
+                          } else {
+                            return f;
+                          }
+                        })
+                      }
+                    }
+                  }
+                }),
+                ...(action.data.parent_id === null && {
+                  [action.data.id]: {
+                    ...state.postComments[action.data.post_id].comments[action.data.id],
+                    files: state.postComments[action.data.post_id].comments[action.data.id].files.map((f) => {
+                      if (f.id === action.data.file.id) {
+                        return action.data.file;
+                      } else {
+                        return f;
+                      }
+                    })
+                  }
+                })
+              }
+            }
+          })
+        }
+      }
     }
     default:
       return state;

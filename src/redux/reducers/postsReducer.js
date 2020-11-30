@@ -712,6 +712,27 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "UPDATE_POST_FILES": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: {
+              ...state.companyPosts.posts[action.data.post_id],
+              files: state.companyPosts.posts[action.data.post_id].files.map((f) => {
+                if (f.id === action.data.file.id) {
+                  return action.data.file;
+                } else {
+                  return f;
+                }
+              })
+            }
+          }
+        }
+      }
+    }
     default:
       return state;
   }

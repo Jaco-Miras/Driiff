@@ -303,3 +303,11 @@ export function fetchDetail(payload, callback) {
 export function searchCompanyPosts(payload, callback) {
   return dispatchActionToReducer(getCompanyPostsService(payload), "SEARCH_COMPANY_POSTS_START", "SEARCH_COMPANY_POSTS_SUCCESS", "SEARCH_COMPANY_POSTS_FAIL", callback);
 }
+
+export function updatePostFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_POST_FILES", payload, callback);
+}
+
+export function updateCommentFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_COMMENT_FILES", payload, callback);
+}

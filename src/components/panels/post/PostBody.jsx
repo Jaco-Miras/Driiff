@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../hooks";
+import { useFiles, useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../hooks";
 import { PostBadge, PostVideos } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
@@ -111,6 +111,7 @@ const PostBody = (props) => {
     body: useRef(null)
   };
 
+  const { fileBlobs, actions: { setFileSrc } } = useFiles();
   const redirect = useRedirect();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const postRecipients = useSelector((state) => state.global.recipients
@@ -167,6 +168,7 @@ const PostBody = (props) => {
   //     console.log(images, 'post body images')
   //   }
   // };
+  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   useEffect(() => {
     if (refs.body.current) {
@@ -176,9 +178,56 @@ const PostBody = (props) => {
       });
       const images = refs.body.current.querySelectorAll("img");
       images.forEach((img) => {
+        const imgSrc = img.getAttribute("src");
         if (!img.classList.contains("has-listener")) {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
+          const imgFile = post.files.find((f) => imgSrc.includes(f.code))
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id])
+          }
+        } else {
+          const imgFile = post.files.find((f) => imgSrc.includes(f.code))
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id])
+          }
+        }
+      })
+    }
+    const imageFiles = post.files.filter((f) => f.type.toLowerCase().includes("image"))
+
+    if (imageFiles.length) {
+      imageFiles.forEach((file) => {
+        if (!fileBlobs[file.id] && post.body.includes(file.code)) {
+          //setIsLoaded(false);
+          fetch(file.view_link, {
+            method: "GET", keepalive: true, headers: {
+              Authorization: `Bearer ${userAuth.access_token}`,
+              'Access-Control-Allow-Origin': "*",
+              Connection: "keep-alive",
+              crossorigin: true,
+            }
+          })
+            .then(function (response) {
+              return response.blob();
+            })
+            .then(function (data) {
+              const imgObj = URL.createObjectURL(data);
+              setFileSrc({
+                id: file.id,
+                src: imgObj
+              });
+              postActions.updatePostImages({
+                post_id: post.id,
+                topic_id: workspaceId,
+                file: {
+                  ...file,
+                  blobUrl: imgObj
+                }
+              })
+            }, function (err) {
+              console.log(err, 'error');
+            });
         }
       })
     }

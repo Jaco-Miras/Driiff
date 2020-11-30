@@ -12,7 +12,8 @@ import {
   postCommentClap,
   putComment,
   removeCommentReact,
-  setEditComment
+  setEditComment,
+  updateCommentFiles,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTodoActions } from "./index";
@@ -175,6 +176,15 @@ const useCommentActions = () => {
     [dispatch]
   );
 
+  const updateCommentImages = useCallback(
+    (payload = {}) => {
+      dispatch(
+        updateCommentFiles(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
@@ -188,7 +198,8 @@ const useCommentActions = () => {
     remind,
     fetchPostReplyHover,
     like,
-    unlike
+    unlike,
+    updateCommentImages,
   };
 };
 
