@@ -606,7 +606,7 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[action.data.post_id].unread_count = companyPosts.posts[action.data.post_id].unread_count + 1;
         }
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
-
+        companyPosts.posts[action.data.post_id].unread_reply_ids = [...new Set([...companyPosts.posts[action.data.post_id].unread_reply_ids, action.data.id])];
         if (action.data.author.id === state.user.id)
           companyPosts.posts[action.data.post_id].has_replied = true;
       }
