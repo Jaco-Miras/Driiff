@@ -1069,7 +1069,7 @@ const CreateEditCompanyPostModal = (props) => {
 
   useEffect(() => {
     if (mounted && !savingDraft.current) {
-      autoUpdateDraft(form, draftId)
+      //autoUpdateDraft(form, draftId)
     }
   }, [form, draftId, mounted]);
 
