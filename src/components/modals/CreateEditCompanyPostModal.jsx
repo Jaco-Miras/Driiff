@@ -407,7 +407,7 @@ const CreateEditCompanyPostModal = (props) => {
     setNestedModal(!nestedModal);
     setCloseAll(true);
     if (saveDraft) {
-      handleSaveDraft();
+      //handleSaveDraft();
     } else if (draftId) {
       dispatch(
         deleteDraft({
@@ -1069,7 +1069,7 @@ const CreateEditCompanyPostModal = (props) => {
 
   useEffect(() => {
     if (mounted && !savingDraft.current) {
-      autoUpdateDraft(form, draftId)
+      //autoUpdateDraft(form, draftId)
     }
   }, [form, draftId, mounted]);
 
