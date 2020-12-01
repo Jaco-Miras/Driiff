@@ -18,6 +18,7 @@ export {
   getWorkspaceChannels,
   putChannel,
   putChannelUpdate,
+  putImportantChat,
   putMarkReadChannel,
   putMarkUnreadChannel,
   postCreateChannel,
