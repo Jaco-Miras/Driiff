@@ -196,7 +196,7 @@ const CompanyPostsPanel = (props) => {
   }, [skip, archived, filter, search])
 
   useEffect(() => {
-    //actions.getUnreadPostCommentsCount();
+    actions.getUnreadNotificationEntries({add_unread_comment: 1});
   }, []);
 
   // useEffect(() => {

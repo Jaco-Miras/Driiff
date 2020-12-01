@@ -1146,13 +1146,14 @@ export default (state = INITIAL_STATE, action) => {
             }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
-              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
               if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
                 updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
               }
-              if (updatedTopic && updatedTopic.id === ws.topic_id) {
+              if (updatedTopic && updatedTopic.id === ws.topic_id && state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_reply_ids.length === 0) {
                 updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
               }
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_reply_ids = [...new Set([...newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_reply_ids, action.data.id])];
             }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
 
@@ -1554,7 +1555,8 @@ export default (state = INITIAL_STATE, action) => {
                         [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id] :
                         state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter(id => id !== action.data.user_id),
                       is_unread: action.data.unread,
-                      unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[action.data.post_id].unread_count
+                      unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[action.data.post_id].unread_count,
+                      unread_reply_ids: action.data.unread === 0 ? [] : state.workspacePosts[wsId].posts[action.data.post_id].unread_reply_ids
                     }
                   }
                 }
@@ -1566,7 +1568,7 @@ export default (state = INITIAL_STATE, action) => {
         },
         activeTopic: {
           ...state.activeTopic,
-          ...(state.workspacePosts.hasOwnProperty(state.workspacePosts) &&
+          ...(state.workspacePosts.hasOwnProperty(state.activeTopic.id) &&
             state.workspacePosts[state.activeTopic.id].posts.hasOwnProperty(action.data.post_id) && {
               unread_count: state.activeTopic.unread_count + (action.data.unread ? 1 : -1),
               unread_posts: state.activeTopic.unread_posts + (action.data.unread ? 1 : -1),
@@ -1750,7 +1752,7 @@ export default (state = INITIAL_STATE, action) => {
         updatedWorkspaces[action.data.topic_id].unread_posts = action.data.unread_posts;
         if (action.data.folder_id) {
           //check undefined unread count
-          updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
+          //updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
         }
         if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
           updatedTopic.unread_posts = action.data.unread_posts;
