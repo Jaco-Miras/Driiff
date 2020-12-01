@@ -119,12 +119,12 @@ const usePosts = () => {
     activeFilter = filter;
     activeFilters = filters;
     counters = {
-      all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id)).length,
+      all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0).length,
       my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
       starred: Object.values(posts).filter((p) => p.is_favourite).length,
       archived: Object.values(posts).filter((p) => p.is_archived).length,
       drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
-      new_reply: Object.values(posts).filter((p) => p.unread_reply_ids.length > 0).length,
+      new_reply: Object.values(posts).filter((p) => p.unread_reply_ids.length > 0).map((p) => p.unread_reply_ids).flat().length,
     };
 
     if (posts.hasOwnProperty(params.postId)) {
@@ -145,7 +145,7 @@ const usePosts = () => {
             } else if (filter === "archive") {
               return p.is_archived === 1;
             } else if (filter === "all") {
-              return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id);
+              return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0;
             } else if (filter === "new_reply") {
               return p.unread_reply_ids.length > 0;
             }

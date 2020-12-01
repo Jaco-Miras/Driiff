@@ -54,7 +54,7 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
-          return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id);
+          return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0;
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author")) return p.author.id === user.id;
           else return false;

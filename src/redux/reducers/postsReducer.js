@@ -604,9 +604,9 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (action.data.author.id !== state.user.id) {
           companyPosts.posts[action.data.post_id].unread_count = companyPosts.posts[action.data.post_id].unread_count + 1;
+          companyPosts.posts[action.data.post_id].unread_reply_ids = [...new Set([...companyPosts.posts[action.data.post_id].unread_reply_ids, action.data.id])];
         }
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
-        companyPosts.posts[action.data.post_id].unread_reply_ids = [...new Set([...companyPosts.posts[action.data.post_id].unread_reply_ids, action.data.id])];
         if (action.data.author.id === state.user.id)
           companyPosts.posts[action.data.post_id].has_replied = true;
       }
@@ -719,16 +719,20 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.post_id]: {
-              ...state.companyPosts.posts[action.data.post_id],
-              files: state.companyPosts.posts[action.data.post_id].files.map((f) => {
-                if (f.id === action.data.file.id) {
-                  return action.data.file;
-                } else {
-                  return f;
+            ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && 
+                {
+                  [action.data.post_id] : {
+                    ...state.companyPosts.posts[action.data.post_id],
+                    files: state.companyPosts.posts[action.data.post_id].files.map((f) => {
+                      if (f.id === action.data.file.id) {
+                        return action.data.file;
+                      } else {
+                        return f;
+                      }
+                    })
+                  }
                 }
-              })
-            }
+            )
           }
         }
       }
