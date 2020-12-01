@@ -11,6 +11,7 @@ import {
   postComment,
   postCommentClap,
   putComment,
+  putCommentImportant,
   removeCommentReact,
   setEditComment,
   updateCommentFiles,
@@ -185,6 +186,18 @@ const useCommentActions = () => {
     [dispatch]
   );
 
+  const important = useCallback(
+    (comment) => {
+      dispatch(
+        putCommentImportant({
+          message_id: comment.id,
+          is_important: comment.is_important ? 0 : 1
+        })
+      );
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
@@ -200,6 +213,7 @@ const useCommentActions = () => {
     like,
     unlike,
     updateCommentImages,
+    important,
   };
 };
 

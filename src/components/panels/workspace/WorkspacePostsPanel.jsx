@@ -165,6 +165,8 @@ const WorkspacePostsPanel = (props) => {
     oneComment: _t("POST.ONE_COMMENT", "1 comment"),
     comments: _t("POST.NUMBER_COMMENTS", "::comment_count:: comments"),
     messageInSecureWs: _t("POST.MESSAGE_IN_SECURE_WORKSPACE", "message in a secure workspace"),
+    markImportant: _t("CHAT.MARK_IMPORTANT", "Mark as important"),
+    unMarkImportant: _t("CHAT.UNMARK_IMPORTANT", "Unmark as important"),
   };
 
   const handleMarkAllAsRead = () => {

@@ -30,6 +30,7 @@ import {
   postUnfollow as postUnfollowService,
   postVisit as postVisitService,
   putComment as putCommentService,
+  putCommentImportant as putCommentImportantService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
   refetchPostComments as refetchPostCommentsService,
@@ -310,4 +311,12 @@ export function updatePostFiles(payload, callback) {
 
 export function updateCommentFiles(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMMENT_FILES", payload, callback);
+}
+
+export function putCommentImportant(payload, callback) {
+  return dispatchActionToReducer(putCommentImportantService(payload), "PUT_COMMENT_START", "PUT_COMMENT_SUCCESS", "PUT_COMMENT_FAIL", callback);
+}
+
+export function incomingImportantComment(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_IMPORTANT_COMMENT", payload, callback);
 }

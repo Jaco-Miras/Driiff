@@ -175,6 +175,7 @@ export {
   postUnfollow,
   postVisit,
   putComment,
+  putCommentImportant,
   putPost,
   getCompanyPosts,
   postCompanyPosts,

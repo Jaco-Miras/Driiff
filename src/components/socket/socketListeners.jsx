@@ -88,6 +88,7 @@ import {
   incomingCommentClap,
   incomingDeletedComment,
   incomingDeletedPost,
+  incomingImportantComment,
   incomingMarkAsRead,
   incomingPost,
   incomingPostClap,
@@ -526,6 +527,9 @@ class SocketListeners extends Component {
           case "MARKED_DONE": {
             this.props.incomingPostMarkDone(e);
             break;
+          }
+          case "COMMENT_IMPORTANT": {
+            this.props.incomingImportantComment(e);
           }
           default:
             return null;
@@ -1474,7 +1478,8 @@ function mapDispatchToProps(dispatch) {
     incomingPostRecipients: bindActionCreators(incomingPostRecipients, dispatch),
     refetchPosts: bindActionCreators(refetchPosts, dispatch),
     refetchPostComments: bindActionCreators(refetchPostComments, dispatch),
-    getUnreadNotificationCounterEntries: bindActionCreators(getUnreadNotificationCounterEntries, dispatch)
+    getUnreadNotificationCounterEntries: bindActionCreators(getUnreadNotificationCounterEntries, dispatch),
+    incomingImportantComment: bindActionCreators(incomingImportantComment, dispatch),
   };
 }
 

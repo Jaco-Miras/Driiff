@@ -554,3 +554,17 @@ export function getUnreadPostComments(payload) {
     url: `/v2/post-unread-comments-entries`,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.message_id
+ * @param {number} payload.is_important
+ * @returns {Promise<*>}
+ */
+export function putCommentImportant(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/set-important-comment`,
+    data: payload
+  });
+}
