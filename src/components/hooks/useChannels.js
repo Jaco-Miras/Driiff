@@ -33,7 +33,7 @@ const useChannels = () => {
       //     filter: "archived",
       //   });
       // }, 30000)
-    
+
       //actions.fetchWorkspaceChannels({});
     }
 
@@ -46,7 +46,7 @@ const useChannels = () => {
     selectedChannel,
     lastVisitedChannel,
     channelsLoaded,
-    chatSidebarSearch
+    chatSidebarSearch,
   };
 };
 
