@@ -476,7 +476,7 @@ const FileUploadModal = (props) => {
     }
   }, [init]);
 
-  const {modules} = useQuillModules({mode:"chat_upload", mentionOrientation: "top", quillRef: reactQuillRef, members});
+  const {modules} = useQuillModules({mode:"chat_upload", mentionOrientation: "bottom", quillRef: reactQuillRef, members});
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
