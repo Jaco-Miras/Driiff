@@ -1923,6 +1923,7 @@ export default (state = INITIAL_STATE, action) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
           workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
+          workspacePosts[action.data.topic_id].posts[p.id].unread_reply_ids = [];
         })
         workspaces[action.data.topic_id].unread_posts = 0;
         if (activeTopic && activeTopic.id === action.data.topic_id) {
@@ -1944,6 +1945,7 @@ export default (state = INITIAL_STATE, action) => {
         Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_archived = 1;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
+          workspacePosts[action.data.topic_id].posts[p.id].unread_reply_ids = [];
         })
         return {
           ...state,
