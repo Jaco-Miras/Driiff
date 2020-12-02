@@ -130,7 +130,7 @@ const usePosts = () => {
     };
 
     if (posts.hasOwnProperty(params.postId)) {
-      post = { ...posts[params.postId] };
+      post = posts[params.postId];
     }
 
     filteredPosts = Object.values(posts)
@@ -203,7 +203,7 @@ const usePosts = () => {
       }
     } 
   }
-
+  
   return {
     flipper,
     actions,
