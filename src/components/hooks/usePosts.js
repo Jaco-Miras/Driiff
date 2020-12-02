@@ -131,11 +131,28 @@ const usePosts = () => {
       post = { ...posts[params.postId] };
     }
 
+    filteredPosts = Object.values(posts)
+
+    if (searchResults.length > 0 && search) {
+      filteredPosts = filteredPosts.filter((p) => {
+        return searchResults.some((s) => {
+          return p.id === s.id;
+        });
+      });
+    } else if (searchResults.length === 0 && search) {
+      filteredPosts = [];
+    }
+
     if (filter || tag) {
-      filteredPosts = Object.values(posts)
-        .filter((p) => {
+      filteredPosts.filter((p) => {
           if (filter) {
-            if (filter === "my_posts") {
+            if (filter === "all") {
+              if (search !== "") {
+                return true;
+              } else {
+                return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0;
+              }
+            } else if (filter === "my_posts") {
               if (p.hasOwnProperty("author")) return p.author.id === user.id;
               else return false;
             } else if (filter === "draft") {
@@ -144,8 +161,6 @@ const usePosts = () => {
               return p.is_favourite;
             } else if (filter === "archive") {
               return p.is_archived === 1;
-            } else if (filter === "all") {
-              return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0;
             } else if (filter === "new_reply") {
               return p.unread_reply_ids.length > 0;
             }
@@ -184,53 +199,44 @@ const usePosts = () => {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         }).length;
       }
-
-      if (searchResults.length > 0 && search) {
-        filteredPosts = filteredPosts.filter((p) => {
-          return searchResults.some((s) => {
-            return p.id === s.id;
-          });
-        });
-      } else if (searchResults.length === 0 && search) {
-        filteredPosts = [];
-      }
-    } else {
-      let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
-      if (searchResults.length && search) {
-        filteredPosts = filteredPosts.filter((p) => {
-          return searchResults.some((s) => {
-            return p.id === s.id;
-          });
-        })
-          .filter((p) => {
-            return !p.hasOwnProperty("draft_type") && p.is_archived === 0;
-          })
-          .sort((a, b) => {
-            if (sort === "favorite") {
-              return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-            } else if (sort === "unread") {
-              return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
-            } else {
-              return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
-            }
-          });
-      } else if (searchResults.length === 0 && search) {
-        filteredPosts = [];
-      } else {
-        filteredPosts = filteredPosts.filter((p) => {
-          return !p.hasOwnProperty("draft_type") && p.is_archived === 0;
-        })
-          .sort((a, b) => {
-            if (sort === "favorite") {
-              return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-            } else if (sort === "unread") {
-              return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
-            } else {
-              return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
-            }
-          });
-      }
-    }
+    } 
+    // else {
+    //   let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
+    //   if (searchResults.length && search) {
+    //     filteredPosts = filteredPosts.filter((p) => {
+    //       return searchResults.some((s) => {
+    //         return p.id === s.id;
+    //       });
+    //     })
+    //       .filter((p) => {
+    //         return !p.hasOwnProperty("draft_type") && p.is_archived === 0;
+    //       })
+    //       .sort((a, b) => {
+    //         if (sort === "favorite") {
+    //           return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
+    //         } else if (sort === "unread") {
+    //           return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
+    //         } else {
+    //           return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
+    //         }
+    //       });
+    //   } else if (searchResults.length === 0 && search) {
+    //     filteredPosts = [];
+    //   } else {
+    //     filteredPosts = filteredPosts.filter((p) => {
+    //       return !p.hasOwnProperty("draft_type") && p.is_archived === 0;
+    //     })
+    //       .sort((a, b) => {
+    //         if (sort === "favorite") {
+    //           return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
+    //         } else if (sort === "unread") {
+    //           return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
+    //         } else {
+    //           return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
+    //         }
+    //       });
+    //   }
+    // }
   }
 
   return {

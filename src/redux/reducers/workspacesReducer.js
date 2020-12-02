@@ -412,6 +412,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.workspacePosts[action.data.topic_id],
             search: action.data.search,
             searchResults: action.data.search_result,
+            filter: "all"
           },
         },
       };
