@@ -246,7 +246,7 @@ const WorkspacePostsPanel = (props) => {
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null)
     return <></>;
-
+  //console.log(post, 'post')
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
@@ -255,7 +255,7 @@ const WorkspacePostsPanel = (props) => {
                      dictionary={dictionary}/>
         <div className="col-md-9 app-content">
           <div className="app-content-overlay"/>
-          {!post &&
+          {post !== null &&
           <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"}/>}
           {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
@@ -271,7 +271,7 @@ const WorkspacePostsPanel = (props) => {
             </div>
           ) : (
             <>
-              {post ? (
+              {post !== null ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
                     <PostDetail

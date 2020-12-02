@@ -128,7 +128,7 @@ const usePosts = () => {
     };
 
     if (posts.hasOwnProperty(params.postId)) {
-      post = { ...posts[params.postId] };
+      post = posts[params.postId];
     }
 
     if (filter || tag) {
@@ -232,7 +232,7 @@ const usePosts = () => {
       }
     }
   }
-
+  
   return {
     flipper,
     actions,

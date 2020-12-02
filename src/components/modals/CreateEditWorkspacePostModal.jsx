@@ -19,6 +19,8 @@ import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
+import { useHistory } from "react-router-dom";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -291,6 +293,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const { type, mode, item = {} } = props.data;
 
+  const history = useHistory();
   const winSize = useWindowSize();
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -667,8 +670,14 @@ const CreateEditWorkspacePostModal = (props) => {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
       } else {
-        dispatch(postCreate(payload, () => {
+        dispatch(postCreate(payload, (err,res) => {
           setLoading(false);
+          if (err) return;
+          if (activeTopic.folder_id) {
+            history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+          } else {
+              history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+          }
         }));
       }
     }
@@ -919,7 +928,15 @@ const CreateEditWorkspacePostModal = (props) => {
           ...payload,
           file_ids: result.map((res) => res.data.id),
         };
-        dispatch(postCreate(payload));
+        dispatch(postCreate(payload, (err,res) => {
+          if (err) return;
+          if (activeTopic.folder_id) {
+            history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+          } else {
+              history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+          }
+          //history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
+        }));
       }
     });
   }
