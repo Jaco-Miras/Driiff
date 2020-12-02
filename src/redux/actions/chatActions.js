@@ -22,6 +22,7 @@ import {
   putChannel as putChannelService,
   putChannelUpdate as putChannelUpdateService,
   putChatMessage as putChatMessageService,
+  putImportantChat as putImportantChatService,
   putMarkReadChannel as putMarkReadChannelService,
   putMarkReminderComplete as putMarkReminderCompleteService,
   putMarkUnreadChannel as putMarkUnreadChannelService,
@@ -272,4 +273,12 @@ export function getLastChannel(payload, callback) {
 
 export function getSelectChannel(payload, callback) {
   return dispatchActionToReducer(getSelectChannelService(payload), "GET_SELECT_CHANNEL_START", "GET_SELECT_CHANNEL_SUCCESS", "GET_SELECT_CHANNEL_FAIL", callback);
+}
+
+export function putImportantChat(payload, callback) {
+  return dispatchActionToReducer(putImportantChatService(payload), "PUT_IMPORTANT_CHAT_START", "PUT_IMPORTANT_CHAT_SUCCESS", "PUT_IMPORTANT_CHAT_FAIL", callback);
+}
+
+export function incomingImportantChat(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_IMPORTANT_CHAT", payload, callback);
 }

@@ -122,9 +122,9 @@ const ChatBubbleContainer = styled.div`
     &:before {
         ${(props) => props.showAvatar && "content: '';"};
         border: 10px solid transparent;
-        border-right-color: #f0f0f0;
+        border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : "#f0f0f0")};
         position: absolute;
-        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
+        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
         left: 30px;
         z-index: 1;
         @media all and (max-width: 620px) {
@@ -135,7 +135,7 @@ const ChatBubbleContainer = styled.div`
           `
             left: auto;
             right: -16px;
-            border-left-color: #7A1B8B;
+            border-left-color:  ${(props) => (props.isImportant ? "#7B68EE" : "#7A1B8B")};
             border-right-color: transparent;
             @media all and (max-width: 620px) {
               display: none;
@@ -855,6 +855,7 @@ class ChatMessages extends React.PureComponent {
                                   data-message-id={reply.id}
                                   showAvatar={showAvatar}
                                   isBot={isBot}
+                                  isImportant={reply.is_important}
                                 >
                                   {reply.message_failed ? (
                                     <FailedSpan>

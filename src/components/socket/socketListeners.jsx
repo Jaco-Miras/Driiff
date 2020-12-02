@@ -18,6 +18,7 @@ import {
   incomingChatMessageFromOthers,
   incomingChatMessageReaction,
   incomingDeletedChatMessage,
+  incomingImportantChat,
   incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
@@ -692,6 +693,10 @@ class SocketListeners extends Component {
             //@change response and add the delete file reducer
             this.props.incomingDeletedChatMessage(e);
             break;
+          }
+
+          case "TOGGLE_IMPORTANT": {
+            this.props.incomingImportantChat(e);
           }
 
           default:
@@ -1480,6 +1485,7 @@ function mapDispatchToProps(dispatch) {
     refetchPostComments: bindActionCreators(refetchPostComments, dispatch),
     getUnreadNotificationCounterEntries: bindActionCreators(getUnreadNotificationCounterEntries, dispatch),
     incomingImportantComment: bindActionCreators(incomingImportantComment, dispatch),
+    incomingImportantChat: bindActionCreators(incomingImportantChat, dispatch),
   };
 }
 

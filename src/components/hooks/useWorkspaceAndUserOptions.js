@@ -7,7 +7,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
   const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
   const { users: actualUsers } = useSelector((state) => state.users);
 
-  const r = recipients.sort((a, b) => a.name.localeCompare(b.name));
+  const r = recipients.filter((r) => typeof r.name !== "undefined").sort((a, b) => a.name.localeCompare(b.name));
   const company = r.find(r => r.main_department === true);
   const workspaces = r.filter(r => r.type === "TOPIC");
   const users = r.filter(r => r.type === "USER" && r.active === 1).sort((a, b) => a.name.localeCompare(b.name));
