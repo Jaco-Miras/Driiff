@@ -294,7 +294,7 @@ const WorkspacePostsPanel = (props) => {
                   }
                   <div className="card card-body app-content-body mb-4">
                     <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
-                      {search !== "" && (
+                      {search != null && search !== "" && (
                         <>
                           {posts.length === 0 ? (
                             <h6
