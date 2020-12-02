@@ -10,7 +10,7 @@ import {
   saveDraft,
   updateDraft,
 } from "../../redux/actions/globalActions";
-import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postActions";
+import { postCreate, putCompanyPosts, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect } from "../forms";
@@ -679,6 +679,11 @@ const CreateEditCompanyPostModal = (props) => {
             setLoading(false);
             toggleAll(false);
             if (err) return;
+            let payload = {
+              filter: "my_posts",
+              tag: null,
+            };
+            dispatch(updateCompanyPostFilterSort(payload));
             history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
           }));
         }
@@ -939,6 +944,11 @@ const CreateEditCompanyPostModal = (props) => {
             setLoading(false);
             toggleAll(false);
             if (err) return;
+            let payload = {
+              filter: "my_posts",
+              tag: null,
+            };
+            dispatch(updateCompanyPostFilterSort(payload));
             history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
           })
         );

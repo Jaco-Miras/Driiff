@@ -11,6 +11,7 @@ import {
   updateDraft,
 } from "../../redux/actions/globalActions";
 import { postCreate, putPost } from "../../redux/actions/postActions";
+import { updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
@@ -673,6 +674,12 @@ const CreateEditWorkspacePostModal = (props) => {
         dispatch(postCreate(payload, (err,res) => {
           setLoading(false);
           if (err) return;
+          let payload = {
+            topic_id: activeTopic.id,
+            filter: "my_posts",
+            tag: null,
+          };
+          dispatch(updateWorkspacePostFilterSort(payload));
           if (activeTopic.folder_id) {
             history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
           } else {
@@ -930,6 +937,12 @@ const CreateEditWorkspacePostModal = (props) => {
         };
         dispatch(postCreate(payload, (err,res) => {
           if (err) return;
+          let payload = {
+            topic_id: activeTopic.id,
+            filter: "my_posts",
+            tag: null,
+          };
+          dispatch(updateWorkspacePostFilterSort(payload));
           if (activeTopic.folder_id) {
             history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
           } else {
