@@ -15,6 +15,14 @@ const Wrapper = styled.li`
   margin-bottom: 1rem;
   overflow: initial;
 
+  &.important {
+    background: #6a5acd !important;
+    color: #fff;
+    .text-muted {
+      color: #FFFAFA !important;
+    }
+  }
+  
   .mention {
     font-weight: bold;
     color: #7a1b8b;
@@ -411,7 +419,7 @@ const Comment = (props) => {
 
   return (
     <>
-      <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
+      <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={user.id}>
         {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT" />}
         {comment.quote && <Quote quote={comment.quote} dictionary={dictionary} />}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
@@ -428,6 +436,7 @@ const Comment = (props) => {
                 <div onClick={handleQuote}>{dictionary.quote}</div>
                 {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
                 {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
+                {user.id === comment.author.id && <div onClick={() => commentActions.important(comment)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
               </MoreOptions>
             )}
           </CommentHeader>

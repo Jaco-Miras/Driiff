@@ -627,7 +627,7 @@ const ChatBubble = (props) => {
       ref={refs.container}
       tabIndex={reply.id}
       hasFiles={hasFiles}
-      className={"chat-bubble ql-editor"}
+      className={`chat-bubble ql-editor ${reply.is_important && "important"}`}
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
