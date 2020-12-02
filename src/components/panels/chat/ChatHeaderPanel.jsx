@@ -259,6 +259,11 @@ const ChatHeaderPanel = (props) => {
           workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 &&
           <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
         }
+        {
+          channel.type === "TOPIC" && !channel.is_archived &&
+          workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared === 1 && workspaces[channel.entity_id].active === 1 &&
+          <Icon className={"ml-1"} icon={"share"} strokeWidth="3" width={12} />
+        }
       </h2>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
