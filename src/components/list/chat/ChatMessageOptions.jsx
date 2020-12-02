@@ -65,6 +65,7 @@ const ChatMessageOptions = (props) => {
       {isAuthor && <div onClick={handleRemoveReply}>{dictionary.remove}</div>}
       <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>
       <div onClick={handleForwardMessage}>{dictionary.forward}</div>
+      {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
     </MoreOptions>
   );
 };

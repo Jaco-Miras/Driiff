@@ -9,9 +9,10 @@ import {
   postChatMessage,
   postChatReaction,
   putChatMessage,
+  putImportantChat,
   putMarkReminderComplete,
   setEditChatMessage,
-  setLastChatVisibility
+  setLastChatVisibility,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -310,6 +311,25 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
+  /**
+   * @param {chat} object
+   * @param {function} [callback]
+   */
+  const markImportant = useCallback(
+    (chat, callback = () => {}) => {
+      dispatch(
+        putImportantChat(
+          {
+            message_id: chat.id,
+            is_important: chat.is_important ? 0 : 1
+          },
+          callback
+        )
+      );
+    },
+    [dispatch]
+  );
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -324,7 +344,8 @@ const useChatMessageActions = () => {
     setQuote,
     setEdit,
     clipboardLink,
-    setLastMessageVisiblility
+    setLastMessageVisiblility,
+    markImportant,
   };
 };
 
