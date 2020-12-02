@@ -2051,6 +2051,28 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_IMPORTANT_COMMENT": {
+      return {
+        ...state,
+        ...(state.postComments[action.data.post.id] && {
+          postComments: {
+            ...state.postComments,
+            [action.data.post.id]: {
+              ...state.postComments[action.data.post.id],
+              comments: {
+                ...state.postComments[action.data.post.id].comments,
+                ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
+                  [action.data.comment.id]: {
+                    ...state.postComments[action.data.post.id].comments[action.data.comment.id],
+                    is_important: !state.postComments[action.data.post.id].comments[action.data.comment.id].is_important
+                  }
+                }) 
+              }
+            }
+          }
+        })
+      }
+    }
     default:
       return state;
   }

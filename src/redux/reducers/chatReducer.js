@@ -1345,6 +1345,44 @@ export default function (state = INITIAL_STATE, action) {
         return state;
       }
     }
+    case "INCOMING_IMPORTANT_CHAT": {
+      return {
+        ...state,
+        ...(state.selectedChannel && state.selectedChannel.id === action.data.channel.id && {
+          selectedChannel: {
+            ...state.selectedChannel,
+            replies: state.selectedChannel.replies.map((r) => {
+              if (r.id === action.data.chat_message.id) {
+                return {
+                  ...r,
+                  ...action.data.chat_message
+                }
+              } else {
+                return r;
+              }
+            })
+          }
+        }),
+        ...(typeof state.channels[action.data.channel.id] !== "undefined" && {
+          channels: {
+            ...state.channels,
+            [action.data.channel.id]: {
+              ...state.channels[action.data.channel.id],
+              replies: state.channels[action.data.channel.id].replies.map((r) => {
+                if (r.id === action.data.chat_message.id) {
+                  return {
+                    ...r,
+                    ...action.data.chat_message
+                  }
+                } else {
+                  return r;
+                }
+              })
+            }
+          }
+        })
+      }
+    }
     default:
       return state;
   }

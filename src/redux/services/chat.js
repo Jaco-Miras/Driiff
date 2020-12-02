@@ -266,3 +266,18 @@ export function getSelectChannel(payload) {
     url: url,
   });
 }
+
+/**
+ * @param payload
+ * @param payload.message_id
+ * @param payload.is_important
+ * @returns {Promise<*>}
+ */
+export function putImportantChat(payload) {
+  let url = "/v2/set-message-important";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
