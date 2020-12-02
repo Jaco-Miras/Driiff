@@ -121,7 +121,7 @@ const usePosts = () => {
     activeTag = tag;
 
     counters = {
-      all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0).length,
+      all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0) ).length,
       my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
       starred: Object.values(posts).filter((p) => p.is_favourite).length,
       archived: Object.values(posts).filter((p) => p.is_archived).length,

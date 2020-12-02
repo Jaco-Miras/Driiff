@@ -255,8 +255,7 @@ const WorkspacePostsPanel = (props) => {
                      dictionary={dictionary}/>
         <div className="col-md-9 app-content">
           <div className="app-content-overlay"/>
-          {post !== null &&
-          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"}/>}
+          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"}/>
           {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
