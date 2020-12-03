@@ -68,7 +68,7 @@ const useCompanyPosts = () => {
           if (search !== "") {
             return true;
           } else {
-            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0);
+            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
           }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author")) return p.author.id === user.id;
