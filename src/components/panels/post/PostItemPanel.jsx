@@ -369,7 +369,9 @@ const PostItemPanel = (props) => {
       data-toggle={flipper ? "1" : "0"}
       appListWidthDiff={postBadgeWidth + 50}
       className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
-      onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
+      onTouchStart={touchStart} 
+      onTouchMove={touchMove} 
+      onTouchEnd={touchEnd}
       onClick={() => openPost(post)}>
       <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)}/>
       <Author className="d-flex ml-2 mr-2">
@@ -429,16 +431,20 @@ const PostItemPanel = (props) => {
               post.todo_reminder === null &&
               <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
             }
-            {post.author && post.author.id === user.id &&
-            <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>}
+            {
+              post.author && post.author.id === user.id &&
+              <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>
+            }
             {
               post.is_unread === 0 ?
                 <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> :
                 <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
             }
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-            {post.author && post.author.id !== user.id &&
-            <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+            {
+              post.author && post.author.id !== user.id && 
+              <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>
+            }
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
           </MoreOptions>
         )}
