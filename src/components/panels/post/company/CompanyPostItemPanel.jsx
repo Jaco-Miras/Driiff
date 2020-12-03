@@ -17,7 +17,7 @@ const Wrapper = styled.li`
   }
   &.has-unread {
     background-color: #f7f7f7 !important;
-    
+
     .dark & {
       background-color: #2b2e31 !important;
     }
@@ -48,21 +48,21 @@ const Wrapper = styled.li`
 
     &.has-unread {
       font-weight: bold;
-      
+
       .post-partialBody {
         color: #343a40;
         font-weight: normal;
-      
+
         .dark & {
           color: #c7c7c7;
-        }      
+        }
       }
     }
 
     &.text-success {
       text-decoration: line-through;
     }
-    
+
     .time-stamp {
       margin-left: 1rem;
       font-weight: 400;
@@ -112,7 +112,6 @@ const Wrapper = styled.li`
       height: 2rem;
     }
   }
-  }
 
   .receiver {
     border-radius: 6px;
@@ -125,13 +124,13 @@ const Wrapper = styled.li`
   .ellipsis-hover {
     position: relative;
     cursor: pointer;
-    
+
     &:hover {
       .recipient-names {
         opacity: 1;
-        max-height: 300px;    
+        max-height: 300px;
       }
-    }  
+    }
   }
 `;
 
@@ -140,10 +139,12 @@ const SlideOption = styled.div`
     transition: all 0.3s ease;
     max-width: 0;
     overflow: hidden;
-    ${props => props.showOptions && `
+    ${(props) =>
+      props.showOptions &&
+      `
       max-width: 576px;
       overflow: initial;      
-    `}  
+    `}
   }
 `;
 
@@ -165,19 +166,19 @@ const AuthorRecipients = styled.div`
   align-items: center;
   font-weight: 400;
   padding-bottom: 3px;
-  
+
   .recipients {
     color: #8b8b8b;
     font-size: 10px;
   }
-  
+
   .ellipsis-hover {
     position: relative;
-    
+
     &:hover {
       .recipient-names {
         opacity: 1;
-        max-height: 300px;    
+        max-height: 300px;
       }
     }
   }
@@ -186,26 +187,26 @@ const AuthorRecipients = styled.div`
     position: absolute;
     top: 20px;
     left: -2px;
-    width: 200px;    
+    width: 200px;
     border-radius: 8px;
     overflow-y: auto;
     border: 1px solid #fff;
-    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
     background: #fff;
     max-height: 0;
     opacity: 0;
     z-index: 1;
-    
+
     &:hover {
       max-height: 300px;
-      opacity: 1;    
+      opacity: 1;
     }
-    
+
     .dark & {
       border: 1px solid #25282c;
       background: #25282c;
     }
-    
+
     > span {
       display: block;
       width: 100%;
@@ -214,7 +215,7 @@ const AuthorRecipients = styled.div`
       overflow: hidden;
       padding: 0.25rem 0.5rem;
       border-radius: unset;
-    }    
+    }
   }
 `;
 
@@ -252,9 +253,13 @@ const CheckBox = styled(TodoCheckBox)`
 `;
 
 const CompanyPostItemPanel = (props) => {
-
   const {
-    className = "", post, dictionary, disableOptions, toggleCheckbox, checked,
+    className = "", 
+    post, 
+    dictionary, 
+    disableOptions, 
+    toggleCheckbox, 
+    checked,
     postActions: { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal }
   } = props;
 
@@ -266,31 +271,31 @@ const CompanyPostItemPanel = (props) => {
   const { fromNow } = useTimeFormat();
 
   const [postBadgeWidth, setPostBadgeWidth] = useState(0);
-  const postRecipients = useSelector((state) => state.global.recipients
-    .filter((r) => post.recipient_ids && post.recipient_ids.includes(r.id))
-    .sort((a, b) => {
-      if (a.type !== b.type) {
-        if (a.type === "TOPIC") return -1;
-        if (b.type === "TOPIC") return 1;
-      }
-      return a.name.toString().localeCompare(b.name);
-    })
+  const postRecipients = useSelector((state) =>
+    state.global.recipients
+      .filter((r) => post.recipient_ids && post.recipient_ids.includes(r.id))
+      .sort((a, b) => {
+        if (a.type !== b.type) {
+          if (a.type === "TOPIC") return -1;
+          if (b.type === "TOPIC") return 1;
+        }
+        return a.name.toString().localeCompare(b.name);
+      })
   );
 
   const renderUserResponsibleNames = () => {
-    const hasMe = postRecipients.some(r => r.type_id === user.id);
-    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
+    const hasMe = postRecipients.some((r) => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
-    const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
+    const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
-        .map(r => {
-          if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
-          else
-            return `<span class="receiver">${r.name}</span>`;
+      recipient_names += otherPostRecipients
+        .filter((r, i) => i < recipientSize)
+        .map((r) => {
+          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          else return `<span class="receiver">${r.name}</span>`;
         })
-        .join(`, `);
+        .join(", ");
     }
 
     if (hasMe) {
@@ -302,14 +307,14 @@ const CompanyPostItemPanel = (props) => {
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
-        .map(r => {
-          if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
-          else
-            return `<span class="receiver">${r.name}</span>`;
-        }).join("");
+    if (otherPostRecipients.length + (hasMe ? 1 : 0) > recipientSize) {
+      otherRecipientNames += otherPostRecipients
+        .filter((r, i) => i >= recipientSize)
+        .map((r) => {
+          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          else return `<span class="receiver">${r.name}</span>`;
+        })
+        .join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
     }
@@ -353,7 +358,7 @@ const CompanyPostItemPanel = (props) => {
     handleTouchStart,
     handleTouchEnd,
     handleSwipeLeft,
-    handleSwipeRight
+    handleSwipeRight,
   });
 
   const hasUnread = post.is_unread === 1;

@@ -105,7 +105,10 @@ const FilePill = forwardRef((props, ref) => {
   const refImageLoader = useRef();
   const refImage = useRef();
 
-  const { fileThumbnailBlobs, actions: { setFileThumbnailSrc } } = useFiles();
+  const {
+    fileThumbnailBlobs,
+    actions: { setFileThumbnailSrc },
+  } = useFiles();
 
   const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? fileThumbnailBlobs[file.id] : file.view_link);
 
@@ -155,8 +158,7 @@ const FilePill = forwardRef((props, ref) => {
   };
   const handleTouchEnd = (e) => {
     e.preventDefault();
-    if (!touchActions)
-      handleViewFile(e);
+    if (!touchActions) handleViewFile(e);
   };
 
   const handleSwipeLeft = (e) => {
@@ -170,43 +172,46 @@ const FilePill = forwardRef((props, ref) => {
     handleTouchStart,
     handleTouchEnd,
     handleSwipeLeft,
-    handleSwipeRight
+    handleSwipeRight,
   });
 
   useEffect(() => {
     if (!imgSrc) {
       fetch(file.thumbnail_link, {
-        method: "GET", keepalive: true, headers: {
+        method: "GET",
+        keepalive: true,
+        headers: {
           Authorization: `Bearer ${userAuth.access_token}`,
-          'Access-Control-Allow-Origin': "*",
+          "Access-Control-Allow-Origin": "*",
           Connection: "keep-alive",
           crossorigin: true,
-        }
+        },
       })
         .then(function (response) {
           return response.blob();
         })
-        .then(function (data) {
-          const imgObj = URL.createObjectURL(data);
-          setImgSrc(imgObj);
-          setFileThumbnailSrc({
-            id: file.id,
-            src: imgObj
-          });
-        }, function (err) {
-          console.log(err, 'error');
-        });
+        .then(
+          function (data) {
+            const imgObj = URL.createObjectURL(data);
+            setImgSrc(imgObj);
+            setFileThumbnailSrc({
+              id: file.id,
+              src: imgObj,
+            });
+          },
+          function (err) {
+            console.log(err, "error");
+          }
+        );
     }
   }, []);
 
   return (
-    <FilePillContainer
-      onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchMove={touchMove}
-      onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
+    <FilePillContainer onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchMove={touchMove} onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
       {file.type.toLowerCase() === "image" ? (
         <>
           <ImgLoader className={imgSrc ? "d-none" : ""}>
-            <ImgLoaderDiv className={"img-loader"}/>
+            <ImgLoaderDiv className={"img-loader"} />
           </ImgLoader>
           <FileImage
             ref={refImage}
@@ -225,9 +230,8 @@ const FilePill = forwardRef((props, ref) => {
             <ImgLoaderDiv className={"img-loader"} />
           </ImgLoader> */}
           {/* <FileVideoOverlay onClick={handleViewFile} /> */}
-          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad}
-                     onError={handleVideoOnError}>
-            <source src={file.view_link} type={file.type}/>
+          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
+            <source src={file.view_link} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
         </>
