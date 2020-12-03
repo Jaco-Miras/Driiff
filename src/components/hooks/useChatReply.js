@@ -68,17 +68,18 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       return newBody;
     } else if (message.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(message.replace("CHANNEL_UPDATE::", ""));
-      let author = recipients.find((r) => data.author && r.type_id === data.author.id && r.type === "USER");
-      if (author) {
-        if (data.author && data.author.id === user.id) {
-          author.name = <b>{dictionary.you}</b>;
-        }
-      } else {
-        author = {
-          name: dictionary.someone
-        };
+      let author = {
+        name: dictionary.someone,
+        id: null
       }
-
+      
+      if (data.author && data.author.id === user.id) {
+        author = {
+          name: <b>{dictionary.you}</b>,
+          id: user.id,
+        }
+      }
+      
       let newBody = "";
       if (data.title !== "") {
         newBody = (
@@ -92,8 +93,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
         //for adding one member without changes in title and for user who join the channel / workspace
         const am = recipients.find((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" })
-        if (am && author.id === am.id) {
-          newBody = <>{user.id === author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b></>;
+        if (am && data.author && data.author.id === am.id) {
+          newBody = <>{user.id === data.author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b></>;
         } else if (am) {
           newBody = <><b>{author.name}</b> {dictionary.added} <b>{am.name}</b></>;
         }
