@@ -408,7 +408,7 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                            {activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -446,7 +446,7 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                            {activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
