@@ -216,7 +216,7 @@ const SystemPeoplePanel = (props) => {
                 type="switch"
                 onChange={handleShowInactiveToggle}
                 data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
-                label={<span>Show inactive mePeopleListItemmbers</span>}
+                label={<span>Show inactive me</span>}
               />
             </div>
             <div>

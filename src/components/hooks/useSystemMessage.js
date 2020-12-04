@@ -75,15 +75,24 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
     }
   } else if (reply.body.includes("CHANNEL_UPDATE::")) {
     const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
+    
     let author = {
       name: dictionary.someone,
       id: null
     }
-    
+
     if (data.author && data.author.id === user.id) {
       author = {
         name: <b>{dictionary.you}</b>,
         id: user.id,
+      }
+    } else if (data.author && data.author.id !== user.id) {
+      let sysAuthor = Array.from(recipients).find((r) => r.type === "USER" && data.author.id === r.type_id);
+      if (sysAuthor) {
+        author = {
+          name: sysAuthor.name,
+          id: sysAuthor.id,
+        }
       }
     }
 
