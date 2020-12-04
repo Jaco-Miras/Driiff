@@ -741,6 +741,53 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_READ_SELECTED_POSTS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.post_ids.reduce((res, id) => {
+              if (state.companyPosts.posts[id]) {
+                res[id] = {
+                  ...state.companyPosts.posts[id],
+                  is_read: true,
+                  unread_count: 0,
+                  is_unread: 0,
+                  unread_reply_ids: []
+                };
+              }
+
+              return res;
+            }, {})
+          }
+        }
+      }
+    }
+    case "INCOMING_ARCHIVED_SELECTED_POSTS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.post_ids.reduce((res, id) => {
+              if (state.companyPosts.posts[id]) {
+                res[id] = {
+                  ...state.companyPosts.posts[id],
+                  is_archived: 1,
+                  unread_count: 0,
+                  is_unread: 0,
+                  unread_reply_ids: []
+                };
+              }
+              return res;
+            }, {})
+          }
+        }
+      }
+    }    
     default:
       return state;
   }

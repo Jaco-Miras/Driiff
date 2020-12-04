@@ -70,7 +70,7 @@ const EmptyState = styled.div`
 `;
 
 const PostsBtnWrapper = styled.div`
-  text-align: right;
+  //text-align: right;
   margin-bottom: 10px;
   .btn {
     margin-left: 10px;
@@ -88,6 +88,13 @@ const WorkspacePostsPanel = (props) => {
   const { actions, posts, filter, tag, sort, post, user, search, count, counters, filters } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
+  const [checkedPosts, setCheckedPosts] = useState([]);
+
+  const handleToggleCheckbox = (postId) => {
+    let checked = !checkedPosts.some(id => id === postId);
+    const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
+    setCheckedPosts(postIds)
+  };
 
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create");
@@ -173,14 +180,7 @@ const WorkspacePostsPanel = (props) => {
     messageInSecureWs: _t("POST.MESSAGE_IN_SECURE_WORKSPACE", "message in a secure workspace"),
     markImportant: _t("CHAT.MARK_IMPORTANT", "Mark as important"),
     unMarkImportant: _t("CHAT.UNMARK_IMPORTANT", "Unmark as important"),
-  };
-
-  const handleMarkAllAsRead = () => {
-    actions.readAll({ topic_id: workspace.id });
-  };
-
-  const handleArchiveAll = () => {
-    actions.archiveAll({ topic_id: workspace.id });
+    archive: _t("POST.ARCHIVE", "Archive"),
   };
 
   const handleLoadMore = () => {
@@ -248,6 +248,23 @@ const WorkspacePostsPanel = (props) => {
     return () => document.body.removeEventListener("scroll", bodyScroll, false);
   }, [filters, workspace, filter, search])
 
+  const handleMarkAllAsRead = () => {
+    actions.readAll({
+      selected_post_ids: checkedPosts,
+      topic_id: workspace.id
+    });
+    setCheckedPosts([]);
+    actions.getUnreadNotificationEntries({add_unread_comment: 1});
+  };
+
+  const handleArchiveAll = () => {
+    actions.archiveAll({
+      selected_post_ids: checkedPosts,
+      topic_id: workspace.id
+    });
+    setCheckedPosts([]);
+  };
+
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null)
@@ -290,12 +307,12 @@ const WorkspacePostsPanel = (props) => {
               ) : (
                 <>
                   {
-                    filter === "all" &&
+                    filter === "all" && checkedPosts.length > 0 &&
                     <PostsBtnWrapper>
                       <button className="btn all-action-button"
-                              onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                              onClick={handleArchiveAll}>{dictionary.archive}</button>
                       <button className="btn all-action-button"
-                              onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                              onClick={handleMarkAllAsRead}>{dictionary.markAsRead}</button>
                     </PostsBtnWrapper>
                   }
                   <div className="card card-body app-content-body mb-4">
@@ -318,7 +335,7 @@ const WorkspacePostsPanel = (props) => {
                         {posts && posts.map((p) => {
                           return <PostItemPanel
                             key={p.id} post={p} postActions={actions} dictionary={dictionary}
-                            disableOptions={disableOptions}/>;
+                            disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some(id => id === p.id)}/>;
                         })}
                       </ul>
                     </div>

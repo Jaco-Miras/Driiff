@@ -2076,6 +2076,62 @@ export default (state = INITIAL_STATE, action) => {
         })
       }
     }
+    case "INCOMING_READ_SELECTED_POSTS": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.topic_id && {
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              posts: {
+                ...state.workspacePosts[action.data.topic_id].posts,
+                ...action.data.post_ids.reduce((res, id) => {
+                  if (state.workspacePosts[action.data.topic_id].posts[id]) {
+                    res[id] = {
+                      ...state.workspacePosts[action.data.topic_id].posts[id],
+                      is_read: true,
+                      unread_count: 0,
+                      is_unread: 0,
+                      unread_reply_ids: []
+                    };
+                  }
+                  return res;
+                }, {})
+              } 
+            }
+          })
+        }
+      }
+    }
+    case "INCOMING_ARCHIVED_SELECTED_POSTS": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.topic_id && {
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              posts: {
+                ...state.workspacePosts[action.data.topic_id].posts,
+                ...action.data.post_ids.reduce((res, id) => {
+                  if (state.workspacePosts[action.data.topic_id].posts[id]) {
+                    res[id] = {
+                      ...state.workspacePosts[action.data.topic_id].posts[id],
+                      is_archived: 1,
+                      unread_count: 0,
+                      is_unread: 0,
+                      unread_reply_ids: []
+                    };
+                  }
+                  return res;
+                }, {})
+              } 
+            }
+          })
+        }
+      }
+    }  
     case "UPDATE_WORKSPACE_POST_COUNT": {
       return {
         ...state,

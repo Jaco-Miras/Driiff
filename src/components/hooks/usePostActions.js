@@ -690,8 +690,8 @@ const usePostActions = () => {
         archiveAllPosts(payload, (err,res) => {
           if (err) return;
 
-          if (callback) callback();
-          dispatch(archiveAllCallback(payload))
+          // if (callback) callback();
+          // dispatch(archiveAllCallback(payload))
         })
       );
     },
@@ -704,8 +704,8 @@ const usePostActions = () => {
         markAllPostAsRead(payload, (err,res) => {
           if (err) return;
 
-          if (callback) callback();
-          dispatch(readAllCallback(payload))
+          // if (callback) callback();
+          // dispatch(readAllCallback(payload))
         })
       );
     },
