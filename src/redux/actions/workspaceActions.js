@@ -4,6 +4,7 @@ import {
   deleteWorkspace as deleteWorkspaceService,
   deleteWorkspaceFolder as deleteWorkspaceFolderService,
   deleteWorkspaceRole as deleteWorkspaceRoleService,
+  getUnreadWorkspacePostEntries as getUnreadWorkspacePostEntriesService,
   fetchDetail as fetchDetailService,
   fetchMembers as fetchMembersService,
   fetchPrimaryFiles as fetchPrimaryFilesService,
@@ -184,4 +185,12 @@ export function getAllWorkspace(payload, callback) {
 
 export function updateWorkspaceSearch(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_SEARCH", payload, callback);
+}
+
+export function getUnreadWorkspacePostEntries(payload, callback) {
+  return dispatchActionToReducer(getUnreadWorkspacePostEntriesService(payload), "GET_UNREAD_WORKSPACE_POSTS_ENTRIES_START", "GET_UNREAD_WORKSPACE_POSTS_ENTRIES_SUCCESS", "GET_UNREAD_WORKSPACE_POSTS_ENTRIES_FAIL", callback);
+}
+
+export function updateWorkspacePostCount(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_POST_COUNT", payload, callback);
 }

@@ -102,6 +102,12 @@ const WorkspacePostsPanel = (props) => {
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
+      actions.getUnreadWsPostsCount({topic_id: params.workspaceId});
+    }
+  }, []);
+
+  useEffect(() => {
+    if (params.hasOwnProperty("workspaceId")) {
       actions.getRecentPosts(params.workspaceId);
     }
   }, [params.workspaceId]);
