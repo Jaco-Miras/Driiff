@@ -39,9 +39,9 @@ const Search = styled(SearchForm)`
 const SystemPeoplePanel = (props) => {
   const { className = "" } = props;
 
-  const { userActions, loggedUser, selectUserChannel } = useUserChannels();
+  const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
-  const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
+  //const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
 
   const history = useHistory();
   const dispatch = useDispatch();
