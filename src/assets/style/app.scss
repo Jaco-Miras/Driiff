@@ -204,6 +204,14 @@ body {
   }
 }
 
+.recipients .receiver {
+  border-radius: 6px;
+  padding: 3px 5px;
+  background-color: rgba(210, 210, 210, 0.2);
+  font-size: 11px;
+  margin-right: 3px;
+}
+
 body.dark {
   // #111417 // sidebar
   // #25282c // bg
