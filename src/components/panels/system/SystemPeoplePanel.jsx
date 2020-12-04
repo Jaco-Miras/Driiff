@@ -231,7 +231,7 @@ const SystemPeoplePanel = (props) => {
                 <PeopleListItem
                   loggedUser={loggedUser}
                   key={user.id}
-                  user={{ ...user, id: user.type_id }}
+                  user={user}
                   onNameClick={handleUserNameClick}
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
