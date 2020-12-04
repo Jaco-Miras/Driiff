@@ -89,7 +89,7 @@ const usePosts = () => {
   let filteredPosts = [];
   //let posts = null;
   let activeFilter = null;
-  let tag = null;
+  let activeTag = null;
   let activeSort = "recent";
   let post = null;
   let activeSearch = "";
@@ -118,8 +118,11 @@ const usePosts = () => {
     activeSort = sort;
     activeFilter = filter;
     activeFilters = filters;
+    activeTag = tag;
+
     counters = {
-      all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0).length,
+      // all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0) ).length,
+      all: 0,
       my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
       starred: Object.values(posts).filter((p) => p.is_favourite).length,
       archived: Object.values(posts).filter((p) => p.is_archived).length,
@@ -128,33 +131,48 @@ const usePosts = () => {
     };
 
     if (posts.hasOwnProperty(params.postId)) {
-      post = { ...posts[params.postId] };
+      post = posts[params.postId];
     }
 
-    if (filter || tag) {
-      filteredPosts = Object.values(posts)
-        .filter((p) => {
-          if (filter) {
-            if (filter === "my_posts") {
+    filteredPosts = Object.values(posts)
+
+    if (searchResults.length > 0 && search) {
+      filteredPosts = filteredPosts.filter((p) => {
+        return searchResults.some((s) => {
+          return p.id === s.id;
+        });
+      });
+    } else if (searchResults.length === 0 && search) {
+      filteredPosts = [];
+    }
+
+    if (activeFilter !== "" || activeTag) {
+      filteredPosts = filteredPosts.filter((p) => {
+          if (activeFilter) {
+            if (activeFilter === "all") {
+              if (search !== "") {
+                return true;
+              } else {
+                return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0 &&  p.is_archived !== 1);
+              }
+            } else if (activeFilter === "my_posts") {
               if (p.hasOwnProperty("author")) return p.author.id === user.id;
               else return false;
-            } else if (filter === "draft") {
+            } else if (activeFilter === "draft") {
               return p.hasOwnProperty("draft_type");
-            } else if (filter === "star") {
+            } else if (activeFilter === "star") {
               return p.is_favourite;
-            } else if (filter === "archive") {
+            } else if (activeFilter === "archive") {
               return p.is_archived === 1;
-            } else if (filter === "all") {
-              return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0;
-            } else if (filter === "new_reply") {
+            } else if (activeFilter === "new_reply") {
               return p.unread_reply_ids.length > 0;
             }
-          } else if (tag) {
-            if (tag === "is_must_reply") {
+          } else if (activeTag) {
+            if (activeTag === "is_must_reply") {
               return p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
-            } else if (tag === "is_must_read") {
+            } else if (activeTag === "is_must_read") {
               return p.is_must_read && !p.is_archived && !p.hasOwnProperty("draft_type");
-            } else if (tag === "is_read_only") {
+            } else if (activeTag === "is_read_only") {
               return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
             } else {
               return true;
@@ -184,61 +202,15 @@ const usePosts = () => {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         }).length;
       }
-
-      if (searchResults.length > 0 && search) {
-        filteredPosts = filteredPosts.filter((p) => {
-          return searchResults.some((s) => {
-            return p.id === s.id;
-          });
-        });
-      } else if (searchResults.length === 0 && search) {
-        filteredPosts = [];
-      }
-    } else {
-      let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
-      if (searchResults.length && search) {
-        filteredPosts = filteredPosts.filter((p) => {
-          return searchResults.some((s) => {
-            return p.id === s.id;
-          });
-        })
-          .filter((p) => {
-            return !p.hasOwnProperty("draft_type") && p.is_archived === 0;
-          })
-          .sort((a, b) => {
-            if (sort === "favorite") {
-              return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-            } else if (sort === "unread") {
-              return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
-            } else {
-              return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
-            }
-          });
-      } else if (searchResults.length === 0 && search) {
-        filteredPosts = [];
-      } else {
-        filteredPosts = filteredPosts.filter((p) => {
-          return !p.hasOwnProperty("draft_type") && p.is_archived === 0;
-        })
-          .sort((a, b) => {
-            if (sort === "favorite") {
-              return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-            } else if (sort === "unread") {
-              return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
-            } else {
-              return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
-            }
-          });
-      }
-    }
+    } 
   }
-
+  
   return {
     flipper,
     actions,
     posts: filteredPosts,
     filter: activeFilter,
-    tag: tag,
+    tag: activeTag,
     sort: activeSort,
     post: post,
     search: activeSearch,

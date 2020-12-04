@@ -412,6 +412,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.workspacePosts[action.data.topic_id],
             search: action.data.search,
             searchResults: action.data.search_result,
+            filter: "all"
           },
         },
       };
@@ -1146,11 +1147,11 @@ export default (state = INITIAL_STATE, action) => {
             }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
-              if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
-                updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
-              }
+              // if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
+              //   updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+              // }
               if (updatedTopic && updatedTopic.id === ws.topic_id && state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_reply_ids.length === 0) {
-                updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+                //updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
               }
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_reply_ids = [...new Set([...newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_reply_ids, action.data.id])];
@@ -1922,6 +1923,7 @@ export default (state = INITIAL_STATE, action) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
           workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
+          workspacePosts[action.data.topic_id].posts[p.id].unread_reply_ids = [];
         })
         workspaces[action.data.topic_id].unread_posts = 0;
         if (activeTopic && activeTopic.id === action.data.topic_id) {
@@ -1943,6 +1945,7 @@ export default (state = INITIAL_STATE, action) => {
         Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_archived = 1;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
+          workspacePosts[action.data.topic_id].posts[p.id].unread_reply_ids = [];
         })
         return {
           ...state,
@@ -1964,7 +1967,7 @@ export default (state = INITIAL_STATE, action) => {
             filter: "all",
             sort: "recent",
             tag: null,
-            search: null,
+            search: "",
             searchResults: [],
             count: null,
             posts: {
@@ -2071,6 +2074,19 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         })
+      }
+    }
+    case "UPDATE_WORKSPACE_POST_COUNT": {
+      return {
+        ...state,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id ? {...state.activeTopic, unread_posts: action.data.count} : state.activeTopic,
+        workspaces: {
+          ...state.workspaces,
+          [action.data.topic_id]: {
+            ...state.workspaces[action.data.topic_id],
+            unread_posts: action.data.count
+          }
+        }
       }
     }
     default:

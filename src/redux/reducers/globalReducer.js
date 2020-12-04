@@ -410,6 +410,7 @@ export default (state = INITIAL_STATE, action) => {
         general_post: 0,
         unread_posts: 0,
         workspace_post: 0,
+        generate_post_comment: 0,
       };
       return {
         ...state,
