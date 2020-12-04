@@ -10,7 +10,7 @@ import {
   saveDraft,
   updateDraft,
 } from "../../redux/actions/globalActions";
-import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postActions";
+import { postCreate, putCompanyPosts, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect } from "../forms";
@@ -19,6 +19,8 @@ import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
+import { useHistory } from "react-router-dom";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -300,6 +302,7 @@ const CreateEditCompanyPostModal = (props) => {
 
   const { type, mode, item = {}, action } = props.data;
 
+  const history = useHistory();
   const winSize = useWindowSize();
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -671,18 +674,18 @@ const CreateEditCompanyPostModal = (props) => {
         uploadFiles(payload, "create");
         //setLoading(false);
       } else {
-        if (form.selectedAddressTo.length > 1) {
-          dispatch(postCreate(payload, () => {
+        if (form.selectedAddressTo.length) {
+          dispatch(postCreate(payload, (err,res) => {
             setLoading(false);
             toggleAll(false);
+            if (err) return;
+            let payload = {
+              filter: "my_posts",
+              tag: null,
+            };
+            dispatch(updateCompanyPostFilterSort(payload));
+            history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
           }));
-        } else {
-          action.create(payload, (err, res) => {
-            setLoading(false);
-            if (res) {
-              toggleAll(false);
-            }
-          });
         }
       }
     }
@@ -937,9 +940,16 @@ const CreateEditCompanyPostModal = (props) => {
           file_ids: result.map((res) => res.data.id),
         };
         dispatch(
-          postCreate(payload, () => {
+          postCreate(payload, (err,res) => {
             setLoading(false);
             toggleAll(false);
+            if (err) return;
+            let payload = {
+              filter: "my_posts",
+              tag: null,
+            };
+            dispatch(updateCompanyPostFilterSort(payload));
+            history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
           })
         );
       }
