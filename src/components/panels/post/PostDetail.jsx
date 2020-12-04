@@ -424,6 +424,7 @@ const PostDetail = (props) => {
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+    postActions.getUnreadWsPostsCount({topic_id: workspace.id});
   }, []);
 
   const privateWsOnly = post.recipients.filter((r) => {

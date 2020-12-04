@@ -73,7 +73,7 @@ const EmptyState = styled.div`
 `;
 
 const PostsBtnWrapper = styled.div`
-  text-align: right;
+  //text-align: right;
   margin-bottom: 10px;
   .btn {
     margin-left: 10px;
@@ -93,6 +93,13 @@ const CompanyPostsPanel = (props) => {
   const { actions, archived, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
+  const [checkedPosts, setCheckedPosts] = useState([]);
+
+  const handleToggleCheckbox = (postId) => {
+    let checked = !checkedPosts.some(id => id === postId);
+    const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
+    setCheckedPosts(postIds)
+  };
 
   const handleShowPostModal = () => {
     actions.showModal("create_company");
@@ -111,7 +118,7 @@ const CompanyPostsPanel = (props) => {
     all: _t("POST.ALL", "All"),
     inbox: _t("POST.INBOX", "Inbox"),
     newReply: _t("POST.NEW_REPLY", "New reply"),
-    myPosts: _t("POST.MY_POSTS", "My posts"),
+    myPosts: _t("POST.MY_POSTS", "My sent posts"),
     starred: _t("POST.STARRED", "Starred"),
     archived: _t("POST.ARCHIVED", "Archived"),
     draft: _t("POST.DRAFT", "Draft"),
@@ -167,6 +174,7 @@ const CompanyPostsPanel = (props) => {
     messageInSecureWs: _t("POST.MESSAGE_IN_SECURE_WORKSPACE", "message in a secure workspace"),
     markImportant: _t("CHAT.MARK_IMPORTANT", "Mark as important"),
     unMarkImportant: _t("CHAT.UNMARK_IMPORTANT", "Unmark as important"),
+    archive: _t("POST.ARCHIVE", "Archive"),
   };
 
   
@@ -212,11 +220,18 @@ const CompanyPostsPanel = (props) => {
   // }, [refs.posts.current]);
 
   const handleMarkAllAsRead = () => {
-    actions.readAll();
+    actions.readAll({
+      selected_post_ids: checkedPosts
+    });
+    setCheckedPosts([]);
+    actions.getUnreadNotificationEntries({add_unread_comment: 1});
   };
 
   const handleArchiveAll = () => {
-    actions.archiveAll();
+    actions.archiveAll({
+      selected_post_ids: checkedPosts
+    });
+    setCheckedPosts([]);
   };
 
   if (posts === null)
@@ -261,12 +276,12 @@ const CompanyPostsPanel = (props) => {
               ) : (
                 <>
                   {
-                    filter === "all" &&
+                    filter === "all" && checkedPosts.length > 0 &&
                     <PostsBtnWrapper>
                       <button className="btn all-action-button"
-                              onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                              onClick={handleArchiveAll}>{dictionary.archive}</button>
                       <button className="btn all-action-button"
-                              onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                              onClick={handleMarkAllAsRead}>{dictionary.markAsRead}</button>
                     </PostsBtnWrapper>
                   }
                   <div className="card card-body app-content-body mb-4">
@@ -288,7 +303,7 @@ const CompanyPostsPanel = (props) => {
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
                         {posts && posts.map((p) => {
                           return <CompanyPostItemPanel
-                            key={p.id} post={p} postActions={actions} dictionary={dictionary}/>;
+                            key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some(id => id === p.id)}/>;
                         })}
                       </ul>
                     </div>

@@ -287,6 +287,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           search: action.data.search,
           searchResults: action.data.search_result,
+          filter: "all"
         }
       }
     }
@@ -607,6 +608,7 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[action.data.post_id].unread_reply_ids = [...new Set([...companyPosts.posts[action.data.post_id].unread_reply_ids, action.data.id])];
         }
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
+        companyPosts.posts[action.data.post_id].reply_count = companyPosts.posts[action.data.post_id].reply_count + 1;
         if (action.data.author.id === state.user.id)
           companyPosts.posts[action.data.post_id].has_replied = true;
       }
@@ -642,6 +644,7 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[p.id].is_updated = true;
           companyPosts.posts[p.id].unread_count = 0;
           companyPosts.posts[p.id].is_unread = 0;
+          companyPosts.posts[p.id].unread_reply_ids = [];
         })
       }
       return {
@@ -656,6 +659,7 @@ export default (state = INITIAL_STATE, action) => {
         Object.values(companyPosts.posts).forEach((p) => {
           companyPosts.posts[p.id].is_archived = 1;
           companyPosts.posts[p.id].unread_count = 0;
+          companyPosts.posts[p.id].unread_reply_ids = [];
         })
       }
       return {
@@ -737,6 +741,53 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_READ_SELECTED_POSTS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.post_ids.reduce((res, id) => {
+              if (state.companyPosts.posts[id]) {
+                res[id] = {
+                  ...state.companyPosts.posts[id],
+                  is_read: true,
+                  unread_count: 0,
+                  is_unread: 0,
+                  unread_reply_ids: []
+                };
+              }
+
+              return res;
+            }, {})
+          }
+        }
+      }
+    }
+    case "INCOMING_ARCHIVED_SELECTED_POSTS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.post_ids.reduce((res, id) => {
+              if (state.companyPosts.posts[id]) {
+                res[id] = {
+                  ...state.companyPosts.posts[id],
+                  is_archived: 1,
+                  unread_count: 0,
+                  is_unread: 0,
+                  unread_reply_ids: []
+                };
+              }
+              return res;
+            }, {})
+          }
+        }
+      }
+    }    
     default:
       return state;
   }

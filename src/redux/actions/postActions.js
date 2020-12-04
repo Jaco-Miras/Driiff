@@ -320,3 +320,11 @@ export function putCommentImportant(payload, callback) {
 export function incomingImportantComment(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_IMPORTANT_COMMENT", payload, callback);
 }
+
+export function incomingReadSelectedPosts(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_READ_SELECTED_POSTS", payload, callback);
+}
+
+export function incomingArchivedSelectedPosts(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ARCHIVED_SELECTED_POSTS", payload, callback);
+}
