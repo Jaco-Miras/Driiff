@@ -44,6 +44,7 @@ import {
   updateCompanyPostFilterSort,
   updatePostFiles,
 } from "../../redux/actions/postActions";
+import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
 
@@ -774,6 +775,21 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const getUnreadWsPostsCount = useCallback(
+    (payload = {}, callback = () => {}) => {
+      dispatch(
+        getUnreadWorkspacePostEntries(payload, (err, res) => {
+          if (err) return;
+          dispatch(updateWorkspacePostCount({
+            topic_id: payload.topic_id,
+            count: res.data.result
+          }))
+        })
+      );
+    },
+    [dispatch]
+  );
+
   return {
     addUserToPost,
     starPost,
@@ -806,7 +822,8 @@ const usePostActions = () => {
     like,
     unlike,
     fetchPostDetail,
-    updatePostImages
+    updatePostImages,
+    getUnreadWsPostsCount,
   };
 };
 

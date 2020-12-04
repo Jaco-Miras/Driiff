@@ -568,3 +568,10 @@ export function putCommentImportant(payload) {
     data: payload
   });
 }
+
+export function getUnreadWorkspacePostEntries(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/post-unread-entries?topic_id=${payload.topic_id}`,
+  });
+}
