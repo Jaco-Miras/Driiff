@@ -41,13 +41,15 @@ const SystemPeoplePanel = (props) => {
 
   const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
-  //const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
+  const inactiveUsers = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER" && r.active === 0);
 
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
 
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
+
+  const allUsers = [...Object.values(users), ...inactiveUsers];
 
   const refs = {
     search: useRef(),
@@ -77,7 +79,7 @@ const SystemPeoplePanel = (props) => {
     [history, selectUserChannel]
   );
 
-  const userSort = Object.values(users)
+  const userSort = allUsers
     .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
 
