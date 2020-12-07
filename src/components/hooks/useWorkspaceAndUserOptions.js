@@ -132,10 +132,10 @@ const useWorkspaceAndUserOptions = (props) => {
     }
   });
   
-  const user_options = users.filter((u) => user_ids.some(id => id === u.id)).map((u) => {
+  const user_options = users.filter((u) => user_ids.some(id => id === u.type_id)).map((u) => {
     return { ...u, 
             icon: "user-avatar",
-            value: u.id,
+            value: u.type_id,
             label: u.name ? u.name : u.email,
             type: "USER" }
   });
