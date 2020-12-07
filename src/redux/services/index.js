@@ -155,6 +155,7 @@ export {
 
 export {
   addPostRecipients,
+  commentApprove,
   deleteComment,
   deletePost,
   getUnreadWorkspacePostEntries,
@@ -163,6 +164,7 @@ export {
   fetchComments,
   fetchRecentPosts,
   fetchTagCounter,
+  postApprove,
   postArchive,
   postClap,
   postCreate,

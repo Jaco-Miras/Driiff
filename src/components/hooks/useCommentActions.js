@@ -5,6 +5,7 @@ import {
   addComment,
   addCommentQuote,
   clearCommentQuote,
+  commentApprove,
   deleteComment,
   fetchComments,
   getReplyClapHover,
@@ -198,9 +199,19 @@ const useCommentActions = () => {
     [dispatch]
   );
 
+  const approve = useCallback(
+    (payload = {}) => {
+      dispatch(
+        commentApprove(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
+    approve,
     clap,
     clearQuote,
     create,

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
-import { PostDetailFooter, PostVideos } from "../../../panels/post/index";
+import { PostDetailFooter, PostVideos, PostChangeAccept } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
 import { useGoogleApis, useTimeFormat, useFiles } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
@@ -220,6 +220,7 @@ const Comment = (props) => {
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
+  const [approving, setApproving] = useState({ approve: false, change: false});
   // const [react, setReact] = useState({
   //   user_clap_count: comment.user_clap_count,
   //   clap_count: comment.clap_count,
@@ -413,6 +414,44 @@ const Comment = (props) => {
     };
   }, []);
 
+  const handleApprove = () => {
+    setApproving({
+      ...approving,
+      approve: true
+    });
+    if (!approving.approve) {
+      commentActions.approve({
+        post_id: post.id,
+        approved: 1,
+        comment_id: comment.id
+      }, () => {
+        setApproving({
+          ...approving,
+          approve: false
+        });
+      })
+    }
+  };
+
+  const handleRequestChange = () => {
+    setApproving({
+      ...approving,
+      change: true
+    });
+    if (!approving.change) {
+      commentActions.approve({
+        post_id: post.id,
+        approved: 0,
+        comment_id: comment.id
+      },  () => {
+        setApproving({
+          ...approving,
+          change: false
+        });
+      })
+    }
+  };
+
   // useEffect(() => {
   //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
   // }, [comment.clap_user_ids]);
@@ -442,6 +481,8 @@ const Comment = (props) => {
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
+          {comment.users_approval.length > 0 && post.users_approval.length === 0 && 
+          <PostChangeAccept approving={approving} fromNow={fromNow} usersApproval={comment.users_approval} user={user} handleApprove={handleApprove} handleRequestChange={handleRequestChange} dictionary={dictionary}/>}
           {comment.files.length >= 1 && (
             <>
               <hr />

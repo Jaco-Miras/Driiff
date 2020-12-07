@@ -116,7 +116,7 @@ const CloseButton = styled(SvgIconFeather)`
 const PostInput = forwardRef((props, ref) => {
   const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
           post, parentId, commentActions, userMention, handleClearUserMention, commentId, members,
-          onClosePicker, onActive
+          onClosePicker, onActive, prioMentionIds, approvers, onClearApprovers,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -141,15 +141,6 @@ const PostInput = forwardRef((props, ref) => {
   const [quote] = useCommentQuote(commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
-
-  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
-                        .map((r) => {
-                          if (r.type === "USER") {
-                            return [r.type_id]
-                          } else {
-                            return r.participant_ids
-                          }
-                        }).flat();
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
@@ -198,7 +189,8 @@ const PostInput = forwardRef((props, ref) => {
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
         post_title: post.title
-      }
+      },
+      approval_user_ids: approvers.map(a => a.value)
     };
 
     if (quote) {
@@ -266,6 +258,7 @@ const PostInput = forwardRef((props, ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
+    onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
   };

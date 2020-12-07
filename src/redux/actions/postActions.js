@@ -2,6 +2,7 @@ import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actio
 import {
   addPostRecipients as addPostRecipientsService,
   archiveAllPosts as archiveAllPostsService,
+  commentApprove as commentApproveService,
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
   fetchComments as fetchCommentsService,
@@ -15,6 +16,7 @@ import {
   getUnreadPostComments as getUnreadPostCommentsService,
   getUnreadPostEntries as getUnreadPostEntriesService,
   markAllPostAsRead as markAllPostAsReadService,
+  postApprove as postApproveService,
   postArchive as postArchiveService,
   postClap as postClapService,
   postComment as postCommentService,
@@ -327,4 +329,20 @@ export function incomingReadSelectedPosts(payload, callback) {
 
 export function incomingArchivedSelectedPosts(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ARCHIVED_SELECTED_POSTS", payload, callback);
+}
+
+export function postApprove(payload, callback) {
+  return dispatchActionToReducer(postApproveService(payload), "POST_APPROVE_START", "POST_APPROVE_SUCCESS", "POST_APPROVE_FAIL", callback);
+}
+
+export function incomingPostApproval(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_APPROVAL", payload, callback);
+}
+
+export function commentApprove(payload, callback) {
+  return dispatchActionToReducer(commentApproveService(payload), "COMMENT_APPROVE_START", "COMMENT_APPROVE_SUCCESS", "COMMENT_APPROVE_FAIL", callback);
+}
+
+export function incomingCommentApproval(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMMENT_APPROVAL", payload, callback);
 }
