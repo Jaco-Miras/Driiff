@@ -408,7 +408,6 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -422,6 +421,7 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
+                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -446,7 +446,6 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -460,6 +459,7 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
+                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}
