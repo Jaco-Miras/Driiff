@@ -110,10 +110,6 @@ class ChatMessages extends React.PureComponent {
     });
   };
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
-  }
-
   loadReplies = () => {
     console.log("load more virtuoso");
     const { selectedChannel, chatMessageActions } = this.props;
@@ -141,8 +137,8 @@ class ChatMessages extends React.PureComponent {
         }
 
         if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
-          if (this.virtuoso.current){
-            this.virtuoso.current.scrollToIndex({index: res.data.results.length - 1, align: "start"})
+          if (this.virtuoso.current) {
+            this.virtuoso.current.scrollToIndex({ index: res.data.results.length - 1, align: "start" });
           }
         } else {
           if (this.virtuoso.current) {
@@ -186,7 +182,7 @@ class ChatMessages extends React.PureComponent {
         mentionEl.classList.add("is-author");
       });
     }
-   
+
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
       if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
@@ -196,11 +192,11 @@ class ChatMessages extends React.PureComponent {
     if (selectedChannel && prevProps.selectedChannel.id === this.props.selectedChannel.id) {
       // has replies
       if (selectedChannel.replies.length) {
-        if ((selectedChannel.replies.length - prevProps.selectedChannel.replies.length) === 1) {
+        if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1) {
           if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === this.props.user.id) {
             //own user message
-            if (this.virtuoso.current){
-              this.virtuoso.current.scrollToIndex({index: selectedChannel.replies.length - 1, align: "end"})
+            if (this.virtuoso.current) {
+              this.virtuoso.current.scrollToIndex({ index: selectedChannel.replies.length - 1, align: "end" });
             }
           } else if (this.props.isLastChatVisible) {
             if (this.props.isBrowserActive) {
@@ -208,8 +204,8 @@ class ChatMessages extends React.PureComponent {
                 this.handleReadChannel();
               }
               //other user message scroll to bottom after receiving
-              if (this.virtuoso.current){
-                this.virtuoso.current.scrollToIndex({index: selectedChannel.replies.length - 1, align: "end"})
+              if (this.virtuoso.current) {
+                this.virtuoso.current.scrollToIndex({ index: selectedChannel.replies.length - 1, align: "end" });
               }
             }
           }
@@ -308,34 +304,34 @@ class ChatMessages extends React.PureComponent {
     const { selectedChannel } = this.props;
 
     return (
-        <Wrapper id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
-          {
-          selectedChannel.replies && selectedChannel.replies.length > 0 && 
-            <Virtualized
-                selectedChannel={selectedChannel}
-                loadReplies={this.loadReplies}
-                virtuosoRef={this.virtuoso}
-                handleResendMessage={this.handleResendMessage}
-                filterSeenMembers={this.filterSeenMembers}
-                handleShowSeenUsers={this.handleShowSeenUsers}
-                recipients={this.props.recipients}
-                chatSettings={this.props.settings}
-                dictionary={this.props.dictionary}
-                chatMessageActions={this.props.chatMessageActions}
-                timeFormat={this.props.timeFormat}
-                user={this.props.user}
-                isLastChatVisible={this.props.isLastChatVisible}
-                getLoadRef={this.getLoadRef}
-                chatName={this.props.chatName}
-                messages={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)]}
-            />
-          }
-          {
-              selectedChannel.replies && selectedChannel.replies.length === 0 && !selectedChannel.hasMore &&
-              <EmptyState className="no-reply-container"><SvgEmptyState icon={3} /></EmptyState>
-          }
-        </Wrapper>
-      );
+      <Wrapper id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
+        {selectedChannel.replies && selectedChannel.replies.length > 0 && (
+          <Virtualized
+            selectedChannel={selectedChannel}
+            loadReplies={this.loadReplies}
+            virtuosoRef={this.virtuoso}
+            handleResendMessage={this.handleResendMessage}
+            filterSeenMembers={this.filterSeenMembers}
+            handleShowSeenUsers={this.handleShowSeenUsers}
+            recipients={this.props.recipients}
+            chatSettings={this.props.settings}
+            dictionary={this.props.dictionary}
+            chatMessageActions={this.props.chatMessageActions}
+            timeFormat={this.props.timeFormat}
+            user={this.props.user}
+            isLastChatVisible={this.props.isLastChatVisible}
+            getLoadRef={this.getLoadRef}
+            chatName={this.props.chatName}
+            messages={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)]}
+          />
+        )}
+        {selectedChannel.replies && selectedChannel.replies.length === 0 && !selectedChannel.hasMore && (
+          <EmptyState className="no-reply-container">
+            <SvgEmptyState icon={3} />
+          </EmptyState>
+        )}
+      </Wrapper>
+    );
   }
 }
 

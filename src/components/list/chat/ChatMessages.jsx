@@ -50,19 +50,19 @@ const ChatReplyContainer = styled.div`
 
 const ChatList = styled.li`
   @media (max-width: 620px) {
-    -webkit-touch-callout:none;
-    -webkit-user-select:none;
-    -khtml-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   position: relative;
   display: inline-block;
   width: 100%;
-  margin-bottom: ${(props) => props.isLastChat ? "20px" : "5px"};
+  margin-bottom: ${(props) => (props.isLastChat ? "20px" : "5px")};
   text-align: center;
   .chat-actions-container {
     opacity: 0;
@@ -119,20 +119,20 @@ const ChatBubbleContainer = styled.div`
     ${(props) => props.isAuthor === true && !props.showAvatar && "position: relative; right: 0px;"};
     ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
   }
-    &:before {
-        ${(props) => props.showAvatar && "content: '';"};
-        border: 10px solid transparent;
-        border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : "#f0f0f0")};
-        position: absolute;
-        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
-        left: 30px;
-        z-index: 1;
-        @media all and (max-width: 620px) {
-          display: none;
-        }
-        ${(props) =>
-          props.isAuthor === true &&
-          `
+  &:before {
+    ${(props) => props.showAvatar && "content: '';"};
+    border: 10px solid transparent;
+    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : "#f0f0f0")};
+    position: absolute;
+    top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
+    left: 30px;
+    z-index: 1;
+    @media all and (max-width: 620px) {
+      display: none;
+    }
+    ${(props) =>
+      props.isAuthor === true &&
+      `
             left: auto;
             right: -16px;
             border-left-color:  ${(props) => (props.isImportant ? "#7B68EE" : "#7A1B8B")};
@@ -141,20 +141,21 @@ const ChatBubbleContainer = styled.div`
               display: none;
             }
         `};
-    }
-    .dark & {
-      &:before {
-        ${(props) => props.showAvatar && "content: '';"};
-        border: 10px solid transparent;        
-        position: absolute;
-        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
-        left: 30px;
-        z-index: 1;
-        @media all and (max-width: 620px) {
-          display: none;
-        }
-        ${(props) =>
-  props.isAuthor === true && `
+  }
+  .dark & {
+    &:before {
+      ${(props) => props.showAvatar && "content: '';"};
+      border: 10px solid transparent;
+      position: absolute;
+      top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
+      left: 30px;
+      z-index: 1;
+      @media all and (max-width: 620px) {
+        display: none;
+      }
+      ${(props) =>
+        props.isAuthor === true &&
+        `
             left: auto;
             right: -16px;            
             border-right-color: transparent;
@@ -162,8 +163,8 @@ const ChatBubbleContainer = styled.div`
               display: none;
             }
         `};
-      }
     }
+  }
 `;
 const ChatActionsContainer = styled.div`
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
@@ -208,7 +209,7 @@ const MessageOptions = styled(ChatMessageOptions)`
   flex: 1;
   margin: 5px;
   max-width: 25px;
-  
+
   @media (max-width: 620px) {
     margin-right: 0;
   }
@@ -217,7 +218,7 @@ const MessageOptions = styled(ChatMessageOptions)`
     &.orientation-bottom {
       top: calc(100% - 35px);
       @media (max-width: 620px) {
-        top: 100%
+        top: 100%;
       }
     }
 
@@ -440,7 +441,6 @@ class ChatMessages extends React.PureComponent {
     const scrollComponent = this.scrollComponent.current;
     console.log("save historical position");
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
-    document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
   }
 
   loadReplies = () => {
@@ -537,7 +537,6 @@ class ChatMessages extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    
     const { selectedChannel, historicalPositions, user } = this.props;
 
     //to be relocated
@@ -706,12 +705,12 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleChatListTouchEnd = (e) => {
-    if ((e.timeStamp - this.varRefs.timerStart.current) > 125) {
+    if (e.timeStamp - this.varRefs.timerStart.current > 125) {
       this.setState({
         showEmoji: {
           ...this.state.showEmoji,
           [e.currentTarget.dataset.messageId]: !this.state.showEmoji[e.currentTarget.dataset.messageId],
-        }
+        },
       });
     }
   };
@@ -771,13 +770,12 @@ class ChatMessages extends React.PureComponent {
               ? groupedMessages.map((gm, i) => {
                   return (
                     <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
-                      <TimestampDiv className="timestamp-container">{
-                        <span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
+                      <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm.replies
                         // .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
                         .map((reply, k, e) => {
-                          const isAuthor = reply.user && reply.user.id === this.props.user.id
+                          const isAuthor = reply.user && reply.user.id === this.props.user.id;
 
                           let showAvatar = false;
                           let showTimestamp = false;
@@ -847,7 +845,7 @@ class ChatMessages extends React.PureComponent {
                               onTouchEnd={this.handleChatListTouchEnd}
                               isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                             >
-                              {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine/>}
+                              {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                               {reply.user && (
                                 <ChatBubbleContainer
                                   isAuthor={isAuthor}
@@ -882,14 +880,9 @@ class ChatMessages extends React.PureComponent {
                                       dictionary={this.props.dictionary}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor}
-                                                             reply={reply}
-                                                             showEmojiSwitcher={this.state.showEmoji[reply.id]}/>}
+                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions dictionary={this.props.dictionary}
-                                                          className={"chat-message-options"}
-                                                          selectedChannel={this.props.selectedChannel}
-                                                          isAuthor={isAuthor} replyData={reply}/>
+                                          <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
                                         )}
                                       </ChatActionsContainer>
                                     </ChatBubble>
@@ -899,10 +892,16 @@ class ChatMessages extends React.PureComponent {
                                     )}
                                   </ChatBubbleQuoteDiv>
 
-                                  {!isAuthor && showAvatar &&
-                                  <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} type="USER"
-                                                imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
-                                                name={reply.user.name} isBot={isBot}/>}
+                                  {!isAuthor && showAvatar && (
+                                    <StyledAvatar
+                                      isForwardedMessage={reply.is_transferred}
+                                      id={reply.user.id}
+                                      type="USER"
+                                      imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                      name={reply.user.name}
+                                      isBot={isBot}
+                                    />
+                                  )}
                                 </ChatBubbleContainer>
                               )}
                               {reply.user === null && (
@@ -933,9 +932,7 @@ class ChatMessages extends React.PureComponent {
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor}
-                                                             reply={reply}
-                                                             showEmojiSwitcher={this.state.showEmoji[reply.id]}/>}
+                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions
                                             dictionary={this.props.dictionary}
