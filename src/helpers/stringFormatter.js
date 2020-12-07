@@ -154,13 +154,9 @@ export const textToLink = (text, new_window) => {
     if (!EmailRegex.test(url)) {
       let protocol_pattern = /^(?:(?:https?|ftp):\/\/)/i;
       let href = protocol_pattern.test(url) ? url : "http://" + url;
-      return " <a href=\"" + href + "\" target=\"" + target + "\">" + url + "</a>";
+      return `<a href="${href}" target="${target}">${url}</a>`;
     } else {
-      return " <a\" <a href=\"mailto:\"rl + ";
-      " t"\" target=\"";
-      arget + "\">";
-      "\">";
-      rl + "</a>";
+      return `<a href="mailto:${target}" target="${target}">${url}</a>`;
     }
   });
 };
