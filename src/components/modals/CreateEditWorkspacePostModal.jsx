@@ -180,6 +180,14 @@ const WrapperDiv = styled(InputGroup)`
   .post-visibility-container {
     width: 100%;
   }
+  .dark & {
+    input {
+      color: #ffffff !important;
+      &::-webkit-input-placeholder {
+        color: #c7ced6;
+      }
+    }    
+  }
 `;
 
 const SelectPostVisibility = styled(PostVisibilitySelect)`

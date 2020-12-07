@@ -115,7 +115,7 @@ const PeopleListItem = (props) => {
                         </div>
                       </ToolTip>
                       <span className="label-wrapper d-inline-flex start align-items-center">
-                        {user.type === "external" &&
+                        {user.type === "external" && loggedUser.type !== "external" &&
                         <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white"/>}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white"/>}
                       </span>
