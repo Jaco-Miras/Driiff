@@ -29,26 +29,25 @@ const UserProfileDropdown = (props) => {
 
   const handleEditProfile = useCallback(() => {
     refs.container.current.classList.remove("show");
-    document.querySelector(".overlay").classList.remove('show');
+    document.querySelector(".overlay").classList.remove("show");
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/edit`);
-
   }, [user]);
 
   const handleSignOut = useCallback(() => {
     refs.container.current.classList.remove("show");
-    document.querySelector(".overlay").classList.remove('show');
+    document.querySelector(".overlay").classList.remove("show");
     processBackendLogout();
   }, []);
 
   const handleProfile = useCallback(() => {
     refs.container.current.classList.remove("show");
-    document.querySelector(".overlay").classList.remove('show');
+    document.querySelector(".overlay").classList.remove("show");
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
   }, [user]);
 
   const handleSettings = useCallback(() => {
     refs.container.current.classList.remove("show");
-    document.querySelector(".overlay").classList.remove('show');
+    document.querySelector(".overlay").classList.remove("show");
     history.push("/settings");
   }, []);
 
@@ -61,17 +60,13 @@ const UserProfileDropdown = (props) => {
   };
 
   return (
-    <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`}
-             x-placement="bottom-end">
+    <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`} x-placement="bottom-end">
       <div className="p-3 text-center">
-        <Avatar name={user.name}
-                imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link}
-                id={user.id} partialName={user.partial_name}/>
+        <Avatar name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} id={user.id} partialName={user.partial_name} />
         <h6 className="d-flex align-items-center justify-content-center">
           {user.name}
-          <span className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title=""
-                data-original-title="Edit profile" onClick={handleEditProfile}>
-            <SvgIconFeather icon="edit-2"/>
+          <span className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title="" data-original-title="Edit profile" onClick={handleEditProfile}>
+            <SvgIconFeather icon="edit-2" />
           </span>
         </h6>
       </div>

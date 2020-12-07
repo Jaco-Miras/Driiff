@@ -33,7 +33,7 @@ export const stripGif = (html) => {
 
   if (!gifUrls) return html;
 
-  gifUrls.forEach(gifUrl => {
+  gifUrls.forEach((gifUrl) => {
     html = html.replace(gifUrl, "");
   });
 
@@ -41,19 +41,19 @@ export const stripGif = (html) => {
   temporalDivElement.innerHTML = html;
 
   let image = temporalDivElement.querySelectorAll("img[src='']");
-  image.forEach(node => {
+  image.forEach((node) => {
     node.parentNode.removeChild(node);
   });
   return temporalDivElement.innerHTML;
 };
 
 export const stripImgTag = (html) => {
-  return html.replace(/<[/]?img[^>]*>/gi, "")
-}
+  return html.replace(/<[/]?img[^>]*>/gi, "");
+};
 
 export const stripImgGif = (html) => {
-  return html.replace(/<[/]?img src="(.*?gif)"[^>]*>/gi, "")
-}
+  return html.replace(/<[/]?img src="(.*?gif)"[^>]*>/gi, "");
+};
 
 export const parseEmojis = (value) => {
   const emojisArray = toArray(value);
@@ -156,7 +156,11 @@ export const textToLink = (text, new_window) => {
       let href = protocol_pattern.test(url) ? url : "http://" + url;
       return " <a href=\"" + href + "\" target=\"" + target + "\">" + url + "</a>";
     } else {
-      return " <a href=\"mailto:" + url + "\" target=\"" + target + "\">" + url + "</a>";
+      return " <a\" <a href=\"mailto:\"rl + ";
+      " t"\" target=\"";
+      arget + "\">";
+      "\">";
+      rl + "</a>";
     }
   });
 };

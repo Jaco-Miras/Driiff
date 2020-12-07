@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Badge } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
+import { replaceChar } from "../../../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -61,7 +62,7 @@ const TeamListItem = (props) => {
 
   const handleClickName = () => {
     if (member.has_accepted) {
-      history.push(`/profile/${member.id}/${member.name}`);
+      history.push(`/profile/${member.id}/${replaceChar(member.name)}`);
     }
   };
 
@@ -86,10 +87,14 @@ const TeamListItem = (props) => {
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
-          <Avatar id={member.id} name={member.name}
-                  imageLink={member.profile_image_thumbnail_link ? member.profile_image_thumbnail_link : member.profile_image_link}
-                  partialName={member.partial_name} noDefaultClick={!member.has_accepted}
-                  hasAccepted={member.has_accepted}/>
+          <Avatar
+            id={member.id}
+            name={member.name}
+            imageLink={member.profile_image_thumbnail_link ? member.profile_image_thumbnail_link : member.profile_image_link}
+            partialName={member.partial_name}
+            noDefaultClick={!member.has_accepted}
+            hasAccepted={member.has_accepted}
+          />
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>
@@ -104,18 +109,20 @@ const TeamListItem = (props) => {
         )}
         {member.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
       </div>
-      {
-        showMoreButton && 
+      {showMoreButton && (
         <ShowMoreBtn className="btn-toggle-show">
-          <span className="cursor-pointer" onClick={toggleShow}>{dictionary.showMore}</span>
+          <span className="cursor-pointer" onClick={toggleShow}>
+            {dictionary.showMore}
+          </span>
         </ShowMoreBtn>
-      }
-      {
-        showLessButton && 
+      )}
+      {showLessButton && (
         <ShowMoreBtn className="btn-toggle-show">
-          <span className="cursor-pointer" onClick={toggleShow}>{dictionary.showLess}</span>
+          <span className="cursor-pointer" onClick={toggleShow}>
+            {dictionary.showLess}
+          </span>
         </ShowMoreBtn>
-      }
+      )}
       {!hideOptions && (
         <MoreOptions moreButton="more-horizontal" scrollRef={parentRef}>
           {member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTeamLead}</div>}
