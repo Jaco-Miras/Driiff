@@ -1,9 +1,10 @@
 import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteChannelMembers,
   getChannel,
   getChannelDrafts,
+  getChannelLastReply,
   getChannelMembers,
   getChannels,
   getGlobalRecipients,
@@ -728,6 +729,13 @@ const useChannelActions = () => {
     [dispatch, fetchLastChannel]
   );
 
+  const fetchChannelLastReply = useCallback(
+    (channelId, callback = () => {}) => {
+      dispatch(getChannelLastReply({ channel_id: channelId }, callback));
+    },
+    [dispatch, fetchLastChannel]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -763,6 +771,7 @@ const useChannelActions = () => {
     getChannelLink,
     getUrlTitle,
     setSidebarSearch,
+    fetchChannelLastReply,
   };
 };
 

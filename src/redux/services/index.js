@@ -1,9 +1,4 @@
-import {
-  getCompanyDashboardMembers,
-  getCompanyDashboardRecentPosts,
-  getCompanyDashboardTimeline,
-  patchUpdateDriffVersion
-} from "./driff";
+import { getCompanyDashboardMembers, getCompanyDashboardRecentPosts, getCompanyDashboardTimeline, patchUpdateDriffVersion } from "./driff";
 import { delRemoveToDo, postToDo, putDoneToDo, putToDo } from "./global";
 
 export { apiCall, apiNoTokenCall } from "./service";
@@ -34,15 +29,10 @@ export {
   deleteChatMessage,
   getChannelDetail,
   getLastChannel,
+  getChannelLastReply,
 } from "./chat";
 
-export {
-  getDriffSettings,
-  getUserSettings,
-  updateUserSettings,
-  getDriffCompSettings,
-  putCompanyUpdateName,
-} from "./settings";
+export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
 
 export {
   login,
@@ -65,7 +55,7 @@ export {
   putMagicLink,
   postInternalRequestForm,
   putUserRole,
-  getRoles
+  getRoles,
 } from "./user";
 
 export {
@@ -215,22 +205,8 @@ export {
   updateWorkspace,
 } from "./workspace";
 
-export {
-  postRegisterDriff,
-  patchCheckDriff,
-  getCompanyDashboardTimeline,
-  getCompanyDashboardRecentPosts,
-  getCompanyDashboardMembers,
-  patchUpdateDriffVersion
-} from "./driff";
+export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";
 
-export {
-  deleteNotification,
-  deleteAllNotification,
-  getNotifications,
-  patchNotification,
-  readAllNotification,
-  unreadNotification
-} from "./notification";
+export { deleteNotification, deleteAllNotification, getNotifications, patchNotification, readAllNotification, unreadNotification } from "./notification";
 
-export {globalSearch} from "./search";
+export { globalSearch } from "./search";

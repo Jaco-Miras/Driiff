@@ -5,6 +5,7 @@ import {
   getChannel as getChannelService,
   getChannelDetail as getChannelDetailService,
   getChannelDrafts as getChannelDraftsService,
+  getChannelLastReply as getChannelLastReplyService,
   getChannelMembers as getChannelMembersService,
   getChannels as getChannelsService,
   getChatMessages as getChatMessagesService,
@@ -281,4 +282,8 @@ export function putImportantChat(payload, callback) {
 
 export function incomingImportantChat(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_IMPORTANT_CHAT", payload, callback);
+}
+
+export function getChannelLastReply(payload, callback) {
+  return dispatchActionToReducer(getChannelLastReplyService(payload), "GET_CHANNEL_LAST_REPLY_START", "GET_CHANNEL_LAST_REPLY_SUCCESS", "GET_CHANNEL_LAST_REPLY_FAIL", callback);
 }
