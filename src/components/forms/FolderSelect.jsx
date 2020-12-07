@@ -46,6 +46,55 @@ const StyledAvatar = styled(Avatar)`
   max-height: 2rem;
 `;
 
+const MultiValueWrapper = styled.div`
+  svg {
+    width: .8rem;
+    height: .8rem;
+  }
+  .value-remove {
+    > div:first-child {
+      display: none;
+    }
+    > div:last-child:hover {
+      background-color: ${(props) => props.isPrivate ? "#1E90FF" : "#7a1b8b"};
+      color: #fff;
+    }
+    display: flex;
+    align-items: center;
+    -webkit-box-align: center;
+    align-items: center;
+    border-radius: 2px;
+    display: flex;
+    box-sizing: border-box;
+    :hover {
+      // background-color: rgb(255, 189, 173);
+      // color: rgb(222, 53, 11);
+      background-color: ${(props) => props.isPrivate ? "#1E90FF" : "#7a1b8b"};
+      color: #fff;
+    }
+  }
+  ${(props) => props.isPrivate && 
+    `
+      > div {
+        background: #f44;
+        color: #fff;
+      }
+    `
+  }
+`;
+
+const MultiValueLabelWrapper = styled.div`
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  ${(props) => props.isPrivate && 
+    `
+      background: #f44;
+      color: #fff;
+    `
+  }
+`;
+
 const Option = (props) => {
   return (
     <SelectOption>
@@ -60,7 +109,8 @@ const Option = (props) => {
                 <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"}/>
             }
             {props.children}
-            {props.data.is_lock === 1 && <LockIcon className="ml-2" icon="lock" strokeWidth="2"/>}
+            {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12"/>}
+            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12"/>}
           </span>
         )}
       </components.Option>
@@ -69,7 +119,22 @@ const Option = (props) => {
 };
 
 const MultiValueContainer = ({ children, selectProps, ...props }) => {
-  return <components.MultiValueContainer {...props}>{children}</components.MultiValueContainer>;
+  return (
+    <MultiValueWrapper isPrivate={props.data.is_lock === 1}>
+      <components.MultiValueContainer {...props}>
+        <components.MultiValueLabel {...props}>
+          <MultiValueLabelWrapper isPrivate={props.data.is_lock === 1}>
+            {props.data.label}
+            {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" height="12"/>}
+            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" height="12"/>}
+          </MultiValueLabelWrapper>
+        </components.MultiValueLabel>
+        <components.MultiValueRemove {...props} innerProps={{className: "value-remove"}}>
+          {children}
+        </components.MultiValueRemove>
+      </components.MultiValueContainer>
+    </MultiValueWrapper>
+  );
 };
 
 const FolderSelect = forwardRef((props, ref) => {
