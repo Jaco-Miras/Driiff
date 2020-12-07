@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   deleteChannelMembers,
   getChannel,
@@ -25,14 +25,13 @@ import {
   setFetchingMessages,
   setLastVisitedChannel,
   setSelectedChannel,
-  setSidebarSearch as setSidebarSearchReducer
+  setSidebarSearch as setSidebarSearchReducer,
 } from "../../redux/actions/chatActions";
 import { useSettings, useToaster, useTranslation } from "./index";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 
 const useChannelActions = () => {
-
   const dispatch = useDispatch();
 
   const { chatSettings } = useSettings();
@@ -40,14 +39,11 @@ const useChannelActions = () => {
   const toaster = useToaster();
   const history = useHistory();
 
-  const sharedSlugs = useSelector((state) => state.global.slugs);
-
   const dictionary = {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     createChannel: _t("TOASTER.CHANNEL_CREATE_SUCCESS", "Channel ::channel_title:: is successfully created."),
     updateChannel: _t("TOASTER.CHANNEL_UPDATE_SUCCESS", "Channel ::channel_title:: is successfully modified."),
-  }
-
+  };
 
   /**
    * @param {Object} channel
@@ -89,16 +85,18 @@ const useChannelActions = () => {
    */
   const create = useCallback(
     (payload, callback) => {
-      dispatch(postCreateChannel(payload, (err, res) => {
-        if (err) {
-          toaster.success(dictionary.toasterGeneraError);
-        }
-        if (res) {
-          toaster.success(<span
-            dangerouslySetInnerHTML={{ __html: dictionary.createChannel.replace("::channel_title::", `<b>${payload.channel_name}</b>`) }}/>)
-        }
-        callback(err, res)
-      }));
+      dispatch(
+        postCreateChannel(payload, (err, res) => {
+          if (err) {
+            toaster.success(dictionary.toasterGeneraError);
+          }
+          if (res) {
+            const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? res.data.profile.name : "";
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.createChannel.replace("::channel_title::", `<b>${channelTitle}</b>`) }} />);
+          }
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
@@ -109,7 +107,7 @@ const useChannelActions = () => {
    */
   const createByUserChannel = useCallback(
     (channel, callback = () => {}) => {
-      let old_channel = {...channel};
+      let old_channel = { ...channel };
 
       create(
         {
@@ -334,7 +332,7 @@ const useChannelActions = () => {
       if (typeof channel === "undefined") {
         console.log(channel, "channel not found");
       } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
-        createByUserChannel({...channel, selected: true}, (err, res) => {
+        createByUserChannel({ ...channel, selected: true }, (err, res) => {
           const data = res.data;
           history.push(`/chat/${data.code}`);
           // dispatch(
@@ -607,17 +605,19 @@ const useChannelActions = () => {
    */
   const update = useCallback(
     (payload, callback = () => {}) => {
-      dispatch(putChannelUpdate(payload, (err, res) => {
-        if (err) {
-          toaster.success(dictionary.toasterGeneraError);
-        }
-        if (res) {
-          toaster.success(<span
-            dangerouslySetInnerHTML={{ __html: dictionary.updateChannel.replace("::channel_title::", `<b>${payload.channel_name}</b>`) }}/>)
-        }
+      dispatch(
+        putChannelUpdate(payload, (err, res) => {
+          if (err) {
+            toaster.success(dictionary.toasterGeneraError);
+          }
+          if (res) {
+            const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? res.data.profile.name : "";
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.updateChannel.replace("::channel_title::", `<b>${channelTitle}</b>`) }} />);
+          }
 
-        callback(err, res);
-      }));
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
@@ -639,11 +639,11 @@ const useChannelActions = () => {
                   });
                 });
               } else {
-                callback(err, null)
+                callback(err, null);
               }
             });
           } else {
-            callback(err, null)
+            callback(err, null);
           }
         })
       );
@@ -667,7 +667,7 @@ const useChannelActions = () => {
     (channel, status) => {
       let payload = {
         id: channel.id,
-        status: status
+        status: status,
       };
 
       dispatch(setFetchingMessages(payload));
@@ -675,46 +675,38 @@ const useChannelActions = () => {
     [dispatch]
   );
 
-  const getUrlTitle = useCallback(
-    (channelTitle) => {
-      if (typeof channelTitle === "string")
-        return replaceChar(channelTitle.toLowerCase());
+  const getUrlTitle = useCallback((channelTitle) => {
+    if (typeof channelTitle === "string") return replaceChar(channelTitle.toLowerCase());
 
-      return "";
-    }, []);
-
-  const getChannelLink = useCallback(
-    (channel) => {
-      if (channel.workspace_folder) {
-        return `/workspace/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
-      } else {
-        return `/workspace/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
-      }
-    },
-    []
-  );
-
-  const setSidebarSearch = useCallback((payload, callback = () => {
-  }) => {
-    dispatch(
-      setSidebarSearchReducer(payload, callback)
-    );
+    return "";
   }, []);
 
-   /**
+  const getChannelLink = useCallback((channel) => {
+    if (channel.workspace_folder) {
+      return `/workspace/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+    } else {
+      return `/workspace/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+    }
+  }, []);
+
+  const setSidebarSearch = useCallback((payload, callback = () => {}) => {
+    dispatch(setSidebarSearchReducer(payload, callback));
+  }, []);
+
+  /**
    * @param {Object} callback
    */
   const fetchLastChannel = useCallback(
     (callback = null) => {
       dispatch(
-        getLastChannel({}, (err,res) => {
+        getLastChannel({}, (err, res) => {
           if (err) return;
           if (callback) callback();
           if (history.location.pathname.startsWith("/chat")) {
             history.push(`/chat/${res.data.code}`);
           }
         })
-      )
+      );
     },
     [dispatch, saveLastVisited, history]
   );
@@ -725,11 +717,13 @@ const useChannelActions = () => {
    */
   const fetchSelectChannel = useCallback(
     (code, callback) => {
-      dispatch(getSelectChannel({ code: code }, (err,res) => {
-        if (err) {
-          fetchLastChannel();
-        }
-      }));
+      dispatch(
+        getSelectChannel({ code: code }, (err, res) => {
+          if (err) {
+            fetchLastChannel();
+          }
+        })
+      );
     },
     [dispatch, fetchLastChannel]
   );
@@ -768,7 +762,7 @@ const useChannelActions = () => {
     fetchingMessages,
     getChannelLink,
     getUrlTitle,
-    setSidebarSearch
+    setSidebarSearch,
   };
 };
 
