@@ -85,6 +85,7 @@ import {
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
+  incomingArchivedSelectedPosts,
   incomingComment,
   incomingCommentClap,
   incomingDeletedComment,
@@ -96,6 +97,7 @@ import {
   incomingPostMarkDone,
   incomingPostRecipients,
   incomingPostViewer,
+  incomingReadSelectedPosts,
   incomingReadUnreadReducer,
   incomingUpdatedPost,
   refetchPostComments,
@@ -110,6 +112,7 @@ import {
   incomingUserRole
 } from "../../redux/actions/userAction";
 import {
+  getUnreadWorkspacePostEntries,
   getWorkspace,
   getWorkspaceFolder,
   incomingArchivedWorkspaceChannel,
@@ -122,7 +125,8 @@ import {
   incomingWorkspaceFolder,
   incomingWorkspaceRole,
   joinWorkspaceReducer,
-  updateWorkspaceCounter
+  updateWorkspaceCounter,
+  updateWorkspacePostCount,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -422,6 +426,14 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
+          case "READ_SELECTED_UNREAD_POST": {
+            this.props.incomingReadSelectedPosts(e);
+            break;
+          }
+          case "ARCHIVED_SELECTED_POST": {
+            this.props.incomingArchivedSelectedPosts(e);
+            break;
+          }
           case "ADD_RECIPIENTS": {
             this.props.fetchPost({post_id: e.post_id}, (err,res) => {
               if (err) return;
@@ -571,16 +583,23 @@ class SocketListeners extends Component {
                 }
               }
               e.workspaces.forEach((ws) => {
-                this.props.getWorkspace({topic_id: ws.topic_id}, (err, res) => {
+                this.props.getUnreadWorkspacePostEntries({topic_id: ws.topic_id}, (err,res) => {
                   if (err) return;
-                  this.props.updateWorkspaceCounter({
-                    folder_id: ws.workspace_id,
-                    topic_id: ws.topic_id,
-                    unread_count: res.data.workspace_data.unread_count,
-                    unread_posts: res.data.workspace_data.topic_detail.unread_posts,
-                    unread_chats: res.data.workspace_data.topic_detail.unread_chats,
-                  });
-                });
+                  this.props.updateWorkspacePostCount({
+                    topic_id:  ws.topic_id,
+                    count: res.data.result
+                  })
+                })
+                // this.props.getWorkspace({topic_id: ws.topic_id}, (err, res) => {
+                //   if (err) return;
+                //   this.props.updateWorkspaceCounter({
+                //     folder_id: ws.workspace_id,
+                //     topic_id: ws.topic_id,
+                //     unread_count: res.data.workspace_data.unread_count,
+                //     unread_posts: res.data.workspace_data.topic_detail.unread_posts,
+                //     unread_chats: res.data.workspace_data.topic_detail.unread_chats,
+                //   });
+                // });
               });
             }
             break;
@@ -1486,6 +1505,10 @@ function mapDispatchToProps(dispatch) {
     getUnreadNotificationCounterEntries: bindActionCreators(getUnreadNotificationCounterEntries, dispatch),
     incomingImportantComment: bindActionCreators(incomingImportantComment, dispatch),
     incomingImportantChat: bindActionCreators(incomingImportantChat, dispatch),
+    incomingReadSelectedPosts: bindActionCreators(incomingReadSelectedPosts, dispatch),
+    incomingArchivedSelectedPosts: bindActionCreators(incomingArchivedSelectedPosts, dispatch),
+    getUnreadWorkspacePostEntries: bindActionCreators(getUnreadWorkspacePostEntries, dispatch),
+    updateWorkspacePostCount: bindActionCreators(updateWorkspacePostCount, dispatch),
   };
 }
 

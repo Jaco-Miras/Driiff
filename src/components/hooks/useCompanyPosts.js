@@ -51,10 +51,25 @@ const useCompanyPosts = () => {
   }, []);
 
   let filteredPosts = Object.values(posts)
-    .filter((p) => {
+
+  if (searchResults.length > 0 && search !== "") {
+    filteredPosts = filteredPosts.filter((p) => {
+      return searchResults.some((s) => {
+        return p.id === s.id;
+      });
+    });
+  } else if (searchResults.length === 0 && search !== "") {
+    filteredPosts = [];
+  } 
+  
+  filteredPosts = filteredPosts.filter((p) => {
       if (filter) {
         if (filter === "all") {
-          return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0;
+          if (search !== "") {
+            return true;
+          } else {
+            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
+          }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author")) return p.author.id === user.id;
           else return false;
@@ -64,8 +79,6 @@ const useCompanyPosts = () => {
           return p.is_favourite;
         } else if (filter === "archive") {
           return p.is_archived === 1;
-        } else if (filter === "all") {
-          return p.is_archived === 0;
         } else if (filter === "new_reply") {
           return p.unread_reply_ids.length > 0;
         }
@@ -102,15 +115,6 @@ const useCompanyPosts = () => {
     count.is_read_only = Object.values(posts).filter((p) => {
       return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
     }).length;
-  }
-  if (searchResults.length > 0 && search !== "") {
-    filteredPosts = filteredPosts.filter((p) => {
-      return searchResults.some((s) => {
-        return p.id === s.id;
-      });
-    });
-  } else if (searchResults.length === 0 && search !== "") {
-    filteredPosts = [];
   }
 
   count.is_must_reply = Object.values(posts).filter((p) => {

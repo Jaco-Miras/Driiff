@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -84,6 +84,12 @@ const TodoCheckBox = (props) => {
       onClick(e);
     }, 300);
   };
+
+  useEffect(() => {
+    if (isChecked !== checked) {
+      setIsChecked(prevState => !prevState);
+    }
+  }, [checked, isChecked])
 
   return (
     <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`}

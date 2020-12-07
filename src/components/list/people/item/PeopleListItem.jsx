@@ -136,30 +136,13 @@ const PeopleListItem = (props) => {
                     <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
                   }
                                     {
-                    showOptions && user.type !== "external" && user.role.name !== "owner" &&
+                    showOptions && user.type !== "external" && user.role && user.role.name !== "owner" &&
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"}
                                  scrollRef={refs.cardBody.current}>
                       {user.role.name === "employee" &&
                       <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
                       {user.role.name === "admin" &&
                       <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
-                      {/* {
-                        loggedUser.role.name === "admin" && (
-                          <>
-                          { user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>Assign as administrator</div> }
-                          { user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>Assign as employee</div> }
-                          </>
-                        )
-                      }
-                      {
-                        loggedUser.role.name === "owner" && (
-                          <>
-                          { (user.role.name === "employee" || user.role.name === "owner") && <div onClick={() => handleUpdateRole("admin")}>Assign as administrator</div> }
-                          { (user.role.name === "admin" || user.role.name === "owner") && <div onClick={() => handleUpdateRole("employee")}>Assign as employee</div> }
-                          { user.role.name === "employee" && <div onClick={() => handleUpdateRole("owner")}>Assign as owner</div> }
-                          </>
-                        )
-                      } */}
                     </MoreOptions>
                   }
                 </div>
