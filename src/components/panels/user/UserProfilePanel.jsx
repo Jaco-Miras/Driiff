@@ -606,12 +606,12 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.address}</div>
                   </div>
                 )}
-                {user.zip_code && (
+                {/*{user.zip_code && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.zip_code}</div>
                     <div className="col col-form">{user.zip_code}</div>
                   </div>
-                )}
+                )}*/}
                 {user.contact && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.phone}</div>
@@ -736,6 +736,7 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
+                {/*
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.zip_code}</div>
                   <div className="col col-form">
@@ -747,7 +748,7 @@ const UserProfilePanel = (props) => {
                       </>
                     )}
                   </div>
-                </div>
+                </div>*/}
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.phone}</div>
                   <div className="col col-form">
