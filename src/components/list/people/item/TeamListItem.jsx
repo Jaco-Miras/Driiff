@@ -55,7 +55,7 @@ const ShowMoreBtn = styled.div`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, showMore, toggleShow } = props;
+  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, showMore, toggleShow, loggedUser } = props;
 
   const history = useHistory();
 
@@ -102,7 +102,7 @@ const TeamListItem = (props) => {
         {member.workspace_role && member.workspace_role !== "" && (
           <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
         )}
-        {member.type === "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
+        {member.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
       </div>
       {
         showMoreButton && 

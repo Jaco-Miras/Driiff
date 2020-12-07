@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
@@ -6,6 +6,8 @@ import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
 import {usePreviousValue} from "./index";
+import { SvgIconFeather } from "../common";
+import { renderToString } from "react-dom/server";
 
 const useQuillModules = ({mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null}) => {
   const [modules, setModules] = useState({});
@@ -112,27 +114,44 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
           }
         },
         renderItem: function (item, searchTerm) {
-          let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
-          if (typeof item.id === "string") {
-            avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          }
+          // let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
+          // let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
+          // if (typeof item.id === "string") {
+          //   avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
+          // }
           
-          let listDisplay =
-            "<span class=\"" +
-            item.class +
-            "\" style=\"" +
-            avatarStyling +
-            "\"><img src=\"" +
-            (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
-            "\" draggable=\"false\" style=\"" +
-            avatarImgStyling +
-            "\" alt=\"" +
-            item.value +
-            "\"></span>&nbsp; <span style=\"width: auto; line-height: 1.35;\">" +
-            item.name +
-            "</span>";
-          return listDisplay;
+          // let listDisplay =
+          //   "<span class=\"" +
+          //   item.class +
+          //   "\" style=\"" +
+          //   avatarStyling +
+          //   "\"><img src=\"" +
+          //   (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
+          //   "\" draggable=\"false\" style=\"" +
+          //   avatarImgStyling +
+          //   "\" alt=\"" +
+          //   item.value +
+          //   "\"></span>&nbsp; <span style=\"width: auto; line-height: 1.35;\">" +
+          //   item.name +
+          //   "</span>";
+          // return listDisplay;
+
+          let avatarStyling = {
+            position: "relative", width: "30px", height: "30px", minWidth: "30px", minHeight: "30px", borderRadius: "50%", marginRight: "10px", zIndex: "1", pointerEvents: "auto", border: "none", overflow: "hidden", cursor: "pointer",
+          };
+          let avatarImgStyling = {width: "100%", height: "100%", position: "absolute", left: 0, top: 0};
+          if (typeof item.id === "string") {
+            avatarStyling = {
+              position: "relative", width: "24px", height: "24px", minWidth: "24px", minHeight: "24px", borderRadius: "50%", marginRight: "10px", zIndex: 1, pointerEvents: "auto", border: "none", overflow: "hidden", cursor: "pointer"
+            }
+          }
+
+          return renderToString(<><span className={item.class} style={avatarStyling}>
+            <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value}/>
+            </span>
+            &nbsp;{" "}
+            <span style={{width: "auto", lineHeight: 1.35}}>{item.name} {item.type === "external" && user.type === "internal" && <SvgIconFeather icon={"share"} width={14} height={14} strokeWidth="3" />}</span>
+          </>)
         },
       },
       toolbar: ["bold", "italic", "link", "image"],

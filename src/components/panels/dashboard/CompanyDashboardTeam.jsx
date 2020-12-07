@@ -51,6 +51,7 @@ const CompanyDashboardTeam = (props) => {
   const {className = "", onEditClick, dictionary, actions} = props;
   const [scrollRef, setScrollRef] = useState(null);
   const users = useSelector((state) => state.users.users);
+  const loggedUser = useSelector((state) => state.session.user);
 
   const [showMore, setShowMore] = useState(false);
 
@@ -104,6 +105,7 @@ const CompanyDashboardTeam = (props) => {
                 showLessButton={i === filteredUsers.length - 1 && filteredUsers.length > 5 && showMore}
                 showMore={showMore}
                 toggleShow={handleToggleShow}
+                loggedUser={loggedUser}
                 />;
             })}
         </ul>

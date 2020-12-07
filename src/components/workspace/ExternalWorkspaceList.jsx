@@ -79,7 +79,7 @@ const Wrapper = styled.li`
   }
 `;
 
-const LockIcon = styled(SvgIconFeather)`
+const Icon = styled(SvgIconFeather)`
   height: 12px !important;
   width: 12px !important;
   cursor: pointer;
@@ -110,8 +110,9 @@ const ExternalWorkspaceList = (props) => {
         <div>
           {workspace.name}
 
-          {workspace.is_lock !== 0 && <LockIcon icon="lock" strokeWidth="2"/>}
-          {workspace.is_active === 0 && <LockIcon icon="archive" />}
+          {workspace.is_lock !== 0 && <Icon icon="lock" strokeWidth="2"/>}
+          {workspace.is_active === 0 && <Icon icon="archive" />}
+          {workspace.is_shared && <Icon icon={"share"} strokeWidth="3" />}
 
           {unread_count > 0 && (
             <Badge color="danger">
