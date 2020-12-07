@@ -2,6 +2,7 @@ import React, {useCallback, useState} from "react";
 import styled from "styled-components";
 import {TeamListItem} from "../../list/people/item";
 import {SvgIconFeather} from "../../common";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   .feather-edit {
@@ -58,6 +59,8 @@ const DashboardTeam = (props) => {
 
   const [showMore, setShowMore] = useState(false);
 
+  const loggedUser = useSelector((state) => state.session.user);
+
   const assignRef = useCallback((e) => {
     if (scrollRef === null) {
       setScrollRef(e);
@@ -98,7 +101,7 @@ const DashboardTeam = (props) => {
                                    hideOptions={hideOptions} actions={actions} workspace_id={workspace.id}
                                    dictionary={dictionary} showMoreButton={i === 4 && members.length > 5 && !showMore}
                                    showLessButton={i === members.length - 1 && members.length > 5 && showMore}
-                                   showMore={showMore} toggleShow={handleToggleShow}/>;
+                                   showMore={showMore} toggleShow={handleToggleShow} loggedUser={loggedUser}/>;
             })}
           </ul>}
       </div>
