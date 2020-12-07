@@ -327,8 +327,8 @@ const CreateEditCompanyPostModal = (props) => {
 
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(true);
-  const [showMoreOptions, setShowMoreOptions] = useState(null);
-  const [maxHeight, setMaxHeight] = useState(null);
+  const [showMoreOptions, setShowMoreOptions] = useState(true);
+  const [maxHeight, setMaxHeight] = useState(120);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
