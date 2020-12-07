@@ -15,6 +15,7 @@ import {
   getUnreadPostComments as getUnreadPostCommentsService,
   getUnreadPostEntries as getUnreadPostEntriesService,
   markAllPostAsRead as markAllPostAsReadService,
+  postApprove as postApproveService,
   postArchive as postArchiveService,
   postClap as postClapService,
   postComment as postCommentService,
@@ -327,4 +328,12 @@ export function incomingReadSelectedPosts(payload, callback) {
 
 export function incomingArchivedSelectedPosts(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ARCHIVED_SELECTED_POSTS", payload, callback);
+}
+
+export function postApprove(payload, callback) {
+  return dispatchActionToReducer(postApproveService(payload), "POST_APPROVE_START", "POST_APPROVE_SUCCESS", "POST_APPROVE_FAIL", callback);
+}
+
+export function incomingPostApproval(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_APPROVAL", payload, callback);
 }

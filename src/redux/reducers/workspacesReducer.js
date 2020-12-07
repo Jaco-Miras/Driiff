@@ -2145,6 +2145,41 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_POST_APPROVAL": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces.length > 0 && {
+            ...state.workspacePosts,
+            ...action.data.workspaces.reduce((res, ws) => {
+              if (state.workspacePosts[ws.topic.id]) {
+                res[ws.topic.id] = {
+                  ...state.workspacePosts[ws.topic.id],
+                  posts: {
+                    ...state.workspacePosts[ws.topic.id].posts,
+                    [action.data.post.id]: {
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
+                        if (u.id === action.data.user_approved.id) {
+                          return {
+                            ...u,
+                            ...action.data.user_approved
+                          }
+                        } else {
+                          return u;
+                        }
+                      })
+                    }
+                  }
+                }
+              }
+              return res;
+            }, {})
+          })
+        }
+      }
+    } 
     default:
       return state;
   }

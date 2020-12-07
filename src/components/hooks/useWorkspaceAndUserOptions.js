@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
+const useWorkspaceAndUserOptions = (props) => {
+
+  const { addressTo } = props;
 
   const recipients = useSelector((state) => state.global.recipients);
   const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
@@ -109,7 +111,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
   let recipient_ids = [];
   let workspace_ids = [];
   let is_personal = false;
-  selected.addressTo.forEach(at => {
+  addressTo.forEach(at => {
     recipient_ids.push(at.id);
 
     if (["DEPARTMENT", "TOPIC", "WORKSPACE"].includes(at.type)) {
@@ -129,9 +131,18 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
       }
     }
   });
-
+  
+  const user_options = users.filter((u) => user_ids.some(id => id === u.id)).map((u) => {
+    return { ...u, 
+            icon: "user-avatar",
+            value: u.id,
+            label: u.name ? u.name : u.email,
+            type: "USER" }
+  });
+  
   return {
     options,
+    userOptions: user_options,
     user_ids: [...new Set(user_ids)],
     workspace_ids,
     responsible_ids,

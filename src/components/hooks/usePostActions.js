@@ -23,6 +23,7 @@ import {
   incomingPostMarkDone,
   incomingReadUnreadReducer,
   markAllPostAsRead,
+  postApprove,
   postArchive,
   postClap,
   postCompanyPosts,
@@ -790,7 +791,17 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const approve = useCallback(
+    (payload = {}) => {
+      dispatch(
+        postApprove(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
+    approve,
     addUserToPost,
     starPost,
     markPost,

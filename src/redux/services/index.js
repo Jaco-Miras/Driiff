@@ -163,6 +163,7 @@ export {
   fetchComments,
   fetchRecentPosts,
   fetchTagCounter,
+  postApprove,
   postArchive,
   postClap,
   postCreate,

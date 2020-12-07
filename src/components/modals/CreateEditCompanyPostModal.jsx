@@ -294,6 +294,18 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const ApproveOptions = styled.div`
+  .react-select-container {
+    width: 300px;
+    @media all and (max-width: 480px) {
+      width: 100%;
+    }
+  }
+`;
+
+const SelectApprover = styled(FolderSelect)`
+`;
+
 const StyledDatePicker = styled(DatePicker)``;
 
 const initTimestamp = Math.floor(Date.now() / 1000);
@@ -344,11 +356,14 @@ const CreateEditCompanyPostModal = (props) => {
     textOnly: "",
     show_at: null,
     end_at: null,
+    approvers: [],
+    showApprover: false,
   });
 
   const {
     options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo,
-    user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids
+    user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids,
+    userOptions: approverOptions,
   } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo
   });
@@ -391,6 +406,7 @@ const CreateEditCompanyPostModal = (props) => {
             count: workspace_ids.length
           })}</span>)
       }),
+    approve: _t("POST.APPROVE", "Approve"),
   };
 
   const formRef = {
@@ -579,7 +595,8 @@ const CreateEditCompanyPostModal = (props) => {
         unread_count: 0,
         reply_count: 0,
         recipients: form.selectedAddressTo,
-        recipient_ids: form.selectedAddressTo.map((r) => r.id)
+        recipient_ids: form.selectedAddressTo.map((r) => r.id),
+        users_approval: []
       };
       if (draftId) {
         payload = {
@@ -624,7 +641,8 @@ const CreateEditCompanyPostModal = (props) => {
       file_ids: inlineImages.map((i) => i.id),
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`
-      }
+      },
+      approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : []
     };
     if (draftId) {
       dispatch(
@@ -1083,6 +1101,27 @@ const CreateEditCompanyPostModal = (props) => {
     }
   }, [form, draftId, mounted]);
 
+  const toggleApprover = () => {
+    setForm({
+      ...form,
+      showApprover: !form.showApprover
+    })
+  }
+
+  const handleSelectApprover = (e) => {
+    if (e === null) {
+      setForm({
+        ...form,
+        approvers: [],
+      });
+    } else {
+      setForm({
+        ...form,
+        approvers: e,
+      });
+    }
+  };
+
   return (
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection
@@ -1168,7 +1207,16 @@ const CreateEditCompanyPostModal = (props) => {
                 {dictionary.noReplies}
               </CheckBox>
             </div>
-
+            <ApproveOptions className="d-flex align-items-center">
+              <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
+                {dictionary.approve}
+              </CheckBox>
+              {
+                form.showApprover && 
+                <SelectApprover options={approverOptions.filter((ao) => ao.value !== user.id)} value={form.approvers}
+                        onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top"/>
+              }
+            </ApproveOptions>
             <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
