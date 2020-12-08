@@ -381,6 +381,8 @@ const MainNavigationTabPanel = (props) => {
         toggleEditCompany();
         break;
       }
+      default:
+        return;
     }
   };
 
@@ -424,7 +426,7 @@ const MainNavigationTabPanel = (props) => {
       <div>
         <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
           <Hat>
-            <img width={"70px"} src={christmas} />
+            <img width={"70px"} src={christmas} alt="christmas hat" />
           </Hat>
           <div className="driff-logo">
             <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
@@ -547,7 +549,9 @@ const MainNavigationTabPanel = (props) => {
                           return ws.folder_id === null && ws.active === 1;
                         })
                         .map((ws) => ws.id),
-                      unread_count: 0,
+                      unread_count: Object.values(workspaces).filter((ws) => {
+                        return ws.folder_id === null && ws.active === 1 && (ws.unread_chats > 0 || ws.unread_posts > 0);
+                      }).length,
                     }}
                   />
                 )}
