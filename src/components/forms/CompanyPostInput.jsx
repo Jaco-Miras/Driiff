@@ -102,7 +102,8 @@ const CloseButton = styled(SvgIconFeather)`
 const CompanyPostInput = forwardRef((props,ref) => {
   const {
     selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
-    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive, onClosePicker } = props;
+    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive, onClosePicker,
+    prioMentionIds, approvers, onClearApprovers, } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   //const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -126,14 +127,14 @@ const CompanyPostInput = forwardRef((props,ref) => {
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
-  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
-                        .map((r) => {
-                          if (r.type === "USER") {
-                            return [r.type_id]
-                          } else {
-                            return r.participant_ids
-                          }
-                        }).flat();
+  // let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+  //                       .map((r) => {
+  //                         if (r.type === "USER") {
+  //                           return [r.type_id]
+  //                         } else {
+  //                           return r.participant_ids
+  //                         }
+  //                       }).flat();
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
@@ -182,7 +183,8 @@ const CompanyPostInput = forwardRef((props,ref) => {
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
         post_title: post.title
-      }
+      },
+      approval_user_ids: approvers.map(a => a.value)
     };
 
     if (quote) {
@@ -223,7 +225,8 @@ const CompanyPostInput = forwardRef((props,ref) => {
         updated_at: {timestamp: timestamp},
         unfurls: [],
         user_clap_count: 0,
-        clap_user_ids: []
+        clap_user_ids: [],
+        users_approval: []
       };
 
       commentActions.add(commentObj);
@@ -250,6 +253,7 @@ const CompanyPostInput = forwardRef((props,ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
+    onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
   };

@@ -231,7 +231,8 @@ const PostInput = forwardRef((props, ref) => {
         updated_at: {timestamp: timestamp},
         unfurls: [],
         user_clap_count: 0,
-        clap_user_ids: []
+        clap_user_ids: [],
+        users_approval: []
       };
 
       commentActions.add(commentObj);

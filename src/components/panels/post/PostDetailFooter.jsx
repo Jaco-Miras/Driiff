@@ -208,8 +208,9 @@ const ApproveCheckBox = styled(CheckBox)`
 const ApproverSelectWrapper = styled.div`
   padding-right: 55px;
   display: flex;
-  justify-content: flex-end;
+  // justify-content: flex-end;
   padding-bottom: 10px;
+  margin-left: auto;
   > div.react-select-container {
     width: 300px;
   }
@@ -413,22 +414,24 @@ const PostDetailFooter = (props) => {
         </ArchivedDiv>
       }
       {
-        isMember && !disableOptions &&
-        privateWsOnly.length === post.recipients.length &&
-        <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
-      }
-      {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId}/>
         </Dflex>
       }
-      {
-        showApprover && 
-        <ApproverSelectWrapper>
-          <FolderSelect options={userOptions} value={approvers}
-                          onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top"/>
-        </ApproverSelectWrapper>
-      }
+      <Dflex className="d-flex alig-items-center">
+        {
+          isMember && !disableOptions &&
+          privateWsOnly.length === post.recipients.length &&
+          <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
+        }
+        {
+          showApprover && 
+          <ApproverSelectWrapper>
+            <FolderSelect options={userOptions} value={approvers}
+                            onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top"/>
+          </ApproverSelectWrapper>
+        }
+      </Dflex>
       {isMember && !disableOptions && (
         <>
           <Dflex className="d-flex align-items-end">

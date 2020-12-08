@@ -2145,6 +2145,37 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_COMMENT_APPROVAL": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          ...(state.postComments[action.data.post.id] && {
+            [action.data.post.id]: {
+              ...state.postComments[action.data.post.id],
+              comments: {
+                ...state.postComments[action.data.post.id].comments,
+                ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
+                  [action.data.comment.id]: {
+                    ...state.postComments[action.data.post.id].comments[action.data.comment.id],
+                    users_approval: state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((u) => {
+                      if (u.id === action.data.user_approved.id) {
+                        return {
+                          ...u,
+                          ...action.data.user_approved
+                        }
+                      } else {
+                        return u;
+                      }
+                    })
+                  }
+                }) 
+              }
+            }
+          })
+        },
+      }
+    } 
     default:
       return state;
   }

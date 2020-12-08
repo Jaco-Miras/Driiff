@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { CommonPicker, SvgIconFeather } from "../../../common";
 import { CommentQuote } from "../../../list/post/item";
-import { CompanyPostInput } from "../../../forms";
+import { CompanyPostInput, FolderSelect, CheckBox } from "../../../forms";
 import { useTranslation } from "../../../hooks";
 
 const Wrapper = styled.div`
@@ -177,6 +177,24 @@ const FileNames = styled.div`
   padding: 5px 45px;
 `;
 
+const ApproveCheckBox = styled(CheckBox)`
+  position: absolute;
+  right: 120px;
+  bottom: 0;
+  height: 35px;
+`;
+
+const ApproverSelectWrapper = styled.div`
+  padding-right: 55px;
+  display: flex;
+  // justify-content: flex-end;
+  padding-bottom: 10px;
+  margin-left: auto;
+  > div.react-select-container {
+    width: 300px;
+  }
+`;
+
 const CompanyPostDetailFooter = (props) => {
   const {
     className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
@@ -195,7 +213,11 @@ const CompanyPostDetailFooter = (props) => {
   const [cursor, setCursor] = useState('default');
   const [backgroundSend, setBackgroundSend] = useState(null);
   const [fillSend, setFillSend] = useState('#cacaca');
+  const [showApprover, setShowApprover] = useState(false);
+  const [approvers, setApprovers] = useState([]);
 
+  const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.users);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
 
   const handleSend = useCallback(() => {
@@ -262,19 +284,65 @@ const CompanyPostDetailFooter = (props) => {
     }
   }
 
+  const toggleApprover = () => {
+    setShowApprover(prevState => !prevState);
+  }
+
   const privateWsOnly = post.recipients.filter((r) => {return r.type === "TOPIC" && r.private === 1})
+  const prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+    .map((r) => {
+      if (r.type === "USER") {
+        return [r.type_id]
+      } else {
+        return r.participant_ids
+      }
+    }).flat();
+  //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
+  const userOptions = Object.values(users).filter((u) => prioMentionIds.some(id => id === u.id) && u.id !== user.id)
+  .map((u) => {
+    return {
+      ...u,
+      icon: "user-avatar",
+      value: u.id,
+      label: u.name ? u.name : u.email,
+      type: "USER"
+    }
+  });
+  const handleSelectApprover = (e) => {
+    if (e === null) {
+      setApprovers([]);
+    } else {
+      setApprovers(e);
+    }
+  };
+
+  const handleClearApprovers = () => {
+    setShowApprover(false);
+    setApprovers([]);
+  }
+
+  const showApproveCheckbox = post.users_approval.length === 0; 
 
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
-      {
-        privateWsOnly.length === post.recipients.length &&
-        <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
-      }
       {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId}/>
         </Dflex>
       }
+      <Dflex className="d-flex alig-items-center">
+        {
+          privateWsOnly.length === post.recipients.length &&
+          <div className={`locked-label mb-2`}>{dictionary.lockedLabel}</div>
+        }
+        {
+          showApprover && 
+          <ApproverSelectWrapper>
+            <FolderSelect options={userOptions} value={approvers}
+                            onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top"/>
+          </ApproverSelectWrapper>
+        }
+      </Dflex>
         <Dflex className="d-flex align-items-end">
           {post.is_read_only ? (
             <NoReply className="d-flex align-items-center">
@@ -297,11 +365,18 @@ const CompanyPostDetailFooter = (props) => {
                   selectedEmoji={selectedEmoji}
                   onClearEmoji={onClearEmoji}
                   dropAction={dropAction}
-                    members={post.users_responsible}
-                    onActive={onActive}
-                    onClosePicker={onClosePicker}
-                    ref={ref.postInput}
+                  members={post.users_responsible}
+                  onActive={onActive}
+                  onClosePicker={onClosePicker}
+                  ref={ref.postInput}
+                  prioMentionIds={prioMentionIds}
+                  approvers={showApprover ? approvers : []}
+                  onClearApprovers={handleClearApprovers}
                 />
+                {
+                  showApproveCheckbox && 
+                  <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+                }
                 <IconButton icon="image" onClick={handleQuillImage} />
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                             icon="smile"/>
