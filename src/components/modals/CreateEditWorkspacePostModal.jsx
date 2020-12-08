@@ -3,13 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import {
-  clearModal,
-  deleteDraft,
-  deleteDraftReducer,
-  saveDraft,
-  updateDraft,
-} from "../../redux/actions/globalActions";
+import { clearModal, deleteDraft, deleteDraftReducer, saveDraft, updateDraft } from "../../redux/actions/globalActions";
 import { postCreate, putPost } from "../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
@@ -45,8 +39,8 @@ const WrapperDiv = styled(InputGroup)`
   &.more-option {
     width: 100%;
     @media all and (max-width: 480px) {
-        margin-left: 0;
-        margin-right: 0;
+      margin-left: 0;
+      margin-right: 0;
     }
   }
   &.schedule-post {
@@ -84,7 +78,7 @@ const WrapperDiv = styled(InputGroup)`
     max-width: 100%;
     margin-left: 128px;
     @media all and (max-width: 480px) {
-        margin-left: 0;
+      margin-left: 0;
     }
     ul {
       margin-right: 128px;
@@ -99,13 +93,13 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
-  .user-popup {    
+  .user-popup {
     cursor: pointer;
-    margin: 0 0.25rem;  
+    margin: 0 0.25rem;
   }
   .workspace-popup {
     cursor: pointer;
-    margin: 0 0.25rem;  
+    margin: 0 0.25rem;
   }
   .user-list {
     transition: all 0.5s ease;
@@ -121,34 +115,34 @@ const WrapperDiv = styled(InputGroup)`
     overflow: auto;
     overflow-x: hidden;
     width: 230px;
-    
+
     .dark & {
       background: #191c20;
     }
-    
+
     &.active,
-     &:hover {
-     padding: 5px 10px;
+    &:hover {
+      padding: 5px 10px;
       opacity: 1;
-      max-height: 255px;    
+      max-height: 255px;
     }
-    
+
     img {
-      min-width: 28px;    
+      min-width: 28px;
     }
-    
+
     .item-user-name {
       width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: block;    
+      display: block;
     }
   }
   .workspace-list {
     position: absolute;
     bottom: 22px;
-    right: 0;    
+    right: 0;
     background-color: #fff;
     border: 1px solid #dee2e6;
     padding: 0;
@@ -156,25 +150,25 @@ const WrapperDiv = styled(InputGroup)`
     opacity: 0;
     max-height: 0;
     overflow: auto;
-    width: 230px;    
-    
+    width: 230px;
+
     .dark & {
       background: #191c20;
     }
-    
+
     &.active,
-     &:hover {
-     padding: 5px 10px;
+    &:hover {
+      padding: 5px 10px;
       opacity: 1;
-      max-height: 255px;    
+      max-height: 255px;
     }
-    
+
     .item-workspace-name {
       display: block;
       width: 100%;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;    
+      text-overflow: ellipsis;
     }
   }
   .post-visibility-container {
@@ -186,7 +180,7 @@ const WrapperDiv = styled(InputGroup)`
       &::-webkit-input-placeholder {
         color: #c7ced6;
       }
-    }    
+    }
   }
 `;
 
@@ -267,7 +261,7 @@ const MoreOption = styled.div`
     color: #972c86;
   }
   @media all and (max-width: 480px) {
-      margin-top: 40px;
+    margin-top: 40px;
   }
   svg {
     transition: all 0.3s;
@@ -285,7 +279,7 @@ const MoreOption = styled.div`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${props => props.height > 80 ? props.height : 80}px;
+    height: ${(props) => (props.height > 80 ? props.height : 80)}px;
   }
 
   label {
@@ -303,15 +297,13 @@ const ApproveOptions = styled.div`
   }
 `;
 
-const SelectApprover = styled(FolderSelect)`
-`;
+const SelectApprover = styled(FolderSelect)``;
 
 const StyledDatePicker = styled(DatePicker)``;
 
 const initTimestamp = Math.floor(Date.now() / 1000);
 
 const CreateEditWorkspacePostModal = (props) => {
-
   const { type, mode, item = {} } = props.data;
 
   const history = useHistory();
@@ -322,7 +314,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.global.recipients).filter(r => r.type === "USER");
+  const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
 
   const [modal, setModal] = useState(true);
 
@@ -355,16 +347,13 @@ const CreateEditWorkspacePostModal = (props) => {
     body: "",
     textOnly: "",
     show_at: null,
-    end_at: null, approvers: [],
+    end_at: null,
+    approvers: [],
     showApprover: false,
   });
 
-  const {
-    options: addressToOptions, getDefaultAddressTo, getAddressTo,
-    user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids,
-    userOptions: approverOptions,
-  } = useWorkspaceAndUserOptions({
-    addressTo: form.selectedAddressTo
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions } = useWorkspaceAndUserOptions({
+    addressTo: form.selectedAddressTo,
   });
 
   const dictionary = {
@@ -392,19 +381,26 @@ const CreateEditWorkspacePostModal = (props) => {
     save: _t("POST.SAVE", "Save"),
     discard: _t("POST.DISCARD", "Discard"),
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
-    postVisibilityInfo: _t("POST.POST_VISIBILITY_COUNT_INFO",
-      `This post will be visible to ::user_count:: in ::workspace_count::`, {
-        user_count: renderToString(<span className="user-popup">{user_ids.length === 1 ?
-          _t("POST.NUMBER_USER", "1 user") :
-          _t("POST.NUMBER_USERS", "::count:: users", {
-            count: user_ids.length
-          })}</span>),
-        workspace_count: renderToString(<span className="workspace-popup">{workspace_ids.length === 1 ?
-          _t("POST.NUMBER_WORKSPACE", "1 workspace") :
-          _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
-            count: workspace_ids.length
-          })}</span>)
-      }),
+    postVisibilityInfo: _t("POST.POST_VISIBILITY_COUNT_INFO", "This post will be visible to ::user_count:: in ::workspace_count::", {
+      user_count: renderToString(
+        <span className="user-popup">
+          {user_ids.length === 1
+            ? _t("POST.NUMBER_USER", "1 user")
+            : _t("POST.NUMBER_USERS", "::count:: users", {
+                count: user_ids.length,
+              })}
+        </span>
+      ),
+      workspace_count: renderToString(
+        <span className="workspace-popup">
+          {workspace_ids.length === 1
+            ? _t("POST.NUMBER_WORKSPACE", "1 workspace")
+            : _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
+                count: workspace_ids.length,
+              })}
+        </span>
+      ),
+    }),
     approve: _t("POST.APPROVE", "Approve"),
   };
 
@@ -428,22 +424,32 @@ const CreateEditWorkspacePostModal = (props) => {
       //handleSaveDraft();
     } else if (draftId) {
       dispatch(
-        deleteDraft({
-          type: "draft_post",
-          draft_id: draftId,
-        }, (err, res) => {
-          dispatch(
-            deleteDraftReducer({
-              topic_id: activeTopic.id,
-              draft_type: "draft_post",
-              draft_id: draftId,
-              id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-              post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
-            }, (err, res) => {
-              toaster.success(<>Draft <b>{form.title}</b> successfully removed.</>);
-            })
-          );
-        })
+        deleteDraft(
+          {
+            type: "draft_post",
+            draft_id: draftId,
+          },
+          (err, res) => {
+            dispatch(
+              deleteDraftReducer(
+                {
+                  topic_id: activeTopic.id,
+                  draft_type: "draft_post",
+                  draft_id: draftId,
+                  id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+                  post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+                },
+                (err, res) => {
+                  toaster.success(
+                    <>
+                      Draft <b>{form.title}</b> successfully removed.
+                    </>
+                  );
+                }
+              )
+            );
+          }
+        )
       );
     }
     setModal(!modal);
@@ -600,7 +606,6 @@ const CreateEditWorkspacePostModal = (props) => {
         partial_body: form.body,
         unread_reply_ids: [],
         clap_user_ids: [],
-        unread_reply_ids: [],
         author: user,
         user_reads: [],
         is_archived: 0,
@@ -611,31 +616,34 @@ const CreateEditWorkspacePostModal = (props) => {
         reply_count: 0,
         recipients: form.selectedAddressTo,
         recipient_ids: form.selectedAddressTo.map((r) => r.id),
-        users_approval: []
+        users_approval: [],
       };
       if (draftId) {
         payload = {
           ...payload,
           draft_id: draftId,
           id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-          post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
+          post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
         };
-        dispatch(updateDraft(payload, (err, res) => {
-          if (err) return;
-          toaster.success(<>Your post is still available as a draft</>);
-        }));
+        dispatch(
+          updateDraft(payload, (err, res) => {
+            if (err) return;
+            toaster.success(<>Your post is still available as a draft</>);
+          })
+        );
       } else {
-        dispatch(saveDraft(payload, (err, res) => {
-          if (err) return;
-          toaster.success(<>Your post is still available as a draft</>);
-        }));
+        dispatch(
+          saveDraft(payload, (err, res) => {
+            if (err) return;
+            toaster.success(<>Your post is still available as a draft</>);
+          })
+        );
       }
     }
   };
-  
+
   const handleConfirm = () => {
-    if (loading)
-      return;
+    if (loading) return;
 
     setLoading(true);
 
@@ -655,28 +663,34 @@ const CreateEditWorkspacePostModal = (props) => {
       tag_ids: [],
       file_ids: inlineImages.map((i) => i.id),
       code_data: {
-        base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`
+        base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
       },
-      approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : []
+      approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : [],
     };
     if (draftId) {
       dispatch(
-        deleteDraft({
-          type: "draft_post",
-          draft_id: draftId,
-        }, () => {
-          setLoading(false);
-          toggleAll(false);
-        })
+        deleteDraft(
+          {
+            type: "draft_post",
+            draft_id: draftId,
+          },
+          () => {
+            setLoading(false);
+            toggleAll(false);
+          }
+        )
       );
       dispatch(
-        deleteDraft({
-          type: "draft_post",
-          draft_id: draftId,
-        }, () => {
-          setLoading(false);
-          toggleAll(false);
-        })
+        deleteDraft(
+          {
+            type: "draft_post",
+            draft_id: draftId,
+          },
+          () => {
+            setLoading(false);
+            toggleAll(false);
+          }
+        )
       );
     }
     if (mode === "edit") {
@@ -688,29 +702,33 @@ const CreateEditWorkspacePostModal = (props) => {
       if (attachedFiles.length) {
         uploadFiles(payload, "edit");
       } else {
-        dispatch(putPost(payload, () => {
-          setLoading(false);
-        }));
+        dispatch(
+          putPost(payload, () => {
+            setLoading(false);
+          })
+        );
       }
     } else {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
       } else {
-        dispatch(postCreate(payload, (err,res) => {
-          setLoading(false);
-          if (err) return;
-          let payload = {
-            topic_id: activeTopic.id,
-            filter: "my_posts",
-            tag: null,
-          };
-          dispatch(updateWorkspacePostFilterSort(payload));
-          if (activeTopic.folder_id) {
-            history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
-          } else {
+        dispatch(
+          postCreate(payload, (err, res) => {
+            setLoading(false);
+            if (err) return;
+            let payload = {
+              topic_id: activeTopic.id,
+              filter: "my_posts",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            if (activeTopic.folder_id) {
+              history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+            } else {
               history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
-          }
-        }));
+            }
+          })
+        );
       }
     }
     toggleAll(false);
@@ -722,19 +740,22 @@ const CreateEditWorkspacePostModal = (props) => {
 
     setForm({
       ...form,
-      selectedAddressTo: [...users.map((user) => {
-        return {
-          id: user.id,
-          value: user.id,
-          label: user.name,
-          name: user.name,
-          first_name: user.first_name,
-          profile_image_link: user.profile_image_link,
-          profile_image_thumbnail_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-          type: "USER",
-          icon: "user-avatar",
-        };
-      }), ...form.selectedAddressTo]
+      selectedAddressTo: [
+        ...users.map((user) => {
+          return {
+            id: user.id,
+            value: user.id,
+            label: user.name,
+            name: user.name,
+            first_name: user.first_name,
+            profile_image_link: user.profile_image_link,
+            profile_image_thumbnail_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+            type: "USER",
+            icon: "user-avatar",
+          };
+        }),
+        ...form.selectedAddressTo,
+      ],
     });
 
     setMentionedUserIds([]);
@@ -749,13 +770,15 @@ const CreateEditWorkspacePostModal = (props) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let adddressIds = form.selectedAddressTo.map((ad) => {
-        if (ad.type === "USER") {
-          return ad.id;
-        } else {
-          return ad.member_ids;
-        }
-      }).flat();
+      let adddressIds = form.selectedAddressTo
+        .map((ad) => {
+          if (ad.type === "USER") {
+            return ad.id;
+          } else {
+            return ad.member_ids;
+          }
+        })
+        .flat();
       let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
@@ -960,21 +983,23 @@ const CreateEditWorkspacePostModal = (props) => {
           ...payload,
           file_ids: result.map((res) => res.data.id),
         };
-        dispatch(postCreate(payload, (err,res) => {
-          if (err) return;
-          let payload = {
-            topic_id: activeTopic.id,
-            filter: "my_posts",
-            tag: null,
-          };
-          dispatch(updateWorkspacePostFilterSort(payload));
-          if (activeTopic.folder_id) {
-            history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
-          } else {
+        dispatch(
+          postCreate(payload, (err, res) => {
+            if (err) return;
+            let payload = {
+              topic_id: activeTopic.id,
+              filter: "my_posts",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            if (activeTopic.folder_id) {
+              history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+            } else {
               history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
-          }
-          //history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
-        }));
+            }
+            //history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`)
+          })
+        );
       }
     });
   }
@@ -1009,6 +1034,7 @@ const CreateEditWorkspacePostModal = (props) => {
       let ws = getDefaultAddressTo();
       setIgnoredMentionedUserIds(ws[0].member_ids);
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
+      const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
       setForm({
         ...form,
         body: item.post.body,
@@ -1021,9 +1047,24 @@ const CreateEditWorkspacePostModal = (props) => {
         selectedAddressTo: getAddressTo(item.post.recipients),
         file_ids: item.post.files.map((f) => f.id),
         show_at: item.post.show_at,
-        end_at: item.post.end_at
+        end_at: item.post.end_at,
+        showApprover: item.post.users_approval.length > 0,
+        approvers:
+          item.post.users_approval.length > 0
+            ? item.post.users_approval.map((u) => {
+                return {
+                  ...u,
+                  icon: "user-avatar",
+                  value: u.id,
+                  label: u.name,
+                  type: "USER",
+                  ip_address: hasRequestedChange ? null : u.ip_address,
+                  is_approved: hasRequestedChange ? false : u.is_approved,
+                };
+              })
+            : [],
       });
-      if ((item.post.end_at !== null || item.post.show_at !== null) || (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)) {
+      if (item.post.end_at !== null || item.post.show_at !== null || item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply) {
         if (formRef.more_options.current !== null) {
           setMaxHeight(formRef.more_options.current.offsetHeight);
         }
@@ -1041,60 +1082,66 @@ const CreateEditWorkspacePostModal = (props) => {
     setMounted(true);
   }, []);
 
-  const autoUpdateDraft = useCallback(debounce((form, draftId) => {
-    if (!(form.title === "" && form.textOnly === "")) {
-      savingDraft.current = true;
-      let payload = {
-        type: "draft_post",
-        form: {
-          ...form,
-          must_read: form.must_read ? 1 : 0,
-          must_reply: form.reply_required ? 1 : 0,
-          read_only: form.no_reply ? 1 : 0,
-          personal: is_personal,
-          users_responsible: responsible_ids,
-        },
-        timestamp: initTimestamp,
-        id: initTimestamp,
-        post_id: initTimestamp,
-        created_at: { timestamp: initTimestamp },
-        updated_at: { timestamp: initTimestamp },
-        title: form.title,
-        partial_body: form.body,
-        unread_reply_ids: [],
-        clap_user_ids: [],
-        unread_reply_ids: [],
-        author: user,
-        user_reads: [],
-        is_archived: 0,
-        is_must_read: form.must_read,
-        is_must_reply: form.reply_required,
-        is_read_only: form.no_reply,
-        unread_count: 0,
-        reply_count: 0,
-        recipients: form.selectedAddressTo,
-        recipient_ids: form.selectedAddressTo.map((r) => r.id)
-      };
-      if (draftId) {
-        payload = {
-          ...payload,
-          draft_id: draftId,
-          id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-          post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp
+  const autoUpdateDraft = useCallback(
+    debounce((form, draftId) => {
+      if (!(form.title === "" && form.textOnly === "")) {
+        savingDraft.current = true;
+        let payload = {
+          type: "draft_post",
+          form: {
+            ...form,
+            must_read: form.must_read ? 1 : 0,
+            must_reply: form.reply_required ? 1 : 0,
+            read_only: form.no_reply ? 1 : 0,
+            personal: is_personal,
+            users_responsible: responsible_ids,
+          },
+          timestamp: initTimestamp,
+          id: initTimestamp,
+          post_id: initTimestamp,
+          created_at: { timestamp: initTimestamp },
+          updated_at: { timestamp: initTimestamp },
+          title: form.title,
+          partial_body: form.body,
+          unread_reply_ids: [],
+          clap_user_ids: [],
+          author: user,
+          user_reads: [],
+          is_archived: 0,
+          is_must_read: form.must_read,
+          is_must_reply: form.reply_required,
+          is_read_only: form.no_reply,
+          unread_count: 0,
+          reply_count: 0,
+          recipients: form.selectedAddressTo,
+          recipient_ids: form.selectedAddressTo.map((r) => r.id),
         };
-        dispatch(updateDraft(payload, (err,res) => {
-          savingDraft.current = false;
-          if (err) return;
-        }));
-      } else {
-        dispatch(saveDraft(payload, (err,res) => {
-          savingDraft.current = false;
-          if (err) return;
-          setDraftId(res.data.id)
-        }));
+        if (draftId) {
+          payload = {
+            ...payload,
+            draft_id: draftId,
+            id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+            post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+          };
+          dispatch(
+            updateDraft(payload, (err, res) => {
+              savingDraft.current = false;
+              if (err) return;
+            })
+          );
+        } else {
+          dispatch(
+            saveDraft(payload, (err, res) => {
+              savingDraft.current = false;
+              if (err) return;
+              setDraftId(res.data.id);
+            })
+          );
+        }
       }
-    }
-  }, 500), []);
+    }, 500),
+    []
+  );
 
   useEffect(() => {
     if (mounted && !savingDraft.current) {
@@ -1105,9 +1152,9 @@ const CreateEditWorkspacePostModal = (props) => {
   const toggleApprover = () => {
     setForm({
       ...form,
-      showApprover: !form.showApprover
-    })
-  }
+      showApprover: !form.showApprover,
+    });
+  };
 
   const handleSelectApprover = (e) => {
     if (e === null) {
@@ -1125,8 +1172,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
-      <ModalHeaderSection
-        toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
         <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
           <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
@@ -1155,15 +1201,17 @@ const CreateEditWorkspacePostModal = (props) => {
             <Label className={"w-100 modal-info pb-3"}>{dictionary.postInfo}</Label>
           </div>
           <div className="w-100">
-            <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
-            <Input className="w-100" style={{ borderRadius: "5px" }} defaultValue={form.title}
-                   onChange={handleNameChange} innerRef={inputRef}/>
+            <Label className={"modal-label"} for="post-title">
+              {dictionary.postTitle}
+            </Label>
+            <Input className="w-100" style={{ borderRadius: "5px" }} defaultValue={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
-          <Label className={"modal-label"} for="workspace">{dictionary.addressedTo}</Label>
-          <FolderSelect options={addressToOptions} value={form.selectedAddressTo}
-                        onChange={handleSelectAddressTo} isMulti={true} isClearable={true}/>
+          <Label className={"modal-label"} for="workspace">
+            {dictionary.addressedTo}
+          </Label>
+          <FolderSelect options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
         </WrapperDiv>
         <StyledDescriptionInput
           className="modal-description"
@@ -1183,25 +1231,21 @@ const CreateEditWorkspacePostModal = (props) => {
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]}
-                             handleRemoveFile={handleRemoveFile}/>
+            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option">
           <MoreOption onClick={toggleMoreOptions}>
             {dictionary.moreOptions}
-            <SvgIconFeather icon="chevron-down"
-                            className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`}/>
+            <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} />
           </MoreOption>
 
-          <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight}
-                         className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
+          <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight} className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
             <div className="d-flex">
               <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
                 {dictionary.mustRead}
               </CheckBox>
-              <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
-                        type="warning">
+              <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
                 {dictionary.replyRequired}
               </CheckBox>
               <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
@@ -1212,61 +1256,49 @@ const CreateEditWorkspacePostModal = (props) => {
               <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
                 {dictionary.approve}
               </CheckBox>
-              {
-                form.showApprover && 
-                <SelectApprover options={approverOptions.filter((ao) => ao.value !== user.id)} value={form.approvers}
-                        onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top"/>
-              }
+              {form.showApprover && <SelectApprover options={approverOptions.filter((ao) => ao.value !== user.id)} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
             </ApproveOptions>
             <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
-              <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
-              <StyledDatePicker className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate}
-                                value={form.show_at}
-                                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
-              <StyledDatePicker className="react-datetime-picker end-date" onChange={handleSelectEndDate}
-                                value={form.end_at}
-                                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
+              <SvgIconFeather className="mr-2" width={18} icon="calendar" />
+              <StyledDatePicker className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate} value={form.show_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
+              <StyledDatePicker className="react-datetime-picker end-date" onChange={handleSelectEndDate} value={form.end_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
             </WrapperDiv>
           </CheckBoxGroup>
         </WrapperDiv>
         <WrapperDiv>
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
-              {
-                users.filter(u => user_ids.includes(u.type_id)).map(u => {
-                  return <span key={u.id}>
-                    <span
-                      title={u.email}
-                      className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
-                      <Avatar
-                        className="mr-2"
-                        key={u.id}
-                        name={u.name}
-                        imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
-                        id={u.id}/><span className="item-user-name">{u.name}</span></span>
-                  </span>;
-                })
-              }
+              {users
+                .filter((u) => user_ids.includes(u.type_id))
+                .map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <span title={u.email} className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} />
+                        <span className="item-user-name">{u.name}</span>
+                      </span>
+                    </span>
+                  );
+                })}
             </span>
             <span className="workspace-list">
-              {
-                form.selectedAddressTo.filter(w => workspace_ids.includes(w.type_id)).map(w => {
-                  return <span className="d-flex justify-content-start align-items-center pt-2 pb-2" key={w.id}>
-                    <span className="item-workspace-name">{w.name}</span>
-                  </span>;
-                })
-              }
+              {form.selectedAddressTo
+                .filter((w) => workspace_ids.includes(w.type_id))
+                .map((w) => {
+                  return (
+                    <span className="d-flex justify-content-start align-items-center pt-2 pb-2" key={w.id}>
+                      <span className="item-workspace-name">{w.name}</span>
+                    </span>
+                  );
+                })}
             </span>
-            <span className="d-flex justify-content-end align-items-center"
-                  dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }}/>
+            <span className="d-flex justify-content-end align-items-center" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
           </div>
         </WrapperDiv>
         <WrapperDiv>
-          <button className="btn btn-primary"
-                  disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>"}
-                  onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>"} onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>
         </WrapperDiv>
