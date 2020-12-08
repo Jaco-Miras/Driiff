@@ -22,7 +22,7 @@ const useUserChannels = () => {
         ...userChannels.current,
         ...(channel.profile && {
           [channel.profile.id]: channel.id,
-        })
+        }),
       };
     }
   }

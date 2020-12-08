@@ -23,8 +23,8 @@ export const getAllLink = (content) => {
     .join("")
     .split("</a>")
     .forEach((element) => {
-      var splitHref = element.split("href=\"");
-      var link = splitHref.join("").split("\"")[0];
+      var splitHref = element.split('href="');
+      var link = splitHref.join("").split('"')[0];
       if (validURL(link)) {
         links.push(link);
       }
@@ -43,15 +43,17 @@ export const urlify = (text) => {
   });
   //return urls.filter(u => !u.includes(REACT_APP_apiDNSName))
   if (
-      urls.filter((u) => { return !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName) && !u.includes("/profile/") }).length
-    ) {
+    urls.filter((u) => {
+      return !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName) && !u.includes("/profile/");
+    }).length
+  ) {
     return [urls.filter((u) => !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName))[0]];
   } else {
     return [];
   }
+
   //return urls.filter(u => !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName));
 };
-
 export const getGifLinks = (content) => {
   let urls = [];
   var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;

@@ -8,6 +8,7 @@ import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "reactstrap";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -44,7 +45,7 @@ const SystemPeoplePanel = (props) => {
   const inactiveUsers = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER" && r.active === 0);
 
   const history = useHistory();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
@@ -65,7 +66,7 @@ const SystemPeoplePanel = (props) => {
 
   const handleUserNameClick = useCallback(
     (user) => {
-      history.push(`/profile/${user.id}/${user.name}`);
+      history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
     },
     [history]
   );

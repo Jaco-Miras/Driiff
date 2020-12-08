@@ -1,24 +1,27 @@
 import React from "react";
-import {useDispatch} from "react-redux";
-import {Redirect, Route, Switch} from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgEmptyState} from "../../common";
-import {useIsMember, useTranslation, useUsers, useWorkspace} from "../../hooks";
-import {
-  WorkspaceChatPanel,
-  WorkspaceDashboardPanel,
-  WorkspaceFilesPanel,
-  WorkspacePeoplePanel,
-  WorkspacePostsPanel,
-  WorkspaceSearchPanel,
-  WorkspaceSettingsPanel
-} from "../workspace";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgEmptyState } from "../../common";
+import { useIsMember, useTranslation, useUsers, useWorkspace } from "../../hooks";
+import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSearchPanel, WorkspaceSettingsPanel } from "../workspace";
 
 const Wrapper = styled.div`
   position: relative;
   padding-bottom: 0 !important;
   overflow: hidden;
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 45vw;
+
+    .spinner-border {
+      color: #5b1a67;
+    }
+  }
 `;
 
 const EmptyState = styled.div`
@@ -44,7 +47,7 @@ const EmptyState = styled.div`
 const WorkspaceContentPanel = (props) => {
   const { className = "", isExternal } = props;
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
@@ -69,7 +72,9 @@ const WorkspaceContentPanel = (props) => {
   return (
     <Wrapper className={`main-content h-100 ${className}`}>
       {!workspacesLoaded ? (
-        <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
+        <div className="spinner-container">
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
+        </div>
       ) : (
         <>
           {Object.keys(workspaces).length >= 1 ? (

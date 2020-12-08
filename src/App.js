@@ -22,7 +22,6 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-
   const { driffSettings } = useSettings();
   const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
   const location = useLocation();
@@ -40,18 +39,17 @@ function App() {
           user: {
             user_id: session.user.id,
             email: session.user.email,
-          }
+          },
         });
       } else {
         api.init();
       }
-      api.show('8f191889-6f0c-4879-ac3a-8760bc45e0f2');
+      api.show("8f191889-6f0c-4879-ac3a-8760bc45e0f2");
     };
   };
 
   useEffect(() => {
-    if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
-      session.checked && initUserSnap !== session.authenticated) {
+    if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && session.checked && initUserSnap !== session.authenticated) {
       //userSnap();
     }
   }, [session]);
@@ -78,7 +76,7 @@ function App() {
   if (driffSettings.settings.maintenance_mode) {
     return (
       <Wrapper className="App">
-        <GuestLayout setRegisteredDriff={setRegisteredDriff}/>
+        <GuestLayout setRegisteredDriff={setRegisteredDriff} />
       </Wrapper>
     );
   }
@@ -86,30 +84,30 @@ function App() {
   return (
     <Wrapper className="App">
       {imgAsLogin()}
-      <ToastContainer transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false}/>
-      <PreLoader/>
+      <ToastContainer transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false} />
+      <PreLoader />
       {location.pathname === "/driff" ? (
-        <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff}/>
+        <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff} />
       ) : location.pathname === "/driff-register" ? (
-        <Route render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff}/>} path="/driff-register" exact/>
+        <Route render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff} />} path="/driff-register" exact />
       ) : (
         <>
           {redirected === true ? (
-            <RedirectPanel redirectTo={driffActions.getBaseUrl}/>
+            <RedirectPanel redirectTo={driffActions.getBaseUrl} />
           ) : registeredDriff === null ? (
-            <DriffSelectPanel/>
+            <DriffSelectPanel />
           ) : (
             <>
               <Switch>
                 <ScrollToTop>
-                  <AppRoute path="*"/>
+                  <AppRoute path="*" />
                 </ScrollToTop>
               </Switch>
             </>
           )}
         </>
       )}
-      <ModalPanel/>
+      <ModalPanel />
     </Wrapper>
   );
 }

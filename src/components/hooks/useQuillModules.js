@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
-import {usePreviousValue} from "./index";
+import { usePreviousValue } from "./index";
+import { SvgIconFeather } from "../common";
+import { renderToString } from "react-dom/server";
 
-const useQuillModules = ({mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null}) => {
+const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null }) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -37,16 +39,16 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
     };
 
     let newAtValues = [];
-    
+
     if (members.length) {
       newAtValues = [
-        ...members.map((user)=> {
+        ...members.map((user) => {
           return Object.assign({}, user, {
             value: user.first_name,
             id: user.id,
             type_id: user.id,
             class: "user-pic",
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
           });
         }),
         all,
@@ -60,7 +62,7 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
             type_id: user.id,
             class: "user-pic all-users",
             profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
           });
         }),
         all,
@@ -74,17 +76,17 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
 
     if (prioMentionIds.length) {
       let prioIds = prioMentionIds.filter((id) => id !== user.id);
-      newAtValues.sort((a,b) => {
-        if (prioIds.some(id => id === a.id) && prioIds.some(id => id === b.id)) {
+      newAtValues.sort((a, b) => {
+        if (prioIds.some((id) => id === a.id) && prioIds.some((id) => id === b.id)) {
           return 0;
-        } else if (prioIds.some(id => id === a.id)) {
+        } else if (prioIds.some((id) => id === a.id)) {
           return -1;
         } else {
           return 1;
         }
-      })
+      });
     }
-    
+
     const modules = {
       magicUrl: true,
       mention: {
@@ -112,32 +114,76 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
           }
         },
         renderItem: function (item, searchTerm) {
-          let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
+          // let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
+          // let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
+          // if (typeof item.id === "string") {
+          //   avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
+          // }
+
+          // let listDisplay =
+          //   "<span class=\"" +
+          //   item.class +
+          //   "\" style=\"" +
+          //   avatarStyling +
+          //   "\"><img src=\"" +
+          //   (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
+          //   "\" draggable=\"false\" style=\"" +
+          //   avatarImgStyling +
+          //   "\" alt=\"" +
+          //   item.value +
+          //   "\"></span>&nbsp; <span style=\"width: auto; line-height: 1.35;\">" +
+          //   item.name +
+          //   "</span>";
+          // return listDisplay;
+
+          let avatarStyling = {
+            position: "relative",
+            width: "30px",
+            height: "30px",
+            minWidth: "30px",
+            minHeight: "30px",
+            borderRadius: "50%",
+            marginRight: "10px",
+            zIndex: "1",
+            pointerEvents: "auto",
+            border: "none",
+            overflow: "hidden",
+            cursor: "pointer",
+          };
+          let avatarImgStyling = { width: "100%", height: "100%", position: "absolute", left: 0, top: 0 };
           if (typeof item.id === "string") {
-            avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
+            avatarStyling = {
+              position: "relative",
+              width: "24px",
+              height: "24px",
+              minWidth: "24px",
+              minHeight: "24px",
+              borderRadius: "50%",
+              marginRight: "10px",
+              zIndex: 1,
+              pointerEvents: "auto",
+              border: "none",
+              overflow: "hidden",
+              cursor: "pointer",
+            };
           }
-          
-          let listDisplay =
-            "<span class=\"" +
-            item.class +
-            "\" style=\"" +
-            avatarStyling +
-            "\"><img src=\"" +
-            (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
-            "\" draggable=\"false\" style=\"" +
-            avatarImgStyling +
-            "\" alt=\"" +
-            item.value +
-            "\"></span>&nbsp; <span style=\"width: auto; line-height: 1.35;\">" +
-            item.name +
-            "</span>";
-          return listDisplay;
+
+          return renderToString(
+            <>
+              <span className={item.class} style={avatarStyling}>
+                <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
+              </span>
+              &nbsp;{" "}
+              <span style={{ width: "auto", lineHeight: 1.35 }}>
+                {item.name} {item.type === "external" && user.type === "internal" && <SvgIconFeather icon={"share"} width={14} height={14} strokeWidth="3" />}
+              </span>
+            </>
+          );
         },
       },
       toolbar: ["bold", "italic", "link", "image"],
       imageUploader: {
-        upload: file => {
+        upload: (file) => {
           return new Promise((resolve, reject) => {
             var formData = new FormData();
             formData.append("file", file);
@@ -147,17 +193,17 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
               file_type: "private",
               folder_id: null,
             })
-            .then(result => {
-              console.log(result);
-              if (setInlineImages) setInlineImages(prevState => [...prevState, result.data])
-              resolve(result.data.thumbnail_link);
-            })
-            .catch(error => {
-              reject("Upload failed");
-              console.error("Error:", error);
-            });
+              .then((result) => {
+                console.log(result);
+                if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
+                resolve(result.data.thumbnail_link);
+              })
+              .catch((error) => {
+                reject("Upload failed");
+                console.error("Error:", error);
+              });
           });
-        }
+        },
       },
       keyboard: {
         bindings: {
@@ -185,8 +231,8 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
             ctrlKey: true,
             handler: () => {
               //do nothing
-            }
-          }
+            },
+          },
         },
       },
     };
@@ -215,31 +261,12 @@ const useQuillModules = ({mode, callback = null, mentionOrientation = "top", qui
     }
   }, [mode, post, previousPost]);
 
-  const formats = [
-    "background",
-    "bold",
-    "color",
-    "font",
-    "code",
-    "italic",
-    "link",
-    "size",
-    "strike",
-    "script",
-    "blockquote",
-    "header",
-    "indent",
-    "list",
-    "align",
-    "direction",
-    "image",
-    "video"
-  ];
+  const formats = ["background", "bold", "color", "font", "code", "italic", "link", "size", "strike", "script", "blockquote", "header", "indent", "list", "align", "direction", "image", "video"];
 
   return {
     modules,
-    formats
-  }
+    formats,
+  };
 };
 
 export default useQuillModules;

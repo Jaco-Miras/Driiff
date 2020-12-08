@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslation, useWorkspaceSearchActions } from "../../hooks";
+import { useToaster, useTranslation, useWorkspace, useWorkspaceSearchActions } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
@@ -236,6 +236,7 @@ const WorspaceHeaderPanel = (props) => {
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
+  const { workspacesLoaded } = useWorkspace();
   const { activeTopic, folders } = useSelector((state) => state.workspaces);
   const {
     driff,
@@ -365,7 +366,7 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
   }, [match.params.page, dispatch, activeTopic]);
-  
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -408,7 +409,6 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -422,6 +422,7 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
+                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -446,7 +447,6 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>
                             {activeTopic.name}
-                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                           </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -460,6 +460,7 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
+                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}
@@ -503,9 +504,11 @@ const WorspaceHeaderPanel = (props) => {
           ) : (
             <>
               <li className="nav-item">
-                <WorkspaceButton onClick={handleShowWorkspaceModal}>
-                  {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus" />
-                </WorkspaceButton>
+                {workspacesLoaded && (
+                  <WorkspaceButton onClick={handleShowWorkspaceModal}>
+                    {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus" />
+                  </WorkspaceButton>
+                )}
               </li>
             </>
           )}

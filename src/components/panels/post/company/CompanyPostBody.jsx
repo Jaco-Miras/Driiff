@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { useFiles, useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../../hooks";
+import { useFiles, useGoogleApis, useRedirect, useTimeFormat, useWindowSize } from "../../../hooks";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import { PostVideos } from "../index";
+import { replaceChar } from "../../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -16,20 +17,20 @@ const Wrapper = styled.div`
     cursor: pointer;
     margin-right: 5px;
   }
-  
+
   // .author-avatar {
   //   width: 2.7rem;
   //   height: 2.7rem;
   // }
-  
+
   .author-name {
     display: block;
-    font-size: 14px;   
+    font-size: 14px;
     font-weight: 500;
     color: rgb(80, 80, 80);
     .dark & {
       color: #c7c7c7;
-    }    
+    }
   }
   .recipients {
     color: #8b8b8b;
@@ -38,14 +39,14 @@ const Wrapper = styled.div`
 
   .ellipsis-hover {
     position: relative;
-  cursor: pointer;
-    
+    cursor: pointer;
+
     &:hover {
       .recipient-names {
         opacity: 1;
-        max-height: 300px;    
+        max-height: 300px;
       }
-    }  
+    }
   }
 
   .recipient-names {
@@ -53,25 +54,25 @@ const Wrapper = styled.div`
     position: absolute;
     top: 20px;
     left: -2px;
-    width: 200px;    
+    width: 200px;
     border-radius: 8px;
     overflow-y: auto;
     border: 1px solid #fff;
-    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
     background: #fff;
     max-height: 0;
     opacity: 0;
-    
+
     &:hover {
       max-height: 300px;
-      opacity: 1;    
+      opacity: 1;
     }
-    
+
     .dark & {
       border: 1px solid #25282c;
       background: #25282c;
     }
-    
+
     > span {
       display: block;
       width: 100%;
@@ -79,7 +80,7 @@ const Wrapper = styled.div`
       text-overflow: ellipsis;
       overflow: hidden;
       padding: 0.25rem 0.5rem;
-    }    
+    }
   }
 `;
 
@@ -119,21 +120,25 @@ const CompanyPostBody = (props) => {
 
   const refs = {
     container: useRef(null),
-    body: useRef(null)
+    body: useRef(null),
   };
 
-  const { fileBlobs, actions: { setFileSrc } } = useFiles();
+  const {
+    fileBlobs,
+    actions: { setFileSrc },
+  } = useFiles();
   const redirect = useRedirect();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const postRecipients = useSelector((state) => state.global.recipients
-    .filter((r) => post.recipient_ids.includes(r.id))
-    .sort((a, b) => {
-      if (a.type !== b.type) {
-        if (a.type === "TOPIC") return -1;
-        if (b.type === "TOPIC") return 1;
-      }
-      return a.name.localeCompare(b.name);
-    })
+  const postRecipients = useSelector((state) =>
+    state.global.recipients
+      .filter((r) => post.recipient_ids.includes(r.id))
+      .sort((a, b) => {
+        if (a.type !== b.type) {
+          if (a.type === "TOPIC") return -1;
+          if (b.type === "TOPIC") return 1;
+        }
+        return a.name.localeCompare(b.name);
+      })
   );
 
   const [star, setStar] = useState(post.is_favourite);
@@ -154,23 +159,23 @@ const CompanyPostBody = (props) => {
   };
 
   const handleInlineImageClick = (e) => {
-    console.log(post.files, e.srcElement.currentSrc)
-    let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc)
+    console.log(post.files, e.srcElement.currentSrc);
+    let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
     if (file) {
       dispatch(
         setViewFiles({
           file_id: file.id,
           files: post.files,
         })
-      )
+      );
     }
-  }
+  };
 
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -180,53 +185,58 @@ const CompanyPostBody = (props) => {
         if (!img.classList.contains("has-listener")) {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
-          const imgFile = post.files.find((f) => imgSrc.includes(f.code))
+          const imgFile = post.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id])
+            img.setAttribute("src", fileBlobs[imgFile.id]);
           }
         } else {
-          const imgFile = post.files.find((f) => imgSrc.includes(f.code))
+          const imgFile = post.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id])
+            img.setAttribute("src", fileBlobs[imgFile.id]);
           }
         }
-      })
+      });
     }
-    const imageFiles = post.files.filter((f) => f.type.includes("image"))
+    const imageFiles = post.files.filter((f) => f.type.includes("image"));
     if (imageFiles.length) {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id]) {
           //setIsLoaded(false);
           fetch(file.view_link, {
-            method: "GET", keepalive: true, headers: {
+            method: "GET",
+            keepalive: true,
+            headers: {
               Authorization: `Bearer ${userAuth.access_token}`,
-              'Access-Control-Allow-Origin': "*",
+              "Access-Control-Allow-Origin": "*",
               Connection: "keep-alive",
               crossorigin: true,
-            }
+            },
           })
             .then(function (response) {
               return response.blob();
             })
-            .then(function (data) {
-              const imgObj = URL.createObjectURL(data);
-              setFileSrc({
-                id: file.id,
-                src: imgObj
-              });
-              postActions.updatePostImages({
-                post_id: post.id,
-                topic_id: null,
-                file: {
-                  ...file,
-                  blobUrl: imgObj
-                }
-              })
-            }, function (err) {
-              console.log(err, 'error');
-            });
+            .then(
+              function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+                postActions.updatePostImages({
+                  post_id: post.id,
+                  topic_id: null,
+                  file: {
+                    ...file,
+                    blobUrl: imgObj,
+                  },
+                });
+              },
+              function (err) {
+                console.log(err, "error");
+              }
+            );
         }
-      })
+      });
     }
   }, [post.body, refs.body, post.files]);
 
@@ -234,7 +244,7 @@ const CompanyPostBody = (props) => {
     const { id, type } = e.target.dataset;
     switch (type) {
       case "DEPARTMENT": {
-        history.push(`/chat`);
+        history.push("/chat");
         break;
       }
       case "TOPIC": {
@@ -243,7 +253,7 @@ const CompanyPostBody = (props) => {
         break;
       }
       case "USER": {
-        history.push(`/profile/${id}/${e.target.innerHTML}`);
+        history.push(`/profile/${id}/${replaceChar(e.target.innerHTML)}`);
         break;
       }
       default: {
@@ -254,13 +264,14 @@ const CompanyPostBody = (props) => {
 
   const renderUserResponsibleNames = () => {
     let recipient_names = "";
-    const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
-    const hasMe = postRecipients.some(r => r.type_id === user.id);
-    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : (hasMe ? 0 : 1);
+    const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
+    const hasMe = postRecipients.some((r) => r.type_id === user.id);
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     if (otherPostRecipients.length) {
-      recipient_names += otherPostRecipients.filter((r, i) => i < recipientSize)
-        .map(r => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
-        .join(`, `);
+      recipient_names += otherPostRecipients
+        .filter((r, i) => i < recipientSize)
+        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
+        .join(", ");
     }
 
     if (hasMe) {
@@ -272,9 +283,10 @@ const CompanyPostBody = (props) => {
     }
 
     let otherRecipientNames = "";
-    if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > recipientSize) {
-      otherRecipientNames += otherPostRecipients.filter((r, i) => i >= recipientSize)
-        .map(r => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
+    if (otherPostRecipients.length + (hasMe ? 1 : 0) > recipientSize) {
+      otherRecipientNames += otherPostRecipients
+        .filter((r, i) => i >= recipientSize)
+        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
         .join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
@@ -285,7 +297,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(`.receiver[data-init="0"]`).forEach(e => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -336,37 +348,28 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
-            <Avatar className="mr-2" id={post.author.id} name={post.author.name}
-                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
+            <Avatar className="mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} />
             <div>
               <span className="author-name">{post.author.first_name}</span>
-              {
-                postRecipients.length >= 1 &&
-                <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
-              }
+              {postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}
             </div>
           </div>
           <div className="d-inline-flex">
-            <CompanyPostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user}/>
-            {post.files.length > 0 && <Icon className="mr-2" icon="paperclip"/>}
-            <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"}
-                  stroke={star ? "#ffc107" : "currentcolor"}/>
-            {!disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive"/>}
+            <CompanyPostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
+            {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
+            <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
+            {!disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
             <div className={"time-stamp"}>
-              <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip}
-                             content={`${localizeDate(post.created_at.timestamp)}`}>
+              <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
                 <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
               </StyledTooltip>
             </div>
           </div>
         </div>
       </div>
-      {
-        post.files.length > 0 && <PostVideos files={post.files}/>
-      }
+      {post.files.length > 0 && <PostVideos files={post.files} />}
       <div className="d-flex align-items-center">
-        <div className="w-100 post-body-content" ref={refs.body}
-             dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }}/>
+        <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
       {
         post.users_approval.length > 0 && 
