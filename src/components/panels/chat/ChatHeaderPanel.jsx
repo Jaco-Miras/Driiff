@@ -29,7 +29,7 @@ const Wrapper = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: calc(100%);
+    max-width: calc(100% - 265px);
 
     a {
       color: #000 !important;
