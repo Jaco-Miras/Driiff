@@ -381,6 +381,8 @@ const MainNavigationTabPanel = (props) => {
         toggleEditCompany();
         break;
       }
+      default:
+        return;
     }
   };
 
