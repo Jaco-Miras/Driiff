@@ -1,11 +1,11 @@
-import {useCallback} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import { useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 //import {useLocation, useHistory, useParams} from "react-router-dom";
 // import toaster from "toasted-notes";
 // import {copyTextToClipboard} from "../../helpers/commonFunctions";
 // import {getBaseUrl} from "../../helpers/slugHelper";
-import {replaceChar} from "../../helpers/stringFormatter";
+import { replaceChar } from "../../helpers/stringFormatter";
 import {
   addPrimaryFiles,
   deleteWorkspaceRole,
@@ -17,33 +17,29 @@ import {
   postWorkspaceRole,
   setActiveTopic,
   updateWorkspaceTimelinePage,
-  joinWorkspace
+  joinWorkspace,
+  leaveWorkspace,
+  updateWorkspace,
 } from "../../redux/actions/workspaceActions";
-import {addToModals} from "../../redux/actions/globalActions";
-import {
-  addToChannels,
-  clearSelectedChannel,
-  getChannel,
-  getWorkspaceChannels,
-  setSelectedChannel
-} from "../../redux/actions/chatActions";
-import {useSettings} from "./index";
+import { addToModals } from "../../redux/actions/globalActions";
+import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, setSelectedChannel, putChannel } from "../../redux/actions/chatActions";
+import { useSettings } from "./index";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const {setGeneralSetting} = useSettings();
+  const { setGeneralSetting, loggedUser } = useSettings();
 
   const getDetail = useCallback(
     (id, callback) => {
-      dispatch(fetchDetail({topic_id: id}, callback));
+      dispatch(fetchDetail({ topic_id: id }, callback));
     },
     [dispatch]
   );
 
   const getPrimaryFiles = useCallback(
     (id, callback) => {
-      dispatch(fetchPrimaryFiles({topic_id: id}, callback));
+      dispatch(fetchPrimaryFiles({ topic_id: id }, callback));
     },
     [dispatch]
   );
@@ -57,7 +53,7 @@ const useWorkspaceActions = () => {
 
   const getMembers = useCallback(
     (id, callback) => {
-      dispatch(fetchMembers({topic_id: id}, callback));
+      dispatch(fetchMembers({ topic_id: id }, callback));
     },
     [dispatch]
   );
@@ -129,14 +125,15 @@ const useWorkspaceActions = () => {
   );
 
   const selectWorkspace = useCallback(
-    (workspace, callback = () => {
-    }) => {
-      dispatch(setActiveTopic(workspace, (err, res) => {
-        setGeneralSetting({
-          active_topic: workspace
+    (workspace, callback = () => {}) => {
+      dispatch(
+        setActiveTopic(workspace, (err, res) => {
+          setGeneralSetting({
+            active_topic: workspace,
+          });
+          callback(err, res);
         })
-        callback(err, res)
-      }));
+      );
     },
     [dispatch]
   );
@@ -148,23 +145,17 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
-  const clearChannel = useCallback(
-    () => {
-      dispatch(clearSelectedChannel());
-    },
-    [dispatch]
-  );
+  const clearChannel = useCallback(() => {
+    dispatch(clearSelectedChannel());
+  }, [dispatch]);
 
-  const redirectTo = useCallback(
-    (workspace) => {
-      if (workspace.folder_id) {
-        history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-      } else {
-        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-      }
-    },
-    []
-  );
+  const redirectTo = useCallback((workspace) => {
+    if (workspace.folder_id) {
+      history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+    } else {
+      history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+    }
+  }, []);
 
   const addRole = useCallback(
     (payload, callback) => {
@@ -189,11 +180,53 @@ const useWorkspaceActions = () => {
 
   const join = useCallback(
     (payload, callback) => {
-      dispatch(
-        joinWorkspace(payload, callback)
-      );
+      dispatch(joinWorkspace(payload, callback));
     },
-  [dispatch]);
+    [dispatch]
+  );
+
+  const leave = useCallback(
+    (workspace, member, callback) => {
+      if (workspace.members.length === 1 && workspace.is_lock === 1) {
+        let archivePayload = {
+          id: workspace.channel.id,
+          is_archived: true,
+          is_muted: false,
+          is_pinned: false,
+        };
+        dispatch(putChannel(archivePayload));
+      } else {
+        let payload = {
+          name: workspace.name,
+          description: workspace.description,
+          topic_id: workspace.id,
+          is_external: 0,
+          member_ids: workspace.members.map((m) => m.id),
+          is_lock: workspace.is_lock ? 1 : 0,
+          workspace_id: workspace.folder_id ? workspace.folder_id : 0,
+          new_member_ids: [],
+          remove_member_ids: [member.id],
+        };
+        payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
+          author: {
+            id: loggedUser.id,
+            name: loggedUser.name,
+            first_name: loggedUser.first_name,
+            partial_name: loggedUser.partial_name,
+            profile_image_link: loggedUser.profile_image_thumbnail_link ? loggedUser.profile_image_thumbnail_link : loggedUser.profile_image_link,
+          },
+          title: "",
+          added_members: [],
+          removed_members: [member.id],
+        })}`;
+        if (member.id === loggedUser.id) {
+          dispatch(leaveWorkspace({ workspace_id: workspace.id, channel_id: workspace.channel.id }, callback));
+        }
+        dispatch(updateWorkspace(payload));
+      }
+    },
+    [dispatch]
+  );
 
   return {
     addPrimaryFilesToWorkspace,
@@ -208,11 +241,12 @@ const useWorkspaceActions = () => {
     getPrimaryFiles,
     getTimeline,
     join,
+    leave,
     redirectTo,
     selectChannel,
     selectWorkspace,
     showModal,
-    updateTimelinePage
+    updateTimelinePage,
   };
 };
 
