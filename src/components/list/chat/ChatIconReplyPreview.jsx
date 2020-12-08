@@ -11,7 +11,7 @@ const Wrapper = styled.span`
   display: table;
   table-layout: fixed;
   width: 100%;
-  font-weight: ${props => props.hasUnRead ? "bold" : "normal"};
+  font-weight: ${(props) => (props.hasUnRead ? "bold" : "normal")};
 `;
 const LastReplyContent = styled.span``;
 const DraftContent = styled.span``;
@@ -25,7 +25,7 @@ const LastReplyBody = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 2;
-  width: calc(100% - ${props => props.iconWidth}px);
+  width: calc(100% - ${(props) => props.iconWidth}px);
   svg {
     margin-right: 4px;
     display: inline;
@@ -40,11 +40,6 @@ const Icon = styled(SvgIconFeather)`
   right: 0;
   width: 15px;
   height: 15px;
-`;
-const ActionContainer = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: row-reverse;
 `;
 const Badge = styled.span`
   color: #fff !important;
@@ -69,7 +64,7 @@ const ReplyPreview = (props) => {
 
   const [iconWidth, setIconWidth] = useState(0);
   const refs = {
-    icons: useRef(null)
+    icons: useRef(null),
   };
 
   let showPreviewIcon = false;
@@ -77,7 +72,7 @@ const ReplyPreview = (props) => {
   let lastReplyBody = "";
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
@@ -85,7 +80,7 @@ const ReplyPreview = (props) => {
 
       //strip html tags and replace it with space
       //lastReplyBody = lastReplyBody.replace(/(<([^>]+)>)/gi, " ");
-      lastReplyBody = stripHtml(lastReplyBody)
+      lastReplyBody = stripHtml(lastReplyBody);
     }
 
     if (channel.last_reply.body === "" || (channel.last_reply.files && channel.last_reply.files.length) || (channel.replies.length && channel.replies[channel.replies.length - 1].files.length) || channel.last_reply.body.match(/<img/)) {
@@ -104,8 +99,7 @@ const ReplyPreview = (props) => {
         if (!noText && showPreviewIcon) {
           previewText = previewText + "Photo";
         }
-        previewText = renderToString(<LastReplyName
-          className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
+        previewText = renderToString(<LastReplyName className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
         previewText = renderToString(<LastReplyName className="last-reply-name">{channel.last_reply.user.first_name}:</LastReplyName>) + " " + previewText;
       }
@@ -124,8 +118,7 @@ const ReplyPreview = (props) => {
 
     if (typeof drafts[channel.id] !== "undefined") {
       if (drafts[channel.id].text && drafts[channel.id].text !== "<div><br></div>") {
-        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent
-          dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }}/>)}`;
+        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
       } else if (drafts[channel.id].reply_quote) {
         previewText = `QUOTE:&nbsp;${drafts[channel.id].reply_quote.body}&nbsp;~${drafts[channel.id].reply_quote.user.name}`;
       }
@@ -139,10 +132,10 @@ const ReplyPreview = (props) => {
   }, [refs.icons, channel]);
 
   const hasUnRead = channel.add_user === false && (!channel.is_read || channel.total_unread > 0);
-
+  console.log(channel.total_unread);
+  console.log(channel.is_read);
   return (
-    <Wrapper hasUnRead={channel.total_unread > 0}
-             className={"d-flex justify-content-between align-items-center small text-muted "}>
+    <Wrapper hasUnRead={channel.total_unread > 0} className={"d-flex justify-content-between align-items-center small text-muted "}>
       <LastReplyBody
         iconWidth={iconWidth}
         isUnread={channel.total_unread > 0}
@@ -151,17 +144,19 @@ const ReplyPreview = (props) => {
           __html: previewText,
         }}
       />
-      <div ref={refs.icons}
-           className="chat-timestamp d-inline-flex justify-content-center align-items-end flex-row-reverse">
-        <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
-        {
-          hasUnRead && (
-            <Badge
-              className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
-          )
-        }
-        {channel.is_pinned && <Icon icon="star"/>}
-        {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
+      <div ref={refs.icons} className="chat-timestamp d-inline-flex justify-content-center align-items-end flex-row-reverse">
+        <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel} />
+        {channel.total_unread === 0 && channel.is_read === false ? (
+          <>
+            <Badge className={"badge badge-primary badge-pill ml-1"}>&nbsp;</Badge>
+          </>
+        ) : (
+          <>
+            {hasUnRead && <Badge className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>}
+          </>
+        )}
+        {channel.is_pinned && <Icon icon="star" />}
+        {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
       </div>
     </Wrapper>
   );

@@ -20,6 +20,12 @@ const ChannelTitleContainer = styled.h6`
   white-space: nowrap;
   max-width: calc(100% - 100px);
 
+  &.is-unread {
+    span {
+      font-weight: bold;
+    }
+  }
+
   span {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -57,8 +63,8 @@ const ChatTitleDate = (props) => {
   );
 
   return (
-    <Wrapper className="d-flex justify-content-between align-items-center">
-      <ChannelTitleContainer className={`mb-1 ${className}`} selectedChannel={selectedChannel} channel={channel}>
+    <Wrapper className={"d-flex justify-content-between align-items-center"}>
+      <ChannelTitleContainer className={`mb-1 ${channel.is_read ? "" : "is-unread"} ${className}`} selectedChannel={selectedChannel} channel={channel}>
         <ToolTip direction="up-start" arrow={false} content={channel.title}>
           <span>{chatTitle}</span>
         </ToolTip>
