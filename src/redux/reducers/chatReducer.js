@@ -253,7 +253,7 @@ export default function (state = INITIAL_STATE, action) {
             } else return m;
           }),
           replies:
-            action.data.member_id === state.user.id
+            action.data.member_id === state.user.id && channel.replies
               ? channel.replies.map((r) => {
                   return {
                     ...r,
@@ -1175,7 +1175,13 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: updatedChannels,
-        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, isFetching: action.data.status } : state.selectedChannel,
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.id
+            ? {
+                ...state.selectedChannel,
+                isFetching: action.data.status,
+              }
+            : state.selectedChannel,
       };
     }
     case "SET_LAST_CHAT_VISIBILITY": {
@@ -1301,7 +1307,12 @@ export default function (state = INITIAL_STATE, action) {
     case "GET_LATEST_REPLY_SUCCESS": {
       return {
         ...state,
-        lastReceivedMessage: action.data.latest_reply ? { id: action.data.latest_reply.reply_id, channel_id: action.data.latest_reply.channel_id } : state.lastReceivedMessage,
+        lastReceivedMessage: action.data.latest_reply
+          ? {
+              id: action.data.latest_reply.reply_id,
+              channel_id: action.data.latest_reply.channel_id,
+            }
+          : state.lastReceivedMessage,
       };
     }
     case "SET_CHANNEL_RANGE": {
