@@ -1,8 +1,9 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import {TeamListItem} from "../../list/people/item";
-import {SvgIconFeather} from "../../common";
+import { TeamListItem } from "../../list/people/item";
+import { SvgIconFeather } from "../../common";
 import { useSelector } from "react-redux";
+import { useToaster } from "../../hooks";
 
 const Wrapper = styled.div`
   .feather-edit {
@@ -47,17 +48,19 @@ const Wrapper = styled.div`
   }
 `;
 
-const EmptyState = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+// const EmptyState = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
 const DashboardTeam = (props) => {
-  const {className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions} = props;
+  const { className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions } = props;
   const [scrollRef, setScrollRef] = useState(null);
 
   const [showMore, setShowMore] = useState(false);
+
+  const toaster = useToaster();
 
   const loggedUser = useSelector((state) => state.session.user);
 
@@ -73,37 +76,63 @@ const DashboardTeam = (props) => {
   const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
 
   const handleToggleShow = () => {
-    setShowMore(prevState => !prevState)
+    setShowMore((prevState) => !prevState);
   };
 
   const slicedUsers = () => {
     if (showMore) {
-      return members
+      return members;
     } else {
-      return members.slice(0,5)
+      return members.slice(0, 5);
     }
-  }
+  };
+
+  const onLeaveWorkspace = (workspace, member) => {
+    let callback = (err, res) => {
+      if (err) return;
+      toaster.success(
+        <>
+          {dictionary.leaveWorkspace}
+          <b>{workspace.name}</b>
+        </>
+      );
+    };
+    actions.leave(workspace, member, callback);
+  };
 
   return (
     <Wrapper className={`dashboard-team card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          {dictionary.team} {isMember === true && !isExternal && workspace.active === 1 &&
-        <SvgIconFeather onClick={onEditClick} icon="plus"/>}
+          {dictionary.team} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather onClick={onEditClick} icon="plus" />}
         </h5>
 
-        {members.length === 0 ?
+        {members.length === 0 ? (
           <>{dictionary.emptyTeam}</>
-          :
+        ) : (
           <ul className="list-group list-group-flush">
-            {slicedUsers().map((member,i) => {
-              return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick}
-                                   hideOptions={hideOptions} actions={actions} workspace_id={workspace.id}
-                                   dictionary={dictionary} showMoreButton={i === 4 && members.length > 5 && !showMore}
-                                   showLessButton={i === members.length - 1 && members.length > 5 && showMore}
-                                   showMore={showMore} toggleShow={handleToggleShow} loggedUser={loggedUser}/>;
+            {slicedUsers().map((member, i) => {
+              return (
+                <TeamListItem
+                  key={member.id}
+                  member={member}
+                  parentRef={scrollRef}
+                  onEditClick={onEditClick}
+                  onLeaveWorkspace={onLeaveWorkspace}
+                  hideOptions={hideOptions}
+                  actions={actions}
+                  workspace_id={workspace.id}
+                  dictionary={dictionary}
+                  showMoreButton={i === 4 && members.length > 5 && !showMore}
+                  showLessButton={i === members.length - 1 && members.length > 5 && showMore}
+                  toggleShow={handleToggleShow}
+                  loggedUser={loggedUser}
+                  workspace={workspace}
+                />
+              );
             })}
-          </ul>}
+          </ul>
+        )}
       </div>
     </Wrapper>
   );

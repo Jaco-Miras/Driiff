@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {usePosts, useTranslation} from "../../hooks";
+import { usePosts, useTranslation } from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
-import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
+import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -55,7 +55,9 @@ const WorkspaceDashboardPanel = (props) => {
     revokeAsApprover: _t("TEAM.REVOKE_APPROVER", "Revoke as approver"),
     assignAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Assign as team lead"),
     assignAsApprover: _t("TEAM.REVOKE_APPROVER", "Assign as approver"),
-    remove: _t("TEAM.REMOVE", "Remove")
+    remove: _t("TEAM.REMOVE", "Remove"),
+    leave: _t("TEAM.REMOVE", "Leave"),
+    leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
   };
 
   let disableOptions = false;
@@ -66,39 +68,34 @@ const WorkspaceDashboardPanel = (props) => {
   return (
     <Wrapper className={`container-fluid fadeIn ${className}`}>
       <div className={"row"}>
-        {
-          workspace === null ?
-            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
-            :
-            <>{width > 620 ? (
+        {workspace === null ? (
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
+        ) : (
+          <>
+            {width > 620 ? (
               <>
                 <div className={"col-md-6"}>
-                  <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}
-                                           isExternal={isExternal} dictionary={dictionary}/>
-                  <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} workspace={workspace}
-                                 dictionary={dictionary}/>
+                  <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary} />
+                  <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} workspace={workspace} dictionary={dictionary} />
                 </div>
 
                 <div className={"col-md-6"}>
-                  <DashboardTeam workspace={workspace} actions={actions} onEditClick={handleEditClick}
-                                 isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
-                  <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions}/>
+                  <DashboardTeam workspace={workspace} actions={actions} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary} />
+                  <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions} />
                 </div>
               </>
             ) : (
               <>
                 <div className={"col-md-12"}>
-                  <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}
-                                           isExternal={isExternal} dictionary={dictionary}/>
-                  <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
-                                 isExternal={isExternal} dictionary={dictionary}/>
-                  <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions}/>
-                  <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} params={params}
-                                 dictionary={dictionary}/>
+                  <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary} />
+                  <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary} />
+                  <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions} />
+                  <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} params={params} dictionary={dictionary} />
                 </div>
               </>
-            )}</>
-        }
+            )}
+          </>
+        )}
       </div>
     </Wrapper>
   );

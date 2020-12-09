@@ -1,25 +1,15 @@
-import React, {useCallback, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {
-  getDriffCompSettings,
-  getDriffSettings,
-  getUserSettings,
-  putCompanyUpdateName,
-  setUserChatSetting,
-  setUserGeneralSetting,
-  updateUserSettings,
-  updateReadAnnouncement,
-} from "../../redux/actions/settingsActions";
-import {addToModals} from "../../redux/actions/globalActions";
-import {setPushNotification} from "../../redux/actions/notificationActions";
-import {useToaster} from "./index";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getDriffCompSettings, getDriffSettings, getUserSettings, putCompanyUpdateName, setUserChatSetting, setUserGeneralSetting, updateUserSettings, updateReadAnnouncement } from "../../redux/actions/settingsActions";
+import { addToModals } from "../../redux/actions/globalActions";
+import { setPushNotification } from "../../redux/actions/notificationActions";
+import { useToaster } from "./index";
 
 const useSettings = () => {
-
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const {driff: driffSettings, user: userSettings} = useSelector((state) => state.settings);
-  const {user: loggedUser} = useSelector((state) => state.session);
+  const { driff: driffSettings, user: userSettings } = useSelector((state) => state.settings);
+  const { user: loggedUser } = useSelector((state) => state.session);
 
   const [isSettingsLoading, setIsSettingsLoading] = useState(false);
   const [isCompSettingsIsLoading, setIsCompSettingsLoading] = useState(false);
@@ -47,8 +37,7 @@ const useSettings = () => {
   );
 
   const setGeneralSetting = useCallback(
-    (e, callback = () => {
-    }) => {
+    (e, callback = () => {}) => {
       dispatch(
         setUserGeneralSetting(e, () => {
           let payload = {
@@ -63,9 +52,7 @@ const useSettings = () => {
           };
 
           if (loggedUser) {
-            dispatch(
-              updateUserSettings(payload, callback)
-            );
+            dispatch(updateUserSettings(payload, callback));
           }
         })
       );
@@ -73,13 +60,10 @@ const useSettings = () => {
     [dispatch, userSettings]
   );
 
-  const setReadAnnouncement = useCallback(
-    () => {
-      dispatch(updateUserSettings({read_announcement: 1}));
-      dispatch(updateReadAnnouncement());
-    },
-    [dispatch, userSettings]
-  );
+  const setReadAnnouncement = useCallback(() => {
+    dispatch(updateUserSettings({ read_announcement: 1 }));
+    dispatch(updateReadAnnouncement());
+  }, [dispatch, userSettings]);
 
   const fetch = useCallback(() => {
     if (!driffSettings.isSettingsLoaded && !isSettingsLoading) {
@@ -97,7 +81,7 @@ const useSettings = () => {
       setIsCompSettingsLoading(true);
       dispatch(
         getDriffCompSettings({}, () => {
-          setIsCompSettingsLoading(false)
+          setIsCompSettingsLoading(false);
         })
       );
     }
@@ -110,46 +94,56 @@ const useSettings = () => {
         setIsUserSettingsLoading(false);
       });
     }
-  }, [dispatch, !driffSettings.isSetting, setIsUserSettingsLoading, isUserSettingsIsLoading])
+  }, [dispatch, !driffSettings.isSetting, setIsUserSettingsLoading, isUserSettingsIsLoading]);
 
-  const createPersonalLink = (payload, callback = () => {
-  }) => {
+  const createPersonalLink = (payload, callback = () => {}) => {
     let links = userSettings.GENERAL_SETTINGS.personal_links;
     links.push(payload);
-    setGeneralSetting({
-      personal_links: links
-    }, (err, res) => {
-      toaster.success(<>You personal link {payload.name} is successfully created!</>);
-      callback(err, res);
-    })
-  }
+    setGeneralSetting(
+      {
+        personal_links: links,
+      },
+      (err, res) => {
+        toaster.success(<>You personal link {payload.name} is successfully created!</>);
+        callback(err, res);
+      }
+    );
+  };
 
-  const updatePersonalLink = (payload, callback = () => {
-  }) => {
+  const updatePersonalLink = (payload, callback = () => {}) => {
     let links = userSettings.GENERAL_SETTINGS.personal_links;
     links[payload.index] = payload;
-    setGeneralSetting({
-      personal_links: links
-    }, (err, res) => {
-      toaster.success(<>You personal link {payload.name} is successfully updated!</>);
-      callback(err, res);
-    })
-  }
+    setGeneralSetting(
+      {
+        personal_links: links,
+      },
+      (err, res) => {
+        toaster.success(<>You personal link {payload.name} is successfully updated!</>);
+        callback(err, res);
+      }
+    );
+  };
 
-  const deletePersonalLink = (payload, callback = () => {
-  }) => {
+  const deletePersonalLink = (payload, callback = () => {}) => {
     let links = userSettings.GENERAL_SETTINGS.personal_links;
     links.splice(payload.index, 1);
-    setGeneralSetting({
-      personal_links: links
-    }, (err, res) => {
-      toaster.success(<>You have deleted <b>{payload.name}</b> personal link!</>);
-      callback(err, res);
-    })
-  }
+    setGeneralSetting(
+      {
+        personal_links: links,
+      },
+      (err, res) => {
+        toaster.success(
+          <>
+            You have deleted <b>{payload.name}</b> personal link!
+          </>
+        );
+        callback(err, res);
+      }
+    );
+  };
 
   const handleDeleteLink = useCallback((item, options) => {
-    showModal("personal_link_delete", item, options)
+    showModal("personal_link_delete", item, options);
   }, []);
 
   const showModal = useCallback(
@@ -175,7 +169,7 @@ const useSettings = () => {
             item: item,
             actions: {
               update: updatePersonalLink,
-              delete: handleDeleteLink
+              delete: handleDeleteLink,
             },
           };
           break;
@@ -206,24 +200,27 @@ const useSettings = () => {
     [dispatch]
   );
 
-  const updateCompanyName = (payload, callback = () => {
-  }) => {
+  const updateCompanyName = (payload, callback = () => {}) => {
     if (driffSettings.company_name === payload.company_name) {
-      toaster.success(`No update made.`);
+      toaster.success("No update made.");
     } else {
       dispatch(
         putCompanyUpdateName(payload, (err, res) => {
           if (err) {
-            toaster.error(<><b>{payload.company_name}</b> can't be used.</>);
+            toaster.error(
+              <>
+                <b>{payload.company_name}</b> can't be used.
+              </>
+            );
           }
           if (res) {
             toaster.success(`You have updated the company name to ${payload.company_name}`);
           }
           callback(err, res);
         })
-      )
+      );
     }
-  }
+  };
 
   const setPushSubscription = useCallback(
     (payload) => {
@@ -254,6 +251,7 @@ const useSettings = () => {
     setPushSubscription,
     setReadAnnouncement,
     showModal,
+    loggedUser,
   };
 };
 

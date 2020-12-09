@@ -56,7 +56,7 @@ const ShowMoreBtn = styled.div`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, showMore, toggleShow, loggedUser } = props;
+  const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null } = props;
 
   const history = useHistory();
 
@@ -135,7 +135,7 @@ const TeamListItem = (props) => {
           {member.workspace_role !== "TEAM_LEAD" && <div onClick={() => handleAddRole("team_lead")}>{dictionary.assignAsTeamLead}</div>}
           {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>{dictionary.assignAsApprover}</div>}
           {member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
-          <div onClick={onEditClick}>{dictionary.remove}</div>
+          <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
         </MoreOptions>
       )}
     </Wrapper>
