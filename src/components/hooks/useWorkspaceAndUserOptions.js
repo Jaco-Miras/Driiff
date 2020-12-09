@@ -26,6 +26,7 @@ const useWorkspaceAndUserOptions = (props) => {
           ...r,
           icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
           ...([postRecipients.type === "DEPARTMENT"] && {
+            participant_ids: internalUsers.map((u) => u.id),
             member_ids: internalUsers.map((u) => u.id),
             members: internalUsers.map((u) => u),
           }),
@@ -41,6 +42,7 @@ const useWorkspaceAndUserOptions = (props) => {
       {
         ...workspaces.filter((w) => w.type_id === activeTopic.id),
         ...activeTopic,
+        participant_ids: activeTopic.member_ids,
         icon: "compass",
         value: activeTopic.id,
         label: activeTopic.name,
@@ -55,6 +57,7 @@ const useWorkspaceAndUserOptions = (props) => {
     return [
       {
         ...company,
+        participant_ids: internalUsers.map((u) => u.id),
         member_ids: internalUsers.map((u) => u.id),
         members: internalUsers.map((u) => u),
         icon: "home",
@@ -102,6 +105,7 @@ const useWorkspaceAndUserOptions = (props) => {
         ...(company && [
           {
             ...company,
+            participant_ids: internalUsers.map((u) => u.id),
             member_ids: internalUsers.map((u) => u.id),
             members: internalUsers.map((u) => u),
             icon: "home",
@@ -141,8 +145,20 @@ const useWorkspaceAndUserOptions = (props) => {
     }
   });
 
+  let addressIds = addressTo
+    .map((ad) => {
+      if (ad.type === "USER") {
+        return ad.type_id;
+      } else {
+        return ad.participant_ids;
+      }
+    })
+    .flat();
+
+  addressIds = [...new Set(addressIds)];
+
   const user_options = users
-    .filter((u) => user_ids.some((id) => id === u.type_id))
+    .filter((u) => addressIds.some((id) => id === u.type_id))
     .map((u) => {
       return {
         ...u,
@@ -154,6 +170,7 @@ const useWorkspaceAndUserOptions = (props) => {
     });
 
   return {
+    addressIds,
     options,
     userOptions: user_options,
     user_ids: [...new Set(user_ids)],
