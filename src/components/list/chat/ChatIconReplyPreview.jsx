@@ -132,8 +132,7 @@ const ReplyPreview = (props) => {
   }, [refs.icons, channel]);
 
   const hasUnRead = channel.add_user === false && (!channel.is_read || channel.total_unread > 0);
-  console.log(channel.total_unread);
-  console.log(channel.is_read);
+
   return (
     <Wrapper hasUnRead={channel.total_unread > 0} className={"d-flex justify-content-between align-items-center small text-muted "}>
       <LastReplyBody
