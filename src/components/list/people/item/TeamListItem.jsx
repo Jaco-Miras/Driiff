@@ -107,7 +107,13 @@ const TeamListItem = (props) => {
         {member.workspace_role && member.workspace_role !== "" && (
           <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
         )}
-        {member.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
+        {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
+        {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
+          <>
+            <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />
+            <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
+          </>
+        )}
       </div>
       {showMoreButton && (
         <ShowMoreBtn className="btn-toggle-show">
