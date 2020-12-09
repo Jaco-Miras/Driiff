@@ -691,6 +691,9 @@ const CreateEditCompanyPostModal = (props) => {
         id: item.post.id,
         file_ids: uploadedFiles.map((f) => f.id),
       };
+      if (item.post.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
+        delete payload.approval_user_ids;
+      }
       if (attachedFiles.length) {
         uploadFiles(payload, "edit");
       } else {

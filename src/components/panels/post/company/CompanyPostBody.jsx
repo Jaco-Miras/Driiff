@@ -142,7 +142,7 @@ const CompanyPostBody = (props) => {
   );
 
   const [star, setStar] = useState(post.is_favourite);
-  const [approving, setApproving] = useState({ approve: false, change: false});
+  const [approving, setApproving] = useState({ approve: false, change: false });
   const { fromNow, localizeDate } = useTimeFormat();
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
@@ -307,36 +307,42 @@ const CompanyPostBody = (props) => {
   const handleApprove = () => {
     setApproving({
       ...approving,
-      approve: true
+      approve: true,
     });
     if (!approving.approve) {
-      postActions.approve({
-        post_id: post.id,
-        approved: 1
-      }, () => {
-        setApproving({
-          ...approving,
-          approve: false
-        });
-      })
+      postActions.approve(
+        {
+          post_id: post.id,
+          approved: 1,
+        },
+        () => {
+          setApproving({
+            ...approving,
+            approve: false,
+          });
+        }
+      );
     }
   };
 
   const handleRequestChange = () => {
     setApproving({
       ...approving,
-      change: true
+      change: true,
     });
     if (!approving.change) {
-      postActions.approve({
-        post_id: post.id,
-        approved: 0
-      },  () => {
-        setApproving({
-          ...approving,
-          change: false
-        });
-      })
+      postActions.approve(
+        {
+          post_id: post.id,
+          approved: 0,
+        },
+        () => {
+          setApproving({
+            ...approving,
+            change: false,
+          });
+        }
+      );
     }
   };
 
@@ -371,27 +377,32 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {
-        post.users_approval.length > 0 && 
-        (post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length)  && 
-        post.users_approval.some((u) => u.id === user.id) &&
+      {post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length && post.users_approval.some((u) => u.id === user.id) && (
         <div className="d-flex align-items-center mt-3">
-          <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>{dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"/>}</button>
-          <button className="btn btn-primary" onClick={handleApprove}>{dictionary.accept} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"/>}</button>
+          <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
+            {dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+          </button>
+          <button className="btn btn-primary" onClick={handleApprove}>
+            {dictionary.accept} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+          </button>
         </div>
-      }
-      {
-        userApproved &&
+      )}
+      {userApproved && (
         <ApprovedText>
-          {userApproved.name} {dictionary.hasAcceptedProposal} <span className="text-muted approve-ip">{fromNow(userApproved.created_at.timestamp)} - {userApproved.ip_address}</span>
+          {userApproved.name} {dictionary.hasAcceptedProposal}{" "}
+          <span className="text-muted approve-ip">
+            {fromNow(userApproved.created_at.timestamp)} - {userApproved.ip_address}
+          </span>
         </ApprovedText>
-      }
-      {
-        userRequestChange &&
+      )}
+      {userRequestChange && (
         <ApprovedText>
-          {userRequestChange.name} {dictionary.hasRequestedChange} <span className="text-muted approve-ip">{fromNow(userRequestChange.created_at.timestamp)} - {userRequestChange.ip_address}</span>
+          {userRequestChange.name} {dictionary.hasRequestedChange}{" "}
+          <span className="text-muted approve-ip">
+            {fromNow(userRequestChange.created_at.timestamp)} - {userRequestChange.ip_address}
+          </span>
         </ApprovedText>
-      }
+      )}
     </Wrapper>
   );
 };
