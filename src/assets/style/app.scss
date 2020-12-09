@@ -144,6 +144,10 @@ body {
 .ql-mention-denotation-char {
   font-weight: bold;
   cursor: default;
+
+  .dark & {
+    color: #7a1b8b !important;
+  }
 }
 
 .chat-input-wrapper {
