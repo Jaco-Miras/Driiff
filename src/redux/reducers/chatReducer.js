@@ -1042,17 +1042,19 @@ export default function (state = INITIAL_STATE, action) {
               [action.data.channel.id]: {
                 ...state.channels[action.data.channel.id],
                 ...(action.data.system_message && {
-                  replies: {
+                  replies: [
                     ...state.channels[action.data.channel.id].replies,
-                    ...action.data.system_message,
-                    created_at: action.data.updated_at,
-                    editable: false,
-                    is_read: true,
-                    is_deleted: false,
-                    files: [],
-                    reactions: [],
-                    unfurls: [],
-                  },
+                    {
+                      ...action.data.system_message,
+                      created_at: action.data.updated_at,
+                      editable: false,
+                      is_read: true,
+                      is_deleted: false,
+                      files: [],
+                      reactions: [],
+                      unfurls: [],
+                    },
+                  ],
                 }),
                 icon_link: action.data.channel.icon_link,
                 title: action.data.name,
@@ -1071,17 +1073,19 @@ export default function (state = INITIAL_STATE, action) {
             selectedChannel: {
               ...state.selectedChannel,
               ...(action.data.system_message && {
-                replies: {
+                replies: [
                   ...state.channels[action.data.channel.id].replies,
-                  ...action.data.system_message,
-                  created_at: action.data.updated_at,
-                  editable: false,
-                  is_read: true,
-                  is_deleted: false,
-                  files: [],
-                  reactions: [],
-                  unfurls: [],
-                },
+                  {
+                    ...action.data.system_message,
+                    created_at: action.data.updated_at,
+                    editable: false,
+                    is_read: true,
+                    is_deleted: false,
+                    files: [],
+                    reactions: [],
+                    unfurls: [],
+                  },
+                ],
               }),
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
