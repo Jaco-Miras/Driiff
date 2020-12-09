@@ -1,29 +1,27 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {useToaster, useUserActions} from "../hooks";
-import {useHistory} from "react-router-dom";
-import {FormInput, PasswordInput} from "../forms";
-import {EmailRegex} from "../../helpers/stringFormatter";
-import {$_GET} from "../../helpers/commonFunctions";
+import { useToaster, useUserActions } from "../hooks";
+import { useHistory } from "react-router-dom";
+import { FormInput, PasswordInput } from "../forms";
+import { EmailRegex } from "../../helpers/stringFormatter";
+import { $_GET } from "../../helpers/commonFunctions";
 
-const Wrapper = styled.form`
-`;
+const Wrapper = styled.form``;
 
 const FormGroup = styled.div`
-    .form-control {
-        margin-bottom: 0 !important;
-    }
-    .invalid-feedback {
-        text-align: left;
-    }
-    .input-group-text {
-      height: 36px;
-    }
+  .form-control {
+    margin-bottom: 0 !important;
+  }
+  .invalid-feedback {
+    text-align: left;
+  }
+  .input-group-text {
+    height: 36px;
+  }
 `;
 
 const ExternalRegisterPanel = (props) => {
-
-  const {dictionary} = props;
+  const { dictionary } = props;
   const history = useHistory();
   const userAction = useUserActions();
   const toaster = useToaster();
@@ -40,6 +38,7 @@ const ExternalRegisterPanel = (props) => {
     last_name: "",
     email: "",
     password: "",
+    company_name: "",
   });
 
   const [formResponse, setFormResponse] = useState({
@@ -49,20 +48,20 @@ const ExternalRegisterPanel = (props) => {
 
   const handleInputChange = useCallback((e) => {
     e.persist();
-    setForm(prevState => ({
+    setForm((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
 
-    setFormResponse(prevState => ({
+    setFormResponse((prevState) => ({
       ...prevState,
       valid: {
         ...prevState.valid,
-        [e.target.name]: undefined
+        [e.target.name]: undefined,
       },
       message: {
         ...prevState.message,
-        [e.target.name]: undefined
+        [e.target.name]: undefined,
       },
     }));
   }, []);
@@ -111,8 +110,8 @@ const ExternalRegisterPanel = (props) => {
       message: message,
     });
 
-    return !Object.values(valid).some(v => v === false);
-  }
+    return !Object.values(valid).some((v) => v === false);
+  };
 
   const handleAccept = (e) => {
     e.preventDefault();
@@ -125,7 +124,7 @@ const ExternalRegisterPanel = (props) => {
     userAction.updateExternalUser(form, (err, res) => {
       setLoading(false);
       if (res) {
-        toaster.success(`Login successful!`);
+        toaster.success("Login successful!");
         localStorage.setItem("fromRegister", true);
         const returnUrl =
           typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
@@ -139,12 +138,12 @@ const ExternalRegisterPanel = (props) => {
   useEffect(() => {
     userAction.fetchStateCode($_GET("state_code"), (err, res) => {
       if (err) {
-        history.push(`/login`);
+        history.push("/login");
       }
 
       if (res) {
         if (res.data.auth_login) {
-          toaster.success(`Activation successful!`);
+          toaster.success("Activation successful!");
 
           const returnUrl =
             typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
@@ -153,17 +152,17 @@ const ExternalRegisterPanel = (props) => {
           userAction.storeLoginToken(res.data.auth_login);
           userAction.processBackendLogin(res.data.auth_login, returnUrl);
         } else {
-          setForm(prevState => ({
+          setForm((prevState) => ({
             ...prevState,
             user_id: res.data.user.id,
             topic_id: res.data.topic.id,
-            email: res.data.user.email
-          }))
+            email: res.data.user.email,
+          }));
 
           refs.first_name.current.focus();
         }
       }
-    })
+    });
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -171,48 +170,25 @@ const ExternalRegisterPanel = (props) => {
   return (
     <Wrapper>
       <FormGroup className="form-group">
-        <FormInput
-          innerRef={refs.first_name} onChange={handleInputChange} name="first_name" placeholder={dictionary.firstName}
-          isValid={formResponse.valid.first_name} feedback={formResponse.message.first_name}
-          required autoFocus
-        />
+        <FormInput innerRef={refs.first_name} onChange={handleInputChange} name="first_name" placeholder={dictionary.firstName} isValid={formResponse.valid.first_name} feedback={formResponse.message.first_name} required autoFocus />
       </FormGroup>
       <FormGroup className="form-group">
-        <FormInput
-          onChange={handleInputChange} name="middle_name" type="text"
-          placeholder={dictionary.middleName}
-          isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name}
-        />
+        <FormInput onChange={handleInputChange} name="middle_name" type="text" placeholder={dictionary.middleName} isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name} />
       </FormGroup>
       <FormGroup className="form-group">
-        <FormInput
-          onChange={handleInputChange} name="last_name" type="text"
-          placeholder={dictionary.lastName}
-          isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name}
-        />
+        <FormInput onChange={handleInputChange} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} />
+      </FormGroup>
+      <FormGroup className="form-group">
+        <FormInput onChange={handleInputChange} name="company_name" placeholder={dictionary.companyName} />
       </FormGroup>
       <FormGroup className="form-group text-left">
-        <FormInput
-          onChange={handleInputChange} name="last_name" type="text"
-          value={form.email}
-          isValid={formResponse.valid.email} feedback={formResponse.message.email}
-          readOnly
-        />
+        <FormInput onChange={handleInputChange} name="last_name" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
       </FormGroup>
       <FormGroup className="form-group">
-        <PasswordInput
-          innerRef={refs.password}
-          name="password"
-          onChange={handleInputChange}
-          placeholder={dictionary.password}
-          isValid={formResponse.valid.password}
-          feedback={formResponse.message.password}
-          required
-        />
+        <PasswordInput innerRef={refs.password} name="password" onChange={handleInputChange} placeholder={dictionary.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} required />
       </FormGroup>
       <button className="btn btn-primary btn-block mt-2" onClick={handleAccept}>
-        {loading &&
-        <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>} {dictionary.accept}
+        {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.accept}
       </button>
     </Wrapper>
   );

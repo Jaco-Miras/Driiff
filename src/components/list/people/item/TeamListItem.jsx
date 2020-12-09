@@ -100,7 +100,8 @@ const TeamListItem = (props) => {
           <h6 className="profile-name" onClick={handleClickName}>
             {member.has_accepted ? member.name : member.email}
           </h6>
-          {member.designation && <small className="text-muted">{member.designation}</small>}
+          {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
+          {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
         </div>
       </div>
       <div className="ml-auto">
