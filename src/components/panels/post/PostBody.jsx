@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../redux/actions/fileActions";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { renderToString } from "react-dom/server";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -102,6 +103,11 @@ const Icon = styled(SvgIconFeather)`
   cursor: pointer;
 `;
 
+const LockIcon = styled(SvgIconFeather)`
+  width: 12px;
+  vertical-align: top;
+`;
+
 const PostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions, workspaceId } = props;
 
@@ -175,7 +181,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -271,7 +277,7 @@ const PostBody = (props) => {
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
-        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
+        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`)
         .join(", ");
     }
 
@@ -287,7 +293,7 @@ const PostBody = (props) => {
     if (otherPostRecipients.length + (hasMe ? 1 : 0) > recipientSize) {
       otherRecipientNames += otherPostRecipients
         .filter((r, i) => i >= recipientSize)
-        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name}</span>`)
+        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`)
         .join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
@@ -298,7 +304,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });

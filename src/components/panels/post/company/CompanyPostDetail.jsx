@@ -445,7 +445,9 @@ const CompanyPostDetail = (props) => {
         </div>
         {privateWsOnly.length === post.recipients.length && (
           <div>
-            <span>{dictionary.messageInSecureWs}</span>
+            <span>
+              {dictionary.messageInSecureWs} <Icon icon="lock" />
+            </span>
           </div>
         )}
         <div>

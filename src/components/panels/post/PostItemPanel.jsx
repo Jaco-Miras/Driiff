@@ -7,6 +7,7 @@ import { PostBadge } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../hooks";
 import { TodoCheckBox } from "../../forms";
+import { renderToString } from "react-dom/server";
 
 const Wrapper = styled.li`
   .feather-eye-off {
@@ -44,7 +45,7 @@ const Wrapper = styled.li`
     width: 100%;
     //padding-left: 2.5rem;
     overflow: inherit;
-    //width: calc(100% - ${props => props.appListWidthDiff}px);
+    //width: calc(100% - ${(props) => props.appListWidthDiff}px);
 
     &.has-unread {
       font-weight: bold;
@@ -135,19 +136,19 @@ const Wrapper = styled.li`
   }
 `;
 
-const SlideOption = styled.div`
-  @media (max-width: 576px) {
-    transition: all 0.3s ease;
-    max-width: 0;
-    overflow: hidden;
-    ${(props) =>
-      props.showOptions &&
-      `
-      max-width: 576px;
-      overflow: initial;      
-    `}
-  }
-`;
+// const SlideOption = styled.div`
+//   @media (max-width: 576px) {
+//     transition: all 0.3s ease;
+//     max-width: 0;
+//     overflow: hidden;
+//     ${(props) =>
+//       props.showOptions &&
+//       `
+//       max-width: 576px;
+//       overflow: initial;
+//     `}
+//   }
+// `;
 
 const Icon = styled(SvgIconFeather)`
   width: 16px;
@@ -220,12 +221,12 @@ const AuthorRecipients = styled.div`
   }
 `;
 
-const CreatedBy = styled.div`
-  position: absolute;
-  top: 1rem;
-  left: 2rem;
-  bottom: 0;
-`;
+// const CreatedBy = styled.div`
+//   position: absolute;
+//   top: 1rem;
+//   left: 2rem;
+//   bottom: 0;
+// `;
 
 const PostReplyCounter = styled.div`
   display: flex;
@@ -253,15 +254,19 @@ const CheckBox = styled(TodoCheckBox)`
   }
 `;
 
+const LockIcon = styled(SvgIconFeather)`
+  width: 12px;
+`;
+
 const PostItemPanel = (props) => {
   const {
-    className = "", 
-    post, 
-    dictionary, 
-    disableOptions, 
-    toggleCheckbox, 
+    className = "",
+    post,
+    dictionary,
+    disableOptions,
+    toggleCheckbox,
     checked,
-    postActions: { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal }
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal },
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -289,11 +294,12 @@ const PostItemPanel = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
+    console.log(otherPostRecipients);
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
         .map((r) => {
-          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join(", ");
@@ -312,7 +318,7 @@ const PostItemPanel = (props) => {
       otherRecipientNames += otherPostRecipients
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
-          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join("");
@@ -345,14 +351,14 @@ const PostItemPanel = (props) => {
     if (!touchActions) openPost(post);
   };
 
-  const [showOptions, setShowOptions] = useState(false);
+  //const [showOptions, setShowOptions] = useState(false);
   const handleSwipeLeft = (e) => {
     touchActions = true;
-    setShowOptions(true);
+    //setShowOptions(true);
   };
   const handleSwipeRight = (e) => {
     touchActions = true;
-    setShowOptions(false);
+    //setShowOptions(false);
   };
 
   const { touchStart, touchMove, touchEnd } = useTouchActions({
@@ -363,51 +369,53 @@ const PostItemPanel = (props) => {
   });
 
   const hasUnread = post.is_unread === 1;
-  
+
   return (
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
       appListWidthDiff={postBadgeWidth + 50}
       className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
-      onTouchStart={touchStart} 
-      onTouchMove={touchMove} 
+      onTouchStart={touchStart}
+      onTouchMove={touchMove}
       onTouchEnd={touchEnd}
-      onClick={() => openPost(post)}>
-      <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)}/>
+      onClick={() => openPost(post)}
+    >
+      <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)} />
       <Author className="d-flex ml-2 mr-2">
-        <ByIcon icon="corner-up-right"/>
-        <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
-                name={post.author.name}
-                imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
+        <ByIcon icon="corner-up-right" />
+        <Avatar
+          title={`FROM: ${post.author.name}`}
+          className="author-avatar mr-2"
+          id={post.author.id}
+          name={post.author.name}
+          imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
+        />
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
-          <div
-            className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-            {/* <CreatedBy>
+        <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
+          {/* <CreatedBy>
               <ByIcon icon="corner-up-right"/>
               <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
                       name={post.author.name}
                       imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             </CreatedBy> */}
-            <AuthorRecipients>
-            {
-              postRecipients.length >= 1 &&
-              <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
-            }
-            </AuthorRecipients>
-            <span>{post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off"/>}{post.title}</span>
-            <div className='text-truncate post-partialBody'>
-              <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>
-            </div>
-            <PostReplyCounter>
-              {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
-              <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
-              <span className="time-stamp text-muted">
-                <span>{fromNow(post.updated_at.timestamp)}</span>
-              </span>
-            </PostReplyCounter>
+          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
+          <span>
+            {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
+            {post.title}
+          </span>
+          <div className="text-truncate post-partialBody">
+            <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }} />
           </div>
-          {/* <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
+          <PostReplyCounter>
+            {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
+            <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
+            <span className="time-stamp text-muted">
+              <span>{fromNow(post.updated_at.timestamp)}</span>
+            </span>
+          </PostReplyCounter>
+        </div>
+        {/* <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
             <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
             {post.type !== "draft_post" && !disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
@@ -417,34 +425,20 @@ const PostItemPanel = (props) => {
             </ArchiveBtn>}
           </SlideOption> */}
       </div>
-      <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
+      <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
       <div className="d-flex">
-        {post.type !== "draft_post" && !disableOptions &&
-              <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
-                          data-toggle="tooltip"
-                          title="" data-original-title="Archive post">
-                <Icon icon="archive"/>
-              </ArchiveBtn>}
         {post.type !== "draft_post" && !disableOptions && (
-          <MoreOptions className={`d-flex ml-2`} item={post} width={220} moreButton={"more-horizontal"}>
-            {
-              post.todo_reminder === null &&
-              <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
-            }
-            {
-              post.author && post.author.id === user.id &&
-              <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>
-            }
-            {
-              post.is_unread === 0 ?
-                <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> :
-                <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
-            }
+          <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Archive post">
+            <Icon icon="archive" />
+          </ArchiveBtn>
+        )}
+        {post.type !== "draft_post" && !disableOptions && (
+          <MoreOptions className={"d-flex ml-2"} item={post} width={220} moreButton={"more-horizontal"}>
+            {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
+            {post.author && post.author.id === user.id && <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>}
+            {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-            {
-              post.author && post.author.id !== user.id && 
-              <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>
-            }
+            {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
           </MoreOptions>
         )}
