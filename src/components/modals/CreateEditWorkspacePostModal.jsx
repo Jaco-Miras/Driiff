@@ -288,6 +288,17 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const ApproveOptions = styled.div`
+  .react-select-container {
+    width: 300px;
+    @media all and (max-width: 480px) {
+      width: 100%;
+    }
+  }
+`;
+
+const SelectApprover = styled(FolderSelect)``;
+
 const StyledDatePicker = styled(DatePicker)``;
 
 const initTimestamp = Math.floor(Date.now() / 1000);
@@ -308,8 +319,8 @@ const CreateEditWorkspacePostModal = (props) => {
   const [modal, setModal] = useState(true);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const [showMoreOptions, setShowMoreOptions] = useState(null);
-  const [maxHeight, setMaxHeight] = useState(null);
+  const [showMoreOptions, setShowMoreOptions] = useState(true);
+  const [maxHeight, setMaxHeight] = useState(120);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -337,9 +348,11 @@ const CreateEditWorkspacePostModal = (props) => {
     textOnly: "",
     show_at: null,
     end_at: null,
+    approvers: [],
+    showApprover: false,
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -388,6 +401,7 @@ const CreateEditWorkspacePostModal = (props) => {
         </span>
       ),
     }),
+    approve: _t("POST.APPROVE", "Approve"),
   };
 
   const formRef = {
@@ -602,6 +616,7 @@ const CreateEditWorkspacePostModal = (props) => {
         reply_count: 0,
         recipients: form.selectedAddressTo,
         recipient_ids: form.selectedAddressTo.map((r) => r.id),
+        users_approval: [],
       };
       if (draftId) {
         payload = {
@@ -650,6 +665,7 @@ const CreateEditWorkspacePostModal = (props) => {
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
       },
+      approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : [],
     };
     if (draftId) {
       dispatch(
@@ -683,6 +699,9 @@ const CreateEditWorkspacePostModal = (props) => {
         id: item.post.id,
         file_ids: uploadedFiles.map((f) => f.id),
       };
+      if (item.post.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
+        delete payload.approval_user_ids;
+      }
       if (attachedFiles.length) {
         uploadFiles(payload, "edit");
       } else {
@@ -1018,6 +1037,7 @@ const CreateEditWorkspacePostModal = (props) => {
       let ws = getDefaultAddressTo();
       setIgnoredMentionedUserIds(ws[0].member_ids);
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
+      const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
       setForm({
         ...form,
         body: item.post.body,
@@ -1031,6 +1051,21 @@ const CreateEditWorkspacePostModal = (props) => {
         file_ids: item.post.files.map((f) => f.id),
         show_at: item.post.show_at,
         end_at: item.post.end_at,
+        showApprover: item.post.users_approval.length > 0,
+        approvers:
+          item.post.users_approval.length > 0
+            ? item.post.users_approval.map((u) => {
+                return {
+                  ...u,
+                  icon: "user-avatar",
+                  value: u.id,
+                  label: u.name,
+                  type: "USER",
+                  ip_address: hasRequestedChange ? null : u.ip_address,
+                  is_approved: hasRequestedChange ? false : u.is_approved,
+                };
+              })
+            : [],
       });
       if (item.post.end_at !== null || item.post.show_at !== null || item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply) {
         if (formRef.more_options.current !== null) {
@@ -1121,6 +1156,27 @@ const CreateEditWorkspacePostModal = (props) => {
     if (!showDropzone) setShowDropzone(true);
   };
 
+  const toggleApprover = () => {
+    setForm({
+      ...form,
+      showApprover: !form.showApprover,
+    });
+  };
+
+  const handleSelectApprover = (e) => {
+    if (e === null) {
+      setForm({
+        ...form,
+        approvers: [],
+      });
+    } else {
+      setForm({
+        ...form,
+        approvers: e,
+      });
+    }
+  };
+
   return (
     <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
@@ -1203,7 +1259,12 @@ const CreateEditWorkspacePostModal = (props) => {
                 {dictionary.noReplies}
               </CheckBox>
             </div>
-
+            <ApproveOptions className="d-flex align-items-center">
+              <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
+                {dictionary.approve}
+              </CheckBox>
+              {form.showApprover && <SelectApprover options={approverOptions.filter((ao) => ao.value !== user.id)} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
+            </ApproveOptions>
             <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar" />

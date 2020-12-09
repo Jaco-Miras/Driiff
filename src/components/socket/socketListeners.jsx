@@ -93,6 +93,7 @@ import {
   incomingImportantComment,
   incomingMarkAsRead,
   incomingPost,
+  incomingPostApproval,
   incomingPostClap,
   incomingPostMarkDone,
   incomingPostRecipients,
@@ -425,6 +426,10 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
+          case "POST_APPROVED": {
+            this.props.incomingPostApproval(e);
+            break;
+          }
           case "READ_SELECTED_UNREAD_POST": {
             this.props.incomingReadSelectedPosts(e);
             break;
@@ -1522,6 +1527,7 @@ function mapDispatchToProps(dispatch) {
     incomingArchivedSelectedPosts: bindActionCreators(incomingArchivedSelectedPosts, dispatch),
     getUnreadWorkspacePostEntries: bindActionCreators(getUnreadWorkspacePostEntries, dispatch),
     updateWorkspacePostCount: bindActionCreators(updateWorkspacePostCount, dispatch),
+    incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
   };
 }
 

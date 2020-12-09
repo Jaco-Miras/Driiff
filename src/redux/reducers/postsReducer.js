@@ -787,6 +787,34 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
       }
+    }
+    case "INCOMING_POST_APPROVAL": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && 
+                {
+                  [action.data.post.id] : {
+                    ...state.companyPosts.posts[action.data.post.id],
+                    users_approval: state.companyPosts.posts[action.data.post.id].users_approval.map((u) => {
+                      if (u.id === action.data.user_approved.id) {
+                        return {
+                          ...u,
+                          ...action.data.user_approved
+                        }
+                      } else {
+                        return u;
+                      }
+                    })
+                  }
+                }
+            )
+          }
+        }
+      }
     }    
     default:
       return state;

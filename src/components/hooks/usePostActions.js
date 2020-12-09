@@ -23,6 +23,7 @@ import {
   incomingPostMarkDone,
   incomingReadUnreadReducer,
   markAllPostAsRead,
+  postApprove,
   postArchive,
   postClap,
   postCompanyPosts,
@@ -97,7 +98,7 @@ const usePostActions = () => {
       if (post.type === "draft_post") return;
       let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
       dispatch(
-        postFavorite({type: "post", type_id: post.id}, (err, res) => {
+        postFavorite({ type: "post", type_id: post.id }, (err, res) => {
           //@todo reverse the action/data in the reducer
           if (err) {
             toaster.error(<>{dictionary.notificationActionFailed}</>);
@@ -125,8 +126,7 @@ const usePostActions = () => {
 
   const markPost = useCallback(
     (post) => {
-      if (post.type === "draft_post")
-        return;
+      if (post.type === "draft_post") return;
 
       dispatch(
         postMarkDone({ post_id: post.id }, (err, res) => {
@@ -138,7 +138,9 @@ const usePostActions = () => {
             toaster.success(
               <>
                 {dictionary.notificationYouMarked}
-                <b>{post.name} {post.is_mark_done ? dictionary.notificationNotDone : dictionary.notificationDone}</b>
+                <b>
+                  {post.name} {post.is_mark_done ? dictionary.notificationNotDone : dictionary.notificationDone}
+                </b>
               </>
             );
           }
@@ -147,7 +149,7 @@ const usePostActions = () => {
       dispatch(
         incomingPostMarkDone({
           post_id: post.id,
-          is_done: !post.is_mark_done
+          is_done: !post.is_mark_done,
         })
       );
     },
@@ -317,11 +319,13 @@ const usePostActions = () => {
               </>
             );
 
-          dispatch(incomingReadUnreadReducer({
-            post_id: post.id,
-            unread: 0,
-            user_id: user.id
-          }));
+          dispatch(
+            incomingReadUnreadReducer({
+              post_id: post.id,
+              unread: 0,
+              user_id: user.id,
+            })
+          );
         }
       };
       dispatch(postToggleRead(payload, cb));
@@ -354,11 +358,13 @@ const usePostActions = () => {
               </>
             );
 
-          dispatch(incomingReadUnreadReducer({
-            post_id: post.id,
-            unread: 1,
-            user_id: user.id
-          }));
+          dispatch(
+            incomingReadUnreadReducer({
+              post_id: post.id,
+              unread: 1,
+              user_id: user.id,
+            })
+          );
         }
       };
       dispatch(postToggleRead(payload, cb));
@@ -392,14 +398,14 @@ const usePostActions = () => {
       if (post.is_followed) {
         //When: The user is following/recipient of the post - and not the creator.
         dispatch(
-          postUnfollow({post_id: post.id}, (err, res) => {
+          postUnfollow({ post_id: post.id }, (err, res) => {
             if (err) return;
             let notification = `${dictionary.notificationStopFollow} ${post.title}`;
             toaster.info(notification);
             dispatch(
               setPostToggleFollow({
                 post_id: post.id,
-                is_followed: false
+                is_followed: false,
               })
             );
           })
@@ -407,14 +413,14 @@ const usePostActions = () => {
       } else {
         //When: The user not following the post and the post is in an open topic.
         dispatch(
-          postFollow({post_id: post.id}, (err, res) => {
+          postFollow({ post_id: post.id }, (err, res) => {
             if (err) return;
             let notification = `${dictionary.notificationStartFollow} ${post.title}`;
             toaster.info(notification);
             dispatch(
               setPostToggleFollow({
                 post_id: post.id,
-                is_followed: true
+                is_followed: true,
               })
             );
           })
@@ -535,56 +541,65 @@ const usePostActions = () => {
   );
 
   const createCompany = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(postCompanyPosts(payload, (err, res) => {
-        if (res) {
-          toaster.success(<>{dictionary.notificationCreatePost}</>);
-        }
-        callback(err, res);
-      }));
+    (payload, callback = () => {}) => {
+      dispatch(
+        postCompanyPosts(payload, (err, res) => {
+          if (res) {
+            toaster.success(<>{dictionary.notificationCreatePost}</>);
+          }
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
 
   const update = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(putPost(payload, (err, res) => {
-        if (res) {
-          toaster.success(<>{dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}</>);
-        }
-        callback(err, res);
-      }));
+    (payload, callback = () => {}) => {
+      dispatch(
+        putPost(payload, (err, res) => {
+          if (res) {
+            toaster.success(
+              <>
+                {dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}
+              </>
+            );
+          }
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
 
   const updateCompany = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(putCompanyPosts(payload, (err, res) => {
-        if (res) {
-          toaster.success(<>{dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}</>);
-        }
-        callback(err, res);
-      }));
+    (payload, callback = () => {}) => {
+      dispatch(
+        putCompanyPosts(payload, (err, res) => {
+          if (res) {
+            toaster.success(
+              <>
+                {dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}
+              </>
+            );
+          }
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
 
   const clap = useCallback(
-    (payload, callback = () => {
-    }) => {
+    (payload, callback = () => {}) => {
       dispatch(postClap(payload, callback));
     },
     [dispatch]
   );
 
   const getRecentPosts = useCallback(
-    (id, callback = () => {
-    }) => {
-      dispatch(fetchRecentPosts({topic_id: id}, callback));
+    (id, callback = () => {}) => {
+      dispatch(fetchRecentPosts({ topic_id: id }, callback));
     },
     [dispatch]
   );
@@ -640,21 +655,23 @@ const usePostActions = () => {
   );
 
   const remind = useCallback(
-    (post, callback = () => {
-    }) => {
-      const onConfirm = (payload, modalCallback = () => {
-      }) => {
+    (post, callback = () => {}) => {
+      const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForPost(post.id, payload, (err, res) => {
           if (err) {
             toaster.error(`${dictionary.notificationError}`);
           }
           if (res) {
-            toaster.success(<>{dictionary.notificationReminderPost} <b>{dictionary.todoLinks}</b>.</>);
+            toaster.success(
+              <>
+                {dictionary.notificationReminderPost} <b>{dictionary.todoLinks}</b>.
+              </>
+            );
           }
           modalCallback(err, res);
           callback(err, res);
-        })
-      }
+        });
+      };
       let payload = {
         type: "todo_reminder",
         item: post,
@@ -670,24 +687,24 @@ const usePostActions = () => {
   );
 
   const getUnreadPostsCount = useCallback(() => {
-    dispatch(
-      getUnreadPostEntries()
-    );
-  }, [])
+    dispatch(getUnreadPostEntries());
+  }, []);
 
-  const fetchPostClapHover = (postId, callback = () => {
-  }) => {
+  const fetchPostClapHover = (postId, callback = () => {}) => {
     dispatch(
-      getPostClapHover({
-        post_id: postId
-      }, callback)
+      getPostClapHover(
+        {
+          post_id: postId,
+        },
+        callback
+      )
     );
   };
 
   const archiveAll = useCallback(
     (payload = {}, callback) => {
       dispatch(
-        archiveAllPosts(payload, (err,res) => {
+        archiveAllPosts(payload, (err, res) => {
           if (err) return;
 
           // if (callback) callback();
@@ -701,7 +718,7 @@ const usePostActions = () => {
   const readAll = useCallback(
     (payload = {}, callback) => {
       dispatch(
-        markAllPostAsRead(payload, (err,res) => {
+        markAllPostAsRead(payload, (err, res) => {
           if (err) return;
 
           // if (callback) callback();
@@ -714,63 +731,46 @@ const usePostActions = () => {
 
   const addUserToPost = useCallback(
     (payload = {}, callback) => {
-      dispatch(
-        addUserToPostRecipients(payload, callback)
-      );
+      dispatch(addUserToPostRecipients(payload, callback));
     },
     [dispatch]
   );
 
-  const getUnreadPostCommentsCount = useCallback(
-    () => {
-      dispatch(
-        getUnreadPostComments()
-      );
-    },
-    [dispatch]
-  );
+  const getUnreadPostCommentsCount = useCallback(() => {
+    dispatch(getUnreadPostComments());
+  }, [dispatch]);
 
   const getUnreadNotificationEntries = useCallback(
     (payload = {}) => {
-      dispatch(
-        getUnreadNotificationCounterEntries(payload)
-      );
+      dispatch(getUnreadNotificationCounterEntries(payload));
     },
     [dispatch]
   );
 
   const like = useCallback(
     (payload = {}, callback) => {
-      dispatch(
-        addPostReact(payload, callback)
-      );
+      dispatch(addPostReact(payload, callback));
     },
     [dispatch]
   );
 
   const unlike = useCallback(
     (payload = {}, callback) => {
-      dispatch(
-        removePostReact(payload, callback)
-      );
+      dispatch(removePostReact(payload, callback));
     },
     [dispatch]
   );
 
   const fetchPostDetail = useCallback(
     (payload = {}) => {
-      dispatch(
-        fetchDetail(payload)
-      );
+      dispatch(fetchDetail(payload));
     },
     [dispatch]
   );
 
   const updatePostImages = useCallback(
     (payload = {}) => {
-      dispatch(
-        updatePostFiles(payload)
-      );
+      dispatch(updatePostFiles(payload));
     },
     [dispatch]
   );
@@ -780,17 +780,27 @@ const usePostActions = () => {
       dispatch(
         getUnreadWorkspacePostEntries(payload, (err, res) => {
           if (err) return;
-          dispatch(updateWorkspacePostCount({
-            topic_id: payload.topic_id,
-            count: res.data.result
-          }))
+          dispatch(
+            updateWorkspacePostCount({
+              topic_id: payload.topic_id,
+              count: res.data.result,
+            })
+          );
         })
       );
     },
     [dispatch]
   );
 
+  const approve = useCallback(
+    (payload, callback) => {
+      dispatch(postApprove(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
+    approve,
     addUserToPost,
     starPost,
     markPost,

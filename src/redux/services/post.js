@@ -575,3 +575,12 @@ export function getUnreadWorkspacePostEntries(payload) {
     url: `/v2/post-unread-entries?topic_id=${payload.topic_id}`,
   });
 }
+
+export function postApprove(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/post-approve`,
+    data: payload
+  });
+}
+

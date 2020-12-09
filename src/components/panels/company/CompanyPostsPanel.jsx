@@ -175,6 +175,10 @@ const CompanyPostsPanel = (props) => {
     markImportant: _t("CHAT.MARK_IMPORTANT", "Mark as important"),
     unMarkImportant: _t("CHAT.UNMARK_IMPORTANT", "Unmark as important"),
     archive: _t("POST.ARCHIVE", "Archive"),
+    requestChange: _t("POST.REQUEST_CHANGE", "Request for change"),
+    accept: _t("POST.ACCEPT", "Accept"),
+    hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
+    hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
   };
 
   
