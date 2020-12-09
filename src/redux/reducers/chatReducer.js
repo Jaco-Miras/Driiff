@@ -20,7 +20,7 @@ const INITIAL_STATE = {
   lastReceivedMessage: null,
   chatSidebarSearch: "",
   channelRange: {},
-  channelDraftsLoaded: false
+  channelDraftsLoaded: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -33,72 +33,74 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
       let channels = { ...state.channels };
-      action.data.result.filter((r) => {
-        if (r.id) {
-          if (r.type === "DIRECT" && r.profile) {
-            return true;
+      action.data.result
+        .filter((r) => {
+          if (r.id) {
+            if (r.type === "DIRECT" && r.profile) {
+              return true;
+            } else {
+              return false;
+            }
           } else {
             return false;
           }
-        } else {
-          return false;
-        }
-      }).forEach((ac) => {
-        if (ac.type === "DIRECT") {
-          ac.members = [
-            {
-              ...ac.profile
-            },
-            {
-              id: state.user.id,
-              name: state.user.name,
-              profile_image_link: state.user.profile_image_link,
-              profile_image_thumbnail_link: state.user.profile_image_thumbnail_link ? state.user.profile_image_thumbnail_link : state.user.profile_image_link,
-              email: state.user.email
-            },
-          ];
-          ac.title = ac.profile.name;
-          ac.replies = [];
-          ac.recipient_ids = [ac.id];
-          ac.add_user = true;
-        }
-
-        if (ac.type === "TOPIC") {
-          ac.members = ac.channel_members;
-          ac.replies = [];
-          ac.add_open_topic = true;
-
-          if (ac.channel_code === null) {
+        })
+        .forEach((ac) => {
+          if (ac.type === "DIRECT") {
+            ac.members = [
+              {
+                ...ac.profile,
+              },
+              {
+                id: state.user.id,
+                name: state.user.name,
+                profile_image_link: state.user.profile_image_link,
+                profile_image_thumbnail_link: state.user.profile_image_thumbnail_link ? state.user.profile_image_thumbnail_link : state.user.profile_image_link,
+                email: state.user.email,
+              },
+            ];
+            ac.title = ac.profile.name;
+            ac.replies = [];
             ac.recipient_ids = [ac.id];
-          } else {
-            ac.hasMore = true;
-            ac.code = ac.channel_code;
-            ac.entity_id = ac.channel_id;
-            ac.read_only = true;
+            ac.add_user = true;
           }
-        }
 
-        channels[ac.key_id] = {
-          ...channels[ac.key_id],
-          ...ac,
-          id: ac.key_id,
-          is_pinned: false,
-          is_hidden: false,
-          is_archived: false,
-        };
-      });
+          if (ac.type === "TOPIC") {
+            ac.members = ac.channel_members;
+            ac.replies = [];
+            ac.add_open_topic = true;
+
+            if (ac.channel_code === null) {
+              ac.recipient_ids = [ac.id];
+            } else {
+              ac.hasMore = true;
+              ac.code = ac.channel_code;
+              ac.entity_id = ac.channel_id;
+              ac.read_only = true;
+            }
+          }
+
+          channels[ac.key_id] = {
+            ...channels[ac.key_id],
+            ...ac,
+            id: ac.key_id,
+            is_pinned: false,
+            is_hidden: false,
+            is_archived: false,
+          };
+        });
       return {
         ...state,
         channels: channels,
       };
     }
     case "RENAME_CHANNEL_KEY": {
-      let channels = {...state.channels};
+      let channels = { ...state.channels };
       delete channels[action.data.old_id];
       delete action.data.old_id;
 
       channels[action.data.id] = action.data;
-      let selectedChannel = {...state.selectedChannel};
+      let selectedChannel = { ...state.selectedChannel };
       if (action.data.selected) {
         if (selectedChannel) {
           channels[selectedChannel.id].selected = false;
@@ -110,27 +112,28 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: channels,
         selectedChannel: selectedChannel,
-        lastVisitedChannel: selectedChannel
+        lastVisitedChannel: selectedChannel,
       };
     }
     case "GET_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
       if (action.data.results.length > 0) {
-        action.data.results.filter((r) => r.id !== null)
-        .filter((r) => {
-          return !(state.selectedChannel && state.selectedChannel.id === r.id);
-        })
-        .forEach((r) => {
-          channels[r.id] = {
-            ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
-            ...r,
-            hasMore: true,
-            skip: 0,
-            replies: [],
-            selected: false,
-            isFetching: false,
-          };
-        });
+        action.data.results
+          .filter((r) => r.id !== null)
+          .filter((r) => {
+            return !(state.selectedChannel && state.selectedChannel.id === r.id);
+          })
+          .forEach((r) => {
+            channels[r.id] = {
+              ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
+              ...r,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              selected: false,
+              isFetching: false,
+            };
+          });
       }
       return {
         ...state,
@@ -219,10 +222,8 @@ export default function (state = INITIAL_STATE, action) {
 
       let updatedChannels = { ...state.channels };
       if (state.selectedChannel) {
-        if (updatedChannels[state.selectedChannel.id])
-          updatedChannels[state.selectedChannel.id].selected = false;
-        if (updatedChannels[action.data.id])
-          updatedChannels[action.data.id].selected = true;
+        if (updatedChannels[state.selectedChannel.id]) updatedChannels[state.selectedChannel.id].selected = false;
+        if (updatedChannels[action.data.id]) updatedChannels[action.data.id].selected = true;
       }
 
       return {
@@ -230,7 +231,7 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: channel,
         channels: updatedChannels,
         //lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
-        lastVisitedChannel: channel
+        lastVisitedChannel: channel,
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
@@ -252,7 +253,7 @@ export default function (state = INITIAL_STATE, action) {
             } else return m;
           }),
           replies:
-            action.data.member_id === state.user.id
+            action.data.member_id === state.user.id && channel.replies
               ? channel.replies.map((r) => {
                   return {
                     ...r,
@@ -285,14 +286,17 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_CHAT_MESSAGES_SUCCESS": {
       let channel = { ...state.channels[action.data.channel_id] };
-      let messsages = [...action.data.results.map((r) => {
-        return {
-          ...r,
-          is_read: true,
-          channel_id: action.data.channel_id,
-          //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-        };
-      }), ...channel.replies];
+      let messsages = [
+        ...action.data.results.map((r) => {
+          return {
+            ...r,
+            is_read: true,
+            channel_id: action.data.channel_id,
+            //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+          };
+        }),
+        ...channel.replies,
+      ];
       let uniqMessages = uniqByProp(messsages, "id");
       channel = {
         ...channel,
@@ -300,7 +304,7 @@ export default function (state = INITIAL_STATE, action) {
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
-        isFetching: false
+        isFetching: false,
       };
       return {
         ...state,
@@ -308,9 +312,10 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           [action.data.channel_id]: channel,
         },
-        ...(channel && state.selectedChannel && {
-          selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
-        })
+        ...(channel &&
+          state.selectedChannel && {
+            selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+          }),
       };
     }
     case "MARK_ALL_MESSAGES_AS_READ": {
@@ -391,14 +396,14 @@ export default function (state = INITIAL_STATE, action) {
           is_hidden: false,
           replies: haveReference
             ? channel.replies.map((r) => {
-              if (r.id === action.data.reference_id) {
-                r.id = action.data.id;
-                return r;
-              } else {
-                r.is_read = true;
-                return r;
-              }
-            })
+                if (r.id === action.data.reference_id) {
+                  r.id = action.data.id;
+                  return r;
+                } else {
+                  r.is_read = true;
+                  return r;
+                }
+              })
             : [...channel.replies, action.data].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
@@ -408,10 +413,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         lastReceivedMessage: action.data,
-        selectedChannel:
-          state.selectedChannel && channel && state.selectedChannel.id === channel.id
-            ? channel
-            : state.selectedChannel,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
         channels:
           channel !== null
             ? {
@@ -655,15 +657,17 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          replies: channel.replies.map((r) => {
-            if (r.id === action.data.id) {
-              return {
-                ...r,
-                body: action.data.body,
-                updated_at: action.data.updated_at,
-              };
-            } else return r;
-          }).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+          replies: channel.replies
+            .map((r) => {
+              if (r.id === action.data.id) {
+                return {
+                  ...r,
+                  body: action.data.body,
+                  updated_at: action.data.updated_at,
+                };
+              } else return r;
+            })
+            .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_reply:
             channel.last_reply && channel.last_reply.id === action.data.id
               ? {
@@ -702,19 +706,21 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          replies: channel.replies.map((r) => {
-            if (r.id === action.data.id) {
-              return {
-                ...r,
-                is_deleted: true,
-                //body: "CHAT_MESSAGE_DELETED",
-                body: "The chat message has been deleted",
-                files: [],
-              };
-            } else {
-              return r;
-            }
-          }).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+          replies: channel.replies
+            .map((r) => {
+              if (r.id === action.data.id) {
+                return {
+                  ...r,
+                  is_deleted: true,
+                  //body: "CHAT_MESSAGE_DELETED",
+                  body: "The chat message has been deleted",
+                  files: [],
+                };
+              } else {
+                return r;
+              }
+            })
+            .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_reply:
             channel.last_reply.id === action.data.id
               ? {
@@ -782,12 +788,12 @@ export default function (state = INITIAL_STATE, action) {
       if (action.data.data.draft_type === "channel") {
         updatedDrafts[action.data.data.channel_id] = {
           ...action.data.data,
-          draft_id: action.data.id
-        }
+          draft_id: action.data.id,
+        };
       }
       return {
         ...state,
-        channelDrafts: updatedDrafts
+        channelDrafts: updatedDrafts,
       };
     }
     case "ADD_TO_CHANNEL_DRAFTS": {
@@ -834,7 +840,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channelDrafts: channelDrafts,
-        channelDraftsLoaded: true
+        channelDraftsLoaded: true,
       };
     }
     case "INCOMING_UPDATED_CHANNEL_DETAIL": {
@@ -959,8 +965,8 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         ...(state.lastVisitedChannel && {
-          selectedChannel: state.lastVisitedChannel ? { ...state.channels[state.lastVisitedChannel.id] } : null
-        })
+          selectedChannel: state.lastVisitedChannel ? { ...state.channels[state.lastVisitedChannel.id] } : null,
+        }),
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
@@ -970,8 +976,8 @@ export default function (state = INITIAL_STATE, action) {
         let channel = {
           ...updatedChannels[action.data.channel_id],
           members: [...updatedChannels[action.data.channel_id].members, ...action.data.users],
-          replies: [...updatedChannels[action.data.channel_id].replies, action.data.message]
-        }
+          replies: [...updatedChannels[action.data.channel_id].replies, action.data.message],
+        };
         updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, ...action.data.users];
         updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
         if (updatedChannel && channel.id === updatedChannel.id) {
@@ -981,8 +987,8 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: updatedChannels,
-        selectedChannel: updatedChannel
-      }
+        selectedChannel: updatedChannel,
+      };
     }
     case "UNREAD_CHANNEL_REDUCER": {
       let updatedChannels = { ...state.channels };
@@ -1031,9 +1037,39 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: {
           ...state.channels,
-          ...(action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && {
-            [action.data.channel.id]: {
-              ...state.channels[action.data.channel.id],
+          ...(action.data.type === "WORKSPACE" &&
+            state.channels[action.data.channel.id] && {
+              [action.data.channel.id]: {
+                ...state.channels[action.data.channel.id],
+                ...(action.data.system_message && {
+                  replies: {
+                    ...state.channels[action.data.channel.id].replies,
+                    ...action.data.system_message,
+                    created_at: action.data.updated_at,
+                    editable: false,
+                    is_read: true,
+                    is_deleted: false,
+                    files: [],
+                    reactions: [],
+                    unfurls: [],
+                  },
+                }),
+                icon_link: action.data.channel.icon_link,
+                title: action.data.name,
+                members: action.data.members.map((m) => {
+                  return {
+                    ...m,
+                    bot_profile_image_link: null,
+                    last_visited_at: null,
+                  };
+                }),
+              },
+            }),
+        },
+        ...(state.selectedChannel &&
+          state.selectedChannel.id === action.data.channel.id && {
+            selectedChannel: {
+              ...state.selectedChannel,
               ...(action.data.system_message && {
                 replies: {
                   ...state.channels[action.data.channel.id].replies,
@@ -1045,7 +1081,7 @@ export default function (state = INITIAL_STATE, action) {
                   files: [],
                   reactions: [],
                   unfurls: [],
-                }
+                },
               }),
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
@@ -1055,37 +1091,9 @@ export default function (state = INITIAL_STATE, action) {
                   bot_profile_image_link: null,
                   last_visited_at: null,
                 };
-              })
-            }
-          })
-        },
-        ...(state.selectedChannel && state.selectedChannel.id === action.data.channel.id && {
-          selectedChannel: {
-            ...state.selectedChannel,
-            ...(action.data.system_message && {
-              replies: {
-                ...state.channels[action.data.channel.id].replies,
-                ...action.data.system_message,
-                created_at: action.data.updated_at,
-                editable: false,
-                is_read: true,
-                is_deleted: false,
-                files: [],
-                reactions: [],
-                unfurls: [],
-              }
-            }),
-            icon_link: action.data.channel.icon_link,
-            title: action.data.name,
-            members: action.data.members.map((m) => {
-              return {
-                ...m,
-                bot_profile_image_link: null,
-                last_visited_at: null,
-              };
-            })
-          }
-        })
+              }),
+            },
+          }),
       };
     }
     case "REMOVE_UNFURL": {
@@ -1098,20 +1106,20 @@ export default function (state = INITIAL_STATE, action) {
             if (m.id === action.data.message_id) {
               return {
                 ...m,
-                unfurls: m.unfurls.filter((u) => u.id !== action.data.unfurl_id)
+                unfurls: m.unfurls.filter((u) => u.id !== action.data.unfurl_id),
               };
             } else {
               return m;
             }
-          })
-        }
+          }),
+        };
         channels[action.data.channel_id] = channel;
       }
       return {
         ...state,
         channels: channels,
-        selectedChannel: state.selectedChannel && channel && channel.id === state.selectedChannel.id ? channel : state.selectedChannel
-      }
+        selectedChannel: state.selectedChannel && channel && channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+      };
     }
     case "LEAVE_WORKSPACE": {
       let updatedChannels = { ...state.channels };
@@ -1121,13 +1129,14 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: updatedChannels,
-        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? 
-        {
-          ...state.selectedChannel,
-          members: state.selectedChannel.members.filter((m) => m.id !== state.user.id)
-        }
-        : state.selectedChannel
-      }
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                members: state.selectedChannel.members.filter((m) => m.id !== state.user.id),
+              }
+            : state.selectedChannel,
+      };
     }
     case "INCOMING_EXTERNAL_USER": {
       let updatedChannel = state.selectedChannel ? { ...state.selectedChannel } : null;
@@ -1139,20 +1148,20 @@ export default function (state = INITIAL_STATE, action) {
             if (m.id === action.data.current_user.id) {
               return {
                 ...m,
-                ...action.data.current_user
-              }
+                ...action.data.current_user,
+              };
             } else {
               return m;
             }
-          })
-        }
+          }),
+        };
         updatedChannels[updatedChannel.id] = updatedChannel;
       }
       return {
         ...state,
         selectedChannel: updatedChannel,
-        channels: updatedChannels
-      }
+        channels: updatedChannels,
+      };
     }
     case "SET_FETCHING_MESSAGES": {
       let updatedChannels = { ...state.channels };
@@ -1162,22 +1171,28 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: updatedChannels,
-        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, isFetching: action.data.status } : state.selectedChannel
-      }
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.id
+            ? {
+                ...state.selectedChannel,
+                isFetching: action.data.status,
+              }
+            : state.selectedChannel,
+      };
     }
     case "SET_LAST_CHAT_VISIBILITY": {
       if (state.isLastChatVisible !== action.data.status) {
         return {
           ...state,
-          isLastChatVisible: action.data.status
-        }
+          isLastChatVisible: action.data.status,
+        };
       } else {
         return state;
       }
     }
     case "DELETE_POST_NOTIFICATION": {
-      let channels = {...state.channels};
-      let selectedChannel = state.selectedChannel ? {...state.selectedChannel} : null
+      let channels = { ...state.channels };
+      let selectedChannel = state.selectedChannel ? { ...state.selectedChannel } : null;
       action.data.forEach((data) => {
         if (channels.hasOwnProperty(data.channel.id)) {
           if (channels[data.channel.id].replies.length) {
@@ -1185,14 +1200,14 @@ export default function (state = INITIAL_STATE, action) {
           }
         }
         if (selectedChannel && selectedChannel.id === data.channel.id && selectedChannel.replies.length) {
-          selectedChannel.replies = selectedChannel.replies.filter((r) => r.id !== data.system_message.id)
+          selectedChannel.replies = selectedChannel.replies.filter((r) => r.id !== data.system_message.id);
         }
-      })
+      });
       return {
         ...state,
         channels: channels,
-        selectedChannel: selectedChannel
-      }
+        selectedChannel: selectedChannel,
+      };
     }
     case "INCOMING_POST_NOTIFICATION_MESSAGE": {
       let channel = null;
@@ -1202,23 +1217,20 @@ export default function (state = INITIAL_STATE, action) {
           ...channel,
           is_hidden: false,
           last_reply: action.data,
-          replies: channel.replies.some((r) => r.id === action.data.id) ? 
-            channel.replies.map((r) => {
-              if (r.id === action.data.id) {
-                return action.data
-              } else {
-                return r
-              }
-            })
-            : [...channel.replies, action.data]
+          replies: channel.replies.some((r) => r.id === action.data.id)
+            ? channel.replies.map((r) => {
+                if (r.id === action.data.id) {
+                  return action.data;
+                } else {
+                  return r;
+                }
+              })
+            : [...channel.replies, action.data],
         };
       }
       return {
         ...state,
-        selectedChannel:
-          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
-            ? channel
-            : state.selectedChannel,
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? channel : state.selectedChannel,
         channels:
           channel !== null
             ? {
@@ -1229,63 +1241,75 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "REFETCH_MESSAGES_SUCCESS": {
-      let channels = {...state.channels};
+      let channels = { ...state.channels };
       let channel = null;
       if (action.data.channel_detail && channels.hasOwnProperty(action.data.channel_detail.id)) {
-        let messages = [...channels[action.data.channel_detail.id].replies, ...action.data.current_latest_messages.map((m) => { return {...m, channel_id: action.data.channel_detail.id} })]
+        let messages = [
+          ...channels[action.data.channel_detail.id].replies,
+          ...action.data.current_latest_messages.map((m) => {
+            return { ...m, channel_id: action.data.channel_detail.id };
+          }),
+        ];
         channel = {
           ...action.data.channel_detail,
           replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
-          isFetching: false
-        }
+          isFetching: false,
+        };
         channels[action.data.channel_detail.id] = channel;
       }
       return {
         ...state,
         channels: channels,
-        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel
-      }
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+      };
     }
     case "REFETCH_OTHER_MESSAGES_SUCCESS": {
       let channelsWithMessage = action.data.filter((c) => c.count_message > 0);
-      let channels = {...state.channels};
+      let channels = { ...state.channels };
       channelsWithMessage.forEach((c) => {
         if (channels.hasOwnProperty(c.channel_id)) {
-          let newMessages = Object.values(c.messages).map((m) => { return {...m, channel_id: c.channel_id} });
+          let newMessages = Object.values(c.messages).map((m) => {
+            return { ...m, channel_id: c.channel_id };
+          });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
           channels[c.channel_id].replies = uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
           // channels[c.channel_id].last_reply = newMessages[0];
         }
-      })
+      });
       return {
         ...state,
         channels: channels,
-        selectedChannel: state.selectedChannel && channels.hasOwnProperty(state.selectedChannel.id) ? channels[state.selectedChannel.id] : state.selectedChannel
-      }
+        selectedChannel: state.selectedChannel && channels.hasOwnProperty(state.selectedChannel.id) ? channels[state.selectedChannel.id] : state.selectedChannel,
+      };
     }
     case "GET_CHANNEL_DETAIL_SUCCESS": {
-      let channels = {...state.channels};
+      let channels = { ...state.channels };
       if (channels.hasOwnProperty(action.data.id)) {
         channels[action.data.id] = {
           ...action.data,
           replies: channels[action.data.id].replies,
           hasMore: channels[action.data.id].hasMore,
           skip: channels[action.data.id].skip,
-          isFetching: false
-        }
+          isFetching: false,
+        };
       }
       return {
         ...state,
-        channels: channels
-      }
+        channels: channels,
+      };
     }
     case "GET_LATEST_REPLY_SUCCESS": {
       return {
         ...state,
-        lastReceivedMessage: action.data.latest_reply ? {id: action.data.latest_reply.reply_id, channel_id: action.data.latest_reply.channel_id} : state.lastReceivedMessage
-      }
+        lastReceivedMessage: action.data.latest_reply
+          ? {
+              id: action.data.latest_reply.reply_id,
+              channel_id: action.data.latest_reply.channel_id,
+            }
+          : state.lastReceivedMessage,
+      };
     }
     case "SET_CHANNEL_RANGE": {
       return {
@@ -1293,54 +1317,54 @@ export default function (state = INITIAL_STATE, action) {
         channelRange: {
           ...state.channelRange,
           [action.data.id]: action.data.range,
-        }
-      }
+        },
+      };
     }
     case "GET_SELECT_CHANNEL_SUCCESS": {
       if (action.data) {
-        let channels = {...state.channels}
+        let channels = { ...state.channels };
         let channel = {
           ...action.data,
           hasMore: true,
           skip: 0,
           selected: true,
-          isFetching: false
-        }
+          isFetching: false,
+        };
         channels = {
           ...channels,
-          [channel.id]: channel
-        }
+          [channel.id]: channel,
+        };
         return {
           ...state,
           channels: channels,
           lastVisitedChannel: channel,
           selectedChannel: channel,
-        }
+        };
       } else {
         return state;
       }
     }
     case "GET_LAST_CHANNEL_SUCCESS": {
       if (action.data) {
-        let channels = {...state.channels}
+        let channels = { ...state.channels };
         let channel = {
           ...action.data,
           replies: action.data.replies.length ? action.data.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp) : [],
           hasMore: action.data.replies.length === 20,
           skip: action.data.replies.length,
           selected: true,
-          isFetching: false
-        }
+          isFetching: false,
+        };
         channels = {
           ...channels,
-          [channel.id]: channel
-        }
+          [channel.id]: channel,
+        };
         return {
           ...state,
           channels: channels,
           lastVisitedChannel: channel,
           selectedChannel: channel,
-        }
+        };
       } else {
         return state;
       }
@@ -1348,21 +1372,22 @@ export default function (state = INITIAL_STATE, action) {
     case "INCOMING_IMPORTANT_CHAT": {
       return {
         ...state,
-        ...(state.selectedChannel && state.selectedChannel.id === action.data.channel.id && {
-          selectedChannel: {
-            ...state.selectedChannel,
-            replies: state.selectedChannel.replies.map((r) => {
-              if (r.id === action.data.chat_message.id) {
-                return {
-                  ...r,
-                  ...action.data.chat_message
+        ...(state.selectedChannel &&
+          state.selectedChannel.id === action.data.channel.id && {
+            selectedChannel: {
+              ...state.selectedChannel,
+              replies: state.selectedChannel.replies.map((r) => {
+                if (r.id === action.data.chat_message.id) {
+                  return {
+                    ...r,
+                    ...action.data.chat_message,
+                  };
+                } else {
+                  return r;
                 }
-              } else {
-                return r;
-              }
-            })
-          }
-        }),
+              }),
+            },
+          }),
         ...(typeof state.channels[action.data.channel.id] !== "undefined" && {
           channels: {
             ...state.channels,
@@ -1372,16 +1397,16 @@ export default function (state = INITIAL_STATE, action) {
                 if (r.id === action.data.chat_message.id) {
                   return {
                     ...r,
-                    ...action.data.chat_message
-                  }
+                    ...action.data.chat_message,
+                  };
                 } else {
                   return r;
                 }
-              })
-            }
-          }
-        })
-      }
+              }),
+            },
+          },
+        }),
+      };
     }
     default:
       return state;
