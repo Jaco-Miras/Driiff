@@ -12,24 +12,23 @@ const Section = styled.section`
     opacity: ${(props) => (props.hide ? "0" : "1")};
     transition: opacity 200ms ease;
     background: rgba(255, 255, 255, 0.9);
-    
+
     .dark & {
       background: rgba(25, 28, 32, 0.9);
     }
   }
   .click-cancel-drop {
-    .dark & {    
-      background: #fff;    
-      color: #7a1b8b;    
-    }  
+    .dark & {
+      background: #fff;
+      color: #7a1b8b;
+    }
   }
 `;
 
-const Icon = styled(SvgIconFeather)`  
-`;
+const Icon = styled(SvgIconFeather)``;
 
 export const DropDocument = forwardRef((props, ref) => {
-  const { attachedFiles, onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, hide, params = null, acceptType = "" } = props;
+  const { onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, hide, acceptType = "" } = props;
 
   const toastr = useToaster();
   const { _t } = useTranslation();
@@ -48,32 +47,32 @@ export const DropDocument = forwardRef((props, ref) => {
     for (let i = 0; i < acceptedFiles.length; i++) {
       let file = acceptedFiles[i];
       if (file.size === 0) {
-          toastr.error(
-            <span>
-              File <b>{file.name}</b> upload failed!
-              <br />
-              Empty file detected.
-            </span>,
-            toastrOption
-          );
-          delete acceptedFiles[i];
-        }
-      }
-
-      for (let i = 0; i < rejectedFiles.length; i++) {
-        let file = rejectedFiles[i];
         toastr.error(
           <span>
             File <b>{file.name}</b> upload failed!
             <br />
-            <b>Tip:</b> Zip it and try again.
+            Empty file detected.
           </span>,
           toastrOption
         );
+        delete acceptedFiles[i];
       }
-
-      onDrop({ acceptedFiles });
     }
+
+    for (let i = 0; i < rejectedFiles.length; i++) {
+      let file = rejectedFiles[i];
+      toastr.error(
+        <span>
+          File <b>{file.name}</b> upload failed!
+          <br />
+          <b>Tip:</b> Zip it and try again.
+        </span>,
+        toastrOption
+      );
+    }
+
+    onDrop({ acceptedFiles });
+  };
 
   let accept = [
     "image/ai",
