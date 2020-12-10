@@ -48,15 +48,15 @@ const StyledAvatar = styled(Avatar)`
 
 const MultiValueWrapper = styled.div`
   svg {
-    width: .8rem;
-    height: .8rem;
+    width: 0.8rem;
+    height: 0.8rem;
   }
   .value-remove {
     > div:first-child {
       display: none;
     }
     > div:last-child:hover {
-      background-color: ${(props) => props.isPrivate ? "#1E90FF" : "#7a1b8b"};
+      background-color: ${(props) => (props.isPrivate ? "#1E90FF" : "#7a1b8b")};
       color: #fff;
     }
     display: flex;
@@ -69,30 +69,30 @@ const MultiValueWrapper = styled.div`
     :hover {
       // background-color: rgb(255, 189, 173);
       // color: rgb(222, 53, 11);
-      background-color: ${(props) => props.isPrivate ? "#1E90FF" : "#7a1b8b"};
+      background-color: ${(props) => (props.isPrivate ? "#1E90FF" : "#7a1b8b")};
       color: #fff;
     }
   }
-  ${(props) => props.isPrivate && 
+  ${(props) =>
+    props.isPrivate &&
     `
       > div {
         background: #f44;
         color: #fff;
       }
-    `
-  }
+    `}
 `;
 
 const MultiValueLabelWrapper = styled.div`
   padding: 0 5px;
   display: flex;
   align-items: center;
-  ${(props) => props.isPrivate && 
+  ${(props) =>
+    props.isPrivate &&
     `
       background: #f44;
       color: #fff;
-    `
-  }
+    `}
 `;
 
 const Option = (props) => {
@@ -101,16 +101,20 @@ const Option = (props) => {
       <components.Option {...props}>
         {props.data && (
           <span className="d-flex justify-content-start align-items-center">
-            {
-              props.data.icon === "user-avatar" ?
-                <StyledAvatar className="react-select-avatar mr-2" key={props.data.id}
-                              imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
-                              name={props.data.name} partialName={props.data.partial_name}/> :
-                <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"}/>
-            }
+            {props.data.icon === "user-avatar" ? (
+              <StyledAvatar
+                className="react-select-avatar mr-2"
+                key={props.data.id}
+                imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
+                name={props.data.name}
+                partialName={props.data.partial_name}
+              />
+            ) : (
+              <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"} />
+            )}
             {props.children}
-            {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12"/>}
-            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12"/>}
+            {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" />}
+            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" />}
           </span>
         )}
       </components.Option>
@@ -125,11 +129,11 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
         <components.MultiValueLabel {...props}>
           <MultiValueLabelWrapper isPrivate={props.data.is_lock === 1}>
             {props.data.label}
-            {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" height="12"/>}
-            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" height="12"/>}
+            {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" height="12" />}
+            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" height="12" />}
           </MultiValueLabelWrapper>
         </components.MultiValueLabel>
-        <components.MultiValueRemove {...props} innerProps={{className: "value-remove"}}>
+        <components.MultiValueRemove {...props} innerProps={{ className: "value-remove" }}>
           {children}
         </components.MultiValueRemove>
       </components.MultiValueContainer>

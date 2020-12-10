@@ -33,6 +33,7 @@ const useWorkspaceAndUserOptions = (props) => {
           participant_ids: r.participant_ids,
           member_ids: r.participant_ids,
           members: [],
+          is_lock: r.private,
         }),
         value: r.id,
         label: r.name,
