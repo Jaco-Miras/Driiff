@@ -424,7 +424,7 @@ const PostDetail = (props) => {
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
-    postActions.getUnreadWsPostsCount({topic_id: workspace.id});
+    postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
   }, []);
 
   const privateWsOnly = post.recipients.filter((r) => {
@@ -453,7 +453,9 @@ const PostDetail = (props) => {
         </div>
         {privateWsOnly.length === post.recipients.length && (
           <div>
-            <span>{dictionary.messageInSecureWs}</span>
+            <span>
+              {dictionary.messageInSecureWs} <Icon icon="lock" />
+            </span>
           </div>
         )}
         <div>

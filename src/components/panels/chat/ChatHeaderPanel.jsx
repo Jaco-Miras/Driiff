@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch, useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -15,35 +15,35 @@ const Wrapper = styled.div`
   position: relative;
   z-index: 2;
   display: flex;
-  
+
   .chat-header-left {
     display: flex;
   }
-  
+
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
     margin-top: 10px;
     text-align: center;
     display: inline-block;
-    text-overflow: ellipsis;    
+    text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;    
-    max-width: calc(100%);
-    
+    white-space: nowrap;
+    max-width: calc(100% - 265px);
+
     a {
       color: #000 !important;
-      text-overflow: ellipsis;    
+      text-overflow: ellipsis;
       overflow: hidden;
-      white-space: nowrap;      
-      
+      white-space: nowrap;
+
       .dark & {
         color: #ffffff !important;
       }
-    }    
+    }
   }
   .chat-header-right {
-    margin-left: auto;    
+    margin-left: auto;
     li .more-options-tooltip > div {
       display: flex;
       align-items: center;
@@ -54,7 +54,7 @@ const Wrapper = styled.div`
   }
   .dictionary-label {
     @media (max-width: 991.99px) {
-      display: none;    
+      display: none;
     }
   }
 `;
@@ -95,11 +95,11 @@ const StyledMoreOptions = styled(MoreOptions)`
   width: 40px;
   align-items: center;
   justify-content: center;
-  
-  .dark  & {
-    border: 1px solid #25282c;  
-    background: #25282c;  
-  }  
+
+  .dark & {
+    border: 1px solid #25282c;
+    background: #25282c;
+  }
   .feather-more-horizontal {
     width: 25px;
     height: 36px;
@@ -114,7 +114,7 @@ const StyledMoreOptions = styled(MoreOptions)`
       width: 14px;
     }
   }
-  
+
   @media (max-width: 480px) {
     margin: 0 0 0.75rem !important;
   }
@@ -198,27 +198,39 @@ const ChatHeaderPanel = (props) => {
   const handleRedirectToProfile = (e, profile) => {
     e.preventDefault();
     history.push(`/profile/${profile.id}/${replaceChar(profile.name)}`);
-  }
+  };
 
   const getChannelTitle = () => {
     switch (chatChannel.type) {
       case "TOPIC": {
         if (chatChannel.workspace_folder) {
-          return <>{chatChannel.workspace_folder.name}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
-                                                                      data-href={channelActions.getChannelLink(chatChannel)}
-                                                                      href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+          return (
+            <>
+              {chatChannel.workspace_folder.name}&nbsp;>&nbsp;
+              <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
+                {chatChannel.title}
+              </a>
+            </>
+          );
         } else {
-          return <><span className="dictionary-label">{dictionary.workspace}&nbsp;>&nbsp;</span><a
-            onClick={handleWorkspaceLinkClick}
-            data-href={channelActions.getChannelLink(chatChannel)}
-            href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+          return (
+            <>
+              <span className="dictionary-label">{dictionary.workspace}&nbsp;>&nbsp;</span>
+              <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
+                {chatChannel.title}
+              </a>
+            </>
+          );
         }
       }
       case "DIRECT": {
-        return <><a
-            onClick={(e) => handleRedirectToProfile(e, chatChannel.profile)}
-            data-href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}
-            href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}>{chatChannel.title}</a></>;
+        return (
+          <>
+            <a onClick={(e) => handleRedirectToProfile(e, chatChannel.profile)} data-href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`} href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}>
+              {chatChannel.title}
+            </a>
+          </>
+        );
       }
       default: {
         return chatChannel.title;
@@ -242,34 +254,25 @@ const ChatHeaderPanel = (props) => {
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
-          <BackButtonChevron icon={"chevron-left"}/>
-          {
-            unreadCounter.chat_message > 0 &&
-            <span>{(unreadCounter.chat_message).toString()}</span>
-          }
+          <BackButtonChevron icon={"chevron-left"} />
+          {unreadCounter.chat_message > 0 && <span>{unreadCounter.chat_message.toString()}</span>}
         </BackButton>
-        <ChannelIcon className="chat-header-icon" channel={channel}/>
+        <ChannelIcon className="chat-header-icon" channel={channel} />
       </div>
       <h2 className="chat-header-title">
-        {
-          getChannelTitle()
-        }
-        {
-          channel.type === "TOPIC" && !channel.is_archived &&
-          workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 &&
+        {getChannelTitle()}
+        {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
           <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
-        }
-        {
-          channel.type === "TOPIC" && !channel.is_archived &&
-          workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 &&
+        )}
+        {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
           <Icon className={"ml-1"} icon={"share"} strokeWidth="3" width={12} />
-        }
+        )}
       </h2>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li className="mt-1">
-              <MemberLists members={channel.members}/>
+              <MemberLists members={channel.members} />
             </li>
           )}
           {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
@@ -277,13 +280,13 @@ const ChatHeaderPanel = (props) => {
               <StyledMoreOptions role="tabList">
                 {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
                   <div onClick={handleShowArchiveConfirmation}>
-                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"}/>
+                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"} />
                     {channel.is_archived ? "Restore" : "Archive"}
                   </div>
                 )}
                 {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
                   <div onClick={handleShowChatEditModal}>
-                    <Icon icon={"edit-3"}/>
+                    <Icon icon={"edit-3"} />
                     {dictionary.edit}
                   </div>
                 )}

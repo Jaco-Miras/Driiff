@@ -77,8 +77,8 @@ export function getChatMessages(payload) {
   // if (payload.is_shared_topic) {
   //   url += `&topic_id=${topic_id}`;
   // }
-  let url = `/v2/post-channel-messages?${objToUrlParams(payload)}`
-  
+  let url = `/v2/post-channel-messages?${objToUrlParams(payload)}`;
+
   return apiCall({
     method: "GET",
     url: url,
@@ -277,6 +277,20 @@ export function putImportantChat(payload) {
   let url = "/v2/set-message-important";
   return apiCall({
     method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @param payload.channel_id
+ * @returns {Promise<*>}
+ */
+export function getChannelLastReply(payload) {
+  let url = `/v2/get-channel-last-reply?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
     url: url,
     data: payload,
   });

@@ -85,9 +85,7 @@ const WorkspacePeoplePanel = (props) => {
   const userSort = members
     .filter((user) => {
       if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) === -1
-          && user.email.toLowerCase().search(search.toLowerCase()) === -1)
-          return false;
+        if (user.name.toLowerCase().search(search.toLowerCase()) === -1 && user.email.toLowerCase().search(search.toLowerCase()) === -1) return false;
       }
 
       return true;
@@ -123,14 +121,13 @@ const WorkspacePeoplePanel = (props) => {
         <div className="card-body">
           <div className="people-header">
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
-            {
-              !isExternal && 
+            {!isExternal && (
               <div>
                 <button className="btn btn-primary" onClick={handleEditWorkspace}>
                   <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.peopleManage}
                 </button>
               </div>
-            }
+            )}
           </div>
           <div className="row">
             {userSort.map((user) => {

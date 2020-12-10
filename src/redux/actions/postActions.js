@@ -204,7 +204,7 @@ export function incomingPostViewer(payload, callback) {
 }
 
 export function archiveReducer(payload, callback) {
-    return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
+  return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
 }
 
 export function incomingReadUnreadReducer(payload, callback) {

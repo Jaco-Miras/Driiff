@@ -120,7 +120,6 @@ const EditIcon = styled(SvgIconFeather)`
   color: #fff8;
 `;
 
-
 const WorkspaceList = (props) => {
   const { className = "", actions, show = true, folder, history, workspace, workspaces } = props;
 
@@ -185,7 +184,7 @@ const WorkspaceList = (props) => {
 
   const handleResetFocus = () => {
     setTriggerFocus(null);
-  }
+  };
 
   const handleEditFolder = (e) => {
     e.preventDefault();
@@ -224,15 +223,13 @@ const WorkspaceList = (props) => {
   }, [workspace_open_folder]);
 
   return (
-
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`}
-             selected={selected} show={show}>
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={selected} show={show}>
       <a className={`${folder.type === "ARCHIVE_FOLDER" ? "archived-folder" : ""}`} onClick={handleShowTopics}>
         <div>
           {folder.name}
 
-          {folder.is_lock !== 0 && <LockIcon icon="lock" strokeWidth="2"/>}
-          {folder.type === "ARCHIVE_FOLDER" && <LockIcon icon="archive"/>}
+          {folder.is_lock !== 0 && <LockIcon icon="lock" strokeWidth="2" />}
+          {folder.type === "ARCHIVE_FOLDER" && <LockIcon icon="archive" />}
 
           {folder.unread_count > 0 && (
             <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
@@ -240,16 +237,28 @@ const WorkspaceList = (props) => {
             </Badge>
           )}
         </div>
-          { folder.type === "FOLDER" && <EditIcon icon="pencil" onClick={handleEditFolder}/> }
+        {folder.type === "FOLDER" && <EditIcon icon="pencil" onClick={handleEditFolder} />}
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
 
       <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
-        {folder.workspace_ids.length > 0 && Object.keys(workspaces).length > 0 &&
+        {folder.workspace_ids.length > 0 &&
+          Object.keys(workspaces).length > 0 &&
           workspaces.map((ws) => {
-            return <TopicList key={ws.id} topic={ws} onShowTopics={onShowTopics} onResetFocus={handleResetFocus} triggerFocus={triggerFocus} showTopics={showTopics} history={history} selected={workspace && workspace.id === ws.id} actions={actions}/>;
-          })
-        }
+            return (
+              <TopicList
+                key={ws.id}
+                topic={ws}
+                onShowTopics={onShowTopics}
+                onResetFocus={handleResetFocus}
+                triggerFocus={triggerFocus}
+                showTopics={showTopics}
+                history={history}
+                selected={workspace && workspace.id === ws.id}
+                actions={actions}
+              />
+            );
+          })}
         <li className="nav-action" onClick={handleShowWorkspaceModal}>
           <SvgIconFeather icon="circle-plus" /> New workspace
         </li>

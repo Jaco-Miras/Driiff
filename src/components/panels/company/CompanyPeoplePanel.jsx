@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { useTranslation, useUserChannels } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -54,7 +55,7 @@ const CompanyPeoplePanel = (props) => {
 
   const handleUserNameClick = useCallback(
     (user) => {
-      history.push(`/profile/${user.id}/${user.name}`);
+      history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
     },
     [history]
   );

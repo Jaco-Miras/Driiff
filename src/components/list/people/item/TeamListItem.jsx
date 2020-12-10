@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Badge } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
+import { replaceChar } from "../../../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -55,13 +56,13 @@ const ShowMoreBtn = styled.div`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, showMore, toggleShow, loggedUser } = props;
+  const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null } = props;
 
   const history = useHistory();
 
   const handleClickName = () => {
     if (member.has_accepted) {
-      history.push(`/profile/${member.id}/${member.name}`);
+      history.push(`/profile/${member.id}/${replaceChar(member.name)}`);
     }
   };
 
@@ -86,10 +87,14 @@ const TeamListItem = (props) => {
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
-          <Avatar id={member.id} name={member.name}
-                  imageLink={member.profile_image_thumbnail_link ? member.profile_image_thumbnail_link : member.profile_image_link}
-                  partialName={member.partial_name} noDefaultClick={!member.has_accepted}
-                  hasAccepted={member.has_accepted}/>
+          <Avatar
+            id={member.id}
+            name={member.name}
+            imageLink={member.profile_image_thumbnail_link ? member.profile_image_thumbnail_link : member.profile_image_link}
+            partialName={member.partial_name}
+            noDefaultClick={!member.has_accepted}
+            hasAccepted={member.has_accepted}
+          />
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>
@@ -102,27 +107,35 @@ const TeamListItem = (props) => {
         {member.workspace_role && member.workspace_role !== "" && (
           <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
         )}
-        {member.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
+        {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
+        {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
+          <>
+            <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />
+            <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
+          </>
+        )}
       </div>
-      {
-        showMoreButton && 
+      {showMoreButton && (
         <ShowMoreBtn className="btn-toggle-show">
-          <span className="cursor-pointer" onClick={toggleShow}>{dictionary.showMore}</span>
+          <span className="cursor-pointer" onClick={toggleShow}>
+            {dictionary.showMore}
+          </span>
         </ShowMoreBtn>
-      }
-      {
-        showLessButton && 
+      )}
+      {showLessButton && (
         <ShowMoreBtn className="btn-toggle-show">
-          <span className="cursor-pointer" onClick={toggleShow}>{dictionary.showLess}</span>
+          <span className="cursor-pointer" onClick={toggleShow}>
+            {dictionary.showLess}
+          </span>
         </ShowMoreBtn>
-      }
+      )}
       {!hideOptions && (
         <MoreOptions moreButton="more-horizontal" scrollRef={parentRef}>
           {member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTeamLead}</div>}
           {member.workspace_role !== "TEAM_LEAD" && <div onClick={() => handleAddRole("team_lead")}>{dictionary.assignAsTeamLead}</div>}
           {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>{dictionary.assignAsApprover}</div>}
           {member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
-          <div onClick={onEditClick}>{dictionary.remove}</div>
+          <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
         </MoreOptions>
       )}
     </Wrapper>

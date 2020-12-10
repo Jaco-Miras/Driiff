@@ -482,11 +482,10 @@ const UserProfilePanel = (props) => {
                 </ImportWarning>
               )}*/}
               <div className="avatar-container" onClick={handleAvatarClick}>
-                {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email}
-                         noDefaultClick={true} forceThumbnail={false}/>}
+                {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
                 {isLoggedUser && (
                   <span className="btn btn-outline-light btn-sm">
-                    <SvgIconFeather icon="pencil"/>
+                    <SvgIconFeather icon="pencil" />
                   </span>
                 )}
               </div>
@@ -517,22 +516,24 @@ const UserProfilePanel = (props) => {
               )}
               {loggedUser.id !== user.id && (
                 <div className="d-flex justify-content-center">
-                  {
-                    user.contact !== "" &&
+                  {user.contact !== "" && (
                     <button className="btn btn-outline-light mr-1">
                       <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                        <SvgIconFeather className="" icon="phone"/>
+                        <SvgIconFeather className="" icon="phone" />
                       </a>
                     </button>
-                  }
+                  )}
                   <button className="ml-1 btn btn-outline-light">
-                    {
-                      (user.type !== "external") && <SvgIconFeather onClick={() => {
-                        handleUserChat(user);
-                      }} icon="message-circle"/>
-                    }
+                    {user.type !== "external" && (
+                      <SvgIconFeather
+                        onClick={() => {
+                          handleUserChat(user);
+                        }}
+                        icon="message-circle"
+                      />
+                    )}
                   </button>
-              </div>
+                </div>
               )}
               {/*{
                                 isLoggedUser &&
@@ -605,12 +606,12 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.address}</div>
                   </div>
                 )}
-                {user.zip_code && (
+                {/*{user.zip_code && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.zip_code}</div>
                     <div className="col col-form">{user.zip_code}</div>
                   </div>
-                )}
+                )}*/}
                 {user.contact && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.phone}</div>
@@ -730,13 +731,12 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur}
-                                   defaultValue={user.address} isValid={formUpdate.feedbackState.address}
-                                   feedback={formUpdate.feedbackText.address}/>
+                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
                       </>
                     )}
                   </div>
                 </div>
+                {/*
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.zip_code}</div>
                   <div className="col col-form">
@@ -744,13 +744,11 @@ const UserProfilePanel = (props) => {
                       <Label>{user.zip_code}</Label>
                     ) : (
                       <>
-                        <FormInput name="zip_code" onChange={handleInputChange} onBlur={handleInputBlur}
-                                   defaultValue={user.zip_code} isValid={formUpdate.feedbackState.zip_code}
-                                   feedback={formUpdate.feedbackText.zip_code}/>
+                        <FormInput name="zip_code" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.zip_code} isValid={formUpdate.feedbackState.zip_code} feedback={formUpdate.feedbackText.zip_code} />
                       </>
                     )}
                   </div>
-                </div>
+                </div>*/}
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.phone}</div>
                   <div className="col col-form">
@@ -758,10 +756,8 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact"
-                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
+                        <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}
                   </div>

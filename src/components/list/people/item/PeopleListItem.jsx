@@ -26,7 +26,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: ${props => props.userNameMaxWidth}px;    
+    max-width: ${(props) => props.userNameMaxWidth}px;
   }
   .button-wrapper {
     display: inline-flex;
@@ -42,7 +42,7 @@ const PeopleListItem = (props) => {
 
   const refs = {
     cardBody: useRef(null),
-    content: useRef(null)
+    content: useRef(null),
   };
 
   const handleOnNameClick = () => {
@@ -56,7 +56,7 @@ const PeopleListItem = (props) => {
   const handleUpdateRole = (role) => {
     let payload = {
       user_id: user.id,
-      role_id: roles[role]
+      role_id: roles[role],
     };
     onUpdateRole(payload);
   };
@@ -96,28 +96,31 @@ const PeopleListItem = (props) => {
           <div className="card-body" ref={refs.cardBody}>
             <div ref={refs.content} className="d-flex align-items-center justify-content-between">
               <div className="d-flex justify-content-start align-items-center">
-                <Avatar id={user.id} name={user.name ? user.name : user.email} hasAccepted={user.has_accepted}
-                        onClick={handleOnNameClick} noDefaultClick={true}
-                        imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}/>
+                <Avatar
+                  id={user.id}
+                  name={user.name ? user.name : user.email}
+                  hasAccepted={user.has_accepted}
+                  onClick={handleOnNameClick}
+                  noDefaultClick={true}
+                  imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}
+                />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
                     <h6 className="user-name mb-1 ">
                       <ToolTip content={user.email}>
                         <div className="mr-2 people-text-truncate">{user.email}</div>
                       </ToolTip>
-                      <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white"/>
+                      <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
+                      <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />
                     </h6>
                   ) : (
                     <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
                       <ToolTip content={user.email}>
-                        <div className="mr-2">
-                          {user.name}
-                        </div>
+                        <div className="mr-2">{user.name}</div>
                       </ToolTip>
                       <span className="label-wrapper d-inline-flex start align-items-center">
-                        {user.type === "external" && loggedUser.type !== "external" &&
-                        <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white"/>}
-                        {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white"/>}
+                        {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
+                        {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                       </span>
                     </h6>
                   )}
@@ -128,23 +131,16 @@ const PeopleListItem = (props) => {
                 <div className="button-wrapper">
                   {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
                     <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                      <SvgIconFeather className="mr-2" icon="phone"/>
+                      <SvgIconFeather className="mr-2" icon="phone" />
                     </a>
                   )}
-                  {
-                    (user.type !== "external" && loggedUser.id !== user.id && user.active === 1) &&
-                    <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
-                  }
-                                    {
-                    showOptions && user.type !== "external" && user.role && user.role.name !== "owner" &&
-                    <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"}
-                                 scrollRef={refs.cardBody.current}>
-                      {user.role.name === "employee" &&
-                      <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
-                      {user.role.name === "admin" &&
-                      <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
+                  {user.type !== "external" && loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
+                  {showOptions && user.type !== "external" && user.role && user.role.name !== "owner" && (
+                    <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
+                      {user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
+                      {user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
                     </MoreOptions>
-                  }
+                  )}
                 </div>
               )}
             </div>

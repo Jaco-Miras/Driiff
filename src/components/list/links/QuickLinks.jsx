@@ -10,7 +10,7 @@ const Wrapper = styled.li`
   transition: all 0.3s ease;
   > a {
     position: relative;
-    font-weight: ${(props) => (props.selected ? "600" : "400")};    
+    font-weight: ${(props) => (props.selected ? "600" : "400")};
     display: flex;
     color: #fff;
     height: 40px;
@@ -65,10 +65,10 @@ const LinkNav = styled.ul`
       width: 100%;
       align-items: center;
       justify-content: space-between;
-      
+
       &.shorcut-title {
         padding-left: 0.5rem;
-        font-weight: 500;      
+        font-weight: 500;
       }
 
       > div {
@@ -98,11 +98,11 @@ const LinkNav = styled.ul`
     }
   }
   li.shorcut-title-link {
-    padding:0;
-    
+    padding: 0;
+
     .shorcut-title {
-      background: #ffffff10;    
-    }  
+      background: #ffffff10;
+    }
   }
 `;
 
@@ -120,9 +120,9 @@ const EditIcon = styled(SvgIconFeather)`
 `;
 
 const QuickLinks = (props) => {
-  const {className = "", links, user, dictionary} = props;
+  const { className = "", links, user, dictionary } = props;
 
-  const {generalSettings, showModal} = useSettings();
+  const { generalSettings, showModal } = useSettings();
 
   const httpsPattern = new RegExp("^(http|https)://");
   const ref = {
@@ -164,14 +164,12 @@ const QuickLinks = (props) => {
   }, [ref.nav, maxHeight]);
 
   return (
-    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}
-             showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
+    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
       <a className="quick-links" href="/" onClick={handleShowLinks}>
-        <NavIcon icon="link"/>
+        <NavIcon icon="link" />
         <div>{dictionary.shortcuts}</div>
-        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") &&
-        <EditIcon icon="pencil" onClick={handleEditLinks}/>}
-        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`}/>
+        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") && <EditIcon icon="pencil" onClick={handleEditLinks} />}
+        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
 
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
@@ -183,14 +181,12 @@ const QuickLinks = (props) => {
             <li key={index} className="personal-link">
               <div>
                 <div>
-                  <a href={!httpsPattern.test(link.web_address) ? `https://${link.web_address}` : link.web_address}
-                     target="_blank" rel="noopener noreferrer">
+                  <a href={!httpsPattern.test(link.web_address) ? `https://${link.web_address}` : link.web_address} target="_blank" rel="noopener noreferrer">
                     {link.name}
                   </a>
                 </div>
                 <div className="action">
-                  <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil"
-                                  onClick={handleEditItemClick}/>
+                  <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil" onClick={handleEditItemClick} />
                 </div>
               </div>
             </li>
@@ -199,23 +195,23 @@ const QuickLinks = (props) => {
         {generalSettings.personal_links.length < 5 && (
           <li className="personal-link nav-action cursor-pointer" onClick={handleAddItemClick}>
             <div className="justify-content-start">
-              <SvgIconFeather icon="circle-plus" width={24} height={24}/> {dictionary.addPersonalShortcut}
+              <SvgIconFeather icon="circle-plus" width={24} height={24} /> {dictionary.addPersonalShortcut}
             </div>
           </li>
         )}
-        {links.map((link, index) => {
-          return (
-            <React.Fragment key={link.id}>
-              {
-                index === 0 &&
-                <li className="personal-link shorcut-title-link pt-2">
-                  <div className="shorcut-title">{dictionary.companyLinks}</div>
-                </li>
-              }
-              <LinkItem link={link} className="quick-links"/>
-            </React.Fragment>
-          );
-        })}
+        {user.type !== "external" &&
+          links.map((link, index) => {
+            return (
+              <React.Fragment key={link.id}>
+                {index === 0 && (
+                  <li className="personal-link shorcut-title-link pt-2">
+                    <div className="shorcut-title">{dictionary.companyLinks}</div>
+                  </li>
+                )}
+                <LinkItem link={link} className="quick-links" />
+              </React.Fragment>
+            );
+          })}
       </LinkNav>
     </Wrapper>
   );
