@@ -20,21 +20,24 @@ const useWorkspaceAndUserOptions = (props) => {
     const internalUsers = Object.values(actualUsers)
       .filter((u) => u.active === 1 && u.type === "internal")
       .map((u) => u);
-    return [
-      ...postRecipients.map((r) => {
-        return {
-          ...r,
-          icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
-          ...([postRecipients.type === "DEPARTMENT"] && {
-            participant_ids: internalUsers.map((u) => u.id),
-            member_ids: internalUsers.map((u) => u.id),
-            members: internalUsers.map((u) => u),
-          }),
-          value: r.id,
-          label: r.name,
-        };
-      }),
-    ];
+    return postRecipients.map((r) => {
+      return {
+        ...r,
+        icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
+        ...(r.type === "DEPARTMENT" && {
+          participant_ids: internalUsers.map((u) => u.id),
+          member_ids: internalUsers.map((u) => u.id),
+          members: internalUsers.map((u) => u),
+        }),
+        ...(r.type === "TOPIC" && {
+          participant_ids: r.participant_ids,
+          member_ids: r.participant_ids,
+          members: [],
+        }),
+        value: r.id,
+        label: r.name,
+      };
+    });
   };
 
   const getDefaultAddressTo = () => {
