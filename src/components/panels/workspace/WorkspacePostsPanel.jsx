@@ -25,8 +25,8 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
-    
-    .app-lists {    
+
+    .app-lists {
       overflow: auto;
       &::-webkit-scrollbar {
         display: none;
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
     color: #828282;
     padding: 10px 5px 5px 5px;
     font-weight: 500;
-     .dark & {
+    .dark & {
       color: rgba(255, 255, 255, 0.5);
     }
   }
@@ -91,9 +91,9 @@ const WorkspacePostsPanel = (props) => {
   const [checkedPosts, setCheckedPosts] = useState([]);
 
   const handleToggleCheckbox = (postId) => {
-    let checked = !checkedPosts.some(id => id === postId);
+    let checked = !checkedPosts.some((id) => id === postId);
     const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
-    setCheckedPosts(postIds)
+    setCheckedPosts(postIds);
   };
 
   const handleShowWorkspacePostModal = () => {
@@ -109,7 +109,7 @@ const WorkspacePostsPanel = (props) => {
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
-      actions.getUnreadWsPostsCount({topic_id: params.workspaceId});
+      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
     }
   }, []);
 
@@ -162,12 +162,14 @@ const WorkspacePostsPanel = (props) => {
     star: _t("POST.STAR", "Mark with star"),
     unStar: _t("POST.UNSTAR", "Unmark star"),
     alreadyReadThis: _t("POST.ALREADY_READ_THIS", "I've read this"),
-    readByNumberofUsers: (readByUsers === 1) ?
-      _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
-        user_name: readByUsers[0].first_name,
-      }) : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
-        user_count: readByUsers.length,
-      }),
+    readByNumberofUsers:
+      readByUsers === 1
+        ? _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
+            user_name: readByUsers[0].first_name,
+          })
+        : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
+            user_count: readByUsers.length,
+          }),
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
@@ -185,6 +187,7 @@ const WorkspacePostsPanel = (props) => {
     accept: _t("POST.ACCEPT", "Accept"),
     hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
+    actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
   };
 
   const handleLoadMore = () => {
@@ -194,16 +197,16 @@ const WorkspacePostsPanel = (props) => {
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : [],
         topic_id: workspace.id,
-        skip: filter === "archive" ? filters.archived.skip : filters.all.skip
-      }
+        skip: filter === "archive" ? filters.archived.skip : filters.all.skip,
+      };
 
       if (filter === "all") {
         if (filters.all && !filters.all.hasMore) return;
       } else if (filter === "archive") {
         if (filters.archived && !filters.archived.hasMore) return;
       }
-      
-      let cb = (err,res) => {
+
+      let cb = (err, res) => {
         setLoading(false);
         fetching = false;
         if (err) return;
@@ -221,75 +224,71 @@ const WorkspacePostsPanel = (props) => {
                 all: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25
-                }
+                  hasMore: res.data.total_take === 25,
+                },
               }),
               ...(filter === "archive" && {
                 archived: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25
-                }
+                  hasMore: res.data.total_take === 25,
+                },
               }),
-            }
+            },
           })
         );
-      }
-      actions.getPosts(payload, cb)
+      };
+      actions.getPosts(payload, cb);
     }
-  }
+  };
 
   const bodyScroll = throttle((e) => {
     // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
     const offset = 500;
-    if ((e.srcElement.scrollHeight - e.srcElement.scrollTop) < (1000 + offset)) {
-      handleLoadMore()
+    if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
+      handleLoadMore();
     }
   }, 200);
 
   useEffect(() => {
     document.body.addEventListener("scroll", bodyScroll, false);
     return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [filters, workspace, filter, search])
+  }, [filters, workspace, filter, search]);
 
   const handleMarkAllAsRead = () => {
     actions.readAll({
       selected_post_ids: checkedPosts,
-      topic_id: workspace.id
+      topic_id: workspace.id,
     });
     setCheckedPosts([]);
-    actions.getUnreadNotificationEntries({add_unread_comment: 1});
+    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
   };
 
   const handleArchiveAll = () => {
     actions.archiveAll({
       selected_post_ids: checkedPosts,
-      topic_id: workspace.id
+      topic_id: workspace.id,
     });
     setCheckedPosts([]);
   };
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
-  if (posts === null)
-    return <></>;
+  if (posts === null) return <></>;
   //console.log(post, 'post')
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag}
-                     postActions={actions} count={count} counters={counters} onGoBack={handleGoback}
-                     dictionary={dictionary}/>
+        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
         <div className="col-md-9 app-content">
-          <div className="app-content-overlay"/>
-          {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"}/> }
+          <div className="app-content-overlay" />
+          {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
           {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
-                <SvgEmptyState icon={3} height={252}/>
+                <SvgEmptyState icon={3} height={252} />
                 {isMember && (
-                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}
-                          disabled={disableOptions}>
+                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal} disabled={disableOptions}>
                     {dictionary.createNewPost}
                   </button>
                 )}
@@ -302,45 +301,54 @@ const WorkspacePostsPanel = (props) => {
                   <PostDetailWrapper className="fadeBottom">
                     <PostDetail
                       readByUsers={readByUsers}
-                      post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback}
+                      post={post}
+                      postActions={actions}
+                      user={user}
+                      history={history}
+                      onGoBack={handleGoback}
                       dictionary={dictionary}
-                      workspace={workspace} isMember={isMember}
-                      disableOptions={disableOptions}/>
+                      workspace={workspace}
+                      isMember={isMember}
+                      disableOptions={disableOptions}
+                    />
                   </PostDetailWrapper>
                 </div>
               ) : (
                 <>
-                  {
-                    filter === "all" && checkedPosts.length > 0 &&
+                  {filter === "all" && checkedPosts.length > 0 && (
                     <PostsBtnWrapper>
-                      <button className="btn all-action-button"
-                              onClick={handleArchiveAll}>{dictionary.archive}</button>
-                      <button className="btn all-action-button"
-                              onClick={handleMarkAllAsRead}>{dictionary.markAsRead}</button>
+                      <button className="btn all-action-button" onClick={handleArchiveAll}>
+                        {dictionary.archive}
+                      </button>
+                      <button className="btn all-action-button" onClick={handleMarkAllAsRead}>
+                        {dictionary.markAsRead}
+                      </button>
                     </PostsBtnWrapper>
-                  }
+                  )}
                   <div className="card card-body app-content-body mb-4">
                     <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
                       {search != null && search !== "" && (
                         <>
                           {posts.length === 0 ? (
-                            <h6
-                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
+                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">
+                              {dictionary.searchNoResult} {search}
+                            </h6>
                           ) : posts.length === 1 ? (
-                            <h6
-                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
+                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">
+                              {dictionary.searchResult} {search}
+                            </h6>
                           ) : (
-                            <h6
-                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
+                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">
+                              {dictionary.searchResults} {search}
+                            </h6>
                           )}
                         </>
                       )}
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
-                        {posts && posts.map((p) => {
-                          return <PostItemPanel
-                            key={p.id} post={p} postActions={actions} dictionary={dictionary}
-                            disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some(id => id === p.id)}/>;
-                        })}
+                        {posts &&
+                          posts.map((p) => {
+                            return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
+                          })}
                       </ul>
                     </div>
                   </div>
