@@ -119,6 +119,19 @@ const useWorkspaceAndUserOptions = (props) => {
         ...workspaceOptions,
         ...userOptions,
       ]);
+    } else if (!progress && recipients.filter((r) => r.main_department).length === 0) {
+      setProgress(true);
+      setOptions(
+        recipients.map((r) => {
+          return {
+            ...r,
+            icon: "compass",
+            value: r.id,
+            label: r.name,
+            member_ids: r.participant_ids,
+          };
+        })
+      );
     }
   }, [options, recipients, actualWorkspaces, setOptions]);
 
@@ -160,13 +173,13 @@ const useWorkspaceAndUserOptions = (props) => {
 
   addressIds = [...new Set(addressIds)];
 
-  const user_options = users
-    .filter((u) => addressIds.some((id) => id === u.type_id))
+  const user_options = Object.values(actualUsers)
+    .filter((u) => addressIds.some((id) => id === u.id))
     .map((u) => {
       return {
         ...u,
         icon: "user-avatar",
-        value: u.type_id,
+        value: u.id,
         label: u.name ? u.name : u.email,
         type: "USER",
       };
