@@ -417,11 +417,11 @@ const CreateEditWorkspacePostModal = (props) => {
     setCloseAll(false);
   };
 
-  const toggleAll = (saveDraft = false) => {
+  const toggleAll = (saveDraft = false, showDeleteToaster = false) => {
     setNestedModal(!nestedModal);
     setCloseAll(true);
     if (saveDraft) {
-      //handleSaveDraft();
+      handleSaveDraft();
     } else if (draftId) {
       dispatch(
         deleteDraft(
@@ -440,11 +440,7 @@ const CreateEditWorkspacePostModal = (props) => {
                   post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
                 },
                 (err, res) => {
-                  toaster.success(
-                    <>
-                      Draft <b>{form.title}</b> successfully removed.
-                    </>
-                  );
+                  if (showDeleteToaster) toaster.success(<>Draft successfully removed.</>);
                 }
               )
             );
@@ -617,6 +613,7 @@ const CreateEditWorkspacePostModal = (props) => {
         recipients: form.selectedAddressTo,
         recipient_ids: form.selectedAddressTo.map((r) => r.id),
         users_approval: [],
+        need_approval: false,
       };
       if (draftId) {
         payload = {
@@ -667,32 +664,20 @@ const CreateEditWorkspacePostModal = (props) => {
       },
       approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : [],
     };
-    if (draftId) {
-      dispatch(
-        deleteDraft(
-          {
-            type: "draft_post",
-            draft_id: draftId,
-          },
-          () => {
-            setLoading(false);
-            toggleAll(false);
-          }
-        )
-      );
-      dispatch(
-        deleteDraft(
-          {
-            type: "draft_post",
-            draft_id: draftId,
-          },
-          () => {
-            setLoading(false);
-            toggleAll(false);
-          }
-        )
-      );
-    }
+    // if (draftId) {
+    //   dispatch(
+    //     deleteDraft(
+    //       {
+    //         type: "draft_post",
+    //         draft_id: draftId,
+    //       },
+    //       () => {
+    //         setLoading(false);
+    //         toggleAll(false);
+    //       }
+    //     )
+    //   );
+    // }
     if (mode === "edit") {
       payload = {
         ...payload,
@@ -1118,6 +1103,8 @@ const CreateEditWorkspacePostModal = (props) => {
           reply_count: 0,
           recipients: form.selectedAddressTo,
           recipient_ids: form.selectedAddressTo.map((r) => r.id),
+          users_approval: [],
+          need_approval: false,
         };
         if (draftId) {
           payload = {
@@ -1148,7 +1135,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   useEffect(() => {
     if (mounted && !savingDraft.current) {
-      //autoUpdateDraft(form, draftId)
+      autoUpdateDraft(form, draftId);
     }
   }, [form, draftId, mounted]);
 
@@ -1185,7 +1172,7 @@ const CreateEditWorkspacePostModal = (props) => {
           <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
           <ModalBody>{dictionary.draftBody}</ModalBody>
           <ModalFooter>
-            <Button className="btn-outline-secondary" onClick={() => toggleAll(false)}>
+            <Button className="btn-outline-secondary" onClick={() => toggleAll(false, true)}>
               {dictionary.discard}
             </Button>
             <Button color="primary" onClick={() => toggleAll(true)}>
