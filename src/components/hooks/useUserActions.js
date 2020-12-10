@@ -208,6 +208,7 @@ const useUserActions = () => {
         "password",
         "role_id",
         "company",
+        "company_name",
         "designation",
         "skills",
         "email",
