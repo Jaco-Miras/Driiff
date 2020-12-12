@@ -52,17 +52,19 @@ const TodosSidebar = (props) => {
                 <Icon className="mr-2" icon="list" />
                 {dictionary.statusToday}
               </Filter>
-              <Filter onClick={setFilter} data-filter="OVERDUE" className={`list-group-item d-flex align-items-center ${filter === "OVERDUE" ? "active" : ""}`}>
-                <Icon className="mr-2" icon="alert-circle" />
-                {dictionary.statusOverdue} {/*{count.overdue}*/}
+              <Filter onClick={setFilter} data-filter="NEW" className={`list-group-item d-flex justify-content-between align-items-center ${filter === "NEW" ? "active" : ""}`}>
+                <span>
+                  <Icon className="mr-2" icon="clock" />
+                  {dictionary.statusUpcoming}
+                </span>
+                <span>{count.new}</span>
               </Filter>
-              <Filter onClick={setFilter} data-filter="NEW" className={`list-group-item d-flex align-items-center ${filter === "NEW" ? "active" : ""}`}>
-                <Icon className="mr-2" icon="clock" />
-                {dictionary.statusUpcoming} {/*{count.new}*/}
-              </Filter>
-              <Filter onClick={setFilter} data-filter="DONE" className={`list-group-item d-flex align-items-center ${filter === "DONE" ? "active" : ""}`}>
-                <Icon className="mr-2" icon="check" />
-                {dictionary.statusDone} {/*{count.done}*/}
+              <Filter onClick={setFilter} data-filter="DONE" className={`list-group-item d-flex justify-content-between align-items-center ${filter === "DONE" ? "active" : ""}`}>
+                <span>
+                  <Icon className="mr-2" icon="check" />
+                  {dictionary.statusDone}
+                </span>
+                <span>{count.done}</span>
               </Filter>
             </div>
           </div>
