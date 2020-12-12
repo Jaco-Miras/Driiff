@@ -7,7 +7,11 @@ import { MoreOptions } from "../common";
 import { setViewFiles } from "../../../redux/actions/fileActions";
 import { useDispatch } from "react-redux";
 
-const Wrapper = styled.ul``;
+const Description = styled.span`
+  * {
+    display: inline-block;
+  }
+`;
 
 const TodosList = (props) => {
   const { className = "", chatHeader, todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
@@ -15,6 +19,8 @@ const TodosList = (props) => {
   const dispatch = useDispatch();
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
+
+  const bodyDescription = quillHelper.parseEmoji(todo.description);
 
   const handlePreviewFile = (e, files, file) => {
     e.preventDefault();
@@ -83,7 +89,7 @@ const TodosList = (props) => {
           }}
         >
           <span className="d-flex justify-content-between w-100 align-items-center">
-            <span className="d-inline-flex overflow-hidden mr-3">
+            <span className="d-inline-flex overflow-hidden w-100 mr-3">
               <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
                 <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
                   <TodoCheckBox name="test" checked={isDone} onClick={handleDoneClick} />
@@ -91,10 +97,10 @@ const TodosList = (props) => {
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
                 <span className="todo-title mr-2">{todo.title}</span>
-                <span className="todo-title mr-2 description" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(todo.description) }} />
+                {bodyDescription !== "" && bodyDescription !== "<span></span>" && <Description className="todo-title mr-2 description" dangerouslySetInnerHTML={{ __html: bodyDescription }} />}
                 {todo.files.map((file) => {
                   return (
-                    <span key={file.id} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
+                    <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
                       {getFileIcon(file.mime_type)}
                     </span>
                   );
