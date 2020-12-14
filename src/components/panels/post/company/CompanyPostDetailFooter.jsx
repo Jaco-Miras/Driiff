@@ -328,10 +328,10 @@ const CompanyPostDetailFooter = (props) => {
 
   useEffect(() => {
     if (editPostComment) {
-      const hasApproval =
-        editPostComment.users_approval.length > 0 && editPostComment.users_approval.filter((u) => u.ip_address === null).length === editPostComment.users_approval.length && editPostComment.users_approval.some((u) => u.id === user.id);
+      // const hasApproval =
+      //   editPostComment.users_approval.length > 0 && editPostComment.users_approval.filter((u) => u.ip_address === null).length === editPostComment.users_approval.length && editPostComment.users_approval.some((u) => u.id === user.id);
       const hasRequestedChange = editPostComment.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
-      if (hasApproval || hasRequestedChange > 0) {
+      if (editPostComment.users_approval.length > 0) {
         setShowApprover(true);
         setApprovers(
           editPostComment.users_approval.map((u) => {
