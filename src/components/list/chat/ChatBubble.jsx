@@ -635,7 +635,6 @@ const ChatBubble = (props) => {
     },
     [reply]
   );
-  console.log(reply.star_count);
 
   return (
     <ChatBubbleContainer

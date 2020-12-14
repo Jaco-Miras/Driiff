@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar } from "../../common";
+import { Avatar, SvgIconFeather } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -185,14 +185,63 @@ const ChatBubbleQuoteDiv = styled.div`
   .chat-options {
     visibility: hidden;
   }
+
   .chat-options.active {
     visibility: visible;
   }
+
   :hover {
     .chat-options {
       visibility: visible;
     }
   }
+
+  .star-wrap {
+    position: relative;
+    display: flex;
+
+    &[data-star="true"] {
+      .feather-star {
+        fill: #7a1b8bcc;
+        color: #7a1b8bcc;
+      }
+    }
+
+    .feather-star {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .star-count {
+      font-size: 0.835rem;
+      color: #a7abc3;
+      height: 16px;
+      line-height: 16px;
+      padding: 0 4px;
+    }
+
+    .star-user-popup {
+      position: absolute;
+      width: 250px;
+      padding: 4px;
+      background-color: #ffffff;
+      top: 100%;
+      z-index: 1;
+      border-top: 1px solid #eeeeee;
+      border-radius: 8px;
+      color: #4d4d4d;
+
+      .name {
+        display: block;
+        width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+
   @media (max-width: 991.99px) {
     max-width: calc(100% - 110px);
   }
@@ -316,7 +365,24 @@ const VirtualizedChat = (props) => {
     let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
     isBot = botCodes.includes(reply.user.code);
   }
-  console.log(reply);
+
+  const handleToggleStar = (e) => {
+    const { messageId, star } = e.currentTarget.dataset;
+    e.currentTarget.dataset.star = star ? "false" : "true";
+    chatMessageActions.setStar({
+      message_id: messageId,
+      star: star === "false" ? 1 : 0,
+    });
+  };
+
+  const handleStarMouseOver = (e) => {
+    const { messageId, loaded } = e.currentTarget.dataset;
+    if (loaded === "false") {
+      e.currentTarget.dataset.loaded = "true";
+      chatMessageActions.getStars(messageId);
+    }
+  };
+
   return (
     <ChatList data-message-id={reply.id} data-code={reply.code} data-timestamp={reply.created_at.timestamp} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp}>
       {showTimestamp && <TimestampDiv className="timestamp-container">{<span>{timeFormat.localizeChatDate(reply.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>}
@@ -355,6 +421,23 @@ const VirtualizedChat = (props) => {
               dictionary={props.dictionary}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
+                  <SvgIconFeather icon="star" />
+                  {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
+                  {reply.star_users && reply.star_users.length > 0 && (
+                    <div className="star-user-popup">
+                      {reply.star_users.map((u) => {
+                        const user = recipients.find((r) => r.type === "USER" && r.type_id === u.id);
+                        return (
+                          <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
+                            <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
+                            <span className="name">{u.name}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </span>
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} replyData={reply} />}
               </ChatActionsContainer>
@@ -406,6 +489,23 @@ const VirtualizedChat = (props) => {
                 />
               ) : null}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
+                  <SvgIconFeather icon="star" />
+                  {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
+                  {reply.star_users && reply.star_users.length > 0 && (
+                    <div className="star-user-popup">
+                      {reply.star_users.map((u) => {
+                        const user = recipients.find((r) => r.type === "USER" && r.type_id === u.id);
+                        return (
+                          <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
+                            <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
+                            <span className="name">{u.name}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </span>
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} />}
               </SystemChatActionsContainer>
