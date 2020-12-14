@@ -17,6 +17,7 @@ import {
   incomingChatMessage,
   incomingChatMessageFromOthers,
   incomingChatMessageReaction,
+  incomingChatStar,
   incomingDeletedChatMessage,
   incomingImportantChat,
   incomingPostNotificationMessage,
@@ -721,11 +722,14 @@ class SocketListeners extends Component {
             this.props.incomingDeletedChatMessage(e);
             break;
           }
-
           case "TOGGLE_IMPORTANT": {
             this.props.incomingImportantChat(e);
+            break;
           }
-
+          case "STAR_CHAT": {
+            this.props.incomingChatStar(e);
+            break;
+          }
           default:
             return null;
         }
@@ -1528,6 +1532,7 @@ function mapDispatchToProps(dispatch) {
     getUnreadWorkspacePostEntries: bindActionCreators(getUnreadWorkspacePostEntries, dispatch),
     updateWorkspacePostCount: bindActionCreators(updateWorkspacePostCount, dispatch),
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
+    incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
   };
 }
 
