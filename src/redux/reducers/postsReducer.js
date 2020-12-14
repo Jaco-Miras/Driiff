@@ -615,7 +615,7 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
         companyPosts.posts[action.data.post_id].reply_count = companyPosts.posts[action.data.post_id].reply_count + 1;
         if (action.data.author.id === state.user.id) companyPosts.posts[action.data.post_id].has_replied = true;
-        if (hasPendingApproval) {
+        if (hasPendingApproval && action.data.users_approval.some((ua) => ua.id === state.user.id)) {
           companyPosts.posts[action.data.post_id].need_approval = true;
         }
       }
@@ -803,6 +803,7 @@ export default (state = INITIAL_STATE, action) => {
             ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
               [action.data.post.id]: {
                 ...state.companyPosts.posts[action.data.post.id],
+                need_approval: false,
                 users_approval: state.companyPosts.posts[action.data.post.id].users_approval.map((u) => {
                   if (u.id === action.data.user_approved.id) {
                     return {
@@ -813,6 +814,23 @@ export default (state = INITIAL_STATE, action) => {
                     return u;
                   }
                 }),
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "INCOMING_COMMENT_APPROVAL": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                need_approval: false,
               },
             }),
           },
