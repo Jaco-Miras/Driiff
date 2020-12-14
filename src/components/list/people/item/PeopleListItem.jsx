@@ -124,7 +124,8 @@ const PeopleListItem = (props) => {
                       </span>
                     </h6>
                   )}
-                  {user.role && <span className="small text-muted">{user.role.display_name}</span>}
+                  {user.role && user.type === "internal" && <span className="small text-muted">{user.role.display_name}</span>}
+                  {user.external_company_name && user.type === "external" && <span className="small text-muted">{user.external_company_name}</span>}
                 </div>
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (

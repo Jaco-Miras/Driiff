@@ -14,7 +14,7 @@ import LockedLabel from "./LockedLabel";
 
 const Wrapper = styled.div`
   position: relative;
-  z-index: 1;
+  z-index: 3;
   .feather-paperclip {
     border: 1px solid #e1e1e1;
     height: 100%;
@@ -83,11 +83,11 @@ const ChatInputContainer = styled.div`
     }
   }
   .feather-send {
-  background: ${props => props.backgroundSend};
-  fill: ${props => props.fillSend};
-  &:hover {
-    cursor: ${props => props.cursor};
-   }
+    background: ${(props) => props.backgroundSend};
+    fill: ${(props) => props.fillSend};
+    &:hover {
+      cursor: ${(props) => props.cursor};
+    }
   }
 `;
 
@@ -150,58 +150,58 @@ const PickerContainer = styled(CommonPicker)`
 `;
 
 const ChatFooterPanel = (props) => {
-  const { className = "", onShowFileDialog, dropAction } = props
-  const { localizeChatDate } = useTimeFormat()
+  const { className = "", onShowFileDialog, dropAction } = props;
+  const { localizeChatDate } = useTimeFormat();
 
-  const dispatch = useDispatch()
-  const toaster = useToaster()
+  const dispatch = useDispatch();
+  const toaster = useToaster();
   const ref = {
     picker: useRef(),
-  }
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [selectedEmoji, setSelectedEmoji] = useState(null)
-  const [selectedGif, setSelectedGif] = useState(null)
+  };
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [selectedGif, setSelectedGif] = useState(null);
   const [active, setActive] = useState(false);
-  const [cursor, setCursor] = useState('default');
+  const [cursor, setCursor] = useState("default");
   const [backgroundSend, setBackgroundSend] = useState(null);
-  const [fillSend, setFillSend] = useState('#cacaca');
+  const [fillSend, setFillSend] = useState("#cacaca");
 
-  const {editChatMessage, selectedChannel} = useSelector((state) => state.chat);
+  const { editChatMessage, selectedChannel } = useSelector((state) => state.chat);
   const user = useSelector((state) => state.session.user);
 
   const handleSend = () => {
-    dispatch(onClickSendButton(true))
-  }
+    dispatch(onClickSendButton(true));
+  };
 
   const handleShowEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker)
-  }
+    setShowEmojiPicker(!showEmojiPicker);
+  };
 
   const onSelectEmoji = (e) => {
-    setSelectedEmoji(e)
-  }
+    setSelectedEmoji(e);
+  };
 
   const onSelectGif = (e) => {
-    setSelectedGif(e)
-  }
+    setSelectedGif(e);
+  };
 
   const onClearEmoji = () => {
-    setSelectedEmoji(null)
-  }
+    setSelectedEmoji(null);
+  };
 
   const onActive = (active) => {
     setActive(active);
     let sendButtonValues;
-    active ? sendButtonValues = ['#7a1b8b', 'pointer', '#fff']  : sendButtonValues = ['', 'default', '#cacaca'];
+    active ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
     setBackgroundSend(sendButtonValues[0]);
     setCursor(sendButtonValues[1]);
     setFillSend(sendButtonValues[2]);
-  }
+  };
 
   const onClearGif = () => {
-    setSelectedGif(null)
+    setSelectedGif(null);
     //handleSend();
-  }
+  };
 
   const handleJoinWorkspace = () => {
     dispatch(
@@ -211,18 +211,18 @@ const ChatFooterPanel = (props) => {
           recipient_ids: [user.id],
         },
         (err, res) => {
-          if (err) return
+          if (err) return;
           toaster.success(
             <>
               You have joined <b>#{selectedChannel.title}</b>
             </>
-          )
+          );
         }
       )
-    )
-  }
+    );
+  };
 
-  const { _t } = useTranslation()
+  const { _t } = useTranslation();
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
@@ -231,7 +231,7 @@ const ChatFooterPanel = (props) => {
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
     chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
-  }
+  };
 
   const handleUnarchive = () => {
     let payload = {
@@ -240,15 +240,15 @@ const ChatFooterPanel = (props) => {
       is_muted: false,
       is_pinned: false,
       push_unarchived: 1,
-    }
+    };
 
-    dispatch(putChannel(payload))
+    dispatch(putChannel(payload));
     toaster.success(
       <span>
         <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is un-archived.` : `${selectedChannel.title} channel is un-archived.`}</b>
       </span>
-    )
-  }
+    );
+  };
 
   const handleShowUnarchiveConfirmation = () => {
     let payload = {
@@ -260,23 +260,23 @@ const ChatFooterPanel = (props) => {
       actions: {
         onSubmit: handleUnarchive,
       },
-    }
+    };
 
-    dispatch(addToModals(payload))
-  }
+    dispatch(addToModals(payload));
+  };
 
   const onSendCallback = () => {
-    setShowEmojiPicker(false)
-  }
+    setShowEmojiPicker(false);
+  };
 
   const isMember = useIsMember(selectedChannel && selectedChannel.members && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
 
   const toggleTooltip = () => {
-    let tooltips = document.querySelectorAll("span.react-tooltip-lite")
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
-      tooltip.parentElement.classList.toggle("tooltip-active")
-    })
-  }
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
 
   return (
     <Wrapper className={`chat-footer ${className}`}>
@@ -286,7 +286,7 @@ const ChatFooterPanel = (props) => {
         <Dflex className="d-flex align-items-end chat-input-cointainer-footer">
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
-              <Icon icon="archive"/>
+              <Icon icon="archive" />
               <h4>{selectedChannel.type === "TOPIC" ? "This is an archived workspace" : "This is an archived channel"}</h4>
               <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>
                 {selectedChannel.type === "TOPIC" ? "Un-archive workspace" : "Un-archive channel"}
@@ -298,15 +298,13 @@ const ChatFooterPanel = (props) => {
               <ChatInputContainer className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
                 {selectedChannel && !selectedChannel.is_archived && (
                   <Dflex className="d-flex pr-2 pl-2">
-                    <ChatQuote/>
+                    <ChatQuote />
                   </Dflex>
                 )}
 
-                  <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif}
-                           selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction}/>
-                <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
-                            icon="smile"/>
-                <IconButton onClick={handleSend} icon="send"/>
+                <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
+                <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+                <IconButton onClick={handleSend} icon="send" />
               </ChatInputContainer>
 
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
@@ -317,19 +315,16 @@ const ChatFooterPanel = (props) => {
           {showEmojiPicker === true && <PickerContainer handleSend={handleSend} handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
         </Dflex>
       )}
-      {
-        isMember && editChatMessage && (
-          <Dflex className="d-flex align-items-end">
-            <div className="p-5">{editChatMessage.files.map((f) => f.filename).join(", ")}</div>
-          </Dflex>
-        )
-      }
+      {isMember && editChatMessage && (
+        <Dflex className="d-flex align-items-end">
+          <div className="p-5">{editChatMessage.files.map((f) => f.filename).join(", ")}</div>
+        </Dflex>
+      )}
       {isMember === false && selectedChannel !== null && (
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{selectedChannel.title}</div>
           <div className="channel-create">
-            Created
-            by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
+            Created by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
             <button onClick={handleJoinWorkspace}>Join workspace chat</button>

@@ -19,7 +19,7 @@ import {
   resetPassword,
   userGoogleLogin,
   userLogin,
-  userLogout
+  userLogout,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -32,7 +32,7 @@ export const userForceLogout = () => {
   if (localStorage.getItem("userAuthToken")) {
     if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
       //alert("error :(");
-      console.log("error")
+      console.log("error");
     }
   }
   /*localStorage.removeItem("userAuthToken");
@@ -49,7 +49,13 @@ const useUserActions = () => {
   const history = useHistory();
   const toaster = useToaster();
   const driffActions = useDriffActions();
-  const { generalSettings: { is_new }, driffSettings, userSettings, setGeneralSetting, setReadAnnouncement } = useSettings();
+  const {
+    generalSettings: { is_new },
+    driffSettings,
+    userSettings,
+    setGeneralSetting,
+    setReadAnnouncement,
+  } = useSettings();
 
   //const { getUserFilter } = useSelector((state) => state.users);
   const getUserFilter = useSelector((state) => state.users.getUserFilter);
@@ -69,19 +75,18 @@ const useUserActions = () => {
 
   const processBackendLogin = useCallback((payload, returnUrl) => {
     let redirectLink = `${getCurrentDriffUrl()}${getFrontEndAuthUrl(payload, returnUrl)}`;
-    window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
+    window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
   }, []);
 
-  const checkCredentials = useCallback((payload, callback = () => {
-  }) => {
+  const checkCredentials = useCallback((payload, callback = () => {}) => {
     dispatch(
       userLogin(payload, (err, res) => {
         if (err) {
-          toaster.error(<>Invalid email or password.</>)
+          toaster.error(<>Invalid email or password.</>);
         }
         callback(err, res);
       })
-    )
+    );
   }, []);
 
   const login = useCallback((payload, returnUrl) => {
@@ -91,31 +96,28 @@ const useUserActions = () => {
 
   const googleLogin = useCallback(() => {
     let payload = {
-      slug: getDriffName()
-    }
+      slug: getDriffName(),
+    };
 
     if (isIPAddress(window.location.hostname)) {
-      const {hostname, port} = window.location;
+      const { hostname, port } = window.location;
       payload.redirect_ip_address = `http://${hostname}:${port}`;
     }
 
     dispatch(
-      userGoogleLogin(payload,
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
-          if (res) {
-            toaster.notify(`Logging in via Google.`);
-            window.location.href = res.data.google_url;
-          }
+      userGoogleLogin(payload, (err, res) => {
+        if (err) {
+          console.log(err);
         }
-      )
+        if (res) {
+          toaster.notify("Logging in via Google.");
+          window.location.href = res.data.google_url;
+        }
+      })
     );
   }, []);
 
-  const checkEmail = useCallback((email, callback = () => {
-  }) => {
+  const checkEmail = useCallback((email, callback = () => {}) => {
     dispatch(
       checkDriffUserEmail(
         {
@@ -127,8 +129,7 @@ const useUserActions = () => {
     );
   }, []);
 
-  const sendMagicLink = useCallback((email, callback = () => {
-  }) => {
+  const sendMagicLink = useCallback((email, callback = () => {}) => {
     dispatch(
       postMagicLink(
         {
@@ -136,10 +137,14 @@ const useUserActions = () => {
         },
         (err, res) => {
           if (err) {
-            toaster.error(<>Not allowed for external users.</>)
+            toaster.error(<>Not allowed for external users.</>);
           }
           if (res) {
-            toaster.success(<>Link was sent to <b>{email}</b></>)
+            toaster.success(
+              <>
+                Link was sent to <b>{email}</b>
+              </>
+            );
           }
           callback(err, res);
         }
@@ -147,15 +152,15 @@ const useUserActions = () => {
     );
   }, []);
 
-  const checkMagicLink = useCallback((token, callback = () => {
-  }) => {
+  const checkMagicLink = useCallback((token, callback = () => {}) => {
     dispatch(
-      putMagicLink({
-          token: token
+      putMagicLink(
+        {
+          token: token,
         },
         (err, res) => {
           if (err) {
-            toaster.error(<>Token expired or not working.</>)
+            toaster.error(<>Token expired or not working.</>);
           }
           callback(err, res);
         }
@@ -163,10 +168,8 @@ const useUserActions = () => {
     );
   }, []);
 
-
   const fetch = useCallback(
-    ({skip = 0, limit = getUserFilter.limit, ...res}, callback = () => {
-    }) => {
+    ({ skip = 0, limit = getUserFilter.limit, ...res }, callback = () => {}) => {
       dispatch(
         getUsers(
           {
@@ -188,16 +191,14 @@ const useUserActions = () => {
   }, [fetch, getUserFilter]);
 
   const fetchById = useCallback(
-    (userId, callback = () => {
-    }) => {
-      dispatch(getUser({id: userId}, callback));
+    (userId, callback = () => {}) => {
+      dispatch(getUser({ id: userId }, callback));
     },
     [dispatch]
   );
 
   const update = useCallback(
-    (user, callback = () => {
-    }) => {
+    (user, callback = () => {}) => {
       const allowed = [
         "id",
         "first_name",
@@ -207,6 +208,7 @@ const useUserActions = () => {
         "password",
         "role_id",
         "company",
+        "company_name",
         "designation",
         "skills",
         "email",
@@ -253,7 +255,7 @@ const useUserActions = () => {
 
           if (res) {
             if (loggedUser.id === res.data.id) {
-              sessionService.saveUser({...res.data});
+              sessionService.saveUser({ ...res.data });
             }
             toaster.success("Profile information saved.");
           }
@@ -291,8 +293,7 @@ const useUserActions = () => {
    * @param {File} file
    * @param {Object} callback
    */
-  const updateProfileImage = useCallback((user, file, callback = () => {
-  }) => {
+  const updateProfileImage = useCallback((user, file, callback = () => {}) => {
     const payload = {
       id: user.id,
       file: file,
@@ -314,16 +315,19 @@ const useUserActions = () => {
 
   const fetchStateCode = useCallback((stateCode, callback) => {
     dispatch(
-      postExternalUserData({
-        state_code: stateCode
-      }, (err, res) => {
-        if (err) {
-          toaster.error(<>Invalid code.</>);
-        }
+      postExternalUserData(
+        {
+          state_code: stateCode,
+        },
+        (err, res) => {
+          if (err) {
+            toaster.error(<>Invalid code.</>);
+          }
 
-        callback(err, res);
-      })
-    )
+          callback(err, res);
+        }
+      )
+    );
   }, []);
 
   const updateExternalUser = useCallback((payload, callback) => {
@@ -331,7 +335,7 @@ const useUserActions = () => {
       putExternalUserUpdate(payload, (err, res) => {
         callback(err, res);
       })
-    )
+    );
   }, []);
 
   const updatePassword = useCallback((payload, callback) => {
@@ -352,27 +356,33 @@ const useUserActions = () => {
 
   const requestPasswordReset = useCallback((email, callback) => {
     dispatch(
-      resetPassword({
-        email: email
-      }, (err, res) => {
-        if (err) {
-          toaster.error(`Email not found`);
+      resetPassword(
+        {
+          email: email,
+        },
+        (err, res) => {
+          if (err) {
+            toaster.error("Email not found");
+          }
+          if (res) {
+            toaster.success(
+              <>
+                Password reset link sent to <b>{email}</b>. Please check.
+              </>
+            );
+          }
+          callback(err, res);
         }
-        if (res) {
-          toaster.success(<>Password reset link sent to <b>{email}</b>. Please check.</>)
-        }
-        callback(err, res);
-      })
+      )
     );
   }, []);
 
   const processBackendLogout = useCallback(() => {
     let redirectLink = `${getCurrentDriffUrl()}/logged-out`;
-    window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
+    window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/logout?redirect_link=${redirectLink}`;
   }, []);
 
-  const logout = useCallback((callback = () => {
-  }) => {
+  const logout = useCallback((callback = () => {}) => {
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, (err, res) => {
@@ -384,9 +394,11 @@ const useUserActions = () => {
           .deleteSession()
           .then(() => sessionService.deleteUser())
           .then(() => {
-            dispatch(toggleLoading(false, () => {
-              toaster.success(`You are logged out`);
-            }));
+            dispatch(
+              toggleLoading(false, () => {
+                toaster.success("You are logged out");
+              })
+            );
           })
           .then(() => callback(err, res));
       })
@@ -401,29 +413,28 @@ const useUserActions = () => {
    * @param {string} user.lastname
    * @param {Object} callback
    */
-  const register = useCallback((payload, callback = () => {
-  }) => {
+  const register = useCallback((payload, callback = () => {}) => {
     checkEmail(payload.email, (err, res) => {
       if (res && !res.data.status) {
         dispatch(
           postRequest(payload, (err, res) => {
             if (err) {
-              toaster.error(`User registration failed.`);
+              toaster.error("User registration failed.");
             }
             if (res) {
-              toaster.success(`Slug request sent. Please wait for admin to cross-check. You'll recieve further notification on your email.`, {
-                duration: 10000
+              toaster.success("Slug request sent. Please wait for admin to cross-check. You'll recieve further notification on your email.", {
+                duration: 10000,
               });
             }
             callback(err, res);
           })
-        )
+        );
       } else {
         toaster.error(`Email ${payload.email} is already taken`);
         callback({
           field: {
-            email: <>{payload.email} is already taken.</>
-          }
+            email: <>{payload.email} is already taken.</>,
+          },
         });
       }
     });
@@ -434,51 +445,47 @@ const useUserActions = () => {
       localStorage.setItem("welcomeBanner", "init");
       const slugName = driffActions.getName();
       if (is_new) {
-        toaster.success(<>Welcome to <b>{slugName}</b> driff, {loggedUser.first_name}</>)
+        toaster.success(
+          <>
+            Welcome to <b>{slugName}</b> driff, {loggedUser.first_name}
+          </>
+        );
         setGeneralSetting({
-          is_new: false
-        })
+          is_new: false,
+        });
       } else {
         if (driffSettings.ANNOUNCEMENT_AT && driffSettings.ANNOUNCEMENT_LINK && driffSettings.ANNOUNCEMENT_LINK !== "") {
           let link = null;
           if (userSettings.READ_ANNOUNCEMENT) {
             if (userSettings.READ_ANNOUNCEMENT.timestamp < driffSettings.ANNOUNCEMENT_AT.timestamp) {
-              link = driffSettings.ANNOUNCEMENT_LINK.split("posts/")
-              link = `/posts/${link[1]}`
+              link = driffSettings.ANNOUNCEMENT_LINK.split("posts/");
+              link = `/posts/${link[1]}`;
               // trigger read action
               setReadAnnouncement();
             }
           } else {
-            link = driffSettings.ANNOUNCEMENT_LINK.split("posts/")
-            link = `/posts/${link[1]}`
+            link = driffSettings.ANNOUNCEMENT_LINK.split("posts/");
+            link = `/posts/${link[1]}`;
             // trigger read action
             setReadAnnouncement();
           }
-          if (link) history.push(link)
+          if (link) history.push(link);
         }
-        toaster.success(<>Welcome back, {loggedUser.first_name}</>)
+        toaster.success(<>Welcome back, {loggedUser.first_name}</>);
       }
     }
   }, [loggedUser, driffActions, is_new, driffSettings, userSettings]);
 
-  
-
   const inviteAsInternalUsers = useCallback((payload, callback) => {
-    dispatch(
-      postInternalRequestForm(payload, callback)
-    )
-  })
+    dispatch(postInternalRequestForm(payload, callback));
+  });
 
   const updateUserRole = useCallback((payload, callback = () => {}) => {
-    dispatch(
-      putUserRole(payload, callback)
-    )
+    dispatch(putUserRole(payload, callback));
   }, []);
 
   const fetchRoles = useCallback(() => {
-    dispatch(
-      getRoles()
-    )
+    dispatch(getRoles());
   }, []);
 
   return {
@@ -507,7 +514,7 @@ const useUserActions = () => {
     displayWelcomeBanner,
     inviteAsInternalUsers,
     updateUserRole,
-    fetchRoles
+    fetchRoles,
   };
 };
 

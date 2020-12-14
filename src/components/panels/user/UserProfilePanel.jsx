@@ -140,6 +140,7 @@ const UserProfilePanel = (props) => {
   const { _t } = useTranslation();
 
   const dictionary = {
+    companyName: _t("PROFILE.COMPANY_NAME", "Company name"),
     information: _t("PROFILE.INFORMATION", "Information"),
     firstName: _t("PROFILE.FIRST_NAME", "First name:"),
     middleName: _t("PROFILE.MIDDLE_NAME", "Middle name:"),
@@ -342,7 +343,7 @@ const UserProfilePanel = (props) => {
       toaster.info("Nothing was updated.");
       setEditInformation(false);
     }
-  }, [form, formUpdate, update, setEditInformation]);
+  }, [form, formUpdate, update, setEditInformation, user]);
 
   const handleAvatarClick = () => {
     if (!editInformation) {
@@ -454,7 +455,7 @@ const UserProfilePanel = (props) => {
   if (!form.id) {
     return <></>;
   }
-  console.log(user);
+
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
       <div className="row row-user-profile-panel">
@@ -588,6 +589,12 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">*****</div>
                   </div>
                 )}
+                {user.type === "external" && (
+                  <div className="row mb-2">
+                    <div className="col col-label text-muted">{dictionary.companyName}</div>
+                    <div className="col col-form">{user.external_company_name && user.external_company_name}</div>
+                  </div>
+                )}
                 {user.role && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.position}</div>
@@ -711,6 +718,21 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
+                {user.type === "external" && (
+                  <div className="row mb-2">
+                    <div className="col col-label text-muted">{dictionary.companyName}</div>
+                    <div className="col col-form">
+                      {readOnlyFields.includes("company_name") ? (
+                        <Label>{user.external_company_name && user.external_company_name}</Label>
+                      ) : (
+                        <>
+                          <Input className={getValidClass(true)} name="company_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.external_company_name ? user.external_company_name : ""} />
+                          {/* <InputFeedback valid={true}>{formUpdate.feedbackText.place}</InputFeedback> */}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.city}</div>
                   <div className="col col-form">
