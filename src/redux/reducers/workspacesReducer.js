@@ -1143,6 +1143,8 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
       let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
+      const hasPendingApproval =
+        action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length && action.data.users_approval.some((u) => u.id === state.user.id);
 
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
         action.data.workspaces.forEach((ws) => {
@@ -1168,6 +1170,9 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
 
             if (action.data.author.id === state.user.id) newWorkspacePosts[ws.topic_id].posts[action.data.post_id].has_replied = true;
+            if (hasPendingApproval && action.data.users_approval.some((ua) => ua.id === state.user.id)) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].need_approval = true;
+            }
           }
         });
       }
@@ -2192,26 +2197,79 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      need_approval: false,
                       users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
                         if (u.id === action.data.user_approved.id) {
                           return {
                             ...u,
-                            ...action.data.user_approved
-                          }
+                            ...action.data.user_approved,
+                          };
                         } else {
                           return u;
                         }
-                      })
-                    }
-                  }
-                }
+                      }),
+                    },
+                  },
+                };
               }
               return res;
-            }, {})
-          })
-        }
-      }
-    } 
+            }, {}),
+          }),
+        },
+      };
+    }
+    case "INCOMING_COMMENT_APPROVAL": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          ...(state.postComments[action.data.post.id] && {
+            [action.data.post.id]: {
+              ...state.postComments[action.data.post.id],
+              comments: {
+                ...state.postComments[action.data.post.id].comments,
+                ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
+                  [action.data.comment.id]: {
+                    ...state.postComments[action.data.post.id].comments[action.data.comment.id],
+                    users_approval: state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((u) => {
+                      if (u.id === action.data.user_approved.id) {
+                        return {
+                          ...u,
+                          ...action.data.user_approved,
+                        };
+                      } else {
+                        return u;
+                      }
+                    }),
+                  },
+                }),
+              },
+            },
+          }),
+        },
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces.length > 0 && {
+            ...state.workspacePosts,
+            ...action.data.workspaces.reduce((res, ws) => {
+              if (state.workspacePosts[ws.topic.id]) {
+                res[ws.topic.id] = {
+                  ...state.workspacePosts[ws.topic.id],
+                  posts: {
+                    ...state.workspacePosts[ws.topic.id].posts,
+                    [action.data.post.id]: {
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      need_approval: false,
+                    },
+                  },
+                };
+              }
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
     default:
       return state;
   }

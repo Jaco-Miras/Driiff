@@ -1,17 +1,13 @@
 import React, { useEffect, useRef } from "react";
 
 const CompanyPostBadge = (props) => {
+  const { className = "", isBadgePill = false, post, dictionary, user, cbGetWidth = () => {} } = props;
 
-  const {
-    className = "", isBadgePill = false, post, dictionary, user, cbGetWidth = () => {
-    }
-  } = props;
-
-  const hasRead = post.user_reads.some(u => u.id === user.id);
+  const hasRead = post.user_reads.some((u) => u.id === user.id);
   const hasReplied = typeof post.has_replied === "undefined" || !post.has_replied ? false : true;
 
   const refs = {
-    container: useRef(null)
+    container: useRef(null),
   };
 
   useEffect(() => {
@@ -22,26 +18,21 @@ const CompanyPostBadge = (props) => {
 
   return (
     <div ref={refs.container}>
-      {
-        (post.is_must_read || post.is_must_reply || post.is_read_only ||
-          post.type === "draft_post" || post.is_archived !== 0 || post.is_personal === true) &&
+      {(post.is_must_read || post.is_must_reply || post.is_read_only || post.type === "draft_post" || post.is_archived !== 0 || post.is_personal === true) && (
         <>
           {post.is_personal === true && (
             <div className={`${className} mr-3 d-sm-inline d-none`}>
-              <div
-                className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.private}</div>
+              <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.private}</div>
             </div>
           )}
           {post.is_archived === 1 && (
             <div className={`${className} mr-3 d-sm-inline d-none`}>
-              <div
-                className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.archived}</div>
+              <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.archived}</div>
             </div>
           )}
           {post.type === "draft_post" && (
             <div className={`${className} mr-3 d-sm-inline d-none`}>
-              <div
-                className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
+              <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
             </div>
           )}
           {post.is_must_read && (post.author.id === user.id || !hasRead) && (
@@ -60,7 +51,12 @@ const CompanyPostBadge = (props) => {
             </div>
           )}
         </>
-      }
+      )}
+      {post.need_approval && (
+        <div className={`${className} mr-3 d-sm-inline d-none`}>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
+        </div>
+      )}
     </div>
   );
 };

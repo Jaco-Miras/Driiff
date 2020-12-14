@@ -10,7 +10,7 @@ import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
-  &.chat-input-wrapper:focus-within  {
+  &.chat-input-wrapper:focus-within {
     border: none;
   }
 `;
@@ -40,7 +40,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 11px 9px;
-    ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
+    ${(props) => props.editMode && "> div {width:calc(100% - 15px);}"} .mention {
       color: #7a1b8b;
     }
     &:focus {
@@ -99,10 +99,28 @@ const CloseButton = styled(SvgIconFeather)`
 `;
 
 /***  Commented out code are to be visited/refactored ***/
-const CompanyPostInput = forwardRef((props,ref) => {
+const CompanyPostInput = forwardRef((props, ref) => {
   const {
-    selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
-    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive, onClosePicker } = props;
+    selectedEmoji,
+    onClearEmoji,
+    selectedGif,
+    onClearGif,
+    dropAction,
+    sent,
+    handleClearSent,
+    post,
+    parentId,
+    commentActions,
+    userMention,
+    handleClearUserMention,
+    commentId,
+    members,
+    onActive,
+    onClosePicker,
+    prioMentionIds,
+    approvers,
+    onClearApprovers,
+  } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   //const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -110,7 +128,7 @@ const CompanyPostInput = forwardRef((props,ref) => {
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const users = useSelector((state) => state.users.users);
-  const recipients = useSelector(state => state.global.recipients);
+  const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
   const [text, setText] = useState("");
@@ -126,14 +144,14 @@ const CompanyPostInput = forwardRef((props,ref) => {
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
-  let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
-                        .map((r) => {
-                          if (r.type === "USER") {
-                            return [r.type_id]
-                          } else {
-                            return r.participant_ids
-                          }
-                        }).flat();
+  // let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
+  //                       .map((r) => {
+  //                         if (r.type === "USER") {
+  //                           return [r.type_id]
+  //                         } else {
+  //                           return r.participant_ids
+  //                         }
+  //                       }).flat();
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
@@ -181,8 +199,9 @@ const CompanyPostInput = forwardRef((props,ref) => {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
-        post_title: post.title
-      }
+        post_title: post.title,
+      },
+      approval_user_ids: approvers.map((a) => a.value),
     };
 
     if (quote) {
@@ -201,7 +220,7 @@ const CompanyPostInput = forwardRef((props,ref) => {
         body: text,
         clap_count: 0,
         code: timestamp,
-        created_at: {timestamp: timestamp},
+        created_at: { timestamp: timestamp },
         files: [],
         id: reference_id,
         is_archive: false,
@@ -220,10 +239,11 @@ const CompanyPostInput = forwardRef((props,ref) => {
         total_replies: 0,
         todo_reminder: null,
         total_unread_replies: 0,
-        updated_at: {timestamp: timestamp},
+        updated_at: { timestamp: timestamp },
         unfurls: [],
         user_clap_count: 0,
-        clap_user_ids: []
+        clap_user_ids: [],
+        users_approval: [],
       };
 
       commentActions.add(commentObj);
@@ -236,6 +256,11 @@ const CompanyPostInput = forwardRef((props,ref) => {
         parent_id: editMessage.parent_id,
         reference_id: null,
       };
+      if (editPostComment) {
+        if (editPostComment.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
+          delete payload.approval_user_ids;
+        }
+      }
       commentActions.edit(payload);
       setEditMode(false);
       setEditMessage(null);
@@ -250,6 +275,7 @@ const CompanyPostInput = forwardRef((props,ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
+    onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
   };
@@ -266,7 +292,6 @@ const CompanyPostInput = forwardRef((props,ref) => {
       dispatch(setEditComment(null));
     }
   };
-
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
@@ -288,11 +313,11 @@ const CompanyPostInput = forwardRef((props,ref) => {
     setQuillContents(editor.getContents());
 
     let hasMention = false;
-    let hasImage = false
+    let hasImage = false;
 
     if (editor.getContents().ops && editor.getContents().ops.length) {
-      hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length
-      hasImage = editor.getContents().ops.filter((m) => m.insert.image).length
+      hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length;
+      hasImage = editor.getContents().ops.filter((m) => m.insert.image).length;
       handleMentionUser(
         editor
           .getContents()
@@ -304,23 +329,23 @@ const CompanyPostInput = forwardRef((props,ref) => {
   };
 
   const handleMentionUser = (mention_ids) => {
-    mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
+    mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
-        //check for recipients/type
-        let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map(m => m.id)];
-        let userIds = mention_ids.filter(id => {
-            let userFound = false;
-            ignoreIds.forEach(pid => {
-                if (pid === parseInt(id)) {
-                    userFound = true;
-                }
-            });
-            return !userFound;
+      //check for recipients/type
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id)];
+      let userIds = mention_ids.filter((id) => {
+        let userFound = false;
+        ignoreIds.forEach((pid) => {
+          if (pid === parseInt(id)) {
+            userFound = true;
+          }
         });
-        setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
+        return !userFound;
+      });
+      setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
     } else {
-        setIgnoredMentionedUserIds([]);
-        setMentionedUserIds([]);
+      setIgnoredMentionedUserIds([]);
+      setMentionedUserIds([]);
     }
   };
 
@@ -446,21 +471,19 @@ const CompanyPostInput = forwardRef((props,ref) => {
     const userRecipients = recipients.filter((r) => r.type === "USER");
 
     const newRecipients = userRecipients.filter((r) => {
-      return userIds.some((id) => id === r.type_id)
-    })
+      return userIds.some((id) => id === r.type_id);
+    });
     let payload = {
       post_id: post.id,
       recipient_ids: newRecipients.map((u) => u.id),
-      recipients: newRecipients
+      recipients: newRecipients,
     };
 
-    console.log(users, payload)
+    console.log(users, payload);
     dispatch(
-      addPostRecipients(payload, (err,res) => {
+      addPostRecipients(payload, (err, res) => {
         if (err) return;
-        dispatch(
-          addUserToPostRecipients(payload)
-        )
+        dispatch(addUserToPostRecipients(payload));
       })
     );
 
@@ -483,18 +506,24 @@ const CompanyPostInput = forwardRef((props,ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-                        
-  const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef:reactQuillRef, members: users, disableMention: false, setInlineImages, prioMentionIds: [...new Set(prioMentionIds)], post});
+
+  const { modules } = useQuillModules({
+    mode: "post_comment",
+    callback: handleSubmit,
+    mentionOrientation: "top",
+    quillRef: reactQuillRef,
+    members: users,
+    disableMention: false,
+    setInlineImages,
+    prioMentionIds: [...new Set(prioMentionIds)],
+    post,
+  });
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && 
-      <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
-                   userIds={mentionedUserIds} basedOnId={false}/>}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef}
-                         onChange={handleQuillChange}
-                         editMode={editMode}/>
-      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose}/>}
+      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
+      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>
   );
 });

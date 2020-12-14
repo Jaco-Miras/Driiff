@@ -10,3 +10,4 @@ export {default as PostDetailFooter} from "./PostDetailFooter";
 export {default as PostBody} from "./PostBody";
 export {default as PostComments} from "./PostComments";
 export {default as PostVideos} from "./PostVideos";
+export {default as PostChangeAccept} from "./PostChangeAccept";
