@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -325,6 +325,30 @@ const CompanyPostDetailFooter = (props) => {
     setShowApprover(false);
     setApprovers([]);
   };
+
+  useEffect(() => {
+    if (editPostComment) {
+      const hasApproval =
+        editPostComment.users_approval.length > 0 && editPostComment.users_approval.filter((u) => u.ip_address === null).length === editPostComment.users_approval.length && editPostComment.users_approval.some((u) => u.id === user.id);
+      const hasRequestedChange = editPostComment.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
+      if (hasApproval || hasRequestedChange > 0) {
+        setShowApprover(true);
+        setApprovers(
+          editPostComment.users_approval.map((u) => {
+            return {
+              ...u,
+              icon: "user-avatar",
+              value: u.id,
+              label: u.name,
+              type: "USER",
+              ip_address: hasRequestedChange ? null : u.ip_address,
+              is_approved: hasRequestedChange ? false : u.is_approved,
+            };
+          })
+        );
+      }
+    }
+  }, [editPostComment]);
 
   //const showApproveCheckbox = post.users_approval.length === 0;
 

@@ -39,7 +39,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 11px 9px;
-    ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
+    ${(props) => props.editMode && "> div {width:calc(100% - 15px);}"} .mention {
       color: #7a1b8b;
     }
     &:focus {
@@ -114,9 +114,26 @@ const CloseButton = styled(SvgIconFeather)`
 
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = forwardRef((props, ref) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
-          post, parentId, commentActions, userMention, handleClearUserMention, commentId, members,
-          onClosePicker, onActive, prioMentionIds, approvers, onClearApprovers,
+  const {
+    selectedEmoji,
+    onClearEmoji,
+    selectedGif,
+    onClearGif,
+    dropAction,
+    sent,
+    handleClearSent,
+    post,
+    parentId,
+    commentActions,
+    userMention,
+    handleClearUserMention,
+    commentId,
+    members,
+    onClosePicker,
+    onActive,
+    prioMentionIds,
+    approvers,
+    onClearApprovers,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -124,7 +141,7 @@ const PostInput = forwardRef((props, ref) => {
   //const slugs = useSelector(state => state.global.slugs);
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const recipients = useSelector(state => state.global.recipients);
+  const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
   const [text, setText] = useState("");
@@ -188,9 +205,9 @@ const PostInput = forwardRef((props, ref) => {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
-        post_title: post.title
+        post_title: post.title,
       },
-      approval_user_ids: approvers.map(a => a.value)
+      approval_user_ids: approvers.map((a) => a.value),
     };
 
     if (quote) {
@@ -228,11 +245,11 @@ const PostInput = forwardRef((props, ref) => {
         todo_reminder: null,
         total_replies: 0,
         total_unread_replies: 0,
-        updated_at: {timestamp: timestamp},
+        updated_at: { timestamp: timestamp },
         unfurls: [],
         user_clap_count: 0,
         clap_user_ids: [],
-        users_approval: []
+        users_approval: [],
       };
 
       commentActions.add(commentObj);
@@ -245,6 +262,11 @@ const PostInput = forwardRef((props, ref) => {
         parent_id: editMessage.parent_id,
         reference_id: null,
       };
+      if (editPostComment) {
+        if (editPostComment.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
+          delete payload.approval_user_ids;
+        }
+      }
       commentActions.edit(payload);
       setEditMode(false);
       setEditMessage(null);
@@ -298,11 +320,11 @@ const PostInput = forwardRef((props, ref) => {
     setQuillContents(editor.getContents());
 
     let hasMention = false;
-    let hasImage = false
+    let hasImage = false;
 
     if (editor.getContents().ops && editor.getContents().ops.length) {
-      hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length
-      hasImage = editor.getContents().ops.filter((m) => m.insert.image).length
+      hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length;
+      hasImage = editor.getContents().ops.filter((m) => m.insert.image).length;
       handleMentionUser(
         editor
           .getContents()
@@ -314,23 +336,23 @@ const PostInput = forwardRef((props, ref) => {
   };
 
   const handleMentionUser = (mention_ids) => {
-    mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
+    mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
-        //check for recipients/type
-        let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map(m => m.id)];
-        let userIds = mention_ids.filter(id => {
-            let userFound = false;
-            ignoreIds.forEach(pid => {
-                if (pid === parseInt(id)) {
-                    userFound = true;
-                }
-            });
-            return !userFound;
+      //check for recipients/type
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id)];
+      let userIds = mention_ids.filter((id) => {
+        let userFound = false;
+        ignoreIds.forEach((pid) => {
+          if (pid === parseInt(id)) {
+            userFound = true;
+          }
         });
-        setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
+        return !userFound;
+      });
+      setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
     } else {
-        setIgnoredMentionedUserIds([]);
-        setMentionedUserIds([]);
+      setIgnoredMentionedUserIds([]);
+      setMentionedUserIds([]);
     }
   };
 
@@ -471,21 +493,19 @@ const PostInput = forwardRef((props, ref) => {
     const userRecipients = recipients.filter((r) => r.type === "USER");
 
     const newRecipients = userRecipients.filter((r) => {
-      return userIds.some((id) => id === r.type_id)
-    })
+      return userIds.some((id) => id === r.type_id);
+    });
     let payload = {
       post_id: post.id,
       recipient_ids: newRecipients.map((u) => u.id),
-      recipients: newRecipients
+      recipients: newRecipients,
     };
 
-    console.log(users, payload)
+    console.log(users, payload);
     dispatch(
-      addPostRecipients(payload, (err,res) => {
+      addPostRecipients(payload, (err, res) => {
         if (err) return;
-        dispatch(
-          addUserToPostRecipients(payload)
-        )
+        dispatch(addUserToPostRecipients(payload));
       })
     );
 
@@ -509,11 +529,21 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  const {modules} = useQuillModules({mode:"post_comment", callback: handleSubmit, mentionOrientation: "top", quillRef: reactQuillRef, members: user.type === "external" ? members : [], disableMention: false, setInlineImages,  prioMentionIds: [...new Set(prioMentionIds)], post});
+  const { modules } = useQuillModules({
+    mode: "post_comment",
+    callback: handleSubmit,
+    mentionOrientation: "top",
+    quillRef: reactQuillRef,
+    members: user.type === "external" ? members : [],
+    disableMention: false,
+    setInlineImages,
+    prioMentionIds: [...new Set(prioMentionIds)],
+    post,
+  });
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds}/>}
+      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>
