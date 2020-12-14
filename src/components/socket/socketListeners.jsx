@@ -88,6 +88,7 @@ import {
   fetchPost,
   incomingArchivedSelectedPosts,
   incomingComment,
+  incomingCommentApproval,
   incomingCommentClap,
   incomingDeletedComment,
   incomingDeletedPost,
@@ -429,6 +430,10 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
+            break;
+          }
+          case "POST_COMMENT_APPROVED": {
+            this.props.incomingCommentApproval(e);
             break;
           }
           case "READ_SELECTED_UNREAD_POST": {
@@ -1533,6 +1538,7 @@ function mapDispatchToProps(dispatch) {
     updateWorkspacePostCount: bindActionCreators(updateWorkspacePostCount, dispatch),
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
     incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
+    incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
   };
 }
 
