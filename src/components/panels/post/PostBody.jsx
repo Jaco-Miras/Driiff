@@ -17,6 +17,9 @@ const Wrapper = styled.div`
     cursor: pointer;
     margin-right: 5px;
   }
+  .recipients svg {
+    margin: 0;
+  }
 
   .author-avatar {
     width: 40px;
@@ -106,6 +109,7 @@ const Icon = styled(SvgIconFeather)`
 const LockIcon = styled(SvgIconFeather)`
   width: 12px;
   vertical-align: top;
+  margin-right: 0;
 `;
 
 const ApprovedText = styled.div`
@@ -289,7 +293,12 @@ const PostBody = (props) => {
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
-        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`)
+        .map(
+          (r) =>
+            `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
+            }</span>`
+        )
         .join(", ");
     }
 
@@ -305,7 +314,12 @@ const PostBody = (props) => {
     if (otherPostRecipients.length + (hasMe ? 1 : 0) > recipientSize) {
       otherRecipientNames += otherPostRecipients
         .filter((r, i) => i >= recipientSize)
-        .map((r) => `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`)
+        .map(
+          (r) =>
+            `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
+            }</span>`
+        )
         .join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;

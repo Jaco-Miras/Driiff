@@ -255,6 +255,7 @@ const CheckBox = styled(TodoCheckBox)`
 
 const LockIcon = styled(SvgIconFeather)`
   width: 12px;
+  margin: 0;
 `;
 
 const CompanyPostItemPanel = (props) => {
@@ -297,7 +298,10 @@ const CompanyPostItemPanel = (props) => {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
         .map((r) => {
-          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`;
+          if (["DEPARTMENT", "TOPIC"].includes(r.type))
+            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
+            }</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join(", ");
@@ -316,7 +320,10 @@ const CompanyPostItemPanel = (props) => {
       otherRecipientNames += otherPostRecipients
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
-          if (["DEPARTMENT", "TOPIC"].includes(r.type)) return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`;
+          if (["DEPARTMENT", "TOPIC"].includes(r.type))
+            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
+            }</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join("");
