@@ -17,6 +17,7 @@ import {
   incomingChatMessage,
   incomingChatMessageFromOthers,
   incomingChatMessageReaction,
+  incomingChatStar,
   incomingDeletedChatMessage,
   incomingImportantChat,
   incomingPostNotificationMessage,
@@ -87,7 +88,6 @@ import {
   fetchPost,
   incomingArchivedSelectedPosts,
   incomingComment,
-  incomingCommentApproval,
   incomingCommentClap,
   incomingDeletedComment,
   incomingDeletedPost,
@@ -427,10 +427,6 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
-          case "POST_COMMENT_APPROVED": {
-            this.props.incomingCommentApproval(e);
-            break;
-          }
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
             break;
@@ -726,11 +722,14 @@ class SocketListeners extends Component {
             this.props.incomingDeletedChatMessage(e);
             break;
           }
-
           case "TOGGLE_IMPORTANT": {
             this.props.incomingImportantChat(e);
+            break;
           }
-
+          case "STAR_CHAT": {
+            this.props.incomingChatStar(e);
+            break;
+          }
           default:
             return null;
         }
@@ -1532,8 +1531,8 @@ function mapDispatchToProps(dispatch) {
     incomingArchivedSelectedPosts: bindActionCreators(incomingArchivedSelectedPosts, dispatch),
     getUnreadWorkspacePostEntries: bindActionCreators(getUnreadWorkspacePostEntries, dispatch),
     updateWorkspacePostCount: bindActionCreators(updateWorkspacePostCount, dispatch),
-    incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
+    incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
   };
 }
 

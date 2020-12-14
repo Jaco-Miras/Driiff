@@ -30,6 +30,8 @@ export {
   getChannelDetail,
   getLastChannel,
   getChannelLastReply,
+  putChatStar,
+  getChatStar,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
