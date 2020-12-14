@@ -112,6 +112,7 @@ export default (state = INITIAL_STATE, action) => {
         } else if (ws.type === "WORKSPACE") {
           updatedWorkspaces[ws.id] = {
             ...ws,
+            is_shared: ws.topic_detail.is_shared,
             active: ws.topic_detail.active,
             channel: { ...ws.topic_detail.channel, loaded: false },
             unread_chats: ws.topic_detail.unread_chats,

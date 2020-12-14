@@ -114,7 +114,7 @@ const Option = (props) => {
             )}
             {props.children}
             {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" />}
-            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" />}
+            {props.data.is_shared && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" />}
           </span>
         )}
       </components.Option>
@@ -130,7 +130,7 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
           <MultiValueLabelWrapper isPrivate={props.data.is_lock === 1}>
             {props.data.label}
             {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" height="12" />}
-            {props.data.is_shared && props.data.type === "WORKSPACE" && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" height="12" />}
+            {props.data.is_shared && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" height="12" />}
           </MultiValueLabelWrapper>
         </components.MultiValueLabel>
         <components.MultiValueRemove {...props} innerProps={{ className: "value-remove" }}>

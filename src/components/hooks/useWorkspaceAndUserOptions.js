@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const useWorkspaceAndUserOptions = (props) => {
@@ -34,6 +34,7 @@ const useWorkspaceAndUserOptions = (props) => {
           member_ids: r.participant_ids,
           members: [],
           is_lock: r.private,
+          is_shared: r.is_shared,
         }),
         value: r.id,
         label: r.name,
