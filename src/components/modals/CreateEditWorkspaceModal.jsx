@@ -18,26 +18,27 @@ const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  
+
   .icon-wrapper {
     width: 60px;
     position: relative;
     justify-content: center;
     align-items: center;
     display: grid;
-    
+
     .btn {
       background: #fff;
       position: absolute;
       right: 5px;
       bottom: -5px;
       padding: 3px;
-      
+
       &:hover {
-        background: #fff !important;      
+        background: #fff !important;
       }
-    } 
+    }
   }
+
   .name-wrapper {
     width: calc(100% - 40px);
   }
@@ -150,7 +151,7 @@ const SelectPeople = styled(PeopleSelect)`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${props => props.height}px;
+    height: ${(props) => props.height}px;
     max-height: 300px;
   }
 
@@ -158,12 +159,12 @@ const StyledDescriptionInput = styled(DescriptionInput)`
     min-width: 100%;
     font-weight: 500;
   }
-  
+
   .ql-toolbar {
     bottom: 30px;
-    left: 40px;  
+    left: 40px;
   }
-  
+
   .invalid-feedback {
     position: absolute;
     bottom: 0;
@@ -204,15 +205,15 @@ const CreateEditWorkspaceModal = (props) => {
         ? null
         : item.type === "FOLDER"
         ? {
-          value: item.id,
-          label: item.name,
-        }
+            value: item.id,
+            label: item.name,
+          }
         : item.folder_id
-          ? {
+        ? {
             value: item.folder_id,
             label: item.folder_name,
           }
-          : null,
+        : null,
     description: "",
     textOnly: "",
   });
@@ -271,9 +272,10 @@ const CreateEditWorkspaceModal = (props) => {
     feedbackWorkspaceNameIsRequired: _t("FEEDBACK.WORKSPACE_NAME_IS_REQUIRED", "Workspace name is required."),
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
-    toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", `::workspace_name:: workspace is created.`, {
-      workspace_name: `<b>${form.name}</b>`
+    toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", "::workspace_name:: workspace is created.", {
+      workspace_name: `<b>${form.name}</b>`,
     }),
+    externalUserConfirmation: _t("CONFIRMATION_EXTERNAL_USER", "Are you sure you want to give an external user access to this Workspace?"),
   };
 
   const _validateName = useCallback(() => {
@@ -336,7 +338,7 @@ const CreateEditWorkspaceModal = (props) => {
         value: ws.id,
         label: (
           <>
-            {ws.name} {ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/>}
+            {ws.name} {ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2" />}
           </>
         ),
       };
@@ -414,16 +416,32 @@ const CreateEditWorkspaceModal = (props) => {
   const handleUpdateWorkspaceIcon = (payload, file) => {
     let formData = new FormData();
     formData.append("files[0]", file);
-    uploadFiles({
-      is_primary: 0,
-      topic_id: payload.topic_id,
-      files: formData,
-    }, (err, res) => {
-      dispatch(updateWorkspace({
-        ...payload,
-        file_id: res.data.files[0].id,
-      }));
-    });
+    uploadFiles(
+      {
+        is_primary: 0,
+        topic_id: payload.topic_id,
+        files: formData,
+      },
+      (err, res) => {
+        dispatch(
+          updateWorkspace({
+            ...payload,
+            file_id: res.data.files[0].id,
+          })
+        );
+      }
+    );
+  };
+
+  const confirmExternalUsers = () => {
+    if (invitedEmails.length) {
+      var answer = window.confirm(dictionary.externalUserConfirmation);
+      if (answer) {
+        handleConfirm();
+      }
+    } else {
+      handleConfirm();
+    }
   };
 
   const handleConfirm = () => {
@@ -601,7 +619,7 @@ const CreateEditWorkspaceModal = (props) => {
               toaster.warning(
                 <span>
                   Workspace creation failed.
-                  <br/>
+                  <br />
                   Please try again.
                 </span>
               );
@@ -612,12 +630,12 @@ const CreateEditWorkspaceModal = (props) => {
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
                 history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, {
                   folder_id: form.selectedFolder.value,
-                  workspace_id: res.data.id
+                  workspace_id: res.data.id,
                 });
               } else {
                 history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, {
                   folder_id: null,
-                  workspace_id: res.data.id
+                  workspace_id: res.data.id,
                 });
               }
               if (attachedFiles.length) {
@@ -665,16 +683,18 @@ const CreateEditWorkspaceModal = (props) => {
               }
 
               if (form.selectedFolder !== null) {
-                toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterWorkspaceIsCreated }}/>);
+                toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterWorkspaceIsCreated }} />);
               } else {
-                toaster.success(<span dangerouslySetInnerHTML={{
-                  __html: _t("TOASTER.WORKSPACE_UNDER_FOLDER_IS_CREATED",
-                    "::workspace_name:: workspace is created under ::folder_name:: directory",
-                    {
-                      workspace_name: `<b>${form.name}</b>`,
-                      folder_name: `<b>${form.selectedFolder.label}</b>`
-                    })
-                }}/>);
+                toaster.success(
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: _t("TOASTER.WORKSPACE_UNDER_FOLDER_IS_CREATED", "::workspace_name:: workspace is created under ::folder_name:: directory", {
+                        workspace_name: `<b>${form.name}</b>`,
+                        folder_name: `<b>${form.selectedFolder.label}</b>`,
+                      }),
+                    }}
+                  />
+                );
               }
             }
           })
@@ -691,16 +711,19 @@ const CreateEditWorkspaceModal = (props) => {
   const handleAddMentionedUsers = (users) => {
     setForm({
       ...form,
-      selectedUsers: [...users.map((user) => {
-        return {
-          id: user.id,
-          value: user.id,
-          label: user.name,
-          name: user.name,
-          first_name: user.first_name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-        };
-      }), ...form.selectedUsers]
+      selectedUsers: [
+        ...users.map((user) => {
+          return {
+            id: user.id,
+            value: user.id,
+            label: user.name,
+            name: user.name,
+            first_name: user.first_name,
+            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+          };
+        }),
+        ...form.selectedUsers,
+      ],
     });
     setMentionedUserIds([]);
   };
@@ -946,9 +969,9 @@ const CreateEditWorkspaceModal = (props) => {
         selectedUsers: members,
         selectedFolder: item.folder_id
           ? {
-            value: item.folder_id,
-            label: item.folder_name,
-          }
+              value: item.folder_id,
+              label: item.folder_name,
+            }
           : null,
         description: item.description,
         textOnly: item.description,
@@ -971,9 +994,9 @@ const CreateEditWorkspaceModal = (props) => {
           item === null
             ? null
             : {
-              value: item.id,
-              label: item.name,
-            },
+                value: item.id,
+                label: item.name,
+              },
         has_folder: item === null ? false : item.type === "FOLDER",
       }));
 
@@ -1067,8 +1090,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
-      <ModalHeaderSection
-        toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
       <ModalBody onDragOver={handleShowDropzone}>
         <DropDocument
           hide={!showDropzone}
@@ -1095,13 +1117,15 @@ const CreateEditWorkspaceModal = (props) => {
                   }}
                   onCancel={handleHideIconDropzone}
                 />
-                {<Avatar imageLink={form.icon_link} name={form.name} noDefaultClick={true} forceThumbnail={false}/>}
+                {<Avatar imageLink={form.icon_link} name={form.name} noDefaultClick={true} forceThumbnail={false} />}
                 <span className="btn btn-outline-light btn-sm">
-                <SvgIconFeather icon="pencil"/>
-              </span>
+                  <SvgIconFeather icon="pencil" />
+                </span>
               </div>
               <div className="name-wrapper">
-                <Label className={"modal-label"} for="chat">{dictionary.workspaceName}</Label>
+                <Label className={"modal-label"} for="chat">
+                  {dictionary.workspaceName}
+                </Label>
                 <Input
                   name="name"
                   defaultValue={mode === "edit" ? item.name : ""}
@@ -1118,7 +1142,7 @@ const CreateEditWorkspaceModal = (props) => {
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
-          <Label for="has_folder"/>
+          <Label for="has_folder" />
           <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
             {dictionary.addToFolder}
           </CheckBox>
@@ -1126,8 +1150,7 @@ const CreateEditWorkspaceModal = (props) => {
         {form.has_folder === true && (
           <WrapperDiv className={"modal-input"}>
             <Label for="people">{dictionary.folder}</Label>
-            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder}
-                          isMulti={false} isClearable={true}/>
+            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
             <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
           </WrapperDiv>
         )}
@@ -1167,19 +1190,19 @@ const CreateEditWorkspaceModal = (props) => {
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile}/>
+            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
           </WrapperDiv>
         )}
         <WrapperDiv className="action-wrapper">
-          <Label/>
+          <Label />
           <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
             {dictionary.lockWorkspace}
           </CheckBox>
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+          <button className="btn btn-primary" onClick={confirmExternalUsers}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>
           {mode === "edit" && (

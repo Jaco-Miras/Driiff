@@ -1,13 +1,12 @@
-import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory, useRouteMatch} from "react-router-dom";
-import {sessionService} from "redux-react-session";
-import {$_GET, getUrlParams} from "../../helpers/commonFunctions";
-import {authenticateGoogleLogin} from "../../redux/actions/userAction";
-import {useUserActions} from "./index";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { sessionService } from "redux-react-session";
+import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
+import { authenticateGoogleLogin } from "../../redux/actions/userAction";
+import { useUserActions } from "./index";
 
 export const useUserLogin = (props) => {
-
   const dispatch = useDispatch();
   const history = useHistory();
   const authMatch = useRouteMatch("/authenticate/:token/:returnUrl?");
@@ -18,7 +17,7 @@ export const useUserLogin = (props) => {
   useEffect(() => {
     if (history.location.pathname === "/logged-out") {
       userActions.logout();
-      history.push('/login');
+      history.push("/login");
     }
 
     //authenticate user login from magic link
@@ -32,7 +31,6 @@ export const useUserLogin = (props) => {
 
     //authenticate user login from backend
     if (authMatch !== null) {
-
       let userAuthToken = localStorage.getItem("userAuthToken");
       let goTo = authMatch.params.returnUrl ? atob(authMatch.params.returnUrl) : "";
 
@@ -79,7 +77,7 @@ export const useUserLogin = (props) => {
             if (authMatch.params.returnUrl) {
               history.push(goTo);
             }
-          })
+          });
       }
     }
 

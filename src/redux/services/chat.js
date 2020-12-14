@@ -295,3 +295,32 @@ export function getChannelLastReply(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param payload
+ * @param number payload.message_id
+ * @param number payload.star 1|0
+ * @returns {Promise<*>}
+ */
+export function putChatStar(payload) {
+  let url = "/v2/chat-star";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @param number payload.message_id
+ * @returns {Promise<*>}
+ */
+export function getChatStar(payload) {
+  let url = `/v2/chat-star?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

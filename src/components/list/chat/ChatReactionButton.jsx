@@ -120,13 +120,17 @@ const ChatReactionButton = (props) => {
     }
   }, [showEmojiSwitcher]);
 
-  useOutsideClick(refs.container, () => {
-    setShowEmojiPicker(false);
-  }, true);
+  useOutsideClick(
+    refs.container,
+    () => {
+      setShowEmojiPicker(false);
+    },
+    true
+  );
 
   return (
     <ChatReactionButtonContainer className="emoji-button-div" ref={refs.container}>
-      <StyledEmojiButton icon="smile" active={showEmojiPicker} onClick={handleShowEmojiPicker}/>
+      <StyledEmojiButton icon="smile" active={showEmojiPicker} onClick={handleShowEmojiPicker} />
       {showEmojiPicker && (
         <StyledPickerEmoji
           ref={refs.picker}

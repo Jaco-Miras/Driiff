@@ -9,6 +9,7 @@ import {
   getChannelMembers as getChannelMembersService,
   getChannels as getChannelsService,
   getChatMessages as getChatMessagesService,
+  getChatStar as getChatStarService,
   getGlobalRecipients as getGlobalRecipientsService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
@@ -23,6 +24,7 @@ import {
   putChannel as putChannelService,
   putChannelUpdate as putChannelUpdateService,
   putChatMessage as putChatMessageService,
+  putChatStar as putChatStarService,
   putImportantChat as putImportantChatService,
   putMarkReadChannel as putMarkReadChannelService,
   putMarkReminderComplete as putMarkReminderCompleteService,
@@ -286,4 +288,16 @@ export function incomingImportantChat(payload, callback) {
 
 export function getChannelLastReply(payload, callback) {
   return dispatchActionToReducer(getChannelLastReplyService(payload), "GET_CHANNEL_LAST_REPLY_START", "GET_CHANNEL_LAST_REPLY_SUCCESS", "GET_CHANNEL_LAST_REPLY_FAIL", callback);
+}
+
+export function putChatStar(payload, callback) {
+  return dispatchActionToReducer(putChatStarService(payload), "PUT_CHAT_STAR_START", "PUT_CHAT_STAR_SUCCESS", "PUT_CHAT_STAR_FAIL", callback);
+}
+
+export function getChatStar(payload, callback) {
+  return dispatchActionToReducer(getChatStarService(payload), "GET_CHAT_STAR_START", "GET_CHAT_STAR_SUCCESS", "GET_CHAT_STAR_FAIL", callback);
+}
+
+export function incomingChatStar(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_CHAT_STAR", payload, callback);
 }
