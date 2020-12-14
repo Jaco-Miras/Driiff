@@ -278,15 +278,15 @@ export function postClap(payload) {
  * @returns {Promise<*>}
  */
 export function getCompanyPosts(payload) {
-  const {skip = 0, limit = 25, search = "", filters = []} = payload;
+  const { skip = 0, limit = 25, search = "", filters = [] } = payload;
   let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
   if (search !== "") {
     url += `&search=${search}`;
   }
-  if (!!filters.length) {
+  if (filters.length) {
     filters.forEach((f, i) => {
       url += `&filter[${i}]=${f}`;
-    })
+    });
   }
   return apiCall({
     method: "GET",
@@ -478,7 +478,7 @@ export function getReplyClapHover(payload) {
 export function getUnreadPostEntries(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/post-unread-entries`,
+    url: "/v2/post-unread-entries",
   });
 }
 
@@ -490,7 +490,7 @@ export function getUnreadPostEntries(payload) {
 export function markAllPostAsRead(payload) {
   return apiCall({
     method: "PUT",
-    url: `/v2/marked-post-read/all`,
+    url: "/v2/marked-post-read/all",
     data: payload,
   });
 }
@@ -503,7 +503,7 @@ export function markAllPostAsRead(payload) {
 export function archiveAllPosts(payload) {
   return apiCall({
     method: "PUT",
-    url: `/v2/archived-post/all`,
+    url: "/v2/archived-post/all",
     data: payload,
   });
 }
@@ -517,7 +517,7 @@ export function archiveAllPosts(payload) {
 export function addPostRecipients(payload) {
   return apiCall({
     method: "POST",
-    url: `/v2/add-post-recipients`,
+    url: "/v2/add-post-recipients",
     data: payload,
   });
 }
@@ -529,7 +529,7 @@ export function addPostRecipients(payload) {
 export function refetchPosts() {
   return apiCall({
     method: "POST",
-    url: `/v2/re-fetch-module/posts`,
+    url: "/v2/re-fetch-module/posts",
   });
 }
 
@@ -551,7 +551,7 @@ export function refetchPostComments(payload) {
 export function getUnreadPostComments(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/post-unread-comments-entries`,
+    url: "/v2/post-unread-comments-entries",
   });
 }
 
@@ -564,8 +564,8 @@ export function getUnreadPostComments(payload) {
 export function putCommentImportant(payload) {
   return apiCall({
     method: "PUT",
-    url: `/v2/set-important-comment`,
-    data: payload
+    url: "/v2/set-important-comment",
+    data: payload,
   });
 }
 
@@ -579,8 +579,15 @@ export function getUnreadWorkspacePostEntries(payload) {
 export function postApprove(payload) {
   return apiCall({
     method: "POST",
-    url: `/v2/post-approve`,
-    data: payload
+    url: "/v2/post-approve",
+    data: payload,
   });
 }
 
+export function commentApprove(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/post-comment-approve",
+    data: payload,
+  });
+}

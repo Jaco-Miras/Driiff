@@ -147,6 +147,7 @@ export {
 
 export {
   addPostRecipients,
+  commentApprove,
   deleteComment,
   deletePost,
   getUnreadWorkspacePostEntries,

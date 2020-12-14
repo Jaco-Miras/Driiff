@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
-import { PostDetailFooter, PostVideos } from "../../../panels/post/index";
+import { PostDetailFooter, PostVideos, PostChangeAccept } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
 import { useGoogleApis, useTimeFormat, useFiles } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
@@ -19,10 +19,10 @@ const Wrapper = styled.li`
     background: #6a5acd !important;
     color: #fff;
     .text-muted {
-      color: #FFFAFA !important;
+      color: #fffafa !important;
     }
   }
-  
+
   .mention {
     font-weight: bold;
     color: #7a1b8b;
@@ -210,7 +210,10 @@ const Comment = (props) => {
     content: useRef(null),
   };
 
-  const { fileBlobs, actions: { setFileSrc } } = useFiles();
+  const {
+    fileBlobs,
+    actions: { setFileSrc },
+  } = useFiles();
   const history = useHistory();
   const googleApis = useGoogleApis();
 
@@ -220,6 +223,7 @@ const Comment = (props) => {
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
+  const [approving, setApproving] = useState({ approve: false, change: false });
   // const [react, setReact] = useState({
   //   user_clap_count: comment.user_clap_count,
   //   clap_count: comment.clap_count,
@@ -322,7 +326,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -332,62 +336,67 @@ const Comment = (props) => {
         if (!img.classList.contains("has-listener")) {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
-          const imgFile = comment.files.find((f) => imgSrc.includes(f.code))
+          const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id])
+            img.setAttribute("src", fileBlobs[imgFile.id]);
           }
         } else {
-          const imgFile = comment.files.find((f) => imgSrc.includes(f.code))
+          const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id])
+            img.setAttribute("src", fileBlobs[imgFile.id]);
           }
         }
-      })
+      });
     }
-    const imageFiles = comment.files.filter((f) => f.type.toLowerCase().includes("image"))
-    
+    const imageFiles = comment.files.filter((f) => f.type.toLowerCase().includes("image"));
+
     if (imageFiles.length) {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id] && comment.body.includes(file.code)) {
           //setIsLoaded(false);
           fetch(file.view_link, {
-            method: "GET", keepalive: true, headers: {
+            method: "GET",
+            keepalive: true,
+            headers: {
               Authorization: `Bearer ${userAuth.access_token}`,
-              'Access-Control-Allow-Origin': "*",
+              "Access-Control-Allow-Origin": "*",
               Connection: "keep-alive",
               crossorigin: true,
-            }
+            },
           })
             .then(function (response) {
               return response.blob();
             })
-            .then(function (data) {
-              const imgObj = URL.createObjectURL(data);
-              setFileSrc({
-                id: file.id,
-                src: imgObj
-              });
-              commentActions.updateCommentImages({
-                post_id: post.id,
-                id: comment.id,
-                parent_id: type === "main" ? null : parentId,
-                file: {
-                  ...file,
-                  blobUrl: imgObj
-                }
-              })
-            }, function (err) {
-              console.log(err, 'error');
-            });
+            .then(
+              function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+                commentActions.updateCommentImages({
+                  post_id: post.id,
+                  id: comment.id,
+                  parent_id: type === "main" ? null : parentId,
+                  file: {
+                    ...file,
+                    blobUrl: imgObj,
+                  },
+                });
+              },
+              function (err) {
+                console.log(err, "error");
+              }
+            );
         }
-      })
+      });
     }
   }, [comment.body, refs.content, comment.files]);
 
   useEffect(() => {
     inputFocus();
   }, [inputFocus]);
-  
+
   useEffect(() => {
     if (typeof history.location.state === "object") {
       if (history.location.state && history.location.state.focusOnMessage === comment.id && refs.body.current) {
@@ -412,6 +421,50 @@ const Comment = (props) => {
       history.push(history.location.pathname, null);
     };
   }, []);
+
+  const handleApprove = () => {
+    setApproving({
+      ...approving,
+      approve: true,
+    });
+    if (!approving.approve) {
+      commentActions.approve(
+        {
+          post_id: post.id,
+          approved: 1,
+          comment_id: comment.id,
+        },
+        () => {
+          setApproving({
+            ...approving,
+            approve: false,
+          });
+        }
+      );
+    }
+  };
+
+  const handleRequestChange = () => {
+    setApproving({
+      ...approving,
+      change: true,
+    });
+    if (!approving.change) {
+      commentActions.approve(
+        {
+          post_id: post.id,
+          approved: 0,
+          comment_id: comment.id,
+        },
+        () => {
+          setApproving({
+            ...approving,
+            change: false,
+          });
+        }
+      );
+    }
+  };
 
   // useEffect(() => {
   //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
@@ -442,6 +495,9 @@ const Comment = (props) => {
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
+          {comment.users_approval.length > 0 && (
+            <PostChangeAccept approving={approving} fromNow={fromNow} usersApproval={comment.users_approval} user={user} handleApprove={handleApprove} handleRequestChange={handleRequestChange} dictionary={dictionary} />
+          )}
           {comment.files.length >= 1 && (
             <>
               <hr />

@@ -5,6 +5,7 @@ import {
   addComment,
   addCommentQuote,
   clearCommentQuote,
+  commentApprove,
   deleteComment,
   fetchComments,
   getReplyClapHover,
@@ -20,7 +21,6 @@ import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTodoActions } from "./index";
 
 const useCommentActions = () => {
-
   const dispatch = useDispatch();
   const todoActions = useTodoActions();
   const toaster = useToaster();
@@ -120,21 +120,23 @@ const useCommentActions = () => {
   );
 
   const remind = useCallback(
-    (postComment, post, callback = () => {
-    }) => {
-      const onConfirm = (payload, modalCallback = () => {
-      }) => {
+    (postComment, post, callback = () => {}) => {
+      const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForPostComment(postComment.id, payload, (err, res) => {
           if (err) {
-            toaster.error(`An error has occurred try again!`);
+            toaster.error("An error has occurred try again!");
           }
           if (res) {
-            toaster.success(<>You will be reminded about this comment under <b>To-dos & Reminders</b>.</>);
+            toaster.success(
+              <>
+                You will be reminded about this comment under <b>To-dos & Reminders</b>.
+              </>
+            );
           }
           modalCallback(err, res);
           callback(err, res);
         });
-      }
+      };
       let payload = {
         type: "todo_reminder",
         parentItem: post,
@@ -150,38 +152,34 @@ const useCommentActions = () => {
     [dispatch]
   );
 
-  const fetchPostReplyHover = (messageId, callback = () => {
-  }) => {
+  const fetchPostReplyHover = (messageId, callback = () => {}) => {
     dispatch(
-      getReplyClapHover({
-        message_id: messageId
-      }, callback)
+      getReplyClapHover(
+        {
+          message_id: messageId,
+        },
+        callback
+      )
     );
   };
 
   const like = useCallback(
     (payload = {}, callback) => {
-      dispatch(
-        addCommentReact(payload, callback)
-      );
+      dispatch(addCommentReact(payload, callback));
     },
     [dispatch]
   );
 
   const unlike = useCallback(
     (payload = {}, callback) => {
-      dispatch(
-        removeCommentReact(payload, callback)
-      );
+      dispatch(removeCommentReact(payload, callback));
     },
     [dispatch]
   );
 
   const updateCommentImages = useCallback(
     (payload = {}) => {
-      dispatch(
-        updateCommentFiles(payload)
-      );
+      dispatch(updateCommentFiles(payload));
     },
     [dispatch]
   );
@@ -191,9 +189,16 @@ const useCommentActions = () => {
       dispatch(
         putCommentImportant({
           message_id: comment.id,
-          is_important: comment.is_important ? 0 : 1
+          is_important: comment.is_important ? 0 : 1,
         })
       );
+    },
+    [dispatch]
+  );
+
+  const approve = useCallback(
+    (payload = {}, callback) => {
+      dispatch(commentApprove(payload, callback));
     },
     [dispatch]
   );
@@ -201,6 +206,7 @@ const useCommentActions = () => {
   return {
     add,
     addQuote,
+    approve,
     clap,
     clearQuote,
     create,

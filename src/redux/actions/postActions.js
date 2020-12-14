@@ -2,6 +2,7 @@ import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actio
 import {
   addPostRecipients as addPostRecipientsService,
   archiveAllPosts as archiveAllPostsService,
+  commentApprove as commentApproveService,
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
   fetchComments as fetchCommentsService,
@@ -203,7 +204,7 @@ export function incomingPostViewer(payload, callback) {
 }
 
 export function archiveReducer(payload, callback) {
-    return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
+  return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
 }
 
 export function incomingReadUnreadReducer(payload, callback) {
@@ -336,4 +337,12 @@ export function postApprove(payload, callback) {
 
 export function incomingPostApproval(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_APPROVAL", payload, callback);
+}
+
+export function commentApprove(payload, callback) {
+  return dispatchActionToReducer(commentApproveService(payload), "COMMENT_APPROVE_START", "COMMENT_APPROVE_SUCCESS", "COMMENT_APPROVE_FAIL", callback);
+}
+
+export function incomingCommentApproval(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMMENT_APPROVAL", payload, callback);
 }

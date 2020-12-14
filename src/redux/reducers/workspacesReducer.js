@@ -1170,7 +1170,7 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
 
             if (action.data.author.id === state.user.id) newWorkspacePosts[ws.topic_id].posts[action.data.post_id].has_replied = true;
-            if (hasPendingApproval) {
+            if (hasPendingApproval && action.data.users_approval.some((ua) => ua.id === state.user.id)) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].need_approval = true;
             }
           }
@@ -2197,6 +2197,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      need_approval: false,
                       users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
                         if (u.id === action.data.user_approved.id) {
                           return {
@@ -2207,6 +2208,58 @@ export default (state = INITIAL_STATE, action) => {
                           return u;
                         }
                       }),
+                    },
+                  },
+                };
+              }
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
+    case "INCOMING_COMMENT_APPROVAL": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          ...(state.postComments[action.data.post.id] && {
+            [action.data.post.id]: {
+              ...state.postComments[action.data.post.id],
+              comments: {
+                ...state.postComments[action.data.post.id].comments,
+                ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
+                  [action.data.comment.id]: {
+                    ...state.postComments[action.data.post.id].comments[action.data.comment.id],
+                    users_approval: state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((u) => {
+                      if (u.id === action.data.user_approved.id) {
+                        return {
+                          ...u,
+                          ...action.data.user_approved,
+                        };
+                      } else {
+                        return u;
+                      }
+                    }),
+                  },
+                }),
+              },
+            },
+          }),
+        },
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces.length > 0 && {
+            ...state.workspacePosts,
+            ...action.data.workspaces.reduce((res, ws) => {
+              if (state.workspacePosts[ws.topic.id]) {
+                res[ws.topic.id] = {
+                  ...state.workspacePosts[ws.topic.id],
+                  posts: {
+                    ...state.workspacePosts[ws.topic.id].posts,
+                    [action.data.post.id]: {
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
+                      need_approval: false,
                     },
                   },
                 };
