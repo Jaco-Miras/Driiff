@@ -1143,6 +1143,9 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
       let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
+      const hasRequestedChange = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
+      const hasPendingApproval =
+        action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length && action.data.users_approval.some((u) => u.id === state.user.id);
 
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
         action.data.workspaces.forEach((ws) => {
@@ -1168,6 +1171,9 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
 
             if (action.data.author.id === state.user.id) newWorkspacePosts[ws.topic_id].posts[action.data.post_id].has_replied = true;
+            if (hasRequestedChange > 0 && hasPendingApproval) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].need_approval = true;
+            }
           }
         });
       }
@@ -2196,22 +2202,22 @@ export default (state = INITIAL_STATE, action) => {
                         if (u.id === action.data.user_approved.id) {
                           return {
                             ...u,
-                            ...action.data.user_approved
-                          }
+                            ...action.data.user_approved,
+                          };
                         } else {
                           return u;
                         }
-                      })
-                    }
-                  }
-                }
+                      }),
+                    },
+                  },
+                };
               }
               return res;
-            }, {})
-          })
-        }
-      }
-    } 
+            }, {}),
+          }),
+        },
+      };
+    }
     default:
       return state;
   }
