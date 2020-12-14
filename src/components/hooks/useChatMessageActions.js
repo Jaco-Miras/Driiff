@@ -6,9 +6,11 @@ import {
   addQuote,
   deleteChatMessage,
   getChatMessages,
+  getChatStar,
   postChatMessage,
   postChatReaction,
   putChatMessage,
+  putChatStar,
   putImportantChat,
   putMarkReminderComplete,
   setEditChatMessage,
@@ -26,7 +28,7 @@ const useChatMessageActions = () => {
   const todoActions = useTodoActions();
 
   const refs = {
-    fetch: useRef(false)
+    fetch: useRef(false),
   };
 
   // const getSharedPayload = useCallback(
@@ -65,10 +67,12 @@ const useChatMessageActions = () => {
           //...getSharedPayload(channel),
         };
 
-        dispatch(getChatMessages(payload, (err, res) => {
-          refs.fetch.current = false;
-          callback(err, res);
-        }));
+        dispatch(
+          getChatMessages(payload, (err, res) => {
+            refs.fetch.current = false;
+            callback(err, res);
+          })
+        );
       }
     },
     [dispatch]
@@ -258,12 +262,8 @@ const useChatMessageActions = () => {
    */
   const removeUnfurl = useCallback(
     (payload) => {
-      dispatch(
-        deleteUnfurl(payload)
-      );
-      dispatch(
-        removeUnfurlReducer(payload)
-      );
+      dispatch(deleteUnfurl(payload));
+      dispatch(removeUnfurlReducer(payload));
     },
     [dispatch]
   );
@@ -273,29 +273,29 @@ const useChatMessageActions = () => {
    */
   const setLastMessageVisiblility = useCallback(
     (payload) => {
-      dispatch(
-        setLastChatVisibility(payload)
-      );
+      dispatch(setLastChatVisibility(payload));
     },
     [dispatch]
   );
 
   const remind = useCallback(
-    (message, channel, callback = () => {
-    }) => {
-      const onConfirm = (payload, modalCallback = () => {
-      }) => {
+    (message, channel, callback = () => {}) => {
+      const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForChat(message.id, payload, (err, res) => {
           if (err) {
-            toaster.error(`An error has occurred try again!`);
+            toaster.error("An error has occurred try again!");
           }
           if (res) {
-            toaster.success(<>You will be reminded about this chat message under <b>To-dos & Reminders</b>.</>);
+            toaster.success(
+              <>
+                You will be reminded about this chat message under <b>To-dos & Reminders</b>.
+              </>
+            );
           }
           modalCallback(err, res);
           callback(err, res);
         });
-      }
+      };
       let payload = {
         type: "todo_reminder",
         parentItem: channel,
@@ -321,11 +321,42 @@ const useChatMessageActions = () => {
         putImportantChat(
           {
             message_id: chat.id,
-            is_important: chat.is_important ? 0 : 1
+            is_important: chat.is_important ? 0 : 1,
           },
           callback
         )
       );
+    },
+    [dispatch]
+  );
+
+  /**
+   * @param number messageId
+   * @param {function} [callback]
+   */
+  const getStars = useCallback(
+    (messageId, callback = () => {}) => {
+      dispatch(
+        getChatStar(
+          {
+            message_id: messageId,
+          },
+          callback
+        )
+      );
+    },
+    [dispatch]
+  );
+
+  /**
+   * @param {object} payload
+   * @parm number payload.star 1|0
+   * @parm number payload.message_id chat.id
+   * @param {function} [callback]
+   */
+  const setStar = useCallback(
+    (payload, callback = () => {}) => {
+      dispatch(putChatStar(payload, callback));
     },
     [dispatch]
   );
@@ -346,6 +377,8 @@ const useChatMessageActions = () => {
     clipboardLink,
     setLastMessageVisiblility,
     markImportant,
+    getStars,
+    setStar,
   };
 };
 

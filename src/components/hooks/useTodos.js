@@ -5,7 +5,6 @@ import { useTimeFormat, useTodoActions } from "./index";
 
 let init = false;
 const useTodos = (fetchTodosOnMount = false) => {
-
   const { isLoaded, skip, limit, hasMore, items, count } = useSelector((state) => state.global.todos);
   const { user: loggedUser } = useSelector((state) => state.session);
 
@@ -14,21 +13,22 @@ const useTodos = (fetchTodosOnMount = false) => {
   const [isFetchLoading, setIsFetchLoading] = useState(false);
 
   const loadMore = () => {
-    if (isFetchLoading || !hasMore)
-      return;
+    if (isFetchLoading || !hasMore) return;
 
     setIsFetchLoading(true);
-    todoActions.fetch({
-      skip: skip,
-      limit: limit
-    }, () => {
-      setIsFetchLoading(false);
-    });
-  }
+    todoActions.fetch(
+      {
+        skip: skip,
+        limit: limit,
+      },
+      () => {
+        setIsFetchLoading(false);
+      }
+    );
+  };
 
-  const getSortedItems = ({filter = ""}) => {
-    return Object
-      .values(items)
+  const getSortedItems = ({ filter = "" }) => {
+    return Object.values(items)
       .sort((a, b) => {
         if (a.status !== b.status) {
           if (a.status === "DONE") {
@@ -56,25 +56,23 @@ const useTodos = (fetchTodosOnMount = false) => {
           return 1;
         }
       })
-      .filter(t => {
+      .filter((t) => {
         if (t.author === null && t.link_type === null) {
           t.author = loggedUser;
         }
         if (filter) {
           if (filter.search !== "") {
-            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim())
-              || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
               return false;
             }
           }
 
-          if (filter.status !== "")
-            return t.status === filter.status;
+          if (filter.status !== "") return t.status === filter.status;
           else {
             if (t.status === "OVERDUE") return true;
             if (t.status === "DONE") return false;
             if (t.remind_at === null) return false;
-            if (localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format('YYYY-MM-DD')) {
+            if (localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) {
               t.status = "TODAY";
               return true;
             } else {
@@ -83,8 +81,8 @@ const useTodos = (fetchTodosOnMount = false) => {
           }
         }
         return true;
-      })
-  }
+      });
+  };
 
   useEffect(() => {
     if (!init) {
@@ -103,7 +101,7 @@ const useTodos = (fetchTodosOnMount = false) => {
     getSortedItems,
     action: {
       ...todoActions,
-      loadMore
+      loadMore,
     },
   };
 };

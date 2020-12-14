@@ -128,16 +128,13 @@ const ChannelOptions = (props) => {
     <>
       <Wrapper channel={channel} scrollRef={scrollEl} moreButton={moreButton}>
         <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
-        <div
-          onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+        <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
         <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
-        {channel.type !== "PERSONAL_BOT" &&
-        <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
-        {(channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") && <div
-          onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+        {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+        {(channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
       </Wrapper>
     </>
   );
 };
 
-export default React.memo(ChannelOptions);
+export default ChannelOptions;
