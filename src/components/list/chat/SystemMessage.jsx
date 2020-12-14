@@ -3,18 +3,19 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
+import { SvgIconFeather } from "../../common";
 
 const SystemMessageContainer = styled.span`
   display: block;
   width: 100%;
-  
+
   .push-link {
     display: inline-block;
     position: relative;
     padding-bottom: 25px;
-    margin-bottom: -25px;    
+    margin-bottom: -25px;
     width: 100%;
-    
+
     &:before {
       position: absolute;
       left: -14px;
@@ -22,11 +23,11 @@ const SystemMessageContainer = styled.span`
       bottom: 0;
       width: 6px;
       height: calc(100% - 12px);
-      background: linear-gradient(180deg, rgba(106,36,126,1) 0%, rgba(216,64,113,1) 100%);
+      background: linear-gradient(180deg, rgba(106, 36, 126, 1) 0%, rgba(216, 64, 113, 1) 100%);
       content: "";
       border-radius: 6px 0 0 6px;
     }
-    
+
     .card-body {
       margin-top: 0.5rem;
       margin-bottom: 0.5rem;
@@ -38,6 +39,7 @@ const SystemMessageContainer = styled.span`
       white-space: nowrap;
       font-size: 12px;
     }
+
     .open-post {
       display: flex;
       position: absolute;
@@ -45,8 +47,8 @@ const SystemMessageContainer = styled.span`
       bottom: -10px;
       justify-content: center;
       align-items: center;
-      font-size: 12px;      
-      
+      font-size: 12px;
+
       svg {
         margin-left: 0;
         height: 12px;
@@ -56,7 +58,7 @@ const SystemMessageContainer = styled.span`
 `;
 
 const SystemMessageContent = styled.span`
-  display: block;  
+  display: block;
   width: 100%;
 `;
 const ChatTimeStamp = styled.div`
@@ -70,18 +72,30 @@ const ChatTimeStamp = styled.div`
   height: 100%;
   align-items: center;
   white-space: nowrap;
+
+  .star-wrap {
+    .feather-star {
+      width: 16px;
+      height: 16px;
+
+      &.active {
+        fill: #7a1b8bcc;
+        color: #7a1b8bcc;
+      }
+    }
+  }
 `;
-const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
+const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = forwardRef((props, ref) => {
-  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary } = props;
+  const { reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary } = props;
 
   const history = useHistory();
 
-  const { parseBody } = useSystemMessage({dictionary, reply, recipients, selectedChannel, user});
+  const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user });
 
   const [lastChatRef, inView, entry] = useInView({
     threshold: THRESHOLD,
-    skip: !isLastChat
+    skip: !isLastChat,
   });
 
   useEffect(() => {
@@ -105,38 +119,39 @@ const SystemMessage = forwardRef((props, ref) => {
     } else {
       history.push(e.currentTarget.dataset.href);
     }
-  }
+  };
 
   const handleHistoryKeyDown = (e) => {
-    if (e.which === 17)
-      e.currentTarget.dataset.ctrl = "1";
-  }
+    if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
+  };
 
   const handleHistoryKeyUp = (e) => {
     e.currentTarget.dataset.ctrl = "0";
-  }
+  };
 
   useEffect(() => {
     if (reply) {
       let pushLinks = document.querySelectorAll('.push-link[data-has-link="0"]');
-      pushLinks.forEach(p => {
+      pushLinks.forEach((p) => {
         p.addEventListener("click", handleHistoryPushClick);
         p.dataset.hasLink = "1";
         p.addEventListener("keydown", handleHistoryKeyDown);
         p.addEventListener("keyup", handleHistoryKeyUp);
-      })
+      });
     }
   }, [reply]);
 
   return (
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent
-        ref={ref} id={`bot-${reply.id}`}
-        dangerouslySetInnerHTML={{__html: parseBody}}
-        isPostNotification={reply.body.includes("POST_CREATE::")}/>
+      <SystemMessageContent ref={ref} id={`bot-${reply.id}`} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
-        <span
-          className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
+        <span className="reply-date created">
+          <span className="star-wrap">
+            <SvgIconFeather className={`mr-1 ${reply.i_starred ? "active" : ""}`} icon="star" />
+            {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
+          </span>
+          {timeFormat.localizeTime(reply.created_at.timestamp)}
+        </span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );

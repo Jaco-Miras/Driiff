@@ -4,7 +4,7 @@ import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader, SvgEmptyState } from "../../common";
+import { Avatar, Loader, SvgEmptyState, SvgIconFeather } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -66,6 +66,48 @@ const ChatList = styled.li`
   text-align: center;
   .chat-actions-container {
     opacity: 0;
+
+    .star-wrap {
+      position: relative;
+      display: flex;
+      &[data-star="true"] {
+        .feather-star {
+          fill: #7a1b8bcc;
+          color: #7a1b8bcc;
+        }
+      }
+      .feather-star {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+      .star-count {
+        font-size: 0.835rem;
+        color: #a7abc3;
+        height: 16px;
+        line-height: 16px;
+        padding: 0 4px;
+      }
+      .star-user-popup {
+        position: absolute;
+        width: 250px;
+        padding: 4px;
+        background-color: #ffffff;
+        top: 100%;
+        z-index: 1;
+        border-top: 1px solid #eeeeee;
+        border-radius: 8px;
+        color: #4d4d4d;
+
+        .name {
+          display: block;
+          width: 100%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+    }
   }
   &:hover {
     .chat-actions-container {
@@ -389,6 +431,7 @@ class ChatMessages extends React.PureComponent {
 
     this.scrollComponent = React.createRef();
     this.infiniteScroll = React.createRef();
+    this.mouseOver = React.createRef(false);
 
     this.varRefs = {
       timerStart: React.createRef(0),
@@ -715,6 +758,23 @@ class ChatMessages extends React.PureComponent {
     }
   };
 
+  handleToggleStar = (e) => {
+    const { messageId, star } = e.currentTarget.dataset;
+    e.currentTarget.dataset.star = star ? "false" : "true";
+    this.props.chatMessageActions.setStar({
+      message_id: messageId,
+      star: star === "false" ? 1 : 0,
+    });
+  };
+
+  handleStarMouseOver = (e) => {
+    const { messageId, loaded } = e.currentTarget.dataset;
+    if (loaded === "false") {
+      e.currentTarget.dataset.loaded = "true";
+      this.props.chatMessageActions.getStars(messageId);
+    }
+  };
+
   render() {
     const { selectedChannel } = this.props;
 
@@ -831,7 +891,6 @@ class ChatMessages extends React.PureComponent {
                           // } else if (!isAuthor && !reply.is_read) {
                           //     //animation = true;
                           // }
-
                           return (
                             <ChatList
                               key={reply.id}
@@ -880,6 +939,23 @@ class ChatMessages extends React.PureComponent {
                                       dictionary={this.props.dictionary}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                        <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
+                                          <SvgIconFeather icon="star" />
+                                          {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
+                                          {reply.star_users && reply.star_users.length > 0 && (
+                                            <div className="star-user-popup">
+                                              {reply.star_users.map((u) => {
+                                                const user = this.props.recipients.find((r) => r.type === "USER" && r.type_id === u.id);
+                                                return (
+                                                  <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
+                                                    <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
+                                                    <span className="name">{u.name}</span>
+                                                  </div>
+                                                );
+                                              })}
+                                            </div>
+                                          )}
+                                        </span>
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
@@ -932,6 +1008,10 @@ class ChatMessages extends React.PureComponent {
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                        <span className="star-wrap mr-2" onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred}>
+                                          <SvgIconFeather icon="star" />
+                                          {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
+                                        </span>
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions

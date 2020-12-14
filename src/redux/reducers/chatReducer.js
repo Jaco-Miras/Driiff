@@ -1412,6 +1412,110 @@ export default function (state = INITIAL_STATE, action) {
         }),
       };
     }
+    case "GET_CHAT_STAR_SUCCESS": {
+      return {
+        ...state,
+        ...(state.selectedChannel &&
+          state.selectedChannel.replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1 && {
+            selectedChannel: {
+              ...state.selectedChannel,
+              replies: state.selectedChannel.replies.map((r) => {
+                if (r.id === action.data.chat_message_id) {
+                  return {
+                    ...r,
+                    star_users: action.data.users,
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            },
+          }),
+        channels: {
+          ...Object.values(state.channels)
+            .map((channel) => {
+              if (state.channels[channel.id].replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1) {
+                return {
+                  [channel.id]: {
+                    ...state.channels[channel.id],
+                    replies: state.channels[channel.id].replies.map((r) => {
+                      if (r.id === action.data.chat_message_id) {
+                        return {
+                          ...r,
+                          star_users: action.data.users,
+                        };
+                      } else {
+                        return r;
+                      }
+                    }),
+                  },
+                };
+              } else {
+                return { [channel.id]: channel };
+              }
+            })
+            .reduce((channels, channel) => {
+              channels = { ...channel };
+              return channels;
+            }, {}),
+        },
+      };
+    }
+    case "INCOMING_CHAT_STAR": {
+      return {
+        ...state,
+        ...(state.selectedChannel &&
+          state.selectedChannel.id === action.data.channel.id && {
+            selectedChannel: {
+              ...state.selectedChannel,
+              replies: state.selectedChannel.replies.map((r) => {
+                if (r.id === action.data.chat.id) {
+                  return {
+                    ...r,
+                    ...(state.user.id === action.data.author.id && { i_starred: action.data.star === 1 ? true : false }),
+                    star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
+                    ...(typeof state.star_users === "undefined"
+                      ? {
+                          ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
+                        }
+                      : {
+                          ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
+                        }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            },
+          }),
+        ...(typeof state.channels[action.data.channel.id] !== "undefined" && {
+          channels: {
+            ...state.channels,
+            [action.data.channel.id]: {
+              ...state.channels[action.data.channel.id],
+              replies: state.channels[action.data.channel.id].replies.map((r) => {
+                if (r.id === action.data.chat.id) {
+                  return {
+                    ...r,
+                    ...(state.user.id === action.data.author.id && { i_starred: action.data.star === 1 ? true : false }),
+                    star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
+                    ...(typeof state.star_users === "undefined"
+                      ? {
+                          ...(action.data.star === 1 ? { star_users: [...action.data.author] } : { star_users: [] }),
+                        }
+                      : {
+                          ...(action.data.star === 1 ? { star_users: [state.star_users, ...action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
+                        }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            },
+          },
+        }),
+      };
+    }
     default:
       return state;
   }

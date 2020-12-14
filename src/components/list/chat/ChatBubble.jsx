@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import { stripGif } from "../../../helpers/stringFormatter";
-import { BlobGifPlayer, SvgIconFeather, SvgImage } from "../../common";
+import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -82,6 +82,31 @@ const ChatBubbleContainer = styled.div`
     height: 100%;
     align-items: center;
     white-space: nowrap;
+
+    .star-wrap {
+      position: relative;
+      display: flex;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        color: #a7abc3;
+
+        &.active {
+          fill: #7a1b8bcc;
+          color: #7a1b8bcc;
+        }
+      }
+      .star-count {
+        font-size: 0.835rem;
+        color: #a7abc3;
+        height: 16px;
+        line-height: 16px;
+        padding: 0 4px;
+        border-radius: 6px;
+        font-style: normal;
+      }
+    }
   }
   ol {
     text-align: left;
@@ -230,18 +255,6 @@ const QuoteContent = styled.div`
   }
 `;
 
-const GrippBotIcon = styled(SvgImage)`
-  position: relative;
-  top: -2px;
-  margin-right: -5px;
-  left: -3px;
-  filter: invert(25%) sepia(36%) saturate(4250%) hue-rotate(165deg) brightness(95%) contrast(101%);
-
-  &:hover {
-    filter: invert(25%) sepia(36%) saturate(4250%) hue-rotate(165deg) brightness(95%) contrast(101%);
-  }
-`;
-
 const ChatMessageFiles = styled(MessageFiles)`
   img {
     cursor: pointer;
@@ -280,7 +293,7 @@ const ChatMessageFiles = styled(MessageFiles)`
     }
   }
 
-  ${(props) => props.hasMessage && ``}
+  ${(props) => props.hasMessage && ""}
 `;
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
@@ -355,7 +368,7 @@ const ChatContentClap = styled.div`
   display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
   //z-index: 2;
-  
+
   .chat-content {
     width: 100%;
     padding-left: 0;
@@ -527,12 +540,12 @@ const ChatBubble = (props) => {
     isAuthor,
     user,
     recipients,
-    selectedChannel
+    selectedChannel,
   });
   const hasFiles = reply.files.length > 0;
 
   const refs = {
-    container: useRef(null)
+    container: useRef(null),
   };
 
   const [loadRef, loadInView] = useInView({
@@ -545,7 +558,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -554,7 +567,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -570,12 +583,10 @@ const ChatBubble = (props) => {
   useEffect(() => {
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
 
-    if (lnkChannelMessage)
-      lnkChannelMessage.addEventListener("click", handleChannelMessageLink, true);
+    if (lnkChannelMessage) lnkChannelMessage.addEventListener("click", handleChannelMessageLink, true);
 
     return () => {
-      if (lnkChannelMessage)
-        lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
+      if (lnkChannelMessage) lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
     };
   }, []);
 
@@ -608,19 +619,23 @@ const ChatBubble = (props) => {
     }
   }, [isLastChat, entry, isLastChatVisible, inView]);
 
-  const handleQuoteClick = useCallback((e) => {
-    if (reply.quote.channel_id) {
-    } else {
-      let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
-      if (el) {
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center",
-        });
+  const handleQuoteClick = useCallback(
+    (e) => {
+      if (reply.quote.channel_id) {
+      } else {
+        let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
+        if (el) {
+          el.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "center",
+          });
+        }
       }
-    }
-  }, [reply]);
+    },
+    [reply]
+  );
+  console.log(reply.star_count);
 
   return (
     <ChatBubbleContainer
@@ -643,19 +658,26 @@ const ChatBubble = (props) => {
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower`}>
-
-            {!isAuthor && showAvatar && (
+            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"}>
+              {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly}
-                                     className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
+                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className="chat-name-not-author-mobile">
+                    {reply.user.name}
+                  </ChatNameNotAuthor>
                 </>
               )}
 
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
-                <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly}
-                                hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick}
-                                onTouchEnd={handleQuoteClick} isAuthor={isAuthor}>
+                <QuoteContainer
+                  className={"quote-container"}
+                  showAvatar={showAvatar}
+                  isEmoticonOnly={isEmoticonOnly}
+                  hasFiles={hasFiles}
+                  theme={chatSettings.chat_message_theme}
+                  onClick={handleQuoteClick}
+                  onTouchEnd={handleQuoteClick}
+                  isAuthor={isAuthor}
+                >
                   {reply.quote.user_id === user.id ? (
                     <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
                       {"You"}
@@ -665,9 +687,7 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent ref={handleQuoteContentRef} className={"quote-content"}
-                                theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
-                                dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  <QuoteContent ref={handleQuoteContentRef} className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {
@@ -679,9 +699,7 @@ const ChatBubble = (props) => {
                 //   </>
                 // )
               }
-              {reply.files.length > 0 && !reply.is_deleted &&
-              <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme}
-                                files={reply.files} reply={reply} type="chat"/>}
+              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} reply={reply} type="chat" />}
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
@@ -694,16 +712,21 @@ const ChatBubble = (props) => {
                   />
                 </span>
               )}
-              {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true}/>}
+              {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
               {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
-                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl}
-                        channelId={selectedChannel.id} messageId={reply.id} type={"chat"}/>
+                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
               )}
               {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-            <span className="reply-date created">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+            <span className="reply-date created">
+              <span className="star-wrap mr-2">
+                <SvgIconFeather className={`${reply.i_starred ? "active" : ""}`} icon="star" />
+                {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
+              </span>
+              <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+            </span>
           </ChatTimeStamp>
         </>
       }
