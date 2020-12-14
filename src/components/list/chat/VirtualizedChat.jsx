@@ -232,6 +232,13 @@ const ChatBubbleQuoteDiv = styled.div`
       border-radius: 8px;
       color: #4d4d4d;
 
+      .dark & {
+        background-color: #25282c;
+        border-top: 1px solid #25282c;
+        border-radius: 8px;
+        color: #c7c7c7;
+      }
+
       .name {
         display: block;
         width: 100%;
