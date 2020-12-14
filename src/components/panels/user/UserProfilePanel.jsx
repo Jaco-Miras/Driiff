@@ -156,6 +156,7 @@ const UserProfilePanel = (props) => {
     saveChanges: _t("BUTTON.SAVE_CHANGES", "Save changes"),
     cancel: _t("BUTTON.Cancel", "Cancel"),
     clickToChangePassword: _t("PROFILE.CLICK_TO_CHANGE_PASSWORD", "Click to change your password"),
+    external: _t("PROFILE.EXTERNAL", "External"),
   };
 
   const getValidClass = useCallback((valid) => {
@@ -598,7 +599,7 @@ const UserProfilePanel = (props) => {
                 {user.role && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.position}</div>
-                    <div className="col col-form">{user.role.name}</div>
+                    <div className="col col-form">{user.type === "external" ? dictionary.external : user.role.name}</div>
                   </div>
                 )}
                 {user.place && (
