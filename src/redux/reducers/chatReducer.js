@@ -1431,34 +1431,32 @@ export default function (state = INITIAL_STATE, action) {
               }),
             },
           }),
-        /*channels: {
+        channels: {
           ...Object.values(state.channels)
             .map((channel) => {
               if (state.channels[channel.id].replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1) {
                 return {
-                  [channel.id]: {
-                    ...state.channels[channel.id],
-                    replies: state.channels[channel.id].replies.map((r) => {
-                      if (r.id === action.data.chat_message_id) {
-                        return {
-                          ...r,
-                          star_users: action.data.users,
-                        };
-                      } else {
-                        return r;
-                      }
-                    }),
-                  },
+                  ...state.channels[channel.id],
+                  replies: state.channels[channel.id].replies.map((r) => {
+                    if (r.id === action.data.chat_message_id) {
+                      return {
+                        ...r,
+                        star_users: action.data.users,
+                      };
+                    } else {
+                      return r;
+                    }
+                  }),
                 };
               } else {
-                return { [channel.id]: channel };
+                return channel;
               }
             })
             .reduce((channels, channel) => {
-              channels = { ...channel };
+              channels[channel.id] = channel;
               return channels;
             }, {}),
-        },*/
+        },
       };
     }
     case "INCOMING_CHAT_STAR": {
@@ -1501,10 +1499,10 @@ export default function (state = INITIAL_STATE, action) {
                     star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
                     ...(typeof state.star_users === "undefined"
                       ? {
-                          ...(action.data.star === 1 ? { star_users: [...action.data.author] } : { star_users: [] }),
+                          ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
                         }
                       : {
-                          ...(action.data.star === 1 ? { star_users: [state.star_users, ...action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
+                          ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
                         }),
                   };
                 } else {
