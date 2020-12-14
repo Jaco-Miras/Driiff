@@ -1431,7 +1431,7 @@ export default function (state = INITIAL_STATE, action) {
               }),
             },
           }),
-        channels: {
+        /*channels: {
           ...Object.values(state.channels)
             .map((channel) => {
               if (state.channels[channel.id].replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1) {
@@ -1458,7 +1458,7 @@ export default function (state = INITIAL_STATE, action) {
               channels = { ...channel };
               return channels;
             }, {}),
-        },
+        },*/
       };
     }
     case "INCOMING_CHAT_STAR": {
