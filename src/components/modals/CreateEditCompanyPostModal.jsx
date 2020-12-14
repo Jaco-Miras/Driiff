@@ -360,7 +360,7 @@ const CreateEditCompanyPostModal = (props) => {
     showApprover: false,
   });
 
-  const { options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions, addressIds } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -392,10 +392,10 @@ const CreateEditCompanyPostModal = (props) => {
     postVisibilityInfo: _t("POST.POST_VISIBILITY_COUNT_INFO", "This post will be visible to ::user_count:: in ::workspace_count::", {
       user_count: renderToString(
         <span className="user-popup">
-          {user_ids.length === 1
+          {addressIds.length === 1
             ? _t("POST.NUMBER_USER", "1 user")
             : _t("POST.NUMBER_USERS", "::count:: users", {
-                count: user_ids.length,
+                count: addressIds.length,
               })}
         </span>
       ),
@@ -760,9 +760,9 @@ const CreateEditCompanyPostModal = (props) => {
       let adddressIds = form.selectedAddressTo
         .map((ad) => {
           if (ad.type === "USER") {
-            return ad.id;
+            return ad.type_id;
           } else {
-            return ad.member_ids;
+            return ad.participant_ids;
           }
         })
         .flat();
@@ -1266,18 +1266,16 @@ const CreateEditCompanyPostModal = (props) => {
         <WrapperDiv>
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
-              {users
-                .filter((u) => user_ids.includes(u.type_id))
-                .map((u) => {
-                  return (
-                    <span key={u.id}>
-                      <span title={u.email} className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
-                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} />
-                        <span className="item-user-name">{u.name}</span>
-                      </span>
+              {approverOptions.map((u) => {
+                return (
+                  <span key={u.id}>
+                    <span title={u.email} className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} />
+                      <span className="item-user-name">{u.name}</span>
                     </span>
-                  );
-                })}
+                  </span>
+                );
+              })}
             </span>
             <span className="workspace-list">
               {form.selectedAddressTo

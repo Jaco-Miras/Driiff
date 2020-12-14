@@ -20,20 +20,25 @@ const useWorkspaceAndUserOptions = (props) => {
     const internalUsers = Object.values(actualUsers)
       .filter((u) => u.active === 1 && u.type === "internal")
       .map((u) => u);
-    return [
-      ...postRecipients.map((r) => {
-        return {
-          ...r,
-          icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
-          ...([postRecipients.type === "DEPARTMENT"] && {
-            member_ids: internalUsers.map((u) => u.id),
-            members: internalUsers.map((u) => u),
-          }),
-          value: r.id,
-          label: r.name,
-        };
-      }),
-    ];
+    return postRecipients.map((r) => {
+      return {
+        ...r,
+        icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
+        ...(r.type === "DEPARTMENT" && {
+          participant_ids: internalUsers.map((u) => u.id),
+          member_ids: internalUsers.map((u) => u.id),
+          members: internalUsers.map((u) => u),
+        }),
+        ...(r.type === "TOPIC" && {
+          participant_ids: r.participant_ids,
+          member_ids: r.participant_ids,
+          members: [],
+          is_lock: r.private,
+        }),
+        value: r.id,
+        label: r.name,
+      };
+    });
   };
 
   const getDefaultAddressTo = () => {
@@ -41,6 +46,7 @@ const useWorkspaceAndUserOptions = (props) => {
       {
         ...workspaces.filter((w) => w.type_id === activeTopic.id),
         ...activeTopic,
+        participant_ids: activeTopic.member_ids,
         icon: "compass",
         value: activeTopic.id,
         label: activeTopic.name,
@@ -55,6 +61,7 @@ const useWorkspaceAndUserOptions = (props) => {
     return [
       {
         ...company,
+        participant_ids: internalUsers.map((u) => u.id),
         member_ids: internalUsers.map((u) => u.id),
         members: internalUsers.map((u) => u),
         icon: "home",
@@ -102,6 +109,7 @@ const useWorkspaceAndUserOptions = (props) => {
         ...(company && [
           {
             ...company,
+            participant_ids: internalUsers.map((u) => u.id),
             member_ids: internalUsers.map((u) => u.id),
             members: internalUsers.map((u) => u),
             icon: "home",
@@ -112,6 +120,19 @@ const useWorkspaceAndUserOptions = (props) => {
         ...workspaceOptions,
         ...userOptions,
       ]);
+    } else if (!progress && recipients.filter((r) => r.main_department).length === 0) {
+      setProgress(true);
+      setOptions(
+        recipients.map((r) => {
+          return {
+            ...r,
+            icon: "compass",
+            value: r.id,
+            label: r.name,
+            member_ids: r.participant_ids,
+          };
+        })
+      );
     }
   }, [options, recipients, actualWorkspaces, setOptions]);
 
@@ -141,19 +162,32 @@ const useWorkspaceAndUserOptions = (props) => {
     }
   });
 
-  const user_options = users
-    .filter((u) => user_ids.some((id) => id === u.type_id))
+  let addressIds = addressTo
+    .map((ad) => {
+      if (ad.type === "USER") {
+        return ad.type_id;
+      } else {
+        return ad.participant_ids;
+      }
+    })
+    .flat();
+
+  addressIds = [...new Set(addressIds)];
+
+  const user_options = Object.values(actualUsers)
+    .filter((u) => addressIds.some((id) => id === u.id))
     .map((u) => {
       return {
         ...u,
         icon: "user-avatar",
-        value: u.type_id,
+        value: u.id,
         label: u.name ? u.name : u.email,
         type: "USER",
       };
     });
 
   return {
+    addressIds,
     options,
     userOptions: user_options,
     user_ids: [...new Set(user_ids)],
