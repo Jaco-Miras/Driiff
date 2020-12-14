@@ -599,7 +599,6 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_COMMENT": {
       let companyPosts = { ...state.companyPosts };
-      const hasRequestedChange = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
       const hasPendingApproval =
         action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length && action.data.users_approval.some((u) => u.id === state.user.id);
       if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE" && state.companyPosts.posts.hasOwnProperty(action.data.post_id)) {
@@ -616,7 +615,7 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
         companyPosts.posts[action.data.post_id].reply_count = companyPosts.posts[action.data.post_id].reply_count + 1;
         if (action.data.author.id === state.user.id) companyPosts.posts[action.data.post_id].has_replied = true;
-        if (hasRequestedChange > 0 || hasPendingApproval) {
+        if (hasPendingApproval) {
           companyPosts.posts[action.data.post_id].need_approval = true;
         }
       }
