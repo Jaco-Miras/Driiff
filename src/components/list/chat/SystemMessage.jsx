@@ -131,7 +131,7 @@ const SystemMessage = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (reply) {
-      let pushLinks = document.querySelectorAll('.push-link[data-has-link="0"]');
+      let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
       pushLinks.forEach((p) => {
         p.addEventListener("click", handleHistoryPushClick);
         p.dataset.hasLink = "1";
@@ -146,10 +146,10 @@ const SystemMessage = forwardRef((props, ref) => {
       <SystemMessageContent ref={ref} id={`bot-${reply.id}`} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">
-          <span className="star-wrap">
+          {/* <span className="star-wrap">
             <SvgIconFeather className={`mr-1 ${reply.i_starred ? "active" : ""}`} icon="star" />
             {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-          </span>
+          </span> */}
           {timeFormat.localizeTime(reply.created_at.timestamp)}
         </span>
       </ChatTimeStamp>
