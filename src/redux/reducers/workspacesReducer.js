@@ -2258,7 +2258,7 @@ export default (state = INITIAL_STATE, action) => {
                   posts: {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
                       need_approval: false,
                     },
                   },
