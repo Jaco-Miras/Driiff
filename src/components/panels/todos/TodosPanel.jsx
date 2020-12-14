@@ -13,8 +13,8 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const {getSortedItems, action: todoActions, isLoaded, count} = useTodos(true); //pass true to fetch to do list on mount - default to false
-  const {_t} = useTranslation();
+  const { getSortedItems, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
+  const { _t } = useTranslation();
 
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
@@ -36,7 +36,7 @@ const TodosPanel = (props) => {
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
     actionMarkAsUndone: _t("REMINDER.ACTION_MARK_AS_UNDONE", "Mark as not done"),
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
-  }
+  };
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -57,18 +57,11 @@ const TodosPanel = (props) => {
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <TodosSidebar
-          className="col-lg-3" dictionary={dictionary} todoActions={todoActions}
-          setFilter={handleFilterFile} filter={filter} count={count}/>
+        <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
-          <div className="app-content-overlay"/>
-          <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch}
-                       searchValue={search}/>
-          <TodosBody
-            complete={false}
-            isLoaded={isLoaded}
-            todoItems={getSortedItems({ filter: { status: filter, search: search } })} dictionary={dictionary}
-            todoActions={todoActions} filter={filter}/>
+          <div className="app-content-overlay" />
+          <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
+          <TodosBody complete={false} isLoaded={isLoaded} todoItems={getSortedItems({ filter: { status: filter, search: search } })} dictionary={dictionary} todoActions={todoActions} filter={filter} />
         </div>
       </div>
     </Wrapper>
