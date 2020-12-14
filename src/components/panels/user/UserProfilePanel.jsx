@@ -524,16 +524,16 @@ const UserProfilePanel = (props) => {
                       </a>
                     </button>
                   )}
-                  <button className="ml-1 btn btn-outline-light">
-                    {user.type !== "external" && (
+                  {user.type !== "external" && (
+                    <button className="ml-1 btn btn-outline-light">
                       <SvgIconFeather
                         onClick={() => {
                           handleUserChat(user);
                         }}
                         icon="message-circle"
                       />
-                    )}
-                  </button>
+                    </button>
+                  )}
                 </div>
               )}
               {/*{
