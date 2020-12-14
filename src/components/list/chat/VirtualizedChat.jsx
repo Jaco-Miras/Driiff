@@ -431,7 +431,7 @@ const VirtualizedChat = (props) => {
               dictionary={props.dictionary}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
+                {/* <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
                   <SvgIconFeather icon="star" />
                   {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
                   {reply.star_users && reply.star_users.length > 0 && (
@@ -447,7 +447,7 @@ const VirtualizedChat = (props) => {
                       })}
                     </div>
                   )}
-                </span>
+                </span> */}
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} replyData={reply} />}
               </ChatActionsContainer>
@@ -499,7 +499,7 @@ const VirtualizedChat = (props) => {
                 />
               ) : null}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
+                {/* <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
                   <SvgIconFeather icon="star" />
                   {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
                   {reply.star_users && reply.star_users.length > 0 && (
@@ -515,7 +515,7 @@ const VirtualizedChat = (props) => {
                       })}
                     </div>
                   )}
-                </span>
+                </span> */}
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} />}
               </SystemChatActionsContainer>

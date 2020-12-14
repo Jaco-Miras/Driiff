@@ -950,7 +950,7 @@ class ChatMessages extends React.PureComponent {
                                       dictionary={this.props.dictionary}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
+                                        {/* <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
                                           <SvgIconFeather icon="star" />
                                           {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
                                           {reply.star_users && reply.star_users.length > 0 && (
@@ -966,7 +966,7 @@ class ChatMessages extends React.PureComponent {
                                               })}
                                             </div>
                                           )}
-                                        </span>
+                                        </span> */}
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
@@ -1019,7 +1019,7 @@ class ChatMessages extends React.PureComponent {
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        <span className="star-wrap mr-2" onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred}>
+                                        {/* <span className="star-wrap mr-2" onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred}>
                                           <SvgIconFeather icon="star" />
                                           {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
                                           {reply.star_users && reply.star_users.length > 0 && (
@@ -1035,7 +1035,7 @@ class ChatMessages extends React.PureComponent {
                                               })}
                                             </div>
                                           )}
-                                        </span>
+                                        </span> */}
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions

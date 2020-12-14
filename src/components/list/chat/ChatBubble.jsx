@@ -558,7 +558,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -567,7 +567,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -720,10 +720,10 @@ const ChatBubble = (props) => {
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
             <span className="reply-date created">
-              <span className="star-wrap mr-2">
+              {/* <span className="star-wrap mr-2">
                 <SvgIconFeather className={`${reply.i_starred ? "active" : ""}`} icon="star" />
                 {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-              </span>
+              </span> */}
               <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
             </span>
           </ChatTimeStamp>
