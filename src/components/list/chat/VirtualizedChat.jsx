@@ -247,6 +247,9 @@ const ChatBubbleQuoteDiv = styled.div`
         overflow: hidden;
       }
     }
+
+    display: none;
+    visibility: hidden;
   }
 
   @media (max-width: 991.99px) {

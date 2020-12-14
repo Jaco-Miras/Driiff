@@ -114,8 +114,12 @@ const ChatList = styled.li`
           overflow: hidden;
         }
       }
+
+      display: none;
+      visibility: hidden;
     }
   }
+
   &:hover {
     .chat-actions-container {
       opacity: 1;
