@@ -616,7 +616,7 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
         companyPosts.posts[action.data.post_id].reply_count = companyPosts.posts[action.data.post_id].reply_count + 1;
         if (action.data.author.id === state.user.id) companyPosts.posts[action.data.post_id].has_replied = true;
-        if (hasRequestedChange > 0 && hasPendingApproval) {
+        if (hasRequestedChange > 0 || hasPendingApproval) {
           companyPosts.posts[action.data.post_id].need_approval = true;
         }
       }
