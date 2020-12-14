@@ -557,9 +557,11 @@ const MainNavigationTabPanel = (props) => {
                 )}
                 {isExternal &&
                   Object.keys(workspaces).length > 0 &&
-                  Object.values(workspaces).map((ws) => {
-                    return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
-                  })}
+                  Object.values(workspaces)
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((ws) => {
+                      return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
+                    })}
               </ul>
             </>
           )}
