@@ -9,6 +9,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
+  z-index: 2;
   .nav-tabs {
     .nav-item {
       cursor: pointer;
@@ -82,11 +83,11 @@ const StyledMoreOptions = styled(MoreOptions)`
   width: 40px;
   align-items: center;
   justify-content: center;
-  
-  .dark  & {
-    border: 1px solid #25282c;  
-    background: #25282c;  
-  }  
+
+  .dark & {
+    border: 1px solid #25282c;
+    background: #25282c;
+  }
   .feather-more-horizontal {
     width: 25px;
     height: 36px;
@@ -101,7 +102,7 @@ const StyledMoreOptions = styled(MoreOptions)`
       width: 14px;
     }
   }
-  
+
   @media (max-width: 480px) {
     margin: 0 0 0.75rem !important;
   }
@@ -149,7 +150,7 @@ const ChatSidebarPanel = (props) => {
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       channelActions.setSidebarSearch({
-        value: query
+        value: query,
       });
     }, 300);
     return () => clearTimeout(timeOutId);
@@ -234,14 +235,14 @@ const ChatSidebarPanel = (props) => {
   }, [chatSidebarSearch]);
 
   const onInputFocus = () => {
-    console.log('focus input')
+    console.log("focus input");
     if (!hiddenArchivedLoaded) {
       hiddenArchivedLoaded = true;
       channelActions.fetchAll({
-          skip: 0,
-          limit: 20,
-          filter: "hidden",
-        });
+        skip: 0,
+        limit: 20,
+        filter: "hidden",
+      });
 
       channelActions.fetchAll({
         skip: 0,
@@ -249,25 +250,22 @@ const ChatSidebarPanel = (props) => {
         filter: "archived",
       });
     }
-  }
+  };
 
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start align-items-center">
-        <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput}
-                closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} onFocus={onInputFocus}/>
+        <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} onFocus={onInputFocus} />
         <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
           <StyledMoreOptions ref={refs.navTab} role="tabList">
-            <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange}
-                 aria-controls="pills-home" aria-selected="false">
+            <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
               {dictionary.chats}
             </div>
-            <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`} onClick={handleTabChange}
-                 aria-controls="pills-workspace" aria-selected="false">
+            <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-workspace" aria-selected="false">
               {dictionary.workspaceChats}
             </div>
             <div className="d-flex" onClick={handleOpenGroupChatModal}>
-              <SvgIconFeather className="mr-2" width={14} height={14} icon="plus"/> {dictionary.newGroupChat}
+              <SvgIconFeather className="mr-2" width={14} height={14} icon="plus" /> {dictionary.newGroupChat}
             </div>
           </StyledMoreOptions>
         </div>

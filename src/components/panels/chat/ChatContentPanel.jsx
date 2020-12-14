@@ -12,6 +12,7 @@ import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 
 const Wrapper = styled.div`
   width: 100%;
+  z-index: 1;
 `;
 
 const ChatMessagesPlaceholder = styled.div`
@@ -25,7 +26,7 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  const {virtualization} = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
@@ -132,8 +133,8 @@ const ChatContentPanel = (props) => {
     someone: _t("SYSTEM.SOMEONE", "Someone"),
     added: _t("SYSTEM.ADDED", "added"),
     andAdded: _t("SYSTEM.AND_ADDED", "and added"),
-    renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
-    renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`),
+    renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", "renamed this workspace to"),
+    renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", "renamed this chat to"),
     forwardedMessage: _t("CHAT.FORWARDED_MESSAGE", "Forwarded message"),
     chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed"),
     workspace: _t("CHAT.WORKSPACE", "Workspace"),
@@ -150,7 +151,7 @@ const ChatContentPanel = (props) => {
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
-  
+
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -164,10 +165,15 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
-      {selectedChannel !== null ? 
-        virtualization ? <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> 
-        : <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> 
-        : <ChatMessagesPlaceholder />}
+      {selectedChannel !== null ? (
+        virtualization ? (
+          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+        ) : (
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+        )
+      ) : (
+        <ChatMessagesPlaceholder />
+      )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
     </Wrapper>
   );
