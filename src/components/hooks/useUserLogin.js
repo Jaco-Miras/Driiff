@@ -5,6 +5,7 @@ import { sessionService } from "redux-react-session";
 import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
 import { authenticateGoogleLogin } from "../../redux/actions/userAction";
 import { useUserActions } from "./index";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 export const useUserLogin = (props) => {
   const dispatch = useDispatch();
@@ -24,7 +25,25 @@ export const useUserLogin = (props) => {
     if (magicLinkMatch !== null) {
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
         if (res) {
-          userActions.login(res.data, "/workspace/chat");
+          console.log(res);
+          if (res.data.additional_data) {
+            if (res.data.additional_data.type === "POST") {
+              if (res.data.additional_data.data.workspace) {
+                let ws = res.data.additional_data.data.workspace[0];
+                let postId = res.data.additional_data.data.id;
+                let postName = res.data.additional_data.data.code;
+                if (ws.workspace_id) {
+                  let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                  userActions.login(res.data, link);
+                } else {
+                  let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                  userActions.login(res.data, link);
+                }
+              }
+            }
+          } else {
+            userActions.login(res.data, "/workspace/chat");
+          }
         }
       });
     }
