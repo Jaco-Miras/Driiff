@@ -1368,27 +1368,38 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "FETCH_TIMELINE_SUCCESS": {
-      let newWorkspaceTimeline = { ...state.workspaceTimeline };
-      if (newWorkspaceTimeline.hasOwnProperty(action.data.topic_id)) {
-        newWorkspaceTimeline[action.data.topic_id] = {
-          ...newWorkspaceTimeline[action.data.topic_id],
-          hasMore: Object.keys(newWorkspaceTimeline[action.data.topic_id].timeline).length + action.data.timeline.length === action.data.total_count,
-          timeline: { ...newWorkspaceTimeline[action.data.topic_id].timeline, ...convertArrayToObject(action.data.timeline, "id") },
-          total_items: action.data.total_count,
-          maxPage: Math.ceil(action.data.total_count / 10),
-        };
-      } else {
-        newWorkspaceTimeline[action.data.topic_id] = {
-          hasMore: action.data.total_count > 10,
-          timeline: convertArrayToObject(action.data.timeline, "id"),
-          total_items: action.data.total_count,
-          page: 1,
-          maxPage: Math.ceil(action.data.total_count / 10),
-        };
-      }
+      console.log(action.data.timeline);
       return {
         ...state,
-        workspaceTimeline: newWorkspaceTimeline,
+        workspaceTimeline: {
+          ...state.workspaceTimeline,
+          [action.data.topic_id]: {
+            ...(typeof state.workspaceTimeline[action.data.topic_id] === "undefined"
+              ? {
+                  hasMore: action.data.total_count > 10,
+                  timeline: action.data.timeline.reduce((timeline, item) => {
+                    timeline[item.id] = item;
+                    return timeline;
+                  }, {}),
+                  total_items: action.data.total_count,
+                  page: 1,
+                  maxPage: Math.ceil(action.data.total_count / 10),
+                }
+              : {
+                  ...state.workspaceTimeline[action.data.topic_id],
+                  hasMore: Object.keys(state.workspaceTimeline[action.data.topic_id].timeline).length + action.data.timeline.length === action.data.total_count,
+                  timeline: {
+                    ...state.workspaceTimeline[action.data.topic_id].timeline,
+                    ...action.data.timeline.reduce((timeline, item) => {
+                      timeline[item.id] = item;
+                      return timeline;
+                    }, {}),
+                  },
+                  total_items: action.data.total_count,
+                  maxPage: Math.ceil(action.data.total_count / 10),
+                }),
+          },
+        },
       };
     }
     case "FETCH_WORKSPACE_MEMBERS_SUCCESS": {
