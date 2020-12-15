@@ -40,8 +40,12 @@ export const useUserLogin = (props) => {
                   userActions.login(res.data, link);
                 }
               }
+            } else {
+              console.log("redirect to chat");
+              userActions.login(res.data, "/workspace/chat");
             }
           } else {
+            console.log("default to workspace chat");
             userActions.login(res.data, "/workspace/chat");
           }
         }
