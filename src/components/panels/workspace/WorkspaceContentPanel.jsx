@@ -56,7 +56,7 @@ const WorkspaceContentPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  useUsers();
+  const { loggedUser } = useUsers();
   const { actions, timeline, workspaces, workspacesLoaded, workspace } = useWorkspace();
   const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
@@ -127,10 +127,14 @@ const WorkspaceContentPanel = (props) => {
             <EmptyState>
               <div>
                 <SvgEmptyState height={275} icon={1} />
-                <h5>{dictionary.sidebarTextCreateWorkspace}</h5>
-                <button className="btn btn-primary" onClick={handleShowWorkspaceModal}>
-                  {dictionary.createWorkspace}
-                </button>
+                {loggedUser.type !== "external" && (
+                  <>
+                    <h5>{dictionary.sidebarTextCreateWorkspace}</h5>
+                    <button className="btn btn-primary" onClick={handleShowWorkspaceModal}>
+                      {dictionary.createWorkspace}
+                    </button>
+                  </>
+                )}
               </div>
             </EmptyState>
           )}

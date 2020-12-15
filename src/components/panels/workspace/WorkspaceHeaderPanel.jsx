@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, useRouteMatch } from "react-router-dom";
+import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
@@ -236,6 +236,7 @@ const WorspaceHeaderPanel = (props) => {
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
+  const history = useHistory();
   const { workspacesLoaded } = useWorkspace();
   const { activeTopic, folders } = useSelector((state) => state.workspaces);
   const {
@@ -270,6 +271,7 @@ const WorspaceHeaderPanel = (props) => {
     actionWorkspaceJoin: _t("ACTION.JOIN_WORKSPACE", "Join"),
     statusWorkspacePrivate: _t("WORKSPACE.STATUS_PRIVATE", "Private"),
     statusWorkspaceArchived: _t("WORKSPACE.STATUS_ARCHIVED", "Archived"),
+    statusNoWorkspaceExternal: _t("WORKSPACE.EXTERNAL_NO_WORKSPACES", "You currently don't have any workspaces."),
     toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
       topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
     }),
@@ -367,6 +369,12 @@ const WorspaceHeaderPanel = (props) => {
     }
   }, [match.params.page, dispatch, activeTopic]);
 
+  useEffect(() => {
+    if (activeTopic && !activeTopic.members.some((m) => m.id === user.id)) {
+      history.push("/");
+    }
+  }, [activeTopic]);
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -407,9 +415,7 @@ const WorspaceHeaderPanel = (props) => {
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
-                          <WorkspaceWrapper>
-                            {activeTopic.name}
-                          </WorkspaceWrapper>
+                          <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
                       {activeTopic.is_lock === 1 && (
@@ -445,9 +451,7 @@ const WorspaceHeaderPanel = (props) => {
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
                           <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
-                          <WorkspaceWrapper>
-                            {activeTopic.name}
-                          </WorkspaceWrapper>
+                          <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
                       {activeTopic.is_lock === 1 && (
@@ -505,9 +509,15 @@ const WorspaceHeaderPanel = (props) => {
             <>
               <li className="nav-item">
                 {workspacesLoaded && (
-                  <WorkspaceButton onClick={handleShowWorkspaceModal}>
-                    {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus" />
-                  </WorkspaceButton>
+                  <>
+                    {user.type === "external" ? (
+                      <>{dictionary.statusNoWorkspaceExternal}</>
+                    ) : (
+                      <WorkspaceButton onClick={handleShowWorkspaceModal}>
+                        {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus" />
+                      </WorkspaceButton>
+                    )}
+                  </>
                 )}
               </li>
             </>

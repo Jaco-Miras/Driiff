@@ -4,12 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {
-  addToModals,
-  // getQuickLinks,
-  // getUnreadNotificationCounterEntries,
-  setNavMode,
-} from "../../../redux/actions/globalActions";
+import { addToModals, setNavMode } from "../../../redux/actions/globalActions";
 import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
 import { useSettings, useTodos, useTranslation, useWorkspace } from "../../hooks";
 import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
@@ -502,10 +497,14 @@ const MainNavigationTabPanel = (props) => {
             <EmptyState>
               <div>
                 <SvgEmptyState height={200} icon={2} />
-                <h5>{dictionary.sidebarTextCreateWorkspace}</h5>
-                <button className="btn btn-primary mt-2" onClick={handleShowWorkspaceModal}>
-                  {dictionary.createWorkspace}
-                </button>
+                {user.type !== "external" && (
+                  <>
+                    <h5>{dictionary.sidebarTextCreateWorkspace}</h5>
+                    <button className="btn btn-primary mt-2" onClick={handleShowWorkspaceModal}>
+                      {dictionary.createWorkspace}
+                    </button>
+                  </>
+                )}
               </div>
             </EmptyState>
           ) : (
@@ -567,7 +566,7 @@ const MainNavigationTabPanel = (props) => {
           )}
         </div>
       </div>
-      {!isExternal && !(Object.values(folders).length === 0 && Object.values(workspaces).length === 0) && (
+      {user.type !== "external" && !(Object.values(folders).length === 0 && Object.values(workspaces).length === 0) && (
         <div>
           <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
             <div>
