@@ -502,7 +502,7 @@ const CreateEditWorkspaceModal = (props) => {
       if (mode === "edit") {
         payload = {
           ...payload,
-          new_external_emails: externalEmails,
+          new_external_emails: invitedEmails,
           is_external: 1,
         };
       } else {
@@ -521,37 +521,11 @@ const CreateEditWorkspaceModal = (props) => {
 
       const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
 
-      // const removed_members = item.members
-      //   .filter((m) => {
-      //     for (const i in form.selectedUsers) {
-      //       if (form.selectedUsers.hasOwnProperty(i)) {
-      //         if (form.selectedUsers[i].id === m.id) {
-      //           return false;
-      //         }
-      //       }
-      //     }
-      //     return true;
-      //   })
-      //   .map((m) => m.id);
-
-      // const added_members = form.selectedUsers
-      //   .filter((u) => {
-      //     for (const i in item.members) {
-      //       if (item.members.hasOwnProperty(i)) {
-      //         if (item.members[i].id === u.id) {
-      //           return false;
-      //         }
-      //       }
-      //     }
-      //     return true;
-      //   })
-      //   .map((m) => m.id);
-
       payload = {
         ...payload,
         workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
         topic_id: item.id,
-        remove_member_ids: removed_members,
+        remove_member_ids: removed_members.map((m) => m.id),
         new_member_ids: added_members,
       };
       if (payload.remove_member_ids.length || payload.new_member_ids.length || item.name !== form.name) {
@@ -565,7 +539,7 @@ const CreateEditWorkspaceModal = (props) => {
           },
           title: form.name === item.name ? "" : form.name,
           added_members: added_members,
-          removed_members: removed_members,
+          removed_members: removed_members.map((m) => m.id),
         })}`;
       }
 
@@ -1010,6 +984,8 @@ const CreateEditWorkspaceModal = (props) => {
               first_name: m.first_name === "" ? m.email : m.first_name,
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
+              has_accepted: m.has_accepted,
+              email: m.email,
             };
           });
         externalMembers = item.members
@@ -1024,6 +1000,7 @@ const CreateEditWorkspaceModal = (props) => {
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               email: m.email,
+              has_accepted: m.has_accepted,
             };
           });
       }
