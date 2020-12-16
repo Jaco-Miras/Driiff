@@ -40,9 +40,21 @@ export const useUserLogin = (props) => {
                   userActions.login(res.data, link);
                 }
               }
-            } else {
+            } else if (res.data.additional_data.type === "CHANNEL") {
               console.log("redirect to chat");
-              userActions.login(res.data, "/workspace/chat");
+              if (res.data.additional_data.topic) {
+                let topic = res.data.additional_data.topic;
+                let wsFolder = res.data.additional_data.workspace;
+                if (wsFolder) {
+                  let link = `/workspace/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
+                  userActions.login(res.data, link);
+                } else {
+                  let link = `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`;
+                  userActions.login(res.data, link);
+                }
+              } else {
+                userActions.login(res.data, "/workspace/chat");
+              }
             }
           } else {
             console.log("default to workspace chat");
