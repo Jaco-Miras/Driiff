@@ -63,6 +63,7 @@ const WrapperDiv = styled(InputGroup)`
   }
   .react-select-container {
     width: 100%;
+    z-index: 2;
   }
   .react-select__multi-value__label {
     align-self: center;
@@ -498,7 +499,7 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    if (externalEmails.length) {
+    if (externalEmails.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
           ...payload,
@@ -1243,16 +1244,17 @@ const CreateEditWorkspaceModal = (props) => {
         </WrapperDiv>
         <WrapperDiv className={"modal-input checkboxes"}>
           <div>
-            <Label for="has_folder" />
             <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
               {dictionary.addToFolder}
             </CheckBox>
           </div>
           <div>
-            <Label for="has_externals" />
             <CheckBox type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck}>
               {dictionary.workspaceWithExternals}
             </CheckBox>
+          </div>
+          <div>
+            <SvgIconFeather icon="alert-circle" width="16" height="16" />
           </div>
         </WrapperDiv>
         {form.has_folder === true && (
