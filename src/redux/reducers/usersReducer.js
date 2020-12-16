@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   onlineUsers: [],
   mentions: {},
   roles: {},
+  externalUsers: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -63,7 +64,7 @@ export default (state = INITIAL_STATE, action) => {
         onlineUsers: action.data.result,
       };
     }
-    case "GET_USERS_SUCCESS":
+    case "GET_USERS_SUCCESS": {
       let users = { ...state.users };
       let mentions = { ...state.mentions };
       action.data.users.forEach((item) => {
@@ -88,6 +89,13 @@ export default (state = INITIAL_STATE, action) => {
           skip: action.data.next_skip,
         },
       };
+    }
+    case "GET_EXTERNAL_USERS_SUCCESS": {
+      return {
+        ...state,
+        externalUsers: action.data.users,
+      };
+    }
     case "GET_USER_SUCCESS": {
       const { CHAT_SETTINGS, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData } = action.data;
 

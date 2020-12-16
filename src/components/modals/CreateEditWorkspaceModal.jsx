@@ -109,6 +109,12 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
+  &.checkboxes {
+    flex-flow: row !important;
+    label {
+      min-width: 0;
+    }
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -188,11 +194,14 @@ const CreateEditWorkspaceModal = (props) => {
   const [modal, setModal] = useState(true);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.folders);
   const [userOptions, setUserOptions] = useState([]);
+  const [externalUserOptions, setExternalUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [invitedEmails, setInvitedEmails] = useState([]);
+  const [externalInput, setExternalInput] = useState("");
   const [form, setForm] = useState({
     is_private: false,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
@@ -216,6 +225,8 @@ const CreateEditWorkspaceModal = (props) => {
         : null,
     description: "",
     textOnly: "",
+    has_externals: false,
+    selectedExternals: [],
   });
 
   const [showDropzone, setShowDropzone] = useState(false);
@@ -276,6 +287,10 @@ const CreateEditWorkspaceModal = (props) => {
       workspace_name: `<b>${form.name}</b>`,
     }),
     externalUserConfirmation: _t("CONFIRMATION_EXTERNAL_USER", "Are you sure you want to give an external user access to this Workspace?"),
+    workspaceWithExternals: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS", "Workspace with externals"),
+    externalGuest: _t("WORKSPACE.EXTERNAL_GUEST", "External guest"),
+    peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
+    peopleInvited: _t("PEOPLE.INVITED", "Invited"),
   };
 
   const _validateName = useCallback(() => {
@@ -366,6 +381,28 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const handleSelectExternalUser = (e) => {
+    if (e === null) {
+      setForm((prevState) => ({
+        ...prevState,
+        selectedExternals: [],
+      }));
+      // setValid((prevState) => ({
+      //   ...prevState,
+      //   team: mode === "edit",
+      // }));
+    } else {
+      setForm((prevState) => ({
+        ...prevState,
+        selectedExternals: e,
+      }));
+      // setValid((prevState) => ({
+      //   ...prevState,
+      //   team: true,
+      // }));
+    }
+  };
+
   const handleSelectFolder = (e) => {
     setForm((prevState) => ({
       ...prevState,
@@ -434,7 +471,8 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const confirmExternalUsers = () => {
-    if (invitedEmails.length) {
+    const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
+    if (externalEmails.length) {
       var answer = window.confirm(dictionary.externalUserConfirmation);
       if (answer) {
         handleConfirm();
@@ -447,65 +485,74 @@ const CreateEditWorkspaceModal = (props) => {
   const handleConfirm = () => {
     if (Object.values(valid).filter((v) => !v).length) return;
 
+    const member_ids = [...form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id), ...form.selectedExternals.filter((u) => typeof u.id === "number" && u.has_accepted).map((u) => u.id)];
+
     let payload = {
       name: form.name,
       description: form.description,
       is_external: 0,
-      member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id),
+      member_ids: member_ids,
       is_lock: form.is_private ? 1 : 0,
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
     };
 
-    if (invitedEmails.length) {
+    const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
+    if (externalEmails.length) {
       if (mode === "edit") {
         payload = {
           ...payload,
-          new_external_emails: invitedEmails,
+          new_external_emails: externalEmails,
           is_external: 1,
         };
       } else {
         payload = {
           ...payload,
-          external_emails: invitedEmails,
+          external_emails: externalEmails,
           is_external: 1,
         };
       }
     }
 
     if (mode === "edit") {
-      const removed_members = item.members
-        .filter((m) => {
-          for (const i in form.selectedUsers) {
-            if (form.selectedUsers.hasOwnProperty(i)) {
-              if (form.selectedUsers[i].id === m.id) {
-                return false;
-              }
-            }
-          }
-          return true;
-        })
-        .map((m) => m.id);
+      const activeMembers = item.members.filter((m) => m.active === 1);
 
-      const added_members = form.selectedUsers
-        .filter((u) => {
-          for (const i in item.members) {
-            if (item.members.hasOwnProperty(i)) {
-              if (item.members[i].id === u.id) {
-                return false;
-              }
-            }
-          }
-          return true;
-        })
-        .map((m) => m.id);
+      const removed_members = activeMembers.filter((m) => !member_ids.some((id) => m.id === id));
+
+      const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
+
+      // const removed_members = item.members
+      //   .filter((m) => {
+      //     for (const i in form.selectedUsers) {
+      //       if (form.selectedUsers.hasOwnProperty(i)) {
+      //         if (form.selectedUsers[i].id === m.id) {
+      //           return false;
+      //         }
+      //       }
+      //     }
+      //     return true;
+      //   })
+      //   .map((m) => m.id);
+
+      // const added_members = form.selectedUsers
+      //   .filter((u) => {
+      //     for (const i in item.members) {
+      //       if (item.members.hasOwnProperty(i)) {
+      //         if (item.members[i].id === u.id) {
+      //           return false;
+      //         }
+      //       }
+      //     }
+      //     return true;
+      //   })
+      //   .map((m) => m.id);
 
       payload = {
         ...payload,
         workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
         topic_id: item.id,
         remove_member_ids: removed_members,
-        new_member_ids: added_members.filter((u) => typeof u === "number"),
+        new_member_ids: added_members,
       };
       if (payload.remove_member_ids.length || payload.new_member_ids.length || item.name !== form.name) {
         payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
@@ -517,7 +564,7 @@ const CreateEditWorkspaceModal = (props) => {
             profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           },
           title: form.name === item.name ? "" : form.name,
-          added_members: added_members.filter((u) => typeof u === "number"),
+          added_members: added_members,
           removed_members: removed_members,
         })}`;
       }
@@ -949,19 +996,36 @@ const CreateEditWorkspaceModal = (props) => {
     }
     if (mode === "edit") {
       let members = [];
+      let externalMembers = [];
       let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
       if (item.members.length) {
-        members = item.members.map((m) => {
-          return {
-            value: m.id,
-            label: m.name,
-            name: m.name,
-            id: m.id,
-            first_name: m.first_name === "" ? m.email : m.first_name,
-            profile_image_link: m.profile_image_link,
-            profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
-          };
-        });
+        members = item.members
+          .filter((m) => m.active === 1 && m.type === "internal")
+          .map((m) => {
+            return {
+              value: m.id,
+              label: m.name,
+              name: m.name,
+              id: m.id,
+              first_name: m.first_name === "" ? m.email : m.first_name,
+              profile_image_link: m.profile_image_link,
+              profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
+            };
+          });
+        externalMembers = item.members
+          .filter((m) => m.type === "external")
+          .map((m) => {
+            return {
+              value: m.id,
+              label: m.name,
+              name: m.name,
+              id: m.id,
+              first_name: m.first_name === "" ? m.email : m.first_name,
+              profile_image_link: m.profile_image_link,
+              profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
+              email: m.email,
+            };
+          });
       }
       setForm({
         ...form,
@@ -977,6 +1041,8 @@ const CreateEditWorkspaceModal = (props) => {
         textOnly: item.description,
         name: item.name,
         is_private: is_private,
+        has_externals: externalMembers.length > 0,
+        selectedExternals: externalMembers,
       });
       setValid({
         name: true,
@@ -1022,7 +1088,10 @@ const CreateEditWorkspaceModal = (props) => {
   }, [form.has_folder, form.selectedFolder]);
 
   useEffect(() => {
-    const userOptions = Object.values(users).map((u) => {
+    const internalUsers = Object.values(users).filter((u) => {
+      return u.type === "internal" && u.active === 1;
+    });
+    const userOptions = internalUsers.map((u) => {
       return {
         ...u,
         value: u.id,
@@ -1031,6 +1100,21 @@ const CreateEditWorkspaceModal = (props) => {
     });
     setUserOptions(userOptions);
   }, [Object.values(users).length]);
+
+  useEffect(() => {
+    const externalUserOptions = externalUsers.map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: u.has_accepted ? `${u.email} | ${u.first_name} ${u.last_name} - ${u.external_company_name}` : `${u.email} `,
+        dictionary: {
+          peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
+          peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+        },
+      };
+    });
+    setExternalUserOptions(externalUserOptions);
+  }, [externalUsers.length]);
 
   const onOpened = () => {
     if (refs.workspace_name && refs.workspace_name.current) {
@@ -1073,8 +1157,47 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const handleKeyDownExternal = (e) => {
+    if (e.key === "Enter") {
+      //validate email - if email is valid then add to useroptions
+      if (EmailRegex.test(externalInput)) {
+        const userExists = userOptions.some((uo) => uo.email === externalInput);
+
+        if (userExists) {
+          let userOption = userOptions.filter((uo) => uo.email === externalInput);
+          if (userOption.length && !form.selectedExternals.some((user) => user.email === externalInput)) {
+            setForm((prevState) => ({
+              ...prevState,
+              selectedUsers: [...prevState.selectedExternals, userOption[0]],
+            }));
+          }
+        } else {
+          setInvitedEmails((prevState) => [...prevState, externalInput]);
+          setForm((prevState) => ({
+            ...prevState,
+            selectedExternals: [
+              ...prevState.selectedExternals,
+              {
+                id: require("shortid").generate(),
+                label: externalInput,
+                value: externalInput,
+                name: externalInput,
+                first_name: externalInput,
+              },
+            ],
+          }));
+        }
+        setExternalInput("");
+      }
+    }
+  };
+
   const handleInputChange = (e) => {
     setInputValue(e);
+  };
+
+  const handleExternalInputChange = (e) => {
+    setExternalInput(e);
   };
 
   const filterOptions = (candidate, input) => {
@@ -1141,11 +1264,19 @@ const CreateEditWorkspaceModal = (props) => {
             </div>
           </div>
         </WrapperDiv>
-        <WrapperDiv className={"modal-input"}>
-          <Label for="has_folder" />
-          <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
-            {dictionary.addToFolder}
-          </CheckBox>
+        <WrapperDiv className={"modal-input checkboxes"}>
+          <div>
+            <Label for="has_folder" />
+            <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
+              {dictionary.addToFolder}
+            </CheckBox>
+          </div>
+          <div>
+            <Label for="has_externals" />
+            <CheckBox type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck}>
+              {dictionary.workspaceWithExternals}
+            </CheckBox>
+          </div>
         </WrapperDiv>
         {form.has_folder === true && (
           <WrapperDiv className={"modal-input"}>
@@ -1169,6 +1300,22 @@ const CreateEditWorkspaceModal = (props) => {
           />
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
+        {form.has_externals === true && (
+          <WrapperDiv className={"modal-input"}>
+            <Label for="people">{dictionary.externalGuest}</Label>
+            <SelectPeople
+              valid={valid.team}
+              options={externalUserOptions}
+              value={form.selectedExternals}
+              inputValue={externalInput}
+              onChange={handleSelectExternalUser}
+              onKeyDown={handleKeyDownExternal}
+              onInputChange={handleExternalInputChange}
+              filterOption={filterOptions}
+              isSearchable
+            />
+          </WrapperDiv>
+        )}
         <StyledDescriptionInput
           className="modal-description"
           height={window.innerHeight - 660}
