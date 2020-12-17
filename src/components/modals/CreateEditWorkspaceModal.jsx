@@ -487,7 +487,8 @@ const CreateEditWorkspaceModal = (props) => {
   const handleConfirm = () => {
     if (Object.values(valid).filter((v) => !v).length) return;
 
-    const member_ids = [...form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id), ...form.selectedExternals.filter((u) => typeof u.id === "number").map((u) => u.id)];
+    const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
+    const member_ids = selectedMembers.map((u) => u.id);
 
     let payload = {
       name: form.name,
@@ -523,6 +524,10 @@ const CreateEditWorkspaceModal = (props) => {
 
       const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
 
+      const invitedIds = selectedMembers.filter((m) => !m.has_accepted).map((m) => m.id);
+
+      console.log(invitedIds, removed_members);
+
       payload = {
         ...payload,
         workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
@@ -530,7 +535,7 @@ const CreateEditWorkspaceModal = (props) => {
         remove_member_ids: removed_members.map((m) => m.id),
         new_member_ids: added_members,
       };
-      if (payload.remove_member_ids.length || payload.new_member_ids.length || item.name !== form.name) {
+      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r)).length || item.name !== form.name) {
         payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
           author: {
             id: user.id,
@@ -540,8 +545,8 @@ const CreateEditWorkspaceModal = (props) => {
             profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           },
           title: form.name === item.name ? "" : form.name,
-          added_members: added_members,
-          removed_members: removed_members.map((m) => m.id),
+          added_members: added_members.filter((r) => !invitedIds.some((id) => id === r)),
+          removed_members: removed_members.filter((rm) => rm.has_accepted).map((m) => m.id),
         })}`;
       }
 
@@ -1130,6 +1135,7 @@ const CreateEditWorkspaceModal = (props) => {
                 name: inputValue,
                 first_name: inputValue,
                 email: inputValue,
+                has_accepted: false,
               },
             ],
           }));
@@ -1166,6 +1172,7 @@ const CreateEditWorkspaceModal = (props) => {
                 name: externalInput,
                 first_name: externalInput,
                 email: externalInput,
+                has_accepted: false,
               },
             ],
           }));
