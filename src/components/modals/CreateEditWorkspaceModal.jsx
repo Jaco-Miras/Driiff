@@ -486,7 +486,7 @@ const CreateEditWorkspaceModal = (props) => {
   const handleConfirm = () => {
     if (Object.values(valid).filter((v) => !v).length) return;
 
-    const member_ids = [...form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id), ...form.selectedExternals.filter((u) => typeof u.id === "number" && u.has_accepted).map((u) => u.id)];
+    const member_ids = [...form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id), ...form.selectedExternals.filter((u) => typeof u.id === "number").map((u) => u.id)];
 
     let payload = {
       name: form.name,
@@ -518,7 +518,7 @@ const CreateEditWorkspaceModal = (props) => {
     if (mode === "edit") {
       const activeMembers = item.members.filter((m) => m.active === 1);
 
-      const removed_members = activeMembers.filter((m) => !member_ids.some((id) => m.id === id));
+      const removed_members = item.members.filter((m) => !member_ids.some((id) => m.id === id));
 
       const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
 
