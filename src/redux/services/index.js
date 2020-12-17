@@ -32,6 +32,12 @@ export {
   getChannelLastReply,
   putChatStar,
   getChatStar,
+  getHuddleChatbot,
+  postHuddleChatbot,
+  putHuddleChatbot,
+  deleteHuddleChatbot,
+  postHuddleAnswer,
+  getUserBots,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
