@@ -16,6 +16,10 @@ const PostBadge = (props) => {
     }
   }, [post]);
 
+  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
+  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+
   return (
     <div ref={refs.container}>
       {(post.is_must_read || post.is_must_reply || post.is_read_only || post.type === "draft_post" || post.is_archived !== 0 || post.is_personal === true) && (
@@ -52,9 +56,19 @@ const PostBadge = (props) => {
           )}
         </>
       )}
-      {post.need_approval && (
+      {/* {post.need_approval && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
+        </div>
+      )} */}
+      {isApprover && hasPendingAproval && (
+        <div className={`${className} mr-3 d-sm-inline d-none`}>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
+        </div>
+      )}
+      {post.author.id === user.id && hasRequestedChange && (
+        <div className={`${className} mr-3 d-sm-inline d-none`}>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.changeRequested}</div>
         </div>
       )}
     </div>

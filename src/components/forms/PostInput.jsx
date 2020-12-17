@@ -134,6 +134,7 @@ const PostInput = forwardRef((props, ref) => {
     prioMentionIds,
     approvers,
     onClearApprovers,
+    onSubmitCallback,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -284,6 +285,7 @@ const PostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
+    if (onSubmitCallback) onSubmitCallback();
   };
 
   const handleClearQuillInput = () => {

@@ -91,6 +91,8 @@ const usePostActions = () => {
     notificationReminderPost: _t("NOTIFICATION.REMINDER_POST", "You will be reminded about this post under"),
     itemPost: _t("ITEM.POST", "post"),
     todoLinks: _t("SIDEBAR.TODO_LINKS", "Reminders"),
+    accept: _t("POST.ACCEPT", "Accept"),
+    acceptThisPost: _t("POST.ACCEPT_THIS_POST", "Accept this post?"),
   };
 
   const starPost = useCallback(
@@ -510,6 +512,23 @@ const usePostActions = () => {
             },
             action: {
               update: update,
+            },
+          };
+          break;
+        }
+        case "confirmation": {
+          payload = {
+            type: "confirmation",
+            mode: mode,
+            submitText: dictionary.accept,
+            cancelText: dictionary.buttonCancel,
+            headerText: dictionary.acceptThisPost,
+            bodyText: "Are you sure you want to accept this post?",
+            item: {
+              post: post,
+            },
+            actions: {
+              onSubmit: () => approve({ post_id: post.id, approved: 1 }),
             },
           };
           break;
