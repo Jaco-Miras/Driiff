@@ -13,6 +13,7 @@ import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect }
 import { useFileActions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
+import { getExternalUsers } from "../../redux/actions/userAction";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -63,7 +64,7 @@ const WrapperDiv = styled(InputGroup)`
   }
   .react-select-container {
     width: 100%;
-    z-index: 2;
+    // z-index: 2;
   }
   .react-select__multi-value__label {
     align-self: center;
@@ -498,8 +499,8 @@ const CreateEditWorkspaceModal = (props) => {
       file_ids: inlineImages.map((i) => i.id),
     };
 
-    const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    if (externalEmails.length && form.has_externals) {
+    //const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
+    if (invitedEmails.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
           ...payload,
@@ -509,7 +510,7 @@ const CreateEditWorkspaceModal = (props) => {
       } else {
         payload = {
           ...payload,
-          external_emails: externalEmails,
+          external_emails: invitedEmails,
           is_external: 1,
         };
       }
@@ -650,12 +651,12 @@ const CreateEditWorkspaceModal = (props) => {
             if (res) {
               //redirect url
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, {
+                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: form.selectedFolder.value,
                   workspace_id: res.data.id,
                 });
               } else {
-                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, {
+                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: null,
                   workspace_id: res.data.id,
                 });
@@ -697,6 +698,7 @@ const CreateEditWorkspaceModal = (props) => {
                 },
                 created_at: res.data.topic.created_at,
                 updated_at: res.data.topic.created_at,
+                is_shared: form.has_externals,
               };
 
               dispatch(setActiveTopic(newWorkspace));
@@ -1050,6 +1052,7 @@ const CreateEditWorkspaceModal = (props) => {
         name: null,
       }));
     }
+    return () => dispatch(getExternalUsers());
   }, []);
 
   useEffect(() => {
@@ -1126,6 +1129,7 @@ const CreateEditWorkspaceModal = (props) => {
                 value: inputValue,
                 name: inputValue,
                 first_name: inputValue,
+                email: inputValue,
               },
             ],
           }));
@@ -1139,14 +1143,14 @@ const CreateEditWorkspaceModal = (props) => {
     if (e.key === "Enter") {
       //validate email - if email is valid then add to useroptions
       if (EmailRegex.test(externalInput)) {
-        const userExists = userOptions.some((uo) => uo.email === externalInput);
+        const userExists = externalUserOptions.some((uo) => uo.email === externalInput);
 
         if (userExists) {
-          let userOption = userOptions.filter((uo) => uo.email === externalInput);
+          let userOption = externalUserOptions.filter((uo) => uo.email === externalInput);
           if (userOption.length && !form.selectedExternals.some((user) => user.email === externalInput)) {
             setForm((prevState) => ({
               ...prevState,
-              selectedUsers: [...prevState.selectedExternals, userOption[0]],
+              selectedExternals: [...prevState.selectedExternals, userOption[0]],
             }));
           }
         } else {
@@ -1161,6 +1165,7 @@ const CreateEditWorkspaceModal = (props) => {
                 value: externalInput,
                 name: externalInput,
                 first_name: externalInput,
+                email: externalInput,
               },
             ],
           }));
