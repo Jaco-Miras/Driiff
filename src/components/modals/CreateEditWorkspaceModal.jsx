@@ -391,19 +391,13 @@ const CreateEditWorkspaceModal = (props) => {
         ...prevState,
         selectedExternals: [],
       }));
-      // setValid((prevState) => ({
-      //   ...prevState,
-      //   team: mode === "edit",
-      // }));
+      setInvitedEmails([]);
     } else {
       setForm((prevState) => ({
         ...prevState,
         selectedExternals: e,
       }));
-      // setValid((prevState) => ({
-      //   ...prevState,
-      //   team: true,
-      // }));
+      setInvitedEmails(invitedEmails.filter((email) => e.some((ex) => ex.email === email)));
     }
   };
 
@@ -528,8 +522,6 @@ const CreateEditWorkspaceModal = (props) => {
       const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
 
       const invitedIds = selectedMembers.filter((m) => !m.has_accepted).map((m) => m.id);
-
-      console.log(invitedIds, removed_members);
 
       payload = {
         ...payload,
