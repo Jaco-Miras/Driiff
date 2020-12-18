@@ -7,13 +7,14 @@ import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
-import { Avatar, FileAttachments, SvgIconFeather } from "../common";
+import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
 import { useFileActions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getExternalUsers } from "../../redux/actions/userAction";
+import Tooltip from "react-tooltip-lite";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -288,6 +289,7 @@ const CreateEditWorkspaceModal = (props) => {
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", "::workspace_name:: workspace is created.", {
       workspace_name: `<b>${form.name}</b>`,
     }),
+    externalWorkspace: _t("WORKSPACE.EXTERNAL_WORKSPACE", "External workspace"),
     externalUserConfirmation: _t("CONFIRMATION_EXTERNAL_USER", "Are you sure you want to give an external user access to this Workspace?"),
     workspaceWithExternals: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS", "Workspace with externals"),
     externalGuest: _t("WORKSPACE.EXTERNAL_GUEST", "External guest"),
@@ -472,19 +474,20 @@ const CreateEditWorkspaceModal = (props) => {
     );
   };
 
-  const confirmExternalUsers = () => {
-    const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    if (externalEmails.length) {
-      var answer = window.confirm(dictionary.externalUserConfirmation);
-      if (answer) {
-        handleConfirm();
-      }
-    } else {
-      handleConfirm();
-    }
-  };
+  // const confirmExternalUsers = () => {
+  //   const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
+  //   if (externalEmails.length) {
+  //     var answer = window.confirm(dictionary.externalUserConfirmation);
+  //     if (answer) {
+  //       handleConfirm();
+  //     }
+  //   } else {
+  //     handleConfirm();
+  //   }
+  // };
 
   const handleConfirm = () => {
+    if (loading) return;
     if (Object.values(valid).filter((v) => !v).length) return;
 
     const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
@@ -601,46 +604,31 @@ const CreateEditWorkspaceModal = (props) => {
         }
       };
 
-      const handleShowConfirmation = () => {
-        let confirmModal = {
-          type: "confirmation",
-          headerText: dictionary.lockedWorkspace,
-          submitText: dictionary.confirm,
-          cancelText: dictionary.cancel,
-          bodyText: dictionary.lockedWorkspaceText,
-          actions: {
-            onSubmit: handleSubmit,
-          },
-        };
+      if ((item.is_lock !== payload.is_lock && payload.is_lock === 1) || form.has_externals) {
+        const handleShowConfirmation = () => {
+          let confirmModal = {
+            type: "confirmation",
+            headerText: form.has_externals && payload.is_lock === 1 ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}` : form.has_externals ? dictionary.externalWorkspace : dictionary.lockedWorkspace,
+            submitText: dictionary.confirm,
+            cancelText: dictionary.cancel,
+            bodyText: form.has_externals && payload.is_lock === 1 ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}` : form.has_externals ? dictionary.externalUserConfirmation : dictionary.lockedWorkspaceText,
+            actions: {
+              onSubmit: handleSubmit,
+            },
+          };
 
-        dispatch(addToModals(confirmModal));
-      };
-      if (item.is_lock !== payload.is_lock && payload.is_lock === 1) {
+          dispatch(addToModals(confirmModal));
+        };
         handleShowConfirmation();
       } else {
         handleSubmit();
       }
     } else {
-      const handleShowConfirmation = () => {
-        let confirmModal = {
-          type: "confirmation",
-          headerText: dictionary.lockedWorkspace,
-          submitText: dictionary.confirm,
-          cancelText: dictionary.cancel,
-          bodyText: dictionary.lockedWorkspaceText,
-          actions: {
-            onSubmit: handleSubmit,
-          },
-        };
-
-        dispatch(addToModals(confirmModal));
-      };
-
       const handleSubmit = () => {
         setLoading(true);
-        toggle();
         dispatch(
           createWorkspace(payload, (err, res) => {
+            toggle();
             if (err) {
               console.log(err);
               setLoading(false);
@@ -729,7 +717,22 @@ const CreateEditWorkspaceModal = (props) => {
           })
         );
       };
-      if (payload.is_lock === 1) {
+
+      if (payload.is_lock === 1 || form.has_externals) {
+        const handleShowConfirmation = () => {
+          let confirmModal = {
+            type: "confirmation",
+            headerText: form.has_externals && payload.is_lock === 1 ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}` : form.has_externals ? dictionary.externalWorkspace : dictionary.lockedWorkspace,
+            submitText: dictionary.confirm,
+            cancelText: dictionary.cancel,
+            bodyText: form.has_externals && payload.is_lock === 1 ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}` : form.has_externals ? dictionary.externalUserConfirmation : dictionary.lockedWorkspaceText,
+            actions: {
+              onSubmit: handleSubmit,
+            },
+          };
+
+          dispatch(addToModals(confirmModal));
+        };
         handleShowConfirmation();
       } else {
         handleSubmit();
@@ -1265,8 +1268,10 @@ const CreateEditWorkspaceModal = (props) => {
               {dictionary.workspaceWithExternals}
             </CheckBox>
           </div>
-          <div>
-            <SvgIconFeather icon="alert-circle" width="16" height="16" />
+          <div style={{ position: "relative" }}>
+            <ToolTip content={"This function will allow users outside your company be invited on this workspace. This may be your customer or supplier."}>
+              <SvgIconFeather icon="alert-circle" width="16" height="16" />
+            </ToolTip>
           </div>
         </WrapperDiv>
         {form.has_folder === true && (
@@ -1339,7 +1344,7 @@ const CreateEditWorkspaceModal = (props) => {
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={confirmExternalUsers}>
+          <button className="btn btn-primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>
