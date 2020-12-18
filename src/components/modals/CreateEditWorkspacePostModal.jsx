@@ -331,6 +331,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
+  const [imageLoading, setImageLoading] = useState(null);
   const [mounted, setMounted] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
 
@@ -640,7 +641,7 @@ const CreateEditWorkspacePostModal = (props) => {
   };
 
   const handleConfirm = () => {
-    if (loading) return;
+    if (loading || imageLoading) return;
 
     setLoading(true);
 
@@ -1220,6 +1221,7 @@ const CreateEditWorkspacePostModal = (props) => {
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}
+          setImageLoading={setImageLoading}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
@@ -1289,7 +1291,7 @@ const CreateEditWorkspacePostModal = (props) => {
           </div>
         </WrapperDiv>
         <WrapperDiv>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>"} onClick={handleConfirm}>
+          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>" || imageLoading} onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>
