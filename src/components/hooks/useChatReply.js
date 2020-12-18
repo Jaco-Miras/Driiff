@@ -15,8 +15,7 @@ const StyledImageTextLink = styled(ImageTextLink)`
   }
 `;
 
-const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel }) => {
-
+const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users }) => {
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
@@ -70,52 +69,82 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       const data = JSON.parse(message.replace("CHANNEL_UPDATE::", ""));
       let author = {
         name: dictionary.someone,
-        id: null
-      }
-  
+        id: null,
+      };
+
       if (data.author && data.author.id === user.id) {
         author = {
           name: <b>{dictionary.you}</b>,
           id: user.id,
-        }
+        };
       } else if (data.author && data.author.id !== user.id) {
         let sysAuthor = Array.from(recipients).find((r) => r.type === "USER" && data.author.id === r.type_id);
         if (sysAuthor) {
           author = {
             name: sysAuthor.name,
             id: sysAuthor.id,
-          }
+          };
         }
       }
-      
+
+      if (data.accepted_members && data.author) {
+        let sysAuthor = Object.values(users).find((u) => data.author === u.id);
+        if (sysAuthor) {
+          author = {
+            name: sysAuthor.name,
+            id: sysAuthor.id,
+          };
+        }
+      }
+
       let newBody = "";
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3"/> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
-            <br/>
+            <SvgIconFeather width={16} icon="edit-3" /> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
+            <br />
           </>
         );
       }
 
       if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
         //for adding one member without changes in title and for user who join the channel / workspace
-        const am = recipients.find((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" })
+        const am = recipients.find((r) => {
+          return data.added_members.includes(r.type_id) && r.type === "USER";
+        });
         if (am && data.author && data.author.id === am.id) {
-          newBody = <>{user.id === data.author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b></>;
+          newBody = (
+            <>
+              {user.id === data.author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b>
+            </>
+          );
         } else if (am) {
-          newBody = <><b>{author.name}</b> {dictionary.added} <b>{am.name}</b></>;
+          newBody = (
+            <>
+              <b>{author.name}</b> {dictionary.added} <b>{am.name}</b>
+            </>
+          );
         }
       } else if (data.added_members.length >= 1) {
-        let am = recipients.filter((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" });
+        let am = recipients.filter((r) => {
+          return data.added_members.includes(r.type_id) && r.type === "USER";
+        });
         if (newBody === "") {
-          newBody = <><b>{author.name}</b> {dictionary.added} </>;
+          newBody = (
+            <>
+              <b>{author.name}</b> {dictionary.added}{" "}
+            </>
+          );
         } else {
-          newBody = <>{newBody} {dictionary.andAdded}</>;
+          newBody = (
+            <>
+              {newBody} {dictionary.andAdded}
+            </>
+          );
         }
-  
+
         if (data.added_members.includes(user.id)) {
-          am = am.filter(m => m.type_id !== user.id)
+          am = am.filter((m) => m.type_id !== user.id);
           if (am.length !== 0) {
             newBody = (
               <>
@@ -130,12 +159,12 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
             );
           }
         }
-  
+
         if (am.length !== 0) {
           newBody = (
             <>
-              {newBody} <b>{am.map(m => m.name).join(", ")}</b>
-              <br/>
+              {newBody} <b>{am.map((m) => m.name).join(", ")}</b>
+              <br />
             </>
           );
         }
@@ -147,7 +176,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
             if (data.author.id === user.id && data.removed_members[0] === user.id) {
               newBody = (
                 <>
-                  <b>{dictionary.you}</b>{" "}{selectedChannel.type === "TOPIC" ? dictionary.leftTheWorkspace : dictionary.leftTheChat}{" "}
+                  <b>{dictionary.you}</b> {selectedChannel.type === "TOPIC" ? dictionary.leftTheWorkspace : dictionary.leftTheChat}{" "}
                 </>
               );
             } else {
@@ -158,10 +187,16 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
               );
             }
           } else {
-            newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+            newBody = (
+              <>
+                {newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}
+              </>
+            );
           }
         } else {
-          const userLeft = recipients.filter((r) => { return data.removed_members[0] === r.type_id && r.type === "USER"});
+          const userLeft = recipients.filter((r) => {
+            return data.removed_members[0] === r.type_id && r.type === "USER";
+          });
           if (newBody === "") {
             newBody = (
               <>
@@ -169,7 +204,11 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
               </>
             );
           } else {
-            newBody = <>{newBody} {dictionary.andRemoved} <b>{userLeft.length ? userLeft[0].name : null}</b></>;
+            newBody = (
+              <>
+                {newBody} {dictionary.andRemoved} <b>{userLeft.length ? userLeft[0].name : null}</b>
+              </>
+            );
           }
         }
       } else if (data.removed_members.length > 1) {
@@ -183,22 +222,34 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
               </>
             );
           } else {
-            newBody = <>{newBody} {dictionary.andLeft}</>;
+            newBody = (
+              <>
+                {newBody} {dictionary.andLeft}
+              </>
+            );
           }
 
           if (rm.length !== 0) {
             newBody = (
               <>
                 {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
-                <br/>
+                <br />
               </>
             );
           }
         } else {
           if (newBody === "") {
-            newBody = <>{author.name} {dictionary.removed} </>;
+            newBody = (
+              <>
+                {author.name} {dictionary.removed}{" "}
+              </>
+            );
           } else {
-            newBody = <>{newBody} {dictionary.andRemoved}</>;
+            newBody = (
+              <>
+                {newBody} {dictionary.andRemoved}
+              </>
+            );
           }
 
           if (data.removed_members.includes(user.id)) {
@@ -221,11 +272,18 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
             newBody = (
               <>
                 {newBody} <b>{rm.join(", ")}</b>
-                <br/>
+                <br />
               </>
             );
           }
         }
+      } else if (data.accepted_members) {
+        const am = Object.values(users).find((u) => data.accepted_members[0] === u.id);
+        newBody = (
+          <>
+            <b>{author.name}</b> {dictionary.added} <b>{am && am.name}</b>
+          </>
+        );
       }
 
       return renderToString(newBody);
@@ -236,8 +294,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
         newBody = renderToString(
           <>
             <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
-            <span className="card card-body" style={{ margin: 0, padding: "10px" }}
-                  dangerouslySetInnerHTML={{ __html: description }}/>
+            <span className="card card-body" style={{ margin: 0, padding: "10px" }} dangerouslySetInnerHTML={{ __html: description }} />
           </>
         );
       } catch (err) {
@@ -249,12 +306,12 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       try {
         const data = JSON.parse(message.replace("ZAP_SUBMIT::", ""));
         newBody = "<span class='zap-submit'>";
-        Object.keys(data).forEach(key => {
+        Object.keys(data).forEach((key) => {
           if (data[key] !== "") {
             newBody += `<span class="data-key">${key}</span> : <span class="data-value">${data[key]}</span><br/>`;
           }
         });
-        newBody += '</span>';
+        newBody += "</span>";
       } catch (e) {
         return message;
       }
@@ -290,8 +347,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     let images = div.getElementsByTagName("img");
     for (let i = 0; i < images.length; i++) {
       quoteBody += renderToString(
-        <StyledImageTextLink className={"image-quote"} target={"_blank"} href={images[0].getAttribute("src")}
-                             icon={"image-video"} isAuthor={isAuthor}>
+        <StyledImageTextLink className={"image-quote"} target={"_blank"} href={images[0].getAttribute("src")} icon={"image-video"} isAuthor={isAuthor}>
           Photo
         </StyledImageTextLink>
       );
@@ -300,8 +356,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     let videos = div.getElementsByTagName("video");
     for (let i = 0; i < videos.length; i++) {
       quoteBody += renderToString(
-        <StyledImageTextLink className={"video-quote"} target={"_blank"} href={videos[0].getAttribute("player-source")}
-                             icon={"image-video"} isAuthor={isAuthor}>
+        <StyledImageTextLink className={"video-quote"} target={"_blank"} href={videos[0].getAttribute("player-source")} icon={"image-video"} isAuthor={isAuthor}>
           Video
         </StyledImageTextLink>
       );
@@ -310,15 +365,15 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       reply.quote.files.forEach((file) => {
         if (file.type === "image") {
           quoteBody += renderToString(
-            <StyledImageTextLink
-              className={"image-quote"} target={"_blank"} href={file.thumbnail_link}
-              icon={"image-video"} isAuthor={isAuthor}>{dictionary.photo}</StyledImageTextLink>
+            <StyledImageTextLink className={"image-quote"} target={"_blank"} href={file.thumbnail_link} icon={"image-video"} isAuthor={isAuthor}>
+              {dictionary.photo}
+            </StyledImageTextLink>
           );
         } else if (file.type === "video") {
           quoteBody += renderToString(
-            <StyledImageTextLink
-              className={"video-quote"} target={"_blank"} href={file.view_link} icon={"image-video"}
-              isAuthor={isAuthor}>{dictionary.video}</StyledImageTextLink>
+            <StyledImageTextLink className={"video-quote"} target={"_blank"} href={file.view_link} icon={"image-video"} isAuthor={isAuthor}>
+              {dictionary.video}
+            </StyledImageTextLink>
           );
         } else {
           quoteBody += renderToString(
@@ -358,7 +413,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     replyBody,
     hasMessage,
     isGifOnly,
-    isEmoticonOnly
+    isEmoticonOnly,
   };
 };
 
