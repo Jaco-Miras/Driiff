@@ -1269,7 +1269,14 @@ const CreateEditWorkspaceModal = (props) => {
             </CheckBox>
           </div>
           <div style={{ position: "relative" }}>
-            <ToolTip content={"This function will allow users outside your company be invited on this workspace. This may be your customer or supplier."}>
+            <ToolTip
+              content={
+                <div>
+                  This function will allow users outside your company be invited on this workspace. <br />
+                  This may be your customer or supplier.
+                </div>
+              }
+            >
               <SvgIconFeather icon="alert-circle" width="16" height="16" />
             </ToolTip>
           </div>
