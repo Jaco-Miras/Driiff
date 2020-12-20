@@ -1103,43 +1103,6 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      //validate email - if email is valid then add to useroptions
-      if (EmailRegex.test(inputValue)) {
-        const userExists = userOptions.some((uo) => uo.email === inputValue);
-
-        if (userExists) {
-          let userOption = userOptions.filter((uo) => uo.email === inputValue);
-          if (userOption.length && !form.selectedUsers.some((user) => user.email === inputValue)) {
-            setForm((prevState) => ({
-              ...prevState,
-              selectedUsers: [...prevState.selectedUsers, userOption[0]],
-            }));
-          }
-        } else {
-          setInvitedEmails((prevState) => [...prevState, inputValue]);
-          setForm((prevState) => ({
-            ...prevState,
-            selectedUsers: [
-              ...prevState.selectedUsers,
-              {
-                id: require("shortid").generate(),
-                label: inputValue,
-                value: inputValue,
-                name: inputValue,
-                first_name: inputValue,
-                email: inputValue,
-                has_accepted: false,
-              },
-            ],
-          }));
-        }
-        setInputValue("");
-      }
-    }
-  };
-
   const handleKeyDownExternal = (e) => {
     if (e.key === "Enter") {
       //validate email - if email is valid then add to useroptions
@@ -1282,17 +1245,7 @@ const CreateEditWorkspaceModal = (props) => {
         )}
         <WrapperDiv className={"modal-input"}>
           <Label for="people">{dictionary.team}</Label>
-          <SelectPeople
-            valid={valid.team}
-            options={userOptions}
-            value={form.selectedUsers}
-            inputValue={inputValue}
-            onChange={handleSelectUser}
-            onKeyDown={handleKeyDown}
-            onInputChange={handleInputChange}
-            filterOption={filterOptions}
-            isSearchable
-          />
+          <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
         {form.has_externals === true && (
