@@ -1083,18 +1083,20 @@ const CreateEditWorkspaceModal = (props) => {
   }, [Object.values(users).length]);
 
   useEffect(() => {
-    const externalUserOptions = externalUsers.map((u) => {
-      return {
-        ...u,
-        value: u.id,
-        label: u.has_accepted ? `${u.email} | ${u.first_name} ${u.last_name} - ${u.external_company_name}` : `${u.email} `,
-        dictionary: {
-          peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
-          peopleInvited: _t("PEOPLE.INVITED", "Invited"),
-        },
-      };
-    });
-    setExternalUserOptions(externalUserOptions);
+    if (externalUsers.length) {
+      const externalUserOptions = externalUsers.map((u) => {
+        return {
+          ...u,
+          value: u.id,
+          label: u.has_accepted ? `${u.email} | ${u.first_name} ${u.last_name} - ${u.external_company_name}` : `${u.email} `,
+          dictionary: {
+            peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
+            peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+          },
+        };
+      });
+      setExternalUserOptions(externalUserOptions);
+    }
   }, [externalUsers.length]);
 
   const onOpened = () => {
