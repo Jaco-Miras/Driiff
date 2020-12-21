@@ -77,7 +77,7 @@ const WrapperDiv = styled(InputGroup)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
-    
+
     .dark & {
       background: #25282c;
       color: #c7c7c7;
@@ -110,7 +110,7 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
-  height: ${props => props.height}px;
+  height: ${(props) => props.height}px;
 
   &.description-input {
     // overflow: auto;
@@ -178,18 +178,36 @@ const Buttons = styled.div`
 const PickerContainer = styled(CommonPicker)`
   left: 15px;
   bottom: 65px;
-  
+
   .common-picker-btn {
     text-align: left;
   }
 `;
 
 const DescriptionInput = (props) => {
-  const {className = "", onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, 
-        members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", setInlineImages = null, 
-        ...otherProps} = props;
+  const {
+    className = "",
+    onChange,
+    showFileButton = false,
+    onOpenFileDialog,
+    defaultValue = "",
+    mode = "",
+    valid = null,
+    feedback = "",
+    height = 80,
+    members = [],
+    disableMention = false,
+    disableBodyMention = false,
+    mentionedUserIds,
+    onAddUsers,
+    onDoNothing,
+    modal = "post",
+    setInlineImages = null,
+    prioMentionIds = [],
+    ...otherProps
+  } = props;
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
   const reactQuillRef = useRef();
   const pickerRef = useRef();
 
@@ -213,14 +231,14 @@ const DescriptionInput = (props) => {
 
   const onSelectGif = (e) => {
     // setSelectedGif(e);
-    console.log(e)
+    console.log(e);
     const editor = reactQuillRef.current.getEditor();
     reactQuillRef.current.focus();
     const cursorPosition = editor.getSelection().index;
     editor.insertEmbed(cursorPosition, "image", e.images.downsized.url);
     editor.setSelection(cursorPosition + 5);
   };
-  
+
   /*useEffect(() => {
     if (mode === "edit" && defaultValue) {
       const editor = reactQuillRef.current.getEditor();
@@ -229,21 +247,17 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const {modules} = useQuillModules({mode:"description", mentionOrientation: "top", quillRef: reactQuillRef, members, disableMention, setInlineImages});
+  const { modules } = useQuillModules({ mode: "description", mentionOrientation: "top", quillRef: reactQuillRef, members, disableMention, setInlineImages, prioMentionIds: [...new Set(prioMentionIds)] });
 
   return (
     <WrapperDiv className={`description-input ${className}`}>
       <Label for="firstMessage">{dictionary.description}</Label>
-      <DescriptionInputWrapper
-        className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
-        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange}
-                           height={80} defaultValue={defaultValue} {...otherProps} />
-        {mentionedUserIds.length > 0 && !disableBodyMention &&
-        <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false}
-                     type={modal}/>}
+      <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
+        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} {...otherProps} />
+        {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} />}
         <Buttons className="action-wrapper">
-          <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
-          {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip"/>}
+          <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+          {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
         </Buttons>
         <InputFeedback valid={valid}>{feedback}</InputFeedback>
       </DescriptionInputWrapper>
