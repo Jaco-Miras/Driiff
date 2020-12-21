@@ -4,8 +4,7 @@ import { renderToString } from "react-dom/server";
 import { useParams } from "react-router-dom";
 import quillHelper from "../../helpers/quillHelper";
 
-const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user }) => {
-
+const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user, users }) => {
   const params = useParams();
   let parseBody = "";
   if (reply.body.includes("POST_CREATE::")) {
@@ -15,25 +14,28 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
       if (params.folderId) {
         link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
       } else {
-        link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
       }
     } else {
       link = `/posts/${item.post.id}/${item.post.title}`;
     }
 
     let description = quillHelper.parseToText(item.post.description);
-    parseBody = renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
-      <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
-      {
-        item.post.description.includes("<img src") ? <span className="card card-body">
-            <SvgIconFeather icon="image"/>
-            </span> :
-          description.trim() !== "" &&
-          <span className="card card-body"
-                dangerouslySetInnerHTML={{ __html: description }}/>
-      }
-      <span className="open-post">{dictionary.openPost} <SvgIconFeather icon="arrow-right"/></span>
-    </a>);
+    parseBody = renderToString(
+      <a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
+        <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+        {item.post.description.includes("<img src") ? (
+          <span className="card card-body">
+            <SvgIconFeather icon="image" />
+          </span>
+        ) : (
+          description.trim() !== "" && <span className="card card-body" dangerouslySetInnerHTML={{ __html: description }} />
+        )}
+        <span className="open-post">
+          {dictionary.openPost} <SvgIconFeather icon="arrow-right" />
+        </span>
+      </a>
+    );
   } else if (reply.body.includes("JOIN_CHANNEL")) {
     let ids = /\d+/g;
     let extractedIds = reply.body.match(ids);
@@ -75,24 +77,34 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
     }
   } else if (reply.body.includes("CHANNEL_UPDATE::")) {
     const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
-    
+
     let author = {
       name: dictionary.someone,
-      id: null
-    }
+      id: null,
+    };
 
     if (data.author && data.author.id === user.id) {
       author = {
         name: <b>{dictionary.you}</b>,
         id: user.id,
-      }
+      };
     } else if (data.author && data.author.id !== user.id) {
       let sysAuthor = Array.from(recipients).find((r) => r.type === "USER" && data.author.id === r.type_id);
       if (sysAuthor) {
         author = {
           name: sysAuthor.name,
           id: sysAuthor.id,
-        }
+        };
+      }
+    }
+
+    if (data.accepted_members && data.author) {
+      let sysAuthor = Object.values(users).find((u) => data.author === u.id);
+      if (sysAuthor) {
+        author = {
+          name: sysAuthor.name,
+          id: sysAuthor.id,
+        };
       }
     }
 
@@ -100,30 +112,50 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
     if (data.title !== "") {
       newBody = (
         <>
-          <SvgIconFeather width={16} icon="edit-3"/> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
-          <br/>
+          <SvgIconFeather width={16} icon="edit-3" /> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
+          <br />
         </>
       );
     }
 
     if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
       //for adding one member without changes in title and for user who join the channel / workspace
-      const am = recipients.find((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" })
+      const am = recipients.find((r) => {
+        return data.added_members.includes(r.type_id) && r.type === "USER";
+      });
       if (am && author.id === am.id) {
-        newBody = <>{user.id === author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b></>;
+        newBody = (
+          <>
+            {user.id === author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b>
+          </>
+        );
       } else if (am) {
-        newBody = <><b>{author.name}</b> {dictionary.added} <b>{am.name}</b></>;
+        newBody = (
+          <>
+            <b>{author.name}</b> {dictionary.added} <b>{am.name}</b>
+          </>
+        );
       }
     } else if (data.added_members.length >= 1) {
-      let am = recipients.filter((r) => { return data.added_members.includes(r.type_id) && r.type === "USER" });
+      let am = recipients.filter((r) => {
+        return data.added_members.includes(r.type_id) && r.type === "USER";
+      });
       if (newBody === "") {
-        newBody = <><b>{author.name}</b> {dictionary.added} </>;
+        newBody = (
+          <>
+            <b>{author.name}</b> {dictionary.added}{" "}
+          </>
+        );
       } else {
-        newBody = <>{newBody} {dictionary.andAdded}</>;
+        newBody = (
+          <>
+            {newBody} {dictionary.andAdded}
+          </>
+        );
       }
 
       if (data.added_members.includes(user.id)) {
-        am = am.filter(m => m.type_id !== user.id)
+        am = am.filter((m) => m.type_id !== user.id);
         if (am.length !== 0) {
           newBody = (
             <>
@@ -142,8 +174,8 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
       if (am.length !== 0) {
         newBody = (
           <>
-            {newBody} <b>{am.map(m => m.name).join(", ")}</b>
-            <br/>
+            {newBody} <b>{am.map((m) => m.name).join(", ")}</b>
+            <br />
           </>
         );
       }
@@ -155,7 +187,7 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
           if (data.author.id === user.id && data.removed_members[0] === user.id) {
             newBody = (
               <>
-                <b>{dictionary.you}</b>{" "}{selectedChannel.type === "TOPIC" ? dictionary.leftTheWorkspace : dictionary.leftTheChat}{" "}
+                <b>{dictionary.you}</b> {selectedChannel.type === "TOPIC" ? dictionary.leftTheWorkspace : dictionary.leftTheChat}{" "}
               </>
             );
           } else {
@@ -166,10 +198,16 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
             );
           }
         } else {
-          newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+          newBody = (
+            <>
+              {newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}
+            </>
+          );
         }
       } else {
-        const userLeft = recipients.filter((r) => { return data.removed_members[0] === r.type_id && r.type === "USER"});
+        const userLeft = recipients.filter((r) => {
+          return data.removed_members[0] === r.type_id && r.type === "USER";
+        });
         if (newBody === "") {
           newBody = (
             <>
@@ -177,7 +215,11 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
             </>
           );
         } else {
-          newBody = <>{newBody} {dictionary.andRemoved} <b>{userLeft.length ? userLeft[0].name : null}</b></>;
+          newBody = (
+            <>
+              {newBody} {dictionary.andRemoved} <b>{userLeft.length ? userLeft[0].name : null}</b>
+            </>
+          );
         }
       }
     } else if (data.removed_members.length > 1) {
@@ -191,22 +233,34 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
             </>
           );
         } else {
-          newBody = <>{newBody} {dictionary.andLeft}</>;
+          newBody = (
+            <>
+              {newBody} {dictionary.andLeft}
+            </>
+          );
         }
 
         if (rm.length !== 0) {
           newBody = (
             <>
               {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
-              <br/>
+              <br />
             </>
           );
         }
       } else {
         if (newBody === "") {
-          newBody = <>{author.name} {dictionary.removed} </>;
+          newBody = (
+            <>
+              {author.name} {dictionary.removed}{" "}
+            </>
+          );
         } else {
-          newBody = <>{newBody} {dictionary.andRemoved}</>;
+          newBody = (
+            <>
+              {newBody} {dictionary.andRemoved}
+            </>
+          );
         }
 
         if (data.removed_members.includes(user.id)) {
@@ -229,18 +283,25 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
           newBody = (
             <>
               {newBody} <b>{rm.join(", ")}</b>
-              <br/>
+              <br />
             </>
           );
         }
       }
+    } else if (data.accepted_members) {
+      const am = Object.values(users).find((u) => data.accepted_members[0] === u.id);
+      newBody = (
+        <>
+          <b>{author.name}</b> {dictionary.added} <b>{am && am.name}</b>
+        </>
+      );
     }
-    parseBody =  renderToString(newBody);
+    parseBody = renderToString(newBody);
   }
 
   return {
-    parseBody
-  }
+    parseBody,
+  };
 };
-  
-  export default useSystemMessage;
+
+export default useSystemMessage;

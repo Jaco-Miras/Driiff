@@ -948,6 +948,7 @@ class ChatMessages extends React.PureComponent {
                                       chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
+                                      users={this.props.users}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {/* <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
@@ -1007,6 +1008,7 @@ class ChatMessages extends React.PureComponent {
                                         isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
+                                        users={this.props.users}
                                       />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
@@ -1077,6 +1079,7 @@ function mapStateToProps(state) {
     global: { isBrowserActive, recipients },
     session: { user },
     chat: { historicalPositions, isLastChatVisible },
+    users: { users },
   } = state;
 
   return {
@@ -1086,6 +1089,7 @@ function mapStateToProps(state) {
     historicalPositions,
     recipients,
     isLastChatVisible,
+    users,
   };
 }
 

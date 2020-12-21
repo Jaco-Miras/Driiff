@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
-import { getUsers } from "../../redux/actions/userAction";
+import { getUsers, getExternalUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 //import { getUnreadPostEntries } from "../../redux/actions/postActions";
 import { getChannels, getGlobalRecipients } from "../../redux/actions/chatActions";
 
 const useInitialLoad = () => {
-  
   const notifications = useSelector((state) => state.notifications.notifications);
 
   const [hasMoreChannels, setHasMoreChannels] = useState(null);
@@ -20,31 +19,32 @@ const useInitialLoad = () => {
     setIsFetching(true);
     setSkip(skip + 50);
     dispatch(
-      getChannels({skip: skip, limit: 50}, (err,res) => {
+      getChannels({ skip: skip, limit: 50 }, (err, res) => {
         if (callback) callback();
         setIsFetching(false);
         if (err) return;
-        
+
         setHasMoreChannels(res.data.results.length === 50);
       })
     );
-  }
+  };
 
   useEffect(() => {
     document.body.classList.remove("form-membership");
     const fetchChannelCb = () => {
       dispatch(getAllRecipients());
       dispatch(getUsers());
+      dispatch(getExternalUsers());
       //dispatch(getUnreadPostEntries());
       if (Object.keys(notifications).length === 0) {
-        dispatch(getNotifications({skip: 0, limit: 50}));
+        dispatch(getNotifications({ skip: 0, limit: 50 }));
       }
-      dispatch(getUnreadNotificationCounterEntries({add_unread_comment: 1}));
+      dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
       //dispatch(getDrafts());
-    }
+    };
     fetchChannels(fetchChannelCb);
   }, []);
 
@@ -52,8 +52,7 @@ const useInitialLoad = () => {
     if (hasMoreChannels && !isFetching) {
       fetchChannels();
     }
-  }, [hasMoreChannels, fetchChannels, skip, isFetching])
-
+  }, [hasMoreChannels, fetchChannels, skip, isFetching]);
 };
 
 export default useInitialLoad;
