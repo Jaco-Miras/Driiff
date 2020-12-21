@@ -109,9 +109,9 @@ const TeamListItem = (props) => {
           <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
         )}
         {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
+        {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
         {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
           <>
-            <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />
             <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
           </>
         )}
