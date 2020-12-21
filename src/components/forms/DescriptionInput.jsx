@@ -203,6 +203,7 @@ const DescriptionInput = (props) => {
     onDoNothing,
     modal = "post",
     setInlineImages = null,
+    setImageLoading = null,
     prioMentionIds = [],
     ...otherProps
   } = props;
@@ -247,7 +248,7 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const { modules } = useQuillModules({ mode: "description", mentionOrientation: "top", quillRef: reactQuillRef, members, disableMention, setInlineImages, prioMentionIds: [...new Set(prioMentionIds)] });
+  const { modules } = useQuillModules({ mode: "description", mentionOrientation: "top", quillRef: reactQuillRef, members, disableMention, setInlineImages, setImageLoading, prioMentionIds: [...new Set(prioMentionIds)] });
 
   return (
     <WrapperDiv className={`description-input ${className}`}>
