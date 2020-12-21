@@ -350,6 +350,7 @@ const CreateEditWorkspacePostModal = (props) => {
     end_at: null,
     approvers: [],
     showApprover: false,
+    mention_ids: [],
   });
 
   const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions, addressIds } = useWorkspaceAndUserOptions({
@@ -663,6 +664,7 @@ const CreateEditWorkspacePostModal = (props) => {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
       },
       approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : [],
+      body_mention_ids: form.mention_ids,
     };
     // if (draftId) {
     //   dispatch(
@@ -754,8 +756,9 @@ const CreateEditWorkspacePostModal = (props) => {
     setMentionedUserIds(mentionedUserIds.filter((id) => !users.some((u) => u.id === id)));
   };
 
-  const handleMentionUser = (mention_ids) => {
-    mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+  const handleMentionUser = (mids) => {
+    const mention_ids = mids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+
     if (mention_ids.length) {
       //check for recipients/type
       let adddressIds = form.selectedAddressTo
@@ -780,18 +783,19 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
+    let mentionIds = [];
     if (editor.getContents().ops && editor.getContents().ops.length) {
-      handleMentionUser(
-        editor
-          .getContents()
-          .ops.filter((m) => m.insert.mention)
-          .map((i) => i.insert.mention.id)
-      );
+      mentionIds = editor
+        .getContents()
+        .ops.filter((m) => m.insert.mention)
+        .map((i) => i.insert.mention.id);
+      handleMentionUser(mentionIds);
     }
     setForm({
       ...form,
       body: content,
       textOnly: textOnly.trim(),
+      mention_ids: mentionIds.map((id) => parseInt(id)).filter((id) => !isNaN(id)),
     });
   };
 
