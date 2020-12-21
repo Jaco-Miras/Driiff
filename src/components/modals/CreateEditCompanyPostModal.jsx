@@ -1223,6 +1223,7 @@ const CreateEditCompanyPostModal = (props) => {
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}
+          prioMentionIds={addressIds}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
