@@ -15,7 +15,7 @@ const SelectOption = styled.div`
     display: flex;
     align-items: center;
   }
-  
+
   .workspaces {
     display: block;
     font-size: 12px;
@@ -33,20 +33,24 @@ const StyledAvatar = styled(Avatar)`
   max-height: 2rem;
 `;
 
-
 const Option = (props) => {
   return (
     <SelectOption>
       <components.Option {...props}>
         {props.data && (
           <>
-            <StyledAvatar className="react-select-avatar" key={props.data.id}
-                          imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
-                          name={props.data.name} partialName={props.data.partial_name}/>
+            <StyledAvatar
+              className="react-select-avatar"
+              key={props.data.id}
+              imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
+              name={props.data.name}
+              partialName={props.data.partial_name}
+            />
             <div>
               {props.children}
-              {props.data.workspaces && props.data.workspaces.length &&
-              <span className="workspaces">{props.data.workspaces && props.data.workspaces.join(", ")}</span>}
+              {props.data.has_accepted && props.data.type === "external" && <div className={"badge badge-info"}>{props.data.dictionary && props.data.dictionary.peopleExternal}</div>}
+              {!props.data.has_accepted && props.data.type === "external" && <div className={"badge badge-info"}>{props.data.dictionary && props.data.dictionary.peopleInvited}</div>}
+              {props.data.workspaces && props.data.workspaces.length && <span className="workspaces">{props.data.workspaces && props.data.workspaces.join(", ")}</span>}
             </div>
           </>
         )}
@@ -62,14 +66,12 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
         ...c,
         props: {
           ...c.props,
-          children: props.data.first_name,
+          children: props.data.first_name.trim() !== "" ? props.data.first_name : props.data.email,
         },
       };
     } else return c;
   });
-  return <components.MultiValueContainer {...props}>
-    {newChildren}
-  </components.MultiValueContainer>;
+  return <components.MultiValueContainer {...props}>{newChildren}</components.MultiValueContainer>;
 };
 
 const PeopleSelect = forwardRef((props, ref) => {

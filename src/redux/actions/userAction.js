@@ -1,4 +1,4 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   authenticateGoogleLogin as authenticateGoogleLoginService,
   checkDriffUserEmail as checkDriffUserEmailService,
@@ -21,6 +21,7 @@ import {
   resetPassword as resetPasswordService,
   putUserRole as putUserRoleService,
   getRoles as getRolesService,
+  getExternalUsers as getExternalUsersService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -121,4 +122,8 @@ export function getRoles(payload, callback) {
 
 export function incomingUserRole(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_USER_ROLE", payload, callback);
+}
+
+export function getExternalUsers(payload, callback) {
+  return dispatchActionToReducer(getExternalUsersService(payload), "GET_EXTERNAL_USERS_START", "GET_EXTERNAL_USERS_SUCCESS", "GET_EXTERNAL_USERS_FAILURE", callback);
 }
