@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline } from "../dashboard/timeline";
+import { AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline, ArchiveTimeline } from "../dashboard/timeline";
 import TimelinePagination from "../dashboard/timeline/TimelinePagination";
 
 const Wrapper = styled.div`
@@ -52,7 +52,12 @@ const TimelinePanel = (props) => {
                   case "DOCUMENT":
                     return <AttachFileTimeline key={t.id} data={t.item} dictionary={dictionary} />;
                   case "TOPIC":
-                    return <TopicTimeline key={t.id} data={t.item} />;
+                    return <TopicTimeline key={t.id} data={t.item} dictionary={dictionary} />;
+                  case "UNARCHIVED_WORKSPACE":
+                  case "ARCHIVED_WORKSPACE":
+                    return <ArchiveTimeline key={t.id} data={t.item} tag={t.tag} dictionary={dictionary} workspace={workspace} />;
+                  default:
+                    return null;
                 }
               })}
         </div>

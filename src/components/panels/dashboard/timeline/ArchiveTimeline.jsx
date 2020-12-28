@@ -18,8 +18,8 @@ const Wrapper = styled.div`
   }
 `;
 
-const TopicTimeline = (props) => {
-  const { className = "", data, dictionary } = props;
+const ArchiveTimeline = (props) => {
+  const { className = "", data, tag, dictionary, workspace } = props;
   const { fromNow } = useTimeFormat();
 
   return (
@@ -30,7 +30,7 @@ const TopicTimeline = (props) => {
           <span className="action-text title font-weight-normal">
             {data.user.name}{" "}
             <strong>
-              {dictionary.created} {data.name} {dictionary.workspace}
+              {tag === "ARCHIVED_WORKSPACE" ? dictionary.archived : dictionary.unarchived} {workspace.name} {dictionary.workspace}
             </strong>
           </span>
           <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
@@ -40,4 +40,4 @@ const TopicTimeline = (props) => {
   );
 };
 
-export default React.memo(TopicTimeline);
+export default React.memo(ArchiveTimeline);
