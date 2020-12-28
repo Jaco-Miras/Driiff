@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   onlineUsers: [],
   mentions: {},
   roles: {},
-  externalUsers: {},
+  externalUsers: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
