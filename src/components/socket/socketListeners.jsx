@@ -1292,6 +1292,9 @@ class SocketListeners extends Component {
       .listen(".archived-chat-channel", (e) => {
         console.log(e, "archived chat", this.props);
         if (e.channel_data.topic_detail) {
+          if (e.channel_data.timeline) {
+            this.props.incomingTimeline({ timeline_data: e.channel_data.timeline, workspace_data: { topic_id: e.channel_data.topic_detail.id } });
+          }
           if (e.channel_data.status === "UNARCHIVED") {
             this.props.incomingUnArchivedWorkspaceChannel(e.channel_data);
           } else {
