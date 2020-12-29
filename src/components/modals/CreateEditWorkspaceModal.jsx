@@ -295,6 +295,8 @@ const CreateEditWorkspaceModal = (props) => {
     externalGuest: _t("WORKSPACE.EXTERNAL_GUEST", "External guest"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+    workspaceWithExternalsInfo1: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO1", "This function will allow users outside your company be invited on this workspace."),
+    workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
   };
 
   const _validateName = useCallback(() => {
@@ -454,7 +456,7 @@ const CreateEditWorkspaceModal = (props) => {
     uploadFiles(
       {
         is_primary: 0,
-        topic_id: payload.topic_id,
+        topic_id: payload.topic_id ? payload.topic_id : payload.id,
         files: formData,
       },
       (err, res) => {
@@ -547,8 +549,9 @@ const CreateEditWorkspaceModal = (props) => {
 
       const handleSubmit = () => {
         setLoading(true);
-        toggle();
+
         const cb = (err, res) => {
+          toggle();
           if (err) return;
 
           if (form.icon) {
@@ -1229,8 +1232,9 @@ const CreateEditWorkspaceModal = (props) => {
             <ToolTip
               content={
                 <div>
-                  This function will allow users outside your company be invited on this workspace. <br />
-                  This may be your customer or supplier.
+                  {dictionary.workspaceWithExternalsInfo1}
+                  <br />
+                  {dictionary.workspaceWithExternalsInfo2}
                 </div>
               }
             >
