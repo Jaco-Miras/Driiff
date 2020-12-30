@@ -141,6 +141,9 @@ const ChatInput = (props) => {
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
+
+  const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -267,14 +270,14 @@ const ChatInput = (props) => {
     let payload = {
       channel_id: selectedChannel.id,
       body: el.innerHTML,
-      mention_ids: mention_ids,
+      mention_ids: selectedChannel.type !== "TOPIC" ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: [],
       reference_id: reference_id,
       reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-      token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-      slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
+      // token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
+      // slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
       //test_case: "web_push"
     };
 

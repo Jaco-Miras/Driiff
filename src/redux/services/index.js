@@ -64,6 +64,7 @@ export {
   postInternalRequestForm,
   putUserRole,
   getRoles,
+  getExternalUsers,
 } from "./user";
 
 export {

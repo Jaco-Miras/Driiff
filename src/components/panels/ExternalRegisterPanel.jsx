@@ -39,6 +39,7 @@ const ExternalRegisterPanel = (props) => {
     email: "",
     password: "",
     company_name: "",
+    responsible_user_id: null,
   });
 
   const [formResponse, setFormResponse] = useState({
@@ -157,6 +158,7 @@ const ExternalRegisterPanel = (props) => {
             user_id: res.data.user.id,
             topic_id: res.data.topic.id,
             email: res.data.user.email,
+            responsible_user_id: res.data.responsible_user_id,
           }));
 
           refs.first_name.current.focus();

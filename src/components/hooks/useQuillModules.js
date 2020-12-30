@@ -9,7 +9,7 @@ import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 
-const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null }) => {
+const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -184,6 +184,8 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
       toolbar: ["bold", "italic", "link", "image"],
       imageUploader: {
         upload: (file) => {
+          console.log(setImageLoading);
+          if (setImageLoading) setImageLoading(true);
           return new Promise((resolve, reject) => {
             var formData = new FormData();
             formData.append("file", file);
@@ -196,10 +198,12 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
               .then((result) => {
                 console.log(result);
                 if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
+                if (setImageLoading) setImageLoading(false);
                 resolve(result.data.thumbnail_link);
               })
               .catch((error) => {
                 reject("Upload failed");
+                if (setImageLoading) setImageLoading(false);
                 console.error("Error:", error);
               });
           });

@@ -177,6 +177,7 @@ export default (state = INITIAL_STATE, action) => {
           created_at: action.data.topic.created_at,
           updated_at: action.data.topic.created_at,
           primary_files: [],
+          is_shared: action.data.members.filter((m) => m.type === "external").length > 0,
         };
         if (action.data.workspace !== null && updatedFolders[action.data.workspace.id]) {
           updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id];

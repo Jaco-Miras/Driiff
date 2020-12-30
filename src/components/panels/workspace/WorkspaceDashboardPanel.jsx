@@ -58,6 +58,10 @@ const WorkspaceDashboardPanel = (props) => {
     remove: _t("TEAM.REMOVE", "Remove"),
     leave: _t("TEAM.REMOVE", "Leave"),
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
+    archived: _t("TIMELINE.ARCHIVED", "archived"),
+    unarchived: _t("TIMELINE.UNARCHIVED", "unarchived"),
+    workspace: _t("TIMELINE.UNARCHIVED", "workspace"),
+    created: _t("TIMELINE.CREATED", "created"),
   };
 
   let disableOptions = false;

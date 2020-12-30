@@ -16,8 +16,7 @@ const ToolTip = (props) => {
   };
 
   return (
-    <Wrapper direction={direction} arrowSize={arrowSize} distance={distance} onToggle={toggleTooltip}
-             content={content} {...otherProps}>
+    <Wrapper direction={direction} arrowSize={arrowSize} distance={distance} onToggle={toggleTooltip} content={content} zIndex={2000} {...otherProps}>
       {children}
     </Wrapper>
   );

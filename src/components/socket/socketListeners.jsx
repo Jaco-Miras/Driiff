@@ -1011,7 +1011,7 @@ class SocketListeners extends Component {
         console.log(e, "update workspace");
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
-          is_shared: e.is_shared === 1,
+          is_shared: e.is_shared,
         });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1042,7 +1042,7 @@ class SocketListeners extends Component {
               }
             }
             if (this.props.selectedChannel) {
-              if (this.props.selectedChannel.id === e.system_message.channel_id) {
+              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
                 //redirect to first channel
                 let wsChannels = Object.values(this.props.channels).filter((c) => {
                   const checkForId = (id) => id === this.props.user.id;
@@ -1153,7 +1153,7 @@ class SocketListeners extends Component {
               }
             }
             if (this.props.selectedChannel) {
-              if (this.props.selectedChannel.id === e.system_message.channel_id) {
+              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
                 //redirect to first channel
                 let wsChannels = Object.values(this.props.channels).filter((c) => {
                   const checkForId = (id) => id === this.props.user.id;
@@ -1311,6 +1311,9 @@ class SocketListeners extends Component {
       .listen(".archived-chat-channel", (e) => {
         console.log(e, "archived chat", this.props);
         if (e.channel_data.topic_detail) {
+          if (e.channel_data.timeline) {
+            this.props.incomingTimeline({ timeline_data: e.channel_data.timeline, workspace_data: { topic_id: e.channel_data.topic_detail.id } });
+          }
           if (e.channel_data.status === "UNARCHIVED") {
             this.props.incomingUnArchivedWorkspaceChannel(e.channel_data);
           } else {

@@ -143,6 +143,9 @@ const PostInput = forwardRef((props, ref) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
+
+  const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -192,10 +195,12 @@ const PostInput = forwardRef((props, ref) => {
 
     if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
 
+    const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
+
     let payload = {
       post_id: post.id,
       body: text,
-      mention_ids: mention_ids,
+      mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: inlineImages.map((i) => i.id),
       post_file_ids: [],
       reference_id: reference_id,

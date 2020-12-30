@@ -501,3 +501,11 @@ export function getRoles(payload) {
     url: "/v2/roles",
   });
 }
+
+export function getExternalUsers(payload = {}) {
+  let url = "/v1/users?filter=external";
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}

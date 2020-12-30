@@ -6,7 +6,6 @@ import { useToaster } from "./index";
 import { driffData } from "../../config/environment.json";
 
 const useDriffActions = () => {
-
   const dispatch = useDispatch();
   const toaster = useToaster();
 
@@ -14,19 +13,21 @@ const useDriffActions = () => {
    * @param {string} driffName
    */
   const checkUpdateVersion = useCallback(
-    (callback = () => {
-    }) => {
+    (callback = () => {}) => {
       if (localStorage.getItem("site_ver") !== driffData.version) {
         dispatch(
-          patchUpdateDriffVersion({
-            version: driffData.version,
-            requirement: driffData.requirement,
-          }, (err, res) => {
-            if (res) {
-              localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
+          patchUpdateDriffVersion(
+            {
+              version: driffData.version,
+              requirement: driffData.requirement,
+            },
+            (err, res) => {
+              if (res) {
+                localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
+              }
+              callback(err, res);
             }
-            callback(err, res);
-          })
+          )
         );
       }
     },
@@ -37,8 +38,7 @@ const useDriffActions = () => {
    * @param {string} driffName
    */
   const check = useCallback(
-    (driffName, callback = () => {
-    }) => {
+    (driffName, callback = () => {}) => {
       dispatch(patchCheckDriff(driffName, callback));
     },
     [dispatch]
@@ -61,13 +61,19 @@ const useDriffActions = () => {
     if (driff) {
       return driff;
     } else {
-      return null;
+      const host = window.location.host.split(".");
+      if (host.length === 3) {
+        localStorage.setItem("slug", host[0]);
+        return host[0];
+      } else {
+        return null;
+      }
     }
   }, []);
 
   const unStoreName = useCallback(() => {
     localStorage.removeItem("slug");
-  }, [])
+  }, []);
 
   const storeName = useCallback((name, force = false) => {
     if (force) {
@@ -119,18 +125,19 @@ const useDriffActions = () => {
    * @param {number} payload.invited_by_id
    */
   const create = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(postRegisterDriff(payload, (err, res) => {
-        if (err) {
-          toaster.error("Something went wrong!");
-        }
+    (payload, callback = () => {}) => {
+      dispatch(
+        postRegisterDriff(payload, (err, res) => {
+          if (err) {
+            toaster.error("Something went wrong!");
+          }
 
-        if (res) {
-          toaster.success("Driff successfully created.");
-        }
-        callback(err, res);
-      }));
+          if (res) {
+            toaster.success("Driff successfully created.");
+          }
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
