@@ -21,6 +21,11 @@ const INITIAL_STATE = {
   chatSidebarSearch: "",
   channelRange: {},
   channelDraftsLoaded: false,
+  bots: {
+    loaded: false,
+    channels: [],
+  },
+  huddleBots: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1511,6 +1516,64 @@ export default function (state = INITIAL_STATE, action) {
               }),
             },
           },
+        }),
+      };
+    }
+    case "GET_USER_BOTS_SUCCESS": {
+      return {
+        ...state,
+        bots: {
+          ...action.data,
+          loaded: true,
+        },
+      };
+    }
+    case "GET_HUDDLE_CHATBOT_SUCCESS": {
+      return {
+        ...state,
+        huddleBots: action.data.map((h) => {
+          return {
+            ...h,
+            questions: h.questions
+              .sort((a, b) => a.id - b.id)
+              .map((q, k) => {
+                return {
+                  ...q,
+                  isLastQuestion: h.questions.length === k + 1,
+                  answer: null,
+                };
+              }),
+          };
+        }),
+      };
+    }
+    case "INCOMING_HUDDLE_BOT": {
+      return {
+        ...state,
+        huddleBots: [...state.huddleBots, action.data],
+      };
+    }
+    case "SAVE_HUDDLE_ANSWER": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.channel.id === action.data.channel_id) {
+            return {
+              ...h,
+              questions: h.questions.map((q) => {
+                if (q.id === action.data.question_id) {
+                  return {
+                    ...q,
+                    answer: action.data.answer,
+                  };
+                } else {
+                  return q;
+                }
+              }),
+            };
+          } else {
+            return h;
+          }
         }),
       };
     }

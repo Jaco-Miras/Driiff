@@ -20,6 +20,7 @@ import {
   incomingChatStar,
   incomingDeletedChatMessage,
   incomingImportantChat,
+  incomingHuddleBot,
   incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
@@ -252,6 +253,24 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".huddle-notification", (e) => {
+        console.log("huddle notification", e);
+        switch (e.SOCKET_TYPE) {
+          case "HUDDLE_CREATED": {
+            this.props.incomingHuddleBot({
+              ...e,
+              channel: {
+                id: e.channel_id,
+              },
+              start_at: e.set_start_at,
+              publish_at: e.set_publish_at,
+            });
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
         switch (e.SOCKET_TYPE) {
@@ -1539,6 +1558,7 @@ function mapDispatchToProps(dispatch) {
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
     incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
     incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
+    incomingHuddleBot: bindActionCreators(incomingHuddleBot, dispatch),
   };
 }
 

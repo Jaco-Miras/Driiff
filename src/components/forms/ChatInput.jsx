@@ -5,10 +5,11 @@ import { addChatMessage, addQuote, addToChannels, clearChannelDraft, clearQuote,
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat } from "../hooks";
+import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 import { useHistory } from "react-router-dom";
+import { HuddleQuestion } from "../panels/bot";
 
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
@@ -153,6 +154,10 @@ const ChatInput = (props) => {
 
   const [quote] = useSelectQuote();
 
+  const toaster = useToaster();
+
+  const { huddle, huddleAnswered, huddleActions, showQuestions, question } = useHuddle({ selectedChannel });
+
   const handleSubmit = () => {
     //let specialCommands = ["/sound-on", "/sound-off"];
     // if (specialCommands.includes(textOnly.trim())) {
@@ -179,6 +184,42 @@ const ChatInput = (props) => {
     //     }
     //     return;
     // }
+    if (showQuestions) {
+      if (question.isLastQuestion) {
+        const currentDate = new Date();
+        let payload = {
+          huddle_id: huddle.id,
+          answers: huddle.questions.map((q) => {
+            return {
+              question_id: q.id,
+              question: q.question,
+              answer: q.isLastQuestion ? textOnly : q.answer,
+            };
+          }),
+        };
+        let cb = (err, res) => {
+          if (err) {
+            toaster.error("Error huddle");
+            return;
+          }
+          if (huddleAnswered) {
+            const { channels } = JSON.parse(huddleAnswered);
+            localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
+          } else {
+            localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
+          }
+          toaster.success("Huddle submitted.");
+        };
+        huddleActions.createAnswer(payload, cb);
+      }
+      huddleActions.saveAnswer({
+        channel_id: selectedChannel.id,
+        question_id: question.id,
+        answer: textOnly,
+      });
+      handleClearQuillInput();
+      return;
+    }
 
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
@@ -670,8 +711,10 @@ const ChatInput = (props) => {
     members: user.type === "external" ? selectedChannel.members : [],
     prioMentionIds: selectedChannel.members.map((m) => m.id),
   });
+
   return (
     <div className="chat-input-wrapper">
+      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} />}
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
       {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />}

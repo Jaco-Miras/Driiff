@@ -335,3 +335,11 @@ export function postHuddleAnswer(payload, callback) {
 export function getUserBots(payload, callback) {
   return dispatchActionToReducer(getUserBotsService(payload), "GET_USER_BOTS_START", "GET_USER_BOTS_SUCCESS", "GET_USER_BOTS_FAIL", callback);
 }
+
+export function incomingHuddleBot(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_HUDDLE_BOT", payload, callback);
+}
+
+export function saveHuddleAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("SAVE_HUDDLE_ANSWER", payload, callback);
+}
