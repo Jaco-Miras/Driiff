@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import TimePicker from "react-time-picker";
 import { FolderSelect } from "../../forms";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHuddleChatbot, useToaster } from "../../hooks";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -36,6 +37,7 @@ const addZeroBefore = (n) => {
 const HuddlePanel = (props) => {
   const actions = useHuddleChatbot();
   const toaster = useToaster();
+  const dispatch = useDispatch();
   const bots = useSelector((state) => state.chat.bots);
   const { channels, loaded, user_bots } = bots;
 
@@ -101,6 +103,7 @@ const HuddlePanel = (props) => {
         setForm({
           ...form,
           channel_id: e.value,
+          questions: defaultQuestions,
         });
       }
     }
@@ -143,6 +146,16 @@ const HuddlePanel = (props) => {
     });
   };
 
+  const setDefaultForm = () => {
+    setForm({
+      set_start_at: defaultTime,
+      set_publish_at: defaultTime,
+      channel_id: null,
+      user_bot_id: 247,
+      questions: defaultQuestions,
+    });
+  };
+
   const handleSave = () => {
     const publishAtUtcHour = parseInt(form.set_publish_at.substr(0, 2)) + offSetHour;
     const startAtUtcHour = parseInt(form.set_start_at.substr(0, 2)) + offSetHour;
@@ -163,13 +176,7 @@ const HuddlePanel = (props) => {
       } else {
         toaster.success("Huddle bot created.");
       }
-      setForm({
-        set_start_at: defaultTime,
-        set_publish_at: defaultTime,
-        channel_id: null,
-        user_bot_id: 247,
-        questions: defaultQuestions,
-      });
+      setDefaultForm();
       setChannel([]);
     };
     if (channel.huddle) {
@@ -186,7 +193,26 @@ const HuddlePanel = (props) => {
     }
   };
 
-  //console.log(form);
+  const handleDelete = () => {
+    let cb = (err, res) => {
+      if (err) return;
+      setDefaultForm();
+      setChannel([]);
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: "Delete huddle",
+      submitText: "Delete",
+      cancelText: "Cancel",
+      bodyText: "Are you sure you want to delete this huddle bot?",
+      actions: {
+        onSubmit: () => actions.remove({ huddle_id: channel.huddle.id }, cb),
+      },
+    };
+
+    dispatch(addToModals(confirmModal));
+  };
 
   const disableBtn = form.questions.filter((q) => q.question.trim() === "").length === form.questions.length || form.channel_id === null;
 
@@ -224,6 +250,11 @@ const HuddlePanel = (props) => {
                 <button className="btn btn-primary" onClick={handleSave} disabled={disableBtn}>
                   {channel.huddle ? "Update" : "Save changes"}
                 </button>
+                {channel.huddle && (
+                  <button className="btn btn-primary ml-3" onClick={handleDelete} disabled={disableBtn}>
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -347,3 +347,7 @@ export function saveHuddleAnswer(payload, callback) {
 export function incomingUpdatedHuddleBot(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UPDATED_HUDDLE_BOT", payload, callback);
 }
+
+export function incomingDeletedHuddleBot(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_HUDDLE_BOT", payload, callback);
+}

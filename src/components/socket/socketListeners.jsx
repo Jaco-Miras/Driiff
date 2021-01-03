@@ -19,6 +19,7 @@ import {
   incomingChatMessageReaction,
   incomingChatStar,
   incomingDeletedChatMessage,
+  incomingDeletedHuddleBot,
   incomingImportantChat,
   incomingHuddleBot,
   incomingPostNotificationMessage,
@@ -289,6 +290,10 @@ class SocketListeners extends Component {
                 };
               }),
             });
+            break;
+          }
+          case "HUDDLE_DELETED": {
+            this.props.incomingDeletedHuddleBot({ id: parseInt(e.id) });
             break;
           }
           default:
@@ -1587,6 +1592,7 @@ function mapDispatchToProps(dispatch) {
     incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
     incomingHuddleBot: bindActionCreators(incomingHuddleBot, dispatch),
     incomingUpdatedHuddleBot: bindActionCreators(incomingUpdatedHuddleBot, dispatch),
+    incomingDeletedHuddleBot: bindActionCreators(incomingDeletedHuddleBot, dispatch),
   };
 }
 

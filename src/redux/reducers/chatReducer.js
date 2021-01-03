@@ -1619,6 +1619,25 @@ export default function (state = INITIAL_STATE, action) {
         },
       };
     }
+    case "INCOMING_DELETED_HUDDLE_BOT": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.filter((hb) => hb.id !== action.data.id),
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (c.huddle && c.huddle.id === action.data.id) {
+              return {
+                ...c,
+                huddle: null,
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
+      };
+    }
     case "SAVE_HUDDLE_ANSWER": {
       return {
         ...state,
