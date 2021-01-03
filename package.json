@@ -59,6 +59,7 @@
     "react-skeleton-loader": "^1.0.4",
     "react-snowfall": "^1.0.2",
     "react-spring": "^8.0.27",
+    "react-time-picker": "^4.1.1",
     "react-toastify": "^6.0.8",
     "react-tooltip-lite": "^1.12.0",
     "react-transition-group": "^4.4.1",

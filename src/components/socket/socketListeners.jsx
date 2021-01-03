@@ -24,6 +24,7 @@ import {
   incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
+  incomingUpdatedHuddleBot,
   setAllMessagesAsRead,
   setChannel,
   setMemberTimestamp,
@@ -264,6 +265,29 @@ class SocketListeners extends Component {
               },
               start_at: e.set_start_at,
               publish_at: e.set_publish_at,
+              questions: e.questions.map((q) => {
+                return {
+                  ...q,
+                  answer: null,
+                };
+              }),
+            });
+            break;
+          }
+          case "HUDDLE_UPDATED": {
+            this.props.incomingUpdatedHuddleBot({
+              ...e,
+              channel: {
+                id: e.channel_id,
+              },
+              start_at: e.set_start_at,
+              publish_at: e.set_publish_at,
+              questions: e.questions.map((q) => {
+                return {
+                  ...q,
+                  answer: null,
+                };
+              }),
             });
             break;
           }
@@ -1562,6 +1586,7 @@ function mapDispatchToProps(dispatch) {
     incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
     incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
     incomingHuddleBot: bindActionCreators(incomingHuddleBot, dispatch),
+    incomingUpdatedHuddleBot: bindActionCreators(incomingUpdatedHuddleBot, dispatch),
   };
 }
 

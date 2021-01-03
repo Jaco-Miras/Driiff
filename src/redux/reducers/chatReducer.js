@@ -1,6 +1,7 @@
 //import {uniqBy} from "lodash";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 import { uniqByProp } from "../../helpers/arrayHelper";
+import { differenceBy } from "lodash";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -1523,7 +1524,13 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         bots: {
-          ...action.data,
+          channels: action.data.channels.map((c) => {
+            return {
+              ...c,
+              huddle: null,
+            };
+          }),
+          user_bots: action.data.user_bots,
           loaded: true,
         },
       };
@@ -1545,12 +1552,71 @@ export default function (state = INITIAL_STATE, action) {
               }),
           };
         }),
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (action.data.some((hb) => hb.channel.id === c.id)) {
+              return {
+                ...c,
+                huddle: action.data.find((hb) => hb.channel.id === c.id),
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
       };
     }
     case "INCOMING_HUDDLE_BOT": {
       return {
         ...state,
         huddleBots: [...state.huddleBots, action.data],
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (action.data.channel.id === c.id) {
+              return {
+                ...c,
+                huddle: action.data,
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
+      };
+    }
+    case "INCOMING_UPDATED_HUDDLE_BOT": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((hb) => {
+          if (hb.channel.id === action.data.channel.id) {
+            return {
+              ...hb,
+              ...action.data,
+            };
+          } else {
+            return hb;
+          }
+        }),
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (action.data.channel.id === c.id) {
+              return {
+                ...c,
+                huddle: c.huddle
+                  ? {
+                      ...c.huddle,
+                      ...action.data,
+                    }
+                  : action.data,
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
       };
     }
     case "SAVE_HUDDLE_ANSWER": {

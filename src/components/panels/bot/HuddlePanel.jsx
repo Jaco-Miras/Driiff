@@ -51,7 +51,8 @@ const HuddlePanel = (props) => {
     },
   ];
   const currentDate = new Date();
-  const defaultTime = addZeroBefore(currentDate.getHours()) + ":" + addZeroBefore(currentDate.getMinutes()) + ":00";
+  //const defaultTime = addZeroBefore(currentDate.getHours() % 12 || 12) + ":" + addZeroBefore(currentDate.getMinutes());
+  const defaultTime = addZeroBefore(currentDate.getHours()) + ":" + addZeroBefore(currentDate.getMinutes());
   const offSetHour = currentDate.getTimezoneOffset() / 60;
 
   const [channel, setChannel] = useState([]);
@@ -70,22 +71,41 @@ const HuddlePanel = (props) => {
       icon: "compass",
     };
   });
+
   const handleSelectChannel = (e) => {
     console.log(e);
     if (e === null) {
       setChannel([]);
       setForm({
         ...form,
+        set_start_at: defaultTime,
+        set_publish_at: defaultTime,
         channel_id: null,
+        user_bot_id: 247,
+        questions: defaultQuestions,
       });
     } else {
       setChannel(e);
-      setForm({
-        ...form,
-        channel_id: e.value,
-      });
+      if (e.huddle) {
+        const publishAtHour = parseInt(e.huddle.publish_at.time.substr(0, 2)) - offSetHour;
+        const startAtHour = parseInt(e.huddle.start_at.time.substr(0, 2)) - offSetHour;
+        setForm({
+          ...form,
+          channel_id: e.value,
+          questions: e.huddle.questions,
+          user_bot_id: e.huddle.user_bot.id,
+          set_publish_at: addZeroBefore(publishAtHour > 23 ? 24 - publishAtHour : publishAtHour) + ":" + e.huddle.publish_at.time.substr(3, 2),
+          set_start_at: addZeroBefore(startAtHour > 23 ? 24 - startAtHour : startAtHour) + ":" + e.huddle.start_at.time.substr(3, 2),
+        });
+      } else {
+        setForm({
+          ...form,
+          channel_id: e.value,
+        });
+      }
     }
   };
+
   useEffect(() => {
     if (!loaded) {
       //get the bots
@@ -138,7 +158,11 @@ const HuddlePanel = (props) => {
         toaster.error("Huddle bot creation failed.");
         return;
       }
-      toaster.success("Huddle bot created.");
+      if (channel.huddle) {
+        toaster.success("Huddle bot updated.");
+      } else {
+        toaster.success("Huddle bot created.");
+      }
       setForm({
         set_start_at: defaultTime,
         set_publish_at: defaultTime,
@@ -148,8 +172,21 @@ const HuddlePanel = (props) => {
       });
       setChannel([]);
     };
-    actions.create(payload, cb);
+    if (channel.huddle) {
+      payload = {
+        ...payload,
+        huddle_id: channel.huddle.id,
+        update_questions: payload.questions,
+        new_questions: [],
+        remove_question_ids: [],
+      };
+      actions.update(payload, cb);
+    } else {
+      actions.create(payload, cb);
+    }
   };
+
+  //console.log(form);
 
   const disableBtn = form.questions.filter((q) => q.question.trim() === "").length === form.questions.length || form.channel_id === null;
 
@@ -166,12 +203,12 @@ const HuddlePanel = (props) => {
               <div className="mb-2">
                 <label>Start at</label>
                 <br />
-                <StyledTimePicker className="react-datetime-picker" onChange={handleSelectStartAt} value={form.set_start_at} disableClock={true} />
+                <StyledTimePicker className="react-datetime-picker start_at" onChange={handleSelectStartAt} value={form.set_start_at} disableClock={true} />
               </div>
               <div className="mb-2">
                 <label>Publish at</label>
                 <br />
-                <StyledTimePicker className="react-datetime-picker" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
+                <StyledTimePicker className="react-datetime-picker publish_at" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
               </div>
               <div className="mb-2">
                 <label>Questions</label>
@@ -185,7 +222,7 @@ const HuddlePanel = (props) => {
                   );
                 })}
                 <button className="btn btn-primary" onClick={handleSave} disabled={disableBtn}>
-                  Save changes
+                  {channel.huddle ? "Update" : "Save changes"}
                 </button>
               </div>
             </div>

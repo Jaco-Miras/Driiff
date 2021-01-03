@@ -343,3 +343,7 @@ export function incomingHuddleBot(payload, callback) {
 export function saveHuddleAnswer(payload, callback) {
   return SimpleDispatchActionToReducer("SAVE_HUDDLE_ANSWER", payload, callback);
 }
+
+export function incomingUpdatedHuddleBot(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_HUDDLE_BOT", payload, callback);
+}
