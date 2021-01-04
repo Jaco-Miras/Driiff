@@ -40,9 +40,15 @@ const HuddlePanel = (props) => {
   const dispatch = useDispatch();
   const bots = useSelector((state) => state.chat.bots);
   const huddleBot = useSelector((state) => state.chat.huddleBot);
-  const { channels, loaded, user_bots } = bots;
+  const { channels, loaded } = bots;
 
   const defaultQuestions = [
+    {
+      question: "",
+    },
+    {
+      question: "",
+    },
     {
       question: "",
     },
