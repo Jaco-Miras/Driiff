@@ -17,13 +17,29 @@ const useHuddle = (props) => {
   const huddleBots = useSelector((state) => state.chat.huddleBots);
   const huddle = huddleBots.find((h) => {
     if (h.questions.filter((q) => q.answer === null).length > 0) {
+      let pastStartTime = false;
+      let beforePublishTime = false;
       const startAtHour = parseInt(h.start_at.time.substr(0, 2));
       const startAtMinutes = parseInt(h.start_at.time.substr(3, 2));
       const publishAtHour = parseInt(h.publish_at.time.substr(0, 2));
       const publishAtMinutes = parseInt(h.publish_at.time.substr(3, 2));
       const currentUtcHour = currentDate.getUTCHours();
       const currentUtcMinutes = currentDate.getUTCMinutes();
-      return currentUtcHour >= startAtHour && currentUtcMinutes > startAtMinutes && !(currentUtcHour >= publishAtHour && currentUtcMinutes > publishAtMinutes);
+      if (currentUtcHour > startAtHour) {
+        pastStartTime = true;
+      } else if (currentUtcHour === startAtHour) {
+        if (currentUtcMinutes > startAtMinutes) {
+          pastStartTime = true;
+        }
+      }
+      if (currentUtcHour > publishAtHour) {
+        beforePublishTime = true;
+      } else if (currentUtcHour === publishAtHour) {
+        if (currentUtcMinutes > publishAtMinutes) {
+          beforePublishTime = true;
+        }
+      }
+      return pastStartTime && beforePublishTime;
     } else {
       return false;
     }
@@ -31,19 +47,6 @@ const useHuddle = (props) => {
 
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
   let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
-  // let pastStartTime = false;
-  // let pastPublishTime = false;
-
-  // if (huddle) {
-  //   const startAtHour = parseInt(huddle.start_at.time.substr(0, 2));
-  //   const startAtMinutes = parseInt(huddle.start_at.time.substr(3, 2));
-  //   const publishAtHour = parseInt(huddle.publish_at.time.substr(0, 2));
-  //   const publishAtMinutes = parseInt(huddle.publish_at.time.substr(3, 2));
-  //   const currentUtcHour = currentDate.getUTCHours();
-  //   const currentUtcMinutes = currentDate.getUTCMinutes();
-  //   pastStartTime = currentUtcHour >= startAtHour && currentUtcMinutes > startAtMinutes;
-  //   pastPublishTime = currentUtcHour >= publishAtHour && currentUtcMinutes > publishAtMinutes;
-  // }
 
   const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isOwner && !isWeekend;
   console.log(showToasterRef);
