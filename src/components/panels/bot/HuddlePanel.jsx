@@ -96,7 +96,7 @@ const HuddlePanel = (props) => {
           ...form,
           channel_id: e.value,
           questions: e.huddle.questions,
-          user_bot_id: e.huddle.user_bot.id,
+          user_bot_id: huddleBot.id,
           set_publish_at: addZeroBefore(publishAtHour > 23 ? 24 - publishAtHour : publishAtHour) + ":" + e.huddle.publish_at.time.substr(3, 2),
           set_start_at: addZeroBefore(startAtHour > 23 ? 24 - startAtHour : startAtHour) + ":" + e.huddle.start_at.time.substr(3, 2),
         });
@@ -170,6 +170,7 @@ const HuddlePanel = (props) => {
     const startAtMinutes = form.set_start_at.substr(3, 2);
     let payload = {
       ...form,
+      user_bot_id: huddleBot.id,
       set_publish_at: addZeroBefore(publishAtUtcHour >= 0 ? publishAtUtcHour : 24 + publishAtUtcHour) + ":" + publishAtMinutes,
       set_start_at: addZeroBefore(startAtUtcHour >= 0 ? startAtUtcHour : 24 + startAtUtcHour) + ":" + startAtMinutes,
     };
