@@ -176,6 +176,7 @@ const HuddlePanel = (props) => {
     const startAtMinutes = form.set_start_at.substr(3, 2);
     let payload = {
       ...form,
+      questions: form.questions.filter((q) => q.question.trim() === ""),
       user_bot_id: huddleBot.id,
       set_publish_at: addZeroBefore(publishAtUtcHour >= 0 ? publishAtUtcHour : 24 + publishAtUtcHour) + ":" + publishAtMinutes,
       set_start_at: addZeroBefore(startAtUtcHour >= 0 ? startAtUtcHour : 24 + startAtUtcHour) + ":" + startAtMinutes,
