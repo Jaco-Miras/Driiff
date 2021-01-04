@@ -420,9 +420,9 @@ const MainNavigationTabPanel = (props) => {
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
         <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-          <Hat>
+          {/* <Hat>
             <img width={"70px"} src={christmas} alt="christmas hat" />
-          </Hat>
+          </Hat> */}
           <div className="driff-logo">
             <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
           </div>

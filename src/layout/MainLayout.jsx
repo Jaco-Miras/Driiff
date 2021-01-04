@@ -2,18 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {
-  useDriff,
-  useFilesUpload,
-  useInitialLoad,
-  useSettings,
-  useSocketConnection,
-  useTimeFormat,
-  useToaster,
-  useUserActions,
-  useVisibilityChange,
-  useWorkspaceActions
-} from "../components/hooks";
+import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
@@ -50,9 +39,9 @@ const MainLayout = (props) => {
   const dispatch = useDispatch();
 
   const {
-    driffSettings: {isCompSettingsLoaded},
-    chatSettings: {sound_enabled},
-    generalSettings: { notifications_on, notification_sound }
+    driffSettings: { isCompSettingsLoaded },
+    chatSettings: { sound_enabled },
+    generalSettings: { notifications_on, notification_sound },
   } = useSettings();
 
   const history = useHistory();
@@ -104,7 +93,12 @@ const MainLayout = (props) => {
   return (
     <>
       <AudioStyle ref={refs.audio} controls>
-        {
+        <>
+          <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg" />
+          <source src={require("../assets/audio/appointed.mp3")} type="audio/mpeg" />
+          <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r" />
+        </>
+        {/* {
           notification_sound === "jingle-bells" ? <>
             <source src={require(`../assets/audio/jingle-bells.ogg`)} type="audio/ogg"/>
             <source src={require(`../assets/audio/jingle-bells.mp3`)} type="audio/mpeg"/>
@@ -114,28 +108,24 @@ const MainLayout = (props) => {
             <source src={require(`../assets/audio/appointed.mp3`)} type="audio/mpeg"/>
             <source src={require(`../assets/audio/appointed.m4r`)} type="audio/m4r"/>
           </>
-        }
+        } */}
         Your browser does not support the audio element.
       </AudioStyle>
-      {
-        showNotificationBar && mounted &&
-        <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater}/>
-      }
-      { mounted && <MainHeaderPanel isExternal={isExternal}/> }
-      {
-        mounted && 
+      {showNotificationBar && mounted && <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater} />}
+      {mounted && <MainHeaderPanel isExternal={isExternal} />}
+      {mounted && (
         <MainContent id="main">
-          <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar}/>} path={["/:page"]}/>
+          <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props}/>} path={["/workspace"]}/>
-            <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal}/>} path={["/:page"]}/>
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+            <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
           </Switch>
         </MainContent>
-      }
-      <MobileOverlay/>
-      {user.id !== undefined && window.Echo !== undefined &&
-      <SocketListeners useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}
-                       workspaceActions={workspaceActions} notificationsOn={notifications_on}/>}
+      )}
+      <MobileOverlay />
+      {user.id !== undefined && window.Echo !== undefined && (
+        <SocketListeners useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
+      )}
     </>
   );
 };
