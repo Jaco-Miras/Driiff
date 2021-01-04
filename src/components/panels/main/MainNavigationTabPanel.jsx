@@ -297,6 +297,7 @@ const MainNavigationTabPanel = (props) => {
     addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add reminder"),
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
     sidebarTextCreateWorkspace: _t("WORKSPACE.TEXT_CREATE_WORKSPACE", "Create workspace"),
+    bots: _t("SIDEBAR.BOTS", "Bots"),
   };
 
   const user = useSelector((state) => state.session.user);
@@ -480,6 +481,14 @@ const MainNavigationTabPanel = (props) => {
             </NavIconContainer>
           </li> */}
           <QuickLinks links={links} user={user} dictionary={dictionary} />
+          {user.role && ["owner"].includes(user.role.name) && (
+            <li>
+              <NavIconContainer to={"/bot"} active={["/bot"].includes(props.location.pathname)}>
+                <NavIcon icon={"cpu"} />
+                <div>{dictionary.bots}</div>
+              </NavIconContainer>
+            </li>
+          )}
         </ul>
       </div>
 

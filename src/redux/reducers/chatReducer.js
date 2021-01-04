@@ -25,8 +25,10 @@ const INITIAL_STATE = {
   bots: {
     loaded: false,
     channels: [],
+    user_bots: [],
   },
   huddleBots: [],
+  huddleBot: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1533,6 +1535,7 @@ export default function (state = INITIAL_STATE, action) {
           user_bots: action.data.user_bots,
           loaded: true,
         },
+        huddleBot: action.data.user_bots && action.data.user_bots.length > 0 ? action.data.user_bots[0] : null,
       };
     }
     case "GET_HUDDLE_CHATBOT_SUCCESS": {
@@ -1660,6 +1663,13 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+      };
+    }
+    case "POST_USER_BOTS_SUCCESS": {
+      return {
+        ...state,
+        huddleBot: action.data,
+        user_bots: [...state.bots.user_bots, action.data],
       };
     }
     default:

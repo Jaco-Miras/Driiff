@@ -404,3 +404,16 @@ export function getUserBots(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function postUserBots(payload) {
+  let url = "/v2/user-bots";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}

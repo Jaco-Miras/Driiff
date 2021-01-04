@@ -39,6 +39,7 @@ const HuddlePanel = (props) => {
   const toaster = useToaster();
   const dispatch = useDispatch();
   const bots = useSelector((state) => state.chat.bots);
+  const huddleBot = useSelector((state) => state.chat.huddleBot);
   const { channels, loaded, user_bots } = bots;
 
   const defaultQuestions = [
@@ -62,7 +63,7 @@ const HuddlePanel = (props) => {
     set_start_at: defaultTime,
     set_publish_at: defaultTime,
     channel_id: null,
-    user_bot_id: 247,
+    user_bot_id: huddleBot ? huddleBot.id : null,
     questions: defaultQuestions,
   });
   const channelOptions = channels.map((c) => {
@@ -83,7 +84,7 @@ const HuddlePanel = (props) => {
         set_start_at: defaultTime,
         set_publish_at: defaultTime,
         channel_id: null,
-        user_bot_id: 247,
+        user_bot_id: huddleBot.id,
         questions: defaultQuestions,
       });
     } else {
@@ -112,7 +113,13 @@ const HuddlePanel = (props) => {
   useEffect(() => {
     if (!loaded) {
       //get the bots
-      actions.fetchUserBots();
+      let cb = (err, res) => {
+        if (err) return;
+        if (res.data.user_bots && res.data.user_bots.length === 0) {
+          actions.createUserBot({ bot_name: "Huddle" });
+        }
+      };
+      actions.fetchUserBots({}, cb);
     }
   }, []);
 
@@ -151,7 +158,7 @@ const HuddlePanel = (props) => {
       set_start_at: defaultTime,
       set_publish_at: defaultTime,
       channel_id: null,
-      user_bot_id: 247,
+      user_bot_id: huddleBot.id,
       questions: defaultQuestions,
     });
   };
@@ -221,42 +228,44 @@ const HuddlePanel = (props) => {
       <div className="row justify-content-center">
         <div className="col-12 col-lg-5 col-xl-6">
           <div className="card">
-            <div className="card-body">
-              <div className="mb-2">
-                <label>Channels</label>
-                <FolderSelect options={channelOptions} value={channel} onChange={handleSelectChannel} isMulti={false} isClearable={true} />
-              </div>
-              <div className="mb-2">
-                <label>Start at</label>
-                <br />
-                <StyledTimePicker className="react-datetime-picker start_at" onChange={handleSelectStartAt} value={form.set_start_at} disableClock={true} />
-              </div>
-              <div className="mb-2">
-                <label>Publish at</label>
-                <br />
-                <StyledTimePicker className="react-datetime-picker publish_at" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
-              </div>
-              <div className="mb-2">
-                <label>Questions</label>
-                {form.questions.map((q, k) => {
-                  return (
-                    <div className="mb-2" key={k}>
-                      <div className="input-group">
-                        <input onChange={handleInputChange} data-name={k} type="text" className="form-control" placeholder={"Question"} aria-describedby="button-addon1" autoFocus value={q.question} />
+            {huddleBot && (
+              <div className="card-body">
+                <div className="mb-2">
+                  <label>Channels</label>
+                  <FolderSelect options={channelOptions} value={channel} onChange={handleSelectChannel} isMulti={false} isClearable={true} />
+                </div>
+                <div className="mb-2">
+                  <label>Start at</label>
+                  <br />
+                  <StyledTimePicker className="react-datetime-picker start_at" onChange={handleSelectStartAt} value={form.set_start_at} disableClock={true} />
+                </div>
+                <div className="mb-2">
+                  <label>Publish at</label>
+                  <br />
+                  <StyledTimePicker className="react-datetime-picker publish_at" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
+                </div>
+                <div className="mb-2">
+                  <label>Questions</label>
+                  {form.questions.map((q, k) => {
+                    return (
+                      <div className="mb-2" key={k}>
+                        <div className="input-group">
+                          <input onChange={handleInputChange} data-name={k} type="text" className="form-control" placeholder={"Question"} aria-describedby="button-addon1" autoFocus value={q.question} />
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-                <button className="btn btn-primary" onClick={handleSave} disabled={disableBtn}>
-                  {channel.huddle ? "Update" : "Save changes"}
-                </button>
-                {channel.huddle && (
-                  <button className="btn btn-primary ml-3" onClick={handleDelete} disabled={disableBtn}>
-                    Delete
+                    );
+                  })}
+                  <button className="btn btn-primary" onClick={handleSave} disabled={disableBtn}>
+                    {channel.huddle ? "Update" : "Save changes"}
                   </button>
-                )}
+                  {channel.huddle && (
+                    <button className="btn btn-primary ml-3" onClick={handleDelete} disabled={disableBtn}>
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

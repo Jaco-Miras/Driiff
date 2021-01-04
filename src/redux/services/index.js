@@ -38,6 +38,7 @@ export {
   deleteHuddleChatbot,
   postHuddleAnswer,
   getUserBots,
+  postUserBots,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";

@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { deleteHuddleChatbot, getHuddleChatbot, postHuddleAnswer, postHuddleChatbot, putHuddleChatbot, getUserBots, saveHuddleAnswer } from "../../redux/actions/chatActions";
+import { deleteHuddleChatbot, getHuddleChatbot, postHuddleAnswer, postHuddleChatbot, putHuddleChatbot, getUserBots, saveHuddleAnswer, postUserBots } from "../../redux/actions/chatActions";
 
 const useHuddleChatbot = () => {
   const dispatch = useDispatch();
@@ -32,6 +32,10 @@ const useHuddleChatbot = () => {
     dispatch(saveHuddleAnswer(payload, callback));
   };
 
+  const createUserBot = (payload = {}, callback = () => {}) => {
+    dispatch(postUserBots(payload, callback));
+  };
+
   return {
     fetch,
     create,
@@ -40,6 +44,7 @@ const useHuddleChatbot = () => {
     createAnswer,
     fetchUserBots,
     saveAnswer,
+    createUserBot,
   };
 };
 

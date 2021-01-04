@@ -26,6 +26,7 @@ import {
   postHuddleAnswer as postHuddleAnswerService,
   postHuddleChatbot as postHuddleChatbotService,
   postSearchExistingChannels as postSearchExistingChannelsService,
+  postUserBots as postUserBotsService,
   putChannel as putChannelService,
   putChannelUpdate as putChannelUpdateService,
   putChatMessage as putChatMessageService,
@@ -350,4 +351,8 @@ export function incomingUpdatedHuddleBot(payload, callback) {
 
 export function incomingDeletedHuddleBot(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_HUDDLE_BOT", payload, callback);
+}
+
+export function postUserBots(payload, callback) {
+  return dispatchActionToReducer(postUserBotsService(payload), "POST_USER_BOTS_START", "POST_USER_BOTS_SUCCESS", "POST_USER_BOTS_FAIL", callback);
 }
