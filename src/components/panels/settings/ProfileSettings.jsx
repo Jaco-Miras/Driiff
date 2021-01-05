@@ -109,10 +109,10 @@ const ProfileSettings = (props) => {
       value: "appointed",
       label: dictionary.notificationSoundDefault,
     },
-    {
-      value: "jingle-bells",
-      label: dictionary.notificationSoundJingleBells,
-    },
+    // {
+    //   value: "jingle-bells",
+    //   label: dictionary.notificationSoundJingleBells,
+    // },
   ];
 
   const channelSortOptions = [
@@ -441,12 +441,12 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
-              <div className="row mb-2">
+              {/* <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.notificationSound}</div>
                 <div className="col-7">
                   <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={notificationSoundOptions.find((o) => o.value === notification_sound)} onChange={handleNotificationSoundChange} options={notificationSoundOptions} />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
