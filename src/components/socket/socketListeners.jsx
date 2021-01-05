@@ -261,9 +261,6 @@ class SocketListeners extends Component {
           case "HUDDLE_CREATED": {
             this.props.incomingHuddleBot({
               ...e,
-              channel: {
-                id: e.channel_id,
-              },
               start_at: e.set_start_at,
               publish_at: e.set_publish_at,
               questions: e.questions.map((q) => {
@@ -278,9 +275,6 @@ class SocketListeners extends Component {
           case "HUDDLE_UPDATED": {
             this.props.incomingUpdatedHuddleBot({
               ...e,
-              channel: {
-                id: e.channel_id,
-              },
               start_at: e.set_start_at,
               publish_at: e.set_publish_at,
               questions: e.questions.map((q) => {

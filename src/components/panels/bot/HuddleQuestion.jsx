@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "../../hooks";
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -14,9 +15,14 @@ const Wrapper = styled.div`
 
 const HuddleQuestion = (props) => {
   const { question } = props;
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    huddleBot: _t("HUDDLE.HUDDLE_BOT", "Huddle bot"),
+  };
   return (
     <Wrapper>
-      <div>Huddle bot</div>
+      <div>{dictionary.huddleBot}</div>
       <div>{question.question}</div>
     </Wrapper>
   );

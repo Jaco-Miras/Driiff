@@ -12,6 +12,7 @@ const useInitialLoad = () => {
   const [hasMoreChannels, setHasMoreChannels] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
+  const [currentTime, setCurrentTime] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -52,6 +53,7 @@ const useInitialLoad = () => {
       const currentDate = new Date();
       const currentDay = currentDate.getDay();
       const huddleStorage = localStorage.getItem("huddle");
+      setCurrentTime(currentDate.getTime());
       if (huddleStorage) {
         const { day } = JSON.parse(huddleStorage);
         if (day < currentDay || currentDay === 0 || currentDay === 6) {

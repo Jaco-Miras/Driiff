@@ -3,7 +3,7 @@ import styled from "styled-components";
 import TimePicker from "react-time-picker";
 import { FolderSelect } from "../../forms";
 import { useDispatch, useSelector } from "react-redux";
-import { useHuddleChatbot, useToaster } from "../../hooks";
+import { useHuddleChatbot, useToaster, useTranslation } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
@@ -38,6 +38,24 @@ const addZeroBefore = (n) => {
 };
 
 const HuddlePanel = (props) => {
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    huddleBot: _t("HUDDLE.Question", "Question"),
+    huddleBotCreated: _t("HUDDLE.HUDDLE_CREATED", "Huddle bot created."),
+    huddleBotUpdated: _t("HUDDLE.HUDDLE_UPDATED", "Huddle bot updated."),
+    huddleBotFailed: _t("HUDDLE.HUDDLE_FAILED", "Huddle bot failed."),
+    channels: _t("HUDDLE.CHANNELS", "Channels"),
+    questions: _t("HUDDLE.QUESTIONS", "Questions"),
+    startAt: _t("HUDDLE.START_AT", "Start at"),
+    publishAt: _t("HUDDLE.PUBLISH_AT", "Publish at"),
+    delete: _t("HUDDLE.DELETE", "Delete"),
+    update: _t("HUDDLE.UPDATE", "Update"),
+    create: _t("HUDDLE.CREATE", "Create"),
+    cancel: _t("HUDDLE.CANCEL", "Cancel"),
+    confirmationText: _t("HUDDLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this huddle bot?"),
+    deleteHuddle: _t("HUDDLE.DELETE_HUDDLE", "Delete huddle"),
+  };
   const actions = useHuddleChatbot();
   const toaster = useToaster();
   const dispatch = useDispatch();
@@ -186,13 +204,13 @@ const HuddlePanel = (props) => {
     };
     let cb = (err, res) => {
       if (err) {
-        toaster.error("Huddle bot creation failed.");
+        toaster.error(dictionary.huddleBotFailed);
         return;
       }
       if (channel.huddle) {
-        toaster.success("Huddle bot updated.");
+        toaster.success(dictionary.huddleBotUpdated);
       } else {
-        toaster.success("Huddle bot created.");
+        toaster.success(dictionary.huddleBotCreated);
       }
       setDefaultForm();
       setChannel([]);
@@ -220,10 +238,10 @@ const HuddlePanel = (props) => {
 
     let confirmModal = {
       type: "confirmation",
-      headerText: "Delete huddle",
-      submitText: "Delete",
-      cancelText: "Cancel",
-      bodyText: "Are you sure you want to delete this huddle bot?",
+      headerText: dictionary.deleteHuddle,
+      submitText: dictionary.delete,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.confirmationText,
       actions: {
         onSubmit: () => actions.remove({ huddle_id: channel.huddle.id }, cb),
       },
@@ -242,21 +260,21 @@ const HuddlePanel = (props) => {
             {huddleBot && (
               <div className="card-body">
                 <div className="mb-2">
-                  <label>Channels</label>
+                  <label>{dictionary.channels}</label>
                   <FolderSelect options={channelOptions} value={channel} onChange={handleSelectChannel} isMulti={false} isClearable={true} />
                 </div>
                 <div className="mb-2">
-                  <label>Start at</label>
+                  <label>{dictionary.startAt}</label>
                   <br />
                   <StyledTimePicker className="react-datetime-picker start_at" onChange={handleSelectStartAt} value={form.set_start_at} disableClock={true} />
                 </div>
                 <div className="mb-2">
-                  <label>Publish at</label>
+                  <label>{dictionary.publishAt}</label>
                   <br />
                   <StyledTimePicker className="react-datetime-picker publish_at" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
                 </div>
                 <div className="mb-2">
-                  <label>Questions</label>
+                  <label>{dictionary.questions}</label>
                   {form.questions.map((q, k) => {
                     return (
                       <div className="mb-2" key={k}>
@@ -267,11 +285,11 @@ const HuddlePanel = (props) => {
                     );
                   })}
                   <button className="btn btn-primary" onClick={handleSave} disabled={disableBtn}>
-                    {channel.huddle ? "Update" : "Save changes"}
+                    {channel.huddle ? dictionary.update : dictionary.create}
                   </button>
                   {channel.huddle && (
                     <button className="btn btn-primary ml-3" onClick={handleDelete} disabled={disableBtn}>
-                      Delete
+                      {dictionary.delete}
                     </button>
                   )}
                 </div>
