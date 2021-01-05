@@ -8,6 +8,7 @@ const useHuddle = (props) => {
   const currentTime = currentDate.getTime();
   const actions = useHuddleChatbot();
   const loggedUser = useSelector((state) => state.session.user);
+  const onlineUsers = useSelector((state) => state.users.onlineUsers);
 
   const isOwner = loggedUser.role && loggedUser.role.name === "owner";
 

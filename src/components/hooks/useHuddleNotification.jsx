@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { setSelectedChannel } from "../../redux/actions/chatActions";
 
 const useHuddle = (props) => {
+  const [time, setCurrentTime] = useState(null);
   const history = useHistory();
   const showToasterRef = useRef(null);
   const currentDate = new Date();
@@ -55,9 +56,22 @@ const useHuddle = (props) => {
       showToasterRef.current = true;
       toast(`Huddle time at ${huddle.channel.name}`, options);
     }
-  } else if (showToasterRef.current && selectedChannel && selectedChannel.id === huddle.channel.id) {
+  } else if (showToasterRef.current && huddle && selectedChannel && selectedChannel.id === huddle.channel.id) {
     toast.dismiss();
   }
+
+  setInterval(() => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay();
+    const huddleStorage = localStorage.getItem("huddle");
+    setCurrentTime(currentDate.getTime());
+    if (huddleStorage) {
+      const { day } = JSON.parse(huddleStorage);
+      if (day < currentDay || currentDay === 0 || currentDay === 6) {
+        localStorage.removeItem("huddle");
+      }
+    }
+  }, 60000);
 };
 
 export default useHuddle;
