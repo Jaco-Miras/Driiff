@@ -5,6 +5,7 @@ const useHuddle = (props) => {
   const { selectedChannel } = props;
 
   const currentDate = new Date();
+  const currentTime = currentDate.getTime();
   const actions = useHuddleChatbot();
   const loggedUser = useSelector((state) => state.session.user);
 
@@ -15,36 +16,24 @@ const useHuddle = (props) => {
   const huddle = huddleBots.find((h) => selectedChannel && h.channel.id === selectedChannel.id);
 
   let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
-  let pastStartTime = false;
-  let beforePublishTime = false;
+  let inTimeRange = false;
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
   if (huddle) {
     const startAtHour = parseInt(huddle.start_at.time.substr(0, 2));
     const startAtMinutes = parseInt(huddle.start_at.time.substr(3, 2));
     const publishAtHour = parseInt(huddle.publish_at.time.substr(0, 2));
     const publishAtMinutes = parseInt(huddle.publish_at.time.substr(3, 2));
-    const currentUtcHour = currentDate.getUTCHours();
-    const currentUtcMinutes = currentDate.getUTCMinutes();
-    if (currentUtcHour > startAtHour) {
-      pastStartTime = true;
-    } else if (currentUtcHour === startAtHour) {
-      if (currentUtcMinutes > startAtMinutes) {
-        pastStartTime = true;
-      }
-    }
-    if (currentUtcHour > publishAtHour) {
-      beforePublishTime = true;
-    } else if (currentUtcHour === publishAtHour) {
-      if (currentUtcMinutes > publishAtMinutes) {
-        beforePublishTime = true;
-      }
-    }
+    let startAtDate = new Date();
+    startAtDate.setUTCHours(startAtHour, startAtMinutes, 0);
+    let publishAtDate = new Date();
+    publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
+    inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
   }
 
   return {
     huddleAnswered,
     huddleActions: actions,
-    showQuestions: huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && pastStartTime && beforePublishTime && !isOwner && !isWeekend,
+    showQuestions: huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && inTimeRange && !isOwner && !isWeekend,
     question: huddle ? huddle.questions.find((q) => q.answer === null) : null,
     huddle,
   };

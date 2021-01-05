@@ -1529,7 +1529,7 @@ export default function (state = INITIAL_STATE, action) {
           channels: action.data.channels.map((c) => {
             return {
               ...c,
-              huddle: null,
+              huddle: state.huddleBots.some((h) => h.channel.id === c.id) ? state.huddleBots.find((h) => h.channel.id === c.id) : null,
             };
           }),
           user_bots: action.data.user_bots,

@@ -8,6 +8,7 @@ const useHuddle = (props) => {
   const history = useHistory();
   const showToasterRef = useRef(null);
   const currentDate = new Date();
+  const currentTime = currentDate.getTime();
   const dispatch = useDispatch();
   const loggedUser = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -17,29 +18,15 @@ const useHuddle = (props) => {
   const huddleBots = useSelector((state) => state.chat.huddleBots);
   const huddle = huddleBots.find((h) => {
     if (h.questions.filter((q) => q.answer === null).length > 0) {
-      let pastStartTime = false;
-      let beforePublishTime = false;
       const startAtHour = parseInt(h.start_at.time.substr(0, 2));
       const startAtMinutes = parseInt(h.start_at.time.substr(3, 2));
       const publishAtHour = parseInt(h.publish_at.time.substr(0, 2));
       const publishAtMinutes = parseInt(h.publish_at.time.substr(3, 2));
-      const currentUtcHour = currentDate.getUTCHours();
-      const currentUtcMinutes = currentDate.getUTCMinutes();
-      if (currentUtcHour > startAtHour) {
-        pastStartTime = true;
-      } else if (currentUtcHour === startAtHour) {
-        if (currentUtcMinutes > startAtMinutes) {
-          pastStartTime = true;
-        }
-      }
-      if (currentUtcHour > publishAtHour) {
-        beforePublishTime = true;
-      } else if (currentUtcHour === publishAtHour) {
-        if (currentUtcMinutes > publishAtMinutes) {
-          beforePublishTime = true;
-        }
-      }
-      return pastStartTime && beforePublishTime;
+      let startAtDate = new Date();
+      startAtDate.setUTCHours(startAtHour, startAtMinutes, 0);
+      let publishAtDate = new Date();
+      publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
+      return currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
     } else {
       return false;
     }

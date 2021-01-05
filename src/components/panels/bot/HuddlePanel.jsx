@@ -28,6 +28,9 @@ const StyledTimePicker = styled(TimePicker)`
       color: #000;
     }
   }
+  .react-time-picker__inputGroup__minute {
+    width: 18px !important;
+  }
 `;
 
 const addZeroBefore = (n) => {
