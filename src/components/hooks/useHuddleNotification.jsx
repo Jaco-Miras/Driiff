@@ -36,8 +36,8 @@ const useHuddle = (props) => {
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
   let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
 
-  const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isOwner && !isWeekend;
-  console.log(showToasterRef);
+  const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
+
   if (showToaster && showToasterRef.current === null) {
     const handleToastClick = () => {
       history.push(`/chat/${huddle.channel.code}`);

@@ -34,7 +34,7 @@ const useHuddle = (props) => {
   return {
     huddleAnswered,
     huddleActions: actions,
-    showQuestions: huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && inTimeRange && !isOwner && !isWeekend,
+    showQuestions: huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && inTimeRange && !isWeekend,
     question: huddle ? huddle.questions.find((q) => q.answer === null) : null,
     huddle,
   };
