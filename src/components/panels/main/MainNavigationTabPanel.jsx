@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import christmas from "../../../assets/img/christmas.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
@@ -237,15 +236,6 @@ const StyledTooltip = styled(Tooltip)`
   justify-content: center;
 `;
 
-// christmas
-const Hat = styled.div`
-  position: absolute;
-  z-index: 20;
-  transform: rotate(-41deg) scaleX(-1);
-  left: 51px;
-  top: 3px;
-`;
-
 const EmptyState = styled.div`
   display: flex;
   align-items: start;
@@ -421,9 +411,6 @@ const MainNavigationTabPanel = (props) => {
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
         <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-          <Hat>
-            <img width={"70px"} src={christmas} alt="christmas hat" />
-          </Hat>
           <div className="driff-logo">
             <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
           </div>

@@ -441,7 +441,8 @@ const ChatInput = (props) => {
     if (mention_ids.length) {
       //check for recipients/type
       if (selectedChannel.type === "PERSONAL_BOT") return;
-      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...ignoredMentionedUserIds];
+      const ingoredExternalIds = selectedChannel.type === "TOPIC" ? activeExternalUsers.map((m) => m.id) : [];
+      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...ignoredMentionedUserIds, ...ingoredExternalIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
