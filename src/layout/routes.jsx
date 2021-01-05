@@ -30,18 +30,16 @@ export const AppRoute = ({ children, ...props }) => {
   useEffect(() => {
     if (session.user.id) {
       dispatch(
-        addUserToReducers(
-          {
-            id: session.user.id,
-            name: session.user.name,
-            partial_name: session.user.partial_name,
-            profile_image_link: session.user.profile_image_thumbnail_link ? session.user.profile_image_thumbnail_link : session.user.profile_image_link,
-            type: session.user.type,
-          }
-        )
-      )
+        addUserToReducers({
+          id: session.user.id,
+          name: session.user.name,
+          partial_name: session.user.partial_name,
+          profile_image_link: session.user.profile_image_thumbnail_link ? session.user.profile_image_thumbnail_link : session.user.profile_image_link,
+          type: session.user.type,
+        })
+      );
     }
-  }, [session.user])
+  }, [session.user]);
 
   // if (!session.checked || !i18nLoaded || push.loading)
   if (!session.checked || !i18nLoaded) return null;
@@ -51,16 +49,14 @@ export const AppRoute = ({ children, ...props }) => {
   return session.authenticated ? (
     <>
       <Switch>
-        <Route {...props} component={GuestLayout} path="/logged-out"
-               exact={true}/>
+        <Route {...props} component={GuestLayout} path="/logged-out" exact={true} />
         <Route {...props} component={TestFiles} path={["/test/files/workspace/:workspaceId"]}>
           {children}
         </Route>
         <Route {...props} component={TestChat} path={["/test/chat"]}>
           {children}
         </Route>
-        <Route {...props} component={MainLayout}
-               path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos"]}>
+        <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/bot"]}>
           {children}
         </Route>
         <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page"]}>
@@ -70,24 +66,26 @@ export const AppRoute = ({ children, ...props }) => {
           path="*"
           to={{
             pathname: session.user.type === "external" ? "/workspace/chat" : "/chat",
-            state: {from: history.location},
+            state: { from: history.location },
           }}
         />
       </Switch>
     </>
   ) : (
     <Switch>
-      <Route {...props} component={GuestLayout}
-             path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email",
-               "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token"]}
-             exact>
+      <Route
+        {...props}
+        component={GuestLayout}
+        path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token"]}
+        exact
+      >
         {children}
       </Route>
       <Redirect
         from="*"
         to={{
           pathname: "/login",
-          state: {from: history.location},
+          state: { from: history.location },
         }}
       />
     </Switch>

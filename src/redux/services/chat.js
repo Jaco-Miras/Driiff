@@ -324,3 +324,96 @@ export function getChatStar(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function getHuddleChatbot(payload) {
+  let url = `/v2/huddle-chatbot?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function postHuddleChatbot(payload) {
+  let url = "/v2/huddle-chatbot";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @param number payload.huddle_id
+ * @returns {Promise<*>}
+ */
+export function putHuddleChatbot(payload) {
+  let url = `/v2/huddle-chatbot/${payload.huddle_id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @param number payload.huddle_id
+ * @returns {Promise<*>}
+ */
+export function deleteHuddleChatbot(payload) {
+  let url = `/v2/huddle-chatbot/${payload.huddle_id}`;
+  return apiCall({
+    method: "DELETE",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function postHuddleAnswer(payload) {
+  let url = "/v2/huddle-answer";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function getUserBots(payload) {
+  let url = `/v2/user-bots?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function postUserBots(payload) {
+  let url = "/v2/user-bots";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
