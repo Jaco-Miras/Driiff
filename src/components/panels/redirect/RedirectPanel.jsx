@@ -59,7 +59,9 @@ const RedirectPanel = (props) => {
                 }
               } else if (res.data.additional_data.data) {
                 let link = `/chat/${res.data.additional_data.data.code}`;
-                channelActions.fetchSelectChannel(res.data.additional_data.data.code);
+                channelActions.fetchSelectChannel(res.data.additional_data.data.code, () => {
+                  document.body.classList.add("m-chat-channel-closed");
+                });
                 history.push(link);
               } else {
                 history.push("/workspace/chat");
