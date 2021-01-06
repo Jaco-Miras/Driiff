@@ -54,6 +54,7 @@ export const useUserLogin = (props) => {
                 }
               } else if (res.data.additional_data.data) {
                 let link = `/chat/${res.data.additional_data.data.code}`;
+                userActions.login(res.data, link);
               } else {
                 userActions.login(res.data, "/workspace/chat");
               }
