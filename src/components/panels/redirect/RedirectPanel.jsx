@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useUserActions } from "../../hooks";
+import { useUserActions, useChannelActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { setSelectedChannel } from "../../../redux/actions/chatActions";
 
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
 const RedirectPanel = (props) => {
   const dispatch = useDispatch();
   const userActions = useUserActions();
+  const channelActions = useChannelActions();
   const history = useHistory();
   const magicLinkMatch = useRouteMatch("/magic-link/:token");
   useEffect(() => {
@@ -58,7 +59,7 @@ const RedirectPanel = (props) => {
                 }
               } else if (res.data.additional_data.data) {
                 let link = `/chat/${res.data.additional_data.data.code}`;
-                dispatch(setSelectedChannel(res.data.additional_data.data));
+                channelActions.fetchSelectChannel(res.data.additional_data.data.code);
                 history.push(link);
               } else {
                 history.push("/workspace/chat");
