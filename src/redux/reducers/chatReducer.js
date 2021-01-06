@@ -1514,6 +1514,50 @@ export default function (state = INITIAL_STATE, action) {
         }),
       };
     }
+    case "INCOMING_ARCHIVED_USER": {
+      return {
+        ...state,
+        channels: {
+          ...Object.values(state.channels)
+            .map((channel) => {
+              if (action.data.channel_ids.some((id) => id === channel.id)) {
+                return {
+                  ...channel,
+                  members: channel.members.filter((m) => m.id !== action.data.user.id),
+                };
+              } else {
+                return channel;
+              }
+            })
+            .reduce((channels, channel) => {
+              channels[channel.id] = channel;
+              return channels;
+            }, {}),
+        },
+      };
+    }
+    case "INCOMING_UNARCHIVED_USER": {
+      return {
+        ...state,
+        channels: {
+          ...Object.values(state.channels)
+            .map((channel) => {
+              if (action.data.connected_channel_ids.some((id) => id === channel.id)) {
+                return {
+                  ...channel,
+                  members: [...channel.members, { ...action.data.profile, last_visited_at: { timestamp: Math.floor(Date.now() / 1000) } }],
+                };
+              } else {
+                return channel;
+              }
+            })
+            .reduce((channels, channel) => {
+              channels[channel.id] = channel;
+              return channels;
+            }, {}),
+        },
+      };
+    }
     default:
       return state;
   }

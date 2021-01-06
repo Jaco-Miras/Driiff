@@ -2,10 +2,14 @@ import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sessionService } from "redux-react-session";
 import {
+  activateUser,
+  archiveUser,
   checkDriffUserEmail,
+  deactivateUser,
   getRoles,
   getUser,
   getUsers,
+  getArchivedUsers,
   postExternalUserData,
   postInternalRequestForm,
   postMagicLink,
@@ -20,6 +24,7 @@ import {
   userGoogleLogin,
   userLogin,
   userLogout,
+  unarchiveUser,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -488,6 +493,26 @@ const useUserActions = () => {
     dispatch(getRoles());
   }, []);
 
+  const archive = useCallback((payload, callback) => {
+    dispatch(archiveUser(payload, callback));
+  });
+
+  const unarchive = useCallback((payload, callback) => {
+    dispatch(unarchiveUser(payload, callback));
+  });
+
+  const activate = useCallback((payload, callback) => {
+    dispatch(activateUser(payload, callback));
+  });
+
+  const deactivate = useCallback((payload, callback) => {
+    dispatch(deactivateUser(payload, callback));
+  });
+
+  const fetchArchivedUsers = useCallback(() => {
+    dispatch(getArchivedUsers());
+  }, []);
+
   return {
     checkCredentials,
     login,
@@ -515,6 +540,11 @@ const useUserActions = () => {
     inviteAsInternalUsers,
     updateUserRole,
     fetchRoles,
+    archive,
+    unarchive,
+    activate,
+    deactivate,
+    fetchArchivedUsers,
   };
 };
 

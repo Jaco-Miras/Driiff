@@ -37,6 +37,9 @@ export {
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
 
 export {
+  activateUser,
+  archiveUser,
+  deactivateUser,
   login,
   logout,
   googleLogin,
@@ -59,6 +62,8 @@ export {
   putUserRole,
   getRoles,
   getExternalUsers,
+  getArchivedUsers,
+  unarchiveUser,
 } from "./user";
 
 export {

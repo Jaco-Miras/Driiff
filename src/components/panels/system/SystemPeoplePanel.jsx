@@ -42,7 +42,7 @@ const SystemPeoplePanel = (props) => {
 
   const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
-  const inactiveUsers = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER" && r.active === 0);
+  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -115,6 +115,26 @@ const SystemPeoplePanel = (props) => {
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     assignAsAdmin: _t("PEOPLE.ASSIGN_AS_ADMIN", "Assign as administrator"),
     assignAsEmployee: _t("PEOPLE.ASSIGN_AS_EMPLOYEE", "Assign as employee"),
+    archiveUser: _t("PEOPLE.ARCHIVE_USER", "Archive user"),
+    unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
+    showInactiveMembers: _t("PEOPLE.SHOW_INACTIVE_MEMBERS", "Show inactive members"),
+    archive: _t("PEOPLE.ARCHIVE", "Archive"),
+    unarchive: _t("PEOPLE.UNARCHIVE", "Un-archive"),
+    archiveConfirmationText: _t(
+      "PEOPLE.ARCHIVE_CONFIRMATION_TEXT",
+      "Are you sure you want to archive this user? This means this user can't log in anymore and will be removed from all its workspaces and group chats. If you want to remove him also from all chats and workspaces please use archive this user."
+    ),
+    unarchiveConfirmationText: _t("PEOPLE.UNARCHIVE_CONFIRMATION_TEXT", "Are you sure you want to un-archive this user? The user will be re-added to its connected workspaces and group chats."),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    activateUser: _t("PEOPLE.ACTIVATE_USER", "Activate user"),
+    deactivateUser: _t("PEOPLE.DEACTIVATE_USER", "Deactivate user"),
+    deactivateConfirmationText: _t(
+      "PEOPLE.DEACTIVATE_CONFIRMATION_TEXT",
+      "Are you sure you want to deactivate this user? This means this user can't log in anymore. If you want to remove him also from all chats and workspaces please use archive this user."
+    ),
+    activateConfirmationText: _t("PEOPLE.ACTIVATE_CONFIRMATION_TEXT", "Are you sure you want to activate this user? This means this user can log in again and see chats and workspaces."),
+    activate: _t("PEOPLE.ACTIVATE", "Activate"),
+    deactivate: _t("PEOPLE.DEACTIVATE", "Deactivate"),
   };
 
   const handleInviteUsers = () => {
@@ -199,10 +219,69 @@ const SystemPeoplePanel = (props) => {
   useEffect(() => {
     refs.search.current.focus();
     // check if roles has an object
-    if (Object.keys(roles).length == 0) {
+    if (Object.keys(roles).length === 0) {
       userActions.fetchRoles();
     }
+    if (inactiveUsers.length === 0) {
+      userActions.fetchArchivedUsers();
+    }
   }, []);
+
+  const handleArchiveUser = (user) => {
+    const handleSubmit = () => {
+      if (user.active) {
+        userActions.archive({ user_id: user.id }, (err, res) => {
+          if (err) return;
+          toaster.success(`${user.name} archived.`);
+        });
+      } else {
+        userActions.unarchive({ user_id: user.id }, (err, res) => {
+          if (err) return;
+          toaster.success(`${user.name} unarchived.`);
+        });
+      }
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: user.active ? dictionary.archive : dictionary.unarchive,
+      submitText: user.active ? dictionary.archive : dictionary.unarchive,
+      cancelText: dictionary.cancel,
+      bodyText: user.active ? dictionary.archiveConfirmationText : dictionary.unarchiveConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
+
+  const handleActivateUser = (user) => {
+    const handleSubmit = () => {
+      if (user.active) {
+        userActions.deactivate({ user_id: user.id }, (err, res) => {
+          if (err) return;
+          toaster.success(`${user.name} deactivated.`);
+        });
+      } else {
+        userActions.activate({ user_id: user.id }, (err, res) => {
+          if (err) return;
+          toaster.success(`${user.name} activated.`);
+        });
+      }
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: user.active ? dictionary.deactivate : dictionary.activate,
+      submitText: user.active ? dictionary.deactivate : dictionary.activate,
+      cancelText: dictionary.cancel,
+      bodyText: user.active ? dictionary.deactivateConfirmationText : dictionary.activateConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
 
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
@@ -219,7 +298,7 @@ const SystemPeoplePanel = (props) => {
                 type="switch"
                 onChange={handleShowInactiveToggle}
                 data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
-                label={<span>Show inactive me</span>}
+                label={<span>{dictionary.showInactiveMembers}</span>}
               />
             </div>
             <div>
@@ -241,6 +320,9 @@ const SystemPeoplePanel = (props) => {
                   onUpdateRole={userActions.updateUserRole}
                   showOptions={loggedUser.role.name === "admin" || loggedUser.role.name === "owner"}
                   roles={roles}
+                  onArchiveUser={handleArchiveUser}
+                  onActivateUser={handleActivateUser}
+                  showInactive={showInactive}
                 />
               );
             })}

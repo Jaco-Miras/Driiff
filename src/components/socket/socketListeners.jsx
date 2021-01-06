@@ -106,7 +106,18 @@ import {
   refetchPostComments,
   refetchPosts,
 } from "../../redux/actions/postActions";
-import { getOnlineUsers, getUser, incomingExternalUser, incomingInternalUser, incomingUpdatedUser, incomingUserRole } from "../../redux/actions/userAction";
+import {
+  getOnlineUsers,
+  getUser,
+  incomingExternalUser,
+  incomingInternalUser,
+  incomingUpdatedUser,
+  incomingUserRole,
+  incomingArchivedUser,
+  incomingUnarchivedUser,
+  incomingDeactivatedUser,
+  incomingActivatedUser,
+} from "../../redux/actions/userAction";
 import {
   getUnreadWorkspacePostEntries,
   getWorkspace,
@@ -741,6 +752,34 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".user-updated", (e) => {
+        console.log("user updated", e);
+        switch (e.SOCKET_TYPE) {
+          case "ARCHIVED_ACCOUNT": {
+            let payload = {
+              channel_ids: [...e.connected_data.user_removed_channel_ids, ...e.connected_data.archived_channel_ids],
+              topic_ids: [...e.connected_data.user_removed_topic_ids, ...e.connected_data.archived_topic_ids],
+              user: e.user,
+            };
+            this.props.incomingArchivedUser(payload);
+            break;
+          }
+          case "RESTORED_ACCOUNT": {
+            this.props.incomingUnarchivedUser(e);
+            break;
+          }
+          case "DEACTIVATE_ACCOUNT": {
+            this.props.incomingDeactivatedUser(e);
+            break;
+          }
+          case "ACTIVATE_ACCOUNT": {
+            this.props.incomingActivatedUser(e);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".updated-version", (e) => {
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
           const { version, requirement } = e;
@@ -1542,6 +1581,10 @@ function mapDispatchToProps(dispatch) {
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
     incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
     incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
+    incomingArchivedUser: bindActionCreators(incomingArchivedUser, dispatch),
+    incomingUnarchivedUser: bindActionCreators(incomingUnarchivedUser, dispatch),
+    incomingDeactivatedUser: bindActionCreators(incomingDeactivatedUser, dispatch),
+    incomingActivatedUser: bindActionCreators(incomingActivatedUser, dispatch),
   };
 }
 
