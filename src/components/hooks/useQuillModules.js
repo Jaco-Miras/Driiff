@@ -181,7 +181,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
           );
         },
       },
-      toolbar: ["bold", "italic", "link", "image"],
+      toolbar: ["bold", "italic", "image"],
       imageUploader: {
         upload: (file) => {
           console.log(setImageLoading);
