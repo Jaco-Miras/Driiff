@@ -9,7 +9,7 @@ import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 
-const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
+const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], workspaces = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -39,6 +39,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
     };
 
     let newAtValues = [];
+    let newWorkSpaceValues = [];
 
     if (members.length) {
       newAtValues = [
@@ -68,12 +69,30 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
         all,
       ];
     }
+    
+
+    if (Object.keys(workspaces).length) {
+      newAtValues = [...newAtValues,
+        ...Object.entries(workspaces).map(([id, workspace], index) => {
+          return Object.assign({}, workspace, {
+            value: workspace.name,
+            id: workspace.id,
+            type_id:  workspace.id,
+            class: "user-pic all-users",
+            profile_image_link: defaultIcon,
+            link: ''
+          });
+        }),
+        all
+      ];
+    }
+
     if (!disableMention) {
       setMentionValues(newAtValues);
     } else {
       newAtValues = [];
     }
-
+    
     if (prioMentionIds.length) {
       let prioIds = prioMentionIds.filter((id) => id !== user.id);
       newAtValues.sort((a, b) => {

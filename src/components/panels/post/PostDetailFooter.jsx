@@ -482,6 +482,7 @@ const PostDetailFooter = (props) => {
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
                     members={workspace ? workspace.members : []}
+                    workspace={workspace ? workspace : null}
                     onActive={onActive}
                     onClosePicker={onClosePicker}
                     ref={ref.postInput}

@@ -24,9 +24,12 @@ const BodyMention = (props) => {
   
   const {_t} = useTranslation();
   const users = useSelector((state) => state.users.users);
-  const mentionedUsers = Object.values(users).filter((user) => {
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const toMention = Object.assign({}, users, workspaces);
+  const mentionedUsers = Object.values(toMention).filter((user) => {
     return userIds.some((id) => id === user.id);
-  })
+  });
+
   // const userRecipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   // const mentionedUsers = userRecipients.filter((user) => {
   //   let userFound = false;
