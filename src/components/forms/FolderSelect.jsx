@@ -115,6 +115,7 @@ const Option = (props) => {
             {props.children}
             {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" />}
             {props.data.is_shared && <LockIcon className="ml-1" icon="share" strokeWidth="2" width="12" />}
+            {props.data.huddle && <LockIcon className="ml-1" icon="cpu" strokeWidth="2" width="12" />}
           </span>
         )}
       </components.Option>

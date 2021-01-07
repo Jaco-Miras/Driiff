@@ -356,3 +356,7 @@ export function incomingDeletedHuddleBot(payload, callback) {
 export function postUserBots(payload, callback) {
   return dispatchActionToReducer(postUserBotsService(payload), "POST_USER_BOTS_START", "POST_USER_BOTS_SUCCESS", "POST_USER_BOTS_FAIL", callback);
 }
+
+export function clearHuddleAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_HUDDLE", payload, callback);
+}

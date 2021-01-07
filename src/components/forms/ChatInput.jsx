@@ -159,7 +159,7 @@ const ChatInput = (props) => {
 
   const toaster = useToaster();
 
-  const { huddle, huddleAnswered, huddleActions, showQuestions, question } = useHuddle({ selectedChannel });
+  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion } = useHuddle({ selectedChannel });
 
   const handleSubmit = () => {
     //let specialCommands = ["/sound-on", "/sound-off"];
@@ -718,7 +718,7 @@ const ChatInput = (props) => {
 
   return (
     <div className="chat-input-wrapper">
-      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} />}
+      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
       {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />}

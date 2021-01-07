@@ -92,6 +92,8 @@ const HuddlePanel = (props) => {
     channel_id: null,
     user_bot_id: huddleBot ? huddleBot.id : null,
     questions: defaultQuestions,
+    welcomeText: "",
+    thankYouText: "",
   });
   const channelOptions = channels.map((c) => {
     return {
@@ -180,6 +182,13 @@ const HuddlePanel = (props) => {
     });
   };
 
+  const handleMessageChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.dataset.name]: e.target.value,
+    });
+  };
+
   const setDefaultForm = () => {
     setForm({
       set_start_at: defaultTime,
@@ -202,6 +211,8 @@ const HuddlePanel = (props) => {
       set_publish_at: addZeroBefore(publishAtUtcHour >= 0 ? publishAtUtcHour : 24 + publishAtUtcHour) + ":" + publishAtMinutes,
       set_start_at: addZeroBefore(startAtUtcHour >= 0 ? startAtUtcHour : 24 + startAtUtcHour) + ":" + startAtMinutes,
     };
+    delete payload.thankYouText;
+    delete payload.welcomeText;
     let cb = (err, res) => {
       if (err) {
         toaster.error(dictionary.huddleBotFailed);
@@ -272,6 +283,22 @@ const HuddlePanel = (props) => {
                   <label>{dictionary.publishAt}</label>
                   <br />
                   <StyledTimePicker className="react-datetime-picker publish_at" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
+                </div>
+                <div className="mb-2">
+                  <label>Welcome message</label>
+                  <div className="mb-2">
+                    <div className="input-group">
+                      <input onChange={handleMessageChange} data-name={"welcomeText"} type="text" className="form-control" placeholder={"Welcome message"} aria-describedby="button-addon1" autoFocus value={form.welcomeText} />
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-2">
+                  <label>Thank you message</label>
+                  <div className="mb-2">
+                    <div className="input-group">
+                      <input onChange={handleMessageChange} data-name={"thankYouText"} type="text" className="form-control" placeholder={"Thank you message"} aria-describedby="button-addon1" autoFocus value={form.thankYouText} />
+                    </div>
+                  </div>
                 </div>
                 <div className="mb-2">
                   <label>{dictionary.questions}</label>
