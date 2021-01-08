@@ -274,10 +274,12 @@ class SocketListeners extends Component {
               ...e,
               start_at: e.set_start_at,
               publish_at: e.set_publish_at,
-              questions: e.questions.map((q) => {
+              questions: e.questions.map((q, k) => {
                 return {
                   ...q,
                   answer: null,
+                  isFirstQuestion: k === 0,
+                  isLastQuestion: e.questions.length === k + 1,
                 };
               }),
             });
@@ -288,10 +290,12 @@ class SocketListeners extends Component {
               ...e,
               start_at: e.set_start_at,
               publish_at: e.set_publish_at,
-              questions: e.questions.map((q) => {
+              questions: e.questions.map((q, k) => {
                 return {
                   ...q,
                   answer: null,
+                  isFirstQuestion: k === 0,
+                  isLastQuestion: e.questions.length === k + 1,
                 };
               }),
             });

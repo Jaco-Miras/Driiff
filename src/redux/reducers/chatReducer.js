@@ -1593,6 +1593,7 @@ export default function (state = INITIAL_STATE, action) {
               .map((q, k) => {
                 return {
                   ...q,
+                  isFirstQuestion: k === 0,
                   isLastQuestion: h.questions.length === k + 1,
                   answer: null,
                 };
@@ -1714,6 +1715,22 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         huddleBot: action.data,
         user_bots: [...state.bots.user_bots, action.data],
+      };
+    }
+    case "CLEAR_HUDDLE": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((h) => {
+          return {
+            ...h,
+            questions: h.questions.map((q) => {
+              return {
+                ...q,
+                answer: null,
+              };
+            }),
+          };
+        }),
       };
     }
     default:

@@ -40,20 +40,18 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
     })
     .filter((channel) => {
-      let isMember = channel.members.some(m => m.id === user.id);
+      let isMember = channel.members.some((m) => m.id === user.id);
 
       if (channel.type === "DIRECT" && channel.members.length == 2) {
-        const id = channel.members.find(m => m.id !== user.id).id;
+        const id = channel.members.find((m) => m.id !== user.id).id;
         if (recipients.includes(id)) {
-          console.log(channel);
           return false;
         }
 
         recipients.push(id);
       }
 
-      if (typeof channel.add_user === "undefined")
-        channel.add_user = false;
+      if (typeof channel.add_user === "undefined") channel.add_user = false;
 
       if (typeof channel.add_open_topic === "undefined") {
         channel.add_open_topic = !isMember;
@@ -75,12 +73,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
       channel.is_relevant = 0;
       if (search.length >= 5) {
-        if (channel.type === "DIRECT" && (channel.members
-          .filter(m => m.id !== user.id)
-          .some(m =>
-            m.name.toLowerCase().includes(search.toLowerCase())
-            || m.email.toLowerCase().includes(search.toLowerCase())
-          ))) {
+        if (channel.type === "DIRECT" && channel.members.filter((m) => m.id !== user.id).some((m) => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase()))) {
           channel.is_relevant = 1;
         }
       }
@@ -89,24 +82,24 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
       } else {
         if (channel.members.length === 2) {
-          console.log(channel);
         }
         if (channel.type === "DIRECT" && channel.members.length === 2) {
+          return channel.members
+            .filter((m) => m.id !== user.id)
+            .some((m) => {
+              if (m.email.toLowerCase().search(search.toLowerCase()) !== -1) return true;
 
-          return channel.members.filter(m => m.id !== user.id).some(m => {
-            if (m.email.toLowerCase().search(search.toLowerCase()) !== -1)
-              return true;
+              if (m.name.toLowerCase().search(search.toLowerCase()) !== -1) return true;
 
-            if (m.name.toLowerCase().search(search.toLowerCase()) !== -1)
-              return true;
-
-            return false;
-          })
+              return false;
+            });
         }
 
-        if ((channel.search.toLowerCase().search(search.toLowerCase()) !== -1
-          || channel.title.toLowerCase().search(search.toLowerCase()) !== -1
-          || channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase() !== -1)))) {
+        if (
+          channel.search.toLowerCase().search(search.toLowerCase()) !== -1 ||
+          channel.title.toLowerCase().search(search.toLowerCase()) !== -1 ||
+          channel.members.filter((m) => m.id !== user.id).some((m) => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase() !== -1))
+        ) {
           return true;
         } else {
           return false;
@@ -140,13 +133,11 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
       //personal bot with unread message
       if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
-        if (a.total_unread !== 0 || !a.is_read || a.total_mark_incomplete !== 0)
-          return -1;
+        if (a.total_unread !== 0 || !a.is_read || a.total_mark_incomplete !== 0) return -1;
       }
 
       if (b.type === "PERSONAL_BOT" && a.type !== "PERSONAL_BOT") {
-        if (b.total_unread !== 0 || !b.is_read || b.total_mark_incomplete !== 0)
-          return 1;
+        if (b.total_unread !== 0 || !b.is_read || b.total_mark_incomplete !== 0) return 1;
       }
 
       //relevant
@@ -173,40 +164,34 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       //if search is active, direct users first
       if (search !== "") {
         if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
-          if (a.type === "DIRECT")
-            return -1;
+          if (a.type === "DIRECT") return -1;
 
-          if (b.type === "DIRECT")
-            return 1;
+          if (b.type === "DIRECT") return 1;
         }
 
         if (!a.last_reply && !b.last_reply && (a.type === "DIRECT" || b.type === "DIRECT")) {
-          if (a.type === "DIRECT")
-            return -1;
+          if (a.type === "DIRECT") return -1;
 
-          if (b.type === "DIRECT")
-            return 1;
+          if (b.type === "DIRECT") return 1;
         }
       }
 
       //hidden and archived
       if (search.length > 2) {
-        if ((b.is_hidden || b.is_archived === true) && !(a.is_hidden || b.is_archived === true))
-          return -1;
+        if ((b.is_hidden || b.is_archived === true) && !(a.is_hidden || b.is_archived === true)) return -1;
 
-        if ((a.is_hidden || a.is_archived === true) && !(b.is_hidden || b.is_archived === true))
-          return 1;
+        if ((a.is_hidden || a.is_archived === true) && !(b.is_hidden || b.is_archived === true)) return 1;
       }
 
       if (settings.order_channel.order_by === "channel_date_updated") {
-        if ( a.last_reply &&  b.last_reply) {
-          if ( a.last_reply.created_at.timestamp ===  b.last_reply.created_at.timestamp) {
-            return  aTitle.localeCompare(bTitle);
+        if (a.last_reply && b.last_reply) {
+          if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+            return aTitle.localeCompare(bTitle);
           }
-          if ( settings.order_channel.sort_by === "DESC") {
-            return  b.last_reply.created_at.timestamp -  a.last_reply.created_at.timestamp;
+          if (settings.order_channel.sort_by === "DESC") {
+            return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
           } else {
-            return  a.last_reply.created_at.timestamp -  b.last_reply.created_at.timestamp;
+            return a.last_reply.created_at.timestamp - b.last_reply.created_at.timestamp;
           }
         }
 

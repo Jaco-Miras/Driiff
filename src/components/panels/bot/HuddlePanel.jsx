@@ -92,6 +92,8 @@ const HuddlePanel = (props) => {
     channel_id: null,
     user_bot_id: huddleBot ? huddleBot.id : null,
     questions: defaultQuestions,
+    introduction_message: "",
+    closing_message: "",
   });
   const channelOptions = channels.map((c) => {
     return {
@@ -177,6 +179,13 @@ const HuddlePanel = (props) => {
           return q;
         }
       }),
+    });
+  };
+
+  const handleMessageChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.dataset.name]: e.target.value,
     });
   };
 
@@ -272,6 +281,31 @@ const HuddlePanel = (props) => {
                   <label>{dictionary.publishAt}</label>
                   <br />
                   <StyledTimePicker className="react-datetime-picker publish_at" onChange={handleSelectPublishAt} value={form.set_publish_at} disableClock={true} />
+                </div>
+                <div className="mb-2">
+                  <label>Welcome message</label>
+                  <div className="mb-2">
+                    <div className="input-group">
+                      <input
+                        onChange={handleMessageChange}
+                        data-name={"introduction_message"}
+                        type="text"
+                        className="form-control"
+                        placeholder={"Welcome message"}
+                        aria-describedby="button-addon1"
+                        autoFocus
+                        value={form.introduction_message}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-2">
+                  <label>Thank you message</label>
+                  <div className="mb-2">
+                    <div className="input-group">
+                      <input onChange={handleMessageChange} data-name={"closing_message"} type="text" className="form-control" placeholder={"Thank you message"} aria-describedby="button-addon1" autoFocus value={form.closing_message} />
+                    </div>
+                  </div>
                 </div>
                 <div className="mb-2">
                   <label>{dictionary.questions}</label>

@@ -6,6 +6,7 @@ const useHuddle = (props) => {
 
   const currentDate = new Date();
   const currentTime = currentDate.getTime();
+  //const currentUTCDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
   const actions = useHuddleChatbot();
   const loggedUser = useSelector((state) => state.session.user);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -26,9 +27,12 @@ const useHuddle = (props) => {
     const publishAtMinutes = parseInt(huddle.publish_at.time.substr(3, 2));
     let startAtDate = new Date();
     startAtDate.setUTCHours(startAtHour, startAtMinutes, 0);
+    startAtDate.setDate(currentDate.getDate());
     let publishAtDate = new Date();
     publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
+    publishAtDate.setDate(currentDate.getDate());
     inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
+    // console.log(currentDate, currentUTCDate);
   }
 
   return {
@@ -36,6 +40,7 @@ const useHuddle = (props) => {
     huddleActions: actions,
     showQuestions: huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && inTimeRange && !isWeekend,
     question: huddle ? huddle.questions.find((q) => q.answer === null) : null,
+    isFirstQuestion: huddle && huddle.questions.find((q) => q.answer === null) ? huddle.questions.find((q) => q.answer === null).isFirstQuestion : null,
     huddle,
   };
 };
