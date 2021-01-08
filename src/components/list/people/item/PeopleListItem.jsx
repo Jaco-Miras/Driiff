@@ -151,7 +151,8 @@ const PeopleListItem = (props) => {
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       {!showInactive && user.role && user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
                       {!showInactive && user.role && user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
-                      <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div>
+                      {/* <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div> */}
+                      {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       <div onClick={handleActivateUser}>{user.active ? dictionary.deactivateUser : dictionary.activateUser}</div>
                     </MoreOptions>
                   )}
