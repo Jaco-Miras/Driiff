@@ -92,8 +92,8 @@ const HuddlePanel = (props) => {
     channel_id: null,
     user_bot_id: huddleBot ? huddleBot.id : null,
     questions: defaultQuestions,
-    welcomeText: "",
-    thankYouText: "",
+    introduction_message: "",
+    closing_message: "",
   });
   const channelOptions = channels.map((c) => {
     return {
@@ -211,8 +211,6 @@ const HuddlePanel = (props) => {
       set_publish_at: addZeroBefore(publishAtUtcHour >= 0 ? publishAtUtcHour : 24 + publishAtUtcHour) + ":" + publishAtMinutes,
       set_start_at: addZeroBefore(startAtUtcHour >= 0 ? startAtUtcHour : 24 + startAtUtcHour) + ":" + startAtMinutes,
     };
-    delete payload.thankYouText;
-    delete payload.welcomeText;
     let cb = (err, res) => {
       if (err) {
         toaster.error(dictionary.huddleBotFailed);
@@ -288,7 +286,16 @@ const HuddlePanel = (props) => {
                   <label>Welcome message</label>
                   <div className="mb-2">
                     <div className="input-group">
-                      <input onChange={handleMessageChange} data-name={"welcomeText"} type="text" className="form-control" placeholder={"Welcome message"} aria-describedby="button-addon1" autoFocus value={form.welcomeText} />
+                      <input
+                        onChange={handleMessageChange}
+                        data-name={"introduction_message"}
+                        type="text"
+                        className="form-control"
+                        placeholder={"Welcome message"}
+                        aria-describedby="button-addon1"
+                        autoFocus
+                        value={form.introduction_message}
+                      />
                     </div>
                   </div>
                 </div>
@@ -296,7 +303,7 @@ const HuddlePanel = (props) => {
                   <label>Thank you message</label>
                   <div className="mb-2">
                     <div className="input-group">
-                      <input onChange={handleMessageChange} data-name={"thankYouText"} type="text" className="form-control" placeholder={"Thank you message"} aria-describedby="button-addon1" autoFocus value={form.thankYouText} />
+                      <input onChange={handleMessageChange} data-name={"closing_message"} type="text" className="form-control" placeholder={"Thank you message"} aria-describedby="button-addon1" autoFocus value={form.closing_message} />
                     </div>
                   </div>
                 </div>

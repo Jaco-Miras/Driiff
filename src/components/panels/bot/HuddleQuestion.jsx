@@ -35,7 +35,7 @@ const HuddleQuestion = (props) => {
   return (
     <Wrapper>
       <div>{dictionary.huddleBot}</div>
-      {isFirstQuestion && <div>Hey it's huddle time</div>}
+      {isFirstQuestion && huddle.introduction_message && <div>{huddle.introduction_message}</div>}
       <div>{question.question}</div>
       <span onClick={handleSkip}>
         <i>skip</i>
