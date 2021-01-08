@@ -348,7 +348,9 @@ const PostInput = forwardRef((props, ref) => {
     if (mention_ids.length) {
       //check for recipients/type
       const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
-      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, workspace.id];
+      const ignoredWorkspaceIds = post.recipients.filter((w) => w.type === "TOPIC"? w : false).map((w) => w.id );
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds];
+
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -509,7 +511,7 @@ const PostInput = forwardRef((props, ref) => {
       recipient_ids: newRecipients.map((u) => u.id),
       recipients: newRecipients,
     };
-
+    
     console.log(users, payload);
     dispatch(
       addPostRecipients(payload, (err, res) => {

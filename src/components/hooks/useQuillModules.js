@@ -72,7 +72,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
     
 
     if (Object.keys(workspaces).length) {
-      newAtValues = [...newAtValues,
+      newWorkSpaceValues = [
         ...Object.entries(workspaces).map(([id, workspace], index) => {
           return Object.assign({}, workspace, {
             value: workspace.name,
@@ -80,17 +80,18 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
             type_id:  workspace.id,
             class: "user-pic all-users",
             profile_image_link: defaultIcon,
-            link: ''
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/${workspace.id}/${replaceChar(workspace.name)}`,
           });
-        }),
-        all
+        })
       ];
     }
 
     if (!disableMention) {
       setMentionValues(newAtValues);
+      setMentionValues(newWorkSpaceValues);
     } else {
       newAtValues = [];
+      newWorkSpaceValues = [];
     }
     
     if (prioMentionIds.length) {
@@ -113,7 +114,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
         defaultMenuOrientation: mentionOrientation,
         spaceAfterInsert: true,
         fixMentionsToQuill: false,
-        mentionDenotationChars: ["@"],
+        mentionDenotationChars: ["@", "/"],
         minChars: 0,
         //linkTarget: "_blank",
         source: function (searchTerm, renderList, mentionChar) {
@@ -121,6 +122,10 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
 
           if (mentionChar === "@") {
             values = newAtValues;
+          }
+
+          if (mentionChar === "/") {
+            values = newWorkSpaceValues;
           }
 
           if (searchTerm.length === 0) {
