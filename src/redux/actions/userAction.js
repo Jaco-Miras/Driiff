@@ -1,5 +1,8 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
+  activateUser as activateUserService,
+  deactivateUser as deactivateUserService,
+  archiveUser as archiveUserService,
   authenticateGoogleLogin as authenticateGoogleLoginService,
   checkDriffUserEmail as checkDriffUserEmailService,
   getMentions as getMentionsService,
@@ -22,6 +25,8 @@ import {
   putUserRole as putUserRoleService,
   getRoles as getRolesService,
   getExternalUsers as getExternalUsersService,
+  unarchiveUser as unarchiveUserService,
+  getArchivedUsers as getArchivedUsersService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -126,4 +131,40 @@ export function incomingUserRole(payload, callback) {
 
 export function getExternalUsers(payload, callback) {
   return dispatchActionToReducer(getExternalUsersService(payload), "GET_EXTERNAL_USERS_START", "GET_EXTERNAL_USERS_SUCCESS", "GET_EXTERNAL_USERS_FAILURE", callback);
+}
+
+export function archiveUser(payload, callback) {
+  return dispatchActionToReducer(archiveUserService(payload), "ARCHIVE_USER_START", "ARCHIVE_USER_SUCCESS", "ARCHIVE_USER_FAILURE", callback);
+}
+
+export function unarchiveUser(payload, callback) {
+  return dispatchActionToReducer(unarchiveUserService(payload), "UNARCHIVE_USER_START", "UNARCHIVE_USER_SUCCESS", "UNARCHIVE_USER_FAILURE", callback);
+}
+
+export function activateUser(payload, callback) {
+  return dispatchActionToReducer(activateUserService(payload), "ACTIVATE_USER_START", "ACTIVATE_USER_SUCCESS", "ACTIVATE_USER_FAILURE", callback);
+}
+
+export function deactivateUser(payload, callback) {
+  return dispatchActionToReducer(deactivateUserService(payload), "DEACTIVATE_USER_START", "DEACTIVATE_USER_SUCCESS", "DEACTIVATE_USER_FAILURE", callback);
+}
+
+export function getArchivedUsers(payload, callback) {
+  return dispatchActionToReducer(getArchivedUsersService(payload), "GET_ARCHIVED_USERS_START", "GET_ARCHIVED_USERS_SUCCESS", "GET_ARCHIVED_USERS_FAILURE", callback);
+}
+
+export function incomingArchivedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ARCHIVED_USER", payload, callback);
+}
+
+export function incomingUnarchivedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UNARCHIVED_USER", payload, callback);
+}
+
+export function incomingDeactivatedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DEACTIVATED_USER", payload, callback);
+}
+
+export function incomingActivatedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ACTIVATED_USER", payload, callback);
 }

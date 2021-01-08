@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   mentions: {},
   roles: {},
   externalUsers: [],
+  archivedUsers: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -230,6 +231,61 @@ export default (state = INITIAL_STATE, action) => {
             },
           },
         },
+      };
+    }
+    case "GET_ARCHIVED_USERS_SUCCESS": {
+      return {
+        ...state,
+        archivedUsers: action.data.users,
+      };
+    }
+    case "INCOMING_ARCHIVED_USER": {
+      //let archivedUser = state.users[action.data.user.id];
+      let updatedUsers = { ...state.users };
+      updatedUsers[action.data.user.id].active = 0;
+      let updatedMentions = { ...state.mentions };
+      delete updatedMentions[action.data.user.id];
+      return {
+        ...state,
+        //archivedUsers: [...state.archivedUsers, archivedUser],
+        mentions: updatedMentions,
+        users: updatedUsers,
+      };
+    }
+    case "INCOMING_UNARCHIVED_USER": {
+      //let archivedUser = state.users[action.data.user.id];
+      let updatedUsers = { ...state.users };
+      updatedUsers[action.data.profile.id] = action.data.profile;
+      let updatedMentions = { ...state.mentions };
+      updatedMentions[action.data.profile.id] = action.data.profile;
+      return {
+        ...state,
+        archivedUsers: state.archivedUsers.filter((m) => m.id !== action.data.profile.id),
+        mentions: updatedMentions,
+        users: updatedUsers,
+      };
+    }
+    case "INCOMING_DEACTIVATED_USER": {
+      let updatedUsers = { ...state.users };
+      updatedUsers[action.data.user_id].active = 0;
+      let updatedMentions = { ...state.mentions };
+      delete updatedMentions[action.data.user_id];
+      return {
+        ...state,
+        mentions: updatedMentions,
+        users: updatedUsers,
+      };
+    }
+    case "INCOMING_ACTIVATED_USER": {
+      let updatedUsers = { ...state.users };
+      updatedUsers[action.data.user.id] = action.data.user;
+      let updatedMentions = { ...state.mentions };
+      updatedMentions[action.data.user.id] = action.data.user;
+      return {
+        ...state,
+        mentions: updatedMentions,
+        users: updatedUsers,
+        archivedUsers: state.archivedUsers.filter((m) => m.id !== action.data.user.id),
       };
     }
     default:

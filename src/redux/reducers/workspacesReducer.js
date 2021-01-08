@@ -2283,6 +2283,26 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_ARCHIVED_USER": {
+      let updatedWorkspaces = { ...state.workspaces };
+      action.data.topic_ids.forEach((wid) => {
+        updatedWorkspaces[wid].members = updatedWorkspaces[wid].members.filter((m) => m.id !== action.data.user.id);
+      });
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+      };
+    }
+    case "INCOMING_UNARCHIVED_USER": {
+      let updatedWorkspaces = { ...state.workspaces };
+      action.data.connected_topic_ids.forEach((wid) => {
+        updatedWorkspaces[wid].members = [...updatedWorkspaces[wid].members, action.data.profile];
+      });
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+      };
+    }
     default:
       return state;
   }
