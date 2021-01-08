@@ -62,7 +62,8 @@ const useHuddle = (props) => {
     const CloseButton = ({ closeToast }) => (
       <i
         className="material-icons"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           closeToast();
           handleDismiss();
         }}
