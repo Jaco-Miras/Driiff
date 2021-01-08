@@ -37,9 +37,11 @@ const HuddleQuestion = (props) => {
       <div>{dictionary.huddleBot}</div>
       {isFirstQuestion && huddle.introduction_message && <div>{huddle.introduction_message}</div>}
       <div>{question.question}</div>
-      <span onClick={handleSkip}>
-        <i>skip</i>
-      </span>
+      {isFirstQuestion && (
+        <span onClick={handleSkip}>
+          <i>skip</i>
+        </span>
+      )}
     </Wrapper>
   );
 };
