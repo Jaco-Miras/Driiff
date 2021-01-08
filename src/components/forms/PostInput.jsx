@@ -162,6 +162,8 @@ const PostInput = forwardRef((props, ref) => {
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
+  const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
+
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
@@ -194,8 +196,6 @@ const PostInput = forwardRef((props, ref) => {
     }
 
     if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
-
-    const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
     let payload = {
       post_id: post.id,
@@ -344,7 +344,8 @@ const PostInput = forwardRef((props, ref) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id)];
+      const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {

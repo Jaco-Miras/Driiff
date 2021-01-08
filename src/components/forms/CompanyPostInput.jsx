@@ -146,6 +146,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [quote] = useCommentQuote(commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
+  const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
   // let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
   //                       .map((r) => {
@@ -188,8 +189,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     }
 
     if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
-
-    const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
     let payload = {
       post_id: post.id,
@@ -491,8 +490,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
         dispatch(addUserToPostRecipients(payload));
       })
     );
-
-    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+    const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id), ...ingoredExternalIds]);
 
     setMentionedUserIds([]);
   };

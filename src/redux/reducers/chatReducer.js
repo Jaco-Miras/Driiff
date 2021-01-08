@@ -1,6 +1,7 @@
 //import {uniqBy} from "lodash";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 import { uniqByProp } from "../../helpers/arrayHelper";
+import { differenceBy } from "lodash";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -21,6 +22,13 @@ const INITIAL_STATE = {
   chatSidebarSearch: "",
   channelRange: {},
   channelDraftsLoaded: false,
+  bots: {
+    loaded: false,
+    channels: [],
+    user_bots: [],
+  },
+  huddleBots: [],
+  huddleBot: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1556,6 +1564,156 @@ export default function (state = INITIAL_STATE, action) {
               return channels;
             }, {}),
         },
+      };
+    }
+    case "GET_USER_BOTS_SUCCESS": {
+      return {
+        ...state,
+        bots: {
+          channels: action.data.channels.map((c) => {
+            return {
+              ...c,
+              huddle: state.huddleBots.some((h) => h.channel.id === c.id) ? state.huddleBots.find((h) => h.channel.id === c.id) : null,
+            };
+          }),
+          user_bots: action.data.user_bots,
+          loaded: true,
+        },
+        huddleBot: action.data.user_bots && action.data.user_bots.length > 0 ? action.data.user_bots[0] : null,
+      };
+    }
+    case "GET_HUDDLE_CHATBOT_SUCCESS": {
+      return {
+        ...state,
+        huddleBots: action.data.map((h) => {
+          return {
+            ...h,
+            questions: h.questions
+              .sort((a, b) => a.id - b.id)
+              .map((q, k) => {
+                return {
+                  ...q,
+                  isLastQuestion: h.questions.length === k + 1,
+                  answer: null,
+                };
+              }),
+          };
+        }),
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (action.data.some((hb) => hb.channel.id === c.id)) {
+              return {
+                ...c,
+                huddle: action.data.find((hb) => hb.channel.id === c.id),
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
+      };
+    }
+    case "INCOMING_HUDDLE_BOT": {
+      return {
+        ...state,
+        huddleBots: [...state.huddleBots, action.data],
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (action.data.channel.id === c.id) {
+              return {
+                ...c,
+                huddle: action.data,
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
+      };
+    }
+    case "INCOMING_UPDATED_HUDDLE_BOT": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((hb) => {
+          if (hb.channel.id === action.data.channel.id) {
+            return {
+              ...hb,
+              ...action.data,
+            };
+          } else {
+            return hb;
+          }
+        }),
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (action.data.channel.id === c.id) {
+              return {
+                ...c,
+                huddle: c.huddle
+                  ? {
+                      ...c.huddle,
+                      ...action.data,
+                    }
+                  : action.data,
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
+      };
+    }
+    case "INCOMING_DELETED_HUDDLE_BOT": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.filter((hb) => hb.id !== action.data.id),
+        bots: {
+          ...state.bots,
+          channels: state.bots.channels.map((c) => {
+            if (c.huddle && c.huddle.id === action.data.id) {
+              return {
+                ...c,
+                huddle: null,
+              };
+            } else {
+              return c;
+            }
+          }),
+        },
+      };
+    }
+    case "SAVE_HUDDLE_ANSWER": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.channel.id === action.data.channel_id) {
+            return {
+              ...h,
+              questions: h.questions.map((q) => {
+                if (q.id === action.data.question_id) {
+                  return {
+                    ...q,
+                    answer: action.data.answer,
+                  };
+                } else {
+                  return q;
+                }
+              }),
+            };
+          } else {
+            return h;
+          }
+        }),
+      };
+    }
+    case "POST_USER_BOTS_SUCCESS": {
+      return {
+        ...state,
+        huddleBot: action.data,
+        user_bots: [...state.bots.user_bots, action.data],
       };
     }
     default:

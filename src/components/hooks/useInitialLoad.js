@@ -4,7 +4,7 @@ import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 //import { getUnreadPostEntries } from "../../redux/actions/postActions";
-import { getChannels, getGlobalRecipients } from "../../redux/actions/chatActions";
+import { getChannels, getGlobalRecipients, getHuddleChatbot } from "../../redux/actions/chatActions";
 
 const useInitialLoad = () => {
   const notifications = useSelector((state) => state.notifications.notifications);
@@ -44,6 +44,7 @@ const useInitialLoad = () => {
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
       //dispatch(getDrafts());
+      dispatch(getHuddleChatbot({}));
     };
     fetchChannels(fetchChannelCb);
   }, []);

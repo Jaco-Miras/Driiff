@@ -19,10 +19,13 @@ import {
   incomingChatMessageReaction,
   incomingChatStar,
   incomingDeletedChatMessage,
+  incomingDeletedHuddleBot,
   incomingImportantChat,
+  incomingHuddleBot,
   incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
+  incomingUpdatedHuddleBot,
   setAllMessagesAsRead,
   setChannel,
   setMemberTimestamp,
@@ -263,6 +266,45 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".huddle-notification", (e) => {
+        console.log("huddle notification", e);
+        switch (e.SOCKET_TYPE) {
+          case "HUDDLE_CREATED": {
+            this.props.incomingHuddleBot({
+              ...e,
+              start_at: e.set_start_at,
+              publish_at: e.set_publish_at,
+              questions: e.questions.map((q) => {
+                return {
+                  ...q,
+                  answer: null,
+                };
+              }),
+            });
+            break;
+          }
+          case "HUDDLE_UPDATED": {
+            this.props.incomingUpdatedHuddleBot({
+              ...e,
+              start_at: e.set_start_at,
+              publish_at: e.set_publish_at,
+              questions: e.questions.map((q) => {
+                return {
+                  ...q,
+                  answer: null,
+                };
+              }),
+            });
+            break;
+          }
+          case "HUDDLE_DELETED": {
+            this.props.incomingDeletedHuddleBot({ id: parseInt(e.id) });
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
         switch (e.SOCKET_TYPE) {
@@ -1585,6 +1627,9 @@ function mapDispatchToProps(dispatch) {
     incomingUnarchivedUser: bindActionCreators(incomingUnarchivedUser, dispatch),
     incomingDeactivatedUser: bindActionCreators(incomingDeactivatedUser, dispatch),
     incomingActivatedUser: bindActionCreators(incomingActivatedUser, dispatch),
+    incomingHuddleBot: bindActionCreators(incomingHuddleBot, dispatch),
+    incomingUpdatedHuddleBot: bindActionCreators(incomingUpdatedHuddleBot, dispatch),
+    incomingDeletedHuddleBot: bindActionCreators(incomingDeletedHuddleBot, dispatch),
   };
 }
 
