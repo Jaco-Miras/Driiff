@@ -200,6 +200,7 @@ const ChatInput = (props) => {
             };
           }),
         };
+        const closingMessage = huddle.closing_message ? huddle.closing_message : "Huddle submitted";
         let cb = (err, res) => {
           if (err) {
             toaster.error("Error huddle");
@@ -211,7 +212,7 @@ const ChatInput = (props) => {
           } else {
             localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
           }
-          toaster.success("Huddle submitted.");
+          toaster.success(closingMessage);
         };
         huddleActions.createAnswer(payload, cb);
       }
