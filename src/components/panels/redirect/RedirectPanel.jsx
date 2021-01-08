@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useUserActions, useChannelActions } from "../../hooks";
+import { useUserActions, useChannelActions, useTranslation } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
-import { setSelectedChannel } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -21,7 +19,10 @@ const Wrapper = styled.div`
 `;
 
 const RedirectPanel = (props) => {
-  const dispatch = useDispatch();
+  const { _t } = useTranslation();
+  const dictionary = {
+    redirecting: _t("REDIRECT.REDIRECTING", "Redirecting..."),
+  };
   const userActions = useUserActions();
   const channelActions = useChannelActions();
   const history = useHistory();
@@ -80,7 +81,7 @@ const RedirectPanel = (props) => {
       <div className="row justify-content-center align-items-center h-100">
         <div className="col-12 col-lg-5 col-xl-6 h-50">
           <div className="card">
-            <h3>Redirecting...</h3>
+            <h3>{dictionary.redirecting}</h3>
           </div>
         </div>
       </div>
