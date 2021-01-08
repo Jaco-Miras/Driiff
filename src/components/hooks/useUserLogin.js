@@ -25,7 +25,7 @@ export const useUserLogin = (props) => {
     if (magicLinkMatch !== null) {
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
         if (res) {
-          console.log(res);
+          console.log(res.data);
           if (res.data.additional_data) {
             if (res.data.additional_data.type === "POST") {
               if (res.data.additional_data.data.workspace) {
@@ -52,6 +52,9 @@ export const useUserLogin = (props) => {
                   let link = `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`;
                   userActions.login(res.data, link);
                 }
+              } else if (res.data.additional_data.data) {
+                let link = `/chat/${res.data.additional_data.data.code}`;
+                userActions.login(res.data, link);
               } else {
                 userActions.login(res.data, "/workspace/chat");
               }

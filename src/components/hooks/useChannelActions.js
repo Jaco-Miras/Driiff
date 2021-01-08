@@ -723,6 +723,7 @@ const useChannelActions = () => {
           if (err) {
             fetchLastChannel();
           }
+          if (callback) callback();
         })
       );
     },
