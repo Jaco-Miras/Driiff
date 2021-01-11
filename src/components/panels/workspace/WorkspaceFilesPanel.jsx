@@ -155,7 +155,7 @@ const WorkspaceFilesPanel = (props) => {
       defaultValue: "",
       label: dictionary.folderName,
       postInputLabel:
-        folder === null ? (
+        !folder ? (
           ""
         ) : (
           <CreateFolderLabel>
