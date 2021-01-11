@@ -90,7 +90,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
     const modules = {
       magicUrl: true,
       mention: {
-        allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+        allowedChars: /^[A-Za-z\sÅÄÖåäöë]*$/,
         defaultMenuOrientation: mentionOrientation,
         spaceAfterInsert: true,
         fixMentionsToQuill: false,
