@@ -390,3 +390,7 @@ export function clearEditHuddle(payload, callback) {
 export function updateHuddleAnswer(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_HUDDLE_ANSWER", payload, callback);
 }
+
+export function clearUnpublishedAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_UNPUBLISHED_HUDDLE_ANSWER", payload, callback);
+}

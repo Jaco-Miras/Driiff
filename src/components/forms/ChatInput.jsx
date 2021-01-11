@@ -235,7 +235,7 @@ const ChatInput = (props) => {
             answers: editHuddle.questions.map((q) => {
               return {
                 id: q.answer_id,
-                answer: q.isLastQuestion ? textOnly : q.answer,
+                answer: q.isLastQuestion ? reactQuillRef.current.getEditor().getText() : q.answer,
               };
             }),
           };
@@ -253,7 +253,7 @@ const ChatInput = (props) => {
           huddleActions.updateAnswer({
             channel_id: selectedChannel.id,
             question_id: question.id,
-            answer: textOnly,
+            answer: reactQuillRef.current.getEditor().getText(),
           });
           setAnswerId(null);
         }

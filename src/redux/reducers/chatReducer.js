@@ -1883,6 +1883,27 @@ export default function (state = INITIAL_STATE, action) {
         editHuddle: null,
       };
     }
+    case "CLEAR_UNPUBLISHED_HUDDLE_ANSWER": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          replies: channel.replies.filter((r) => !r.hasOwnProperty("huddle_log")),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+      };
+    }
     default:
       return state;
   }
