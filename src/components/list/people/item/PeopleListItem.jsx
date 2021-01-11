@@ -96,7 +96,7 @@ const PeopleListItem = (props) => {
     onArchiveUser(user);
   };
 
-  const handleActivateUser = () => {
+  const handleActivateDeactivateUser = () => {
     onActivateUser(user);
   };
 
@@ -153,7 +153,8 @@ const PeopleListItem = (props) => {
                       {!showInactive && user.role && user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
                       {/* <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div> */}
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
-                      <div onClick={handleActivateUser}>{user.active ? dictionary.deactivateUser : dictionary.activateUser}</div>
+                      {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
+                      {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
                     </MoreOptions>
                   )}
                 </div>
