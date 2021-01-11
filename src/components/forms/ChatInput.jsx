@@ -154,12 +154,25 @@ const ChatInput = (props) => {
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
+  const [answerId, setAnswerId] = useState(null);
 
   const [quote] = useSelectQuote();
 
   const toaster = useToaster();
 
-  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion } = useHuddle({ selectedChannel });
+  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
+
+  const setEditedAnswerId = useRef(null);
+
+  useEffect(() => {
+    if (editHuddle && question && answerId !== question.answer_id && textOnly !== question.original_answer) {
+      reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, question.original_answer);
+      if (reactQuillRef.current.getEditor().getText() === question.original_answer) {
+        setAnswerId(question.answer_id);
+        setTextOnly(question.original_answer);
+      }
+    }
+  }, [editHuddle, question, answerId, textOnly]);
 
   const handleSubmit = () => {
     //let specialCommands = ["/sound-on", "/sound-off"];
@@ -214,13 +227,43 @@ const ChatInput = (props) => {
           }
           toaster.success(closingMessage);
         };
-        huddleActions.createAnswer(payload, cb);
+        if (editHuddle) {
+          // clear edit huddle
+          let payload = {
+            message_id: editHuddle.huddle_log.message_id,
+            huddle_log_id: editHuddle.huddle_log.id,
+            answers: editHuddle.questions.map((q) => {
+              return {
+                id: q.answer_id,
+                answer: q.isLastQuestion ? textOnly : q.answer,
+              };
+            }),
+          };
+          let cb = (err, res) => {
+            if (err) return;
+            huddleActions.clearHuddle();
+          };
+          huddleActions.updateUnpublishedAnswers(payload, cb);
+        } else {
+          huddleActions.createAnswer(payload, cb);
+        }
       }
-      huddleActions.saveAnswer({
-        channel_id: selectedChannel.id,
-        question_id: question.id,
-        answer: textOnly,
-      });
+      if (editHuddle) {
+        if (!question.isLastQuestion) {
+          huddleActions.updateAnswer({
+            channel_id: selectedChannel.id,
+            question_id: question.id,
+            answer: textOnly,
+          });
+          setAnswerId(null);
+        }
+      } else {
+        huddleActions.saveAnswer({
+          channel_id: selectedChannel.id,
+          question_id: question.id,
+          answer: textOnly,
+        });
+      }
       handleClearQuillInput();
       return;
     }

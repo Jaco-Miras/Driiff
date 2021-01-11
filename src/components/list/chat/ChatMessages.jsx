@@ -604,6 +604,7 @@ class ChatMessages extends React.PureComponent {
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
+      // this.props.chatMessageActions.channelActions.fetchUnpublishedAnswers({ channel_id: selectedChannel.id });
       if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
       this.handleReadChannel();
 

@@ -119,10 +119,13 @@ const HuddlePanel = (props) => {
     } else {
       setChannel(e);
       if (e.huddle) {
+        console.log(e.huddle);
         const publishAtHour = parseInt(e.huddle.publish_at.time.substr(0, 2)) - offSetHour;
         const startAtHour = parseInt(e.huddle.start_at.time.substr(0, 2)) - offSetHour;
         setForm({
           ...form,
+          introduction_message: e.huddle.introduction_message,
+          closing_message: e.huddle.closing_message,
           channel_id: e.value,
           questions: e.huddle.questions,
           user_bot_id: huddleBot.id,

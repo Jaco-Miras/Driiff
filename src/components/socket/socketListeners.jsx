@@ -22,6 +22,7 @@ import {
   incomingDeletedHuddleBot,
   incomingImportantChat,
   incomingHuddleBot,
+  incomingHuddleAnswers,
   incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
@@ -278,6 +279,7 @@ class SocketListeners extends Component {
                 return {
                   ...q,
                   answer: null,
+                  original_answer: null,
                   isFirstQuestion: k === 0,
                   isLastQuestion: e.questions.length === k + 1,
                 };
@@ -294,6 +296,7 @@ class SocketListeners extends Component {
                 return {
                   ...q,
                   answer: null,
+                  original_answer: null,
                   isFirstQuestion: k === 0,
                   isLastQuestion: e.questions.length === k + 1,
                 };
@@ -303,6 +306,23 @@ class SocketListeners extends Component {
           }
           case "HUDDLE_DELETED": {
             this.props.incomingDeletedHuddleBot({ id: parseInt(e.id) });
+            break;
+          }
+          case "HUDDLE_ANSWER_UPDATE": {
+            this.props.incomingHuddleAnswers({
+              ...e,
+              channel: {
+                id: e.huddle.channel_id,
+              },
+            });
+            break;
+          }
+          case "USER_ANSWERED": {
+            this.props.incomingHuddleAnswers(e);
+            this.props.incomingChatMessage({
+              ...e.message,
+              huddle_log: e.huddle_log,
+            });
             break;
           }
           default:
@@ -1634,6 +1654,7 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleBot: bindActionCreators(incomingHuddleBot, dispatch),
     incomingUpdatedHuddleBot: bindActionCreators(incomingUpdatedHuddleBot, dispatch),
     incomingDeletedHuddleBot: bindActionCreators(incomingDeletedHuddleBot, dispatch),
+    incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
   };
 }
 
