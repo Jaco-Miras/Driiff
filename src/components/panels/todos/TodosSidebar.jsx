@@ -11,9 +11,12 @@ const Filter = styled.span`
     background: #191c20 !important;
     border-color: #ffffff14 !important;
   }
+
   &.active {
-    color: #fff;
+    background: 0 0 !important;
+    color: #7a1b8b !important;
   }
+
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     > ul {
@@ -35,7 +38,7 @@ const Icon = styled(SvgIconFeather)`
 
 const TodosSidebar = (props) => {
   const { className = "", dictionary, todoActions, setFilter, filter, count } = props;
-
+  
   return (
     <Wrapper className={`todo-sidebar bottom-modal-mobile ${className}`}>
       <div className="card">
@@ -53,14 +56,14 @@ const TodosSidebar = (props) => {
                 {dictionary.statusToday}
               </Filter>
               <Filter onClick={setFilter} data-filter="NEW" className={`list-group-item d-flex justify-content-between align-items-center ${filter === "NEW" ? "active" : ""}`}>
-                <span>
+                <span data-filter="NEW">
                   <Icon className="mr-2" icon="clock" />
                   {dictionary.statusUpcoming}
                 </span>
                 <span>{count.new}</span>
               </Filter>
               <Filter onClick={setFilter} data-filter="DONE" className={`list-group-item d-flex justify-content-between align-items-center ${filter === "DONE" ? "active" : ""}`}>
-                <span>
+                <span  data-filter="DONE">
                   <Icon className="mr-2" icon="check" />
                   {dictionary.statusDone}
                 </span>
