@@ -12,10 +12,12 @@ const Filter = styled.span`
     border-color: #ffffff14 !important;
   }
 
-  &.active {
-    background: 0 0 !important;
-    color: #7a1b8b !important;
-  }
+  ${(props) =>
+    props.active &&
+    `
+        background: 0 0;
+        color: #7a1b8b;
+    `}
 
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
@@ -51,18 +53,18 @@ const TodosSidebar = (props) => {
         <div>
           <div className="app-sidebar-menu" tabIndex="1">
             <div className="list-group list-group-flush">
-              <Filter onClick={setFilter} data-filter="" className={`list-group-item d-flex align-items-center ${filter === "" ? "active" : ""}`}>
+              <Filter onClick={setFilter} data-filter="" active={filter === ""} className={`list-group-item d-flex align-items-center`}>
                 <Icon className="mr-2" icon="list" />
                 {dictionary.statusToday}
               </Filter>
-              <Filter onClick={setFilter} data-filter="NEW" className={`list-group-item d-flex justify-content-between align-items-center ${filter === "NEW" ? "active" : ""}`}>
+              <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={`list-group-item d-flex justify-content-between align-items-center`}>
                 <span data-filter="NEW">
                   <Icon className="mr-2" icon="clock" />
                   {dictionary.statusUpcoming}
                 </span>
                 <span>{count.new}</span>
               </Filter>
-              <Filter onClick={setFilter} data-filter="DONE" className={`list-group-item d-flex justify-content-between align-items-center ${filter === "DONE" ? "active" : ""}`}>
+              <Filter onClick={setFilter} data-filter="DONE" active={filter === "DONE"} className={`list-group-item d-flex justify-content-between align-items-center`}>
                 <span  data-filter="DONE">
                   <Icon className="mr-2" icon="check" />
                   {dictionary.statusDone}
