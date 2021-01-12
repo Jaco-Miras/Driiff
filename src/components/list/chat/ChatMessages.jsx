@@ -885,7 +885,7 @@ class ChatMessages extends React.PureComponent {
                             if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                               showGifPlayer = true;
                             }
-                            let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
+                            let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
                             isBot = botCodes.includes(reply.user.code);
                           } else {
                             //remove duplicate messages from bot
@@ -989,6 +989,7 @@ class ChatMessages extends React.PureComponent {
                                       imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
                                       name={reply.user.name}
                                       isBot={isBot}
+                                      isHuddleBot={reply.user.code === "huddle_bot"}
                                     />
                                   )}
                                 </ChatBubbleContainer>

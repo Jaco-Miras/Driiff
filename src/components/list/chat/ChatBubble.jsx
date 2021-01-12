@@ -559,7 +559,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -568,7 +568,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -662,7 +662,7 @@ const ChatBubble = (props) => {
               {!isAuthor && showAvatar && (
                 <>
                   <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className="chat-name-not-author-mobile">
-                    {reply.user.name}
+                    {reply.user.name} {reply.user.type === "BOT" && reply.user.code.includes("huddle") ? dictionary.teamFeedback : null}
                   </ChatNameNotAuthor>
                 </>
               )}
