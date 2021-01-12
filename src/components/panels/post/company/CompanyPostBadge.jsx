@@ -18,7 +18,7 @@ const CompanyPostBadge = (props) => {
 
   // const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
-  // const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
 
   const renderApprovalLabel = (status) => {
     switch (status) {
@@ -26,7 +26,8 @@ const CompanyPostBadge = (props) => {
         return dictionary.accepted;
       }
       case "NEED_ACTION": {
-        return dictionary.actionNeeded;
+        if (isApprover) return dictionary.actionNeeded;
+        else retun null;
       }
       case "REQUEST_UPDATE": {
         return dictionary.changeRequested;
