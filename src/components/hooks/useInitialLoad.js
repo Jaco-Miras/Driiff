@@ -44,9 +44,10 @@ const useInitialLoad = () => {
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
       //dispatch(getDrafts());
-      dispatch(getHuddleChatbot({}));
+      // dispatch(getHuddleChatbot({}));
     };
     fetchChannels(fetchChannelCb);
+    dispatch(getHuddleChatbot({}));
   }, []);
 
   useEffect(() => {

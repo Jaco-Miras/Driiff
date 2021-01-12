@@ -417,3 +417,29 @@ export function postUserBots(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function getUnpublishedAnswers(payload) {
+  let url = `/v2/get-huddle-answer?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function putUnpublishedAnswers(payload) {
+  let url = "/v2/update-huddle-answer";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}

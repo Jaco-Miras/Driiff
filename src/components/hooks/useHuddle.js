@@ -10,6 +10,7 @@ const useHuddle = (props) => {
   const actions = useHuddleChatbot();
   const loggedUser = useSelector((state) => state.session.user);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  const editHuddle = useSelector((state) => state.chat.editHuddle);
 
   const isOwner = loggedUser.role && loggedUser.role.name === "owner";
 
@@ -20,6 +21,7 @@ const useHuddle = (props) => {
   let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
   let inTimeRange = false;
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+
   if (huddle) {
     const startAtHour = parseInt(huddle.start_at.time.substr(0, 2));
     const startAtMinutes = parseInt(huddle.start_at.time.substr(3, 2));
@@ -36,12 +38,13 @@ const useHuddle = (props) => {
   }
 
   return {
+    huddle,
     huddleAnswered,
     huddleActions: actions,
-    showQuestions: huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && inTimeRange && !isWeekend,
-    question: huddle ? huddle.questions.find((q) => q.answer === null) : null,
+    showQuestions: editHuddle !== null || (huddle && huddle.questions.find((q) => q.answer === null) !== undefined && !answeredChannels.some((id) => selectedChannel && selectedChannel.id === id) && inTimeRange && !isWeekend),
+    question: editHuddle ? editHuddle.questions.find((q) => q.answer === null) : huddle ? huddle.questions.find((q) => q.answer === null) : null,
     isFirstQuestion: huddle && huddle.questions.find((q) => q.answer === null) ? huddle.questions.find((q) => q.answer === null).isFirstQuestion : null,
-    huddle,
+    editHuddle: editHuddle,
   };
 };
 

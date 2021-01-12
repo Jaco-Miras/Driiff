@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions } from "../components/hooks";
+import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslation } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
@@ -27,6 +27,11 @@ const MainLayout = (props) => {
   const { path } = useRouteMatch();
   const { displayWelcomeBanner } = useUserActions();
   const uDriff = useDriff();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
+  };
 
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
@@ -124,7 +129,7 @@ const MainLayout = (props) => {
       )}
       <MobileOverlay />
       {user.id !== undefined && window.Echo !== undefined && (
-        <SocketListeners useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
+        <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
       )}
     </>
   );

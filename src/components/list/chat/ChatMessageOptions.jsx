@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addToModals } from "../../../redux/actions/globalActions";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
@@ -12,6 +12,12 @@ const ChatMessageOptions = (props) => {
   const scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
+
+  useEffect(() => {
+    if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && !replyData.hasOwnProperty("huddle_log")) {
+      chatMessageActions.channelActions.fetchUnpublishedAnswers({ channel_id: replyData.channel_id });
+    }
+  }, []);
 
   const handleDeleteReply = () => {
     chatMessageActions.remove(replyData.id);
@@ -55,17 +61,21 @@ const ChatMessageOptions = (props) => {
 
     dispatch(addToModals(payload));
   };
+
+  const handleEditHuddle = () => {
+    chatMessageActions.setHuddleAnswers({ id: replyData.id, channel_id: replyData.channel_id, huddle_log: replyData.huddle_log });
+  };
   /* dictionary initiated in ChatContentPanel.jsx */
   return (
     <MoreOptions width={width} className={className} scrollRef={scrollEl}>
-      <div onClick={() => chatMessageActions.remind(replyData, selectedChannel)}>{dictionary.remindMeAboutThis}</div>
-      {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred &&
-      <div onClick={handleEditReply}>{dictionary.edit}</div>}
-      <div onClick={handleQuoteReply}>{dictionary.quote}</div>
+      {!replyData.hasOwnProperty("huddle_log") && <div onClick={() => chatMessageActions.remind(replyData, selectedChannel)}>{dictionary.remindMeAboutThis}</div>}
+      {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred && <div onClick={handleEditReply}>{dictionary.edit}</div>}
+      {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleQuoteReply}>{dictionary.quote}</div>}
       {isAuthor && <div onClick={handleRemoveReply}>{dictionary.remove}</div>}
-      <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>
-      <div onClick={handleForwardMessage}>{dictionary.forward}</div>
+      {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>}
+      {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
+      {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
     </MoreOptions>
   );
 };
