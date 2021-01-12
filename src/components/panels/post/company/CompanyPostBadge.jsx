@@ -27,7 +27,7 @@ const CompanyPostBadge = (props) => {
       }
       case "NEED_ACTION": {
         if (isApprover) return dictionary.actionNeeded;
-        else retun null;
+        else return null;
       }
       case "REQUEST_UPDATE": {
         return dictionary.changeRequested;
