@@ -324,6 +324,7 @@ const CreateEditCompanyPostModal = (props) => {
   const user = useSelector((state) => state.session.user);
   const company = useSelector((state) => state.global.recipients).find((r) => r.main_department === true);
   const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(true);
@@ -746,8 +747,9 @@ const CreateEditCompanyPostModal = (props) => {
         ...form.selectedAddressTo,
       ],
     });
-
+    
     setMentionedUserIds([]);
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => parseInt(u.id)) ]);
   };
 
   const handleIgnoreMentionedUsers = (users) => {
@@ -1223,6 +1225,7 @@ const CreateEditCompanyPostModal = (props) => {
           mode={mode}
           required
           mentionedUserIds={mentionedUserIds}
+          workspaces={workspaces}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}

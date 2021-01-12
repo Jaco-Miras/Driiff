@@ -131,6 +131,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -336,7 +337,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id)];
+      const ignoredWorkspaceIds = post.recipients.filter((w) => w.type === "TOPIC"? w : false).map((w) => w.id );
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ignoredWorkspaceIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -517,6 +519,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: users,
+    workspaces: workspaces? workspaces: [],
     disableMention: false,
     setInlineImages,
     prioMentionIds: [...new Set(prioMentionIds)],
