@@ -213,7 +213,7 @@ const PostInput = forwardRef((props, ref) => {
         post_id: post.id,
         post_title: post.title,
       },
-      approval_user_ids: approvers.map((a) => a.value),
+      approval_user_ids: approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
     if (quote) {

@@ -178,6 +178,7 @@ const CompanyPostsPanel = (props) => {
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
     actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
+    accepted: _t("POST.ACCEPTED", "Accepted"),
   };
 
   const handleLoadMore = () => {

@@ -295,7 +295,7 @@ const PostItemPanel = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-    console.log(otherPostRecipients);
+
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)

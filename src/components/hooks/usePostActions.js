@@ -93,6 +93,11 @@ const usePostActions = () => {
     todoLinks: _t("SIDEBAR.TODO_LINKS", "Reminders"),
     accept: _t("POST.ACCEPT", "Accept"),
     acceptThisPost: _t("POST.ACCEPT_THIS_POST", "Accept this post?"),
+    acceptThisPostText: _t("POST.ACCEPT_THIS_POST_TEXT", "Are you sure you want to accept? Please refer to the General condition for more details"),
+    acceptCondition: _t(
+      "POST.ACCEPT_GENERAL_CONDITION",
+      "You accept the final design provided to you. Zuid will now proceed on the next steps. Any additional changes on the design will be subject for re-estimation and additional work which will be considered as a separate project."
+    ),
   };
 
   const starPost = useCallback(
@@ -523,7 +528,8 @@ const usePostActions = () => {
             submitText: dictionary.accept,
             cancelText: dictionary.buttonCancel,
             headerText: dictionary.acceptThisPost,
-            bodyText: "Are you sure you want to accept this post?",
+            bodyText: dictionary.acceptThisPostText,
+            generalConditionText: dictionary.acceptCondition,
             item: {
               post: post,
             },

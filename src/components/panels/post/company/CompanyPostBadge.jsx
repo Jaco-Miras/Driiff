@@ -16,9 +16,25 @@ const CompanyPostBadge = (props) => {
     }
   }, [post]);
 
-  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
-  const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
-  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+  // const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
+  // const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+
+  const renderApprovalLabel = (status) => {
+    switch (status) {
+      case "ACCEPTED": {
+        return dictionary.accepted;
+      }
+      case "NEED_ACTION": {
+        return dictionary.actionNeeded;
+      }
+      case "REQUEST_UPDATE": {
+        return dictionary.changeRequested;
+      }
+      default:
+        return null;
+    }
+  };
 
   return (
     <div ref={refs.container}>
@@ -61,7 +77,7 @@ const CompanyPostBadge = (props) => {
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
         </div>
       )} */}
-      {isApprover && hasPendingAproval && (
+      {/* {isApprover && hasPendingAproval && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
         </div>
@@ -69,6 +85,11 @@ const CompanyPostBadge = (props) => {
       {post.author.id === user.id && hasRequestedChange && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.changeRequested}</div>
+        </div>
+      )} */}
+      {post.post_approval_label && (
+        <div className={`${className} mr-3 d-sm-inline d-none`}>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
         </div>
       )}
     </div>
