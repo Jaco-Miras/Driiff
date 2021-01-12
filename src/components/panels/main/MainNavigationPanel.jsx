@@ -1,7 +1,7 @@
 import React from "react";
-import {Route} from "react-router-dom";
+import { Route } from "react-router-dom";
 import styled from "styled-components";
-import {MainNavigationTabPanel} from "./index";
+import { MainNavigationTabPanel } from "./index";
 
 const Wrapper = styled.div``;
 
@@ -29,6 +29,7 @@ const MainNavigationPanel = (props) => {
           "/posts/:postId/:postTitle/:postCommentCode?",
           "/files/folder/:folderId/:folderName",
           "/system/people",
+          "/magic-link/:token",
           "/:page",
         ]}
       />

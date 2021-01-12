@@ -429,6 +429,7 @@ const VirtualizedChat = (props) => {
               chatSettings={chatSettings}
               isLastChatVisible={isLastChatVisible}
               dictionary={props.dictionary}
+              users={props.users}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {/* <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
@@ -486,6 +487,7 @@ const VirtualizedChat = (props) => {
                 isLastChat={index + 1 === messages.length ? true : null}
                 isLastChatVisible={isLastChatVisible}
                 dictionary={props.dictionary}
+                users={props.users}
               />
               {reply.unfurls.length ? (
                 <ChatUnfurl

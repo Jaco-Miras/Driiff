@@ -339,6 +339,7 @@ const CreateEditCompanyPostModal = (props) => {
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
+  const [imageLoading, setImageLoading] = useState(null);
   const [mounted, setMounted] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
 
@@ -358,6 +359,7 @@ const CreateEditCompanyPostModal = (props) => {
     end_at: null,
     approvers: [],
     showApprover: false,
+    mention_ids: [],
   });
 
   const { options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions, addressIds } = useWorkspaceAndUserOptions({
@@ -630,9 +632,8 @@ const CreateEditCompanyPostModal = (props) => {
       }
     }
   };
-
   const handleConfirm = () => {
-    if (loading) return;
+    if (loading || imageLoading) return;
 
     setLoading(true);
 
@@ -655,6 +656,7 @@ const CreateEditCompanyPostModal = (props) => {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
       },
       approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : [],
+      body_mention_ids: form.mention_ids,
     };
     // if (draftId) {
     //   dispatch(
@@ -779,18 +781,19 @@ const CreateEditCompanyPostModal = (props) => {
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
+    let mentionIds = [];
     if (editor.getContents().ops && editor.getContents().ops.length) {
-      handleMentionUser(
-        editor
-          .getContents()
-          .ops.filter((m) => m.insert.mention)
-          .map((i) => i.insert.mention.id)
-      );
+      mentionIds = editor
+        .getContents()
+        .ops.filter((m) => m.insert.mention)
+        .map((i) => i.insert.mention.id);
+      handleMentionUser(mentionIds);
     }
     setForm({
       ...form,
       body: content,
       textOnly: textOnly.trim(),
+      mention_ids: mentionIds.map((id) => parseInt(id)).filter((id) => !isNaN(id)),
     });
   };
 
@@ -1223,6 +1226,8 @@ const CreateEditCompanyPostModal = (props) => {
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}
+          setImageLoading={setImageLoading}
+          prioMentionIds={addressIds}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
@@ -1292,7 +1297,7 @@ const CreateEditCompanyPostModal = (props) => {
           </div>
         </WrapperDiv>
         <WrapperDiv>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === ""} onClick={handleConfirm}>
+          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>

@@ -5,6 +5,7 @@ import { sessionService } from "redux-react-session";
 import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
 import { authenticateGoogleLogin } from "../../redux/actions/userAction";
 import { useUserActions } from "./index";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 export const useUserLogin = (props) => {
   const dispatch = useDispatch();
@@ -24,7 +25,44 @@ export const useUserLogin = (props) => {
     if (magicLinkMatch !== null) {
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
         if (res) {
-          userActions.login(res.data, "/workspace/chat");
+          console.log(res.data);
+          if (res.data.additional_data) {
+            if (res.data.additional_data.type === "POST") {
+              if (res.data.additional_data.data.workspace) {
+                let ws = res.data.additional_data.data.workspace[0];
+                let postId = res.data.additional_data.data.id;
+                let postName = res.data.additional_data.data.code;
+                if (ws.workspace_id) {
+                  let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                  userActions.login(res.data, link);
+                } else {
+                  let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                  userActions.login(res.data, link);
+                }
+              }
+            } else if (res.data.additional_data.type === "CHANNEL") {
+              console.log("redirect to chat");
+              if (res.data.additional_data.topic) {
+                let topic = res.data.additional_data.topic;
+                let wsFolder = res.data.additional_data.workspace;
+                if (wsFolder) {
+                  let link = `/workspace/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
+                  userActions.login(res.data, link);
+                } else {
+                  let link = `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`;
+                  userActions.login(res.data, link);
+                }
+              } else if (res.data.additional_data.data) {
+                let link = `/chat/${res.data.additional_data.data.code}`;
+                userActions.login(res.data, link);
+              } else {
+                userActions.login(res.data, "/workspace/chat");
+              }
+            }
+          } else {
+            console.log("default to workspace chat");
+            userActions.login(res.data, "/workspace/chat");
+          }
         }
       });
     }

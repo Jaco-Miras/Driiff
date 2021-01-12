@@ -144,6 +144,9 @@ const PostInput = forwardRef((props, ref) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
+
+  const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -159,6 +162,8 @@ const PostInput = forwardRef((props, ref) => {
   const [quote] = useCommentQuote(commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
+
+  const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
@@ -196,7 +201,7 @@ const PostInput = forwardRef((props, ref) => {
     let payload = {
       post_id: post.id,
       body: text,
-      mention_ids: mention_ids,
+      mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: inlineImages.map((i) => i.id),
       post_file_ids: [],
       reference_id: reference_id,
@@ -341,7 +346,8 @@ const PostInput = forwardRef((props, ref) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id)];
+      const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {

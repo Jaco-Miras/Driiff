@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addHuddleLog,
   deleteChannelMembers,
   getChannel,
   getChannelDrafts,
@@ -11,6 +12,7 @@ import {
   getLastChannel,
   getLastVisitedChannel,
   getSelectChannel,
+  getUnpublishedAnswers,
   getWorkspaceChannels,
   postChannelMembers,
   postCreateChannel,
@@ -723,6 +725,7 @@ const useChannelActions = () => {
           if (err) {
             fetchLastChannel();
           }
+          if (callback) callback();
         })
       );
     },
@@ -734,6 +737,33 @@ const useChannelActions = () => {
       dispatch(getChannelLastReply({ channel_id: channelId }, callback));
     },
     [dispatch, fetchLastChannel]
+  );
+
+  /**
+   * @param {Object} callback
+   */
+  const fetchUnpublishedAnswers = useCallback(
+    (payload = {}) => {
+      let cb = (err, res) => {
+        if (err) return;
+        let huddle = res.data.find((d) => !d.huddle_log.published);
+        if (huddle) {
+          dispatch(
+            addHuddleLog({
+              ...payload,
+              message_id: huddle.huddle_log.connected_message_id,
+              huddle_log: {
+                ...huddle.huddle_log,
+                message_id: huddle.huddle_log.connected_message_id,
+              },
+              huddle_answers: huddle.huddle_answers,
+            })
+          );
+        }
+      };
+      dispatch(getUnpublishedAnswers(payload, cb));
+    },
+    [dispatch]
   );
 
   return {
@@ -748,6 +778,7 @@ const useChannelActions = () => {
     fetchLastChannel,
     fetchLastVisited,
     fetchSelectChannel,
+    fetchUnpublishedAnswers,
     fetchWorkspaceChannels,
     saveHistoricalPosition,
     saveLastVisited,

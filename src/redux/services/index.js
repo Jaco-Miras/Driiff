@@ -32,11 +32,23 @@ export {
   getChannelLastReply,
   putChatStar,
   getChatStar,
+  getHuddleChatbot,
+  postHuddleChatbot,
+  putHuddleChatbot,
+  deleteHuddleChatbot,
+  postHuddleAnswer,
+  getUserBots,
+  postUserBots,
+  getUnpublishedAnswers,
+  putUnpublishedAnswers,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
 
 export {
+  activateUser,
+  archiveUser,
+  deactivateUser,
   login,
   logout,
   googleLogin,
@@ -58,6 +70,9 @@ export {
   postInternalRequestForm,
   putUserRole,
   getRoles,
+  getExternalUsers,
+  getArchivedUsers,
+  unarchiveUser,
 } from "./user";
 
 export {

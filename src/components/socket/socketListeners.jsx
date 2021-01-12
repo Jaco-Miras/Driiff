@@ -19,16 +19,21 @@ import {
   incomingChatMessageReaction,
   incomingChatStar,
   incomingDeletedChatMessage,
+  incomingDeletedHuddleBot,
   incomingImportantChat,
+  incomingHuddleBot,
+  incomingHuddleAnswers,
   incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
+  incomingUpdatedHuddleBot,
   setAllMessagesAsRead,
   setChannel,
   setMemberTimestamp,
   setSelectedChannel,
   unreadChannelReducer,
   updateChannelMembersTitle,
+  clearUnpublishedAnswer,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -106,7 +111,18 @@ import {
   refetchPostComments,
   refetchPosts,
 } from "../../redux/actions/postActions";
-import { getOnlineUsers, getUser, incomingExternalUser, incomingInternalUser, incomingUpdatedUser, incomingUserRole } from "../../redux/actions/userAction";
+import {
+  getOnlineUsers,
+  getUser,
+  incomingExternalUser,
+  incomingInternalUser,
+  incomingUpdatedUser,
+  incomingUserRole,
+  incomingArchivedUser,
+  incomingUnarchivedUser,
+  incomingDeactivatedUser,
+  incomingActivatedUser,
+} from "../../redux/actions/userAction";
 import {
   getUnreadWorkspacePostEntries,
   getWorkspace,
@@ -138,6 +154,7 @@ class SocketListeners extends Component {
     };
 
     this.onlineUsers = React.createRef(null);
+    this.publishChannelId = React.createRef(null);
   }
 
   refetchPosts = () => {
@@ -252,6 +269,68 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".huddle-notification", (e) => {
+        console.log("huddle notification", e);
+        switch (e.SOCKET_TYPE) {
+          case "HUDDLE_CREATED": {
+            this.props.incomingHuddleBot({
+              ...e,
+              start_at: e.set_start_at,
+              publish_at: e.set_publish_at,
+              questions: e.questions.map((q, k) => {
+                return {
+                  ...q,
+                  answer: null,
+                  original_answer: null,
+                  isFirstQuestion: k === 0,
+                  isLastQuestion: e.questions.length === k + 1,
+                };
+              }),
+            });
+            break;
+          }
+          case "HUDDLE_UPDATED": {
+            this.props.incomingUpdatedHuddleBot({
+              ...e,
+              start_at: e.set_start_at,
+              publish_at: e.set_publish_at,
+              questions: e.questions.map((q, k) => {
+                return {
+                  ...q,
+                  answer: null,
+                  original_answer: null,
+                  isFirstQuestion: k === 0,
+                  isLastQuestion: e.questions.length === k + 1,
+                };
+              }),
+            });
+            break;
+          }
+          case "HUDDLE_DELETED": {
+            this.props.incomingDeletedHuddleBot({ id: parseInt(e.id) });
+            break;
+          }
+          case "HUDDLE_ANSWER_UPDATE": {
+            this.props.incomingHuddleAnswers({
+              ...e,
+              channel: {
+                id: e.huddle.channel_id,
+              },
+            });
+            break;
+          }
+          case "USER_ANSWERED": {
+            this.props.incomingHuddleAnswers(e);
+            this.props.incomingChatMessage({
+              ...e.message,
+              huddle_log: e.huddle_log,
+            });
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
         switch (e.SOCKET_TYPE) {
@@ -641,6 +720,13 @@ class SocketListeners extends Component {
 
         switch (e.SOCKET_TYPE) {
           case "CHAT_CREATE": {
+            if (e.is_huddle && this.publishChannelId.current !== e.channel_id) {
+              this.props.toaster.success(`${this.props.dictionary.huddlePublished} - ${e.channel_name}`, { toastId: e.channel_id });
+              this.props.clearUnpublishedAnswer(e);
+              setTimeout(() => {
+                this.publishChannelId.current = null;
+              }, 5000);
+            }
             //unfurl link
             let message = { ...e };
             let urlArray = [...new Set(urlify(e.body))];
@@ -741,6 +827,34 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".user-updated", (e) => {
+        console.log("user updated", e);
+        switch (e.SOCKET_TYPE) {
+          case "ARCHIVED_ACCOUNT": {
+            let payload = {
+              channel_ids: [...e.connected_data.user_removed_channel_ids, ...e.connected_data.archived_channel_ids],
+              topic_ids: [...e.connected_data.user_removed_topic_ids, ...e.connected_data.archived_topic_ids],
+              user: e.user,
+            };
+            this.props.incomingArchivedUser(payload);
+            break;
+          }
+          case "RESTORED_ACCOUNT": {
+            this.props.incomingUnarchivedUser(e);
+            break;
+          }
+          case "DEACTIVATE_ACCOUNT": {
+            this.props.incomingDeactivatedUser(e);
+            break;
+          }
+          case "ACTIVATE_ACCOUNT": {
+            this.props.incomingActivatedUser(e);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".updated-version", (e) => {
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
           const { version, requirement } = e;
@@ -992,7 +1106,7 @@ class SocketListeners extends Component {
         console.log(e, "update workspace");
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
-          is_shared: e.is_shared === 1,
+          is_shared: e.is_shared,
         });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1023,7 +1137,7 @@ class SocketListeners extends Component {
               }
             }
             if (this.props.selectedChannel) {
-              if (this.props.selectedChannel.id === e.system_message.channel_id) {
+              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
                 //redirect to first channel
                 let wsChannels = Object.values(this.props.channels).filter((c) => {
                   const checkForId = (id) => id === this.props.user.id;
@@ -1134,7 +1248,7 @@ class SocketListeners extends Component {
               }
             }
             if (this.props.selectedChannel) {
-              if (this.props.selectedChannel.id === e.system_message.channel_id) {
+              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
                 //redirect to first channel
                 let wsChannels = Object.values(this.props.channels).filter((c) => {
                   const checkForId = (id) => id === this.props.user.id;
@@ -1292,6 +1406,9 @@ class SocketListeners extends Component {
       .listen(".archived-chat-channel", (e) => {
         console.log(e, "archived chat", this.props);
         if (e.channel_data.topic_detail) {
+          if (e.channel_data.timeline) {
+            this.props.incomingTimeline({ timeline_data: e.channel_data.timeline, workspace_data: { topic_id: e.channel_data.topic_detail.id } });
+          }
           if (e.channel_data.status === "UNARCHIVED") {
             this.props.incomingUnArchivedWorkspaceChannel(e.channel_data);
           } else {
@@ -1539,6 +1656,15 @@ function mapDispatchToProps(dispatch) {
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
     incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
     incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
+    incomingArchivedUser: bindActionCreators(incomingArchivedUser, dispatch),
+    incomingUnarchivedUser: bindActionCreators(incomingUnarchivedUser, dispatch),
+    incomingDeactivatedUser: bindActionCreators(incomingDeactivatedUser, dispatch),
+    incomingActivatedUser: bindActionCreators(incomingActivatedUser, dispatch),
+    incomingHuddleBot: bindActionCreators(incomingHuddleBot, dispatch),
+    incomingUpdatedHuddleBot: bindActionCreators(incomingUpdatedHuddleBot, dispatch),
+    incomingDeletedHuddleBot: bindActionCreators(incomingDeletedHuddleBot, dispatch),
+    incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
+    clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
   };
 }
 

@@ -171,14 +171,6 @@ const DashboardAboutWorkspace = (props) => {
             </DashboardDescriptionContainer>
           </>
         )}
-        {workspace && workspace.primary_files && workspace.primary_files.length > 0 && (
-          <>
-            <hr/>
-            <span>{dictionary.fileAttachments}:</span>
-            <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace"
-                             showDelete={false}/>
-          </>
-        )}
       </div>
     </Wrapper>
   );

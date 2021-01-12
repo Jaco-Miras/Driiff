@@ -604,6 +604,7 @@ class ChatMessages extends React.PureComponent {
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
+      // this.props.chatMessageActions.channelActions.fetchUnpublishedAnswers({ channel_id: selectedChannel.id });
       if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
       this.handleReadChannel();
 
@@ -884,7 +885,7 @@ class ChatMessages extends React.PureComponent {
                             if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                               showGifPlayer = true;
                             }
-                            let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
+                            let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
                             isBot = botCodes.includes(reply.user.code);
                           } else {
                             //remove duplicate messages from bot
@@ -948,6 +949,7 @@ class ChatMessages extends React.PureComponent {
                                       chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
+                                      users={this.props.users}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {/* <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
@@ -987,6 +989,7 @@ class ChatMessages extends React.PureComponent {
                                       imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
                                       name={reply.user.name}
                                       isBot={isBot}
+                                      isHuddleBot={reply.user.code === "huddle_bot"}
                                     />
                                   )}
                                 </ChatBubbleContainer>
@@ -1007,6 +1010,7 @@ class ChatMessages extends React.PureComponent {
                                         isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
+                                        users={this.props.users}
                                       />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
@@ -1077,6 +1081,7 @@ function mapStateToProps(state) {
     global: { isBrowserActive, recipients },
     session: { user },
     chat: { historicalPositions, isLastChatVisible },
+    users: { users },
   } = state;
 
   return {
@@ -1086,6 +1091,7 @@ function mapStateToProps(state) {
     historicalPositions,
     recipients,
     isLastChatVisible,
+    users,
   };
 }
 

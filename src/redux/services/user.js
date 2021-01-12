@@ -358,19 +358,19 @@ export function getSharedFiles(payload) {
   });
 }
 
-export function archiveUser(payload) {
-  return apiCall({
-    method: "DELETE",
-    url: `/users/${payload.id}`,
-  });
-}
+// export function archiveUser(payload) {
+//   return apiCall({
+//     method: "DELETE",
+//     url: `/users/${payload.id}`,
+//   });
+// }
 
-export function unarchiveUser(payload) {
-  return apiCall({
-    method: "PUT",
-    url: `/users/${payload.id}/un-archive`,
-  });
-}
+// export function unarchiveUser(payload) {
+//   return apiCall({
+//     method: "PUT",
+//     url: `/users/${payload.id}/un-archive`,
+//   });
+// }
 
 export function updateSettings(payload) {
   return apiCall({
@@ -499,5 +499,73 @@ export function getRoles(payload) {
   return apiCall({
     method: "GET",
     url: "/v2/roles",
+  });
+}
+
+export function getExternalUsers(payload = {}) {
+  let url = "/v1/users?filter=external";
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.user_id
+ * @returns {Promise<* | void>}
+ */
+export function archiveUser(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: "/v2/archived-user",
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.user_id
+ * @returns {Promise<* | void>}
+ */
+export function unarchiveUser(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/un-archived-user",
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.user_id
+ * @returns {Promise<* | void>}
+ */
+export function deactivateUser(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: "/v2/deactivate-user",
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.user_id
+ * @returns {Promise<* | void>}
+ */
+export function activateUser(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/activate-user",
+    data: payload,
+  });
+}
+
+export function getArchivedUsers(payload = {}) {
+  let url = "/v1/users?filter=archive";
+  return apiCall({
+    method: "GET",
+    url: url,
   });
 }

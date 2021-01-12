@@ -5,10 +5,11 @@ import { addChatMessage, addQuote, addToChannels, clearChannelDraft, clearQuote,
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat } from "../hooks";
+import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 import { useHistory } from "react-router-dom";
+import { HuddleQuestion } from "../panels/bot";
 
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
@@ -140,6 +141,9 @@ const ChatInput = (props) => {
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
+
+  const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -150,8 +154,25 @@ const ChatInput = (props) => {
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
+  const [answerId, setAnswerId] = useState(null);
 
   const [quote] = useSelectQuote();
+
+  const toaster = useToaster();
+
+  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
+
+  const setEditedAnswerId = useRef(null);
+
+  useEffect(() => {
+    if (editHuddle && question && answerId !== question.answer_id && textOnly !== question.original_answer) {
+      reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, question.original_answer);
+      if (reactQuillRef.current.getEditor().getText() === question.original_answer) {
+        setAnswerId(question.answer_id);
+        setTextOnly(question.original_answer);
+      }
+    }
+  }, [editHuddle, question, answerId, textOnly]);
 
   const handleSubmit = () => {
     //let specialCommands = ["/sound-on", "/sound-off"];
@@ -179,6 +200,73 @@ const ChatInput = (props) => {
     //     }
     //     return;
     // }
+    if (showQuestions) {
+      if (question.isLastQuestion) {
+        const currentDate = new Date();
+        let payload = {
+          huddle_id: huddle.id,
+          answers: huddle.questions.map((q) => {
+            return {
+              question_id: q.id,
+              question: q.question,
+              answer: q.isLastQuestion ? textOnly : q.answer,
+            };
+          }),
+        };
+        const closingMessage = huddle.closing_message ? huddle.closing_message : "Huddle submitted";
+        let cb = (err, res) => {
+          if (err) {
+            toaster.error("Error huddle");
+            return;
+          }
+          if (huddleAnswered) {
+            const { channels } = JSON.parse(huddleAnswered);
+            localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
+          } else {
+            localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
+          }
+          toaster.success(closingMessage);
+        };
+        if (editHuddle) {
+          // clear edit huddle
+          let payload = {
+            message_id: editHuddle.huddle_log.message_id,
+            huddle_log_id: editHuddle.huddle_log.id,
+            answers: editHuddle.questions.map((q) => {
+              return {
+                id: q.answer_id,
+                answer: q.isLastQuestion ? reactQuillRef.current.getEditor().getText() : q.answer,
+              };
+            }),
+          };
+          let cb = (err, res) => {
+            if (err) return;
+            huddleActions.clearHuddle();
+          };
+          huddleActions.updateUnpublishedAnswers(payload, cb);
+        } else {
+          huddleActions.createAnswer(payload, cb);
+        }
+      }
+      if (editHuddle) {
+        if (!question.isLastQuestion) {
+          huddleActions.updateAnswer({
+            channel_id: selectedChannel.id,
+            question_id: question.id,
+            answer: reactQuillRef.current.getEditor().getText(),
+          });
+          setAnswerId(null);
+        }
+      } else {
+        huddleActions.saveAnswer({
+          channel_id: selectedChannel.id,
+          question_id: question.id,
+          answer: textOnly,
+        });
+      }
+      handleClearQuillInput();
+      return;
+    }
 
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
@@ -226,14 +314,14 @@ const ChatInput = (props) => {
     let payload = {
       channel_id: selectedChannel.id,
       body: el.innerHTML,
-      mention_ids: mention_ids,
+      mention_ids: selectedChannel.type !== "TOPIC" ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: [],
       reference_id: reference_id,
       reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-      token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-      slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
+      // token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
+      // slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
       //test_case: "web_push"
     };
 
@@ -397,7 +485,8 @@ const ChatInput = (props) => {
     if (mention_ids.length) {
       //check for recipients/type
       if (selectedChannel.type === "PERSONAL_BOT") return;
-      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...ignoredMentionedUserIds];
+      const ingoredExternalIds = selectedChannel.type === "TOPIC" ? activeExternalUsers.map((m) => m.id) : [];
+      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...ignoredMentionedUserIds, ...ingoredExternalIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -670,8 +759,10 @@ const ChatInput = (props) => {
     members: user.type === "external" ? selectedChannel.members : [],
     prioMentionIds: selectedChannel.members.map((m) => m.id),
   });
+
   return (
     <div className="chat-input-wrapper">
+      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
       {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />}

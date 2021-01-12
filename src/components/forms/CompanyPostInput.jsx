@@ -131,6 +131,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const users = useSelector((state) => state.users.users);
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
+
+  const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -144,6 +147,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [quote] = useCommentQuote(commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
+  const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
   // let prioMentionIds = post.recipients.filter((r) => r.type !== "DEPARTMENT")
   //                       .map((r) => {
@@ -190,7 +194,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     let payload = {
       post_id: post.id,
       body: text,
-      mention_ids: mention_ids,
+      mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: inlineImages.map((i) => i.id),
       post_file_ids: [],
       reference_id: reference_id,
@@ -488,8 +492,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
         dispatch(addUserToPostRecipients(payload));
       })
     );
-
-    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+    const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id), ...ingoredExternalIds]);
 
     setMentionedUserIds([]);
   };

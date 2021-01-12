@@ -64,11 +64,11 @@ const AttachFileTimeline = (props) => {
             </span>
             <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
           </h6>
-          <div className="mb-3 border p-3 border-radius-1">
+          {/* <div className="mb-3 border p-3 border-radius-1">
             <span onClick={handleFilePreview} className="timeline-file-icon">
               {fileHandler.getFileIcon(data.mime_type)} <span>{data.name}</span>
             </span>
-          </div>
+          </div> */}
         </div>
       }
     </Wrapper>

@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { ChatContentPanel, ChatSidebarPanel } from "../chat";
-import Snowfall from "react-snowfall";
-//christmas
 
 const Wrapper = styled.div`
   .chat-sidebar-panel {
@@ -51,22 +49,12 @@ const Wrapper = styled.div`
 
 const CompanyChatPanel = (props) => {
   const { className = "" } = props;
-  const [active, setActive] = useState(true);
-
-  //christmas
-  useEffect(() => {
-    setTimeout(() => {
-      setActive(false);
-    }, 7000);
-  });
 
   return (
     <Wrapper className={`company-chat ${className}`}>
       <div className="row no-gutters chat-block">
         <ChatSidebarPanel className={"col-lg-4 chat-sidebar-panel"} />
         <ChatContentPanel className={"col-lg-8 chat-content-panel"} />
-        {active ? <Snowfall /> : ""}
-        {/* christmas */}
       </div>
     </Wrapper>
   );

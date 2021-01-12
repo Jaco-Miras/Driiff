@@ -2,6 +2,7 @@ import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actio
 import {
   deleteChannelMembers as deleteChannelMembersService,
   deleteChatMessage as deleteChatMessageService,
+  deleteHuddleChatbot as deleteHuddleChatbotService,
   getChannel as getChannelService,
   getChannelDetail as getChannelDetailService,
   getChannelDrafts as getChannelDraftsService,
@@ -11,24 +12,32 @@ import {
   getChatMessages as getChatMessagesService,
   getChatStar as getChatStarService,
   getGlobalRecipients as getGlobalRecipientsService,
+  getHuddleChatbot as getHuddleChatbotService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
   getSelectChannel as getSelectChannelService,
+  getUnpublishedAnswers as getUnpublishedAnswersService,
+  getUserBots as getUserBotsService,
   getWorkspaceChannels as getWorkspaceChannelsService,
   postChannelMembers as postChannelMembersService,
   postChatMessage as postChatMessageService,
   postChatReaction as postChatReactionService,
   postChatReminder as postChatReminderService,
   postCreateChannel as postCreateChannelService,
+  postHuddleAnswer as postHuddleAnswerService,
+  postHuddleChatbot as postHuddleChatbotService,
   postSearchExistingChannels as postSearchExistingChannelsService,
+  postUserBots as postUserBotsService,
   putChannel as putChannelService,
   putChannelUpdate as putChannelUpdateService,
   putChatMessage as putChatMessageService,
   putChatStar as putChatStarService,
+  putHuddleChatbot as putHuddleChatbotService,
   putImportantChat as putImportantChatService,
   putMarkReadChannel as putMarkReadChannelService,
   putMarkReminderComplete as putMarkReminderCompleteService,
   putMarkUnreadChannel as putMarkUnreadChannelService,
+  putUnpublishedAnswers as putUnpublishedAnswersService,
 } from "../services";
 
 export function setSelectedChannel(payload, callback) {
@@ -298,6 +307,90 @@ export function getChatStar(payload, callback) {
   return dispatchActionToReducer(getChatStarService(payload), "GET_CHAT_STAR_START", "GET_CHAT_STAR_SUCCESS", "GET_CHAT_STAR_FAIL", callback);
 }
 
+export function setIsStarred(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_IS_STARRED", payload, callback);
+}
+
 export function incomingChatStar(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_CHAT_STAR", payload, callback);
+}
+
+export function getHuddleChatbot(payload, callback) {
+  return dispatchActionToReducer(getHuddleChatbotService(payload), "GET_HUDDLE_CHATBOT_START", "GET_HUDDLE_CHATBOT_SUCCESS", "GET_HUDDLE_CHATBOT_FAIL", callback);
+}
+
+export function postHuddleChatbot(payload, callback) {
+  return dispatchActionToReducer(postHuddleChatbotService(payload), "POST_HUDDLE_CHATBOT_START", "POST_HUDDLE_CHATBOT_SUCCESS", "POST_HUDDLE_CHATBOT_FAIL", callback);
+}
+
+export function putHuddleChatbot(payload, callback) {
+  return dispatchActionToReducer(putHuddleChatbotService(payload), "PUT_HUDDLE_CHATBOT_START", "PUT_HUDDLE_CHATBOT_SUCCESS", "PUT_HUDDLE_CHATBOT_FAIL", callback);
+}
+
+export function deleteHuddleChatbot(payload, callback) {
+  return dispatchActionToReducer(deleteHuddleChatbotService(payload), "DELETE_HUDDLE_CHATBOT_START", "DELETE_HUDDLE_CHATBOT_SUCCESS", "DELETE_HUDDLE_CHATBOT_FAIL", callback);
+}
+
+export function postHuddleAnswer(payload, callback) {
+  return dispatchActionToReducer(postHuddleAnswerService(payload), "POST_HUDDLE_ANSWER_START", "POST_HUDDLE_ANSWER_SUCCESS", "POST_HUDDLE_ANSWER_FAIL", callback);
+}
+
+export function getUserBots(payload, callback) {
+  return dispatchActionToReducer(getUserBotsService(payload), "GET_USER_BOTS_START", "GET_USER_BOTS_SUCCESS", "GET_USER_BOTS_FAIL", callback);
+}
+
+export function incomingHuddleBot(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_HUDDLE_BOT", payload, callback);
+}
+
+export function saveHuddleAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("SAVE_HUDDLE_ANSWER", payload, callback);
+}
+
+export function incomingUpdatedHuddleBot(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_HUDDLE_BOT", payload, callback);
+}
+
+export function incomingDeletedHuddleBot(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_HUDDLE_BOT", payload, callback);
+}
+
+export function postUserBots(payload, callback) {
+  return dispatchActionToReducer(postUserBotsService(payload), "POST_USER_BOTS_START", "POST_USER_BOTS_SUCCESS", "POST_USER_BOTS_FAIL", callback);
+}
+
+export function clearHuddleAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_HUDDLE", payload, callback);
+}
+
+export function incomingHuddleAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_HUDDLE_ANSWERS", payload, callback);
+}
+
+export function getUnpublishedAnswers(payload, callback) {
+  return dispatchActionToReducer(getUnpublishedAnswersService(payload), "GET_UNPUBLISHED_ANSWERS_START", "GET_UNPUBLISHED_ANSWERS_SUCCESS", "GET_UNPUBLISHED_ANSWERS_FAIL", callback);
+}
+
+export function putUnpublishedAnswers(payload, callback) {
+  return dispatchActionToReducer(putUnpublishedAnswersService(payload), "PUT_UNPUBLISHED_ANSWERS_START", "PUT_UNPUBLISHED_ANSWERS_SUCCESS", "PUT_UNPUBLISHED_ANSWERS_FAIL", callback);
+}
+
+export function setEditHuddleAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_EDIT_HUDDLE_ANSWERS", payload, callback);
+}
+
+export function addHuddleLog(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_HUDDLE_LOG", payload, callback);
+}
+
+export function clearEditHuddle(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_EDIT_HUDDLE", payload, callback);
+}
+
+export function updateHuddleAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_HUDDLE_ANSWER", payload, callback);
+}
+
+export function clearUnpublishedAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_UNPUBLISHED_HUDDLE_ANSWER", payload, callback);
 }

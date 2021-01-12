@@ -22,6 +22,9 @@ const Wrapper = styled.div`
   > .col-12 {
     padding: 0;
   }
+  .card.border {
+    overflow: visible;
+  }
   .people-text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -36,7 +39,7 @@ const Wrapper = styled.div`
 `;
 
 const PeopleListItem = (props) => {
-  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary, showOptions = false, onUpdateRole = null, roles } = props;
+  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary, showOptions = false, onUpdateRole = null, roles, onArchiveUser = null, onActivateUser = null, showInactive = false } = props;
 
   const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
 
@@ -89,6 +92,14 @@ const PeopleListItem = (props) => {
     handleResize();
   }, []);
 
+  const handleArchiveUser = () => {
+    onArchiveUser(user);
+  };
+
+  const handleActivateUser = () => {
+    onActivateUser(user);
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
       <div className="col-12">
@@ -105,7 +116,7 @@ const PeopleListItem = (props) => {
                   imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}
                 />
                 <div className="user-info-wrapper ml-3">
-                  {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
+                  {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
                     <h6 className="user-name mb-1 ">
                       <ToolTip content={user.email}>
                         <div className="mr-2 people-text-truncate">{user.email}</div>
@@ -136,10 +147,13 @@ const PeopleListItem = (props) => {
                     </a>
                   )}
                   {user.type !== "external" && loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
-                  {showOptions && user.type !== "external" && user.role && user.role.name !== "owner" && (
+                  {showOptions && user.type !== "external" && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
-                      {user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
-                      {user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
+                      {!showInactive && user.role && user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
+                      {!showInactive && user.role && user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
+                      {/* <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div> */}
+                      {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
+                      <div onClick={handleActivateUser}>{user.active ? dictionary.deactivateUser : dictionary.activateUser}</div>
                     </MoreOptions>
                   )}
                 </div>
