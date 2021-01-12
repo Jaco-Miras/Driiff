@@ -14,7 +14,7 @@ const ChatMessageOptions = (props) => {
   const chatMessageActions = useChatMessageActions();
 
   useEffect(() => {
-    if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your huddle answer -") && !replyData.hasOwnProperty("huddle_log")) {
+    if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && !replyData.hasOwnProperty("huddle_log")) {
       chatMessageActions.channelActions.fetchUnpublishedAnswers({ channel_id: replyData.channel_id });
     }
   }, []);
@@ -75,7 +75,7 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>}
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
-      {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your huddle answer -") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
+      {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
     </MoreOptions>
   );
 };
