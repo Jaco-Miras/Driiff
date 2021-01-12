@@ -413,7 +413,13 @@ export default function (state = INITIAL_STATE, action) {
                   return r;
                 }
               })
-            : [...channel.replies, action.data].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+            : [...channel.replies, action.data].sort((a, b) => {
+                if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                  return a.id - b.id;
+                } else {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                }
+              }),
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
