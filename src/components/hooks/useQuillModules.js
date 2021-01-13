@@ -89,6 +89,13 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
 
     const modules = {
       magicUrl: true,
+      clipboard: {
+        allowed: {
+          tags: ['a', 'b', 'strong', 'u', 's', 'i', 'p', 'br', 'ul', 'ol', 'li'],
+          attributes: ['href', 'rel', 'target', 'class']
+      },
+      keepSelection: true,
+      },
       mention: {
         allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
         defaultMenuOrientation: mentionOrientation,
@@ -234,6 +241,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
             key: 85,
             ctrlKey: true,
             handler: () => {
+              console.warn("copy paste pressed")
               //do nothing
             },
           },

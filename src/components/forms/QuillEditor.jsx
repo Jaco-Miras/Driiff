@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import { useTranslation } from "../hooks";
 import MagicUrl from "quill-magic-url";
 import ImageUploader from "quill-image-uploader";
+import QuillPasteSmart from "quill-paste-smart";
 
 const QuillEditor = forwardRef((props, ref) => {
   const { className = "", theme = "snow", placeholder = "", ...otherProps } = props;
@@ -40,5 +41,6 @@ Quill.register(Block);
 Quill.register("modules/magicUrl", MagicUrl);
 
 //Quill.register("modules/clipboard", QuillPlainClipboard, true);
+Quill.register("modules/clipboard", QuillPasteSmart);
 
 Quill.register("modules/imageUploader", ImageUploader);
