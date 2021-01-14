@@ -30,7 +30,8 @@ const PostBadge = (props) => {
         else return null;
       }
       case "REQUEST_UPDATE": {
-        return dictionary.changeRequested;
+        if (post.author.id === user.id) return dictionary.changeRequested;
+        return null;
       }
       default:
         return null;
