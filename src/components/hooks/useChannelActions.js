@@ -24,6 +24,7 @@ import {
   putMarkUnreadChannel,
   readChannelReducer,
   renameChannelKey,
+  searchChannels,
   setChannel,
   setChannelHistoricalPosition,
   setFetchingMessages,
@@ -798,6 +799,20 @@ const useChannelActions = () => {
     [dispatch, chatSettings.order_channel.order_by, chatSettings.order_channel.sort_by]
   );
 
+  /**
+   * @param {Object} payload
+   * @param {string} payload.search
+   * @param {number} payload.skip
+   * @param {number} payload.limit
+   * @param {function} [callback]
+   */
+  const search = useCallback(
+    (payload, callback = () => {}) => {
+      dispatch(searchChannels(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -836,6 +851,7 @@ const useChannelActions = () => {
     setSidebarSearch,
     fetchChannelLastReply,
     loadMore,
+    search,
   };
 };
 

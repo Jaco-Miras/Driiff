@@ -15,6 +15,7 @@ import {
   getHuddleChatbot as getHuddleChatbotService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
+  getSearchChannels as getSearchChannelsService,
   getSelectChannel as getSelectChannelService,
   getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,
@@ -397,4 +398,8 @@ export function clearUnpublishedAnswer(payload, callback) {
 
 export function addChannels(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_CHANNELS", payload, callback);
+}
+
+export function searchChannels(payload, callback) {
+  return dispatchActionToReducer(getChannelsService(payload), "SEARCH_CHANNELS_START", "SEARCH_CHANNELS_SUCCESS", "SEARCH_CHANNELS_FAIL", callback);
 }

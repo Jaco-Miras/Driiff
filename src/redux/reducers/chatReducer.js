@@ -187,6 +187,33 @@ export default function (state = INITIAL_STATE, action) {
         },
       };
     }
+    case "SEARCH_CHANNELS_SUCCESS": {
+      let channels = { ...state.channels };
+      if (action.data.results.length > 0) {
+        action.data.results
+          .filter((r) => r.id !== null)
+          .filter((r) => {
+            return !(state.selectedChannel && state.selectedChannel.id === r.id);
+          })
+          .forEach((r) => {
+            if (!channels.hasOwnProperty(r.id)) {
+              channels[r.id] = {
+                ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
+                ...r,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: false,
+                isFetching: false,
+              };
+            }
+          });
+      }
+      return {
+        ...state,
+        channels: channels,
+      };
+    }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
       action.data

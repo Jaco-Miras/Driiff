@@ -443,3 +443,11 @@ export function putUnpublishedAnswers(payload) {
     data: payload,
   });
 }
+
+export function getSearchChannels(payload) {
+  let url = `/v2/search-post-channels?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}
