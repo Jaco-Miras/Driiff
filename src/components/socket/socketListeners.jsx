@@ -802,6 +802,12 @@ class SocketListeners extends Component {
               }
             }
 
+            //check if channel exist
+            let channel = this.props.channels[e.channel_id];
+            if (typeof channel === "undefined") {
+              this.props.getChannel({ code: e.channel_code });
+            }
+
             break;
           }
           case "CHAT_UPDATE": {

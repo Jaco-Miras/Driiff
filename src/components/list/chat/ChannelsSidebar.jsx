@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { useSortChannels } from "../../hooks";
+import { useSortChannels, useChannelActions } from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div``;
@@ -30,8 +30,18 @@ const ChatHeader = styled.h4`
 const ChannelsSidebar = (props) => {
   const { className = "", search, channels, selectedChannel, workspace, dictionary } = props;
 
+  const [fetchingChannels, setFetchingChannels] = useState(false);
+  const actions = useChannelActions();
   const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
+  const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
+  const handleLoadMore = () => {
+    let cb = () => setFetchingChannels(false);
+    if (!fetching && hasMore && !fetchingChannels) {
+      setFetchingChannels(true);
+      actions.loadMore({ skip: skip }, cb);
+    }
+  };
 
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
@@ -84,8 +94,7 @@ const ChannelsSidebar = (props) => {
           return (
             <React.Fragment key={channel.id}>
               {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-              <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts}
-                           dictionary={dictionary} search={search} show={true}/>
+              <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} search={search} addLoadRef={search === "" && k > sortedChannels.length - 5} onLoadMore={handleLoadMore} />
             </React.Fragment>
           );
         })}

@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
+  addChannels,
   addHuddleLog,
   deleteChannelMembers,
   getChannel,
@@ -766,6 +767,37 @@ const useChannelActions = () => {
     [dispatch]
   );
 
+  /**
+   * @param {Object} filter
+   * @param {number} [filter.skip=0]
+   * @param {number} [filter.limit=25]
+   * @param {"hidden"|"archived"} [filter.filter]
+   * @param {function} [callback]
+   */
+  const loadMore = useCallback(
+    ({ skip = 0, limit = 25 }, callback = () => {}) => {
+      let params = {
+        skip: skip,
+        limit: limit,
+        order_by: chatSettings.order_channel.order_by,
+        sort_by: chatSettings.order_channel.sort_by.toLowerCase(),
+      };
+
+      dispatch(
+        getChannels(params, (err, res) => {
+          if (callback) callback();
+          if (err) return;
+          dispatch(
+            addChannels({
+              channels: res.data.results,
+            })
+          );
+        })
+      );
+    },
+    [dispatch, chatSettings.order_channel.order_by, chatSettings.order_channel.sort_by]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -803,6 +835,7 @@ const useChannelActions = () => {
     getUrlTitle,
     setSidebarSearch,
     fetchChannelLastReply,
+    loadMore,
   };
 };
 

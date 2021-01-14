@@ -394,3 +394,7 @@ export function updateHuddleAnswer(payload, callback) {
 export function clearUnpublishedAnswer(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_UNPUBLISHED_HUDDLE_ANSWER", payload, callback);
 }
+
+export function addChannels(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_CHANNELS", payload, callback);
+}

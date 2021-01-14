@@ -1,14 +1,12 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
-// import ChannelTitle from "./ChannelTitle";
 import ChatTitleDate from "./ChatTitleDate";
 import ChatIconReplyPreview from "./ChatIconReplyPreview";
 import { Badge } from "../../common";
 import { useSelector } from "react-redux";
-import { useTimeFormat } from "../../hooks";
-// import ChatIcon from "./ChatIcon";
+import { useInView } from "react-intersection-observer";
 
 const Wrapper = styled.li`
   display: flex;
@@ -107,15 +105,24 @@ const Wrapper = styled.li`
 const ChannelTitlePreview = styled.div``;
 
 const ChannelList = (props) => {
-  const { className = "", channel, selectedChannel, channelDrafts, dictionary, show = false } = props;
+  const { className = "", channel, selectedChannel, channelDrafts, dictionary, addLoadRef, onLoadMore } = props;
 
   const channelActions = useChannelActions();
-  const { channelPreviewDate } = useTimeFormat();
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const refs = {
     container: useRef(null),
   };
+
+  const [loadRef, loadInView] = useInView({
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (addLoadRef && loadInView) {
+      onLoadMore();
+    }
+  }, [addLoadRef, loadInView]);
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
@@ -184,28 +191,24 @@ const ChannelList = (props) => {
       onTouchEnd={handleTouchEndChannel}
       onTouchMove={handleTouchMoveChannel}
     >
-      {show && (
-        <>
-          <ChannelIcon channel={channel} />
-          <div className="channel-info">
-            <ChannelTitlePreview className="channel-title-preview">
-              {/* <ChannelTitle channel={channel} search={search}/> */}
-              {/* <Timestamp className="text-right ml-auto"> */}
-              <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} />
-              {/* </Timestamp> */}
-            </ChannelTitlePreview>
-            <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} />
-            <div className="d-flex">
-              {channel.is_hidden && (
-                <>
-                  <Badge label="Hidden" />
-                </>
-              )}
-              {/* <ChatIcon className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/> */}
-            </div>
-          </div>
-        </>
-      )}
+      <ChannelIcon channel={channel} />
+      <div className="channel-info" ref={addLoadRef ? loadRef : null}>
+        <ChannelTitlePreview className="channel-title-preview">
+          {/* <ChannelTitle channel={channel} search={search}/> */}
+          {/* <Timestamp className="text-right ml-auto"> */}
+          <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} />
+          {/* </Timestamp> */}
+        </ChannelTitlePreview>
+        <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} />
+        <div className="d-flex">
+          {channel.is_hidden && (
+            <>
+              <Badge label="Hidden" />
+            </>
+          )}
+          {/* <ChatIcon className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/> */}
+        </div>
+      </div>
     </Wrapper>
   );
 };
