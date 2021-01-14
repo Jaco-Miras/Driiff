@@ -733,6 +733,16 @@ const CreateEditCompanyPostModal = (props) => {
       ...form,
       selectedAddressTo: [
         ...users.map((user) => {
+          if (user.type === 'WORKSPACE' || user.type === 'TOPIC'){
+            return {
+              ...user,
+              value: user.id,
+              label: user.name,
+              name: user.name,
+              first_name: user.first_name,
+              type: user.type
+            }
+          }
           return {
             id: user.id,
             value: user.id,

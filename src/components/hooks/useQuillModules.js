@@ -3,6 +3,7 @@ import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
+import workspaceIcon from "../../assets/icon/people_group/l/white.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
 import { usePreviousValue } from "./index";
@@ -75,11 +76,12 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
       newWorkSpaceValues = [
         ...Object.entries(workspaces).map(([id, workspace], index) => {
           return Object.assign({}, workspace, {
+            ...workspace,
             value: workspace.name,
             id: workspace.id,
             type_id:  workspace.id,
-            class: "user-pic all-users",
-            profile_image_link: defaultIcon,
+            icon: "compass",
+            profile_image_link: workspaceIcon,
             link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/${workspace.id}/${replaceChar(workspace.name)}`,
           });
         })
