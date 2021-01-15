@@ -99,7 +99,6 @@ const WorkspaceSearch = (props) => {
   };
 
   const handleSearch = () => {
-    console.warn(filter_by)
     actions.search(
       {
         search: inputValue,
@@ -184,25 +183,34 @@ const WorkspaceSearch = (props) => {
     }
   };
 
-  const handleFilter = (filtersPrevState, name) => {
+  const handleFilter = useCallback((filtersPrevState, name) => {
     setFilterBy((prevState) => !filtersPrevState[name]? name : "");
+    const filterState = Object.keys(filtersPrevState).reduce(
+      (accumulator, current) => {
+        if (name !== current) {
+          accumulator[current] = false;
+        }
+        return accumulator
+      }, {});
     return {
-      ...filtersPrevState,
+      ...filterState,
       [name]: !filtersPrevState[name]
     }
-  };
+  },[setFilterBy]);
 
   const toggleCheckFilter = useCallback(
     (e) => {
       const name = e.target.dataset.name;
       setFilter((prevState) => handleFilter(prevState, name));
     },
-    [setFilter, setFilterBy]
+    [setFilter]
   );
 
   useEffect(()=> {
     if (Object.values(filter).includes(true) && !searching){
       handleSearch();
+    } else {
+      handleClearSearch();
     }
   }, [filter_by]);
 
@@ -260,7 +268,7 @@ const WorkspaceSearch = (props) => {
               <CheckBox name="nonMember" checked={filter.nonMember}  type="danger" onClick={toggleCheckFilter}>
                 {dictionary.nonMember}
               </CheckBox>
-              <CheckBox name="archived" checked={filter.new}  type="danger" onClick={toggleCheckFilter}>
+              <CheckBox name="new" checked={filter.new}  type="danger" onClick={toggleCheckFilter}>
                 {dictionary.new}
               </CheckBox>
             </div>
