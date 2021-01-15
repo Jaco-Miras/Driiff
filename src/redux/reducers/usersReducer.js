@@ -268,6 +268,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_DEACTIVATED_USER": {
       let updatedUsers = { ...state.users };
       updatedUsers[action.data.user_id].active = 0;
+      updatedUsers[action.data.user_id].deactivate = true;
       let updatedMentions = { ...state.mentions };
       delete updatedMentions[action.data.user_id];
       return {
@@ -278,7 +279,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_ACTIVATED_USER": {
       let updatedUsers = { ...state.users };
-      updatedUsers[action.data.user.id] = action.data.user;
+      updatedUsers[action.data.user.id] = { ...action.data.user, deactivate: false };
       let updatedMentions = { ...state.mentions };
       updatedMentions[action.data.user.id] = action.data.user;
       return {

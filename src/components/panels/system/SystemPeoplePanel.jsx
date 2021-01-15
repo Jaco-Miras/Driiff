@@ -257,12 +257,12 @@ const SystemPeoplePanel = (props) => {
 
   const handleActivateUser = (user) => {
     const handleSubmit = () => {
-      if (user.active) {
+      if (user.active && !user.deactivate) {
         userActions.deactivate({ user_id: user.id }, (err, res) => {
           if (err) return;
           toaster.success(`${user.name} deactivated.`);
         });
-      } else {
+      } else if (user.active === 0 && user.deactivate) {
         userActions.activate({ user_id: user.id }, (err, res) => {
           if (err) return;
           toaster.success(`${user.name} activated.`);
