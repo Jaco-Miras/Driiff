@@ -40,14 +40,24 @@ const CloseIcon = styled(SvgIconFeather)`
   stroke-width: 2px;
 `;
 
-const InputWrapper = styled.div`
-  width: 80% !important;
-`;
+const InputWrapper = styled.div``;
 
 const MoreOption = styled.div`
   margin-bottom: 5px;
   @media all and (max-width: 480px) {
     margin-top: 40px;
+  }
+`;
+
+const FilterLists = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  label {
+      margin: 0;
+  }
+  .custom-control {
+      min-height: 1rem;
   }
 `;
 
@@ -77,20 +87,10 @@ const CheckBoxGroup = styled.div`
 
 const WorkspaceSearch = (props) => {
   const { actions, search } = props;
-  const { value, searching, filterBy } = search;
+  const { value, searching, filterBy, filters } = search;
   const [inputValue, setInputValue] = useState(value);
-  const [showFilters, setShowFilters] = useState(false);
   const [filter_by, setFilterBy] = useState(filterBy);
-  const [filter, setFilter] = useState({
-    private: false,
-    archived: false,
-    nonMember: false,
-    new: false
-  });
-
-  const toggleShowFilter = () => {
-    setShowFilters(!showFilters);
-  };
+  const [filter, setFilter] = useState(filters);
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !searching) {
@@ -184,17 +184,20 @@ const WorkspaceSearch = (props) => {
   };
 
   const handleFilter = useCallback((filtersPrevState, name) => {
-    setFilterBy((prevState) => !filtersPrevState[name]? name : "");
-    const filterState = Object.keys(filtersPrevState).reduce(
+    setFilterBy((prevState) => !filtersPrevState[name].checked? name : "");
+    filtersPrevState[name].checked = !filtersPrevState[name].checked;
+    const filterState = Object.values(filtersPrevState).reduce(
       (accumulator, current) => {
-        if (name !== current) {
-          accumulator[current] = false;
+        if (name !== current.key) {
+          current.checked = false;
+          accumulator[current.key] = {...current};
         }
         return accumulator
       }, {});
+
     return {
+      ...filtersPrevState,
       ...filterState,
-      [name]: !filtersPrevState[name]
     }
   },[setFilterBy]);
 
@@ -207,7 +210,7 @@ const WorkspaceSearch = (props) => {
   );
 
   useEffect(()=> {
-    if (Object.values(filter).includes(true) && !searching){
+    if ((Object.values(filter).map((sf)=> sf.checked ).includes(true) && !searching) || !!value){
       handleSearch();
     } else {
       handleClearSearch();
@@ -248,29 +251,30 @@ const WorkspaceSearch = (props) => {
               <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
                 <SvgIconFeather icon="search" />
               </button>
-              <button className="btn btn-outline-light" type="button" onClick={toggleShowFilter}>
-                <SvgIconFeather icon="sliders" />
-              </button>
             </div>
           </div>
           
-          <CheckBoxGroup className={showFilters === null ? "" : showFilters ? "enter-active" : "leave-active"}>
-            <div className="row d-flex justify-content-center mt-3" >
+          <CheckBoxGroup className={"enter-active"}>
+            <div className="row d-flex justify-content-center my-3" >
+              
               <MoreOption className="px-3">
-                {dictionary.filters}:
+                <SvgIconFeather icon="sliders"/>
               </MoreOption>
-              <CheckBox name="private" checked={filter.private}  type="danger" onClick={toggleCheckFilter}>
-                {dictionary.private}
-              </CheckBox>
-              <CheckBox name="archived" checked={filter.archived}  type="danger" onClick={toggleCheckFilter}>
-                {dictionary.archived}
-              </CheckBox>
-              <CheckBox name="nonMember" checked={filter.nonMember}  type="danger" onClick={toggleCheckFilter}>
-                {dictionary.nonMember}
-              </CheckBox>
-              <CheckBox name="new" checked={filter.new}  type="danger" onClick={toggleCheckFilter}>
-                {dictionary.new}
-              </CheckBox>
+              <FilterLists className="d-flex">
+                {
+                  Object.values(filter).map((sf) => {
+                    return (
+                      <li className="d-flex align-items-center" key={sf.key}>
+                        <span className="custom-control custom-checkbox custom-checkbox-success mr-2 pl-1">
+                          <CheckBox name={sf.key} checked={sf.checked}  type="danger" onClick={toggleCheckFilter}/>
+                        </span>
+                        <span>{dictionary[sf.key]}</span>
+                      </li>
+                    )
+                  })
+                }
+              </FilterLists>
+
             </div>
           </CheckBoxGroup>
           

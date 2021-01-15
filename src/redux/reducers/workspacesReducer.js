@@ -26,6 +26,28 @@ const INITIAL_STATE = {
     page: 1,
     maxPage: 1,
     count: 0,
+    filters: {
+      private: {
+        checked: false,
+        label: "Private",
+        key: "private"
+      },
+      archived: {
+        checked: false,
+        label: "Archived",
+        key: "archived"
+      },
+      nonMember: {
+        checked: false,
+        label: "Non member",
+        key: "nonMember"
+      },
+      new: {
+        checked: false,
+        label: "New",
+        key: "new"
+      }
+    },
   },
 };
 
