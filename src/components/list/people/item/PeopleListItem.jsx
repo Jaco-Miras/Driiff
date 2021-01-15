@@ -152,6 +152,7 @@ const PeopleListItem = (props) => {
                       {!showInactive && user.role && user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
                       {!showInactive && user.role && user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
                       {/* <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div> */}
+                      {showInactive && user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
                       {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
