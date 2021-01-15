@@ -39,6 +39,8 @@ export {
   postHuddleAnswer,
   getUserBots,
   postUserBots,
+  getUnpublishedAnswers,
+  putUnpublishedAnswers,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";

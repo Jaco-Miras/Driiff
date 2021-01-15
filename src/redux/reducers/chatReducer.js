@@ -29,6 +29,7 @@ const INITIAL_STATE = {
   },
   huddleBots: [],
   huddleBot: null,
+  editHuddle: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -412,7 +413,13 @@ export default function (state = INITIAL_STATE, action) {
                   return r;
                 }
               })
-            : [...channel.replies, action.data].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+            : [...channel.replies, action.data].sort((a, b) => {
+                if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                  return a.id - b.id;
+                } else {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                }
+              }),
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
@@ -1596,6 +1603,7 @@ export default function (state = INITIAL_STATE, action) {
                   isFirstQuestion: k === 0,
                   isLastQuestion: h.questions.length === k + 1,
                   answer: null,
+                  original_answer: null,
                 };
               }),
           };
@@ -1698,6 +1706,7 @@ export default function (state = INITIAL_STATE, action) {
                   return {
                     ...q,
                     answer: action.data.answer,
+                    original_answer: action.data.answer,
                   };
                 } else {
                   return q;
@@ -1731,6 +1740,174 @@ export default function (state = INITIAL_STATE, action) {
             }),
           };
         }),
+      };
+    }
+    case "INCOMING_HUDDLE_ANSWERS": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel.id)) {
+        channel = { ...state.channels[action.data.channel.id] };
+        channel = {
+          ...channel,
+          replies: channel.replies.map((r) => {
+            if (r.id === action.data.message.id) {
+              return {
+                ...r,
+                huddle_log: action.data.huddle_log,
+                body: action.data.message.body,
+              };
+            } else {
+              return r;
+            }
+          }),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel.id]: channel,
+              }
+            : state.channels,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.channel.id === action.data.channel.id) {
+            return {
+              ...h,
+              questions: h.questions.map((q) => {
+                let answer = action.data.huddle_answers.find((ha) => ha.huddle_question_id === q.id);
+                if (answer) {
+                  return {
+                    ...q,
+                    answer: answer.answer,
+                    original_answer: answer.answer,
+                    answer_id: answer.id,
+                  };
+                } else {
+                  return q;
+                }
+              }),
+            };
+          } else {
+            return h;
+          }
+        }),
+      };
+    }
+    case "ADD_HUDDLE_LOG": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          replies: channel.replies.map((r) => {
+            if (r.id === action.data.message_id) {
+              return {
+                ...r,
+                huddle_log: action.data.huddle_log,
+              };
+            } else {
+              return r;
+            }
+          }),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.channel.id === action.data.channel_id) {
+            return {
+              ...h,
+              questions: h.questions.map((q) => {
+                let answer = action.data.huddle_answers.find((ha) => ha.huddle_question_id === q.id);
+                if (answer) {
+                  return {
+                    ...q,
+                    answer: answer.answer,
+                    original_answer: answer.answer,
+                    answer_id: answer.id,
+                  };
+                } else {
+                  return q;
+                }
+              }),
+            };
+          } else {
+            return h;
+          }
+        }),
+      };
+    }
+    case "SET_EDIT_HUDDLE_ANSWERS": {
+      let huddle = state.huddleBots.find((h) => h.channel.id === action.data.channel_id);
+      return {
+        ...state,
+        editHuddle: huddle
+          ? {
+              ...huddle,
+              huddle_log: action.data.huddle_log,
+              questions: huddle.questions.map((q) => {
+                return {
+                  ...q,
+                  answer: null,
+                };
+              }),
+            }
+          : null,
+      };
+    }
+    case "UPDATE_HUDDLE_ANSWER": {
+      return {
+        ...state,
+        editHuddle: {
+          ...state.editHuddle,
+          questions: state.editHuddle.questions.map((q) => {
+            if (q.id === action.data.question_id) {
+              return {
+                ...q,
+                answer: action.data.answer,
+              };
+            } else {
+              return q;
+            }
+          }),
+        },
+      };
+    }
+    case "CLEAR_EDIT_HUDDLE": {
+      return {
+        ...state,
+        editHuddle: null,
+      };
+    }
+    case "CLEAR_UNPUBLISHED_HUDDLE_ANSWER": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          replies: channel.replies.filter((r) => !r.hasOwnProperty("huddle_log")),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
       };
     }
     default:

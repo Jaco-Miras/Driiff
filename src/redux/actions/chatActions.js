@@ -16,6 +16,7 @@ import {
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
   getSelectChannel as getSelectChannelService,
+  getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,
   getWorkspaceChannels as getWorkspaceChannelsService,
   postChannelMembers as postChannelMembersService,
@@ -36,6 +37,7 @@ import {
   putMarkReadChannel as putMarkReadChannelService,
   putMarkReminderComplete as putMarkReminderCompleteService,
   putMarkUnreadChannel as putMarkUnreadChannelService,
+  putUnpublishedAnswers as putUnpublishedAnswersService,
 } from "../services";
 
 export function setSelectedChannel(payload, callback) {
@@ -359,4 +361,36 @@ export function postUserBots(payload, callback) {
 
 export function clearHuddleAnswers(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_HUDDLE", payload, callback);
+}
+
+export function incomingHuddleAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_HUDDLE_ANSWERS", payload, callback);
+}
+
+export function getUnpublishedAnswers(payload, callback) {
+  return dispatchActionToReducer(getUnpublishedAnswersService(payload), "GET_UNPUBLISHED_ANSWERS_START", "GET_UNPUBLISHED_ANSWERS_SUCCESS", "GET_UNPUBLISHED_ANSWERS_FAIL", callback);
+}
+
+export function putUnpublishedAnswers(payload, callback) {
+  return dispatchActionToReducer(putUnpublishedAnswersService(payload), "PUT_UNPUBLISHED_ANSWERS_START", "PUT_UNPUBLISHED_ANSWERS_SUCCESS", "PUT_UNPUBLISHED_ANSWERS_FAIL", callback);
+}
+
+export function setEditHuddleAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_EDIT_HUDDLE_ANSWERS", payload, callback);
+}
+
+export function addHuddleLog(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_HUDDLE_LOG", payload, callback);
+}
+
+export function clearEditHuddle(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_EDIT_HUDDLE", payload, callback);
+}
+
+export function updateHuddleAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_HUDDLE_ANSWER", payload, callback);
+}
+
+export function clearUnpublishedAnswer(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_UNPUBLISHED_HUDDLE_ANSWER", payload, callback);
 }

@@ -15,6 +15,7 @@ import {
   putMarkReminderComplete,
   setEditChatMessage,
   setLastChatVisibility,
+  setEditHuddleAnswers,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -361,6 +362,18 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
+  /**
+   * @param {object} payload
+   * @parm number payload.message_id chat.id
+   * @param {function} [callback]
+   */
+  const setHuddleAnswers = useCallback(
+    (payload) => {
+      dispatch(setEditHuddleAnswers(payload));
+    },
+    [dispatch]
+  );
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -379,6 +392,7 @@ const useChatMessageActions = () => {
     markImportant,
     getStars,
     setStar,
+    setHuddleAnswers,
   };
 };
 

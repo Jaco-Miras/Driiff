@@ -26,7 +26,7 @@ const HuddleQuestion = (props) => {
   const { _t } = useTranslation();
 
   const dictionary = {
-    huddleBot: _t("HUDDLE.HUDDLE_BOT", "Huddle bot"),
+    skip: _t("SKIP", "skip"),
   };
   const handleSkip = () => {
     const currentDate = new Date();
@@ -34,12 +34,11 @@ const HuddleQuestion = (props) => {
   };
   return (
     <Wrapper>
-      <div>{dictionary.huddleBot}</div>
       {isFirstQuestion && huddle.introduction_message && <div>{huddle.introduction_message}</div>}
       <div>{question.question}</div>
       {isFirstQuestion && (
         <span onClick={handleSkip}>
-          <i>skip</i>
+          <i>{dictionary.skip}</i>
         </span>
       )}
     </Wrapper>

@@ -5,6 +5,7 @@ import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import botIcon from "../../assets/img/gripp-bot.png";
+import driffIcon from "../../assets/img/driff_logo.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
@@ -44,7 +45,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  let { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, forceThumbnail = true, ...rest } = props;
+  let { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, isHuddleBot = false, forceThumbnail = true, ...rest } = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -125,7 +126,7 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={rest.title ? rest.title : name}>
         {isBot ? (
-          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
           <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
             {handleInitials(name)}
