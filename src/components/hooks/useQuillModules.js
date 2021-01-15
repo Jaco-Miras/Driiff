@@ -91,7 +91,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
       magicUrl: true,
       clipboard: {
         allowed: {
-          tags: ['a', 'b', 'strong', 'u', 's', 'i', 'p', 'br', 'ul', 'ol', 'li'],
+          tags: ['a', 'b', 'strong', 'u', 's', 'i', 'p', 'br', 'ul', 'ol', 'li', 'div', 'span'],
           attributes: ['href', 'rel', 'target', 'class']
       },
       keepSelection: true,
