@@ -120,6 +120,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     prioMentionIds,
     approvers,
     onClearApprovers,
+    onSubmitCallback,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -205,7 +206,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
         post_id: post.id,
         post_title: post.title,
       },
-      approval_user_ids: approvers.map((a) => a.value),
+      approval_user_ids: approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
     if (quote) {
@@ -282,6 +283,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
+    if (onSubmitCallback) onSubmitCallback();
   };
 
   const handleClearQuillInput = () => {

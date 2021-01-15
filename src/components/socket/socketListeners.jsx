@@ -536,6 +536,8 @@ class SocketListeners extends Component {
           }
           case "POST_CREATE": {
             e.clap_user_ids = [];
+            let post = { ...e };
+            const isApprover = post.users_approval.some((ua) => ua.id === this.props.user.id);
             if (this.props.user.id !== e.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
@@ -544,9 +546,15 @@ class SocketListeners extends Component {
               }
             }
             if (e.show_at !== null && this.props.user.id === e.author.id) {
-              this.props.incomingPost(e);
+              this.props.incomingPost({
+                ...post,
+                post_approval_label: isApprover ? "NEED_ACTION" : null,
+              });
             } else {
-              this.props.incomingPost(e);
+              this.props.incomingPost({
+                ...post,
+                post_approval_label: isApprover ? "NEED_ACTION" : null,
+              });
             }
             if (e.workspace_ids && e.workspace_ids.length >= 1) {
               if (this.props.user.id !== e.author.id) {
