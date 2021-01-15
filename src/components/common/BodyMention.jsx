@@ -76,6 +76,7 @@ const BodyMention = (props) => {
         <p>
           {dictionary.youMentioned}&nbsp;
           {mentionedUsers.map((mu, i) => {
+            const denotation = mu.type === "WORKSPACE" || mu.type === "TOPIC"? "/" : "@";
             if (i === mentionedUsers.length - 1 && mentionedUsers.length > 1) {
               return (
                 <div className={"mention-data"}>
@@ -91,7 +92,7 @@ const BodyMention = (props) => {
                           //push(`/profile/${mu.type_id}`)
                         }}
                       >
-                        <span className="ql-mention-denotation-char">@</span>
+                        <span className="ql-mention-denotation-char">{denotation}</span>
                         {mu.name}
                       </span>
                     </span>
@@ -109,7 +110,7 @@ const BodyMention = (props) => {
                       // /push(`/profile/${mu.type_id}`)
                     }}
                   >
-                    <span className="ql-mention-denotation-char">@</span>
+                    <span className="ql-mention-denotation-char">{denotation}</span>
                     {mu.name},
                   </span>
                 </span>

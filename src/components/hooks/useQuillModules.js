@@ -3,7 +3,7 @@ import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
-import workspaceIcon from "../../assets/icon/people_group/l/white.svg";
+import workspaceIcon from "../../assets/icon/people_group/l/active.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
 import { usePreviousValue } from "./index";
@@ -197,7 +197,10 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
           return renderToString(
             <>
               <span className={item.class} style={avatarStyling}>
-                <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
+                {item.type === "WORKSPACE" || item.type === "TOPIC"? 
+                  <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" />: 
+                  <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
+                }
               </span>
               &nbsp;{" "}
               <span style={{ width: "auto", lineHeight: 1.35 }}>

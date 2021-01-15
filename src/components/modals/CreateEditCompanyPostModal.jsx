@@ -740,7 +740,8 @@ const CreateEditCompanyPostModal = (props) => {
               label: user.name,
               name: user.name,
               first_name: user.first_name,
-              type: user.type
+              type: user.type,
+              icon: "compass"
             }
           }
           return {
