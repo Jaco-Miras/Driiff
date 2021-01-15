@@ -94,7 +94,7 @@ const useChannelActions = () => {
             toaster.success(dictionary.toasterGeneraError);
           }
           if (res) {
-            const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? res.data.profile.name : "";
+            const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? (res.data.channel.profile ? res.data.channel.profile.name : "") : "";
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.createChannel.replace("::channel_title::", `<b>${channelTitle}</b>`) }} />);
           }
           callback(err, res);
