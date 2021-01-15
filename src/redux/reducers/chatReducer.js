@@ -1,7 +1,6 @@
 //import {uniqBy} from "lodash";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 import { uniqByProp } from "../../helpers/arrayHelper";
-import { differenceBy } from "lodash";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -30,6 +29,12 @@ const INITIAL_STATE = {
   huddleBots: [],
   huddleBot: null,
   editHuddle: null,
+  fetch: {
+    skip: 0,
+    limit: 25,
+    fetching: false,
+    hasMore: false,
+  },
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -124,7 +129,65 @@ export default function (state = INITIAL_STATE, action) {
         lastVisitedChannel: selectedChannel,
       };
     }
-    case "GET_CHANNELS_SUCCESS": {
+    // case "GET_CHANNELS_SUCCESS": {
+    //   let channels = { ...state.channels };
+    //   if (action.data.results.length > 0) {
+    //     action.data.results
+    //       .filter((r) => r.id !== null)
+    //       .filter((r) => {
+    //         return !(state.selectedChannel && state.selectedChannel.id === r.id);
+    //       })
+    //       .forEach((r) => {
+    //         channels[r.id] = {
+    //           ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
+    //           ...r,
+    //           hasMore: true,
+    //           skip: 0,
+    //           replies: [],
+    //           selected: false,
+    //           isFetching: false,
+    //         };
+    //       });
+    //   }
+    //   return {
+    //     ...state,
+    //     channels: channels,
+    //     channelsLoaded: true,
+    //   };
+    // }
+    case "ADD_CHANNELS": {
+      let fetchedChannels = {};
+      action.data.channels
+        .filter((r) => r.id !== null)
+        .filter((r) => {
+          return !(state.selectedChannel && state.selectedChannel.id === r.id);
+        })
+        .forEach((r) => {
+          fetchedChannels[r.id] = {
+            ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
+            ...r,
+            hasMore: true,
+            skip: 0,
+            replies: [],
+            selected: false,
+            isFetching: false,
+          };
+        });
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...fetchedChannels,
+        },
+        fetch: {
+          skip: action.data.channels.length + state.fetch.skip,
+          limit: 25,
+          fetching: false,
+          hasMore: action.data.channels.length === 25,
+        },
+      };
+    }
+    case "SEARCH_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
       if (action.data.results.length > 0) {
         action.data.results
@@ -133,21 +196,22 @@ export default function (state = INITIAL_STATE, action) {
             return !(state.selectedChannel && state.selectedChannel.id === r.id);
           })
           .forEach((r) => {
-            channels[r.id] = {
-              ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
-              ...r,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: false,
-              isFetching: false,
-            };
+            if (!channels.hasOwnProperty(r.id)) {
+              channels[r.id] = {
+                ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
+                ...r,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: false,
+                isFetching: false,
+              };
+            }
           });
       }
       return {
         ...state,
         channels: channels,
-        channelsLoaded: true,
       };
     }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {

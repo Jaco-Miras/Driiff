@@ -59,22 +59,22 @@ const useChatMessageActions = () => {
    */
   const fetch = useCallback(
     (channel, { skip = 0, limit = 20 }, callback = () => {}) => {
-      if (!refs.fetch.current) {
-        refs.fetch.current = true;
-        let payload = {
-          channel_id: channel.id,
-          skip: skip,
-          limit: limit,
-          //...getSharedPayload(channel),
-        };
+      // if (!refs.fetch.current) {
+      //   refs.fetch.current = true;
+      let payload = {
+        channel_id: channel.id,
+        skip: skip,
+        limit: limit,
+        //...getSharedPayload(channel),
+      };
 
-        dispatch(
-          getChatMessages(payload, (err, res) => {
-            refs.fetch.current = false;
-            callback(err, res);
-          })
-        );
-      }
+      dispatch(
+        getChatMessages(payload, (err, res) => {
+          refs.fetch.current = false;
+          callback(err, res);
+        })
+      );
+      //}
     },
     [dispatch]
   );

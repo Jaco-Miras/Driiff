@@ -152,6 +152,7 @@ const ChatSidebarPanel = (props) => {
       channelActions.setSidebarSearch({
         value: query,
       });
+      channelActions.search({ search: query, skip: 0, limit: 50 });
     }, 300);
     return () => clearTimeout(timeOutId);
   }, [query]);
@@ -236,20 +237,20 @@ const ChatSidebarPanel = (props) => {
 
   const onInputFocus = () => {
     console.log("focus input");
-    if (!hiddenArchivedLoaded) {
-      hiddenArchivedLoaded = true;
-      channelActions.fetchAll({
-        skip: 0,
-        limit: 20,
-        filter: "hidden",
-      });
+    // if (!hiddenArchivedLoaded) {
+    //   hiddenArchivedLoaded = true;
+    //   channelActions.fetchAll({
+    //     skip: 0,
+    //     limit: 20,
+    //     filter: "hidden",
+    //   });
 
-      channelActions.fetchAll({
-        skip: 0,
-        limit: 20,
-        filter: "archived",
-      });
-    }
+    //   channelActions.fetchAll({
+    //     skip: 0,
+    //     limit: 20,
+    //     filter: "archived",
+    //   });
+    // }
   };
 
   return (

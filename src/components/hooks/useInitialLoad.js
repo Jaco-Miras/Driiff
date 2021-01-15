@@ -1,33 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
-//import { getUnreadPostEntries } from "../../redux/actions/postActions";
-import { getChannels, getGlobalRecipients, getHuddleChatbot } from "../../redux/actions/chatActions";
+import { getGlobalRecipients, getHuddleChatbot } from "../../redux/actions/chatActions";
+import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
   const notifications = useSelector((state) => state.notifications.notifications);
 
-  const [hasMoreChannels, setHasMoreChannels] = useState(null);
-  const [skip, setSkip] = useState(0);
-  const [isFetching, setIsFetching] = useState(false);
+  const channelActions = useChannelActions();
 
   const dispatch = useDispatch();
-
-  const fetchChannels = (callback = null) => {
-    setIsFetching(true);
-    setSkip(skip + 50);
-    dispatch(
-      getChannels({ skip: skip, limit: 50 }, (err, res) => {
-        if (callback) callback();
-        setIsFetching(false);
-        if (err) return;
-
-        setHasMoreChannels(res.data.results.length === 50);
-      })
-    );
-  };
 
   useEffect(() => {
     document.body.classList.remove("form-membership");
@@ -44,17 +28,10 @@ const useInitialLoad = () => {
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
       //dispatch(getDrafts());
-      // dispatch(getHuddleChatbot({}));
     };
-    fetchChannels(fetchChannelCb);
+    channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
     dispatch(getHuddleChatbot({}));
   }, []);
-
-  useEffect(() => {
-    if (hasMoreChannels && !isFetching) {
-      fetchChannels();
-    }
-  }, [hasMoreChannels, fetchChannels, skip, isFetching]);
 };
 
 export default useInitialLoad;

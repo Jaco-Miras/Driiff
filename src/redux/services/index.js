@@ -41,6 +41,7 @@ export {
   postUserBots,
   getUnpublishedAnswers,
   putUnpublishedAnswers,
+  getSearchChannels,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
