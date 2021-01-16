@@ -42,14 +42,14 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     .filter((channel) => {
       let isMember = channel.members.some((m) => m.id === user.id);
 
-      if (channel.type === "DIRECT" && channel.members.length == 2) {
-        const id = channel.members.find((m) => m.id !== user.id).id;
-        if (recipients.includes(id)) {
-          return false;
-        }
+      // if (channel.type === "DIRECT" && channel.members.length === 2) {
+      //   const id = channel.members.find((m) => m.id !== user.id);
+      //   if (recipients.includes(id)) {
+      //     return false;
+      //   }
 
-        recipients.push(id);
-      }
+      //   recipients.push(id);
+      // }
 
       if (typeof channel.add_user === "undefined") channel.add_user = false;
 

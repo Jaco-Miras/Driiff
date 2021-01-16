@@ -851,6 +851,13 @@ class SocketListeners extends Component {
               user: e.user,
             };
             this.props.incomingArchivedUser(payload);
+            if (e.user.id === this.props.user.id) {
+              localStorage.removeItem("userAuthToken");
+              localStorage.removeItem("token");
+              localStorage.removeItem("atoken");
+              //localStorage.removeItem("welcomeBanner");
+              sessionService.deleteSession().then(() => sessionService.deleteUser());
+            }
             break;
           }
           case "RESTORED_ACCOUNT": {
@@ -859,6 +866,13 @@ class SocketListeners extends Component {
           }
           case "DEACTIVATE_ACCOUNT": {
             this.props.incomingDeactivatedUser(e);
+            if (e.user_id === this.props.user.id) {
+              localStorage.removeItem("userAuthToken");
+              localStorage.removeItem("token");
+              localStorage.removeItem("atoken");
+              //localStorage.removeItem("welcomeBanner");
+              sessionService.deleteSession().then(() => sessionService.deleteUser());
+            }
             break;
           }
           case "ACTIVATE_ACCOUNT": {
