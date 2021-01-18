@@ -38,7 +38,8 @@ middleware = [...middleware, logger, LogRocket.reduxMiddleware()];
 // export default store;
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-let persistenceOn = localStorage.getItem("persistence") ? true : false;
+//let persistenceOn = localStorage.getItem("persistence") ? true : false;
+let persistenceOn = true;
 let store = null;
 
 if (persistenceOn) {
