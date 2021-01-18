@@ -89,7 +89,7 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
         id: user.id,
       };
     } else if (data.author && data.author.id !== user.id) {
-      let sysAuthor = Array.from(recipients).find((r) => r.type === "USER" && data.author.id === r.type_id);
+      let sysAuthor = Object.values(users).find((u) => data.author.id === u.id);
       if (sysAuthor) {
         author = {
           name: sysAuthor.name,

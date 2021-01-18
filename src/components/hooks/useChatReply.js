@@ -78,7 +78,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
           id: user.id,
         };
       } else if (data.author && data.author.id !== user.id) {
-        let sysAuthor = Array.from(recipients).find((r) => r.type === "USER" && data.author.id === r.type_id);
+        let sysAuthor = Object.values(users).find((u) => data.author.id === u.id);
         if (sysAuthor) {
           author = {
             name: sysAuthor.name,
@@ -302,7 +302,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
       try {
         const data = JSON.parse(message.replace("ZAP_SUBMIT::", ""));
         newBody = "<span class='zap-submit'>";
