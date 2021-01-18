@@ -84,6 +84,7 @@ const useHuddle = (props) => {
       toast(`Huddle time at ${huddle.channel.name}`, options);
     }
   } else if (showToasterRef.current && huddle && selectedChannel && selectedChannel.id === huddle.channel.id) {
+    showToasterRef.current = null;
     toast.dismiss();
   }
 

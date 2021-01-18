@@ -156,6 +156,7 @@ export default function (state = INITIAL_STATE, action) {
     //   };
     // }
     case "ADD_CHANNELS": {
+      let channels = { ...state.channels };
       let fetchedChannels = {};
       action.data.channels
         .filter((r) => r.id !== null)
@@ -163,15 +164,26 @@ export default function (state = INITIAL_STATE, action) {
           return !(state.selectedChannel && state.selectedChannel.id === r.id);
         })
         .forEach((r) => {
-          fetchedChannels[r.id] = {
-            ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
-            ...r,
-            hasMore: true,
-            skip: 0,
-            replies: [],
-            selected: false,
-            isFetching: false,
-          };
+          if (channels.hasOwnProperty(r.id)) {
+            fetchedChannels[r.id] = {
+              ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
+              ...r,
+              replies: channels[r.id].replies,
+              hasMore: true,
+              skip: 0,
+              isFetching: false,
+            };
+          } else {
+            fetchedChannels[r.id] = {
+              ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
+              ...r,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              selected: false,
+              isFetching: false,
+            };
+          }
         });
       return {
         ...state,
@@ -185,6 +197,7 @@ export default function (state = INITIAL_STATE, action) {
           fetching: false,
           hasMore: action.data.channels.length === 25,
         },
+        channelsLoaded: true,
       };
     }
     case "SEARCH_CHANNELS_SUCCESS": {
