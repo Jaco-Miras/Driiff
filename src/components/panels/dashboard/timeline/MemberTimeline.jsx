@@ -28,15 +28,25 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const MemberTimeline = (props) => {
-  const {className = "", data, dictionary} = props;
-  const {fromNow, localizeDate} = useTimeFormat();
+  const { className = "", data, dictionary } = props;
+  const { fromNow, localizeDate } = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  const users = useSelector((state) => state.users.users);
 
   let message = null;
+  let author = null;
   if (data.body.includes("CHANNEL_UPDATE")) {
     message = JSON.parse(data.body.replace("CHANNEL_UPDATE::", ""));
+  }
+
+  if (message && message.author) {
+    if (message.author.name) {
+      author = message.author;
+    } else {
+      author = Object.values(users).find((u) => u.id === message.author);
+    }
   }
 
   const toggleTooltip = () => {
@@ -54,44 +64,38 @@ const MemberTimeline = (props) => {
     }
   };
 
-  const renderAddedMembers = (joined = false) => {
-    if (message.author === null)
-      return "";
-
-    if (joined) {
-      let author = recipients.filter((r) => r.type_id === message.author.id && message.added_members.includes(r.type_id))[0];
-      if (author) {
-        if (author.type_id === user.id) {
-          return `${dictionary.youJoined}.`;
-        } else {
-          return `${author.name} ${dictionary.hasJoined}`;
+  const renderAddedMembers = () => {
+    if (message.author === null) {
+      if (message.accepted_members) {
+        let members = Object.values(users).filter((u) => message.accepted_members.some((id) => id === u.id));
+        if (members.length) {
+          return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
         }
+      } else {
+        return "";
       }
     } else {
-      let members = recipients.filter((r) => message.added_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
-      if (members.length) {
-        return members.join(", ") + ` ${dictionary.isAdded}.`;
+      if (message.accepted_members) {
+        let members = Object.values(users).filter((u) => message.accepted_members.some((id) => id === u.id));
+        if (members.length) {
+          return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
+        }
+      } else {
+        let members = Object.values(users).filter((u) => message.added_members.some((id) => id === u.id));
+        if (members.length) {
+          return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
+        }
       }
     }
   };
 
-  const renderRemovedMembers = (left = false) => {
-    if (message.author === null)
+  const renderRemovedMembers = () => {
+    if (message.author === null) {
       return "";
-
-    if (left) {
-      let author = recipients.filter((r) => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
-      if (author) {
-        if (author.type_id === user.id) {
-          return `${dictionary.youLeft}.`;
-        } else {
-          return `${author.name} ${dictionary.hasLeft}`;
-        }
-      }
     } else {
-      let members = recipients.filter((r) => message.removed_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
+      let members = Object.values(users).filter((u) => message.removed_members.some((id) => id === u.id));
       if (members.length) {
-        return members.join(", ") + ` ${dictionary.isRemoved}.`;
+        return members.map((m) => m.name).join(", ") + ` ${dictionary.isRemoved}.`;
       }
     }
   };
@@ -100,28 +104,33 @@ const MemberTimeline = (props) => {
 
   return (
     <Wrapper className={`member-timeline timeline-item ${className}`}>
-      <div>{message !== null ? (
-        <>{message.author ?
-          <Avatar className="mr-3" name={message.author.name}
-                  imageLink={message.author.profile_image_thumbnail_link ? message.author.profile_image_thumbnail_link : message.author.profile_image_link}
-                  id={message.author.id}/> : <Avatar className="mr-3" imageLink={null} isBot={true}/>}</>
-      ) : (
-        <Avatar className="mr-3" imageLink={null} isBot={true}/>
-      )}</div>
+      <div>
+        {message !== null ? (
+          <>
+            {author ? (
+              <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_thumbnail_link ? author.profile_image_thumbnail_link : author.profile_image_link} id={author.id} />
+            ) : (
+              <Avatar className="mr-3" imageLink={null} isBot={true} />
+            )}
+          </>
+        ) : (
+          <Avatar className="mr-3" imageLink={null} isBot={true} />
+        )}
+      </div>
       <div>
         {message !== null ? (
           <>
             <h6 className="d-flex justify-content-between mb-4">
-          <span className="title">
-            {message.author && message.author.name} {renderTitle()}
-          </span>
+              <span className="title">
+                {author && author.name} {renderTitle()}
+              </span>
               <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
             </h6>
             {message.added_members.length || message.removed_members.length ? (
               <div className="mb-3 border p-3 border-radius-1">
-                <p className="action-text">{message.added_members.length > 0 && renderAddedMembers(true)}</p>
+                {/* <p className="action-text">{message.added_members.length > 0 && renderAddedMembers(true)}</p> */}
                 <p className="action-text">{message.added_members.length > 0 && renderAddedMembers()}</p>
-                <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers(true)}</p>
+                {/* <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers(true)}</p> */}
                 <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers()}</p>
               </div>
             ) : null}
@@ -130,12 +139,12 @@ const MemberTimeline = (props) => {
           <div>
             <h6 className="d-flex justify-content-between mb-4">
               <span className="title">{renderTitle()}</span>
-              <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip}
-                             content={`${localizeDate(data.created_at.timestamp)}`}>
+              <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(data.created_at.timestamp)}`}>
                 <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
               </StyledTooltip>
             </h6>
-          </div>)}
+          </div>
+        )}
       </div>
     </Wrapper>
   );
