@@ -74,7 +74,7 @@ const ChannelOptions = (props) => {
       channelActions.markAsRead(channel);
     }
 
-    if (selectedChannel.id === channel.id) {
+    if (selectedChannel && selectedChannel.id === channel.id) {
       /**
        * @todo find a fallback channel
        */
