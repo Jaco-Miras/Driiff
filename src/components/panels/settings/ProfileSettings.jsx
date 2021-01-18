@@ -1,5 +1,5 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { CustomInput } from "reactstrap";
@@ -11,6 +11,7 @@ import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import reduxPersist from "../../../redux/store/configStore";
 
 const Wrapper = styled.div`
   .card {
@@ -70,7 +71,9 @@ const Wrapper = styled.div`
 
 const ProfileSettings = (props) => {
   const { className = "" } = props;
-
+  let persistenceOn = localStorage.getItem("persistence") ? true : false;
+  const { persistor } = reduxPersist();
+  const [persist, setPersist] = useState(persistenceOn);
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -318,6 +321,22 @@ const ProfileSettings = (props) => {
     });
   };
 
+  const handleTogglePersist = (e) => {
+    e.persist();
+    const { checked, dataset } = e.target;
+    setPersist(checked);
+    if (checked) {
+      localStorage.setItem("persistence", true);
+    } else {
+      if (persistenceOn) {
+        persistor.purge();
+        localStorage.removeItem("persist:root");
+      }
+      localStorage.removeItem("persistence");
+    }
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
+
   return (
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
@@ -374,6 +393,22 @@ const ProfileSettings = (props) => {
                       onChange={handleChatSwitchToggle}
                       data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
                       label={<span>Virtualized chat</span>}
+                    />
+                  </div>
+                </div>
+              }
+              {
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <CustomInput
+                      className="cursor-pointer text-muted"
+                      checked={persist}
+                      type="switch"
+                      id="redux_persist"
+                      name="persistence"
+                      onChange={handleTogglePersist}
+                      data-success-message={`You have turn ${persist ? "OFF" : "ON"} data persistence in chat!`}
+                      label={<span>Persisted data</span>}
                     />
                   </div>
                 </div>
