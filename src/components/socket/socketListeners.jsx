@@ -887,14 +887,14 @@ class SocketListeners extends Component {
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
           const { version, requirement } = e;
           const handleReminder = () => {
-            setTimeout(() => {
-              this.props.addToModals({
-                id: version,
-                type: "update_found",
-                requirement: requirement,
-                handleReminder: handleReminder,
-              });
-            }, [30 * 60 * 1000]);
+            // setTimeout(() => {
+            //   this.props.addToModals({
+            //     id: version,
+            //     type: "update_found",
+            //     requirement: requirement,
+            //     handleReminder: handleReminder,
+            //   });
+            // }, [30 * 60 * 1000]);
           };
 
           this.props.addToModals({
