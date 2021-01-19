@@ -31,8 +31,9 @@ const NotificationDropdown = (props) => {
     container: useRef(null),
   };
 
-  const markAllRead = () => {
+  const markAllRead = (e) => {
     actions.readAll({});
+    removeOverlay(e);
   };
 
   const removeOverlay = (e) => {
