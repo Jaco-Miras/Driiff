@@ -63,7 +63,7 @@ const PostBadge = (props) => {
             </div>
           )}
           {post.is_must_reply && (post.author.id === user.id || !hasReplied) && (
-            <div className={`${className} mr-3 d-sm-inline d-none`}>
+            <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>
           )}
