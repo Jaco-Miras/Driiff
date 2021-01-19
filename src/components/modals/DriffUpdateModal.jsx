@@ -13,7 +13,7 @@ import { SvgIconFeather } from "../common";
 //   right: 20px;
 //   display: block;
 //   top: 1px;
-  
+
 //   .modal-content {
 //     border: 1px solid #ffffff14 !important;
 //   }
@@ -28,7 +28,7 @@ const NotificationBar = styled.div`
   display: flex;
   place-content: center;
   .feather {
-      cursor: pointer;
+    cursor: pointer;
   }
   position: fixed;
   top: 0;
@@ -62,8 +62,8 @@ const DriffUpdateModal = (props) => {
   const dictionary = {
     update: _t("DRIFF.DRIFF_VERSION_UPDATE", "Go!"),
     remindMeAboutThis: _t("DRIFF.REMIND_ME_ABOUT_THIS", "Not right now"),
-    updateReload: _t("DRIFF.UPDATE_BODY_RELOAD", `🎉  Driff is updated. Reload now?`),
-    updateLogout: _t("DRIFF.UPDATE_BODY_LOGOUT", `🎉 Driff is updated. Logout now?`)
+    updateReload: _t("DRIFF.UPDATE_BODY_RELOAD", "🎉  Driff is updated. Reload now?"),
+    updateLogout: _t("DRIFF.UPDATE_BODY_LOGOUT", "🎉 Driff is updated. Logout now?"),
   };
 
   const [modal, setModal] = useState(true);
@@ -99,30 +99,30 @@ const DriffUpdateModal = (props) => {
     }
   };
 
-  const handleSoundPlay = () => {
-    if (refs.audio.current) {
-      const promiseAudioPlay = refs.audio.current.play();
+  // const handleSoundPlay = () => {
+  //   if (refs.audio.current) {
+  //     const promiseAudioPlay = refs.audio.current.play();
 
-      if (promiseAudioPlay !== undefined) {
-        promiseAudioPlay
-          .then(() => {
-            // Start whatever you need to do only after playback
-            // has begun.
-          })
-          .catch((error) => {
-            /**
-             * @todo need a fallback in case autoplay is not allowed
-             **/
-            if (error.name === "NotAllowedError") {
-            } else {
-            }
-          });
-      }
-    }
-  };
+  //     if (promiseAudioPlay !== undefined) {
+  //       promiseAudioPlay
+  //         .then(() => {
+  //           // Start whatever you need to do only after playback
+  //           // has begun.
+  //         })
+  //         .catch((error) => {
+  //           /**
+  //            * @todo need a fallback in case autoplay is not allowed
+  //            **/
+  //           if (error.name === "NotAllowedError") {
+  //           } else {
+  //           }
+  //         });
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
-    handleSoundPlay();
+    //handleSoundPlay();
     const id = setInterval(() => {
       const el = document.querySelector(".modal-backdrop");
       if (el && el.classList.contains("show")) {
@@ -134,20 +134,20 @@ const DriffUpdateModal = (props) => {
 
   return (
     <NotificationBar isOpen={modal} toggle={toggle} size={"m"} centered>
-      <AudioStyle ref={refs.audio} controls>
+      {/* <AudioStyle ref={refs.audio} controls>
         <source src={require(`../../assets/audio/hohoho.ogg`)} type="audio/ogg"/>
         <source src={require(`../../assets/audio/hohoho.mp3`)} type="audio/mpeg"/>
         <source src={require(`../../assets/audio/hohoho.m4r`)} type="audio/m4r"/>
         Your browser does not support the audio element.
-      </AudioStyle>
-      <div dangerouslySetInnerHTML={{ __html: getContent() }}/>
+      </AudioStyle> */}
+      <div dangerouslySetInnerHTML={{ __html: getContent() }} />
       <Button className="button-notification" onClick={handleConfirm}>
         {dictionary.update}
       </Button>{" "}
       {/* <Button className="button-notification" onClick={handleRemind}>
           {dictionary.remindMeAboutThis}
         </Button> */}
-      <SvgIconFeather className="ml-3 align-self-center" icon="x" onClick={handleRemind}/>
+      <SvgIconFeather className="ml-3 align-self-center" icon="x" onClick={handleRemind} />
     </NotificationBar>
   );
 };

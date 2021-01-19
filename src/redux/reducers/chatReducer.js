@@ -386,7 +386,13 @@ export default function (state = INITIAL_STATE, action) {
       let uniqMessages = uniqByProp(messsages, "id");
       channel = {
         ...channel,
-        replies: uniqMessages.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+        replies: uniqMessages.sort((a, b) => {
+          if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+            return a.id - b.id;
+          } else {
+            return a.created_at.timestamp - b.created_at.timestamp;
+          }
+        }),
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
