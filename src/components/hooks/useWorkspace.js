@@ -6,7 +6,7 @@ import {useSettings, useWorkspaceActions, useToaster} from "../hooks";
 const useWorkspace = (fetchOnMount = false) => {
 
   const {
-    generalSettings: {active_topic: activeTopicSettings},
+    generalSettings: {active_topic: activeTopicSettings, order_channel: orderChannel },
     setGeneralSetting,
   } = useSettings();
   const toaster = useToaster();
@@ -33,7 +33,10 @@ const useWorkspace = (fetchOnMount = false) => {
         if (err) return;
         //callback on get workspaces
       }
-      actions.fetchWorkspaces({}, fetchCb);
+      actions.fetchWorkspaces({
+        sort_by: orderChannel.sort_by.toLowerCase(),
+        order_by: orderChannel.order_by
+      }, fetchCb);
       //actions.fetchWorkspaces({is_external: 0}, fetchCb);
       //actions.fetchWorkspaces({is_external: 1}, () => setExternalLoaded(true));
       // actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {

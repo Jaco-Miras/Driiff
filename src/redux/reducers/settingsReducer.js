@@ -72,8 +72,17 @@ const INITIAL_STATE = {
       time_format: "HH:mm",
       personal_links: [],
       notifications_on: true,
+      order_channel: {
+        order_by: "channel_date_updated",
+        sort_by: "DESC",
+      }
+
     },
     READ_ANNOUNCEMENT: null,
+    ORDER_CHANNEL: {
+      order_by: "channel_name",
+      sort_by: "ASC"
+    }
   },
   isLoaded: false,
 };
@@ -282,6 +291,21 @@ export default (state = INITIAL_STATE, action) => {
           ...state.driff,
           ANNOUNCEMENT_LINK: action.data.ANNOUNCEMENT_LINK,
           ANNOUNCEMENT_AT: action.data.ANNOUNCEMENT_AT,
+        },
+      };
+    }
+    case "UPDATE_WORKSPACE_SETTING": {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          GENERAL_SETTINGS: {
+            ...state.user.GENERAL_SETTINGS,
+            ...action.data
+          },
+          ORDER_CHANNEL: {
+            ...action.data.order_channel
+          }
         },
       };
     }
