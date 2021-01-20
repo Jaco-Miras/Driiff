@@ -556,13 +556,8 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            if (e.workspace_ids && e.workspace_ids.length >= 1) {
-              if (this.props.user.id !== e.author.id) {
-                this.props.setGeneralChat({
-                  count: 1,
-                  entity_type: "WORKSPACE_POST",
-                });
-              }
+            if (this.props.user.id !== e.author.id) {
+              this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
             }
             if (typeof e.channel_messages === "undefined") {
               console.log(e);

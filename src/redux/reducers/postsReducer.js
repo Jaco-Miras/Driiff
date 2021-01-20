@@ -527,7 +527,7 @@ export default (state = INITIAL_STATE, action) => {
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
                 view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
-                is_unread: 0,
+                //is_unread: 0,
               },
             },
           },

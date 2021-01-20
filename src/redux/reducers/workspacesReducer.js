@@ -25,6 +25,28 @@ const INITIAL_STATE = {
     page: 1,
     maxPage: 1,
     count: 0,
+    filters: {
+      private: {
+        checked: false,
+        label: "Private",
+        key: "private",
+      },
+      archived: {
+        checked: false,
+        label: "Archived",
+        key: "archived",
+      },
+      nonMember: {
+        checked: false,
+        label: "Non member",
+        key: "nonMember",
+      },
+      new: {
+        checked: false,
+        label: "New",
+        key: "new",
+      },
+    },
   },
 };
 
@@ -1452,7 +1474,7 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
                       view_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.viewer.id],
-                      is_unread: 0,
+                      //is_unread: 0,
                     },
                   },
                 },
