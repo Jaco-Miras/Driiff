@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useChannels, useUsers } from "./index";
 import { useSelector } from "react-redux";
 
@@ -9,6 +9,7 @@ const useUserChannels = () => {
   const { actions: userActions, loggedUser, ...otherUseUsers } = useUsers();
   const userChannels = Object.values(channels).filter((channel) => channel.add_user);
   const recipients = useSelector((state) => state.global.recipients);
+  const searchingRef = useRef(null);
   // const userChannels = useRef({});
 
   // for (const i in channels) {
@@ -42,12 +43,14 @@ const useUserChannels = () => {
         } else {
           //search the channel
           let cb = (err, res) => {
+            searchingRef.current = false;
             if (err) return;
             if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code);
           };
           let user_ids = [user.id, loggedUser.id];
           let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));
-          if (recipient_ids.length && recipient_ids.length === 2) {
+          if (recipient_ids.length && recipient_ids.length === 2 && !searchingRef.current) {
+            searchingRef.current = true;
             channelActions.searchExisting(
               "",
               recipient_ids.map((r) => r.id),
