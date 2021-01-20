@@ -112,21 +112,21 @@ export default function (state = INITIAL_STATE, action) {
       let channels = { ...state.channels };
       delete channels[action.data.old_id];
       delete action.data.old_id;
-
+      let newChannel = { ...action.data, selected: true };
       channels[action.data.id] = action.data;
       let selectedChannel = { ...state.selectedChannel };
       if (action.data.selected) {
         if (selectedChannel) {
           channels[selectedChannel.id].selected = false;
         }
-        selectedChannel = action.data;
+        ///selectedChannel = action.data;
       }
 
       return {
         ...state,
         channels: channels,
-        selectedChannel: selectedChannel,
-        lastVisitedChannel: selectedChannel,
+        selectedChannel: newChannel,
+        lastVisitedChannel: newChannel,
       };
     }
     // case "GET_CHANNELS_SUCCESS": {

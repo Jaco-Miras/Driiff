@@ -73,9 +73,7 @@ const SystemPeoplePanel = (props) => {
 
   const handleUserChat = useCallback(
     (user) => {
-      selectUserChannel(user, (channel) => {
-        history.push(`/chat/${channel.code}`);
-      });
+      selectUserChannel(user);
     },
     [history, selectUserChannel]
   );

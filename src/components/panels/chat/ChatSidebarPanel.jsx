@@ -152,7 +152,7 @@ const ChatSidebarPanel = (props) => {
       channelActions.setSidebarSearch({
         value: query,
       });
-      channelActions.search({ search: query, skip: 0, limit: 50 });
+      if (query.trim() !== "") channelActions.search({ search: query, skip: 0, limit: 50, type: "DIRECT" });
     }, 300);
     return () => clearTimeout(timeOutId);
   }, [query]);
