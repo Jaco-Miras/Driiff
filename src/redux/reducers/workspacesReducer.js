@@ -21,6 +21,7 @@ const INITIAL_STATE = {
   search: {
     results: [],
     searching: false,
+    filterBy: "",
     value: "",
     page: 1,
     maxPage: 1,

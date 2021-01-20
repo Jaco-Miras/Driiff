@@ -315,6 +315,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [modal, setModal] = useState(true);
 
@@ -733,6 +734,16 @@ const CreateEditWorkspacePostModal = (props) => {
       ...form,
       selectedAddressTo: [
         ...users.map((user) => {
+          if (user.type === 'WORKSPACE' || user.type === 'TOPIC'){
+            return {
+              ...user,
+              value: user.id,
+              label: user.name,
+              name: user.name,
+              first_name: user.first_name,
+              type: user.type
+            }
+          }
           return {
             id: user.id,
             value: user.id,
@@ -750,6 +761,7 @@ const CreateEditWorkspacePostModal = (props) => {
     });
 
     setMentionedUserIds([]);
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => parseInt(u.id))]);
   };
 
   const handleIgnoreMentionedUsers = (users) => {
@@ -759,7 +771,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const handleMentionUser = (mids) => {
     const mention_ids = mids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
-
+  
     if (mention_ids.length) {
       //check for recipients/type
       let adddressIds = form.selectedAddressTo
@@ -1222,6 +1234,7 @@ const CreateEditWorkspacePostModal = (props) => {
           mode={mode}
           required
           mentionedUserIds={mentionedUserIds}
+          workspaces={workspaces}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}

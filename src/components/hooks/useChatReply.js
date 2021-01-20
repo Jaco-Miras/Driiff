@@ -302,15 +302,33 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
+      const renderStars = (num) => {
+        let star = "";
+        for (let i = 1; i <= 10; i++) {
+          star += renderToString(<SvgIconFeather width={16} icon="star" fill={i <= num ? "#ffc107" : "none"} />);
+        }
+        return star;
+      };
+      const renderBoolean = (value) => {
+        if (value.toLowerCase() === "true") return "👍";
+        else if (value.toLowerCase() === "false") return "👎";
+        else return value;
+      };
       try {
         const data = JSON.parse(message.replace("ZAP_SUBMIT::", ""));
         newBody = "<span class='zap-submit'>";
-        Object.keys(data).forEach((key) => {
-          if (data[key] !== "") {
-            newBody += `<span class="data-key">${key}</span> : <span class="data-value">${data[key]}</span><br/>`;
-          }
-        });
+        newBody += `<span>Hoi, ${data.project_manager} Bedrijf ${data.company_name} heeft een NPS review achtergelaten voor project: ${data.project_name}</span><div><br/></div>`;
+        Object.keys(data)
+          .filter((key) => {
+            if (key === "submission_id") return false;
+            else return true;
+          })
+          .forEach((key) => {
+            if (data[key] !== "") {
+              newBody += `<span class="data-key">${key}</span> : <span class="data-value">${isNaN(data[key]) ? renderBoolean(data[key]) : renderStars(parseInt(data[key]))}</span><br/>`;
+            }
+          });
         newBody += "</span>";
       } catch (e) {
         return message;

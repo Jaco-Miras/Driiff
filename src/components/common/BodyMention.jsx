@@ -24,9 +24,12 @@ const BodyMention = (props) => {
   
   const {_t} = useTranslation();
   const users = useSelector((state) => state.users.users);
-  const mentionedUsers = Object.values(users).filter((user) => {
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const toMention = Object.assign({}, users, workspaces);
+  const mentionedUsers = Object.values(toMention).filter((user) => {
     return userIds.some((id) => id === user.id);
-  })
+  });
+
   // const userRecipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   // const mentionedUsers = userRecipients.filter((user) => {
   //   let userFound = false;
@@ -73,6 +76,7 @@ const BodyMention = (props) => {
         <p>
           {dictionary.youMentioned}&nbsp;
           {mentionedUsers.map((mu, i) => {
+            const denotation = mu.type === "WORKSPACE" || mu.type === "TOPIC"? "/" : "@";
             if (i === mentionedUsers.length - 1 && mentionedUsers.length > 1) {
               return (
                 <div className={"mention-data"}>
@@ -88,7 +92,7 @@ const BodyMention = (props) => {
                           //push(`/profile/${mu.type_id}`)
                         }}
                       >
-                        <span className="ql-mention-denotation-char">@</span>
+                        <span className="ql-mention-denotation-char">{denotation}</span>
                         {mu.name}
                       </span>
                     </span>
@@ -106,7 +110,7 @@ const BodyMention = (props) => {
                       // /push(`/profile/${mu.type_id}`)
                     }}
                   >
-                    <span className="ql-mention-denotation-char">@</span>
+                    <span className="ql-mention-denotation-char">{denotation}</span>
                     {mu.name},
                   </span>
                 </span>

@@ -129,6 +129,7 @@ const PostInput = forwardRef((props, ref) => {
     handleClearUserMention,
     commentId,
     members,
+    workspace,
     onClosePicker,
     onActive,
     prioMentionIds,
@@ -141,6 +142,7 @@ const PostInput = forwardRef((props, ref) => {
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const slugs = useSelector(state => state.global.slugs);
   const user = useSelector((state) => state.session.user);
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
@@ -344,10 +346,13 @@ const PostInput = forwardRef((props, ref) => {
 
   const handleMentionUser = (mention_ids) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+
     if (mention_ids.length) {
       //check for recipients/type
       const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
-      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds];
+      const ignoredWorkspaceIds = post.recipients.filter((w) => w.type === "TOPIC"? w : false).map((w) => w.id );
+      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds];
+
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -498,8 +503,8 @@ const PostInput = forwardRef((props, ref) => {
   // };
   const handleAddMentionedUsers = (users) => {
     const userIds = users.map((u) => u.id);
-    const userRecipients = recipients.filter((r) => r.type === "USER");
-
+    const types = ["USER", 'WORKSPACE', "TOPIC"];
+    const userRecipients = recipients.filter((r) => types.includes(r.type));
     const newRecipients = userRecipients.filter((r) => {
       return userIds.some((id) => id === r.type_id);
     });
@@ -508,7 +513,7 @@ const PostInput = forwardRef((props, ref) => {
       recipient_ids: newRecipients.map((u) => u.id),
       recipients: newRecipients,
     };
-
+    
     console.log(users, payload);
     dispatch(
       addPostRecipients(payload, (err, res) => {
@@ -543,6 +548,7 @@ const PostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: user.type === "external" ? members : [],
+    workspaces: workspaces? workspaces: [],
     disableMention: false,
     setInlineImages,
     prioMentionIds: [...new Set(prioMentionIds)],

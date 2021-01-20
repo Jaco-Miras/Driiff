@@ -95,7 +95,7 @@ const useHuddle = (props) => {
     //setCurrentTime(currentDate.getTime());
     if (huddleStorage) {
       const { day } = JSON.parse(huddleStorage);
-      if (day < currentDay || currentDay === 0 || currentDay === 6) {
+      if (day !== currentDay || currentDay === 0 || currentDay === 6) {
         localStorage.removeItem("huddle");
         dispatch(clearHuddleAnswers());
       }
