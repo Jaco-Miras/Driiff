@@ -60,12 +60,7 @@ const CompanyPeoplePanel = (props) => {
     [history]
   );
 
-  const handleUserChat = useCallback(
-    (user) => {
-      selectUserChannel(user);
-    },
-    [history, selectUserChannel]
-  );
+  const handleUserChat = (user) => selectUserChannel(user);
 
   useEffect(() => {
     refs.search.current.focus();

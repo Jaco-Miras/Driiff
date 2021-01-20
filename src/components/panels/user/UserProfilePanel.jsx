@@ -174,12 +174,7 @@ const UserProfilePanel = (props) => {
     setPasswordVisibility((prevState) => !prevState);
   }, [setPasswordVisibility]);
 
-  const handleUserChat = useCallback(
-    (user) => {
-      selectUserChannel(user);
-    },
-    [history, selectUserChannel]
-  );
+  const handleUserChat = (user) => selectUserChannel(user);
 
   const toggleEditInformation = useCallback(() => {
     setEditInformation((prevState) => !prevState);

@@ -125,7 +125,7 @@ const useChannelActions = () => {
 
           if (res) {
             let timestamp = Math.round(+new Date() / 1000);
-            let channel = {
+            let newchannel = {
               ...res.data.channel,
               old_id: old_channel.id,
               code: res.data.code,
@@ -140,13 +140,18 @@ const useChannelActions = () => {
               last_reply: null,
               title: res.data.channel.profile.name,
             };
-            history.push(`/chat/${channel.code}`);
-            dispatch(renameChannelKey(channel));
+
+            dispatch(
+              renameChannelKey(newchannel, () => {
+                history.push(`/chat/${newchannel.code}`);
+                dispatch(setSelectedChannel(newchannel));
+              })
+            );
           }
         }
       );
     },
-    [dispatch, create]
+    [dispatch, create, history]
   );
 
   /**
