@@ -140,17 +140,8 @@ const useChannelActions = () => {
               last_reply: null,
               title: res.data.channel.profile.name,
             };
-            dispatch(
-              renameChannelKey(channel, (err) => {
-                if (err) {
-                  console.log(err);
-                }
-
-                callback(err, {
-                  data: channel,
-                });
-              })
-            );
+            history.push(`/chat/${channel.code}`);
+            dispatch(renameChannelKey(channel));
           }
         }
       );
@@ -337,16 +328,8 @@ const useChannelActions = () => {
       if (typeof channel === "undefined") {
         console.log(channel, "channel not found");
       } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
-        createByUserChannel({ ...channel, selected: true }, (err, res) => {
-          const data = res.data;
-          history.push(`/chat/${data.code}`);
-          // dispatch(
-          //   setSelectedChannel(res.data, () => {
-          //     callback(data);
-          //   })
-          // );
-        });
-
+        console.log(channel, "selected user create new channel");
+        createByUserChannel({ ...channel, selected: true });
         //if unarchived archived chat
       } else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived) {
         unArchive(channel, (err, res) => {
@@ -727,6 +710,7 @@ const useChannelActions = () => {
           if (err) {
             fetchLastChannel();
           }
+          history.push(`/chat/${res.data.code}`);
           if (callback) callback();
         })
       );

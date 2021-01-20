@@ -1,39 +1,67 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import { useChannels, useUsers } from "./index";
+import { useSelector } from "react-redux";
 
 let init = true;
 
 const useUserChannels = () => {
   const { channels, actions: channelActions } = useChannels();
-  const { actions: userActions, ...otherUseUsers } = useUsers();
-  const userChannels = useRef({});
+  const { actions: userActions, loggedUser, ...otherUseUsers } = useUsers();
+  const userChannels = Object.values(channels).filter((channel) => channel.add_user);
+  const recipients = useSelector((state) => state.global.recipients);
+  // const userChannels = useRef({});
 
-  for (const i in channels) {
-    if (channels.hasOwnProperty(i)) {
-      let channel = channels[i];
+  // for (const i in channels) {
+  //   if (channels.hasOwnProperty(i)) {
+  //     let channel = channels[i];
 
-      if (channel.type !== "DIRECT") continue;
+  //     if (channel.type !== "DIRECT") continue;
 
-      if (userChannels && userChannels.current && channel.profile) {
-        if (userChannels.current.hasOwnProperty(channel.profile.id)) continue;
-      }
+  //     if (userChannels && userChannels.current && channel.profile) {
+  //       if (userChannels.current.hasOwnProperty(channel.profile.id)) continue;
+  //     }
 
-      userChannels.current = {
-        ...userChannels.current,
-        ...(channel.profile && {
-          [channel.profile.id]: channel.id,
-        }),
-      };
-    }
-  }
+  //     userChannels.current = {
+  //       ...userChannels.current,
+  //       ...(channel.profile && {
+  //         [channel.profile.id]: channel.id,
+  //       }),
+  //     };
+  //   }
+  // }
 
   const selectUserChannel = useCallback(
     (user, callback = () => {}) => {
-      try {
-        channelActions.select(channels[userChannels.current[user.id]], callback);
-      } catch (e) {
-        console.log("no channel from selected user");
+      const userChannel = userChannels.find((c) => c.profile.id === user.id);
+      if (userChannel) {
+        channelActions.createByUserChannel(userChannel);
+      } else {
+        const channel = Object.values(channels).find((c) => c.profile && c.profile.id === user.id && c.type === "DIRECT");
+        if (channel) {
+          channelActions.select(channel);
+        } else {
+          //search the channel
+          let cb = (err, res) => {
+            if (err) return;
+            if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code);
+          };
+          let user_ids = [user.id, loggedUser.id];
+          let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));
+          if (recipient_ids.length && recipient_ids.length === 2) {
+            channelActions.searchExisting(
+              "",
+              recipient_ids.map((r) => r.id),
+              cb
+            );
+          }
+        }
       }
+      // try {
+      //   console.log(userChannels, "try");
+      //   //channelActions.select(channels[userChannels.current[user.id]], callback);
+      // } catch (e) {
+      //   console.log("no channel from selected user");
+      // }
     },
     [channels, channelActions]
   );
@@ -52,8 +80,9 @@ const useUserChannels = () => {
   return {
     ...useChannels(),
     ...otherUseUsers,
+    loggedUser,
     userActions,
-    userChannels: userChannels.current,
+    userChannels,
     selectUserChannel,
   };
 };

@@ -34,8 +34,8 @@ const useHuddle = (props) => {
     publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
     publishAtDate.setDate(currentDate.getDate());
     inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
-    console.log(huddle, inTimeRange, answeredChannels, "huddle");
-    console.log(currentDate, startAtDate, publishAtDate, "huddle dates");
+    // console.log(huddle, inTimeRange, answeredChannels, "huddle");
+    // console.log(currentDate, startAtDate, publishAtDate, "huddle dates");
   }
 
   return {
