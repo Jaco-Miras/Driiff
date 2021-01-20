@@ -196,6 +196,7 @@ const DescriptionInput = (props) => {
     feedback = "",
     height = 80,
     members = [],
+    workspaces = [],
     disableMention = false,
     disableBodyMention = false,
     mentionedUserIds,
@@ -248,7 +249,7 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const { modules } = useQuillModules({ mode: "description", mentionOrientation: "top", quillRef: reactQuillRef, members, disableMention, setInlineImages, setImageLoading, prioMentionIds: [...new Set(prioMentionIds)] });
+  const { modules } = useQuillModules({ mode: "description", mentionOrientation: "top", quillRef: reactQuillRef, members, workspaces, disableMention, setInlineImages, setImageLoading, prioMentionIds: [...new Set(prioMentionIds)] });
 
   return (
     <WrapperDiv className={`description-input ${className}`}>

@@ -3,13 +3,14 @@ import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
+import workspaceIcon from "../../assets/icon/people_group/l/active.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { uploadDocument } from "../../redux/services/global";
 import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 
-const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
+const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], workspaces = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -39,6 +40,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
     };
 
     let newAtValues = [];
+    let newWorkSpaceValues = [];
 
     if (members.length) {
       newAtValues = [
@@ -68,12 +70,32 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
         all,
       ];
     }
-    if (!disableMention) {
-      setMentionValues(newAtValues);
-    } else {
-      newAtValues = [];
+    
+
+    if (Object.keys(workspaces).length) {
+      newWorkSpaceValues = [
+        ...Object.entries(workspaces).map(([id, workspace], index) => {
+          return Object.assign({}, workspace, {
+            ...workspace,
+            value: workspace.name,
+            id: workspace.id,
+            type_id:  workspace.id,
+            icon: "compass",
+            profile_image_link: workspaceIcon,
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/${workspace.id}/${replaceChar(workspace.name)}`,
+          });
+        })
+      ];
     }
 
+    if (!disableMention) {
+      setMentionValues(newAtValues);
+      setMentionValues(newWorkSpaceValues);
+    } else {
+      newAtValues = [];
+      newWorkSpaceValues = [];
+    }
+    
     if (prioMentionIds.length) {
       let prioIds = prioMentionIds.filter((id) => id !== user.id);
       newAtValues.sort((a, b) => {
@@ -101,7 +123,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
         defaultMenuOrientation: mentionOrientation,
         spaceAfterInsert: true,
         fixMentionsToQuill: false,
-        mentionDenotationChars: ["@"],
+        mentionDenotationChars: ["@", "/"],
         minChars: 0,
         //linkTarget: "_blank",
         source: function (searchTerm, renderList, mentionChar) {
@@ -109,6 +131,10 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
 
           if (mentionChar === "@") {
             values = newAtValues;
+          }
+
+          if (mentionChar === "/") {
+            values = newWorkSpaceValues;
           }
 
           if (searchTerm.length === 0) {
@@ -178,7 +204,10 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
           return renderToString(
             <>
               <span className={item.class} style={avatarStyling}>
-                <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
+                {item.type === "WORKSPACE" || item.type === "TOPIC"? 
+                  <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" />: 
+                  <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
+                }
               </span>
               &nbsp;{" "}
               <span style={{ width: "auto", lineHeight: 1.35 }}>
