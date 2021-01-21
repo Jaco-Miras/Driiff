@@ -48,6 +48,11 @@ const PostFilterTag = (props) => {
         {dictionary.noReplies}
         <span className="small ml-auto">{count && count.is_read_only > 0 && count.is_read_only}</span>
       </a>
+      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_unread" ? "active" : ""}`} data-value="is_unread" onClick={handleClickFilter}>
+        <span className="text-success fa fa-circle mr-2" />
+        {dictionary.unread}
+        <span className="small ml-auto">{count && count.is_unread > 0 && count.is_unread}</span>
+      </a>
     </Wrapper>
   );
 };
