@@ -143,6 +143,7 @@ import {
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+import { toast } from "react-toastify";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -628,7 +629,10 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CLAP_TOGGLE": {
-            if (this.props.user.id !== e.author.id) this.props.incomingPostClap(e);
+            if (this.props.user.id !== e.author.id) {
+              toast(`${e.author.name} liked your post`, { position: toast.POSITION.BOTTOM_LEFT });
+              this.props.incomingPostClap(e);
+            }
             break;
           }
           case "MARKED_DONE": {
@@ -709,7 +713,10 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
-            if (this.props.user.id !== e.author.id) this.props.incomingCommentClap(e);
+            if (this.props.user.id !== e.author.id) {
+              toast(`${e.author.name} liked your comment`, { position: toast.POSITION.BOTTOM_LEFT });
+              this.props.incomingCommentClap(e);
+            }
             break;
           }
 
