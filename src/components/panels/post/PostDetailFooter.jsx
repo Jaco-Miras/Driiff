@@ -495,6 +495,11 @@ const PostDetailFooter = (props) => {
           </ApproverSelectWrapper>
         )}
       </Dflex>
+      {hasPendingAproval && !isApprover && (
+        <NoReply className="d-flex align-items-center mb-2">
+          <div className="alert alert-primary">Request for approval</div>
+        </NoReply>
+      )}
       {((isMember && !disableOptions && !isApprover) || approving.change || userApproved) && (
         <>
           <Dflex className="d-flex align-items-end">

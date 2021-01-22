@@ -16,7 +16,7 @@ const PostBadge = (props) => {
     }
   }, [post]);
 
-  // const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
 
@@ -92,6 +92,11 @@ const PostBadge = (props) => {
       {post.post_approval_label && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
+        </div>
+      )}
+      {hasPendingAproval && post.author.id === user.id && (
+        <div className={`${className} mr-3 d-sm-inline d-none opacity-2`}>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>Request for approval</div>
         </div>
       )}
     </div>

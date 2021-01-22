@@ -13997,7 +13997,8 @@ body:not(.dark) .nicescroll-cursors {
 }
 
 .alert.alert-success {
-  background: rgba(0, 200, 81, 0.3) !important;
+  //background: rgba(0, 200, 81, 0.3) !important;
+  background: #00c851;
 }
 
 .alert.alert-success.alert-with-border {
