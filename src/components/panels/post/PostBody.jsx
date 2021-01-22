@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import { useFiles, useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../hooks";
-import { PostBadge, PostVideos } from "./index";
+import { PostBadge, PostVideos, PostChangeAccept } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
@@ -379,8 +379,8 @@ const PostBody = (props) => {
     }
   };
 
-  const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
-  const userRequestChange = post.users_approval.find((u) => u.ip_address !== null && !u.is_approved);
+  // const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
+  // const userRequestChange = post.users_approval.find((u) => u.ip_address !== null && !u.is_approved);
 
   return (
     <Wrapper ref={refs.container} className="card-body">
@@ -410,31 +410,8 @@ const PostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {/* {post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length && post.users_approval.some((u) => u.id === user.id) && (
-        <div className="d-flex align-items-center mt-3">
-          <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
-            {dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-          </button>
-          <button className="btn btn-primary" onClick={handleApprove}>
-            {dictionary.accept} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-          </button>
-        </div>
-      )} */}
-      {userApproved && (
-        <ApprovedText>
-          {userApproved.name} {dictionary.hasAcceptedProposal}{" "}
-          <span className="text-muted approve-ip">
-            {fromNow(userApproved.created_at.timestamp)} - {userApproved.ip_address}
-          </span>
-        </ApprovedText>
-      )}
-      {userRequestChange && (
-        <ApprovedText>
-          {userRequestChange.name} {dictionary.hasRequestedChange}{" "}
-          <span className="text-muted approve-ip">
-            {fromNow(userRequestChange.created_at.timestamp)} - {userRequestChange.ip_address}
-          </span>
-        </ApprovedText>
+      {post.users_approval.length > 0 && (
+        <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} handleApprove={handleApprove} handleRequestChange={handleRequestChange} dictionary={dictionary} />
       )}
     </Wrapper>
   );

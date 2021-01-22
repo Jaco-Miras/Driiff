@@ -10,7 +10,7 @@ import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
-import {osName} from "react-device-detect";
+import { osName } from "react-device-detect";
 
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
@@ -22,7 +22,6 @@ const DescriptionInputWrapper = styled.div`
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
-
   &.description-input {
     // overflow: auto;
     // overflow-x: hidden;
@@ -61,7 +60,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
-    
+
     .dark & {
       background: #25282c;
       color: #c7c7c7;
@@ -198,7 +197,7 @@ const IconButton = styled(SvgIconFeather)`
 const PickerContainer = styled(CommonPicker)`
   left: unset;
   bottom: 40px;
-  
+
   .common-picker-btn {
     text-align: right;
   }
@@ -245,7 +244,7 @@ const FileUploadModal = (props) => {
 
   const onSelectGif = (e) => {
     // setSelectedGif(e);
-    console.log(e)
+    console.log(e);
     const editor = reactQuillRef.current.getEditor();
     reactQuillRef.current.focus();
     const cursorPosition = editor.getSelection().index;
@@ -257,7 +256,7 @@ const FileUploadModal = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     upload: _t("BUTTON.UPLOAD", "Upload"),
     fileUpload: _t("FILE_UPLOAD", "File upload"),
-    quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...")
+    quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here..."),
   };
 
   useEffect(() => {
@@ -282,24 +281,24 @@ const FileUploadModal = (props) => {
         ...droppedFiles,
       ]);
     }
-    
-    const handleKeyDown = e => {
+
+    const handleKeyDown = (e) => {
       if (e.keyCode === 27) {
         dispatch(clearModal({ type: type }));
       }
       if (osName.includes("Mac")) {
         if (e.metaKey && e.keyCode === 13) {
-            handleUpload();
+          handleUpload();
         }
       } else {
         if (e.ctrlKey && e.keyCode === 13) {
-            handleUpload();
+          handleUpload();
         }
       }
     };
     document.addEventListener("keydown", handleKeyDown, false);
     return () => {
-        document.removeEventListener("keydown", handleKeyDown, false);
+      document.removeEventListener("keydown", handleKeyDown, false);
     };
   }, []);
 
@@ -388,6 +387,7 @@ const FileUploadModal = (props) => {
         reference_id: require("shortid").generate(),
         personalized_for_id: null,
         parent_id: parentId,
+        approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
       };
       setUploadedFiles([]);
       dispatch(setParentIdForUpload(null));
@@ -476,7 +476,7 @@ const FileUploadModal = (props) => {
     }
   }, [init]);
 
-  const {modules} = useQuillModules({mode:"chat_upload", mentionOrientation: "bottom", quillRef: reactQuillRef, members});
+  const { modules } = useQuillModules({ mode: "chat_upload", mentionOrientation: "bottom", quillRef: reactQuillRef, members });
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
@@ -493,8 +493,8 @@ const FileUploadModal = (props) => {
             onChange={handleQuillChange}
             height={80}
           />
-          <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
-          {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} showPreview={false}/>}
+          <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+          {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} showPreview={false} />}
         </DescriptionInputWrapper>
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
       </ModalBody>
