@@ -1,6 +1,6 @@
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-import {usePostActions} from "../../../hooks";
+import { usePostActions } from "../../../hooks";
 
 const Wrapper = styled.div`
   a {
@@ -9,9 +9,9 @@ const Wrapper = styled.div`
 `;
 
 const CompanyPostFilterTag = (props) => {
-  const {className = "", workspace, tag, count, onGoBack, dictionary} = props;
+  const { className = "", tag, count, onGoBack, dictionary } = props;
 
-  const {setCompanyFilterPosts} = usePostActions();
+  const { setCompanyFilterPosts } = usePostActions();
 
   const handleClickFilter = useCallback((e) => {
     e.persist();
@@ -27,30 +27,32 @@ const CompanyPostFilterTag = (props) => {
         filter: "all",
       };
     }
-    setCompanyFilterPosts(payload)
+    setCompanyFilterPosts(payload);
     onGoBack();
     document.body.classList.remove("mobile-modal-open");
   }, []);
 
   return (
     <Wrapper className={`list-group list-group-flush ${className}`}>
-      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_must_reply" ? "active" : ""}`}
-         data-value="is_must_reply" onClick={handleClickFilter}>
-        <span className="text-warning fa fa-circle mr-2"/>
+      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_must_reply" ? "active" : ""}`} data-value="is_must_reply" onClick={handleClickFilter}>
+        <span className="text-warning fa fa-circle mr-2" />
         {dictionary.replyRequired}
         <span className="small ml-auto">{count && count.is_must_reply > 0 && count.is_must_reply}</span>
       </a>
-      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_must_read" ? "active" : ""}`}
-         data-value="is_must_read" onClick={handleClickFilter}>
-        <span className="text-danger fa fa-circle mr-2"/>
+      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_must_read" ? "active" : ""}`} data-value="is_must_read" onClick={handleClickFilter}>
+        <span className="text-danger fa fa-circle mr-2" />
         {dictionary.mustRead}
         <span className="small ml-auto">{count && count.is_must_read > 0 && count.is_must_read}</span>
       </a>
-      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_read_only" ? "active" : ""}`}
-         data-value="is_read_only" onClick={handleClickFilter}>
-        <span className="text-info fa fa-circle mr-2"/>
+      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_read_only" ? "active" : ""}`} data-value="is_read_only" onClick={handleClickFilter}>
+        <span className="text-info fa fa-circle mr-2" />
         {dictionary.noReplies}
         <span className="small ml-auto">{count && count.is_read_only > 0 && count.is_read_only}</span>
+      </a>
+      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_unread" ? "active" : ""}`} data-value="is_unread" onClick={handleClickFilter}>
+        <span className="text-success fa fa-circle mr-2" />
+        {dictionary.unread}
+        <span className="small ml-auto">{count && count.is_unread > 0 && count.is_unread}</span>
       </a>
     </Wrapper>
   );

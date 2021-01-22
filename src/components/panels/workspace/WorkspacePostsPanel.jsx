@@ -277,7 +277,7 @@ const WorkspacePostsPanel = (props) => {
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null) return <></>;
-  //console.log(post, 'post')
+
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
