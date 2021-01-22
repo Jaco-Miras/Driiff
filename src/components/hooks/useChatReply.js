@@ -109,9 +109,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
 
       if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
         //for adding one member without changes in title and for user who join the channel / workspace
-        const am = recipients.find((r) => {
-          return data.added_members.includes(r.type_id) && r.type === "USER";
-        });
+        const am = Object.values(users).find((u) => data.added_members.includes(u.id));
         if (am && data.author && data.author.id === am.id) {
           newBody = (
             <>
@@ -126,9 +124,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
           );
         }
       } else if (data.added_members.length >= 1) {
-        let am = recipients.filter((r) => {
-          return data.added_members.includes(r.type_id) && r.type === "USER";
-        });
+        let am = Object.values(users).filter((u) => data.added_members.includes(u.id));
         if (newBody === "") {
           newBody = (
             <>
@@ -194,26 +190,23 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
             );
           }
         } else {
-          const userLeft = recipients.filter((r) => {
-            return data.removed_members[0] === r.type_id && r.type === "USER";
-          });
+          let userLeft = Object.values(users).find((u) => data.removed_members.includes(u.id));
           if (newBody === "") {
             newBody = (
               <>
-                {author.name} {dictionary.removed} <b>{userLeft.length ? userLeft[0].name : null}</b>
+                {author.name} {dictionary.removed} <b>{userLeft ? userLeft.name : null}</b>
               </>
             );
           } else {
             newBody = (
               <>
-                {newBody} {dictionary.andRemoved} <b>{userLeft.length ? userLeft[0].name : null}</b>
+                {newBody} {dictionary.andRemoved} <b>{userLeft ? userLeft.name : null}</b>
               </>
             );
           }
         }
       } else if (data.removed_members.length > 1) {
-        const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
-
+        let rm = Object.values(users).filter((u) => data.removed_members.includes(u.id));
         if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
