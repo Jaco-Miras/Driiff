@@ -80,8 +80,8 @@ const INITIAL_STATE = {
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {
-      order_by: "channel_name",
-      sort_by: "ASC"
+      order_by: "channel_date_updated",
+      sort_by: "DESC"
     }
   },
   isLoaded: false,
