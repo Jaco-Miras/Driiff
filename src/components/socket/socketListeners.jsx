@@ -630,8 +630,10 @@ class SocketListeners extends Component {
           }
           case "POST_CLAP_TOGGLE": {
             if (this.props.user.id !== e.author.id) {
-              toast(`${e.author.name} liked your post`, { position: toast.POSITION.BOTTOM_LEFT });
               this.props.incomingPostClap(e);
+              if (this.props.user.id === e.post_user_id && e.clap_count === 1) {
+                toast(`${e.author.name} ${this.props.dictionary.likedYourPost}`, { position: toast.POSITION.BOTTOM_LEFT });
+              }
             }
             break;
           }
@@ -714,8 +716,10 @@ class SocketListeners extends Component {
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
             if (this.props.user.id !== e.author.id) {
-              toast(`${e.author.name} liked your comment`, { position: toast.POSITION.BOTTOM_LEFT });
               this.props.incomingCommentClap(e);
+              if (this.props.user.id === e.comment_user_id && e.clap_count === 1) {
+                toast(`${e.author.name} ${this.props.dictionary.likedYourComment}`, { position: toast.POSITION.BOTTOM_LEFT });
+              }
             }
             break;
           }
