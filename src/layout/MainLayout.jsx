@@ -31,6 +31,8 @@ const MainLayout = (props) => {
 
   const dictionary = {
     huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
+    likedYourPost: _t("TOAST.LIKED_YOUR_POST", "liked your post"),
+    likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
   };
 
   const user = useSelector((state) => state.session.user);

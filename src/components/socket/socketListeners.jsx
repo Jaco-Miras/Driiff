@@ -143,6 +143,7 @@ import {
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+import { toast } from "react-toastify";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -628,7 +629,12 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CLAP_TOGGLE": {
-            if (this.props.user.id !== e.author.id) this.props.incomingPostClap(e);
+            if (this.props.user.id !== e.author.id) {
+              this.props.incomingPostClap(e);
+              if (this.props.user.id === e.post_user_id && e.clap_count === 1) {
+                toast(`${e.author.name} ${this.props.dictionary.likedYourPost}`, { position: toast.POSITION.BOTTOM_LEFT });
+              }
+            }
             break;
           }
           case "MARKED_DONE": {
@@ -709,7 +715,12 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
-            if (this.props.user.id !== e.author.id) this.props.incomingCommentClap(e);
+            if (this.props.user.id !== e.author.id) {
+              this.props.incomingCommentClap(e);
+              if (this.props.user.id === e.comment_user_id && e.clap_count === 1) {
+                toast(`${e.author.name} ${this.props.dictionary.likedYourComment}`, { position: toast.POSITION.BOTTOM_LEFT });
+              }
+            }
             break;
           }
 
