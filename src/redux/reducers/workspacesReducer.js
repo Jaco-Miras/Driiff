@@ -2328,6 +2328,28 @@ export default (state = INITIAL_STATE, action) => {
         workspaces: updatedWorkspaces,
       };
     }
+    case "SET_POSTREAD": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...Object.keys(state.workspacePosts).reduce( (res, key) => {
+            res[key] = {
+              ...state.workspacePosts[key],
+              posts: {
+                ...state.workspacePosts[key].posts,
+                [action.data.postId]: {
+                  ...state.workspacePosts[key].posts[action.data.postId],
+                  post_reads: [
+                    ...action.data.readPosts
+                  ],
+                },
+              },
+            }
+            return res;
+          }, {})
+        }
+      }
+    }
     default:
       return state;
   }

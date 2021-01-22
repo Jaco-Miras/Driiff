@@ -167,6 +167,7 @@ export {
   deleteComment,
   deletePost,
   getUnreadWorkspacePostEntries,
+  getPostRead,
   fetchPost,
   fetchPosts,
   fetchComments,

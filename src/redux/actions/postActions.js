@@ -37,6 +37,7 @@ import {
   putPost as putPostService,
   refetchPostComments as refetchPostCommentsService,
   refetchPosts as refetchPostsService,
+  getPostRead as getPostReadService
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -345,4 +346,12 @@ export function commentApprove(payload, callback) {
 
 export function incomingCommentApproval(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMMENT_APPROVAL", payload, callback);
+}
+
+export function getPostRead(payload, callback) {
+  return dispatchActionToReducer(getPostReadService(payload), "GET_POSTREAD_START", "GET_POSTREAD_SUCCESS", "GET_POSTREAD_FAIL", callback);
+}
+
+export function setPostRead(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_POSTREAD", payload, callback);
 }

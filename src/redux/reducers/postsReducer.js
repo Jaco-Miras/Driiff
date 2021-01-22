@@ -837,6 +837,25 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "SET_POSTREAD": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(Object.keys(state.companyPosts.posts).length && {
+              [action.data.postId]: {
+                ...state.companyPosts.posts[action.data.postId],
+                post_reads: [
+                  ...action.data.readPosts
+                ],
+              },
+            })
+          }
+        }
+      }
+    }
     default:
       return state;
   }

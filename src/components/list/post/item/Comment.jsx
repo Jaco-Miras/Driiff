@@ -469,6 +469,18 @@ const Comment = (props) => {
   // useEffect(() => {
   //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
   // }, [comment.clap_user_ids]);
+  const userReadPost = useCallback(
+    () => {
+      let filter_post_read = [];
+      if (!!post.post_reads) {
+        return post.post_reads
+        .filter( (u) =>
+          u.last_read_timestamp >= comment.updated_at.timestamp
+        );
+      }
+      return filter_post_read;
+    }, [post]
+  );
 
   return (
     <>
@@ -526,6 +538,23 @@ const Comment = (props) => {
                 {dictionary.comment}
               </Reply>
             )}
+            {
+              <div className="user-reads-container">
+                <span className="no-readers">
+                  <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
+                  {userReadPost().length}
+                </span>
+                <span className="hover read-users-container">
+                  {userReadPost().map((u) => {
+                    return (
+                      <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                      </span>
+                    );
+                  })}
+                </span>
+              </div>
+            }
           </div>
         </CommentWrapper>
       </Wrapper>
