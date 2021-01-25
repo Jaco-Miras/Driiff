@@ -4,7 +4,7 @@ const INITIAL_STATE = {
   user: null,
   notifications: {},
   unreadCount: 0,
-  hasSubscribed: true
+  hasSubscribed: true,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -16,7 +16,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
-      let results = action.data.notifications
+      let results = action.data.notifications;
       return {
         ...state,
         notifications: {
@@ -27,7 +27,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_ALL_NOTIFICATION_REDUCER": {
-      let updatedNotifications = {...state.notifications};
+      let updatedNotifications = { ...state.notifications };
       Object.values(updatedNotifications).forEach((n) => {
         updatedNotifications[n.id].is_read = 1;
       });
@@ -38,7 +38,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_NOTIFICATION_REDUCER": {
-      let updatedNotifications = {...state.notifications};
+      let updatedNotifications = { ...state.notifications };
       updatedNotifications[action.data.id].is_read = 1;
       return {
         ...state,
@@ -47,7 +47,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UNREAD_NOTIFICATION_REDUCER": {
-      let updatedNotifications = {...state.notifications};
+      let updatedNotifications = { ...state.notifications };
       updatedNotifications[action.data.id].is_read = 0;
       return {
         ...state,
@@ -56,7 +56,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMOVE_NOTIFICATION_REDUCER": {
-      let updatedNotifications = {...state.notifications};
+      let updatedNotifications = { ...state.notifications };
       delete updatedNotifications[action.data.id];
       return {
         ...state,
@@ -70,6 +70,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
+      let notificationApproval = {};
       if (action.data.notification && action.data.author.id !== state.user.id) {
         let postNotification = {
           id: action.data.notification.id,
@@ -88,18 +89,41 @@ export default (state = INITIAL_STATE, action) => {
             comment_body: null,
           },
         };
+        if (action.data.notification_approval) {
+          notificationApproval = {
+            id: action.data.notification_approval.id,
+            type: action.data.notification_approval.type,
+            is_read: 0,
+            created_at: action.data.created_at,
+            author: action.data.author,
+            data: {
+              post_id: action.data.id,
+              type: action.data.type,
+              must_read: action.data.is_must_read,
+              must_reply: action.data.is_must_reply,
+              personalized_for_id: action.data.personalized_for_id,
+              title: action.data.title,
+              workspaces: action.data.workspaces,
+              comment_body: null,
+            },
+          };
+        }
         return {
           ...state,
-          notifications: {...state.notifications, [postNotification.id]: postNotification},
+          notifications: {
+            ...state.notifications,
+            [postNotification.id]: postNotification,
+            ...(action.data.notification_approval && {
+              [notificationApproval.id]: notificationApproval,
+            }),
+          },
         };
       } else {
         return state;
       }
     }
     case "INCOMING_COMMENT": {
-      if (action.data.notification === null
-        || action.data.author.id === state.user.id)
-        return state;
+      if (action.data.notification === null || action.data.author.id === state.user.id) return state;
 
       let postNotification = {
         id: action.data.notification.id,
@@ -116,20 +140,20 @@ export default (state = INITIAL_STATE, action) => {
           title: action.data.post_title,
           workspaces: action.data.workspaces,
           comment_body: action.data.body,
-          comment_id: action.data.id
+          comment_id: action.data.id,
         },
       };
 
       return {
         ...state,
-        notifications: {...state.notifications, [postNotification.id]: postNotification},
+        notifications: { ...state.notifications, [postNotification.id]: postNotification },
       };
     }
     case "SET_PUSH_NOTIFICATION": {
       return {
         ...state,
-        hasSubscribed: action.data
-      }
+        hasSubscribed: action.data,
+      };
     }
     case "INCOMING_REMINDER_NOTIFICATION": {
       if (action.data.notification) {
@@ -143,12 +167,12 @@ export default (state = INITIAL_STATE, action) => {
             title: action.data.title,
             description: action.data.description,
             created_at: action.data.created_at,
-            remind_at: action.data.remind_at
-          }
-        }
+            remind_at: action.data.remind_at,
+          },
+        };
         return {
           ...state,
-          notifications: {...state.notifications, [reminderNotification.id]: reminderNotification},
+          notifications: { ...state.notifications, [reminderNotification.id]: reminderNotification },
         };
       } else {
         return state;

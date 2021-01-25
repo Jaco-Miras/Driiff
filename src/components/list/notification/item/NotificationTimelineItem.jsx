@@ -206,7 +206,15 @@ export const NotificationTimelineItem = (props) => {
           </h6>
           <span className="notification-body-wrapper">
             <div className={`notification-body mb-3 border p-3 border-radius-1 d-flex justify-content-between align-items-center mr-4 ${notification.is_read === 0 ? "border-left-active" : ""}`}>
-              <div>{notification.type === "NEW_TODO" ? <>{stripHtml(notification.data.description)}</> : notification.type === "POST_CREATE" ? <>{notification.data.title}</> : <>{stripHtml(notification.data.comment_body)}</>}</div>
+              <div>
+                {notification.type === "NEW_TODO" ? (
+                  <>{stripHtml(notification.data.description)}</>
+                ) : notification.type === "POST_CREATE" || notification.type === "POST_REQST_APPROVAL" ? (
+                  <>{notification.data && notification.data.title}</>
+                ) : (
+                  <>{stripHtml(notification.data.comment_body)}</>
+                )}
+              </div>
               <div>
                 {notification.is_read === 0 ? (
                   <i title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer fa fa-circle-o font-size-11" />

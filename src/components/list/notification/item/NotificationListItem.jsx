@@ -162,6 +162,7 @@ export const NotificationListItem = (props) => {
           <div className="notification-container flex-grow-1" onClick={handleRedirect}>
             <span>{notification.author.name}</span>
             <p className="notification-title text-link">{dictionary.sentProposal}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
             <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
           </div>
         );
