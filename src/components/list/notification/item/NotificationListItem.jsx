@@ -157,7 +157,7 @@ export const NotificationListItem = (props) => {
           </div>
         );
       }
-      case "POST_REQUEST_APPROVAL": {
+      case "POST_REQST_APPROVAL": {
         return (
           <div className="notification-container flex-grow-1" onClick={handleRedirect}>
             <span>{notification.author.name}</span>

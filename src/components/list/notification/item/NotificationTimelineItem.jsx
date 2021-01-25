@@ -175,7 +175,7 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
-      case "POST_REQUEST_APPROVAL": {
+      case "POST_REQST_APPROVAL": {
         return (
           <>
             <span>
