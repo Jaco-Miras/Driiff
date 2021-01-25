@@ -16,7 +16,7 @@ const Wrapper = styled.li`
     overflow: hidden;
     display: block !important;
     text-overflow: ellipsis;
-    white-space: nowrap;  
+    white-space: nowrap;
   }
   .notification-title {
     width: calc(100% - 10px);
@@ -48,7 +48,7 @@ export const NotificationListItem = (props) => {
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
     } else {
-      let post = { id: notification.data.post_id, title: notification.data.title};
+      let post = { id: notification.data.post_id, title: notification.data.title };
       let workspace = null;
       let focusOnMessage = null;
       if (notification.data.workspaces && notification.data.workspaces.length) {
@@ -62,10 +62,10 @@ export const NotificationListItem = (props) => {
       }
       if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
         if (notification.data.comment_id) {
-          focusOnMessage = {focusOnMessage: notification.data.comment_id};
+          focusOnMessage = { focusOnMessage: notification.data.comment_id };
         }
       }
-      redirect.toPost({ workspace, post}, focusOnMessage);
+      redirect.toPost({ workspace, post }, focusOnMessage);
     }
   };
 
@@ -88,10 +88,13 @@ export const NotificationListItem = (props) => {
   // const { _t } = useTranslation();
 
   const dictionary = {
-    post: _t("NOTIFICATION.POST_POPUP", `Shared a post`),
-    comment: _t("NOTIFICATION.COMMENT_POPUP", `Made a comment in ::title::`, { title: "" }),
-    mention: _t("NOTIFICATION.MENTION_POPUP", `Mentioned you in ::title::`, { title: "" }),
-    reminder: _t("NOTIFICATION.REMINDER_POPUP", `You asked to be reminded about ::title::`, { title: "" })
+    post: _t("NOTIFICATION.POST_POPUP", "Shared a post"),
+    comment: _t("NOTIFICATION.COMMENT_POPUP", "Made a comment in ::title::", { title: "" }),
+    mention: _t("NOTIFICATION.MENTION_POPUP", "Mentioned you in ::title::", { title: "" }),
+    reminder: _t("NOTIFICATION.REMINDER_POPUP", "You asked to be reminded about ::title::", { title: "" }),
+    hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
+    hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
+    sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
   };
 
   const notifDisplay = () => {
@@ -134,7 +137,34 @@ export const NotificationListItem = (props) => {
             <p className="notification-title text-link">{notification.data.title}</p>
             <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
           </div>
-      );
+        );
+      }
+      case "POST_ACCEPT_APPROVAL": {
+        return (
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-title text-link">{dictionary.hasAcceptedProposal}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
+        );
+      }
+      case "POST_REJECT_APPROVAL": {
+        return (
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-title text-link">{dictionary.hasRequestedChange}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
+        );
+      }
+      case "POST_REQUEST_APPROVAL": {
+        return (
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-title text-link">{dictionary.sentProposal}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
+        );
       }
       default:
         return null;
@@ -153,16 +183,10 @@ export const NotificationListItem = (props) => {
     <Wrapper>
       <span className="list-group-item d-flex hide-show-toggler">
         <div>
-          {
-            notification.author !== null &&
-            <Avatar id={notification.author.id} name={notification.author.name}
-                    imageLink={notification.author.profile_image_thumbnail_link ? notification.author.profile_image_thumbnail_link : notification.author.profile_image_link}/>
-          }
-          {
-            notification.type === "NEW_TODO" &&
-            <Avatar id={user.id} name={user.name}
-                    imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link}/>
-          }
+          {notification.author !== null && (
+            <Avatar id={notification.author.id} name={notification.author.name} imageLink={notification.author.profile_image_thumbnail_link ? notification.author.profile_image_thumbnail_link : notification.author.profile_image_link} />
+          )}
+          {notification.type === "NEW_TODO" && <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />}
         </div>
         {notifDisplay()}
         <div style={{ minWidth: "10px" }}>

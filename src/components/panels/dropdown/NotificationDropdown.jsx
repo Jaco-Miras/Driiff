@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const NotificationDropdown = (props) => {
-  const { className = "", toggleDropdown, } = props;
+  const { className = "", toggleDropdown } = props;
 
   const history = useHistory();
   const actions = useNotificationActions();
@@ -65,14 +65,14 @@ const NotificationDropdown = (props) => {
     >
       <div className="notification-title-wrapper p-4 text-center d-flex justify-content-between">
         <h6 className="mb-0">{dictionary.notifications}</h6>
-        {unreadCount > 0 &&
-        <small className="font-size-11 opacity-7">{unreadCount} {dictionary.unreadNotifications}</small>}
+        {unreadCount > 0 && (
+          <small className="font-size-11 opacity-7">
+            {unreadCount} {dictionary.unreadNotifications}
+          </small>
+        )}
       </div>
       <div>
-        <NotificationLists
-          data-toggle={"notification"}
-          notifications={notifications} actions={actions} history={history} dictionary={dictionary}
-          removeOverlay={toggleDropdown}/>
+        <NotificationLists data-toggle={"notification"} notifications={notifications} actions={actions} history={history} dictionary={dictionary} removeOverlay={toggleDropdown} />
       </div>
       <div className="p-2 text-right">
         <ul className="list-inline small">

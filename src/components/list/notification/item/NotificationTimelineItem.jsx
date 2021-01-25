@@ -109,6 +109,9 @@ export const NotificationTimelineItem = (props) => {
     notificationNewPost: _t("NOTIFICATION.NEW_POST", `shared a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
     notificationComment: _t("NOTIFICATION.COMMENT", `made a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">comment</span> in <span class="text-link">${notification.data.title}`),
     notificationMention: _t("NOTIFICATION.MENTION", `<span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">mentioned</span> you in`),
+    hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
+    hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
+    sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
   };
 
   const renderTitle = useCallback(() => {
@@ -151,6 +154,33 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span>{_t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
+          </>
+        );
+      }
+      case "POST_ACCEPT_APPROVAL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasAcceptedProposal}
+            </span>
+          </>
+        );
+      }
+      case "POST_REJECT_APPROVAL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasRequestedChange}
+            </span>
+          </>
+        );
+      }
+      case "POST_REQUEST_APPROVAL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.sentProposal}
+            </span>
           </>
         );
       }
