@@ -14,28 +14,26 @@ let init = false;
 export const useTranslation = (session = {}) => {
   const dispatch = useDispatch();
 
-  const {registeredDriff} = useDriff();
+  const { registeredDriff } = useDriff();
   const {
     driffSettings,
     generalSettings: { language },
     setGeneralSetting,
   } = useSettings();
   const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
+  const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
 
   const [dictFile, setDictFile] = useState("");
-  const {REACT_APP_dictionary_file} = process.env;
-  const dictionaryAPIUrl = registeredDriff ?
-    REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff) :
-    REACT_APP_dictionary_file.replace("{{driffName}}.", "");
+  const { REACT_APP_dictionary_file } = process.env;
+  const dictionaryAPIUrl = registeredDriff ? REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff) : REACT_APP_dictionary_file.replace("{{driffName}}.", "");
 
   const browserLang = {
     main: (navigator.language || navigator.userLanguage).split("-")[0],
-    exact: navigator.language || navigator.userLanguage
-  }
+    exact: navigator.language || navigator.userLanguage,
+  };
 
   useEffect(() => {
-    if (init || !session.checked || (session.authenticated && language === null))
-      return;
+    if (init || !session.checked || (session.authenticated && language === null)) return;
 
     init = true;
 
@@ -57,7 +55,6 @@ export const useTranslation = (session = {}) => {
   });
 
   useEffect(() => {
-
     if (dictFile) {
       dispatch(
         getTranslationObject(
@@ -95,6 +92,9 @@ export const useTranslation = (session = {}) => {
     let translation = default_value;
     if (i18n !== null && typeof i18n[code] !== "undefined") {
       translation = i18n[code];
+    } else if (i18n !== null && typeof i18n[code] === "undefined" && !i18new.hasOwnProperty(code)) {
+      const newWords = { ...i18new, [code]: default_value };
+      localStorage.setItem("i18new", JSON.stringify(newWords));
     }
 
     if (replacement !== null) {
@@ -148,21 +148,20 @@ export const useTranslation = (session = {}) => {
   }, []);
 
   const uploadTranslationToServer = useCallback(
-    (callback = () => {
-    }) => {
+    (callback = () => {}) => {
       let vocabulary = [];
-      let bodyText = `You are about to add the following words to the dictionary files, continue?`;
-      bodyText += `<table>`;
-      Object.keys(i18n).forEach((k) => {
-        bodyText += `<tr>`;
+      let bodyText = "You are about to add the following words to the dictionary files, continue?";
+      bodyText += "<table>";
+      Object.keys(i18new).forEach((k) => {
+        bodyText += "<tr>";
         bodyText += `<td>${k}</td>`;
-        bodyText += `<td>${i18n[k]}</td>`;
-        bodyText += `</tr>`;
+        bodyText += `<td>${i18new[k]}</td>`;
+        bodyText += "</tr>";
         vocabulary.push({
-          [k]: i18n[k],
+          [k]: i18new[k],
         });
       });
-      bodyText += `</table>`;
+      bodyText += "</table>";
 
       const cb = () => {
         dispatch(postGenerateTranslationRaw(vocabulary, callback));
@@ -179,7 +178,6 @@ export const useTranslation = (session = {}) => {
           onSubmit: cb,
         },
       };
-
       dispatch(addToModals(payload));
     },
     [i18n]
