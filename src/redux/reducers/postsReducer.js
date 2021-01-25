@@ -844,17 +844,15 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(Object.keys(state.companyPosts.posts).length && {
+            ...(typeof state.companyPosts.posts[action.data.postId] && {
               [action.data.postId]: {
                 ...state.companyPosts.posts[action.data.postId],
-                post_reads: [
-                  ...action.data.readPosts
-                ],
+                post_reads: [...action.data.readPosts],
               },
-            })
-          }
-        }
-      }
+            }),
+          },
+        },
+      };
     }
     default:
       return state;
