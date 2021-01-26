@@ -209,7 +209,7 @@ export const NotificationTimelineItem = (props) => {
               <div>
                 {notification.type === "NEW_TODO" ? (
                   <>{stripHtml(notification.data.description)}</>
-                ) : notification.type === "POST_CREATE" || notification.type === "POST_REQST_APPROVAL" ? (
+                ) : notification.type === "POST_CREATE" || notification.type === "POST_REQST_APPROVAL" || notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "POST_REJECT_APPROVAL" ? (
                   <>{notification.data && notification.data.title}</>
                 ) : (
                   <>{stripHtml(notification.data.comment_body)}</>

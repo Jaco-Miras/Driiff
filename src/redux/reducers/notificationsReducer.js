@@ -69,6 +69,40 @@ export default (state = INITIAL_STATE, action) => {
         notifications: {},
       };
     }
+    case "INCOMING_POST_APPROVAL": {
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          ...(action.data.notification_approval && {
+            [action.data.notification_approval.id]: {
+              id: action.data.notification_approval.id,
+              type: action.data.notification_approval.type,
+              is_read: 0,
+              created_at: action.data.user_approved.updated_at,
+              author: action.data.user_approved,
+              data: {
+                post_id: action.data.post.id,
+                type: "POST",
+                must_read: false,
+                must_reply: false,
+                personalized_for_id: null,
+                title: action.data.post.title,
+                workspaces: action.data.workspaces.map((ws) => {
+                  return {
+                    topic_id: ws.topic.id,
+                    topic_name: ws.topic.name,
+                    workspace_id: ws.workspace ? ws.workspace.id : null,
+                    workspace_name: ws.workspace ? ws.workspace.name : null,
+                  };
+                }),
+                comment_body: null,
+              },
+            },
+          }),
+        },
+      };
+    }
     case "INCOMING_POST": {
       let notificationApproval = {};
       if (action.data.notification && action.data.author.id !== state.user.id) {
