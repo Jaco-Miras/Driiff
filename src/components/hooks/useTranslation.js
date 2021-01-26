@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getHttpStatus } from "../../helpers/commonFunctions";
 import { addToModals, getTranslationObject, postGenerateTranslationRaw } from "../../redux/actions/globalActions";
 import { useDriff, useSettings } from "./index";
@@ -11,15 +11,16 @@ let cookieName = {
   name: "i18n_ver",
 };
 let init = false;
-export const useTranslation = (session = {}) => {
+export const useTranslation = () => {
   const dispatch = useDispatch();
-
+  const session = useSelector((state) => state.session);
   const { registeredDriff } = useDriff();
   const {
     driffSettings,
     generalSettings: { language },
     setGeneralSetting,
   } = useSettings();
+
   const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
   const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
 
@@ -93,8 +94,10 @@ export const useTranslation = (session = {}) => {
     if (i18n !== null && typeof i18n[code] !== "undefined") {
       translation = i18n[code];
     } else if (i18n !== null && typeof i18n[code] === "undefined" && !i18new.hasOwnProperty(code)) {
-      const newWords = { ...i18new, [code]: default_value };
-      localStorage.setItem("i18new", JSON.stringify(newWords));
+      if (session.authenticated && session.user && (["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(session.user.email))) {
+        const newWords = { ...i18new, [code]: default_value };
+        localStorage.setItem("i18new", JSON.stringify(newWords));
+      }
     }
 
     if (replacement !== null) {

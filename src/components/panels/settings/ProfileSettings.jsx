@@ -413,7 +413,7 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               </div>
-              {(loggedUser.email.includes("rt@") || ["rtuerlings@zuid.com", "joules@makedevelopment.com", "anthea@makedevelopment.com", "nilo@makedevelopment.com"].includes(loggedUser.email)) && (
+              {(["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email)) && (
                 <div className="row mb-2 mt-4">
                   <div className="col-12 text-right">
                     <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>
