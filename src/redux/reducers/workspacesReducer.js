@@ -156,6 +156,24 @@ export default (state = INITIAL_STATE, action) => {
         folders: updatedFolders,
       };
     }
+    case "GET_WORKSPACE_SUCCESS": {
+      let ws = {
+        ...action.data.workspace_data,
+        channel: action.data.workspace_data.topic_detail.channel,
+        unread_chats: action.data.workspace_data.topic_detail.unread_chats,
+        unread_posts: action.data.workspace_data.topic_detail.unread_posts,
+        folder_id: action.data.workspace_id,
+        folder_name: action.data.workspace_name,
+      };
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          [ws.id]: ws,
+        },
+        activeTopic: ws,
+      };
+    }
     case "INCOMING_WORKSPACE_FOLDER": {
       let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
@@ -2332,23 +2350,21 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspacePosts: {
-          ...Object.keys(state.workspacePosts).reduce( (res, key) => {
+          ...Object.keys(state.workspacePosts).reduce((res, key) => {
             res[key] = {
               ...state.workspacePosts[key],
               posts: {
                 ...state.workspacePosts[key].posts,
                 [action.data.postId]: {
                   ...state.workspacePosts[key].posts[action.data.postId],
-                  post_reads: [
-                    ...action.data.readPosts
-                  ],
+                  post_reads: [...action.data.readPosts],
                 },
               },
-            }
+            };
             return res;
-          }, {})
-        }
-      }
+          }, {}),
+        },
+      };
     }
     default:
       return state;

@@ -8,7 +8,7 @@ import useChannelActions from "../../hooks/useChannelActions";
 import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
-import { useSettings, useWorkspace } from "../../hooks";
+import { useSettings, useWorkspaceActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
@@ -134,6 +134,7 @@ const ChatHeaderPanel = (props) => {
 
   const [page, setPage] = useState("chat");
   const chatChannel = useSelector((state) => state.chat.selectedChannel);
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -171,8 +172,8 @@ const ChatHeaderPanel = (props) => {
   const goBackChannelSelect = () => {
     document.body.classList.remove("m-chat-channel-closed");
   };
+  const workspaceAction = useWorkspaceActions();
 
-  const { actions: workspaceAction, workspaces } = useWorkspace();
   const {
     generalSettings: { workspace_open_folder },
     setGeneralSetting,
