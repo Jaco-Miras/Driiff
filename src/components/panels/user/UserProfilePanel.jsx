@@ -159,6 +159,8 @@ const UserProfilePanel = (props) => {
     external: _t("PROFILE.EXTERNAL", "External"),
   };
 
+  const isAdmin = loggedUser && loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active;
+
   const getValidClass = useCallback((valid) => {
     if (typeof valid !== "boolean") {
     } else {
@@ -327,17 +329,26 @@ const UserProfilePanel = (props) => {
           }
         });
       } else {
-        update(form, (err, res) => {
-          if (res) {
-            setEditInformation(false);
-          }
-        });
+        if (isAdmin) {
+          console.log("update user");
+          update({ ...form, change_email: 1 }, (err, res) => {
+            if (res) {
+              setEditInformation(false);
+            }
+          });
+        } else {
+          update(form, (err, res) => {
+            if (res) {
+              setEditInformation(false);
+            }
+          });
+        }
       }
     } else {
       toaster.info("Nothing was updated.");
       setEditInformation(false);
     }
-  }, [form, formUpdate, update, setEditInformation, user]);
+  }, [form, formUpdate, update, setEditInformation, user, isAdmin]);
 
   const handleAvatarClick = () => {
     if (!editInformation) {
@@ -553,11 +564,11 @@ const UserProfilePanel = (props) => {
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
                   {dictionary.information}
-                  {isLoggedUser && (
+                  {isLoggedUser || (loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active) ? (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                       <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
-                  )}
+                  ) : null}
                 </h6>
                 {user.first_name && (
                   <div className="row mb-2">
@@ -646,7 +657,15 @@ const UserProfilePanel = (props) => {
                       <Label>{user.first_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.first_name)} innerRef={refs.first_name} name="first_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.first_name} />
+                        <Input
+                          className={getValidClass(formUpdate.valid.first_name)}
+                          disabled={isAdmin || !isLoggedUser}
+                          innerRef={refs.first_name}
+                          name="first_name"
+                          onChange={handleInputChange}
+                          onBlur={handleInputBlur}
+                          defaultValue={user.first_name}
+                        />
                         <InputFeedback valid={formUpdate.feedbackState.first_name}>{formUpdate.feedbackText.first_name}</InputFeedback>
                       </>
                     )}
@@ -659,7 +678,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.middle_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.middle_name)} name="middle_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.middle_name} />
+                        <Input className={getValidClass(formUpdate.valid.middle_name)} disabled={isAdmin || !isLoggedUser} name="middle_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.middle_name} />
                         <InputFeedback valid={formUpdate.feedbackState.middle_name}>{formUpdate.feedbackText.middle_name}</InputFeedback>
                       </>
                     )}
@@ -673,7 +692,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.last_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.last_name)} name="last_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.last_name} />
+                        <Input className={getValidClass(formUpdate.valid.last_name)} disabled={isAdmin || !isLoggedUser} name="last_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.last_name} />
                         <InputFeedback valid={formUpdate.feedbackState.last_name}>{formUpdate.feedbackText.last_name}</InputFeedback>
                       </>
                     )}
@@ -682,7 +701,7 @@ const UserProfilePanel = (props) => {
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.password}</div>
                   <div className="col col-form">
-                    {readOnlyFields.includes("password") ? (
+                    {readOnlyFields.includes("password") || isAdmin ? (
                       <Label>*****</Label>
                     ) : (
                       <>
@@ -720,7 +739,14 @@ const UserProfilePanel = (props) => {
                         <Label>{user.external_company_name && user.external_company_name}</Label>
                       ) : (
                         <>
-                          <Input className={getValidClass(true)} name="company_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.external_company_name ? user.external_company_name : ""} />
+                          <Input
+                            className={getValidClass(true)}
+                            name="company_name"
+                            disabled={isAdmin || !isLoggedUser}
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            defaultValue={user.external_company_name ? user.external_company_name : ""}
+                          />
                           {/* <InputFeedback valid={true}>{formUpdate.feedbackText.place}</InputFeedback> */}
                         </>
                       )}
@@ -734,7 +760,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.place}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.place)} name="place" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
+                        <Input className={getValidClass(formUpdate.valid.place)} name="place" disabled={isAdmin || !isLoggedUser} onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
                         <InputFeedback valid={formUpdate.feedbackState.place}>{formUpdate.feedbackText.place}</InputFeedback>
                       </>
                     )}
@@ -747,7 +773,15 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
+                        <FormInput
+                          name="address"
+                          disabled={isAdmin || !isLoggedUser}
+                          onChange={handleInputChange}
+                          onBlur={handleInputBlur}
+                          defaultValue={user.address}
+                          isValid={formUpdate.feedbackState.address}
+                          feedback={formUpdate.feedbackText.address}
+                        />
                       </>
                     )}
                   </div>
@@ -772,7 +806,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" disabled={isAdmin || !isLoggedUser} onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
                         <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}
