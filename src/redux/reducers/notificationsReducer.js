@@ -79,7 +79,7 @@ export default (state = INITIAL_STATE, action) => {
               id: action.data.notification_approval.id,
               type: action.data.notification_approval.type,
               is_read: 0,
-              created_at: action.data.user_approved.updated_at,
+              created_at: action.data.created_at ? action.data.created_at : action.data.user_approved.updated_at,
               author: action.data.user_approved,
               data: {
                 post_id: action.data.post.id,
