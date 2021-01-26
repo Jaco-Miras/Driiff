@@ -304,6 +304,7 @@ const ProfileSettings = (props) => {
 
   const handleUpdateTranslationClick = () => {
     uploadTranslationToServer(() => {
+      localStorage.removeItem("i18new");
       let a = document.createElement("a");
       a.href = `https://${getDriffName()}.driff.io/admin/translations`;
       a.target = "_blank";
