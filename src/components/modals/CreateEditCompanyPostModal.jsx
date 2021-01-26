@@ -36,6 +36,7 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
+    z-index: 0;
     width: 100%;
     @media all and (max-width: 480px) {
       margin-left: 0;
@@ -733,7 +734,7 @@ const CreateEditCompanyPostModal = (props) => {
       ...form,
       selectedAddressTo: [
         ...users.map((user) => {
-          if (user.type === 'WORKSPACE' || user.type === 'TOPIC'){
+          if (user.type === "WORKSPACE" || user.type === "TOPIC") {
             return {
               ...user,
               value: user.id,
@@ -741,8 +742,8 @@ const CreateEditCompanyPostModal = (props) => {
               name: user.name,
               first_name: user.first_name,
               type: user.type,
-              icon: "compass"
-            }
+              icon: "compass",
+            };
           }
           return {
             id: user.id,
@@ -758,9 +759,9 @@ const CreateEditCompanyPostModal = (props) => {
         ...form.selectedAddressTo,
       ],
     });
-    
+
     setMentionedUserIds([]);
-    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => parseInt(u.id)) ]);
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => parseInt(u.id))]);
   };
 
   const handleIgnoreMentionedUsers = (users) => {

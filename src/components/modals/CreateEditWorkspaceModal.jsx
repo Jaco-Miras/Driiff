@@ -98,6 +98,7 @@ const WrapperDiv = styled(InputGroup)`
     margin-bottom: -20px;
   }
   &.action-wrapper {
+    z-index: 0;
     margin-top: 40px;
 
     .action-archive-wrapper {

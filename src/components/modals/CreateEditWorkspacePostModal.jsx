@@ -37,6 +37,7 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
+    z-index: 0;
     width: 100%;
     @media all and (max-width: 480px) {
       margin-left: 0;
@@ -734,15 +735,15 @@ const CreateEditWorkspacePostModal = (props) => {
       ...form,
       selectedAddressTo: [
         ...users.map((user) => {
-          if (user.type === 'WORKSPACE' || user.type === 'TOPIC'){
+          if (user.type === "WORKSPACE" || user.type === "TOPIC") {
             return {
               ...user,
               value: user.id,
               label: user.name,
               name: user.name,
               first_name: user.first_name,
-              type: user.type
-            }
+              type: user.type,
+            };
           }
           return {
             id: user.id,
@@ -771,7 +772,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const handleMentionUser = (mids) => {
     const mention_ids = mids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
-  
+
     if (mention_ids.length) {
       //check for recipients/type
       let adddressIds = form.selectedAddressTo
