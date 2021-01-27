@@ -11,6 +11,7 @@ import {
   archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
+  commentApprove,
   deletePost,
   fetchDetail,
   fetchPosts,
@@ -478,7 +479,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null) => {
+    (mode = "create", post = null, comment_id = null) => {
       let payload = {};
 
       switch (mode) {
@@ -534,7 +535,13 @@ const usePostActions = () => {
               post: post,
             },
             actions: {
-              onSubmit: () => approve({ post_id: post.id, approved: 1 }),
+              onSubmit: () => {
+                if (comment_id) {
+                  approveComment({ post_id: post.id, approved: 1, comment_id: comment_id });
+                } else {
+                  approve({ post_id: post.id, approved: 1 });
+                }
+              },
             },
           };
           break;
@@ -824,8 +831,16 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const approveComment = useCallback(
+    (payload = {}, callback) => {
+      dispatch(commentApprove(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
+    approveComment,
     addUserToPost,
     starPost,
     markPost,

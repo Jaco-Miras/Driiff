@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Comment} from "../../../list/post/item";
+import { Comment } from "../../../list/post/item";
 
 const Wrapper = styled.div`
   ul {
@@ -15,27 +15,30 @@ const Wrapper = styled.div`
 `;
 
 const CompanyPostComments = (props) => {
-  const {className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember = true, dictionary, disableOptions = false} = props;
+  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember = true, dictionary, disableOptions = false, postActions } = props;
 
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
       {comments && (
         <ul>
           {Object.values(comments).map((c) => {
-            return <Comment
-              key={c.id}
-              comment={c}
-              post={post}
-              user={user}
-              commentActions={commentActions}
-              onShowFileDialog={onShowFileDialog}
-              dropAction={dropAction}
-              workspace={workspace}
-              isMember={isMember}
-              dictionary={dictionary}
-              disableOptions={disableOptions}
-              isCompanyPost={true}
-            />;
+            return (
+              <Comment
+                key={c.id}
+                comment={c}
+                post={post}
+                user={user}
+                commentActions={commentActions}
+                onShowFileDialog={onShowFileDialog}
+                dropAction={dropAction}
+                workspace={workspace}
+                isMember={isMember}
+                dictionary={dictionary}
+                disableOptions={disableOptions}
+                isCompanyPost={true}
+                postActions={postActions}
+              />
+            );
           })}
         </ul>
       )}

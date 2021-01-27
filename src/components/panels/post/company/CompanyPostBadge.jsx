@@ -96,7 +96,7 @@ const CompanyPostBadge = (props) => {
       )}
       {hasPendingAproval && post.author.id === user.id && (
         <div className={`${className} mr-3 d-sm-inline d-none opacity-2`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>Request for approval</div>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.requestForApproval}</div>
         </div>
       )}
     </div>

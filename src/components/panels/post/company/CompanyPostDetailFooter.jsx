@@ -193,6 +193,7 @@ const ApproverSelectWrapper = styled.div`
   // justify-content: flex-end;
   padding-bottom: 10px;
   margin-left: auto;
+  flex-direction: column;
   > div.react-select-container {
     width: 300px;
   }
@@ -279,6 +280,7 @@ const CompanyPostDetailFooter = (props) => {
     lockedLabel: _t("CHAT.INFO_PRIVATE_WORKSPACE", "You are in a private workspace."),
     requestChange: _t("POST.REQUEST_CHANGE", "Request for change"),
     accept: _t("POST.ACCEPT", "Accept"),
+    requestApprovalFrom: _t("POST.REQUEST_APPROVAL_FROM", "Request approval from"),
   };
 
   const handleQuillImage = () => {
@@ -317,7 +319,17 @@ const CompanyPostDetailFooter = (props) => {
         type: "USER",
       };
     });
+
   const handleSelectApprover = (e) => {
+    if (e === null || !e.length) {
+      if (approving.change) {
+        setApproving({
+          ...approving,
+          change: false,
+        });
+        setShowApprover(false);
+      }
+    }
     if (e === null) {
       setApprovers([]);
     } else {
@@ -403,13 +415,16 @@ const CompanyPostDetailFooter = (props) => {
         {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
         {showApprover && (
           <ApproverSelectWrapper>
+            {approving.change && <label>Request change to</label>}
             <FolderSelect options={userOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
           </ApproverSelectWrapper>
         )}
       </Dflex>
       {hasPendingAproval && !isApprover && (
         <NoReply className="d-flex align-items-center mb-2">
-          <div className="alert alert-primary">Request for approval</div>
+          <div className="alert alert-primary" style={{ color: "#1E90FF" }}>
+            {dictionary.requestApprovalFrom} {post.author.name}
+          </div>
         </NoReply>
       )}
       {(!isApprover || approving.change || userApproved) && (
@@ -444,7 +459,7 @@ const CompanyPostDetailFooter = (props) => {
                   onClearApprovers={handleClearApprovers}
                   onSubmitCallback={requestForChangeCallback}
                 />
-                <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+                {!isApprover && <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>}
                 <IconButton icon="image" onClick={handleQuillImage} />
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
                 <IconButton onClick={handleSend} icon="send" />

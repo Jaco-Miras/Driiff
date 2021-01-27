@@ -581,7 +581,7 @@ const CompanyPostDetail = (props) => {
         )}
         {comments && Object.keys(comments).length > 0 && (
           <>
-            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} />
+            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} postActions={postActions} />
             <hr className="m-0" />
           </>
         )}
