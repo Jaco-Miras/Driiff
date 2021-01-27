@@ -19,6 +19,7 @@ import {
   getPostRead,
   setPostRead,
   clearApprovingState,
+  setChangeRequestedComment,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTodoActions } from "./index";
@@ -234,6 +235,13 @@ const useCommentActions = () => {
     [dispatch]
   );
 
+  const setRequestForChangeComment = useCallback(
+    (payload, callback) => {
+      dispatch(setChangeRequestedComment(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
@@ -254,6 +262,7 @@ const useCommentActions = () => {
     fetchPostRead,
     setPostReadComments,
     clearApprovingStatus,
+    setRequestForChangeComment,
   };
 };
 

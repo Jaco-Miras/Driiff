@@ -218,6 +218,7 @@ const Comment = (props) => {
   const googleApis = useGoogleApis();
 
   const users = useSelector((state) => state.users.users);
+  const clearApprovingState = useSelector((state) => state.posts.clearApprovingState);
   //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
 
   const [showInput, setShowInput] = useState(null);
@@ -445,11 +446,14 @@ const Comment = (props) => {
   // };
 
   const handleRequestChange = () => {
-    handleShowInput(null);
+    handleShowInput(comment.id);
     setApproving({
       ...approving,
       change: true,
     });
+    if (type !== "main") {
+      commentActions.setRequestForChangeComment(comment);
+    }
   };
 
   const handleCancelChange = () => {
@@ -490,6 +494,16 @@ const Comment = (props) => {
     }
     return filter_post_read;
   }, [post]);
+
+  useEffect(() => {
+    if (clearApprovingState && clearApprovingState === comment.id) {
+      setApproving({
+        ...approving,
+        change: false,
+      });
+      commentActions.clearApprovingStatus(null);
+    }
+  }, [clearApprovingState]);
 
   return (
     <>

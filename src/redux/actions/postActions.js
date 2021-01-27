@@ -356,6 +356,10 @@ export function setPostRead(payload, callback) {
   return SimpleDispatchActionToReducer("SET_POSTREAD", payload, callback);
 }
 
+export function setChangeRequestedComment(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANGE_REQUESTED_COMMENT", payload, callback);
+}
+
 export function clearApprovingState(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_COMMENT_APPROVING_STATE", payload, callback);
 }

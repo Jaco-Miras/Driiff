@@ -32,6 +32,7 @@ const INITIAL_STATE = {
   parentId: null,
   recentPosts: {},
   clearApprovingState: null,
+  changeRequestedComment: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -859,6 +860,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         clearApprovingState: action.data,
+      };
+    }
+    case "SET_CHANGE_REQUESTED_COMMENT": {
+      return {
+        ...state,
+        changeRequestedComment: action.data,
       };
     }
     default:

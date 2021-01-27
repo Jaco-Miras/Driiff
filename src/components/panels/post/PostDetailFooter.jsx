@@ -258,6 +258,7 @@ const PostDetailFooter = (props) => {
   //const topic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
   const users = useSelector((state) => state.users.users);
 
   const handleSend = useCallback(() => {
@@ -418,6 +419,9 @@ const PostDetailFooter = (props) => {
 
   const handleSelectApprover = (e) => {
     if (e === null || !e.length) {
+      if (changeRequestedComment) {
+        commentActions.clearApprovingStatus(changeRequestedComment.id);
+      }
       if (props.handleCancelChange) {
         props.handleCancelChange();
       }
@@ -503,6 +507,13 @@ const PostDetailFooter = (props) => {
     if (showCommentApprover && props.requestChangeCommentCallback) {
       props.requestChangeCommentCallback();
     }
+    if (changeRequestedComment) {
+      commentActions.approve({
+        post_id: post.id,
+        approved: 0,
+        comment_id: changeRequestedComment.id,
+      });
+    }
   };
 
   useEffect(() => {
@@ -521,6 +532,26 @@ const PostDetailFooter = (props) => {
       ]);
     }
   }, [showCommentApprover]);
+
+  useEffect(() => {
+    if (changeRequestedComment && commentId && commentId === changeRequestedComment.id) {
+      setShowApprover(true);
+      setApprovers([
+        {
+          ...changeRequestedComment.author,
+          icon: "user-avatar",
+          value: changeRequestedComment.author.id,
+          label: changeRequestedComment.author.name,
+          type: "USER",
+          ip_address: null,
+          is_approved: null,
+        },
+      ]);
+    } else {
+      setShowApprover(false);
+      setApprovers([]);
+    }
+  }, [changeRequestedComment]);
 
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
