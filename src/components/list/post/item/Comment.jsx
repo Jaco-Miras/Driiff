@@ -326,7 +326,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -445,25 +445,35 @@ const Comment = (props) => {
   // };
 
   const handleRequestChange = () => {
+    handleShowInput(null);
     setApproving({
       ...approving,
       change: true,
     });
-    if (!approving.change) {
-      commentActions.approve(
-        {
-          post_id: post.id,
-          approved: 0,
-          comment_id: comment.id,
-        },
-        () => {
-          setApproving({
-            ...approving,
-            change: false,
-          });
-        }
-      );
-    }
+  };
+
+  const handleCancelChange = () => {
+    setShowInput(null);
+    setApproving({
+      ...approving,
+      change: false,
+    });
+  };
+
+  const requestChangeCommentCallback = () => {
+    commentActions.approve(
+      {
+        post_id: post.id,
+        approved: 0,
+        comment_id: comment.id,
+      },
+      () => {
+        setApproving({
+          ...approving,
+          change: false,
+        });
+      }
+    );
   };
 
   const handleApprove = () => {
@@ -506,7 +516,7 @@ const Comment = (props) => {
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
-          {comment.users_approval.length > 0 && (
+          {comment.users_approval.length > 0 && !approving.change && (
             <PostChangeAccept approving={approving} fromNow={fromNow} usersApproval={comment.users_approval} user={user} handleApprove={handleApprove} handleRequestChange={handleRequestChange} post={post} />
           )}
           {comment.files.length >= 1 && (
@@ -592,6 +602,9 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
+              showCommentApprover={approving.change}
+              requestChangeCommentCallback={requestChangeCommentCallback}
+              handleCancelChange={handleCancelChange}
             />
           ) : (
             <CommentInput
@@ -608,6 +621,9 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
+              showCommentApprover={approving.change}
+              requestChangeCommentCallback={requestChangeCommentCallback}
+              handleCancelChange={handleCancelChange}
             />
           )}
         </InputWrapper>

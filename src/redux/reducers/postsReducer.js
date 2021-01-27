@@ -31,6 +31,7 @@ const INITIAL_STATE = {
   commentQuotes: {},
   parentId: null,
   recentPosts: {},
+  clearApprovingState: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -605,7 +606,7 @@ export default (state = INITIAL_STATE, action) => {
         if (companyPosts.posts[action.data.post_id].is_archived === 1) {
           companyPosts.posts[action.data.post_id].is_archived = 0;
         }
-        if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
+        if (companyPosts.posts[action.data.post_id].users_responsible && !companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
           companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author];
         }
         if (action.data.author.id !== state.user.id) {
@@ -852,6 +853,12 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         },
+      };
+    }
+    case "CLEAR_COMMENT_APPROVING_STATE": {
+      return {
+        ...state,
+        clearApprovingState: action.data,
       };
     }
     default:

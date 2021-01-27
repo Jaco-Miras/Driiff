@@ -220,7 +220,22 @@ const ApproverSelectWrapper = styled.div`
 `;
 
 const PostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, workspace, isMember, disableOptions } = props;
+  const {
+    className = "",
+    onShowFileDialog,
+    dropAction,
+    post,
+    parentId = null,
+    commentActions,
+    userMention = null,
+    handleClearUserMention = null,
+    commentId = null,
+    innerRef = null,
+    workspace,
+    isMember,
+    disableOptions,
+    showCommentApprover = false,
+  } = props;
 
   const postActions = usePostActions();
   const dispatch = useDispatch();
@@ -306,6 +321,8 @@ const PostDetailFooter = (props) => {
     requestChange: _t("POST.REQUEST_CHANGE", "Request for change"),
     accept: _t("POST.ACCEPT", "Accept"),
     requestApprovalFrom: _t("POST.REQUEST_APPROVAL_FROM", "Request approval from"),
+    requestChangeTo: _t("POST.REQUEST_CHANGE_TO", "Request change to"),
+    addressedTo: _t("POST.ADDRESSED_TO", "Addressed to"),
   };
 
   const handleUnarchive = () => {
@@ -401,6 +418,9 @@ const PostDetailFooter = (props) => {
 
   const handleSelectApprover = (e) => {
     if (e === null || !e.length) {
+      if (props.handleCancelChange) {
+        props.handleCancelChange();
+      }
       if (approving.change) {
         setApproving({
           ...approving,
@@ -471,6 +491,7 @@ const PostDetailFooter = (props) => {
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
   const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
+  const approverNames = post.users_approval.map((u) => u.name);
 
   const requestForChangeCallback = () => {
     if (hasPendingAproval && isApprover && showApprover) {
@@ -479,7 +500,27 @@ const PostDetailFooter = (props) => {
         approved: 0,
       });
     }
+    if (showCommentApprover && props.requestChangeCommentCallback) {
+      props.requestChangeCommentCallback();
+    }
   };
+
+  useEffect(() => {
+    setShowApprover(showCommentApprover);
+    if (showCommentApprover) {
+      setApprovers([
+        {
+          ...post.author,
+          icon: "user-avatar",
+          value: post.author.id,
+          label: post.author.name,
+          type: "USER",
+          ip_address: null,
+          is_approved: null,
+        },
+      ]);
+    }
+  }, [showCommentApprover]);
 
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
@@ -501,7 +542,8 @@ const PostDetailFooter = (props) => {
         {isMember && !disableOptions && privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
         {showApprover && (
           <ApproverSelectWrapper>
-            {approving.change && <label>Request change to</label>}
+            {((approving.change && isApprover) || showCommentApprover) && <label>{dictionary.requestChangeTo}</label>}
+            {!isApprover && <label>{dictionary.addressedTo}</label>}
             <FolderSelect options={userOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
           </ApproverSelectWrapper>
         )}
@@ -509,7 +551,7 @@ const PostDetailFooter = (props) => {
       {hasPendingAproval && !isApprover && (
         <NoReply className="d-flex align-items-center mb-2">
           <div className="alert alert-primary" style={{ color: "#1E90FF" }}>
-            {dictionary.requestApprovalFrom} {post.author.name}
+            {dictionary.requestApprovalFrom} {approverNames.join(", ")}
           </div>
         </NoReply>
       )}

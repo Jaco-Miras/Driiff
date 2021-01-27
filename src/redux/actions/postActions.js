@@ -37,7 +37,7 @@ import {
   putPost as putPostService,
   refetchPostComments as refetchPostCommentsService,
   refetchPosts as refetchPostsService,
-  getPostRead as getPostReadService
+  getPostRead as getPostReadService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -354,4 +354,8 @@ export function getPostRead(payload, callback) {
 
 export function setPostRead(payload, callback) {
   return SimpleDispatchActionToReducer("SET_POSTREAD", payload, callback);
+}
+
+export function clearApprovingState(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_COMMENT_APPROVING_STATE", payload, callback);
 }
