@@ -301,9 +301,7 @@ const PostItemPanel = (props) => {
         .filter((r, i) => i < recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
-            }</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join(", ");
@@ -323,7 +321,7 @@ const PostItemPanel = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
               r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
             }</span>`;
           else return `<span class="receiver">${r.name}</span>`;
