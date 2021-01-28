@@ -2280,6 +2280,32 @@ export default (state = INITIAL_STATE, action) => {
                     }),
                   },
                 }),
+                ...(!state.postComments[action.data.post.id].comments.hasOwnProperty(action.data.comment.id) && {
+                  ...Object.keys(state.postComments[action.data.post.id].comments).reduce((res, key) => {
+                    res[key] = {
+                      ...state.postComments[action.data.post.id].comments[key],
+                      ...(state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id] && {
+                        replies: {
+                          ...state.postComments[action.data.post.id].comments[key].replies,
+                          [action.data.comment.id]: {
+                            ...state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id],
+                            users_approval: state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id].users_approval.map((u) => {
+                              if (u.id === action.data.user_approved.id) {
+                                return {
+                                  ...u,
+                                  ...action.data.user_approved,
+                                };
+                              } else {
+                                return u;
+                              }
+                            }),
+                          },
+                        },
+                      }),
+                    };
+                    return res;
+                  }, {}),
+                }),
               },
             },
           }),
@@ -2332,23 +2358,21 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspacePosts: {
-          ...Object.keys(state.workspacePosts).reduce( (res, key) => {
+          ...Object.keys(state.workspacePosts).reduce((res, key) => {
             res[key] = {
               ...state.workspacePosts[key],
               posts: {
                 ...state.workspacePosts[key].posts,
                 [action.data.postId]: {
                   ...state.workspacePosts[key].posts[action.data.postId],
-                  post_reads: [
-                    ...action.data.readPosts
-                  ],
+                  post_reads: [...action.data.readPosts],
                 },
               },
-            }
+            };
             return res;
-          }, {})
-        }
-      }
+          }, {}),
+        },
+      };
     }
     default:
       return state;

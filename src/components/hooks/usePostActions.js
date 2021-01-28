@@ -6,6 +6,7 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { addToModals, deleteDraft, getUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
 import {
+  addCommentReact,
   addPostReact,
   addUserToPostRecipients,
   archiveAllCallback,
@@ -479,7 +480,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null, comment_id = null) => {
+    (mode = "create", post = null, comment = null) => {
       let payload = {};
 
       switch (mode) {
@@ -536,8 +537,19 @@ const usePostActions = () => {
             },
             actions: {
               onSubmit: () => {
-                if (comment_id) {
-                  approveComment({ post_id: post.id, approved: 1, comment_id: comment_id });
+                if (comment) {
+                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
+                    if (err) return;
+                    dispatch(
+                      addCommentReact({
+                        counter: 1,
+                        id: comment.id,
+                        parent_id: comment.parent_id,
+                        post_id: post.id,
+                        reaction: "clap",
+                      })
+                    );
+                  });
                 } else {
                   approve({ post_id: post.id, approved: 1 });
                 }
