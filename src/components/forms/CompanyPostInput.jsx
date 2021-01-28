@@ -476,7 +476,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   const handleAddMentionedUsers = (users) => {
     const userIds = users.map((u) => u.id);
-    const userRecipients = recipients.filter((r) => r.type === "USER");
+    const types = ["USER", "WORKSPACE", "TOPIC"];
+    const userRecipients = recipients.filter((r) => types.includes(r.type));
 
     const newRecipients = userRecipients.filter((r) => {
       return userIds.some((id) => id === r.type_id);
