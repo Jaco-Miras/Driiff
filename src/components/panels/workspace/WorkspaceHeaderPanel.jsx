@@ -237,8 +237,7 @@ const WorspaceHeaderPanel = (props) => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const history = useHistory();
-  const { workspacesLoaded } = useWorkspace();
-  const { activeTopic, folders } = useSelector((state) => state.workspaces);
+  const { activeTopic, folders, workspacesLoaded } = useSelector((state) => state.workspaces);
   const {
     driff,
     user: {
@@ -369,11 +368,11 @@ const WorspaceHeaderPanel = (props) => {
     }
   }, [match.params.page, dispatch, activeTopic]);
 
-  useEffect(() => {
-    if (activeTopic && !activeTopic.members.some((m) => m.id === user.id)) {
-      history.push("/");
-    }
-  }, [activeTopic]);
+  // useEffect(() => {
+  //   if (activeTopic && !activeTopic.members.some((m) => m.id === user.id)) {
+  //     history.push("/");
+  //   }
+  // }, [activeTopic]);
 
   return (
     <>
