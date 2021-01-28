@@ -564,7 +564,7 @@ const UserProfilePanel = (props) => {
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
                   {dictionary.information}
-                  {isLoggedUser || (loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active) ? (
+                  {isLoggedUser || (loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active && !user.hasOwnProperty("history_email_change")) ? (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                       <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
