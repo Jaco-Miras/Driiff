@@ -451,9 +451,10 @@ const Comment = (props) => {
       ...approving,
       change: true,
     });
-    if (type !== "main") {
-      commentActions.setRequestForChangeComment(comment);
-    }
+    // if (type !== "main") {
+    //   commentActions.setRequestForChangeComment(comment);
+    // }
+    commentActions.setRequestForChangeComment(comment);
   };
 
   const handleCancelChange = () => {

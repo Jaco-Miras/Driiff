@@ -412,9 +412,9 @@ const CompanyPostDetailFooter = (props) => {
         approved: 0,
       });
     }
-    if (showCommentApprover && props.requestChangeCommentCallback) {
-      props.requestChangeCommentCallback();
-    }
+    // if (showCommentApprover && props.requestChangeCommentCallback) {
+    //   props.requestChangeCommentCallback();
+    // }
     if (changeRequestedComment) {
       commentActions.approve({
         post_id: post.id,
@@ -424,22 +424,22 @@ const CompanyPostDetailFooter = (props) => {
     }
   };
 
-  useEffect(() => {
-    setShowApprover(showCommentApprover);
-    if (showCommentApprover) {
-      setApprovers([
-        {
-          ...post.author,
-          icon: "user-avatar",
-          value: post.author.id,
-          label: post.author.name,
-          type: "USER",
-          ip_address: null,
-          is_approved: null,
-        },
-      ]);
-    }
-  }, [showCommentApprover]);
+  // useEffect(() => {
+  //   setShowApprover(showCommentApprover);
+  //   if (showCommentApprover) {
+  //     setApprovers([
+  //       {
+  //         ...post.author,
+  //         icon: "user-avatar",
+  //         value: post.author.id,
+  //         label: post.author.name,
+  //         type: "USER",
+  //         ip_address: null,
+  //         is_approved: null,
+  //       },
+  //     ]);
+  //   }
+  // }, [showCommentApprover]);
 
   useEffect(() => {
     if (changeRequestedComment && commentId && commentId === changeRequestedComment.id) {
