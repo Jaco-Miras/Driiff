@@ -193,13 +193,14 @@ const ApproverSelectWrapper = styled.div`
   // justify-content: flex-end;
   padding-bottom: 10px;
   margin-left: auto;
+  flex-direction: column;
   > div.react-select-container {
     width: 300px;
   }
 `;
 
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null } = props;
+  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, showCommentApprover = false } = props;
 
   const postActions = usePostActions();
   const ref = {
@@ -221,6 +222,7 @@ const CompanyPostDetailFooter = (props) => {
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
 
   const handleSend = useCallback(() => {
     setSent(true);
@@ -279,6 +281,9 @@ const CompanyPostDetailFooter = (props) => {
     lockedLabel: _t("CHAT.INFO_PRIVATE_WORKSPACE", "You are in a private workspace."),
     requestChange: _t("POST.REQUEST_CHANGE", "Request for change"),
     accept: _t("POST.ACCEPT", "Accept"),
+    requestApprovalFrom: _t("POST.REQUEST_APPROVAL_FROM", "Request approval from"),
+    requestChangeTo: _t("POST.REQUEST_CHANGE_TO", "Request change to"),
+    addressedTo: _t("POST.ADDRESSED_TO", "Addressed to"),
   };
 
   const handleQuillImage = () => {
@@ -317,7 +322,23 @@ const CompanyPostDetailFooter = (props) => {
         type: "USER",
       };
     });
+
   const handleSelectApprover = (e) => {
+    if (e === null || !e.length) {
+      if (changeRequestedComment) {
+        commentActions.clearApprovingStatus(changeRequestedComment.id);
+      }
+      if (props.handleCancelChange) {
+        props.handleCancelChange();
+      }
+      if (approving.change) {
+        setApproving({
+          ...approving,
+          change: false,
+        });
+        setShowApprover(false);
+      }
+    }
     if (e === null) {
       setApprovers([]);
     } else {
@@ -382,6 +403,7 @@ const CompanyPostDetailFooter = (props) => {
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
   const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
+  const approverNames = post.users_approval.map((u) => u.name);
 
   const requestForChangeCallback = () => {
     if (hasPendingAproval && isApprover && showApprover) {
@@ -390,7 +412,54 @@ const CompanyPostDetailFooter = (props) => {
         approved: 0,
       });
     }
+    // if (showCommentApprover && props.requestChangeCommentCallback) {
+    //   props.requestChangeCommentCallback();
+    // }
+    if (changeRequestedComment) {
+      commentActions.approve({
+        post_id: post.id,
+        approved: 0,
+        comment_id: changeRequestedComment.id,
+      });
+    }
   };
+
+  // useEffect(() => {
+  //   setShowApprover(showCommentApprover);
+  //   if (showCommentApprover) {
+  //     setApprovers([
+  //       {
+  //         ...post.author,
+  //         icon: "user-avatar",
+  //         value: post.author.id,
+  //         label: post.author.name,
+  //         type: "USER",
+  //         ip_address: null,
+  //         is_approved: null,
+  //       },
+  //     ]);
+  //   }
+  // }, [showCommentApprover]);
+
+  useEffect(() => {
+    if (changeRequestedComment && commentId && commentId === changeRequestedComment.id) {
+      setShowApprover(true);
+      setApprovers([
+        {
+          ...changeRequestedComment.author,
+          icon: "user-avatar",
+          value: changeRequestedComment.author.id,
+          label: changeRequestedComment.author.name,
+          type: "USER",
+          ip_address: null,
+          is_approved: null,
+        },
+      ]);
+    } else {
+      setShowApprover(false);
+      setApprovers([]);
+    }
+  }, [changeRequestedComment]);
 
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
@@ -403,10 +472,19 @@ const CompanyPostDetailFooter = (props) => {
         {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
         {showApprover && (
           <ApproverSelectWrapper>
+            {((approving.change && isApprover) || showCommentApprover) && <label>{dictionary.requestChangeTo}</label>}
+            {!isApprover && <label>{dictionary.addressedTo}</label>}
             <FolderSelect options={userOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
           </ApproverSelectWrapper>
         )}
       </Dflex>
+      {hasPendingAproval && !isApprover && (
+        <NoReply className="d-flex align-items-center mb-2">
+          <div className="alert alert-primary" style={{ color: "#1E90FF" }}>
+            {dictionary.requestApprovalFrom} {approverNames.join(", ")}
+          </div>
+        </NoReply>
+      )}
       {(!isApprover || approving.change || userApproved) && (
         <Dflex className="d-flex align-items-end">
           {post.is_read_only ? (
@@ -439,7 +517,7 @@ const CompanyPostDetailFooter = (props) => {
                   onClearApprovers={handleClearApprovers}
                   onSubmitCallback={requestForChangeCallback}
                 />
-                <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+                {!isApprover && <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>}
                 <IconButton icon="image" onClick={handleQuillImage} />
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
                 <IconButton onClick={handleSend} icon="send" />

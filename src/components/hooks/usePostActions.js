@@ -6,11 +6,13 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { addToModals, deleteDraft, getUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
 import {
+  addCommentReact,
   addPostReact,
   addUserToPostRecipients,
   archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
+  commentApprove,
   deletePost,
   fetchDetail,
   fetchPosts,
@@ -478,7 +480,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null) => {
+    (mode = "create", post = null, comment = null) => {
       let payload = {};
 
       switch (mode) {
@@ -534,7 +536,24 @@ const usePostActions = () => {
               post: post,
             },
             actions: {
-              onSubmit: () => approve({ post_id: post.id, approved: 1 }),
+              onSubmit: () => {
+                if (comment) {
+                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
+                    if (err) return;
+                    dispatch(
+                      addCommentReact({
+                        counter: 1,
+                        id: comment.id,
+                        parent_id: comment.parent_id,
+                        post_id: post.id,
+                        reaction: "clap",
+                      })
+                    );
+                  });
+                } else {
+                  approve({ post_id: post.id, approved: 1 });
+                }
+              },
             },
           };
           break;
@@ -824,8 +843,16 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const approveComment = useCallback(
+    (payload = {}, callback) => {
+      dispatch(commentApprove(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
+    approveComment,
     addUserToPost,
     starPost,
     markPost,

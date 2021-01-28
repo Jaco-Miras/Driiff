@@ -109,6 +109,9 @@ export const NotificationTimelineItem = (props) => {
     notificationNewPost: _t("NOTIFICATION.NEW_POST", `shared a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
     notificationComment: _t("NOTIFICATION.COMMENT", `made a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">comment</span> in <span class="text-link">${notification.data.title}`),
     notificationMention: _t("NOTIFICATION.MENTION", `<span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">mentioned</span> you in`),
+    hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
+    hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
+    sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
   };
 
   const renderTitle = useCallback(() => {
@@ -154,6 +157,33 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+      case "POST_ACCEPT_APPROVAL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasAcceptedProposal}
+            </span>
+          </>
+        );
+      }
+      case "POST_REJECT_APPROVAL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasRequestedChange}
+            </span>
+          </>
+        );
+      }
+      case "POST_REQST_APPROVAL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.sentProposal}
+            </span>
+          </>
+        );
+      }
       default:
         return null;
     }
@@ -176,7 +206,15 @@ export const NotificationTimelineItem = (props) => {
           </h6>
           <span className="notification-body-wrapper">
             <div className={`notification-body mb-3 border p-3 border-radius-1 d-flex justify-content-between align-items-center mr-4 ${notification.is_read === 0 ? "border-left-active" : ""}`}>
-              <div>{notification.type === "NEW_TODO" ? <>{stripHtml(notification.data.description)}</> : notification.type === "POST_CREATE" ? <>{notification.data.title}</> : <>{stripHtml(notification.data.comment_body)}</>}</div>
+              <div>
+                {notification.type === "NEW_TODO" ? (
+                  <>{stripHtml(notification.data.description)}</>
+                ) : notification.type === "POST_CREATE" || notification.type === "POST_REQST_APPROVAL" || notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "POST_REJECT_APPROVAL" ? (
+                  <>{notification.data && notification.data.title}</>
+                ) : (
+                  <>{stripHtml(notification.data.comment_body)}</>
+                )}
+              </div>
               <div>
                 {notification.is_read === 0 ? (
                   <i title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer fa fa-circle-o font-size-11" />

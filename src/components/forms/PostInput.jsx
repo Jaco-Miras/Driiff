@@ -350,7 +350,7 @@ const PostInput = forwardRef((props, ref) => {
     if (mention_ids.length) {
       //check for recipients/type
       const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
-      const ignoredWorkspaceIds = post.recipients.filter((w) => w.type === "TOPIC"? w : false).map((w) => w.id );
+      const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
       let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds];
 
       let userIds = mention_ids.filter((id) => {
@@ -503,7 +503,7 @@ const PostInput = forwardRef((props, ref) => {
   // };
   const handleAddMentionedUsers = (users) => {
     const userIds = users.map((u) => u.id);
-    const types = ["USER", 'WORKSPACE', "TOPIC"];
+    const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
     const newRecipients = userRecipients.filter((r) => {
       return userIds.some((id) => id === r.type_id);
@@ -513,7 +513,7 @@ const PostInput = forwardRef((props, ref) => {
       recipient_ids: newRecipients.map((u) => u.id),
       recipients: newRecipients,
     };
-    
+
     console.log(users, payload);
     dispatch(
       addPostRecipients(payload, (err, res) => {
@@ -538,7 +538,13 @@ const PostInput = forwardRef((props, ref) => {
     handleClearQuillInput();
   };
 
-  useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
+  useSaveInput(
+    handleClearQuillInput,
+    text,
+    textOnly,
+    quillContents,
+    approvers.map((a) => a.value).filter((id) => post.author.id !== id)
+  );
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
@@ -548,7 +554,7 @@ const PostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: user.type === "external" ? members : [],
-    workspaces: workspaces? workspaces: [],
+    workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
     prioMentionIds: [...new Set(prioMentionIds)],

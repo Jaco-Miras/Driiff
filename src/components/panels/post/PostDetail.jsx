@@ -611,6 +611,7 @@ const PostDetail = (props) => {
               isMember={isMember}
               dictionary={dictionary}
               disableOptions={disableOptions}
+              postActions={postActions}
             />
             <hr className="m-0" />
           </>

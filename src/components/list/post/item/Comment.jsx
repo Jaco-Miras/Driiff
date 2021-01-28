@@ -199,7 +199,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false } = props;
+  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false, postActions } = props;
 
   const dispatch = useDispatch();
 
@@ -218,6 +218,7 @@ const Comment = (props) => {
   const googleApis = useGoogleApis();
 
   const users = useSelector((state) => state.users.users);
+  const clearApprovingState = useSelector((state) => state.posts.clearApprovingState);
   //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
 
   const [showInput, setShowInput] = useState(null);
@@ -422,65 +423,88 @@ const Comment = (props) => {
     };
   }, []);
 
-  const handleApprove = () => {
-    setApproving({
-      ...approving,
-      approve: true,
-    });
-    if (!approving.approve) {
-      commentActions.approve(
-        {
-          post_id: post.id,
-          approved: 1,
-          comment_id: comment.id,
-        },
-        () => {
-          setApproving({
-            ...approving,
-            approve: false,
-          });
-        }
-      );
-    }
-  };
+  // const handleApprove = () => {
+  //   setApproving({
+  //     ...approving,
+  //     approve: true,
+  //   });
+  //   if (!approving.approve) {
+  //     commentActions.approve(
+  //       {
+  //         post_id: post.id,
+  //         approved: 1,
+  //         comment_id: comment.id,
+  //       },
+  //       () => {
+  //         setApproving({
+  //           ...approving,
+  //           approve: false,
+  //         });
+  //       }
+  //     );
+  //   }
+  // };
 
   const handleRequestChange = () => {
+    handleShowInput(comment.id);
     setApproving({
       ...approving,
       change: true,
     });
-    if (!approving.change) {
-      commentActions.approve(
-        {
-          post_id: post.id,
-          approved: 0,
-          comment_id: comment.id,
-        },
-        () => {
-          setApproving({
-            ...approving,
-            change: false,
-          });
-        }
-      );
-    }
+    // if (type !== "main") {
+    //   commentActions.setRequestForChangeComment(comment);
+    // }
+    commentActions.setRequestForChangeComment(comment);
+  };
+
+  const handleCancelChange = () => {
+    setShowInput(null);
+    setApproving({
+      ...approving,
+      change: false,
+    });
+  };
+
+  const requestChangeCommentCallback = () => {
+    commentActions.approve(
+      {
+        post_id: post.id,
+        approved: 0,
+        comment_id: comment.id,
+      },
+      () => {
+        setApproving({
+          ...approving,
+          change: false,
+        });
+      }
+    );
+  };
+
+  const handleApprove = () => {
+    postActions.showModal("confirmation", post, comment);
   };
 
   // useEffect(() => {
   //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
   // }, [comment.clap_user_ids]);
-  const userReadPost = useCallback(
-    () => {
-      let filter_post_read = [];
-      if (!!post.post_reads) {
-        return post.post_reads
-        .filter( (u) =>
-          u.last_read_timestamp >= comment.updated_at.timestamp
-        );
-      }
-      return filter_post_read;
-    }, [post]
-  );
+  const userReadPost = useCallback(() => {
+    let filter_post_read = [];
+    if (post.post_reads) {
+      return post.post_reads.filter((u) => u.last_read_timestamp >= comment.updated_at.timestamp);
+    }
+    return filter_post_read;
+  }, [post]);
+
+  useEffect(() => {
+    if (clearApprovingState && clearApprovingState === comment.id) {
+      setApproving({
+        ...approving,
+        change: false,
+      });
+      commentActions.clearApprovingStatus(null);
+    }
+  }, [clearApprovingState]);
 
   return (
     <>
@@ -507,8 +531,8 @@ const Comment = (props) => {
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
-          {comment.users_approval.length > 0 && (
-            <PostChangeAccept approving={approving} fromNow={fromNow} usersApproval={comment.users_approval} user={user} handleApprove={handleApprove} handleRequestChange={handleRequestChange} dictionary={dictionary} />
+          {comment.users_approval.length > 0 && !approving.change && (
+            <PostChangeAccept approving={approving} fromNow={fromNow} usersApproval={comment.users_approval} user={user} handleApprove={handleApprove} handleRequestChange={handleRequestChange} post={post} />
           )}
           {comment.files.length >= 1 && (
             <>
@@ -573,6 +597,7 @@ const Comment = (props) => {
           dictionary={dictionary}
           disableOptions={disableOptions}
           isCompanyPost={isCompanyPost}
+          postActions={postActions}
         />
       )}
       {showInput !== null && (
@@ -592,6 +617,9 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
+              showCommentApprover={approving.change}
+              requestChangeCommentCallback={requestChangeCommentCallback}
+              handleCancelChange={handleCancelChange}
             />
           ) : (
             <CommentInput
@@ -608,6 +636,9 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
+              showCommentApprover={approving.change}
+              requestChangeCommentCallback={requestChangeCommentCallback}
+              handleCancelChange={handleCancelChange}
             />
           )}
         </InputWrapper>

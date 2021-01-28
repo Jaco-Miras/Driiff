@@ -31,6 +31,8 @@ const INITIAL_STATE = {
   commentQuotes: {},
   parentId: null,
   recentPosts: {},
+  clearApprovingState: null,
+  changeRequestedComment: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -605,7 +607,7 @@ export default (state = INITIAL_STATE, action) => {
         if (companyPosts.posts[action.data.post_id].is_archived === 1) {
           companyPosts.posts[action.data.post_id].is_archived = 0;
         }
-        if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
+        if (companyPosts.posts[action.data.post_id].users_responsible && !companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
           companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author];
         }
         if (action.data.author.id !== state.user.id) {
@@ -844,17 +846,27 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(Object.keys(state.companyPosts.posts).length && {
+            ...(typeof state.companyPosts.posts[action.data.postId] && {
               [action.data.postId]: {
                 ...state.companyPosts.posts[action.data.postId],
-                post_reads: [
-                  ...action.data.readPosts
-                ],
+                post_reads: [...action.data.readPosts],
               },
-            })
-          }
-        }
-      }
+            }),
+          },
+        },
+      };
+    }
+    case "CLEAR_COMMENT_APPROVING_STATE": {
+      return {
+        ...state,
+        clearApprovingState: action.data,
+      };
+    }
+    case "SET_CHANGE_REQUESTED_COMMENT": {
+      return {
+        ...state,
+        changeRequestedComment: action.data,
+      };
     }
     default:
       return state;
