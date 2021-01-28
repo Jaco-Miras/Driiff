@@ -78,10 +78,11 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
+    setWorkspaceSetting,
     setGeneralSetting,
     setPushSubscription,
   } = useSettings();
@@ -102,6 +103,8 @@ const ProfileSettings = (props) => {
     languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
     timezoneLabel: _t("SETTINGS.TIMEZONE_LABEL", "Timezone"),
     dateTimeFormatLabel: _t("SETTINGS.DATE_TIME_FORMAT_LABEL", "Date and time format"),
+    workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
+    sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
   };
 
   const notificationSoundOptions = [
@@ -280,6 +283,16 @@ const ProfileSettings = (props) => {
     toaster.success(<span>You have successfully sort channel</span>);
   };
 
+  const handleSortWorkspaceChange = (e) => {
+    setWorkspaceSetting({
+      order_channel: {
+        order_by: e.value,
+        sort_by: e.value === "channel_date_updated"? "DESC" : "ASC",
+      }
+    });
+    toaster.success(<span>You have successfully sort channel</span>);
+  };
+
   const handleTimezoneChange = useCallback((e) => {
     setGeneralSetting({ timezone: e.value });
     toaster.success(<span>You have successfully updated Timezone</span>);
@@ -387,7 +400,17 @@ const ProfileSettings = (props) => {
               </div>
             </div>
           </div>
-
+          <div className="card">
+            <div className="card-body">
+              <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.workspaceSettingsTitle}</h6>
+              <div className="row mb-2">
+                <div className="col-5 text-muted">{dictionary.sortWorkspaceLabel}</div>
+                <div className="col-7">
+                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={channelSortOptions.find((o) => o.value === orderChannel.order_by)} onChange={handleSortWorkspaceChange} options={channelSortOptions} />
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="card">
             <div className="card-body">
               <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.localizationSettingsTitle}</h6>
