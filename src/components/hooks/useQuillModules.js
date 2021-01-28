@@ -82,7 +82,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
             type_id:  workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/${workspace.id}/${replaceChar(workspace.name)}`,
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`,
           });
         })
       ];

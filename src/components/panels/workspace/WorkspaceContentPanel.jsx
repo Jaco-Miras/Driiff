@@ -101,7 +101,7 @@ const WorkspaceContentPanel = (props) => {
                     "/workspace/posts",
                   ]}
                 />
-                <Route render={() => <WorkspaceChatPanel {...props} workspace={workspace} />} path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
+                <Route exact={true} render={() => <WorkspaceChatPanel {...props} workspace={workspace} />} path={["/workspace/:workspaceId/:workspaceName", "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
                 <Route
                   exact={true}
                   {...props}
