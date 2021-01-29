@@ -1492,8 +1492,9 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      view_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.viewer.id],
-                      //is_unread: 0,
+                      ...(state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids && {
+                        view_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+                      }),
                     },
                   },
                 },
@@ -2229,10 +2230,12 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id ? { ...state.activeTopic, unread_posts: action.data.count } : state.activeTopic,
         workspaces: {
           ...state.workspaces,
-          [action.data.topic_id]: {
-            ...state.workspaces[action.data.topic_id],
-            unread_posts: action.data.count,
-          },
+          ...(state.workspaces[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaces[action.data.topic_id],
+              unread_posts: action.data.count,
+            },
+          }),
         },
       };
     }
@@ -2286,16 +2289,16 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
                   [action.data.comment.id]: {
                     ...state.postComments[action.data.post.id].comments[action.data.comment.id],
-                    users_approval: state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((u) => {
-                      if (u.id === action.data.user_approved.id) {
-                        return {
-                          ...u,
-                          ...action.data.user_approved,
-                        };
-                      } else {
-                        return u;
-                      }
-                    }),
+                    users_approval: [],
+                    replies: {
+                      ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies,
+                      ...(state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id] && {
+                        [action.data.transferred_comment.id]: {
+                          ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id],
+                          users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
+                        },
+                      }),
+                    },
                   },
                 }),
                 ...(!state.postComments[action.data.post.id].comments.hasOwnProperty(action.data.comment.id) && {
@@ -2307,16 +2310,11 @@ export default (state = INITIAL_STATE, action) => {
                           ...state.postComments[action.data.post.id].comments[key].replies,
                           [action.data.comment.id]: {
                             ...state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id],
-                            users_approval: state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id].users_approval.map((u) => {
-                              if (u.id === action.data.user_approved.id) {
-                                return {
-                                  ...u,
-                                  ...action.data.user_approved,
-                                };
-                              } else {
-                                return u;
-                              }
-                            }),
+                            users_approval: [],
+                          },
+                          [action.data.transferred_comment.id]: {
+                            ...state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id],
+                            users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
                           },
                         },
                       }),

@@ -497,44 +497,23 @@ const PostDetailFooter = (props) => {
   const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
   const approverNames = post.users_approval.map((u) => u.name);
 
-  const requestForChangeCallback = () => {
+  const requestForChangeCallback = (err, res) => {
+    if (err) return;
     if (hasPendingAproval && isApprover && showApprover) {
       postActions.approve({
         post_id: post.id,
         approved: 0,
       });
     }
-    // if (showCommentApprover && props.requestChangeCommentCallback) {
-    //   props.requestChangeCommentCallback();
-    // }
     if (changeRequestedComment) {
       commentActions.approve({
         post_id: post.id,
         approved: 0,
         comment_id: changeRequestedComment.id,
+        transfer_comment_id: res.data.id,
       });
     }
   };
-
-  // useEffect(() => {
-  //   //setShowApprover(showCommentApprover);
-  //   if (showCommentApprover) {
-  //     setShowApprover(true);
-  //     setApprovers([
-  //       {
-  //         ...post.author,
-  //         icon: "user-avatar",
-  //         value: post.author.id,
-  //         label: post.author.name,
-  //         type: "USER",
-  //         ip_address: null,
-  //         is_approved: null,
-  //       },
-  //     ]);
-  //   }
-  // }, [showCommentApprover]);
-
-  // console.log(showCommentApprover, showApprover, commentId);
 
   useEffect(() => {
     if (changeRequestedComment && commentId && commentId === changeRequestedComment.id) {

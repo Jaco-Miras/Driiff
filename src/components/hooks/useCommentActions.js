@@ -51,8 +51,8 @@ const useCommentActions = () => {
   );
 
   const create = useCallback(
-    (payload) => {
-      dispatch(postComment(payload));
+    (payload, callback = () => {}) => {
+      dispatch(postComment(payload, callback));
     },
     [dispatch]
   );

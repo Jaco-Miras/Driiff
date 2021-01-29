@@ -9,7 +9,7 @@ import {
   addCommentReact,
   addPostReact,
   addUserToPostRecipients,
-  archiveAllCallback,
+  //archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
   commentApprove,
@@ -39,13 +39,14 @@ import {
   postVisit,
   putCompanyPosts,
   putPost,
-  readAllCallback,
+  //readAllCallback,
   removePost,
   removePostReact,
   setPostToggleFollow,
   starPostReducer,
   updateCompanyPostFilterSort,
   updatePostFiles,
+  postComment,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -538,18 +539,33 @@ const usePostActions = () => {
             actions: {
               onSubmit: () => {
                 if (comment) {
-                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
-                    if (err) return;
-                    dispatch(
-                      addCommentReact({
-                        counter: 1,
-                        id: comment.id,
-                        parent_id: comment.parent_id,
-                        post_id: post.id,
-                        reaction: "clap",
-                      })
-                    );
-                  });
+                  let cpayload = {
+                    post_id: post.id,
+                    body: "<div></div>",
+                    mention_ids: [],
+                    file_ids: [],
+                    post_file_ids: [],
+                    personalized_for_id: null,
+                    parent_id: comment.id,
+                    approval_user_ids: [],
+                  };
+                  dispatch(
+                    postComment(cpayload, (err, res) => {
+                      if (err) return;
+                      approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
+                        if (err) return;
+                        dispatch(
+                          addCommentReact({
+                            counter: 1,
+                            id: comment.id,
+                            parent_id: comment.parent_id,
+                            post_id: post.id,
+                            reaction: "clap",
+                          })
+                        );
+                      });
+                    })
+                  );
                 } else {
                   approve({ post_id: post.id, approved: 1 });
                 }
