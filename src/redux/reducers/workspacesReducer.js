@@ -47,6 +47,12 @@ const INITIAL_STATE = {
         label: "New",
         key: "new",
       },
+      external: {
+        checked: false,
+        label: "External",
+        key: "external",
+    
+      }
     },
   },
 };
