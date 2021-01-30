@@ -37,15 +37,19 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  padding-right: 120px;
+  // padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
+  display: flex;
+  .chat-input-wrapper {
+    flex-grow: 1;
+  }
   .feather-image,
   .feather-send,
   .feather-smile {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    // position: absolute;
+    // bottom: 0;
+    // right: 0;
     margin: 4px;
     height: calc(100% - 8px);
     max-height: 38px;
@@ -57,7 +61,7 @@ const ChatInputContainer = styled.div`
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
   .feather-smile {
-    right: 44px;
+    //right: 44px;
     margin: 4px 0;
     background: transparent;
     border-color: transparent;
@@ -71,7 +75,7 @@ const ChatInputContainer = styled.div`
     }
   }
   .feather-image {
-    right: 80px;
+    //right: 80px;
     margin: 4px 0;
     background: transparent;
     border-color: transparent;
@@ -134,9 +138,9 @@ const Dflex = styled.div`
       }
     }
   }
-  svg.feather-send {
-    margin-left: 8px;
-  }
+  // svg.feather-send {
+  //   margin-left: 8px;
+  // }
   svg.feather-paperclip {
     margin-left: 0;
     margin-right: 0;
@@ -145,16 +149,16 @@ const Dflex = styled.div`
     .emojiButton {
       display: none;
     }
-    div:nth-child(4) {
-      order: 1;
-      margin-right: 8px;
-    }
-    div:nth-child(2) {
-      order: 3;
-    }
-    svg:nth-child(3) {
-      order: 3;
-    }
+    // div:nth-child(4) {
+    //   order: 1;
+    //   margin-right: 8px;
+    // }
+    // div:nth-child(2) {
+    //   order: 3;
+    // }
+    // svg:nth-child(3) {
+    //   order: 3;
+    // }
     svg.feather-send {
       margin-right: 0;
     }
@@ -201,10 +205,11 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const ApproveCheckBox = styled(CheckBox)`
-  position: absolute;
-  right: 120px;
-  bottom: 0;
-  height: 35px;
+  // position: absolute;
+  // right: 120px;
+  // bottom: 0;
+  //height: 35px;
+  display: inline-block;
 `;
 
 const ApproverSelectWrapper = styled.div`
@@ -217,6 +222,12 @@ const ApproverSelectWrapper = styled.div`
   > div.react-select-container {
     width: 300px;
   }
+`;
+
+const PostInputButtons = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
 `;
 
 const PostDetailFooter = (props) => {
@@ -324,6 +335,9 @@ const PostDetailFooter = (props) => {
     requestApprovalFrom: _t("POST.REQUEST_APPROVAL_FROM", "Request approval from"),
     requestChangeTo: _t("POST.REQUEST_CHANGE_TO", "Request change to"),
     addressedTo: _t("POST.ADDRESSED_TO", "Addressed to"),
+    selectApprover: _t("TOOLTIP.SELECT_APPROVER", "Select approver"),
+    emoji: _t("TOOLTIP.EMOJI", "Emoji"),
+    images: _t("TOOLTIP.IMAGES", "Images"),
   };
 
   const handleUnarchive = () => {
@@ -602,10 +616,20 @@ const PostDetailFooter = (props) => {
                     onClearApprovers={handleClearApprovers}
                     onSubmitCallback={requestForChangeCallback}
                   />
-                  {!isApprover && <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>}
-                  <IconButton icon="image" onClick={handleQuillImage} />
-                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
-                  <IconButton onClick={handleSend} icon="send" />
+                  <PostInputButtons>
+                    {!isApprover && (
+                      <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
+                        <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+                      </Tooltip>
+                    )}
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
+                      <IconButton icon="image" onClick={handleQuillImage} />
+                    </Tooltip>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.emoji}>
+                      <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+                    </Tooltip>
+                    <IconButton onClick={handleSend} icon="send" />
+                  </PostInputButtons>
                 </ChatInputContainer>
 
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
