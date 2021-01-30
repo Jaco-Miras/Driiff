@@ -1234,6 +1234,21 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.id]: action.data,
                   }),
                 }),
+                ...(!action.data.hasOwnProperty("reference_id") && {
+                  ...(action.data.parent_id &&
+                    state.postComments[action.data.post_id].comments[action.data.parent_id] && {
+                      [action.data.parent_id]: {
+                        ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                        replies: {
+                          ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                          [action.data.id]: action.data,
+                        },
+                      },
+                    }),
+                  ...(!action.data.parent_id && {
+                    [action.data.id]: action.data,
+                  }),
+                }),
               },
             },
           }),
@@ -2314,10 +2329,12 @@ export default (state = INITIAL_STATE, action) => {
                             ...state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id],
                             users_approval: [],
                           },
-                          [action.data.transferred_comment.id]: {
-                            ...state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id],
-                            users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
-                          },
+                          ...(state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id] && {
+                            [action.data.transferred_comment.id]: {
+                              ...state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id],
+                              users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
+                            },
+                          }),
                         },
                       }),
                     };

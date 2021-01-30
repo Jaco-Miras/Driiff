@@ -546,8 +546,13 @@ const usePostActions = () => {
                     file_ids: [],
                     post_file_ids: [],
                     personalized_for_id: null,
-                    parent_id: comment.id,
+                    parent_id: comment.parent_id ? comment.parent_id : comment.id,
                     approval_user_ids: [],
+                    code_data: {
+                      push_title: `${user.name} replied in ${post.title}`,
+                      post_id: post.id,
+                      post_title: post.title,
+                    },
                   };
                   dispatch(
                     postComment(cpayload, (err, res) => {
