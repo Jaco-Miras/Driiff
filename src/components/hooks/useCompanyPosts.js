@@ -72,7 +72,7 @@ const useCompanyPosts = () => {
           if (search !== "") {
             return true;
           } else {
-            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || p.unread_reply_ids.length > 0 || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
+            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
           }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author")) return p.author.id === user.id;
@@ -83,8 +83,6 @@ const useCompanyPosts = () => {
           return p.is_favourite;
         } else if (filter === "archive") {
           return p.is_archived === 1;
-        } else if (filter === "new_reply") {
-          return p.unread_reply_ids.length > 0;
         }
       } else if (tag) {
         if (tag === "is_must_reply") {
@@ -145,7 +143,6 @@ const useCompanyPosts = () => {
     starred: Object.values(posts).filter((p) => p.is_favourite).length,
     archived: Object.values(posts).filter((p) => p.is_archived).length,
     drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
-    new_reply: Object.values(posts).filter((p) => p.unread_reply_ids.length > 0).length,
   };
 
   return {

@@ -202,7 +202,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
       personalized_for_id: null,
       parent_id: parentId,
       code_data: {
-        base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
         post_title: post.title,

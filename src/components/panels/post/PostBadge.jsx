@@ -74,21 +74,6 @@ const PostBadge = (props) => {
           )}
         </>
       )}
-      {/* {post.need_approval && (
-        <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
-        </div>
-      )} */}
-      {/* {isApprover && hasPendingAproval && (
-        <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
-        </div>
-      )}
-      {post.author.id === user.id && hasRequestedChange && (
-        <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.changeRequested}</div>
-        </div>
-      )} */}
       {post.post_approval_label && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>

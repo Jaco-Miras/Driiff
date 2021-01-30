@@ -209,12 +209,11 @@ const PostInput = forwardRef((props, ref) => {
       reference_id: reference_id,
       personalized_for_id: null,
       parent_id: parentId,
-      // code_data: {
-      //   base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
-      //   push_title: `${user.name} replied in ${post.title}`,
-      //   post_id: post.id,
-      //   post_title: post.title,
-      // },
+      code_data: {
+        push_title: `${user.name} replied in ${post.title}`,
+        post_id: post.id,
+        post_title: post.title,
+      },
       approval_user_ids: approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
