@@ -211,7 +211,7 @@ const PostInputButtons = styled.div`
 `;
 
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, showCommentApprover = false } = props;
+  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null } = props;
 
   const postActions = usePostActions();
   const ref = {
@@ -468,7 +468,7 @@ const CompanyPostDetailFooter = (props) => {
         {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
         {showApprover && (
           <ApproverSelectWrapper>
-            {((approving.change && isApprover) || showCommentApprover) && <label>{dictionary.requestChangeTo}</label>}
+            {approving.change && isApprover && <label>{dictionary.requestChangeTo}</label>}
             {!isApprover && <label>{dictionary.addressedTo}</label>}
             <FolderSelect options={userOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
           </ApproverSelectWrapper>

@@ -465,22 +465,6 @@ const Comment = (props) => {
     });
   };
 
-  const requestChangeCommentCallback = () => {
-    commentActions.approve(
-      {
-        post_id: post.id,
-        approved: 0,
-        comment_id: comment.id,
-      },
-      () => {
-        setApproving({
-          ...approving,
-          change: false,
-        });
-      }
-    );
-  };
-
   const handleApprove = () => {
     postActions.showModal("confirmation", post, comment);
   };
@@ -617,8 +601,6 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
-              showCommentApprover={approving.change}
-              requestChangeCommentCallback={requestChangeCommentCallback}
               handleCancelChange={handleCancelChange}
             />
           ) : (
@@ -636,8 +618,6 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
-              showCommentApprover={approving.change}
-              requestChangeCommentCallback={requestChangeCommentCallback}
               handleCancelChange={handleCancelChange}
             />
           )}
