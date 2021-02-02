@@ -22,7 +22,7 @@ class quillHelper {
       let innerHTML = pTagQuery[index].innerHTML;
 
       let words = [];
-      if (!innerHTML.startsWith(`<span class="ql-mention-denotation-char">`)) {
+      if (!innerHTML.startsWith("<span class=\"ql-mention-denotation-char\">")) {
         words = innerHTML.split(" ");
       }
       let parseText = [];
@@ -30,14 +30,13 @@ class quillHelper {
       let isSpan = false;
       let isLink = false;
       for (let word of words) {
-
         //mention
-        if (word === `<span`) {
+        if (word === "<span") {
           isSpan = true;
           parseText.push(word);
           i++;
           continue;
-        } else if (word.endsWith(`</a></span></span>`)) {
+        } else if (word.endsWith("</a></span></span>")) {
           isSpan = false;
           parseText.push(word);
           i++;
@@ -49,12 +48,12 @@ class quillHelper {
         }
 
         //hyperlink
-        if (word === `<a`) {
+        if (word === "<a") {
           isLink = true;
           parseText.push(word);
           i++;
           continue;
-        } else if (word.endsWith(`</a>`)) {
+        } else if (word.endsWith("</a>")) {
           isLink = false;
           parseText.push(word);
           i++;
@@ -104,11 +103,11 @@ class quillHelper {
           const googleDriveFileUrlPattern = /^(https:\/\/(drive|docs)\.google\.com\/)(file|spreadsheets|document|presentation|forms)\/d\/([^\/]+)\/.*$/;
           const urlPattern = /^((http|https|ftp):\/\/)/;
           if (googleDriveFileUrlPattern.test(word)) {
-            word = renderToString(<GoogleDriveLink link={word}/>);
+            word = renderToString(<GoogleDriveLink link={word} />);
           } else if (!urlPattern.test(word)) {
-            if (!(word.includes("href") || word.includes("src"))) {
-              word = parseEmojis(textToLink(word));
-            }
+            // if (!(word.includes("href") || word.includes("src"))) {
+            //   word = parseEmojis(textToLink(word));
+            // }
           } else {
             word = `<a target="_blank" href="${word}">${word}</a>`;
             // let taskUrl = parseTaskUrl(word);
@@ -144,8 +143,7 @@ class quillHelper {
   }
 
   static parseEmoji(body) {
-    if (body === null)
-      return "";
+    if (body === null) return "";
 
     let el = document.createElement("div");
     el.innerHTML = body;
@@ -158,20 +156,17 @@ class quillHelper {
     return el.innerHTML;
   }
 
-  static parseToText(body, options = {imageVideo: false}) {
+  static parseToText(body, options = { imageVideo: false }) {
     let tmp = document.createElement("DIV");
 
-    if (options.imageVideo)
-      tmp.innerHTML = body.replace(/<img[^>]*>/g, "::image::");
-    else
-      tmp.innerHTML = body;
+    if (options.imageVideo) tmp.innerHTML = body.replace(/<img[^>]*>/g, "::image::");
+    else tmp.innerHTML = body;
 
     return tmp.textContent || tmp.innerText || "";
   }
 
   static parseToTextImageVideo(body) {
-    return this.parseToText(body, {imageVideo: true}).replace("::image::", renderToString(<SvgIcon className="ml-1"
-                                                                                                   icon="image-video"/>));
+    return this.parseToText(body, { imageVideo: true }).replace("::image::", renderToString(<SvgIcon className="ml-1" icon="image-video" />));
   }
 }
 
