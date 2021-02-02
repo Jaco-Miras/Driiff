@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useChannels, useUsers } from "./index";
 import { useSelector } from "react-redux";
+import { uniqByProp } from "../../helpers/arrayHelper";
 
 let init = true;
 
@@ -31,43 +32,42 @@ const useUserChannels = () => {
   //   }
   // }
 
-  const selectUserChannel = useCallback(
-    (user, callback = () => {}) => {
-      const userChannel = userChannels.find((c) => c.profile.id === user.id);
-      if (userChannel) {
-        channelActions.createByUserChannel(userChannel);
+  const selectUserChannel = (user, callback = () => {}) => {
+    const userChannel = userChannels.find((c) => c.profile.id === user.id);
+    if (userChannel) {
+      channelActions.createByUserChannel(userChannel);
+    } else {
+      const channel = Object.values(channels).find((c) => c.profile && c.profile.id === user.id && c.type === "DIRECT");
+      if (channel) {
+        channelActions.select(channel);
       } else {
-        const channel = Object.values(channels).find((c) => c.profile && c.profile.id === user.id && c.type === "DIRECT");
-        if (channel) {
-          channelActions.select(channel);
-        } else {
-          //search the channel
-          let cb = (err, res) => {
-            searchingRef.current = false;
-            if (err) return;
-            if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code);
-          };
-          let user_ids = [user.id, loggedUser.id];
-          let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));
-          if (recipient_ids.length && recipient_ids.length === 2 && !searchingRef.current) {
-            searchingRef.current = true;
-            channelActions.searchExisting(
-              "",
-              recipient_ids.map((r) => r.id),
-              cb
-            );
-          }
+        //search the channel
+        let cb = (err, res) => {
+          searchingRef.current = null;
+          if (err) return;
+          if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code);
+        };
+        let user_ids = [user.id, loggedUser.id];
+        let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));
+        recipient_ids = uniqByProp(recipient_ids, "type_id");
+        console.log(recipient_ids, "select user channel - search");
+        if (recipient_ids.length && recipient_ids.length === 2 && !searchingRef.current) {
+          searchingRef.current = true;
+          channelActions.searchExisting(
+            "",
+            recipient_ids.map((r) => r.id),
+            cb
+          );
         }
       }
-      // try {
-      //   console.log(userChannels, "try");
-      //   //channelActions.select(channels[userChannels.current[user.id]], callback);
-      // } catch (e) {
-      //   console.log("no channel from selected user");
-      // }
-    },
-    [channels, channelActions]
-  );
+    }
+    // try {
+    //   console.log(userChannels, "try");
+    //   //channelActions.select(channels[userChannels.current[user.id]], callback);
+    // } catch (e) {
+    //   console.log("no channel from selected user");
+    // }
+  };
 
   useEffect(() => {
     if (init) {
