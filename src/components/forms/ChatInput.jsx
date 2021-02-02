@@ -16,6 +16,9 @@ const StyledQuillEditor = styled(QuillEditor)`
     // border: 1px solid #afb8bd;
     // border-radius: 5px;
     max-height: 180px;
+    @media(min-width: 768px) {
+      max-height: 370px;
+    }
     position: static;
     overflow: auto;
     &::-webkit-scrollbar {
