@@ -269,6 +269,10 @@ export function addUserToPostRecipients(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_USER_TO_POST_RECIPIENTS", payload, callback);
 }
 
+export function removeUserToPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_USER_TO_POST_RECIPIENTS", payload, callback);
+}
+
 export function incomingPostRecipients(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_RECIPIENTS", payload, callback);
 }

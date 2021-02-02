@@ -7,7 +7,7 @@ import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
 import QuillEditor from "./QuillEditor";
-import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients } from "../../redux/actions/postActions";
+import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
   &.chat-input-wrapper:focus-within {
@@ -162,7 +162,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [inlineImages, setInlineImages] = useState([]);
 
   const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
-
+  const [mentionUsers, setMentionUsers] = useState([]);
+  const [mentionUsersPayload, setMentionUsersPayload] = useState({});
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
   const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
@@ -301,6 +302,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
+    handleAddMentionedUsersToPost();
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
@@ -324,11 +326,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
     const textOnly = editor.getText(content);
     if (textOnly.trim() === "" && userMention) {
       handleClearUserMention();
+      setMentionUsersPayload({});
     }
 
     if (textOnly.trim() === "" && editMode) {
       setEditMode(false);
       setEditMessage(null);
+      setMentionUsersPayload({});
       //edit message in redux
       if (editPostComment !== null) {
         dispatch(setEditComment(null));
@@ -355,8 +359,21 @@ const CompanyPostInput = forwardRef((props, ref) => {
     textOnly.trim() === "" && !hasMention && !hasImage ? onActive(false) : onActive(true);
   };
 
+  const handleRemoveMention = () => {
+    let to_remove = [];
+    if (post.hasOwnProperty("to_add")) { 
+      to_remove = post.to_add.filter( id => !mentionUsers.includes(id));
+    }  
+    let payload = {
+      post_id: post.id,
+      remove_recipient_ids: to_remove
+    };
+    dispatch(removeUserToPostRecipients(payload));
+  }
+
   const handleMentionUser = (mention_ids) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+    setMentionUsers(mention_ids);
     if (mention_ids.length) {
       //check for recipients/type
       const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
@@ -488,6 +505,11 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //         setText(draft.text);
   //     }
   // };
+  const handleAddMentionedUsersToPost = () => {
+    dispatch(
+      addPostRecipients(mentionUsersPayload)
+    );
+  }
 
   const handleAddMentionedUsers = (users) => {
     const userIds = users.map((u) => u.id);
@@ -504,12 +526,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     };
 
     console.log(users, payload);
-    dispatch(
-      addPostRecipients(payload, (err, res) => {
-        if (err) return;
-        dispatch(addUserToPostRecipients(payload));
-      })
-    );
+    setMentionUsersPayload(payload);
+    dispatch(addUserToPostRecipients(payload));
+
     const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
     setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id), ...ingoredExternalIds]);
 
@@ -535,6 +554,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
+    removeMention: handleRemoveMention,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: Object.values(users).filter((u) => {
