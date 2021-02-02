@@ -118,6 +118,14 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
       );
     }
 
+    if (data.title === "" && data.added_members.length === 0 && data.removed_members.length === 0 && !data.hasOwnProperty("accepted_members")) {
+      newBody = (
+        <>
+          {user.id === data.author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} updated <b>#{selectedChannel.title}</b>
+        </>
+      );
+    }
+
     if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
       //for adding one member without changes in title and for user who join the channel / workspace
       const am = Object.values(users).find((u) => data.added_members.includes(u.id));

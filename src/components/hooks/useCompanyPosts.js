@@ -104,7 +104,11 @@ const useCompanyPosts = () => {
       if (sort === "favorite") {
         return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
       } else if (sort === "unread") {
-        return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
+        if (a.unread_count > 0) {
+          return -1;
+        } else {
+          return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
+        }
       } else {
         return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
       }

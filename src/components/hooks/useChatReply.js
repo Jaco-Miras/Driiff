@@ -107,6 +107,14 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
         );
       }
 
+      if (data.title === "" && data.added_members.length === 0 && data.removed_members.length === 0 && !data.hasOwnProperty("accepted_members")) {
+        newBody = (
+          <>
+            {user.id === data.author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} updated <b>#{selectedChannel.title}</b>
+          </>
+        );
+      }
+
       if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
         //for adding one member without changes in title and for user who join the channel / workspace
         const am = Object.values(users).find((u) => data.added_members.includes(u.id));
@@ -295,7 +303,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
