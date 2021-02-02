@@ -298,6 +298,8 @@ const CompanyPostDetailFooter = (props) => {
     selectApprover: _t("TOOLTIP.SELECT_APPROVER", "Select approver"),
     emoji: _t("TOOLTIP.EMOJI", "Emoji"),
     images: _t("TOOLTIP.IMAGES", "Images"),
+    sharedWithAdditionalPeople: _t("POST.INFO_SHARED_WITH_PEOPLE", "Your comment is published in secured workspace(s) & shared with additional people"),
+    sharedWithPublicWs: _t("POST.INFO_SHARED_WITH_PUBLIC_WS", "Your comment is published in secured workspace(s) & public workspace(s)"),
   };
 
   const handleQuillImage = () => {
@@ -457,6 +459,16 @@ const CompanyPostDetailFooter = (props) => {
     }
   }, [changeRequestedComment]);
 
+  const hasPrivateRecipient = post.recipients.find((r) => {
+    return r.type === "TOPIC" && r.private === 1;
+  });
+
+  const hasUserRecipient = post.recipients.find((r) => r.type === "USER");
+
+  const hasPublicRecipient = post.recipients.find((r) => {
+    return r.type === "TOPIC" && r.private === 0;
+  });
+
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
@@ -466,6 +478,8 @@ const CompanyPostDetailFooter = (props) => {
       }
       <Dflex className="d-flex alig-items-center">
         {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
+        {hasPrivateRecipient && hasUserRecipient && <div className={"locked-label mb-2"}>{dictionary.sharedWithAdditionalPeople}</div>}
+        {hasPrivateRecipient && hasPublicRecipient && <div className={"locked-label mb-2"}>{dictionary.sharedWithPublicWs}</div>}
         {showApprover && (
           <ApproverSelectWrapper>
             {approving.change && isApprover && <label>{dictionary.requestChangeTo}</label>}
