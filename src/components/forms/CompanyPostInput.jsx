@@ -202,7 +202,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
       personalized_for_id: null,
       parent_id: parentId,
       code_data: {
-        base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
         post_title: post.title,
@@ -271,7 +270,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       setEditMode(false);
       setEditMessage(null);
     } else {
-      commentActions.create(payload);
+      commentActions.create(payload, onSubmitCallback);
     }
 
     if (quote) {
@@ -284,7 +283,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
-    if (onSubmitCallback) onSubmitCallback();
+    //if (onSubmitCallback) onSubmitCallback();
   };
 
   const handleClearQuillInput = () => {
@@ -339,7 +338,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      const ignoredWorkspaceIds = post.recipients.filter((w) => w.type === "TOPIC"? w : false).map((w) => w.id );
+      const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
       let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ignoredWorkspaceIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
@@ -522,7 +521,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: users,
-    workspaces: workspaces? workspaces: [],
+    workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
     prioMentionIds: [...new Set(prioMentionIds)],

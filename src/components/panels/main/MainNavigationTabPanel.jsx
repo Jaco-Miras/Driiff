@@ -293,7 +293,7 @@ const MainNavigationTabPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const { lastVisitedChannel } = useSelector((state) => state.chat);
   const { links, unreadCounter } = useSelector((state) => state.global);
-  const { order_channel } = useSelector( (state) => state.settings.user.GENERAL_SETTINGS);
+  const { order_channel } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const [editCompany, setEditCompany] = useState(false);
   const [companyName, setCompanyName] = useState(driffSettings.company_name);
   const [defaultTopic, setDefaultTopic] = useState(null);
@@ -399,19 +399,15 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [editCompany]);
 
-  const sortWorkspace = useCallback(
-    () => {
-      return  Object.values(sortedWorkspaces)
-      .sort((a, b) =>  {
-        if (order_channel.order_by === "channel_date_updated") {
-          return -1;
-        } else {
-          return a.name.localeCompare(b.name);
-        }
-      });
-    },
-    [sortedWorkspaces]
-  )
+  const sortWorkspace = useCallback(() => {
+    return Object.values(sortedWorkspaces).sort((a, b) => {
+      if (order_channel.order_by === "channel_date_updated") {
+        return -1;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
+  }, [sortedWorkspaces]);
 
   const hasUnreadCounter =
     Object.keys(unreadCounter)
@@ -569,7 +565,7 @@ const MainNavigationTabPanel = (props) => {
                   Object.values(workspaces)
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((ws) => {
-                      return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
+                      return <ExternalWorkspaceList key={ws.id} actions={actions} workspace={ws} activeTopic={workspace} />;
                     })}
               </ul>
             </>

@@ -135,7 +135,7 @@ const PostInput = forwardRef((props, ref) => {
     prioMentionIds,
     approvers,
     onClearApprovers,
-    onSubmitCallback,
+    onSubmitCallback = () => {},
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -210,7 +210,6 @@ const PostInput = forwardRef((props, ref) => {
       personalized_for_id: null,
       parent_id: parentId,
       code_data: {
-        base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
         post_title: post.title,
@@ -279,7 +278,7 @@ const PostInput = forwardRef((props, ref) => {
       setEditMode(false);
       setEditMessage(null);
     } else {
-      commentActions.create(payload);
+      commentActions.create(payload, onSubmitCallback);
     }
 
     if (quote) {
@@ -292,7 +291,6 @@ const PostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
-    if (onSubmitCallback) onSubmitCallback();
   };
 
   const handleClearQuillInput = () => {

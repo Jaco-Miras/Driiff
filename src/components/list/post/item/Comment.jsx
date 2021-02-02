@@ -327,7 +327,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -412,7 +412,7 @@ const Comment = (props) => {
     if (comment.body.match(/\.(gif)/g) !== null) {
       setShowGifPlayer(true);
     }
-    if (typeof comment.fetchedReact === "undefined") commentActions.fetchPostReplyHover(comment.id);
+    if (comment.reference_id && comment.id !== comment.reference_id) commentActions.fetchPostReplyHover(comment.id);
     // commentActions.fetchPostReplyHover(comment.id, (err, res) => {
     //   const clap_user_ids = res.data.claps.map(c => c.user_id);
     //   setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
@@ -463,22 +463,6 @@ const Comment = (props) => {
       ...approving,
       change: false,
     });
-  };
-
-  const requestChangeCommentCallback = () => {
-    commentActions.approve(
-      {
-        post_id: post.id,
-        approved: 0,
-        comment_id: comment.id,
-      },
-      () => {
-        setApproving({
-          ...approving,
-          change: false,
-        });
-      }
-    );
   };
 
   const handleApprove = () => {
@@ -617,8 +601,6 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
-              showCommentApprover={approving.change}
-              requestChangeCommentCallback={requestChangeCommentCallback}
               handleCancelChange={handleCancelChange}
             />
           ) : (
@@ -636,8 +618,6 @@ const Comment = (props) => {
               workspace={workspace}
               isMember={isMember}
               disableOptions={disableOptions}
-              showCommentApprover={approving.change}
-              requestChangeCommentCallback={requestChangeCommentCallback}
               handleCancelChange={handleCancelChange}
             />
           )}

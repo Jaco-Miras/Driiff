@@ -604,7 +604,6 @@ const CreateEditWorkspacePostModal = (props) => {
         updated_at: { timestamp: timestamp },
         title: form.title,
         partial_body: form.body,
-        unread_reply_ids: [],
         clap_user_ids: [],
         author: user,
         user_reads: [],
@@ -617,7 +616,6 @@ const CreateEditWorkspacePostModal = (props) => {
         recipients: form.selectedAddressTo,
         recipient_ids: form.selectedAddressTo.map((r) => r.id),
         users_approval: [],
-        need_approval: false,
       };
       if (draftId) {
         payload = {
@@ -1109,7 +1107,6 @@ const CreateEditWorkspacePostModal = (props) => {
           updated_at: { timestamp: initTimestamp },
           title: form.title,
           partial_body: form.body,
-          unread_reply_ids: [],
           clap_user_ids: [],
           author: user,
           user_reads: [],
@@ -1122,7 +1119,6 @@ const CreateEditWorkspacePostModal = (props) => {
           recipients: form.selectedAddressTo,
           recipient_ids: form.selectedAddressTo.map((r) => r.id),
           users_approval: [],
-          need_approval: false,
         };
         if (draftId) {
           payload = {
