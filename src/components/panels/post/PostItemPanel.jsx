@@ -267,7 +267,7 @@ const PostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal },
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close },
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -321,9 +321,7 @@ const PostItemPanel = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
-            }</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join("");
@@ -445,6 +443,7 @@ const PostItemPanel = (props) => {
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
+            {post.post_approval_label === "ACCEPTED" && !post.is_close && post.author && post.author.id === user.id && <div onClick={() => close(post)}>{dictionary.closeThisPost}</div>}
           </MoreOptions>
         )}
       </div>

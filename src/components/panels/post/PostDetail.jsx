@@ -479,7 +479,7 @@ const PostDetail = (props) => {
                   {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                   {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-                  {post.post_approval_label === "ACCEPTED" && !post.is_close && <div onClick={() => close(post)}>Close this post</div>}
+                  {post.post_approval_label === "ACCEPTED" && !post.is_close && <div onClick={() => close(post)}>{dictionary.closeThisPost}</div>}
                 </StyledMoreOptions>
               </li>
             </ul>

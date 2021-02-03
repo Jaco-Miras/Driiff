@@ -23,7 +23,7 @@ const PostBadge = (props) => {
   const renderApprovalLabel = (status) => {
     switch (status) {
       case "ACCEPTED": {
-        return dictionary.accepted;
+        return post.is_close ? dictionary.closed : dictionary.accepted;
       }
       case "NEED_ACTION": {
         if (isApprover) return dictionary.actionNeeded;

@@ -266,7 +266,7 @@ const CompanyPostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal },
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close },
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -441,6 +441,7 @@ const CompanyPostItemPanel = (props) => {
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
+            {post.post_approval_label === "ACCEPTED" && !post.is_close && post.author && post.author.id === user.id && <div onClick={() => close(post)}>{dictionary.closeThisPost}</div>}
           </MoreOptions>
         )}
       </div>

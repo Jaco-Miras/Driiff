@@ -191,6 +191,8 @@ const WorkspacePostsPanel = (props) => {
     changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
     accepted: _t("POST.ACCEPTED", "Accepted"),
     requestForApproval: _t("POST.REQUEST_FOR_APPROVAL", "Request for approval"),
+    closeThisPost: _t("POST.CLOSE_THIS_POST", "Close this post"),
+    closed: _t("POST.CLOSED", "Closed"),
   };
 
   const handleLoadMore = () => {
