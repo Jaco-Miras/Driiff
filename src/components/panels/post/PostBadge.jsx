@@ -23,7 +23,7 @@ const PostBadge = (props) => {
   const renderApprovalLabel = (status) => {
     switch (status) {
       case "ACCEPTED": {
-        return post.is_close ? dictionary.closed : dictionary.accepted;
+        return dictionary.accepted;
       }
       case "NEED_ACTION": {
         if (isApprover) return dictionary.actionNeeded;
@@ -77,6 +77,13 @@ const PostBadge = (props) => {
       {post.post_approval_label && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
+        </div>
+      )}
+      {post.post_approval_label && (
+        <div className={`${className} mr-3 d-sm-inline d-none`}>
+          <div className={`badge ${isBadgePill ? "badge-pill" : ""}`} style={{ backgroundColor: "#ffa500" }}>
+            {renderApprovalLabel(post.post_approval_label)}
+          </div>
         </div>
       )}
       {hasPendingAproval && post.author.id === user.id && (
