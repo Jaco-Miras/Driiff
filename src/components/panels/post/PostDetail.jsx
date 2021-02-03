@@ -286,7 +286,7 @@ const MarkAsRead = styled.div`
 
 const PostDetail = (props) => {
   const { post, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
@@ -479,6 +479,7 @@ const PostDetail = (props) => {
                   {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                   {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                  {post.post_approval_label === "ACCEPTED" && !post.is_close && <div onClick={() => close(post)}>Close this post</div>}
                 </StyledMoreOptions>
               </li>
             </ul>

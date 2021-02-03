@@ -47,6 +47,7 @@ import {
   updateCompanyPostFilterSort,
   updatePostFiles,
   postComment,
+  postClose,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -871,6 +872,13 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const close = useCallback(
+    (post, callback) => {
+      dispatch(postClose({ post_id: post.id, is_close: 1 }, callback));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
     approveComment,
@@ -907,6 +915,7 @@ const usePostActions = () => {
     fetchPostDetail,
     updatePostImages,
     getUnreadWsPostsCount,
+    close,
   };
 };
 

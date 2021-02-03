@@ -604,3 +604,16 @@ export function getPostRead(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function postClose(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/post-close",
+    data: payload,
+  });
+}

@@ -92,6 +92,7 @@ import {
 import {
   fetchPost,
   incomingArchivedSelectedPosts,
+  incomingClosePost,
   incomingComment,
   incomingCommentApproval,
   incomingCommentClap,
@@ -508,6 +509,10 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
+          case "CLOSED_POST": {
+            this.props.incomingClosePost(e);
+            break;
+          }
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
             break;
@@ -1699,6 +1704,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedHuddleBot: bindActionCreators(incomingDeletedHuddleBot, dispatch),
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
+    incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
   };
 }
 

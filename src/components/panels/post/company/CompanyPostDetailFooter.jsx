@@ -505,50 +505,52 @@ const CompanyPostDetailFooter = (props) => {
               <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
             </NoReply>
           ) : (
-            <React.Fragment>
-              <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
-                <CompanyPostInput
-                  handleClearSent={handleClearSent}
-                  sent={sent}
-                  commentId={commentId}
-                  userMention={userMention}
-                  handleClearUserMention={handleClearUserMention}
-                  commentActions={commentActions}
-                  parentId={parentId}
-                  post={post}
-                  selectedGif={selectedGif}
-                  onClearGif={onClearGif}
-                  selectedEmoji={selectedEmoji}
-                  onClearEmoji={onClearEmoji}
-                  dropAction={dropAction}
-                  members={post.users_responsible}
-                  onActive={onActive}
-                  onClosePicker={onClosePicker}
-                  ref={ref.postInput}
-                  prioMentionIds={prioMentionIds}
-                  approvers={showApprover ? approvers : []}
-                  onClearApprovers={handleClearApprovers}
-                  onSubmitCallback={requestForChangeCallback}
-                />
-                <PostInputButtons>
-                  {!isApprover && (
-                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
-                      <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+            !post.is_close && (
+              <React.Fragment>
+                <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+                  <CompanyPostInput
+                    handleClearSent={handleClearSent}
+                    sent={sent}
+                    commentId={commentId}
+                    userMention={userMention}
+                    handleClearUserMention={handleClearUserMention}
+                    commentActions={commentActions}
+                    parentId={parentId}
+                    post={post}
+                    selectedGif={selectedGif}
+                    onClearGif={onClearGif}
+                    selectedEmoji={selectedEmoji}
+                    onClearEmoji={onClearEmoji}
+                    dropAction={dropAction}
+                    members={post.users_responsible}
+                    onActive={onActive}
+                    onClosePicker={onClosePicker}
+                    ref={ref.postInput}
+                    prioMentionIds={prioMentionIds}
+                    approvers={showApprover ? approvers : []}
+                    onClearApprovers={handleClearApprovers}
+                    onSubmitCallback={requestForChangeCallback}
+                  />
+                  <PostInputButtons>
+                    {!isApprover && (
+                      <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
+                        <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+                      </Tooltip>
+                    )}
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
+                      <IconButton icon="image" onClick={handleQuillImage} />
                     </Tooltip>
-                  )}
-                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
-                    <IconButton icon="image" onClick={handleQuillImage} />
-                  </Tooltip>
-                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.emoji}>
-                    <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
-                  </Tooltip>
-                  <IconButton onClick={handleSend} icon="send" />
-                </PostInputButtons>
-              </ChatInputContainer>
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
-                <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
-              </Tooltip>
-            </React.Fragment>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.emoji}>
+                      <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+                    </Tooltip>
+                    <IconButton onClick={handleSend} icon="send" />
+                  </PostInputButtons>
+                </ChatInputContainer>
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
+                  <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
+                </Tooltip>
+              </React.Fragment>
+            )
           )}
           {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
         </Dflex>

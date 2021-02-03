@@ -201,6 +201,7 @@ export {
   markAllPostAsRead,
   refetchPosts,
   refetchPostComments,
+  postClose,
 } from "./post";
 
 export {

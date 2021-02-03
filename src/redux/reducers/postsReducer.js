@@ -860,6 +860,23 @@ export default (state = INITIAL_STATE, action) => {
         changeRequestedComment: action.data,
       };
     }
+    case "INCOMING_CLOSE_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(state.companyPosts.posts[action.data.post.id] && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
+                is_close: action.data.is_close,
+              },
+            }),
+          },
+        },
+      };
+    }
     default:
       return state;
   }
