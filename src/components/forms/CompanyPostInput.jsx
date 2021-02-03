@@ -206,7 +206,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
         post_id: post.id,
         post_title: post.title,
       },
-      approval_user_ids: approvers.map((a) => a.value).filter((id) => post.author.id !== id),
+      approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
     if (quote) {

@@ -19,7 +19,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     // border: 1px solid #afb8bd;
     // border-radius: 5px;
     max-height: 180px;
-    @media(min-width: 768px) {
+    @media (min-width: 768px) {
       max-height: 370px;
     }
     position: static;
@@ -217,7 +217,7 @@ const PostInput = forwardRef((props, ref) => {
         post_id: post.id,
         post_title: post.title,
       },
-      approval_user_ids: approvers.map((a) => a.value).filter((id) => post.author.id !== id),
+      approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
     if (quote) {

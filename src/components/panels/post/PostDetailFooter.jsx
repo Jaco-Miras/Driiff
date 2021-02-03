@@ -404,17 +404,30 @@ const PostDetailFooter = (props) => {
     })
     .flat();
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
-  const userOptions = Object.values(users)
-    .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
-    .map((u) => {
-      return {
-        ...u,
-        icon: "user-avatar",
-        value: u.id,
-        label: u.name ? u.name : u.email,
-        type: "USER",
-      };
-    });
+  let approverOptions = [
+    ...Object.values(users)
+      .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
+      }),
+    {
+      id: require("shortid").generate(),
+      value: "all",
+      label: "All users",
+      icon: "users",
+      all_ids: prioMentionIds.filter((id) => id !== user.id),
+    },
+  ];
+
+  if (approvers.length && approvers.find((a) => a.value === "all")) {
+    approverOptions = approverOptions.filter((a) => a.value === "all");
+  }
 
   const handleSelectApprover = (e) => {
     if (e === null || !e.length) {
@@ -435,7 +448,11 @@ const PostDetailFooter = (props) => {
     if (e === null) {
       setApprovers([]);
     } else {
-      setApprovers(e);
+      if (e.find((a) => a.value === "all")) {
+        setApprovers(e.filter((a) => a.value === "all"));
+      } else {
+        setApprovers(e);
+      }
     }
   };
 
@@ -556,7 +573,7 @@ const PostDetailFooter = (props) => {
           <ApproverSelectWrapper>
             {approving.change && isApprover && <label>{dictionary.requestChangeTo}</label>}
             {!isApprover && <label>{dictionary.addressedTo}</label>}
-            <FolderSelect options={userOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
+            <FolderSelect options={approverOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
           </ApproverSelectWrapper>
         )}
       </Dflex>

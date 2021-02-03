@@ -506,7 +506,7 @@ const PostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
+        <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.author.id !== user.id && post.is_must_read && !hasRead && (
             <MarkAsRead className="d-sm-inline d-none">
