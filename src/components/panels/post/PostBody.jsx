@@ -112,16 +112,16 @@ const LockIcon = styled(SvgIconFeather)`
   margin-right: 0;
 `;
 
-const ApprovedText = styled.div`
-  span.approve-ip {
-    display: none;
-  }
-  :hover {
-    span.approve-ip {
-      display: block;
-    }
-  }
-`;
+// const ApprovedText = styled.div`
+//   span.approve-ip {
+//     display: none;
+//   }
+//   :hover {
+//     span.approve-ip {
+//       display: block;
+//     }
+//   }
+// `;
 
 const PostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions, workspaceId } = props;
@@ -337,50 +337,7 @@ const PostBody = (props) => {
     }
   });
 
-  // const handleApprove = () => {
-  //   setApproving({
-  //     ...approving,
-  //     approve: true,
-  //   });
-  //   if (!approving.approve) {
-  //     postActions.approve(
-  //       {
-  //         post_id: post.id,
-  //         approved: 1,
-  //       },
-  //       () => {
-  //         setApproving({
-  //           ...approving,
-  //           approve: false,
-  //         });
-  //       }
-  //     );
-  //   }
-  // };
-
-  // const handleRequestChange = () => {
-  //   setApproving({
-  //     ...approving,
-  //     change: true,
-  //   });
-  //   if (!approving.change) {
-  //     postActions.approve(
-  //       {
-  //         post_id: post.id,
-  //         approved: 0,
-  //       },
-  //       () => {
-  //         setApproving({
-  //           ...approving,
-  //           change: false,
-  //         });
-  //       }
-  //     );
-  //   }
-  // };
-
-  // const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
-  // const userRequestChange = post.users_approval.find((u) => u.ip_address !== null && !u.is_approved);
+  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
 
   return (
     <Wrapper ref={refs.container} className="card-body">
@@ -410,7 +367,7 @@ const PostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {post.users_approval.length > 0 && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} />}
+      {hasPendingAproval && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} />}
     </Wrapper>
   );
 };

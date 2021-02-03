@@ -573,7 +573,26 @@ const usePostActions = () => {
                     })
                   );
                 } else {
-                  approve({ post_id: post.id, approved: 1 });
+                  approve({ post_id: post.id, approved: 1 }, (err, res) => {
+                    if (err) return;
+                    let cpayload = {
+                      post_id: post.id,
+                      body: "<div></div>",
+                      mention_ids: [],
+                      file_ids: [],
+                      post_file_ids: [],
+                      personalized_for_id: null,
+                      parent_id: null,
+                      approval_user_ids: [],
+                      has_accepted: 1,
+                      code_data: {
+                        push_title: `${user.name} replied in ${post.title}`,
+                        post_id: post.id,
+                        post_title: post.title,
+                      },
+                    };
+                    dispatch(postComment(cpayload));
+                  });
                 }
               },
             },

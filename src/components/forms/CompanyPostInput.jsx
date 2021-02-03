@@ -270,6 +270,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
       setEditMode(false);
       setEditMessage(null);
     } else {
+      if (props.isApprover) {
+        payload.has_rejected = 1;
+      }
       commentActions.create(payload, onSubmitCallback);
     }
 

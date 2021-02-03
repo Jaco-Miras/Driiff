@@ -516,10 +516,18 @@ const PostDetailFooter = (props) => {
   const requestForChangeCallback = (err, res) => {
     if (err) return;
     if (hasPendingAproval && isApprover && showApprover) {
-      postActions.approve({
-        post_id: post.id,
-        approved: 0,
-      });
+      postActions.approve(
+        {
+          post_id: post.id,
+          approved: 0,
+        },
+        (err, res) => {
+          setApproving({
+            ...approving,
+            change: false,
+          });
+        }
+      );
     }
     if (changeRequestedComment) {
       commentActions.approve({
@@ -618,6 +626,7 @@ const PostDetailFooter = (props) => {
                       approvers={showApprover ? approvers : []}
                       onClearApprovers={handleClearApprovers}
                       onSubmitCallback={requestForChangeCallback}
+                      isApprover={approving.change && hasPendingAproval}
                     />
                     <PostInputButtons>
                       {!isApprover && (

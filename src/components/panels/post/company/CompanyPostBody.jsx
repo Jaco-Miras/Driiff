@@ -112,16 +112,16 @@ const LockIcon = styled(SvgIconFeather)`
   margin-right: 0;
 `;
 
-const ApprovedText = styled.div`
-  span.approve-ip {
-    display: none;
-  }
-  :hover {
-    span.approve-ip {
-      display: block;
-    }
-  }
-`;
+// const ApprovedText = styled.div`
+//   span.approve-ip {
+//     display: none;
+//   }
+//   :hover {
+//     span.approve-ip {
+//       display: block;
+//     }
+//   }
+// `;
 
 const CompanyPostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions } = props;
@@ -185,7 +185,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -317,57 +317,14 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
     }
   });
 
-  // const handleApprove = () => {
-  //   setApproving({
-  //     ...approving,
-  //     approve: true,
-  //   });
-  //   if (!approving.approve) {
-  //     postActions.approve(
-  //       {
-  //         post_id: post.id,
-  //         approved: 1,
-  //       },
-  //       () => {
-  //         setApproving({
-  //           ...approving,
-  //           approve: false,
-  //         });
-  //       }
-  //     );
-  //   }
-  // };
-
-  // const handleRequestChange = () => {
-  //   setApproving({
-  //     ...approving,
-  //     change: true,
-  //   });
-  //   if (!approving.change) {
-  //     postActions.approve(
-  //       {
-  //         post_id: post.id,
-  //         approved: 0,
-  //       },
-  //       () => {
-  //         setApproving({
-  //           ...approving,
-  //           change: false,
-  //         });
-  //       }
-  //     );
-  //   }
-  // };
-
-  // const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
-  // const userRequestChange = post.users_approval.find((u) => u.ip_address !== null && !u.is_approved);
+  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
 
   return (
     <Wrapper ref={refs.container} className="card-body">
@@ -397,7 +354,7 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {post.users_approval.length > 0 && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} />}
+      {hasPendingAproval && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} />}
     </Wrapper>
   );
 };
