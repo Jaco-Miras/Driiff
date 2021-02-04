@@ -23,8 +23,7 @@ const WorkspaceSearchPanel = (props) => {
     const actions = useWorkspaceSearchActions();
     const search = useSelector((state) => state.workspaces.search);
     const user = useSelector((state) => state.session.user);
-    const { count, maxPage, page, results, searching, value } = search;
-
+    const { count, maxPage, page, results, searching, filter_by, value } = search;
     useEffect(() => {
         document.getElementById("main").setAttribute("style", "overflow: auto");
         
@@ -33,6 +32,7 @@ const WorkspaceSearchPanel = (props) => {
                 search: "",
                 skip: 0,
                 limit: 25,
+                filter_by: filter_by,
             }, 
             (err,res) => {
                 if (err) {
@@ -43,6 +43,7 @@ const WorkspaceSearchPanel = (props) => {
                 } else {
                     actions.updateSearch({
                         ...search,
+                        filter_by: filter_by,
                         searching: false,
                         count: res.data.total_count,
                         results: res.data.workspaces,
@@ -63,7 +64,9 @@ const WorkspaceSearchPanel = (props) => {
         if (results.length === count) {
             actions.updateSearch({
                 ...search,
+                filter_by: filter_by,
                 page: selectedPage
+                
             });
         } else {
             if (results.length < selectedPage*25) {
@@ -71,16 +74,19 @@ const WorkspaceSearchPanel = (props) => {
                     search: value,
                     skip: results.length,
                     limit: (selectedPage*25) - results.length,
+                    filter_by: filter_by,
                 }, (err, res) => {
                     if (err) {
                         actions.updateSearch({
                             ...search,
                             searching: false,
+                            filter_by: filter_by,
                         });
                     } else {
                         actions.updateSearch({
                             ...search,
                             searching: false,
+                            filter_by: filter_by,
                             count: res.data.total_count,
                             results: [...res.data.workspaces, ...results],
                             maxPage: Math.ceil(res.data.total_count / 25),
@@ -91,6 +97,7 @@ const WorkspaceSearchPanel = (props) => {
             }
             actions.updateSearch({
                 ...search,
+                filter_by: filter_by,
                 value: value,
                 searching: true,
                 page: selectedPage

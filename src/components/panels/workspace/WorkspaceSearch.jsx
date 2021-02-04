@@ -127,8 +127,10 @@ const WorkspaceSearch = (props) => {
       }
     );
     actions.updateSearch({
-      ...search,
+      // ...search,
+      results: [],
       value: inputValue,
+      filter_by: filter_by,
       searching: true,
     });
   };
@@ -211,7 +213,15 @@ const WorkspaceSearch = (props) => {
 
   useEffect(()=> {
     if ((Object.values(filter).map((sf)=> sf.checked ).includes(true) && !searching) || !!value){
-      handleSearch();
+      actions.updateSearch({
+        results: [],
+        value: inputValue,
+        filter_by: filter_by,
+        searching: true,
+      }, () => {
+        handleSearch();  
+      });
+      
     } else {
       handleClearSearch();
     }
@@ -230,7 +240,8 @@ const WorkspaceSearch = (props) => {
     private: _t("WORKSPACE.PRIVATE", "Private"),
     archived: _t("WORKSPACE.ARCHIVED", "Archived"),
     nonMember: _t("WORKSPACE.NON_MEMBER", "Non Member"),
-    new: _t("WORKSPACE.NEW", "New")
+    new: _t("WORKSPACE.NEW", "New"),
+    external: _t("WORKSPACE.EXTERNAL", "External"),
   };
 
   return (
@@ -264,8 +275,8 @@ const WorkspaceSearch = (props) => {
                 {
                   Object.values(filter).map((sf) => {
                     return (
-                      <li className="d-flex align-items-center" key={sf.key}>
-                        <span className="custom-control custom-checkbox custom-checkbox-success mr-2 pl-1">
+                      <li className="d-flex align-items-center mr-2" key={sf.key}>
+                        <span className="custom-control custom-checkbox custom-checkbox-success">
                           <CheckBox name={sf.key} checked={sf.checked}  type="danger" onClick={toggleCheckFilter}/>
                         </span>
                         <span>{dictionary[sf.key]}</span>
