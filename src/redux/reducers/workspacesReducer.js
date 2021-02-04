@@ -2549,10 +2549,6 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: workspacePost
       }
-
-      return {
-        ...state,
-      }
     }
     default:
       return state;
