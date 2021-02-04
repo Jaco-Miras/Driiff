@@ -175,7 +175,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //                           return r.participant_ids
   //                         }
   //                       }).flat();
-
+  console.error("IGNORE",ignoredMentionedUserIds, prioMentionIds, post);
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
@@ -378,6 +378,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       //check for recipients/type
       const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
       let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ignoredWorkspaceIds];
+      ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -525,7 +526,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       recipients: newRecipients,
     };
 
-    console.log(users, payload);
+    console.log(users, payload, ignoredMentionedUserIds);
     setMentionUsersPayload(payload);
     dispatch(addUserToPostRecipients(payload));
 
