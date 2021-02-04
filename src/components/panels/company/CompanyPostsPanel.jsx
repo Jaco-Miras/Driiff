@@ -182,6 +182,7 @@ const CompanyPostsPanel = (props) => {
     requestForApproval: _t("POST.REQUEST_FOR_APPROVAL", "Request for approval"),
     closeThisPost: _t("POST.CLOSE_THIS_POST", "Close this post"),
     closed: _t("POST.CLOSED", "Closed"),
+    openThisPost: _t("POST.OPEN_THIS_POST", "Open this post"),
   };
 
   const handleLoadMore = () => {

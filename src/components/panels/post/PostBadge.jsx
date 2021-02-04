@@ -79,7 +79,7 @@ const PostBadge = (props) => {
           <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
         </div>
       )}
-      {post.post_approval_label && post.post_approval_label === "ACCEPTED" && post.is_close && (
+      {post.is_close && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
           <div className={`badge ${isBadgePill ? "badge-pill" : ""}`} style={{ backgroundColor: "#ffa500" }}>
             {dictionary.closed}

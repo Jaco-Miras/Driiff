@@ -893,7 +893,7 @@ const usePostActions = () => {
 
   const close = useCallback(
     (post, callback) => {
-      dispatch(postClose({ post_id: post.id, is_close: 1 }, callback));
+      dispatch(postClose({ post_id: post.id, is_close: post.is_close ? 0 : 1 }, callback));
     },
     [dispatch]
   );

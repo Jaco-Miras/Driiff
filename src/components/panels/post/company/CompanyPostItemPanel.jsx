@@ -441,7 +441,7 @@ const CompanyPostItemPanel = (props) => {
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-            {post.post_approval_label === "ACCEPTED" && !post.is_close && post.author && post.author.id === user.id && <div onClick={() => close(post)}>{dictionary.closeThisPost}</div>}
+            {post.author && post.author.id === user.id && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
           </MoreOptions>
         )}
       </div>
