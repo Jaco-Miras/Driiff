@@ -311,6 +311,15 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "corner-up-left":
+        strokeWidth = "2";
+        content = (
+          <>
+            <polyline points="9 14 4 9 9 4" />
+            <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+          </>
+        );
+        break;
       case "arrow-left":
         strokeWidth = "2";
         content = (

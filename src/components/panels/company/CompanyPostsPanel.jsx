@@ -267,7 +267,7 @@ const CompanyPostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail readByUsers={readByUsers} post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} />
+                    <CompanyPostDetail readByUsers={readByUsers} post={post} posts={posts} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} />
                   </PostDetailWrapper>
                 </div>
               ) : (

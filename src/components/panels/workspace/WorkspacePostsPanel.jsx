@@ -323,6 +323,7 @@ const WorkspacePostsPanel = (props) => {
                     <PostDetail
                       readByUsers={readByUsers}
                       post={post}
+                      posts={posts}
                       postActions={actions}
                       user={user}
                       history={history}
