@@ -284,7 +284,7 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const { post, posts, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -587,7 +587,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

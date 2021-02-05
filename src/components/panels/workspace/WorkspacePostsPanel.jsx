@@ -324,6 +324,7 @@ const WorkspacePostsPanel = (props) => {
                       readByUsers={readByUsers}
                       post={post}
                       posts={posts}
+                      filter={filter}
                       postActions={actions}
                       user={user}
                       history={history}

@@ -250,7 +250,7 @@ const PostInputButtons = styled.div`
 `;
 
 const PostDetailFooter = (props) => {
-  const { className = "", overview, onShowFileDialog, dropAction, post, posts, parentId = null, commentActions, postActions: { openPost, archivePost }, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, workspace, isMember, disableOptions, mainInput } = props;
+  const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, postActions: { openPost, archivePost }, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, workspace, isMember, disableOptions, mainInput } = props;
   const postActions = usePostActions();
   const dispatch = useDispatch();
   const ref = {
@@ -786,16 +786,18 @@ const PostDetailFooter = (props) => {
           </div>
         </Dflex>
       )}
-      <Dflex>
-        <div className="d-flex align-items-center justify-content-center mt-3">
-          <button className="btn btn-outline-light mr-3" onClick={() => overview()}>
-            <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
-          </button>
-          <button className="btn btn-outline-light" onClick={handleNextPost}>
-            <SvgIconFeather className="mr-2" icon="corner-up-right" /> {dictionary.archivePostOpenNext}
-          </button>
-        </div>
-      </Dflex>
+      {filter && filter === "all" && (
+        <Dflex>
+          <div className="d-flex align-items-center justify-content-center mt-3">
+            <button className="btn btn-outline-light mr-3" onClick={() => overview()}>
+              <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
+            </button>
+            <button className="btn btn-outline-light" onClick={handleNextPost}>
+              <SvgIconFeather className="mr-2" icon="corner-up-right" /> {dictionary.archivePostOpenNext}
+            </button>
+          </div>
+        </Dflex>
+      )}
     </Wrapper>
   );
 };

@@ -286,7 +286,7 @@ const MarkAsRead = styled.div`
 
 const PostDetail = (props) => {
 
-  const { post, posts, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
+  const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -619,7 +619,7 @@ const PostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <PostDetailFooter post={post} posts={posts} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} mainInput={true}  />
+        <PostDetailFooter post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} mainInput={true} />
       </MainBody>
     </>
   );
