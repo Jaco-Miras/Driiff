@@ -464,7 +464,9 @@ const CreateEditWorkspaceModal = (props) => {
         dispatch(
           updateWorkspace({
             ...payload,
+            topic_id: payload.topic_id ? payload.topic_id : payload.id,
             file_id: res.data.files[0].id,
+            workspace_id: payload.folder_id ? payload.folder_id : payload.workspace_id,
           })
         );
       }

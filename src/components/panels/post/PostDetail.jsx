@@ -617,7 +617,7 @@ const PostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} />
+        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} mainInput={true} />
       </MainBody>
     </>
   );

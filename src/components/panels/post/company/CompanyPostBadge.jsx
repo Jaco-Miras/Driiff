@@ -81,9 +81,7 @@ const CompanyPostBadge = (props) => {
       )}
       {post.is_close && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge ${isBadgePill ? "badge-pill" : ""}`} style={{ backgroundColor: "#ffa500" }}>
-            {dictionary.closed}
-          </div>
+          <div className={`badge badge-info ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.closed}</div>
         </div>
       )}
       {hasPendingAproval && post.author.id === user.id && (
