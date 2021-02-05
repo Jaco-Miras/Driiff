@@ -180,6 +180,7 @@ const CommentBody = styled.div`
     }
   }
   ul {
+    padding-left: 40px;
     li {
       list-style: initial;
     }
