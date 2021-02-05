@@ -517,9 +517,13 @@ const ForwardedSpan = styled.span`
 `;
 
 const ChatNameNotAuthor = styled.span`
-  font-weight: 500;
   padding: ${(props) => (props.isEmoticonOnly || props.isGifOnly || props.hasFiles === true ? "3px 9px 3px 9px" : "0")};
+  font-weight: 500;
   color: #929496;
+  &.important {
+    font-weight: 600;
+    color: #191c20;
+  }
   @media (max-width: 620px) {
     display: block;
     font-size: 11px;
@@ -661,7 +665,7 @@ const ChatBubble = (props) => {
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"}>
               {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className="chat-name-not-author-mobile">
+                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
                     {reply.user.type === "BOT" && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
                   </ChatNameNotAuthor>
                 </>
