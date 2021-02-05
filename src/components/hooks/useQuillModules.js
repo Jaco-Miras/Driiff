@@ -259,10 +259,11 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
             key: 8,
             metaKey: osName.includes("Mac") && mode !== "chat" ? true : false,
             handler: function (range, context) {
-              if (range.index === 0) return;
-              if (range.length === 0) { this.quill.deleteText(range.index - 1, 1, Quill.sources.USER);
+              if (range.index === 0 && range.length === 0 ) return;
+              if (range.length === 0) { 
+                this.quill.deleteText(range.index - 1, 1, Quill.sources.USER);
               } else {
-                    this.quill.deleteText(range, Quill.sources.USER);
+                this.quill.deleteText(range, Quill.sources.USER);
               }
               if (mode === "post_comment") {
                 handleRemoveMention(range, context);
