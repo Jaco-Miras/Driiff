@@ -330,12 +330,19 @@ const UserProfilePanel = (props) => {
         });
       } else {
         if (isAdmin) {
-          console.log("update user");
-          update({ ...form, change_email: 1 }, (err, res) => {
-            if (res) {
-              setEditInformation(false);
-            }
-          });
+          if (user.email !== form.email) {
+            update({ ...form, change_email: 1 }, (err, res) => {
+              if (res) {
+                setEditInformation(false);
+              }
+            });
+          } else {
+            update({ ...form }, (err, res) => {
+              if (res) {
+                setEditInformation(false);
+              }
+            });
+          }
         } else {
           update(form, (err, res) => {
             if (res) {
@@ -467,7 +474,7 @@ const UserProfilePanel = (props) => {
         <div className="col-12 col-lg-5 col-xl-6">
           <div className="card">
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
-              {isLoggedUser && (
+              {(isLoggedUser || isAdmin) && (
                 <DropDocument
                   acceptType="imageOnly"
                   hide={!showDropZone}
@@ -489,7 +496,7 @@ const UserProfilePanel = (props) => {
               )}*/}
               <div className="avatar-container" onClick={handleAvatarClick}>
                 {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
-                {isLoggedUser && (
+                {(isLoggedUser || isAdmin) && (
                   <span className="btn btn-outline-light btn-sm">
                     <SvgIconFeather icon="pencil" />
                   </span>
@@ -564,7 +571,7 @@ const UserProfilePanel = (props) => {
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
                   {dictionary.information}
-                  {isLoggedUser || (loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active && !user.hasOwnProperty("history_email_change")) ? (
+                  {isLoggedUser || (loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active) ? (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                       <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
@@ -659,7 +666,7 @@ const UserProfilePanel = (props) => {
                       <>
                         <Input
                           className={getValidClass(formUpdate.valid.first_name)}
-                          disabled={isAdmin || !isLoggedUser}
+                          //disabled={!isLoggedUser}
                           innerRef={refs.first_name}
                           name="first_name"
                           onChange={handleInputChange}
@@ -678,7 +685,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.middle_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.middle_name)} disabled={isAdmin || !isLoggedUser} name="middle_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.middle_name} />
+                        <Input className={getValidClass(formUpdate.valid.middle_name)} name="middle_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.middle_name} />
                         <InputFeedback valid={formUpdate.feedbackState.middle_name}>{formUpdate.feedbackText.middle_name}</InputFeedback>
                       </>
                     )}
@@ -692,7 +699,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.last_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.last_name)} disabled={isAdmin || !isLoggedUser} name="last_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.last_name} />
+                        <Input className={getValidClass(formUpdate.valid.last_name)} name="last_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.last_name} />
                         <InputFeedback valid={formUpdate.feedbackState.last_name}>{formUpdate.feedbackText.last_name}</InputFeedback>
                       </>
                     )}
@@ -815,7 +822,7 @@ const UserProfilePanel = (props) => {
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.email}</div>
                   <div className="col col-form">
-                    {readOnlyFields.includes("email") ? (
+                    {readOnlyFields.includes("email") || user.hasOwnProperty("history_email_change") ? (
                       <Label>{user.email}</Label>
                     ) : (
                       <>
