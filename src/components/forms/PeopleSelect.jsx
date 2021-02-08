@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Avatar } from "../common";
 import { useSettings } from "../hooks";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
+import CreatableSelect from "react-select/creatable";
 
 const SelectOption = styled.div`
   display: flex;
@@ -75,11 +76,26 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
 };
 
 const PeopleSelect = forwardRef((props, ref) => {
-  const { className = "", isMulti = true, isClearable = false, ...otherProps } = props;
+  const { className = "", isMulti = true, isClearable = false, creatable = false, ...otherProps } = props;
   const {
     generalSettings: { dark_mode },
   } = useSettings();
-  return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={{ Option, MultiValueContainer }} {...otherProps} />;
+
+  if (creatable) {
+    return (
+      <CreatableSelect
+        ref={ref}
+        className={`react-select-container ${className}`}
+        styles={dark_mode === "0" ? lightTheme : darkTheme}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        components={{ Option, MultiValueContainer }}
+        {...otherProps}
+      />
+    );
+  } else {
+    return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={{ Option, MultiValueContainer }} {...otherProps} />;
+  }
 });
 
 export default PeopleSelect;
