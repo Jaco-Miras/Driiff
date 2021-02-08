@@ -459,11 +459,21 @@ const Comment = (props) => {
             approved: 0,
             comment_id: comment.id,
           },
-          () => {
+          (err, res) => {
             setApproving({
               ...approving,
               change: false,
             });
+            if (err) return;
+            const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
+            const allUsersDisagreed = comment.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === comment.users_approval.length - 1;
+            if (isLastUserToAnswer && allUsersDisagreed) {
+              postActions.generateSystemMessage(
+                post,
+                [],
+                comment.users_approval.map((ua) => ua.id)
+              );
+            }
           }
         );
       }

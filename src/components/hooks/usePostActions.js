@@ -581,7 +581,8 @@ const usePostActions = () => {
                       if (isLastUserToAnswer && allUsersAgreed) {
                         generateSystemMessage(
                           post,
-                          comment.users_approval.map((ua) => ua.id)
+                          comment.users_approval.map((ua) => ua.id),
+                          []
                         );
                       }
                     });
@@ -595,7 +596,8 @@ const usePostActions = () => {
                     if (isLastUserToAnswer && allUsersAgreed) {
                       generateSystemMessage(
                         post,
-                        post.users_approval.map((ua) => ua.id)
+                        post.users_approval.map((ua) => ua.id),
+                        []
                       );
                     }
                     if (post.users_approval.length === 1) {
@@ -924,13 +926,13 @@ const usePostActions = () => {
   );
 
   const generateSystemMessage = useCallback(
-    (post, approval_ids) => {
+    (post, accepted_ids, rejected_ids) => {
       let payload = {
         post_id: post.id,
-        body: "<div>Post accepted</div>",
+        body: rejected_ids.length ? "<div>Everyone disagreed to this post</div>" : "<div>Everyone agreed to this post</div>",
         generate_system_message: 1,
-        accepted_user_ids: approval_ids,
-        rejected_user_ids: [],
+        accepted_user_ids: accepted_ids,
+        rejected_user_ids: rejected_ids,
       };
       dispatch(postComment(payload));
     },
