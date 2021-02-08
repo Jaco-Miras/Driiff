@@ -404,6 +404,10 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const formatCreateLabel = (inputValue) => {
+    return `Add ${inputValue}`;
+  };
+
   const handleCreateOption = (inputValue) => {
     setInvitedEmails((prevState) => [...prevState, inputValue]);
     setForm((prevState) => ({
@@ -1266,6 +1270,7 @@ const CreateEditWorkspaceModal = (props) => {
               onChange={handleSelectExternalUser}
               onInputChange={handleExternalInputChange}
               filterOption={filterOptions}
+              formatCreateLabel={formatCreateLabel}
               isSearchable
             />
           </WrapperDiv>
