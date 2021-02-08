@@ -324,7 +324,6 @@ const CreateEditCompanyPostModal = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const company = useSelector((state) => state.global.recipients).find((r) => r.main_department === true);
-  const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [init, setInit] = useState(false);
@@ -1205,7 +1204,7 @@ const CreateEditCompanyPostModal = (props) => {
       value: "all",
       label: "All users",
       icon: "users",
-      all_ids: addressIds.filter((id) => id !== user.id),
+      all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
     },
   ];
 

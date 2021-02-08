@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { useTranslation } from "../../hooks";
+import { Avatar } from "../../common";
 
 const Wrapper = styled.div``;
 const ApprovedText = styled.div`
@@ -18,8 +20,9 @@ const ApprovedText = styled.div`
 `;
 
 const PostChangeAccept = (props) => {
-  const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post } = props;
+  const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers } = props;
 
+  const users = useSelector((state) => state.users.users);
   const { _t } = useTranslation();
   const dictionary = {
     comment: _t("NOTIFICATION.COMMENT_POPUP", "Made a comment in ::title::", { title: "" }),
@@ -32,10 +35,17 @@ const PostChangeAccept = (props) => {
   const userApproved = usersApproval.find((u) => u.ip_address !== null && u.is_approved);
   const userRequestChange = usersApproval.find((u) => u.ip_address !== null && !u.is_approved);
   const isApprover = usersApproval.some((ua) => ua.id === user.id);
+  const usersApproved = usersApproval.filter((u) => u.ip_address !== null && u.is_approved);
+  const usersDisagreed = usersApproval.filter((u) => u.ip_address !== null && !u.is_approved);
+  const userApprovedIds = usersApproved.map((ua) => ua.id);
+  const agreedUsers = Object.values(users).filter((u) => userApprovedIds.some((id) => id === u.id));
+  const userDisagreedIds = usersDisagreed.map((ua) => ua.id);
+  const disagreedUsers = Object.values(users).filter((u) => userDisagreedIds.some((id) => id === u.id));
+  const hasAnswered = usersApproval.some((ua) => ua.id === user.id && ua.ip_address !== null);
 
   return (
     <Wrapper className="mb-3">
-      {!postBody && usersApproval.filter((u) => u.ip_address === null).length === usersApproval.length && usersApproval.some((u) => u.id === user.id) && (
+      {!postBody && !hasAnswered && isApprover && (
         <div className="d-flex align-items-center mt-3">
           <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
             {dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
@@ -45,7 +55,7 @@ const PostChangeAccept = (props) => {
           </button>
         </div>
       )}
-      {userApproved && (
+      {userApproved && !isMultipleApprovers && (
         <ApprovedText>
           <div className="d-flex align-items-center justify-content-center">
             <div className="alert alert-success">
@@ -59,13 +69,46 @@ const PostChangeAccept = (props) => {
           </div>
         </ApprovedText>
       )}
-      {userRequestChange && (
+      {userRequestChange && !isMultipleApprovers && (
         <ApprovedText>
           {userRequestChange.name} {isApprover ? dictionary.askForChange : dictionary.hasRequestedChange}{" "}
           <span className="text-muted approve-ip">
             {fromNow(userRequestChange.created_at.timestamp)} - {userRequestChange.ip_address}
           </span>
         </ApprovedText>
+      )}
+      {isMultipleApprovers && (
+        <div className="readers-container">
+          {usersApproved.length > 0 && (
+            <div className="user-reads-container read-by">
+              <span className="no-readers">{usersApproved.length} users agreed</span>
+              <span className="hover read-users-container">
+                {agreedUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
+          <br />
+          {usersDisagreed.length > 0 && (
+            <div className="user-reads-container read-by">
+              <span className="no-readers">{usersDisagreed.length} users disagreed</span>
+              <span className="hover read-users-container">
+                {disagreedUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
+        </div>
       )}
     </Wrapper>
   );
