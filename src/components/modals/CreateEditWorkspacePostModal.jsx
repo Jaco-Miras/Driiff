@@ -315,7 +315,6 @@ const CreateEditWorkspacePostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [modal, setModal] = useState(true);
@@ -1203,7 +1202,7 @@ const CreateEditWorkspacePostModal = (props) => {
       value: "all",
       label: "All users",
       icon: "users",
-      all_ids: addressIds.filter((id) => id !== user.id),
+      all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
     },
   ];
 

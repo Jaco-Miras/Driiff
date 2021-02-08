@@ -185,7 +185,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -317,7 +317,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -325,6 +325,7 @@ const CompanyPostBody = (props) => {
   });
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  const isMultipleApprovers = post.users_approval.length > 1;
 
   return (
     <Wrapper ref={refs.container} className="card-body">
@@ -354,7 +355,7 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {hasPendingAproval && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} />}
+      {(hasPendingAproval || isMultipleApprovers) && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} isMultipleApprovers={isMultipleApprovers} />}
     </Wrapper>
   );
 };

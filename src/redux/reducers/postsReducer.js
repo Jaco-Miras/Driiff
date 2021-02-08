@@ -815,22 +815,22 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "INCOMING_COMMENT_APPROVAL": {
-      return {
-        ...state,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-              },
-            }),
-          },
-        },
-      };
-    }
+    // case "INCOMING_COMMENT_APPROVAL": {
+    //   return {
+    //     ...state,
+    //     companyPosts: {
+    //       ...state.companyPosts,
+    //       posts: {
+    //         ...state.companyPosts.posts,
+    //         ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+    //           [action.data.post_id]: {
+    //             ...state.companyPosts.posts[action.data.post_id],
+    //           },
+    //         }),
+    //       },
+    //     },
+    //   };
+    // }
     case "SET_POSTREAD": {
       return {
         ...state,

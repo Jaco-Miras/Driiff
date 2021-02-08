@@ -413,38 +413,34 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const handleRequestChange = () => {
-    setApproving({
-      ...approving,
-      change: true,
-    });
-    setShowApprover(true);
-    setApprovers([
-      {
-        ...post.author,
-        icon: "user-avatar",
-        value: post.author.id,
-        label: post.author.name,
-        type: "USER",
-        ip_address: null,
-        is_approved: null,
-      },
-    ]);
-  };
-
-  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
-  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
-  const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
-  const approverNames = post.users_approval.map((u) => u.name);
-
-  const requestForChangeCallback = (err, res) => {
-    if (err) return;
-    if (hasPendingAproval && isApprover && showApprover) {
+    if (post.users_approval.length === 1) {
+      setApproving({
+        ...approving,
+        change: true,
+      });
+      setShowApprover(true);
+      setApprovers([
+        {
+          ...post.author,
+          icon: "user-avatar",
+          value: post.author.id,
+          label: post.author.name,
+          type: "USER",
+          ip_address: null,
+          is_approved: null,
+        },
+      ]);
+    } else {
+      setApproving({
+        ...approving,
+        change: true,
+      });
       postActions.approve(
         {
           post_id: post.id,
           approved: 0,
         },
-        () => {
+        (err, res) => {
           setApproving({
             ...approving,
             change: false,
@@ -452,13 +448,41 @@ const CompanyPostDetailFooter = (props) => {
         }
       );
     }
-    if (changeRequestedComment) {
-      commentActions.approve({
-        post_id: post.id,
-        approved: 0,
-        comment_id: changeRequestedComment.id,
-        transfer_comment_id: res.data.id,
-      });
+  };
+
+  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+  const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
+  const approverNames = post.users_approval.map((u) => u.name);
+  const isMultipleApprovers = post.users_approval.length > 1;
+  const hasAnswered = post.users_approval.some((ua) => ua.id === user.id && ua.ip_address !== null);
+  //const isLastUserToAnswer = post.users_approval.length > 0 && post.users_approval.length - post.users_approval.filter((u) => u.ip_address === null).length === 1;
+
+  const requestForChangeCallback = (err, res) => {
+    if (post.users_approval.length === 1) {
+      if (err) return;
+      if (hasPendingAproval && isApprover && showApprover) {
+        postActions.approve(
+          {
+            post_id: post.id,
+            approved: 0,
+          },
+          (err, res) => {
+            setApproving({
+              ...approving,
+              change: false,
+            });
+          }
+        );
+      }
+      if (changeRequestedComment) {
+        commentActions.approve({
+          post_id: post.id,
+          approved: 0,
+          comment_id: changeRequestedComment.id,
+          transfer_comment_id: res.data.id,
+        });
+      }
     }
   };
 
@@ -565,7 +589,7 @@ const CompanyPostDetailFooter = (props) => {
         </Dflex>
       )}
       {editPostComment && editPostComment.files.length > 0 && <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
-      {hasPendingAproval && isApprover && !approving.change && (
+      {((hasPendingAproval && isApprover && !approving.change) || (isMultipleApprovers && isApprover && !hasAnswered)) && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
