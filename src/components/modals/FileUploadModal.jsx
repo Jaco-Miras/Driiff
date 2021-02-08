@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
+import { useToaster } from "../hooks";
 import { uploadDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
@@ -214,7 +215,9 @@ const FileUploadModal = (props) => {
   const pickerRef = useRef();
   const { _t } = useTranslation();
   const dispatch = useDispatch();
+  const toaster = useToaster();
   const reactQuillRef = useRef();
+  const toasterRef = useRef(null);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const savedInput = useSelector((state) => state.global.dataFromInput);
@@ -325,6 +328,11 @@ const FileUploadModal = (props) => {
               file: file.bodyFormData,
               file_type: "private",
               folder_id: null,
+              options: { 
+                config: {
+                  onUploadProgress: handleOnUploadProgress
+                }
+              }
             })
           )
       ).then((result) => {
@@ -332,6 +340,19 @@ const FileUploadModal = (props) => {
       });
     } else {
       setUploadedFiles(files);
+    }
+  }
+
+  const handleOnUploadProgress = (progressEvent) => {
+    const progress = progressEvent.loaded / progressEvent.total;
+    if (toasterRef.current === null) {
+      toasterRef.current = toaster.info(
+        <div>
+          Uploading File.
+        </div>
+      , {progress: progress});
+    } else {
+      toaster.update(toasterRef.current, {progress: progress});
     }
   }
 

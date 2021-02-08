@@ -20,7 +20,7 @@ const TextWrapper = styled.div`
 const useToaster = () => {
 
   const success = useCallback((text, options = {}) => {
-    toast.success(
+    return toast.success(
       <Wrapper>
         <Icon icon="check" strokeWidth="2"/>
         <TextWrapper>
@@ -31,7 +31,7 @@ const useToaster = () => {
   }, []);
 
   const error = useCallback((text, options = {}) => {
-    toast.error(
+    return toast.error(
       <Wrapper>
         <Icon icon="alert-x" strokeWidth="2"/>
         <TextWrapper>
@@ -42,7 +42,7 @@ const useToaster = () => {
   }, []);
 
   const info = useCallback((text, options = {}) => {
-    toast.info(
+   return toast.info(
       <Wrapper>
         <Icon icon="info" strokeWidth="2"/>
         <TextWrapper>
@@ -53,7 +53,7 @@ const useToaster = () => {
   }, []);
 
   const warning = useCallback((text, options = {}) => {
-    toast.warn(
+    return toast.warn(
       <Wrapper>
         <Icon icon="warning" strokeWidth="2"/>
         <TextWrapper>
@@ -64,7 +64,7 @@ const useToaster = () => {
   }, []);
 
   const notify = useCallback((text, options = {}) => {
-    toast(
+    return toast(
       <Wrapper>
         <TextWrapper>
           {text}
@@ -73,12 +73,17 @@ const useToaster = () => {
     , options);
   }, []);
 
+  const update = useCallback((text, options = {}) =>{
+    toast.update(text, options);
+  }, []);
+
   return {
     success,
     error,
     warning,
     info,
     notify,
+    update,
   };
 };
 

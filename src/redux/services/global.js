@@ -59,11 +59,12 @@ export function uploadDocument(payload) {
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
   }
-  return apiCall({
+  const payloadRequest = Object.assign({
     method: "POST",
     url: url,
     data: payload.file,
-  });
+  }, payload.options? payload.options : {} );
+  return apiCall(payloadRequest);
 }
 
 export function getTranslationObject(payload) {
