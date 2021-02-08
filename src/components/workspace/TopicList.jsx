@@ -39,6 +39,7 @@ const TopicList = (props) => {
 
   const dispatch = useDispatch();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const channels = useSelector((state) => state.chat.channels);
   const workspaceRef = useRef();
   const history = useHistory();
   const route = useRouteMatch();
@@ -62,7 +63,9 @@ const TopicList = (props) => {
       }
     }
     if (selected && onWorkspace) return;
-
+    if (selectedChannel && selectedChannel.id !== topic.channel.id && channels[topic.channel.id]) {
+      actions.selectChannel(channels[topic.channel.id]);
+    }
     actions.selectWorkspace(topic);
     actions.redirectTo(topic);
   };
