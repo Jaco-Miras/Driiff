@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useTranslation } from "../../hooks";
-import { Avatar } from "../../common";
+import { Avatar, SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div``;
 const ApprovedText = styled.div`
@@ -16,6 +16,14 @@ const ApprovedText = styled.div`
     span.approve-ip {
       display: block;
     }
+  }
+`;
+
+const Icon = styled(SvgIconFeather)`
+  width: 16px;
+
+  &.close {
+    cursor: pointer;
   }
 `;
 
@@ -81,7 +89,12 @@ const PostChangeAccept = (props) => {
         <div className="readers-container">
           {usersApproved.length > 0 && (
             <div className="user-reads-container read-by">
-              <span className="no-readers">{usersApproved.length} users agreed</span>
+              {userApprovedIds.some((id) => id === user.id) && (
+                <span className="mr-2">
+                  <Icon className="mr-2" icon="check" /> I've agreed to this
+                </span>
+              )}
+              <span className="no-readers">Agreed by {usersApproved.length} users</span>
               <span className="hover read-users-container">
                 {agreedUsers.map((u) => {
                   return (
@@ -96,7 +109,12 @@ const PostChangeAccept = (props) => {
           <br />
           {usersDisagreed.length > 0 && (
             <div className="user-reads-container read-by">
-              <span className="no-readers">{usersDisagreed.length} users disagreed</span>
+              {userDisagreedIds.some((id) => id === user.id) && (
+                <span className="mr-2">
+                  <Icon className="mr-2" icon="check" /> I've disagreed to this
+                </span>
+              )}
+              <span className="no-readers">Disagreed by {usersDisagreed.length} users</span>
               <span className="hover read-users-container">
                 {disagreedUsers.map((u) => {
                   return (
