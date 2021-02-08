@@ -522,6 +522,16 @@ const PostDetailFooter = (props) => {
             ...approving,
             change: false,
           });
+          if (err) return;
+          const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
+          const allUsersDisagreed = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === post.users_approval.length - 1;
+          if (isLastUserToAnswer && allUsersDisagreed) {
+            postActions.generateSystemMessage(
+              post,
+              [],
+              post.users_approval.map((ua) => ua.id)
+            );
+          }
         }
       );
     }
