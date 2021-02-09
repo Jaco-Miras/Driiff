@@ -169,6 +169,23 @@ const NoReply = styled.div`
     margin-bottom: 0;
     text-align: center;
   }
+  .request-approval {
+    color: #7a1b8b;
+  }
+`;
+
+const ClosedLabel = styled.div`
+  width: 100%;
+
+  .alert {
+    width: 100%;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    span:last-child {
+      cursor: pointer;
+    }
+  }
 `;
 
 const PickerContainer = styled(CommonPicker)`
@@ -211,7 +228,7 @@ const PostInputButtons = styled.div`
 `;
 
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null } = props;
+  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
 
   const postActions = usePostActions();
   const ref = {
@@ -300,6 +317,8 @@ const CompanyPostDetailFooter = (props) => {
     images: _t("TOOLTIP.IMAGES", "Images"),
     sharedWithAdditionalPeople: _t("POST.INFO_SHARED_WITH_PEOPLE", "Your comment is published in secured workspace(s) & shared with additional people"),
     sharedWithPublicWs: _t("POST.INFO_SHARED_WITH_PUBLIC_WS", "Your comment is published in secured workspace(s) & public workspace(s)"),
+    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator closed this post for commenting"),
+    reopen: _t("POST.REOPEN", "Reopen"),
   };
 
   const handleQuillImage = () => {
@@ -494,6 +513,10 @@ const CompanyPostDetailFooter = (props) => {
     return r.type === "TOPIC" && r.private === 0;
   });
 
+  const handleReopen = () => {
+    postActions.close(post);
+  };
+
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
@@ -515,10 +538,18 @@ const CompanyPostDetailFooter = (props) => {
       </Dflex>
       {hasPendingAproval && !isApprover && (
         <NoReply className="d-flex align-items-center mb-2">
-          <div className="alert alert-primary" style={{ color: "#1E90FF" }}>
+          <div className="alert alert-primary request-approval">
             {dictionary.requestApprovalFrom} {approverNames.join(", ")}
           </div>
         </NoReply>
+      )}
+      {post.is_close && mainInput && (
+        <ClosedLabel className="d-flex align-items-center">
+          <div className="alert alert-warning">
+            <span>{dictionary.creatorClosedPost}</span>
+            <span onClick={handleReopen}>{dictionary.reopen}</span>
+          </div>
+        </ClosedLabel>
       )}
       {(!isApprover || approving.change || userApproved) && (
         <Dflex className="d-flex align-items-end">

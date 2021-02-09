@@ -542,7 +542,7 @@ const Comment = (props) => {
                 </span>
               )}
             </div>
-            {!post.is_read_only && !disableOptions && (
+            {!post.is_read_only && !disableOptions && !post.is_close && (
               <Reply className="ml-3" onClick={handleShowInput}>
                 {dictionary.comment}
               </Reply>
@@ -603,6 +603,7 @@ const Comment = (props) => {
               isMember={isMember}
               disableOptions={disableOptions}
               handleCancelChange={handleCancelChange}
+              mainInput={false}
             />
           ) : (
             <CommentInput
@@ -620,6 +621,7 @@ const Comment = (props) => {
               isMember={isMember}
               disableOptions={disableOptions}
               handleCancelChange={handleCancelChange}
+              mainInput={false}
             />
           )}
         </InputWrapper>

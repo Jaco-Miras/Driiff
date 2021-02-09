@@ -586,7 +586,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

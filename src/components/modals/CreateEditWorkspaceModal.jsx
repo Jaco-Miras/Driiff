@@ -404,6 +404,42 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const formatCreateLabel = (inputValue) => {
+    return `Add ${inputValue}`;
+  };
+
+  const handleCreateOption = (inputValue) => {
+    setInvitedEmails((prevState) => [...prevState, inputValue]);
+    setForm((prevState) => ({
+      ...prevState,
+      selectedExternals: [
+        ...prevState.selectedExternals,
+        {
+          id: require("shortid").generate(),
+          label: inputValue,
+          value: inputValue,
+          name: inputValue,
+          first_name: inputValue,
+          email: inputValue,
+          has_accepted: false,
+        },
+      ],
+    }));
+  };
+
+  const handleExternalValidation = (inputValue, selectValue, selectOptions) => {
+    const isExistingOption = selectOptions.some((o) => o.email === inputValue);
+    const isSelectedOption = selectValue.some((o) => o.email === inputValue);
+    if (!isExistingOption && !isSelectedOption && inputValue !== "") {
+      if (EmailRegex.test(inputValue)) {
+        const userExists = selectOptions.some((uo) => uo.email === inputValue);
+        if (!userExists) {
+          return true;
+        }
+      }
+    }
+  };
+
   const handleSelectFolder = (e) => {
     setForm((prevState) => ({
       ...prevState,
@@ -464,7 +500,9 @@ const CreateEditWorkspaceModal = (props) => {
         dispatch(
           updateWorkspace({
             ...payload,
+            topic_id: payload.topic_id ? payload.topic_id : payload.id,
             file_id: res.data.files[0].id,
+            workspace_id: payload.folder_id ? payload.folder_id : payload.workspace_id,
           })
         );
       }
@@ -1109,43 +1147,6 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
-  const handleKeyDownExternal = (e) => {
-    if (e.key === "Enter") {
-      //validate email - if email is valid then add to useroptions
-      if (EmailRegex.test(externalInput)) {
-        const userExists = externalUserOptions.some((uo) => uo.email === externalInput);
-
-        if (userExists) {
-          let userOption = externalUserOptions.filter((uo) => uo.email === externalInput);
-          if (userOption.length && !form.selectedExternals.some((user) => user.email === externalInput)) {
-            setForm((prevState) => ({
-              ...prevState,
-              selectedExternals: [...prevState.selectedExternals, userOption[0]],
-            }));
-          }
-        } else {
-          setInvitedEmails((prevState) => [...prevState, externalInput]);
-          setForm((prevState) => ({
-            ...prevState,
-            selectedExternals: [
-              ...prevState.selectedExternals,
-              {
-                id: require("shortid").generate(),
-                label: externalInput,
-                value: externalInput,
-                name: externalInput,
-                first_name: externalInput,
-                email: externalInput,
-                has_accepted: false,
-              },
-            ],
-          }));
-        }
-        setExternalInput("");
-      }
-    }
-  };
-
   const handleInputChange = (e) => {
     setInputValue(e);
   };
@@ -1259,14 +1260,17 @@ const CreateEditWorkspaceModal = (props) => {
           <WrapperDiv className={"modal-input"}>
             <Label for="people">{dictionary.externalGuest}</Label>
             <SelectPeople
+              creatable={true}
               valid={valid.team}
               options={externalUserOptions}
               value={form.selectedExternals}
               inputValue={externalInput}
+              isValidNewOption={handleExternalValidation}
+              onCreateOption={handleCreateOption}
               onChange={handleSelectExternalUser}
-              onKeyDown={handleKeyDownExternal}
               onInputChange={handleExternalInputChange}
               filterOption={filterOptions}
+              formatCreateLabel={formatCreateLabel}
               isSearchable
             />
           </WrapperDiv>
