@@ -70,7 +70,6 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
         all,
       ];
     }
-    
 
     if (Object.keys(workspaces).length) {
       newWorkSpaceValues = [
@@ -79,12 +78,12 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
             ...workspace,
             value: workspace.name,
             id: workspace.id,
-            type_id:  workspace.id,
+            type_id: workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
             link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`,
           });
-        })
+        }),
       ];
     }
 
@@ -95,7 +94,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
       newAtValues = [];
       newWorkSpaceValues = [];
     }
-    
+
     if (prioMentionIds.length) {
       let prioIds = prioMentionIds.filter((id) => id !== user.id);
       newAtValues.sort((a, b) => {
@@ -113,10 +112,10 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
       magicUrl: true,
       clipboard: {
         allowed: {
-          tags: ['a', 'b', 'strong', 'u', 's', 'i', 'p', 'br', 'ul', 'ol', 'li', 'div', 'span'],
-          attributes: ['href', 'rel', 'target', 'class']
-      },
-      keepSelection: true,
+          tags: ["a", "b", "strong", "u", "s", "i", "p", "br", "ul", "ol", "li", "div", "span"],
+          attributes: ["href", "rel", "target", "class"],
+        },
+        keepSelection: true,
       },
       mention: {
         allowedChars: /^[A-Za-z\sÅÄÖåäöë]*$/,
@@ -204,10 +203,11 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
           return renderToString(
             <>
               <span className={item.class} style={avatarStyling}>
-                {item.type === "WORKSPACE" || item.type === "TOPIC"? 
-                  <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" />: 
+                {item.type === "WORKSPACE" || item.type === "TOPIC" ? (
+                  <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" />
+                ) : (
                   <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
-                }
+                )}
               </span>
               &nbsp;{" "}
               <span style={{ width: "auto", lineHeight: 1.35 }}>
@@ -217,7 +217,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
           );
         },
       },
-      toolbar: ["bold", "italic", "image"],
+      toolbar: ["bold", "italic", "image", "link"],
       imageUploader: {
         upload: (file) => {
           console.log(setImageLoading);
@@ -270,7 +270,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
             key: 85,
             ctrlKey: true,
             handler: () => {
-              console.warn("copy paste pressed")
+              console.warn("copy paste pressed");
               //do nothing
             },
           },
