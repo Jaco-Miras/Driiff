@@ -2385,13 +2385,13 @@ export default (state = INITIAL_STATE, action) => {
           ...(action.data.workspaces.length > 0 && {
             ...state.workspacePosts,
             ...action.data.workspaces.reduce((res, ws) => {
-              if (state.workspacePosts[ws.topic_id]) {
+              if (state.workspacePosts[ws.topic.id]) {
                 res[ws.topic.id] = {
-                  ...state.workspacePosts[ws.topic_id],
+                  ...state.workspacePosts[ws.topic.id],
                   posts: {
-                    ...state.workspacePosts[ws.topic_id].posts,
+                    ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic_id].posts[action.data.post.id],
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
                       post_approval_label: allUsersAgreed
                         ? "ACCEPTED"
                         : allUsersDisagreed
@@ -2400,7 +2400,7 @@ export default (state = INITIAL_STATE, action) => {
                         ? "SPLIT"
                         : action.data.user_approved.id === state.user.id
                         ? null
-                        : state.workspacePosts[ws.topic_id].posts[action.data.post.id].post_approval_label,
+                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
                       //post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
                     },
                   },
