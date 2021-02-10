@@ -2327,20 +2327,19 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
                   [action.data.comment.id]: {
                     ...state.postComments[action.data.post.id].comments[action.data.comment.id],
-                    users_approval: action.data.users_approval,
-                    // users_approval:
-                    //   state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.length > 1
-                    //     ? state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((ua) => {
-                    //         if (ua.id === action.data.user_approved.id) {
-                    //           return {
-                    //             ...ua,
-                    //             ...action.data.user_approved,
-                    //           };
-                    //         } else {
-                    //           return ua;
-                    //         }
-                    //       })
-                    //     : [],
+                    users_approval:
+                      state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.length > 1
+                        ? state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((ua) => {
+                            if (ua.id === action.data.user_approved.id) {
+                              return {
+                                ...ua,
+                                ...action.data.user_approved,
+                              };
+                            } else {
+                              return ua;
+                            }
+                          })
+                        : [],
                     replies: {
                       ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies,
                       ...(action.data.transferred_comment &&
