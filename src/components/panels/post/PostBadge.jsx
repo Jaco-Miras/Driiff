@@ -34,7 +34,7 @@ const PostBadge = (props) => {
         return null;
       }
       default:
-        return null;
+        return status;
     }
   };
 

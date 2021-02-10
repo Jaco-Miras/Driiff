@@ -2263,6 +2263,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
       return {
         ...state,
         workspacePosts: {
@@ -2277,7 +2280,15 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
-                      post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
+                      post_approval_label: allUsersAgreed
+                        ? "ACCEPTED"
+                        : allUsersDisagreed
+                        ? "REQUEST_UPDATE"
+                        : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                        ? "SPLIT"
+                        : action.data.user_approved.id === state.user.id
+                        ? null
+                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
                       users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
                         if (u.id === action.data.user_approved.id) {
                           return {

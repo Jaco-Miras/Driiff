@@ -34,7 +34,7 @@ const CompanyPostBadge = (props) => {
         return null;
       }
       default:
-        return null;
+        return status;
     }
   };
 

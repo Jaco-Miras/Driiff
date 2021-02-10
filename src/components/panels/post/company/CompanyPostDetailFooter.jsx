@@ -363,7 +363,7 @@ const CompanyPostDetailFooter = (props) => {
       value: "all",
       label: "All users",
       icon: "users",
-      all_ids: prioMentionIds.filter((id) => id !== user.id),
+      all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== user.id),
     },
   ];
 
