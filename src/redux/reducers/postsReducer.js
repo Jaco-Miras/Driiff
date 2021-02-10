@@ -827,22 +827,34 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    // case "INCOMING_COMMENT_APPROVAL": {
-    //   return {
-    //     ...state,
-    //     companyPosts: {
-    //       ...state.companyPosts,
-    //       posts: {
-    //         ...state.companyPosts.posts,
-    //         ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
-    //           [action.data.post_id]: {
-    //             ...state.companyPosts.posts[action.data.post_id],
-    //           },
-    //         }),
-    //       },
-    //     },
-    //   };
-    // }
+    case "INCOMING_COMMENT_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                post_approval_label: allUsersAgreed
+                  ? "ACCEPTED"
+                  : allUsersDisagreed
+                  ? "REQUEST_UPDATE"
+                  : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                  ? "SPLIT"
+                  : action.data.user_approved.id === state.user.id
+                  ? null
+                  : state.companyPosts.posts[action.data.post_id].post_approval_label,
+              },
+            }),
+          },
+        },
+      };
+    }
     case "SET_POSTREAD": {
       return {
         ...state,

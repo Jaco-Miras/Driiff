@@ -672,7 +672,7 @@ const PostDetailFooter = (props) => {
           </div>
         </ClosedLabel>
       )}
-      {((isMember && !disableOptions && !isApprover) || approving.change || userApproved || !hasPendingAproval) && (
+      {((isMember && !disableOptions && !isApprover) || approving.change || userApproved || !hasPendingAproval || hasAnswered) && (
         <>
           <Dflex className="d-flex align-items-end">
             {post.is_read_only ? (

@@ -1266,15 +1266,17 @@ export default (state = INITIAL_STATE, action) => {
                 ...state.workspacePosts[ws.topic_id],
                 posts: {
                   ...state.workspacePosts[ws.topic_id].posts,
-                  [action.data.post_id]: {
-                    ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
-                    is_archived: 0,
-                    reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
-                    updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
-                    has_replied: isNewComment && action.data.author.id === state.user.id ? true : false,
-                    unread_count:
-                      isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
-                  },
+                  ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
+                      is_archived: 0,
+                      reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
+                      updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
+                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : false,
+                      unread_count:
+                        isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
+                    },
+                  }),
                 },
               };
             }
@@ -2310,6 +2312,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_COMMENT_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
       return {
         ...state,
         postComments: {
@@ -2322,19 +2327,20 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
                   [action.data.comment.id]: {
                     ...state.postComments[action.data.post.id].comments[action.data.comment.id],
-                    users_approval:
-                      state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.length > 1
-                        ? state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((ua) => {
-                            if (ua.id === action.data.user_approved.id) {
-                              return {
-                                ...ua,
-                                ...action.data.user_approved,
-                              };
-                            } else {
-                              return ua;
-                            }
-                          })
-                        : [],
+                    users_approval: action.data.users_approval,
+                    // users_approval:
+                    //   state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.length > 1
+                    //     ? state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((ua) => {
+                    //         if (ua.id === action.data.user_approved.id) {
+                    //           return {
+                    //             ...ua,
+                    //             ...action.data.user_approved,
+                    //           };
+                    //         } else {
+                    //           return ua;
+                    //         }
+                    //       })
+                    //     : [],
                     replies: {
                       ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies,
                       ...(action.data.transferred_comment &&
@@ -2387,7 +2393,16 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
-                      post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
+                      post_approval_label: allUsersAgreed
+                        ? "ACCEPTED"
+                        : allUsersDisagreed
+                        ? "REQUEST_UPDATE"
+                        : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                        ? "SPLIT"
+                        : action.data.user_approved.id === state.user.id
+                        ? null
+                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
+                      //post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
                     },
                   },
                 };

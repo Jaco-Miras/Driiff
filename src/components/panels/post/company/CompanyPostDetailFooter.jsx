@@ -585,7 +585,7 @@ const CompanyPostDetailFooter = (props) => {
           </div>
         </ClosedLabel>
       )}
-      {(!isApprover || approving.change || userApproved) && (
+      {(!isApprover || approving.change || userApproved || hasAnswered) && (
         <Dflex className="d-flex align-items-end">
           {post.is_read_only ? (
             <NoReply className="d-flex align-items-center">
