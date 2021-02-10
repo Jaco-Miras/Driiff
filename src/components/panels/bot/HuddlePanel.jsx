@@ -139,6 +139,7 @@ const HuddlePanel = (props) => {
     end_select_after: 1,
     end_select_on: null,
     repeat_hour: 0,
+    bot_name: "",
   });
   const channelOptions = channels.map((c) => {
     return {
@@ -281,6 +282,16 @@ const HuddlePanel = (props) => {
       channel_id: null,
       user_bot_id: huddleBot.id,
       questions: defaultQuestions,
+      bot_name: "",
+      publish_channel_id: null,
+      repeat_type: "DAILY",
+      repeat_select_weekly: null,
+      repeat_select_monthly: 1,
+      repeat_select_yearly: null,
+      end_type: "NEVER",
+      end_select_after: 1,
+      end_select_on: null,
+      repeat_hour: 0,
     });
   };
 
@@ -303,7 +314,6 @@ const HuddlePanel = (props) => {
       if (payload.end_type === "NEVER") {
         delete payload.end_select_after;
         delete payload.end_select_on;
-        payload.repeat_select_weekly = payload.repeat_select_weekly === "thursday" ? "TH" : payload.repeat_select_weekly.toUpperCase().charAt(0);
       } else if (payload.end_type === "END_ON") {
         delete payload.end_select_after;
         payload.end_select_on = moment(form.end_select_on, "YYYY-MM-DD").format("YYYY-MM-DD");
@@ -313,6 +323,7 @@ const HuddlePanel = (props) => {
     } else if (payload.repeat_type === "WEEKLY") {
       delete payload.repeat_select_monthly;
       delete payload.repeat_select_yearly;
+      payload.repeat_select_weekly = payload.repeat_select_weekly === "thursday" ? "TH" : payload.repeat_select_weekly.toUpperCase().charAt(0);
       if (payload.end_type === "NEVER") {
         delete payload.end_select_after;
         delete payload.end_select_on;
@@ -458,6 +469,14 @@ const HuddlePanel = (props) => {
           <div className="card">
             {huddleBot && (
               <div className="card-body">
+                <div className="mb-2">
+                  <label>Bot name</label>
+                  <div className="mb-2">
+                    <div className="input-group">
+                      <input onChange={handleMessageChange} data-name={"bot_name"} type="text" className="form-control" placeholder={"Bot name"} aria-describedby="button-addon1" autoFocus value={form.bot_name} />
+                    </div>
+                  </div>
+                </div>
                 <div className="mb-2">
                   <label>Publish question channel</label>
                   <FolderSelect options={channelOptions} value={channel} onChange={handleSelectChannel} isMulti={false} isClearable={true} />
