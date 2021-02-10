@@ -33,8 +33,11 @@ const CompanyPostBadge = (props) => {
         if (post.author.id === user.id) return dictionary.changeRequested;
         return null;
       }
+      case "SPLIT": {
+        return "Split";
+      }
       default:
-        return status;
+        return null;
     }
   };
 
