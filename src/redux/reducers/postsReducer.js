@@ -837,9 +837,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+            ...(state.companyPosts.posts[action.data.post.id] && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
                 post_approval_label: allUsersAgreed
                   ? "ACCEPTED"
                   : allUsersDisagreed
@@ -848,7 +848,7 @@ export default (state = INITIAL_STATE, action) => {
                   ? "SPLIT"
                   : action.data.user_approved.id === state.user.id
                   ? null
-                  : state.companyPosts.posts[action.data.post_id].post_approval_label,
+                  : state.companyPosts.posts[action.data.post.id].post_approval_label,
               },
             }),
           },
