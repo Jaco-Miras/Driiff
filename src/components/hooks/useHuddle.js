@@ -8,15 +8,80 @@ const useHuddle = (props) => {
   const currentTime = currentDate.getTime();
   //const currentUTCDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
   const actions = useHuddleChatbot();
-  const loggedUser = useSelector((state) => state.session.user);
+  //const loggedUser = useSelector((state) => state.session.user);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const editHuddle = useSelector((state) => state.chat.editHuddle);
 
-  const isOwner = loggedUser.role && loggedUser.role.name === "owner";
-
+  //const isOwner = loggedUser.role && loggedUser.role.name === "owner";
+  const weekDays = [
+    { day: "M", value: 1 },
+    { day: "T", value: 2 },
+    { day: "W", value: 3 },
+    { day: "TH", value: 4 },
+    { day: "F", value: 5 },
+  ];
   const huddleAnswered = localStorage.getItem("huddle");
   const huddleBots = useSelector((state) => state.chat.huddleBots);
-  const huddle = huddleBots.find((h) => selectedChannel && h.channel.id === selectedChannel.id);
+  const huddle = huddleBots.find((h) => {
+    if (selectedChannel && h.channel.id === selectedChannel.id) {
+      if (h.end_type === "NEVER") {
+        if (h.repeat_type === "DAILY") {
+          return true;
+        } else if (h.repeat_type === "WEEKLY") {
+          if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (h.repeat_type === "MONTHLY") {
+          if (h.repeat_select_monthly === currentDate.getDate()) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (h.repeat_type === "YEARLY") {
+          // same day and month
+          if (parseInt(huddle.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(huddle.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } else if (h.end_type === "END_ON") {
+        const endDate = new Date(huddle.end_select_on.substr(0, 4), parseInt(huddle.end_select_on.substr(5, 2)) - 1, huddle.end_select_on.substr(8, 2));
+        if (currentDate.getTime() < endDate.getTime()) {
+          if (h.repeat_type === "DAILY") {
+            return true;
+          } else if (h.repeat_type === "WEEKLY") {
+            if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+              return true;
+            } else {
+              return false;
+            }
+          } else if (h.repeat_type === "MONTHLY") {
+            if (h.repeat_select_monthly === currentDate.getDate()) {
+              return true;
+            } else {
+              return false;
+            }
+          } else if (h.repeat_type === "YEARLY") {
+            // same day and month
+            if (parseInt(huddle.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(huddle.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        } else {
+          return false;
+        }
+      } else if (h.end_type === "END_AFTER_REPEAT") {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  });
 
   let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
   let inTimeRange = false;
@@ -34,8 +99,6 @@ const useHuddle = (props) => {
     publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
     publishAtDate.setDate(currentDate.getDate());
     inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
-    // console.log(huddle, inTimeRange, answeredChannels, "huddle");
-    // console.log(currentDate, startAtDate, publishAtDate, "huddle dates");
   }
 
   return {

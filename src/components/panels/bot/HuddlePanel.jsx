@@ -381,6 +381,7 @@ const HuddlePanel = (props) => {
       };
       actions.update(payload, cb);
     } else {
+      delete payload.user_bot_id;
       actions.create(payload, cb);
     }
   };
