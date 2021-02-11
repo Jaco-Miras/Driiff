@@ -1266,15 +1266,17 @@ export default (state = INITIAL_STATE, action) => {
                 ...state.workspacePosts[ws.topic_id],
                 posts: {
                   ...state.workspacePosts[ws.topic_id].posts,
-                  [action.data.post_id]: {
-                    ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
-                    is_archived: 0,
-                    reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
-                    updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
-                    has_replied: isNewComment && action.data.author.id === state.user.id ? true : false,
-                    unread_count:
-                      isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
-                  },
+                  ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
+                      is_archived: 0,
+                      reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
+                      updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
+                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : false,
+                      unread_count:
+                        isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
+                    },
+                  }),
                 },
               };
             }
@@ -1818,37 +1820,37 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: updatedTopic,
       };
     }
-    case "GET_WORKSPACE_SUCCESS": {
-      let updatedWorkspaces = { ...state.workspaces };
-      let updatedFolders = { ...state.folders };
-      if (Object.keys(updatedWorkspaces).length > 0) {
-        if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
-          return state;
-        } else {
-          updatedWorkspaces[action.data.topic_id] = {
-            ...action.data.workspace_data,
-            active: action.data.workspace_data.topic_detail.active,
-            channel: action.data.workspace_data.topic_detail.channel,
-            unread_chats: action.data.workspace_data.topic_detail.unread_chats,
-            unread_count: action.data.workspace_data.topic_detail.unread_count,
-            folder_id: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_id : null,
-            folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
-          };
-          delete updatedWorkspaces[action.data.topic_id].topic_detail;
+    // case "GET_WORKSPACE_SUCCESS": {
+    //   let updatedWorkspaces = { ...state.workspaces };
+    //   let updatedFolders = { ...state.folders };
+    //   if (Object.keys(updatedWorkspaces).length > 0) {
+    //     if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
+    //       return state;
+    //     } else {
+    //       updatedWorkspaces[action.data.topic_id] = {
+    //         ...action.data.workspace_data,
+    //         active: action.data.workspace_data.topic_detail.active,
+    //         channel: action.data.workspace_data.topic_detail.channel,
+    //         unread_chats: action.data.workspace_data.topic_detail.unread_chats,
+    //         unread_count: action.data.workspace_data.topic_detail.unread_count,
+    //         folder_id: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_id : null,
+    //         folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
+    //       };
+    //       delete updatedWorkspaces[action.data.topic_id].topic_detail;
 
-          if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
-            updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
-          }
-          return {
-            ...state,
-            workspaces: updatedWorkspaces,
-            folders: updatedFolders,
-          };
-        }
-      } else {
-        return state;
-      }
-    }
+    //       if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
+    //         updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
+    //       }
+    //       return {
+    //         ...state,
+    //         workspaces: updatedWorkspaces,
+    //         folders: updatedFolders,
+    //       };
+    //     }
+    //   } else {
+    //     return state;
+    //   }
+    // }
     case "GET_FOLDER_SUCCESS": {
       let updatedFolders = { ...state.folders };
       updatedFolders[action.data.workspace_id] = {
@@ -2263,6 +2265,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
       return {
         ...state,
         workspacePosts: {
@@ -2277,7 +2282,15 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
-                      post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
+                      post_approval_label: allUsersAgreed
+                        ? "ACCEPTED"
+                        : allUsersDisagreed
+                        ? "REQUEST_UPDATE"
+                        : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                        ? "SPLIT"
+                        : action.data.user_approved.id === state.user.id
+                        ? null
+                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
                       users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
                         if (u.id === action.data.user_approved.id) {
                           return {
@@ -2299,6 +2312,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_COMMENT_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
       return {
         ...state,
         postComments: {
@@ -2311,15 +2327,28 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
                   [action.data.comment.id]: {
                     ...state.postComments[action.data.post.id].comments[action.data.comment.id],
-                    users_approval: [],
+                    users_approval:
+                      state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.length > 1
+                        ? state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((ua) => {
+                            if (ua.id === action.data.user_approved.id) {
+                              return {
+                                ...ua,
+                                ...action.data.user_approved,
+                              };
+                            } else {
+                              return ua;
+                            }
+                          })
+                        : [],
                     replies: {
                       ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies,
-                      ...(state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id] && {
-                        [action.data.transferred_comment.id]: {
-                          ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id],
-                          users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
-                        },
-                      }),
+                      ...(action.data.transferred_comment &&
+                        state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id] && {
+                          [action.data.transferred_comment.id]: {
+                            ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id],
+                            users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
+                          },
+                        }),
                     },
                   },
                 }),
@@ -2334,12 +2363,13 @@ export default (state = INITIAL_STATE, action) => {
                             ...state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id],
                             users_approval: [],
                           },
-                          ...(state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id] && {
-                            [action.data.transferred_comment.id]: {
-                              ...state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id],
-                              users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
-                            },
-                          }),
+                          ...(action.data.transferred_comment &&
+                            state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id] && {
+                              [action.data.transferred_comment.id]: {
+                                ...state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id],
+                                users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
+                              },
+                            }),
                         },
                       }),
                     };
@@ -2362,7 +2392,16 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[ws.topic.id].posts,
                     [action.data.post.id]: {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
-                      post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
+                      post_approval_label: allUsersAgreed
+                        ? "ACCEPTED"
+                        : allUsersDisagreed
+                        ? "REQUEST_UPDATE"
+                        : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                        ? "SPLIT"
+                        : action.data.user_approved.id === state.user.id
+                        ? null
+                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
+                      //post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
                     },
                   },
                 };

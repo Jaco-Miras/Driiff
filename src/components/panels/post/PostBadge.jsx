@@ -33,6 +33,9 @@ const PostBadge = (props) => {
         if (post.author.id === user.id) return dictionary.changeRequested;
         return null;
       }
+      case "SPLIT": {
+        return null;
+      }
       default:
         return null;
     }

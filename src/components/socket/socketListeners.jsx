@@ -518,7 +518,19 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_APPROVED": {
-            this.props.incomingCommentApproval(e);
+            this.props.incomingCommentApproval({
+              ...e,
+              users_approval: e.users_approval.map((u) => {
+                if (u.id === e.user_approved.id) {
+                  return {
+                    ...u,
+                    ...e.user_approved,
+                  };
+                } else {
+                  return u;
+                }
+              }),
+            });
             break;
           }
           case "READ_SELECTED_UNREAD_POST": {
