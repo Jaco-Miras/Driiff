@@ -27,6 +27,10 @@ const Icon = styled(SvgIconFeather)`
   }
 `;
 
+const ApprovalLabelWrapper = styled.div`
+  text-align: right;
+`;
+
 const PostChangeAccept = (props) => {
   const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers } = props;
 
@@ -90,7 +94,7 @@ const PostChangeAccept = (props) => {
         </ApprovedText>
       )}
       {isMultipleApprovers && (
-        <div className="readers-container">
+        <ApprovalLabelWrapper className="readers-container">
           {usersApproved.length > 0 && (
             <div className="user-reads-container read-by">
               {userApprovedIds.some((id) => id === user.id) && (
@@ -134,7 +138,7 @@ const PostChangeAccept = (props) => {
               </span>
             </div>
           )}
-        </div>
+        </ApprovalLabelWrapper>
       )}
     </Wrapper>
   );
