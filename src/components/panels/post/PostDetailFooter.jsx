@@ -345,6 +345,8 @@ const PostDetailFooter = (props) => {
     sharedWithPublicWs: _t("POST.INFO_SHARED_WITH_PUBLIC_WS", "Your comment is published in secured workspace(s) & public workspace(s)"),
     creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
+    agree: _t("POST.AGREE", "Agree"),
+    disagree: _t("POST.DISAGREE", "Disagree"),
   };
 
   const handleUnarchive = () => {
@@ -740,10 +742,10 @@ const PostDetailFooter = (props) => {
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
-              {dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              {dictionary.agree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
             <button className="btn btn-primary" onClick={handleApprove}>
-              {dictionary.accept} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              {dictionary.disagree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
           </div>
         </Dflex>
