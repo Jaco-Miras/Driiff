@@ -742,10 +742,10 @@ const PostDetailFooter = (props) => {
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
-              {dictionary.agree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
             <button className="btn btn-primary" onClick={handleApprove}>
-              {dictionary.disagree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
           </div>
         </Dflex>
