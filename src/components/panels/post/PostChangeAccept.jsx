@@ -39,6 +39,10 @@ const PostChangeAccept = (props) => {
     accept: _t("POST.ACCEPT", "Accept"),
     hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
     askForChange: _t("POST.ASK_FOR_CHANGE", "asked ::author:: for a change", { author: post.author.name }),
+    agreedToThis: _t("POST.AGREED_TO_THIS", "I've agreed to this"),
+    disagreedToThis: _t("POST.DISAGREED_TO_THIS", "I've disagreed to this"),
+    agreedBy: _t("POST.AGREED_BY", "Agreed by"),
+    disagreedBy: _t("POST.DISAGREED_BY", "Disagreed by"),
   };
   const userApproved = usersApproval.find((u) => u.ip_address !== null && u.is_approved);
   const userRequestChange = usersApproval.find((u) => u.ip_address !== null && !u.is_approved);
@@ -91,10 +95,12 @@ const PostChangeAccept = (props) => {
             <div className="user-reads-container read-by">
               {userApprovedIds.some((id) => id === user.id) && (
                 <span className="mr-2">
-                  <Icon className="mr-2" icon="check" /> I've agreed to this
+                  <Icon className="mr-2" icon="check" /> {dictionary.agreedToThis}
                 </span>
               )}
-              <span className="no-readers">Agreed by {usersApproved.length} users</span>
+              <span className="no-readers">
+                {dictionary.agreedBy} {usersApproved.length} users
+              </span>
               <span className="hover read-users-container">
                 {agreedUsers.map((u) => {
                   return (
@@ -111,10 +117,12 @@ const PostChangeAccept = (props) => {
             <div className="user-reads-container read-by">
               {userDisagreedIds.some((id) => id === user.id) && (
                 <span className="mr-2">
-                  <Icon className="mr-2" icon="check" /> I've disagreed to this
+                  <Icon className="mr-2" icon="check" /> {dictionary.disagreedToThis}
                 </span>
               )}
-              <span className="no-readers">Disagreed by {usersDisagreed.length} users</span>
+              <span className="no-readers">
+                {dictionary.disagreedBy} {usersDisagreed.length} users
+              </span>
               <span className="hover read-users-container">
                 {disagreedUsers.map((u) => {
                   return (

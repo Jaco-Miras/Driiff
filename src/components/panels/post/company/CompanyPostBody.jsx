@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { useFiles, useGoogleApis, useRedirect, useTimeFormat, useWindowSize } from "../../../hooks";
-import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
-import { PostVideos, PostChangeAccept } from "../index";
+import { PostBadge, PostVideos, PostChangeAccept } from "../index";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { renderToString } from "react-dom/server";
 
@@ -339,7 +338,7 @@ const CompanyPostBody = (props) => {
             </div>
           </div>
           <div className="d-inline-flex">
-            <CompanyPostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
+            <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
             {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
             <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
             {!disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}

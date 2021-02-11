@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
-import { CompanyPostBadge } from "./index";
+import { PostBadge } from "../index";
 import quillHelper from "../../../../helpers/quillHelper";
 import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../../hooks";
 import { TodoCheckBox } from "../../../forms";
@@ -426,7 +426,7 @@ const CompanyPostItemPanel = (props) => {
           </ArchiveBtn>}
         </SlideOption> */}
       </div>
-      <CompanyPostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
+      <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
       <div className="d-flex">
         {post.type !== "draft_post" && !disableOptions && (
           <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Archive post">
