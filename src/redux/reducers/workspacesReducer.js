@@ -1273,7 +1273,13 @@ export default (state = INITIAL_STATE, action) => {
                   ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
                     [action.data.post_id]: {
                       ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
-                      post_approval_label: allUsersAgreed ? "ACCEPTED" : allUsersDisagreed ? "REQUEST_UPDATE" : isApprover && hasPendingAproval ? "NEED_ACTION" : state.workspacePosts[ws.topic_id].posts[action.data.post_id].label,
+                      post_approval_label: allUsersAgreed
+                        ? "ACCEPTED"
+                        : allUsersDisagreed
+                        ? "REQUEST_UPDATE"
+                        : isApprover && hasPendingAproval
+                        ? "NEED_ACTION"
+                        : state.workspacePosts[ws.topic_id].posts[action.data.post_id].post_approval_label,
                       is_archived: 0,
                       reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
                       updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
