@@ -170,13 +170,13 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
-    if (this.props.lastReceivedMessage) {
+    if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
     }
   };
 
   refetchOtherMessages = () => {
-    if (this.props.lastReceivedMessage && Object.values(this.props.channels).length) {
+    if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id && Object.values(this.props.channels).length) {
       let channels = Object.values(this.props.channels);
       this.props.refetchOtherMessages(
         {
