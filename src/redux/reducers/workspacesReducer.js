@@ -1188,6 +1188,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_COMMENT": {
       const isNewComment = action.data.SOCKET_TYPE === "POST_COMMENT_CREATE";
+      const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
       return {
         ...state,
         postComments: {
@@ -1269,6 +1270,7 @@ export default (state = INITIAL_STATE, action) => {
                   ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
                     [action.data.post_id]: {
                       ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
+                      post_approval_label: hasPendingAproval ? "NEED_ACTION" : state.workspacePosts[ws.topic_id].posts[action.data.post_id].label,
                       is_archived: 0,
                       reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
                       updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
