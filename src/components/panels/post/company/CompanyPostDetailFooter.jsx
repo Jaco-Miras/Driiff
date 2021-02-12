@@ -508,14 +508,14 @@ const CompanyPostDetailFooter = (props) => {
           }
         );
       }
-      if (changeRequestedComment) {
-        commentActions.approve({
-          post_id: post.id,
-          approved: 0,
-          comment_id: changeRequestedComment.id,
-          transfer_comment_id: res.data.id,
-        });
-      }
+    }
+    if (changeRequestedComment) {
+      commentActions.approve({
+        post_id: post.id,
+        approved: 0,
+        comment_id: changeRequestedComment.id,
+        transfer_comment_id: res.data.id,
+      });
     }
   };
 

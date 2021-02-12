@@ -328,7 +328,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -544,7 +544,7 @@ const Comment = (props) => {
             )}
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
-          <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
+          <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (
             <PostChangeAccept
               approving={approving}
@@ -555,6 +555,7 @@ const Comment = (props) => {
               handleRequestChange={handleRequestChange}
               post={post}
               isMultipleApprovers={comment.users_approval.length > 1}
+              isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
             />
           )}
           {comment.files.length >= 1 && (

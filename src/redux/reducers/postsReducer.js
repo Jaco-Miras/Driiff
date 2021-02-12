@@ -620,7 +620,15 @@ export default (state = INITIAL_STATE, action) => {
                   updated_at: action.data.updated_at,
                   reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
                   has_replied: action.data.author.id === state.user.id ? true : false,
-                  post_approval_label: allUsersAgreed ? "ACCEPTED" : allUsersDisagreed ? "REQUEST_UPDATE" : isApprover && hasPendingAproval ? "NEED_ACTION" : state.companyPosts.posts[action.data.post_id].post_approval_label,
+                  post_approval_label: allUsersAgreed
+                    ? "ACCEPTED"
+                    : allUsersDisagreed
+                    ? "REQUEST_UPDATE"
+                    : isApprover && hasPendingAproval
+                    ? "NEED_ACTION"
+                    : state.companyPosts.posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                    ? "REQUEST_APPROVAL"
+                    : state.companyPosts.posts[action.data.post_id].post_approval_label,
                 },
               }),
             },

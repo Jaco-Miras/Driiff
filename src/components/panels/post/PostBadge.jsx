@@ -36,6 +36,10 @@ const PostBadge = (props) => {
       case "SPLIT": {
         return "Split";
       }
+      case "REQUEST_APPROVAL": {
+        if (post.author.id === user.id) return dictionary.requestForApproval;
+        return null;
+      }
       default:
         return null;
     }

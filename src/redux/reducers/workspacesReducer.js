@@ -1279,6 +1279,8 @@ export default (state = INITIAL_STATE, action) => {
                         ? "REQUEST_UPDATE"
                         : isApprover && hasPendingAproval
                         ? "NEED_ACTION"
+                        : state.workspacePosts[ws.topic_id].posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                        ? "REQUEST_APPROVAL"
                         : state.workspacePosts[ws.topic_id].posts[action.data.post_id].post_approval_label,
                       is_archived: 0,
                       reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
