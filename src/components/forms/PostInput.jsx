@@ -342,7 +342,6 @@ const PostInput = forwardRef((props, ref) => {
 
     let hasMention = false;
     let hasImage = false;
-
     if (editor.getContents().ops && editor.getContents().ops.length) {
       hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length;
       hasImage = editor.getContents().ops.filter((m) => m.insert.image).length;
@@ -376,8 +375,8 @@ const PostInput = forwardRef((props, ref) => {
       //check for recipients/type
       const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
       const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
-      let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds];
-      ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
+      let ignoreIds = [...new Set([user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds])];
+      // ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -532,7 +531,7 @@ const PostInput = forwardRef((props, ref) => {
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
     const newRecipients = userRecipients.filter((r) => {
-      return userIds.some((id) => id === r.type_id);
+      return users.some((user) => user.id === r.type_id);
     });
     let payload = {
       post_id: post.id,
@@ -545,7 +544,6 @@ const PostInput = forwardRef((props, ref) => {
     setMentionUsersPayload(payload);
     dispatch(addUserToPostRecipients(payload));
     setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
-
     setMentionedUserIds([]);
   };
 

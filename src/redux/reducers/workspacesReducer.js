@@ -2508,7 +2508,6 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "ADD_USER_TO_POST_RECIPIENTS": {
       let workspacePost = {...state.workspacePosts };
-      console.error("ADD USER IN WORKSPACES")
       if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
         if (workspacePost[action.data.topic_id].posts.hasOwnProperty(action.data.post_id)) {
           if (!workspacePost[action.data.topic_id].posts[action.data.post_id].hasOwnProperty("to_add")) {
@@ -2529,7 +2528,6 @@ export default (state = INITIAL_STATE, action) => {
 
     case "REMOVE_USER_TO_POST_RECIPIENTS": {
       let workspacePost = {...state.workspacePosts };
-      console.error("REMOVE USER IN WORKSPACES")
       if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
         if (workspacePost[action.data.topic_id].posts.hasOwnProperty(action.data.post_id)) {
           const filteredRecipientsIds = workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids.filter( (id) => {
@@ -2539,7 +2537,6 @@ export default (state = INITIAL_STATE, action) => {
           const filteredRecipients = workspacePost[action.data.topic_id].posts[action.data.post_id].recipients.filter( (r) => {
             return !action.data.remove_recipient_ids.includes(r.id);
           });
-          
           workspacePost[action.data.topic_id].posts[action.data.post_id].recipients = filteredRecipients;
           workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids = filteredRecipientsIds;
         }
