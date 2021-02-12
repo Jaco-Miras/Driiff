@@ -1189,6 +1189,9 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_COMMENT": {
       const isNewComment = action.data.SOCKET_TYPE === "POST_COMMENT_CREATE";
       const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
+      const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const isApprover = action.data.users_approval.some((ua) => ua.id === state.user.id);
       return {
         ...state,
         postComments: {
@@ -1270,7 +1273,7 @@ export default (state = INITIAL_STATE, action) => {
                   ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
                     [action.data.post_id]: {
                       ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
-                      post_approval_label: hasPendingAproval ? "NEED_ACTION" : state.workspacePosts[ws.topic_id].posts[action.data.post_id].label,
+                      post_approval_label: allUsersAgreed ? "ACCEPTED" : allUsersDisagreed ? "REQUEST_UPDATE" : isApprover && hasPendingAproval ? "NEED_ACTION" : state.workspacePosts[ws.topic_id].posts[action.data.post_id].label,
                       is_archived: 0,
                       reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
                       updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
@@ -2270,6 +2273,7 @@ export default (state = INITIAL_STATE, action) => {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
+      console.log("allusers agreed", allUsersAgreed, "all uses disagree", allUsersDisagreed);
       return {
         ...state,
         workspacePosts: {
