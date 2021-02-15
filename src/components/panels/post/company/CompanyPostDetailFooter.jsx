@@ -587,7 +587,7 @@ const CompanyPostDetailFooter = (props) => {
           </div>
         </ClosedLabel>
       )}
-      {post.is_read_only && (
+      {post.is_read_only && mainInput && (
         <Dflex className="d-flex align-items-end">
           <NoReply className="d-flex align-items-center">
             <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
