@@ -601,6 +601,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_COMMENT": {
       if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
+        const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
+        const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+        const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+        const isApprover = action.data.users_approval.some((ua) => ua.id === state.user.id);
         return {
           ...state,
           companyPosts: {
@@ -616,6 +620,7 @@ export default (state = INITIAL_STATE, action) => {
                   updated_at: action.data.updated_at,
                   reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
                   has_replied: action.data.author.id === state.user.id ? true : false,
+                  post_approval_label: allUsersAgreed ? "ACCEPTED" : allUsersDisagreed ? "REQUEST_UPDATE" : isApprover && hasPendingAproval ? "NEED_ACTION" : state.companyPosts.posts[action.data.post_id].post_approval_label,
                 },
               }),
             },

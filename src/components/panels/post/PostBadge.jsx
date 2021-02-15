@@ -34,7 +34,7 @@ const PostBadge = (props) => {
         return null;
       }
       case "SPLIT": {
-        return null;
+        return "Split";
       }
       default:
         return null;

@@ -27,6 +27,10 @@ const Icon = styled(SvgIconFeather)`
   }
 `;
 
+const ApprovalLabelWrapper = styled.div`
+  text-align: right;
+`;
+
 const PostChangeAccept = (props) => {
   const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers } = props;
 
@@ -43,6 +47,8 @@ const PostChangeAccept = (props) => {
     disagreedToThis: _t("POST.DISAGREED_TO_THIS", "I've disagreed to this"),
     agreedBy: _t("POST.AGREED_BY", "Agreed by"),
     disagreedBy: _t("POST.DISAGREED_BY", "Disagreed by"),
+    agree: _t("POST.AGREE", "Agree"),
+    disagree: _t("POST.DISAGREE", "Disagree"),
   };
   const userApproved = usersApproval.find((u) => u.ip_address !== null && u.is_approved);
   const userRequestChange = usersApproval.find((u) => u.ip_address !== null && !u.is_approved);
@@ -60,10 +66,10 @@ const PostChangeAccept = (props) => {
       {!postBody && !hasAnswered && isApprover && (
         <div className="d-flex align-items-center mt-3">
           <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
-            {dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+            {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
           </button>
           <button className="btn btn-primary" onClick={handleApprove}>
-            {dictionary.accept} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+            {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
           </button>
         </div>
       )}
@@ -90,7 +96,7 @@ const PostChangeAccept = (props) => {
         </ApprovedText>
       )}
       {isMultipleApprovers && (
-        <div className="readers-container">
+        <ApprovalLabelWrapper className="readers-container">
           {usersApproved.length > 0 && (
             <div className="user-reads-container read-by">
               {userApprovedIds.some((id) => id === user.id) && (
@@ -134,7 +140,7 @@ const PostChangeAccept = (props) => {
               </span>
             </div>
           )}
-        </div>
+        </ApprovalLabelWrapper>
       )}
     </Wrapper>
   );
