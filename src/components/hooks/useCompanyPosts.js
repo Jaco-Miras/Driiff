@@ -69,6 +69,8 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
+          return true;
+        } else if (filter === "inbox") {
           if (search !== "") {
             return true;
           } else {
