@@ -150,10 +150,10 @@ const usePosts = () => {
     activeTag = tag;
 
     counters = {
-      all: 0,
-      my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
-      starred: Object.values(posts).filter((p) => p.is_favourite).length,
-      archived: Object.values(posts).filter((p) => p.is_archived).length,
+      // all: 0,
+      // my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
+      // starred: Object.values(posts).filter((p) => p.is_favourite).length,
+      // archived: Object.values(posts).filter((p) => p.is_archived).length,
       drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
     };
 
@@ -177,6 +177,8 @@ const usePosts = () => {
       .filter((p) => {
         if (activeFilter) {
           if (activeFilter === "all") {
+            return true;
+          } else if (activeFilter === "inbox") {
             if (search !== "") {
               return true;
             } else {

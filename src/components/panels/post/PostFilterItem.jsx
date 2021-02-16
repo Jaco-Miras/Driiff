@@ -10,10 +10,10 @@ const Wrapper = styled.div`
     cursor: hand;
 
     &.active {
-      border-color: #ebebeb !important;     
-      
+      border-color: #ebebeb !important;
+
       &:after {
-        content: '';
+        content: "";
         width: 3px;
         height: 100%;
         background: #7a1b8b;
@@ -53,27 +53,22 @@ const PostFilterItem = (props) => {
 
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
-      <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`}
-            data-value="all" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="inbox"/>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "inbox" ? "active" : ""}`} data-value="inbox" onClick={handleClickFilter}>
+        <SvgIconFeather className="mr-2" icon="inbox" />
         {dictionary.inbox}
         <span className="small ml-auto">{workspace && workspace.unread_posts > 0 && workspace.unread_posts}</span>
       </span>
-      {/* <span className={`list-group-item d-flex align-items-center ${filter && filter === "new_reply" ? "active" : ""}`}
-            data-value="new_reply" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="mail"/>
-        {dictionary.newReply}
-        <span className="small ml-auto">{counters.new_reply > 0 && counters.new_reply}</span>
-      </span> */}
-      <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
-            data-value="my_posts" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="send-post"/>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
+        <SvgIconFeather className="mr-2" icon="mail" />
+        {dictionary.all}
+      </span>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts" onClick={handleClickFilter}>
+        <SvgIconFeather className="mr-2" icon="send-post" />
         {dictionary.myPosts}
         {/* <span className="small ml-auto">{counters.my_posts > 0 && counters.my_posts}</span> */}
       </span>
-      <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`}
-            data-value="star" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="star"/>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`} data-value="star" onClick={handleClickFilter}>
+        <SvgIconFeather className="mr-2" icon="star" />
         {dictionary.starred}
         {/* <span className="small ml-auto">{counters.starred > 0 && counters.starred}</span> */}
       </span>

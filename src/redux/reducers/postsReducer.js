@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     total_take: 0,
     has_more: true,
     posts: {},
-    filter: "all",
+    filter: "inbox",
     sort: "recent",
     tag: null,
     count: {},
