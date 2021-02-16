@@ -91,11 +91,11 @@ const PostBadge = (props) => {
           <div className={`badge badge-info ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.closed}</div>
         </div>
       )}
-      {hasPendingAproval && post.author.id === user.id && (
+      {/* {hasPendingAproval && post.author.id === user.id && (
         <div className={`${className} mr-3 d-sm-inline d-none opacity-2`}>
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.requestForApproval}</div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
