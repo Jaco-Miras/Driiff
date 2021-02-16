@@ -576,6 +576,15 @@ const usePostActions = () => {
                   } else {
                     approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
                       if (err) return;
+                      dispatch(
+                        addCommentReact({
+                          counter: 1,
+                          id: comment.id,
+                          parent_id: comment.parent_id,
+                          post_id: post.id,
+                          reaction: "clap",
+                        })
+                      );
                       const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
                       const allUsersAgreed = comment.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === comment.users_approval.length - 1;
                       if (isLastUserToAnswer && allUsersAgreed) {
@@ -929,7 +938,10 @@ const usePostActions = () => {
     (post, accepted_ids, rejected_ids) => {
       let payload = {
         post_id: post.id,
-        body: rejected_ids.length ? "<div>Everyone disagreed to this post</div>" : "<div>Everyone agreed to this post</div>",
+        //body: rejected_ids.length ? "<div>Everyone disagreed to this post</div>" : "<div>Everyone agreed to this post</div>",
+        body: `COMMENT_APPROVAL::${JSON.stringify({
+          message: rejected_ids.length ? "Everyone disagreed to this post" : "Everyone agreed to this post",
+        })}`,
         generate_system_message: 1,
         accepted_user_ids: accepted_ids,
         rejected_user_ids: rejected_ids,

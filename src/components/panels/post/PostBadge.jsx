@@ -36,6 +36,10 @@ const PostBadge = (props) => {
       case "SPLIT": {
         return "Split";
       }
+      case "REQUEST_APPROVAL": {
+        if (post.author.id === user.id) return dictionary.requestForApproval;
+        return null;
+      }
       default:
         return null;
     }
@@ -84,14 +88,14 @@ const PostBadge = (props) => {
       )}
       {post.is_close && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-info ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.closed}</div>
+          <div className={`badge badge-info ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.repliesClosed}</div>
         </div>
       )}
-      {hasPendingAproval && post.author.id === user.id && (
+      {/* {hasPendingAproval && post.author.id === user.id && (
         <div className={`${className} mr-3 d-sm-inline d-none opacity-2`}>
           <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.requestForApproval}</div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

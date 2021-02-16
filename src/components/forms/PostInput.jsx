@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
-import { addQuote, postChannelMembers } from "../../redux/actions/chatActions";
+//import { addQuote, postChannelMembers } from "../../redux/actions/chatActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
@@ -139,6 +139,7 @@ const PostInput = forwardRef((props, ref) => {
     approvers,
     onClearApprovers,
     onSubmitCallback = () => {},
+    mainInput,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -164,7 +165,7 @@ const PostInput = forwardRef((props, ref) => {
   const [draftId, setDraftId] = useState(null);
   const [inlineImages, setInlineImages] = useState([]);
 
-  const [quote] = useCommentQuote(commentId);
+  const [quote] = useCommentQuote(editPostComment ? editPostComment.quote.id : commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
@@ -224,10 +225,12 @@ const PostInput = forwardRef((props, ref) => {
       payload.quote = {
         id: quote.id,
         body: quote.body,
-        user_id: quote.author.id,
-        user: quote.author,
+        user_id: quote.author ? quote.author.id : quote.user_id,
+        user: quote.author ? quote.author : quote.user,
         files: quote.files,
       };
+    } else {
+      payload.quote = null;
     }
 
     if (!editMode) {
@@ -379,12 +382,7 @@ const PostInput = forwardRef((props, ref) => {
     setEditMessage(reply);
     setEditMode(true);
     if (reply.quote) {
-      dispatch(
-        addQuote({
-          ...reply.quote,
-          channel_id: reply.channel_id,
-        })
-      );
+      commentActions.addQuote(reply.quote);
     }
   };
 
@@ -445,7 +443,7 @@ const PostInput = forwardRef((props, ref) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editPostComment && !editMode && editMessage === null) {
+    if (editPostComment && !editMode && editMessage === null && mainInput) {
       handleSetEditMessageStates(editPostComment);
     }
   }, [editPostComment]);
@@ -540,6 +538,7 @@ const PostInput = forwardRef((props, ref) => {
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
+    onClearApprovers();
   };
 
   useSaveInput(

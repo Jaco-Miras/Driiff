@@ -32,7 +32,7 @@ const ApprovalLabelWrapper = styled.div`
 `;
 
 const PostChangeAccept = (props) => {
-  const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers } = props;
+  const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers, isBotMessage = false } = props;
 
   const users = useSelector((state) => state.users.users);
   const { _t } = useTranslation();
@@ -60,6 +60,7 @@ const PostChangeAccept = (props) => {
   const userDisagreedIds = usersDisagreed.map((ua) => ua.id);
   const disagreedUsers = Object.values(users).filter((u) => userDisagreedIds.some((id) => id === u.id));
   const hasAnswered = usersApproval.some((ua) => ua.id === user.id && ua.ip_address !== null);
+  const allUsersAgreed = usersApproval.filter((u) => u.ip_address !== null && u.is_approved).length === usersApproval.length;
 
   return (
     <Wrapper className="mb-3">
@@ -72,6 +73,15 @@ const PostChangeAccept = (props) => {
             {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
           </button>
         </div>
+      )}
+      {isBotMessage && (
+        <ApprovedText>
+          <div className={`d-flex align-items-center ${allUsersAgreed ? "justify-content-center" : ""}`}>
+            <div className={`${allUsersAgreed ? "alert alert-success" : ""}`}>
+              <span>{allUsersAgreed ? "Everyone agreed to this post" : "Everyone disagreed to this post"}</span>
+            </div>
+          </div>
+        </ApprovedText>
       )}
       {userApproved && !isMultipleApprovers && (
         <ApprovedText>

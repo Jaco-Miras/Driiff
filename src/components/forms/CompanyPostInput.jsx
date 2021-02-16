@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
-import { addQuote } from "../../redux/actions/chatActions";
+//import { addQuote } from "../../redux/actions/chatActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
@@ -92,10 +92,25 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
-  top: calc(50% - 12px);
-  right: 5px;
+  top: 0;
+  right: 0;
+  margin: 0;
+  margin: 4px;
+  height: calc(100% - 8px);
+  background: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  min-width: 40px;
+  width: 40px;
+  padding: 9px;
   cursor: pointer;
-  color: #000;
+  right: 40px;
+  z-index: 9;
+  color: #cacaca;
+  transition: color 0.15s ease-in-out;
+  &:hover {
+    color: #7a1b8b;
+  }
 `;
 
 /***  Commented out code are to be visited/refactored ***/
@@ -121,6 +136,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     approvers,
     onClearApprovers,
     onSubmitCallback,
+    mainInput,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -145,7 +161,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [editMessage, setEditMessage] = useState(null);
   const [inlineImages, setInlineImages] = useState([]);
 
-  const [quote] = useCommentQuote(commentId);
+  const [quote] = useCommentQuote(editPostComment ? editPostComment.quote.id : commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
   const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
@@ -213,10 +229,12 @@ const CompanyPostInput = forwardRef((props, ref) => {
       payload.quote = {
         id: quote.id,
         body: quote.body,
-        user_id: quote.author.id,
-        user: quote.author,
+        user_id: quote.author ? quote.author.id : quote.user_id,
+        user: quote.author ? quote.author : quote.user,
         files: quote.files,
       };
+    } else {
+      payload.quote = null;
     }
 
     if (!editMode) {
@@ -365,12 +383,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     setEditMessage(reply);
     setEditMode(true);
     if (reply.quote) {
-      dispatch(
-        addQuote({
-          ...reply.quote,
-          channel_id: reply.channel_id,
-        })
-      );
+      commentActions.addQuote(reply.quote);
     }
   };
 
@@ -431,7 +444,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editPostComment && !editMode && editMessage === null) {
+    if (editPostComment && !editMode && editMessage === null && mainInput) {
       handleSetEditMessageStates(editPostComment);
     }
   }, [editPostComment]);
@@ -512,6 +525,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
+    onClearApprovers();
   };
 
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);

@@ -125,6 +125,7 @@ const usePosts = () => {
     is_must_read: 0,
     is_read_only: 0,
     is_unread: 0,
+    is_close: 0,
   };
   let counters = {
     all: 0,
@@ -149,10 +150,10 @@ const usePosts = () => {
     activeTag = tag;
 
     counters = {
-      all: 0,
-      my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
-      starred: Object.values(posts).filter((p) => p.is_favourite).length,
-      archived: Object.values(posts).filter((p) => p.is_archived).length,
+      // all: 0,
+      // my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
+      // starred: Object.values(posts).filter((p) => p.is_favourite).length,
+      // archived: Object.values(posts).filter((p) => p.is_archived).length,
       drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
     };
 
@@ -176,6 +177,8 @@ const usePosts = () => {
       .filter((p) => {
         if (activeFilter) {
           if (activeFilter === "all") {
+            return true;
+          } else if (activeFilter === "inbox") {
             if (search !== "") {
               return true;
             } else {
@@ -200,6 +203,8 @@ const usePosts = () => {
             return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
           } else if (tag === "is_unread") {
             return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+          } else if (tag === "is_close") {
+            return p.is_close && !p.hasOwnProperty("draft_type");
           } else {
             return true;
           }
@@ -233,6 +238,9 @@ const usePosts = () => {
       }).length,
       is_unread: Object.values(posts).filter((p) => {
         return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+      }).length,
+      is_close: Object.values(posts).filter((p) => {
+        return p.is_close && !p.hasOwnProperty("draft_type");
       }).length,
     };
   }

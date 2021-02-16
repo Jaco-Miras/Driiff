@@ -69,6 +69,8 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
+          return true;
+        } else if (filter === "inbox") {
           if (search !== "") {
             return true;
           } else {
@@ -93,6 +95,8 @@ const useCompanyPosts = () => {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         } else if (tag === "is_unread") {
           return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+        } else if (tag === "is_close") {
+          return p.is_close && !p.hasOwnProperty("draft_type");
         } else {
           return true;
         }
@@ -113,20 +117,20 @@ const useCompanyPosts = () => {
         return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
       }
     });
-  if (count) {
-    count.is_must_reply = Object.values(posts).filter((p) => {
-      return p.is_must_reply && p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
-    }).length;
-    count.is_must_read = Object.values(posts).filter((p) => {
-      return p.is_must_read && p.is_must_read && !p.is_archived && !p.hasOwnProperty("draft_type");
-    }).length;
-    count.is_read_only = Object.values(posts).filter((p) => {
-      return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
-    }).length;
-    count.is_unread = Object.values(posts).filter((p) => {
-      return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
-    }).length;
-  }
+  //if (count) {
+  // count.is_must_reply = Object.values(posts).filter((p) => {
+  //   return p.is_must_reply && p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
+  // }).length;
+  // count.is_must_read = Object.values(posts).filter((p) => {
+  //   return p.is_must_read && p.is_must_read && !p.is_archived && !p.hasOwnProperty("draft_type");
+  // }).length;
+  // count.is_read_only = Object.values(posts).filter((p) => {
+  //   return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
+  // }).length;
+  // count.is_unread = Object.values(posts).filter((p) => {
+  //   return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+  // }).length;
+  //}
 
   count.is_must_reply = Object.values(posts).filter((p) => {
     return p.is_must_reply && p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
@@ -140,12 +144,15 @@ const useCompanyPosts = () => {
   count.is_unread = Object.values(posts).filter((p) => {
     return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
   }).length;
+  count.is_close = Object.values(posts).filter((p) => {
+    return p.is_close && !p.hasOwnProperty("draft_type");
+  }).length;
 
   const counters = {
-    all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id)).length,
-    my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
-    starred: Object.values(posts).filter((p) => p.is_favourite).length,
-    archived: Object.values(posts).filter((p) => p.is_archived).length,
+    // all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id)).length,
+    // my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
+    // starred: Object.values(posts).filter((p) => p.is_favourite).length,
+    // archived: Object.values(posts).filter((p) => p.is_archived).length,
     drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
   };
 

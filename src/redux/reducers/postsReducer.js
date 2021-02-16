@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     total_take: 0,
     has_more: true,
     posts: {},
-    filter: "all",
+    filter: "inbox",
     sort: "recent",
     tag: null,
     count: {},
@@ -44,9 +44,15 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SET_EDIT_POST_COMMENT": {
+      let updatedQuotes = { ...state.commentQuotes };
+      if (Object.keys(state.commentQuotes).length > 0 && state.editPostComment && action.data === null) {
+        updatedQuotes = { ...state.commentQuotes };
+        delete updatedQuotes[state.editPostComment.id];
+      }
       return {
         ...state,
         editPostComment: action.data,
+        commentQuotes: updatedQuotes,
       };
     }
     case "ADD_COMMENT_QUOTE": {
@@ -620,7 +626,15 @@ export default (state = INITIAL_STATE, action) => {
                   updated_at: action.data.updated_at,
                   reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
                   has_replied: action.data.author.id === state.user.id ? true : false,
-                  post_approval_label: allUsersAgreed ? "ACCEPTED" : allUsersDisagreed ? "REQUEST_UPDATE" : isApprover && hasPendingAproval ? "NEED_ACTION" : state.companyPosts.posts[action.data.post_id].post_approval_label,
+                  post_approval_label: allUsersAgreed
+                    ? "ACCEPTED"
+                    : allUsersDisagreed
+                    ? "REQUEST_UPDATE"
+                    : isApprover && hasPendingAproval
+                    ? "NEED_ACTION"
+                    : state.companyPosts.posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                    ? "REQUEST_APPROVAL"
+                    : state.companyPosts.posts[action.data.post_id].post_approval_label,
                 },
               }),
             },
