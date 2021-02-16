@@ -644,7 +644,7 @@ const PostDetailFooter = (props) => {
       )}
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote commentActions={commentActions} commentId={commentId} />
+          <CommentQuote commentActions={commentActions} commentId={editPostComment ? editPostComment.quote.id : commentId} editPostComment={editPostComment} mainInput={mainInput} />
         </Dflex>
       }
       <Dflex className="d-flex alig-items-center">

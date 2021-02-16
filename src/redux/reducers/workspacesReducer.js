@@ -1214,7 +1214,7 @@ export default (state = INITIAL_STATE, action) => {
                             };
                           } else {
                             if (parseInt(k) === action.data.id) {
-                              rep[k] = { ...state.postComments[action.data.post_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at };
+                              rep[k] = { ...state.postComments[action.data.post_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
                             } else {
                               rep[k] = state.postComments[action.data.post_id].comments[key].replies[k];
                             }
@@ -1228,7 +1228,7 @@ export default (state = INITIAL_STATE, action) => {
                       res[action.data.id] = action.data;
                     } else {
                       if (parseInt(key) === action.data.id) {
-                        res[key] = { ...state.postComments[action.data.post_id].comments[key], body: action.data.body, updated_at: action.data.updated_at };
+                        res[key] = { ...state.postComments[action.data.post_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
                       } else {
                         res[key] = state.postComments[action.data.post_id].comments[key];
                       }
