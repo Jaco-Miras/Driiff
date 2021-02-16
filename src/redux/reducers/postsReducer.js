@@ -44,9 +44,15 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SET_EDIT_POST_COMMENT": {
+      let updatedQuotes = { ...state.commentQuotes };
+      if (Object.keys(state.commentQuotes).length > 0 && state.editPostComment && action.data === null) {
+        updatedQuotes = { ...state.commentQuotes };
+        delete updatedQuotes[state.editPostComment.id];
+      }
       return {
         ...state,
         editPostComment: action.data,
+        commentQuotes: updatedQuotes,
       };
     }
     case "ADD_COMMENT_QUOTE": {
