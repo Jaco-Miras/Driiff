@@ -620,6 +620,7 @@ const CompanyPostDetailFooter = (props) => {
                     onClearApprovers={handleClearApprovers}
                     onSubmitCallback={requestForChangeCallback}
                     isApprover={approving.change && hasPendingAproval}
+                    mainInput={mainInput}
                   />
                   <PostInputButtons>
                     {!isApprover && (

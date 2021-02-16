@@ -1206,43 +1206,53 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[action.data.post_id].comments[key],
                       replies: {
                         ...Object.keys(state.postComments[action.data.post_id].comments[key].replies).reduce((rep, k) => {
-                          if (k === action.data.reference_id) {
+                          if (action.data.reference_id && k === action.data.reference_id) {
                             rep[action.data.id] = {
                               ...action.data,
-                              clap_user_ids: state.postComments[action.data.post_id].comments[key].replies[action.data.reference_id].clap_user_ids,
+                              clap_user_ids: [],
+                              // clap_user_ids: state.postComments[action.data.post_id].comments[key].replies[action.data.reference_id].clap_user_ids,
                             };
                           } else {
-                            rep[k] = state.postComments[action.data.post_id].comments[key].replies[k];
+                            if (parseInt(k) === action.data.id) {
+                              rep[k] = { ...state.postComments[action.data.post_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at };
+                            } else {
+                              rep[k] = state.postComments[action.data.post_id].comments[key].replies[k];
+                            }
                           }
                           return rep;
                         }, {}),
                       },
                     };
                   } else {
-                    if (key !== action.data.reference_id) {
-                      res[key] = { ...state.postComments[action.data.post_id].comments[key] };
-                    } else {
+                    if (action.data.reference_id && key === action.data.reference_id) {
                       res[action.data.id] = action.data;
+                    } else {
+                      if (parseInt(key) === action.data.id) {
+                        res[key] = { ...state.postComments[action.data.post_id].comments[key], body: action.data.body, updated_at: action.data.updated_at };
+                      } else {
+                        res[key] = state.postComments[action.data.post_id].comments[key];
+                      }
                     }
                   }
                   return res;
                 }, {}),
-                ...(state.user.id !== action.data.author.id && {
-                  //new comment from other user
-                  ...(action.data.parent_id &&
-                    state.postComments[action.data.post_id].comments[action.data.parent_id] && {
-                      [action.data.parent_id]: {
-                        ...state.postComments[action.data.post_id].comments[action.data.parent_id],
-                        replies: {
-                          ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
-                          [action.data.id]: action.data,
+                ...(state.user.id !== action.data.author.id &&
+                  isNewComment && {
+                    //new comment from other user
+                    ...(action.data.parent_id &&
+                      state.postComments[action.data.post_id].comments[action.data.parent_id] && {
+                        [action.data.parent_id]: {
+                          ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                          replies: {
+                            ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                            [action.data.id]: action.data,
+                          },
                         },
-                      },
+                      }),
+                    ...(!action.data.parent_id && {
+                      [action.data.id]: action.data,
                     }),
-                  ...(!action.data.parent_id && {
-                    [action.data.id]: action.data,
                   }),
-                }),
                 ...(!action.data.hasOwnProperty("reference_id") && {
                   ...(action.data.parent_id &&
                     state.postComments[action.data.post_id].comments[action.data.parent_id] && {
@@ -1283,7 +1293,7 @@ export default (state = INITIAL_STATE, action) => {
                       is_archived: 0,
                       reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
                       updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
-                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : false,
+                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[ws.topic_id].posts[action.data.post_id].has_replied,
                       unread_count:
                         isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
                     },

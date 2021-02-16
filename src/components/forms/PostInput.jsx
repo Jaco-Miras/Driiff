@@ -139,6 +139,7 @@ const PostInput = forwardRef((props, ref) => {
     approvers,
     onClearApprovers,
     onSubmitCallback = () => {},
+    mainInput,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -445,7 +446,7 @@ const PostInput = forwardRef((props, ref) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editPostComment && !editMode && editMessage === null) {
+    if (editPostComment && !editMode && editMessage === null && mainInput) {
       handleSetEditMessageStates(editPostComment);
     }
   }, [editPostComment]);
@@ -540,6 +541,7 @@ const PostInput = forwardRef((props, ref) => {
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
+    onClearApprovers();
   };
 
   useSaveInput(

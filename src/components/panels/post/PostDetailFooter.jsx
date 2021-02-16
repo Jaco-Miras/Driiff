@@ -709,6 +709,7 @@ const PostDetailFooter = (props) => {
                       onClearApprovers={handleClearApprovers}
                       onSubmitCallback={requestForChangeCallback}
                       isApprover={approving.change && hasPendingAproval}
+                      mainInput={mainInput}
                     />
                     <PostInputButtons>
                       {!isApprover && (
