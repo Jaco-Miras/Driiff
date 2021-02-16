@@ -451,13 +451,13 @@ const PostDetail = (props) => {
             </li>
           </ul>
         </div>
-        {privateWsOnly.length === post.recipients.length && (
+        {/* {privateWsOnly.length === post.recipients.length && (
           <div>
             <span>
               {dictionary.messageInSecureWs} <Icon icon="lock" />
             </span>
           </div>
-        )}
+        )} */}
         <div>
           {post.author.id === user.id && !disableOptions && (
             <ul>
