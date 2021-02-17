@@ -40,7 +40,13 @@ const HuddleQuestion = (props) => {
         user_bot: huddle.user_bot,
       })}`,
     });
-    localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
+    const huddleAnswered = localStorage.getItem("huddle");
+    if (huddleAnswered) {
+      const { channels, day } = JSON.parse(huddleAnswered);
+      localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, huddle.channel.id], day: day }));
+    } else {
+      localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
+    }
   };
   return (
     <Wrapper>

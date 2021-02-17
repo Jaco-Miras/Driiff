@@ -332,6 +332,15 @@ class SocketListeners extends Component {
           }
           case "HUDDLE_SKIP": {
             this.props.incomingHuddleSkip(e);
+            const huddleAnswered = localStorage.getItem("huddle");
+
+            if (huddleAnswered) {
+              const { channels, day } = JSON.parse(huddleAnswered);
+              localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            } else {
+              const currentDate = new Date();
+              localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            }
             break;
           }
           default:
