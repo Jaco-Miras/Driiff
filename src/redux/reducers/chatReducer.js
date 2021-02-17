@@ -35,6 +35,7 @@ const INITIAL_STATE = {
     fetching: false,
     hasMore: false,
   },
+  skipIds: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1820,17 +1821,19 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel.id] };
         channel = {
           ...channel,
-          replies: channel.replies.map((r) => {
-            if (r.id === action.data.message.id) {
-              return {
-                ...r,
-                huddle_log: action.data.huddle_log,
-                body: action.data.message.body,
-              };
-            } else {
-              return r;
-            }
-          }),
+          replies: channel.replies
+            .map((r) => {
+              if (r.id === action.data.message.id) {
+                return {
+                  ...r,
+                  huddle_log: action.data.huddle_log,
+                  body: action.data.message.body,
+                };
+              } else {
+                return r;
+              }
+            })
+            .filter((r) => !action.data.skip_message_ids.some((id) => id === r.id)),
         };
       }
       return {
@@ -1865,6 +1868,7 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+        skipIds: action.data.skip_message_ids ? state.skipIds.filter((s) => !action.data.skip_message_ids.some((id) => id === s.id)) : state.skipIds,
       };
     }
     case "ADD_HUDDLE_LOG": {
@@ -1980,6 +1984,33 @@ export default function (state = INITIAL_STATE, action) {
                 [action.data.channel_id]: channel,
               }
             : state.channels,
+      };
+    }
+    case "INCOMING_HUDDLE_SKIP": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel.id)) {
+        channel = { ...state.channels[action.data.channel.id] };
+        channel = {
+          ...channel,
+          replies: [...channel.replies, action.data.message],
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel.id]: channel,
+              }
+            : state.channels,
+      };
+    }
+    case "ADD_SKIP_ID": {
+      return {
+        ...state,
+        skipIds: [...state.skipIds, action.data],
       };
     }
     default:

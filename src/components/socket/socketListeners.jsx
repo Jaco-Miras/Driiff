@@ -34,6 +34,7 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  incomingHuddleSkip,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -327,6 +328,10 @@ class SocketListeners extends Component {
               ...e.message,
               huddle_log: e.huddle_log,
             });
+            break;
+          }
+          case "HUDDLE_SKIP": {
+            this.props.incomingHuddleSkip(e);
             break;
           }
           default:
@@ -1717,6 +1722,7 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
+    incomingHuddleSkip: bindActionCreators(incomingHuddleSkip, dispatch),
   };
 }
 

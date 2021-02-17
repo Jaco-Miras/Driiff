@@ -451,3 +451,12 @@ export function getSearchChannels(payload) {
     url: url,
   });
 }
+
+export function postSkipHuddle(payload) {
+  let url = "/v2/huddle-chatbot-skip";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}

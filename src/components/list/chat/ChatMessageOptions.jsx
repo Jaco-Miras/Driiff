@@ -65,6 +65,16 @@ const ChatMessageOptions = (props) => {
   const handleEditHuddle = () => {
     chatMessageActions.setHuddleAnswers({ id: replyData.id, channel_id: replyData.channel_id, huddle_log: replyData.huddle_log });
   };
+
+  const handleUnskip = () => {
+    const huddleStorage = localStorage.getItem("huddle");
+    //setCurrentTime(currentDate.getTime());
+    if (huddleStorage) {
+      const { day, channels } = JSON.parse(huddleStorage);
+      localStorage.setItem("huddle", JSON.stringify({ channels: channels.filter((id) => id !== replyData.channel_id), day: day }));
+      chatMessageActions.addSkip({ channel_id: replyData.channel_id, id: replyData.id });
+    }
+  };
   /* dictionary initiated in ChatContentPanel.jsx */
   return (
     <MoreOptions width={width} className={className} scrollRef={scrollEl}>
@@ -76,6 +86,7 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
+      {replyData.body.startsWith("HUDDLE_SKIP::") && <div onClick={handleUnskip}>Unskip</div>}
     </MoreOptions>
   );
 };

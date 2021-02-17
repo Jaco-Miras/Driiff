@@ -4,6 +4,7 @@ import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
 import {
   addQuote,
+  addSkipId,
   deleteChatMessage,
   getChatMessages,
   getChatStar,
@@ -374,6 +375,13 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
+  const addSkip = useCallback(
+    (payload) => {
+      dispatch(addSkipId(payload));
+    },
+    [dispatch]
+  );
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -393,6 +401,7 @@ const useChatMessageActions = () => {
     getStars,
     setStar,
     setHuddleAnswers,
+    addSkip,
   };
 };
 

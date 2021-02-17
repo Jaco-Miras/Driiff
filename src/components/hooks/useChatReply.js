@@ -65,6 +65,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
+    } else if (message.includes("HUDDLE_SKIP::")) {
+      newBody = "You skipped today";
     } else if (message.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(message.replace("CHANNEL_UPDATE::", ""));
       let author = {
@@ -303,7 +305,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {

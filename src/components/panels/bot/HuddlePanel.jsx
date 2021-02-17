@@ -191,10 +191,11 @@ const HuddlePanel = (props) => {
           repeat_type: e.huddle.repeat_type,
           repeat_select_weekly: e.huddle.repeat_select_weekly ? e.huddle.repeat_select_weekly : [],
           repeat_select_monthly: e.huddle.repeat_select_monthly ? e.huddle.repeat_select_monthly : 1,
-          repeat_select_yearly: e.huddle.repeat_select_yearly,
+          repeat_select_yearly: e.huddle.repeat_select_yearly ? new Date(e.huddle.repeat_select_yearly.substr(0, 4), parseInt(e.huddle.repeat_select_yearly.substr(5, 2)) - 1, e.huddle.repeat_select_yearly.substr(8, 2)) : null,
           end_type: e.huddle.end_type,
           end_select_after: e.huddle.end_select_after ? e.huddle.end_select_after : 1,
-          end_select_on: e.huddle.end_select_on,
+          end_select_on: e.huddle.end_select_on ? new Date(e.huddle.end_select_on.substr(0, 4), parseInt(e.huddle.end_select_on.substr(5, 2)) - 1, e.huddle.end_select_on.substr(8, 2)) : null,
+          bot_name: e.huddle.user_bot.first_name,
         });
         setPublishChannel([{ ...e.huddle.publish_channel, value: e.huddle.publish_channel.id, label: e.huddle.publish_channel.name, icon: "compass" }]);
       } else {
@@ -531,7 +532,7 @@ const HuddlePanel = (props) => {
                       On
                     </RadioInput>
                     <DatePickerWrapper>
-                      <DatePicker className="react-datetime-picker" onChange={handleSelectDate} value={form.end_select_on} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
+                      <DatePicker className="react-datetime-picker" onChange={handleSelectDate} value={form.end_select_on} minDate={channel.huddle ? null : new Date(new Date().setDate(new Date().getDate() + 1))} />
                     </DatePickerWrapper>
                   </RadioInputWrapper>
                   <RadioInputWrapper>
@@ -548,16 +549,7 @@ const HuddlePanel = (props) => {
                   <label>Welcome message</label>
                   <div className="mb-2">
                     <div className="input-group">
-                      <input
-                        onChange={handleMessageChange}
-                        data-name={"introduction_message"}
-                        type="text"
-                        className="form-control"
-                        placeholder={"Welcome message"}
-                        aria-describedby="button-addon1"
-                        autoFocus
-                        value={form.introduction_message}
-                      />
+                      <input onChange={handleMessageChange} data-name={"introduction_message"} type="text" className="form-control" placeholder={"Welcome message"} aria-describedby="button-addon1" value={form.introduction_message} />
                     </div>
                   </div>
                 </div>
@@ -565,7 +557,7 @@ const HuddlePanel = (props) => {
                   <label>Thank you message</label>
                   <div className="mb-2">
                     <div className="input-group">
-                      <input onChange={handleMessageChange} data-name={"closing_message"} type="text" className="form-control" placeholder={"Thank you message"} aria-describedby="button-addon1" autoFocus value={form.closing_message} />
+                      <input onChange={handleMessageChange} data-name={"closing_message"} type="text" className="form-control" placeholder={"Thank you message"} aria-describedby="button-addon1" value={form.closing_message} />
                     </div>
                   </div>
                 </div>
@@ -575,7 +567,7 @@ const HuddlePanel = (props) => {
                     return (
                       <div className="mb-2" key={k}>
                         <div className="input-group">
-                          <input onChange={handleInputChange} data-name={k} type="text" className="form-control" placeholder={"Question"} aria-describedby="button-addon1" autoFocus value={q.question} />
+                          <input onChange={handleInputChange} data-name={k} type="text" className="form-control" placeholder={"Question"} aria-describedby="button-addon1" value={q.question} />
                         </div>
                       </div>
                     );

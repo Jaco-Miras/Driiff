@@ -41,14 +41,14 @@ const useHuddle = (props) => {
           }
         } else if (h.repeat_type === "YEARLY") {
           // same day and month
-          if (parseInt(huddle.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(huddle.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+          if (parseInt(huddle.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
             return true;
           } else {
             return false;
           }
         }
       } else if (h.end_type === "END_ON") {
-        const endDate = new Date(huddle.end_select_on.substr(0, 4), parseInt(huddle.end_select_on.substr(5, 2)) - 1, huddle.end_select_on.substr(8, 2));
+        const endDate = new Date(h.end_select_on.substr(0, 4), parseInt(h.end_select_on.substr(5, 2)) - 1, h.end_select_on.substr(8, 2));
         if (currentDate.getTime() < endDate.getTime()) {
           if (h.repeat_type === "DAILY") {
             return true;
@@ -66,7 +66,7 @@ const useHuddle = (props) => {
             }
           } else if (h.repeat_type === "YEARLY") {
             // same day and month
-            if (parseInt(huddle.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(huddle.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+            if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
               return true;
             } else {
               return false;
@@ -76,7 +76,28 @@ const useHuddle = (props) => {
           return false;
         }
       } else if (h.end_type === "END_AFTER_REPEAT") {
-        return true;
+        if (h.repeat_type === "DAILY") {
+          return true;
+        } else if (h.repeat_type === "WEEKLY") {
+          if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (h.repeat_type === "MONTHLY") {
+          if (h.repeat_select_monthly === currentDate.getDate()) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (h.repeat_type === "YEARLY") {
+          // same day and month
+          if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       }
     } else {
       return false;
@@ -86,7 +107,6 @@ const useHuddle = (props) => {
   let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
   let inTimeRange = false;
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-
   if (huddle) {
     const startAtHour = parseInt(huddle.start_at.time.substr(0, 2));
     const startAtMinutes = parseInt(huddle.start_at.time.substr(3, 2));

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useTranslation } from "../../hooks";
+import { useTranslation, useHuddleChatbot } from "../../hooks";
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -21,15 +21,25 @@ const Wrapper = styled.div`
 `;
 
 const HuddleQuestion = (props) => {
-  const { question, huddle, isFirstQuestion } = props;
+  const { question, huddle, isFirstQuestion, selectedChannel, user } = props;
 
   const { _t } = useTranslation();
+  const actions = useHuddleChatbot();
 
   const dictionary = {
     skip: _t("SKIP", "skip"),
   };
   const handleSkip = () => {
     const currentDate = new Date();
+    actions.skipHuddle({
+      channel_id: selectedChannel.id,
+      huddle_id: huddle.id,
+      body: `HUDDLE_SKIP::${JSON.stringify({
+        huddle_id: huddle.id,
+        author: user,
+        user_bot: huddle.user_bot,
+      })}`,
+    });
     localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
   };
   return (

@@ -28,6 +28,7 @@ import {
   postHuddleAnswer as postHuddleAnswerService,
   postHuddleChatbot as postHuddleChatbotService,
   postSearchExistingChannels as postSearchExistingChannelsService,
+  postSkipHuddle as postSkipHuddleService,
   postUserBots as postUserBotsService,
   putChannel as putChannelService,
   putChannelUpdate as putChannelUpdateService,
@@ -402,4 +403,16 @@ export function addChannels(payload, callback) {
 
 export function searchChannels(payload, callback) {
   return dispatchActionToReducer(getChannelsService(payload), "SEARCH_CHANNELS_START", "SEARCH_CHANNELS_SUCCESS", "SEARCH_CHANNELS_FAIL", callback);
+}
+
+export function postSkipHuddle(payload, callback) {
+  return dispatchActionToReducer(postSkipHuddleService(payload), "POST_SKIP_HUDDLE_START", "POST_SKIP_HUDDLE_SUCCESS", "POST_SKIP_HUDDLE_FAIL", callback);
+}
+
+export function incomingHuddleSkip(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_HUDDLE_SKIP", payload, callback);
+}
+
+export function addSkipId(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_SKIP_ID", payload, callback);
 }
