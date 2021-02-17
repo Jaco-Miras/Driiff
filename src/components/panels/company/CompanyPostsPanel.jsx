@@ -86,7 +86,7 @@ const CompanyPostsPanel = (props) => {
   const params = useParams();
   const history = useHistory();
 
-  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = useCompanyPosts();
+  const { actions, archived, fetchMore, posts, filter, tag, sort, post, user, search, count, postLists, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
@@ -188,6 +188,9 @@ const CompanyPostsPanel = (props) => {
     creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator/internal closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
     closed: _t("POST.CLOSED", "Closed"),
+    createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
+    addToList: _t("POST.ADD_TO_LIST", "Add to list"),
+    removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
   };
 
   const handleLoadMore = () => {
@@ -241,11 +244,10 @@ const CompanyPostsPanel = (props) => {
   };
 
   if (posts === null) return <></>;
-
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
-        <CompanyPostSidebar filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+        <CompanyPostSidebar filter={filter} tag={tag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}

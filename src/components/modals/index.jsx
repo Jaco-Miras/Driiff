@@ -18,3 +18,4 @@ export { default as CompanyMoveFilesModal } from "./CompanyMoveFilesModal";
 export { default as TodoReminderModal } from "./TodoReminderModal";
 export { default as DriffUpdateModal } from "./DriffUpdateModal";
 export { default as ReleaseModal } from "./ReleaseModal";
+export { default as CreateEditPostListModal } from "./CreateEditPostListModal";

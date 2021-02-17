@@ -24,6 +24,7 @@ const INITIAL_STATE = {
     limit: 25,
   },
   posts: {},
+  postsLists: [],
   drafts: [],
   totalPostsCount: 0,
   unreadPostsCount: 0,
@@ -970,6 +971,12 @@ export default (state = INITIAL_STATE, action) => {
           },
         },
       };
+    }
+    case 'POST_LIST_SUCCESS': {
+      return {
+        ...state,
+        postsLists: [...action.data]
+      }
     }
     default:
       return state;

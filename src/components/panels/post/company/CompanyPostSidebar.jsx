@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { CompanyPostFilterItem, CompanyPostFilterTag } from "./index";
+import { CompanyPostFilterItem, CompanyPostFilterTag, CompanyPostList } from "./index";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -32,14 +32,17 @@ const Wrapper = styled.div`
 const MobileOverlayFilter = styled.div``;
 
 const CompanyPostSidebar = (props) => {
-  const {workspace, filter, tag, count, counters, postActions, onGoBack, dictionary, disableOptions} = props;
-
+  const {workspace, filter, tag, count, postLists, counters, postActions, onGoBack, dictionary, disableOptions} = props;
   const handleShowPostModal = () => {
     postActions.showModal("create_company");
   };
 
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
+  };
+
+  const handleShowNewPostListModal = () => {
+    postActions.showModal("create_edit_post_list");
   };
 
   return (
@@ -59,6 +62,17 @@ const CompanyPostSidebar = (props) => {
             <h6 className="mb-0">{dictionary.category}</h6>
           </div>
           <CompanyPostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack}
+                                dictionary={dictionary}/>
+        </div>
+      </div>
+      <div className="bottom-modal-mobile_inner">
+        <div className="app-sidebar-menu mt-3" tabIndex="2">
+          <div className="card-body create-new-post-wrapper">
+            <button className="btn btn-primary btn-block" onClick={handleShowNewPostListModal} disabled={disableOptions}>
+              {dictionary.createNewList}
+            </button>
+          </div>
+          <CompanyPostList postLists={postLists} tag={tag} onGoBack={onGoBack}
                                 dictionary={dictionary}/>
         </div>
       </div>

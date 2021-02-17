@@ -151,7 +151,9 @@ import { toast } from "react-toastify";
 
 class SocketListeners extends Component {
   constructor(props) {
+    console.log("SOCKET LISTENER 1", props);
     super(props);
+    console.log("SOCKET LISTENER 2", this.state, props);
     this.state = {
       reconnected: null,
       disconnectedTimestamp: null,
@@ -865,7 +867,21 @@ class SocketListeners extends Component {
           default:
             return null;
         }
-      });
+      })
+      .listen(".post-list-notification", (e) => {
+        console.log(e);
+        switch(e.SOCKET_TYPE) {
+          case "POST_LIST_CONNECTED": {
+            console.log(e)
+          }
+          case "POST_LIST_DISCONNECTED": {
+            console.log(e)
+          }
+          default:
+            return null;
+        }
+      })
+      ;
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
       .listen(".announcement-notification", (e) => {

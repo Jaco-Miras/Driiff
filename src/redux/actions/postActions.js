@@ -39,7 +39,37 @@ import {
   refetchPosts as refetchPostsService,
   getPostRead as getPostReadService,
   postClose as postCloseService,
+  getPostList as getPostListService,
+  createPostList as createPostListService,
+  updatePostList as updatePostListService,
+  deletePostList as deletePostListService,
+  postListConnect as postListConnectService,
+  postListDisconnect as postListDisconnectService,
 } from "../services";
+
+export function getPostList(payload, callback) {
+  return dispatchActionToReducer(getPostListService(payload), "POST_LIST_START", "POST_LIST_SUCCESS", "POST_LIST_FAIL", callback);
+}
+
+export function createPostList(payload, callback) {
+  return dispatchActionToReducer(createPostListService(payload), "POST_LIST_CREATE_START", "POST_LIST_CREATE_SUCCESS", "POST_LIST_CREATE_FAIL", callback);
+}
+
+export function updatePostList(payload, callback) {
+  return dispatchActionToReducer(updatePostListService(payload, payload.id), "POST_LIST_UPDATE_START", "POST_LIST_UPDATE_SUCCESS", "POST_LIST_UPDATE_FAIL", callback);
+}
+
+export function deletePostList(payload, callback) {
+  return dispatchActionToReducer(deletePostListService(payload, payload.id), "POST_LIST_DELETE_START", "POST_LIST_DELETE_SUCCESS", "POST_LIST_DELETE_FAIL", callback);
+}
+
+export function postListConnect(payload, callback) {
+  return dispatchActionToReducer(postListConnectService(payload), "POST_LIST_CONNECT_START", "POST_LIST_CONNECT_SUCCESS", "POST_LIST_CONNECT_FAIL", callback);
+}
+
+export function postListDisconnected(payload, callback) {
+  return dispatchActionToReducer(postListDisconnectService(payload), "POST_LIST_DISCONNECT_START", "POST_LIST_DISCONNECT_SUCCESS", "POST_LIST_DISCONNECT_FAIL", callback);
+}
 
 export function postFavorite(payload, callback) {
   return dispatchActionToReducer(postFavoriteService(payload), "POST_FAVORITE_START", "POST_FAVORITE_SUCCESS", "POST_FAVORRITE_FAIL", callback);

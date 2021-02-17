@@ -8,3 +8,4 @@ export { default as CompanyPostFilterTag } from "./CompanyPostFilterTag";
 export { default as CompanyPostItemPanel } from "./CompanyPostItemPanel";
 export { default as CompanyPostSearch } from "./CompanyPostSearch";
 export { default as CompanyPostSidebar } from "./CompanyPostSidebar";
+export { default as CompanyPostList } from "./CompanyPostList";
