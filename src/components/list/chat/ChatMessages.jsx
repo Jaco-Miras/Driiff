@@ -128,13 +128,16 @@ const ChatList = styled.li`
 `;
 const TimestampDiv = styled.div`
   z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
   color: #a7abc3;
-  padding: 26px 0 14px 0;
+  //padding: 26px 0 14px 0;
+  display: inline-block;
+  left: 50%;
   position: sticky;
-  top: 0;
+  top: 10px;
+  transform: translateX(-50%);
   span {
     padding: 4px 8px;
     display: inline-block;
@@ -150,7 +153,7 @@ const TimestampDiv = styled.div`
     }
   }
   @media (max-width: 620px) {
-    padding: 14px 0 10px 0;
+    //padding: 14px 0 10px 0;
   }
 `;
 const ChatBubbleContainer = styled.div`
