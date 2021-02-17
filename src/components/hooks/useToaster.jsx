@@ -77,6 +77,10 @@ const useToaster = () => {
     toast.update(text, options);
   }, []);
 
+  const dismiss = useCallback((toastId, options = {}) => {
+    toast.dismiss(toastId);
+  }, []);
+
   return {
     success,
     error,
@@ -84,6 +88,7 @@ const useToaster = () => {
     info,
     notify,
     update,
+    dismiss,
   };
 };
 

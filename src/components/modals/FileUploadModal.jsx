@@ -260,6 +260,8 @@ const FileUploadModal = (props) => {
     upload: _t("BUTTON.UPLOAD", "Upload"),
     fileUpload: _t("FILE_UPLOAD", "File upload"),
     quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here..."),
+    uploading: _t("FILE_UPLOADING", "Uploading File"),
+    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
   };
 
   useEffect(() => {
@@ -337,9 +339,23 @@ const FileUploadModal = (props) => {
           )
       ).then((result) => {
         setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
+      })
+      .catch((error) => {
+        handleNetWorkError(error)
       });
     } else {
       setUploadedFiles(files);
+    }
+  }
+
+  const handleNetWorkError = () => {
+    if (toasterRef.curent !== null) {
+      setLoading(false);
+      toaster.dismiss(toasterRef.current);
+      toaster.error(
+        <div>{dictionary.unsuccessful}.</div>
+      );
+      toasterRef.current = null;
     }
   }
 
@@ -347,12 +363,10 @@ const FileUploadModal = (props) => {
     const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
       toasterRef.current = toaster.info(
-        <div>
-          Uploading File.
-        </div>
-      , {progress: progress});
+        <div>{dictionary.uploading}.</div>,
+        {progress: progress, autoClose: true});
     } else {
-      toaster.update(toasterRef.current, {progress: progress});
+      toaster.update(toasterRef.current, {progress: progress, autoClose: true});
     }
   }
 
