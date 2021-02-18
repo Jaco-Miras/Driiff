@@ -164,6 +164,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
+  // const [quote] = useCommentQuote(commentId);
+
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
   const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
@@ -302,7 +304,11 @@ const CompanyPostInput = forwardRef((props, ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
-    handleAddMentionedUsersToPost();
+
+    if (mentionUsers.length) {
+      handleAddMentionedUsersToPost();
+    }
+
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
