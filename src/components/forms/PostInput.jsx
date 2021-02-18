@@ -151,6 +151,7 @@ const PostInput = forwardRef((props, ref) => {
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const users = useSelector((state) => state.users.users);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -551,12 +552,31 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
+  let addressIds = post.recipients
+    .map((ad) => {
+      if (ad.type === "USER") {
+        return ad.type_id;
+      } else {
+        return ad.participant_ids;
+      }
+    })
+    .flat();
+
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: user.type === "external" ? members : [],
+    members:
+      user.type === "external"
+        ? members
+        : Object.values(users).filter((u) => {
+            if ((u.type === "external" && addressIds.some((id) => id === u.id)) || u.type === "internal") {
+              return true;
+            } else {
+              return false;
+            }
+          }),
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,

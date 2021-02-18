@@ -16,7 +16,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     // border: 1px solid #afb8bd;
     // border-radius: 5px;
     max-height: 180px;
-    @media(min-width: 768px) {
+    @media (min-width: 768px) {
       max-height: 370px;
     }
     position: static;
@@ -145,6 +145,7 @@ const ChatInput = (props) => {
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const users = useSelector((state) => state.users.users);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -759,7 +760,16 @@ const ChatInput = (props) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: user.type === "external" ? selectedChannel.members : [],
+    members:
+      user.type === "external"
+        ? selectedChannel.members
+        : Object.values(users).filter((u) => {
+            if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || u.type === "internal") {
+              return true;
+            } else {
+              return false;
+            }
+          }),
     prioMentionIds: selectedChannel.members.map((m) => m.id),
   });
 
