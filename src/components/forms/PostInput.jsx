@@ -552,16 +552,6 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  let addressIds = post.recipients
-    .map((ad) => {
-      if (ad.type === "USER") {
-        return ad.type_id;
-      } else {
-        return ad.participant_ids;
-      }
-    })
-    .flat();
-
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -571,7 +561,7 @@ const PostInput = forwardRef((props, ref) => {
       user.type === "external"
         ? members
         : Object.values(users).filter((u) => {
-            if ((u.type === "external" && addressIds.some((id) => id === u.id)) || u.type === "internal") {
+            if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
               return true;
             } else {
               return false;
