@@ -226,16 +226,16 @@ const HuddlePanel = (props) => {
   };
 
   useEffect(() => {
-    if (!loaded) {
-      //get the bots
-      let cb = (err, res) => {
-        if (err) return;
-        if (res.data.user_bots && res.data.user_bots.length === 0) {
-          actions.createUserBot({ bot_name: "Huddle" });
-        }
-      };
-      actions.fetchUserBots({}, cb);
-    }
+    //if (!loaded) {
+    //get the bots
+    let cb = (err, res) => {
+      if (err) return;
+      if (res.data.user_bots && res.data.user_bots.length === 0) {
+        actions.createUserBot({ bot_name: "Huddle" });
+      }
+    };
+    actions.fetchUserBots({}, cb);
+    //}
   }, []);
 
   const handleSelectStartAt = (time) => {

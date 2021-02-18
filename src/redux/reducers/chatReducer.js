@@ -1967,23 +1967,34 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "CLEAR_UNPUBLISHED_HUDDLE_ANSWER": {
       let channel = null;
+      let huddleChannel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          replies: channel.replies.filter((r) => !r.hasOwnProperty("huddle_log")),
+          replies: channel.replies.filter((r) => !action.data.huddle_deleted_message_ids.some((id) => id === r.id)),
+        };
+      }
+      if (state.channels[action.data.huddle_channel_id]) {
+        huddleChannel = { ...state.channels[action.data.huddle_channel_id] };
+        huddleChannel = {
+          ...huddleChannel,
+          replies: huddleChannel.replies.filter((r) => !action.data.huddle_deleted_message_ids.some((id) => id === r.id)),
         };
       }
       return {
         ...state,
-        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
-        channels:
-          channel !== null
-            ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
-            : state.channels,
+        selectedChannel:
+          state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel && huddleChannel && state.selectedChannel.id === huddleChannel.id ? huddleChannel : state.selectedChannel,
+        channels: {
+          ...state.channels,
+          ...(channel && {
+            [action.data.channel_id]: channel,
+          }),
+          ...(huddleChannel && {
+            [action.data.huddle_channel_id]: huddleChannel,
+          }),
+        },
       };
     }
     case "INCOMING_HUDDLE_SKIP": {
