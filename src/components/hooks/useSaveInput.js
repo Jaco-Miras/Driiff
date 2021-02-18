@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearInputData, saveInputData } from "../../redux/actions/globalActions";
 
-const useSaveInput = (callback, text, textOnly, quillContents) => {
+const useSaveInput = (callback, text, textOnly, quillContents, approvers = []) => {
   const savedCallback = useRef(callback);
 
   useEffect(() => {
@@ -26,15 +26,16 @@ const useSaveInput = (callback, text, textOnly, quillContents) => {
 
   useEffect(() => {
     //@to do need to revisit this function
-    if (Object.keys(modals).length && modals.hasOwnProperty("file_upload")) {
+    if (Object.keys(modals).length && modals.hasOwnProperty("file_upload") && !savedInput) {
       let payload = {
         text,
         textOnly,
         quillContents,
+        approvers,
       };
-      if (textOnly.trim() !== "") dispatch(saveInputData(payload));
+      if (textOnly.trim() !== "" || approvers.length) dispatch(saveInputData(payload));
     }
-  }, [Object.keys(modals).length, textOnly]);
+  }, [Object.keys(modals).length, textOnly, approvers, savedInput]);
 };
 
 export default useSaveInput;

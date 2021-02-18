@@ -92,6 +92,7 @@ import {
 import {
   fetchPost,
   incomingArchivedSelectedPosts,
+  incomingClosePost,
   incomingComment,
   incomingCommentApproval,
   incomingCommentClap,
@@ -143,6 +144,7 @@ import {
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+import { toast } from "react-toastify";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -168,13 +170,13 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
-    if (this.props.lastReceivedMessage) {
+    if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
     }
   };
 
   refetchOtherMessages = () => {
-    if (this.props.lastReceivedMessage && Object.values(this.props.channels).length) {
+    if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id && Object.values(this.props.channels).length) {
       let channels = Object.values(this.props.channels);
       this.props.refetchOtherMessages(
         {
@@ -507,12 +509,28 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
+          case "CLOSED_POST": {
+            this.props.incomingClosePost(e);
+            break;
+          }
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
             break;
           }
           case "POST_COMMENT_APPROVED": {
-            this.props.incomingCommentApproval(e);
+            this.props.incomingCommentApproval({
+              ...e,
+              users_approval: e.users_approval.map((u) => {
+                if (u.id === e.user_approved.id) {
+                  return {
+                    ...u,
+                    ...e.user_approved,
+                  };
+                } else {
+                  return u;
+                }
+              }),
+            });
             break;
           }
           case "READ_SELECTED_UNREAD_POST": {
@@ -556,13 +574,8 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            if (e.workspace_ids && e.workspace_ids.length >= 1) {
-              if (this.props.user.id !== e.author.id) {
-                this.props.setGeneralChat({
-                  count: 1,
-                  entity_type: "WORKSPACE_POST",
-                });
-              }
+            if (this.props.user.id !== e.author.id) {
+              this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
             }
             if (typeof e.channel_messages === "undefined") {
               console.log(e);
@@ -633,7 +646,12 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CLAP_TOGGLE": {
-            if (this.props.user.id !== e.author.id) this.props.incomingPostClap(e);
+            if (this.props.user.id !== e.author.id) {
+              this.props.incomingPostClap(e);
+              if (this.props.user.id === e.post_user_id && e.clap_count === 1) {
+                toast(`${e.author.name} ${this.props.dictionary.likedYourPost}`, { position: toast.POSITION.BOTTOM_LEFT });
+              }
+            }
             break;
           }
           case "MARKED_DONE": {
@@ -714,7 +732,12 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
-            if (this.props.user.id !== e.author.id) this.props.incomingCommentClap(e);
+            if (this.props.user.id !== e.author.id) {
+              this.props.incomingCommentClap(e);
+              if (this.props.user.id === e.comment_user_id && e.clap_count === 1) {
+                toast(`${e.author.name} ${this.props.dictionary.likedYourComment}`, { position: toast.POSITION.BOTTOM_LEFT });
+              }
+            }
             break;
           }
 
@@ -1693,6 +1716,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedHuddleBot: bindActionCreators(incomingDeletedHuddleBot, dispatch),
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
+    incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
   };
 }
 

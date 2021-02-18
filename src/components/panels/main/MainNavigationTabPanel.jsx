@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
@@ -293,7 +293,7 @@ const MainNavigationTabPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const { lastVisitedChannel } = useSelector((state) => state.chat);
   const { links, unreadCounter } = useSelector((state) => state.global);
-
+  const { order_channel } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const [editCompany, setEditCompany] = useState(false);
   const [companyName, setCompanyName] = useState(driffSettings.company_name);
   const [defaultTopic, setDefaultTopic] = useState(null);
@@ -398,6 +398,16 @@ const MainNavigationTabPanel = (props) => {
       refs.companyName.current.select();
     }
   }, [editCompany]);
+
+  const sortWorkspace = useCallback(() => {
+    return Object.values(sortedWorkspaces).sort((a, b) => {
+      if (order_channel.order_by === "channel_date_updated") {
+        return -1;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
+  }, [sortedWorkspaces]);
 
   const hasUnreadCounter =
     Object.keys(unreadCounter)
@@ -518,7 +528,7 @@ const MainNavigationTabPanel = (props) => {
                           history={history}
                           show={true}
                           workspace={workspace}
-                          workspaces={sortedWorkspaces.filter((ws) => {
+                          workspaces={sortWorkspace().filter((ws) => {
                             return ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id);
                           })}
                         />
@@ -530,7 +540,7 @@ const MainNavigationTabPanel = (props) => {
                     history={history}
                     show={true}
                     workspace={workspace}
-                    workspaces={sortedWorkspaces.filter((ws) => {
+                    workspaces={sortWorkspace().filter((ws) => {
                       return ws.active === 1 && ws.folder_id === null;
                     })}
                     folder={{
@@ -555,7 +565,7 @@ const MainNavigationTabPanel = (props) => {
                   Object.values(workspaces)
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((ws) => {
-                      return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
+                      return <ExternalWorkspaceList key={ws.id} actions={actions} workspace={ws} activeTopic={workspace} />;
                     })}
               </ul>
             </>

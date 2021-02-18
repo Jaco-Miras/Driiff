@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     total_take: 0,
     has_more: true,
     posts: {},
-    filter: "all",
+    filter: "inbox",
     sort: "recent",
     tag: null,
     count: {},
@@ -31,6 +31,8 @@ const INITIAL_STATE = {
   commentQuotes: {},
   parentId: null,
   recentPosts: {},
+  clearApprovingState: null,
+  changeRequestedComment: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -42,9 +44,15 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SET_EDIT_POST_COMMENT": {
+      let updatedQuotes = { ...state.commentQuotes };
+      if (Object.keys(state.commentQuotes).length > 0 && state.editPostComment && action.data === null) {
+        updatedQuotes = { ...state.commentQuotes };
+        delete updatedQuotes[state.editPostComment.id];
+      }
       return {
         ...state,
         editPostComment: action.data,
+        commentQuotes: updatedQuotes,
       };
     }
     case "ADD_COMMENT_QUOTE": {
@@ -527,7 +535,7 @@ export default (state = INITIAL_STATE, action) => {
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
                 view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
-                is_unread: 0,
+                //is_unread: 0,
               },
             },
           },
@@ -598,32 +606,43 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_COMMENT": {
-      let companyPosts = { ...state.companyPosts };
-      const hasPendingApproval =
-        action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length && action.data.users_approval.some((u) => u.id === state.user.id);
-      if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE" && state.companyPosts.posts.hasOwnProperty(action.data.post_id)) {
-        if (companyPosts.posts[action.data.post_id].is_archived === 1) {
-          companyPosts.posts[action.data.post_id].is_archived = 0;
-        }
-        if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
-          companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author];
-        }
-        if (action.data.author.id !== state.user.id) {
-          companyPosts.posts[action.data.post_id].unread_count = companyPosts.posts[action.data.post_id].unread_count + 1;
-          companyPosts.posts[action.data.post_id].unread_reply_ids = [...new Set([...companyPosts.posts[action.data.post_id].unread_reply_ids, action.data.id])];
-        }
-        companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
-        companyPosts.posts[action.data.post_id].reply_count = companyPosts.posts[action.data.post_id].reply_count + 1;
-        if (action.data.author.id === state.user.id) companyPosts.posts[action.data.post_id].has_replied = true;
-        if (hasPendingApproval && action.data.users_approval.some((ua) => ua.id === state.user.id)) {
-          companyPosts.posts[action.data.post_id].need_approval = true;
-        }
+      if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
+        const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
+        const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+        const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+        const isApprover = action.data.users_approval.some((ua) => ua.id === state.user.id);
+        return {
+          ...state,
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              ...(state.companyPosts.posts[action.data.post_id] && {
+                [action.data.post_id]: {
+                  ...state.companyPosts.posts[action.data.post_id],
+                  is_archived: 0,
+                  //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
+                  unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
+                  updated_at: action.data.updated_at,
+                  reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
+                  has_replied: action.data.author.id === state.user.id ? true : false,
+                  post_approval_label: allUsersAgreed
+                    ? "ACCEPTED"
+                    : allUsersDisagreed
+                    ? "REQUEST_UPDATE"
+                    : isApprover && hasPendingAproval
+                    ? "NEED_ACTION"
+                    : state.companyPosts.posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                    ? "REQUEST_APPROVAL"
+                    : state.companyPosts.posts[action.data.post_id].post_approval_label,
+                },
+              }),
+            },
+          },
+        };
+      } else {
+        return state;
       }
-
-      return {
-        ...state,
-        companyPosts: companyPosts,
-      };
     }
     case "GET_UNREAD_POST_ENTRIES_SUCCESS": {
       return {
@@ -651,7 +670,6 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[p.id].is_updated = true;
           companyPosts.posts[p.id].unread_count = 0;
           companyPosts.posts[p.id].is_unread = 0;
-          companyPosts.posts[p.id].unread_reply_ids = [];
         });
       }
       return {
@@ -666,7 +684,6 @@ export default (state = INITIAL_STATE, action) => {
         Object.values(companyPosts.posts).forEach((p) => {
           companyPosts.posts[p.id].is_archived = 1;
           companyPosts.posts[p.id].unread_count = 0;
-          companyPosts.posts[p.id].unread_reply_ids = [];
         });
       }
       return {
@@ -760,7 +777,6 @@ export default (state = INITIAL_STATE, action) => {
                   is_read: true,
                   unread_count: 0,
                   is_unread: 0,
-                  unread_reply_ids: [],
                 };
               }
 
@@ -784,7 +800,6 @@ export default (state = INITIAL_STATE, action) => {
                   is_archived: 1,
                   unread_count: 0,
                   is_unread: 0,
-                  unread_reply_ids: [],
                 };
               }
               return res;
@@ -794,6 +809,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
       return {
         ...state,
         companyPosts: {
@@ -803,7 +821,15 @@ export default (state = INITIAL_STATE, action) => {
             ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
               [action.data.post.id]: {
                 ...state.companyPosts.posts[action.data.post.id],
-                need_approval: false,
+                post_approval_label: allUsersAgreed
+                  ? "ACCEPTED"
+                  : allUsersDisagreed
+                  ? "REQUEST_UPDATE"
+                  : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                  ? "SPLIT"
+                  : action.data.user_approved.id === state.user.id
+                  ? null
+                  : state.companyPosts.posts[action.data.post.id].post_approval_label,
                 users_approval: state.companyPosts.posts[action.data.post.id].users_approval.map((u) => {
                   if (u.id === action.data.user_approved.id) {
                     return {
@@ -821,16 +847,73 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_COMMENT_APPROVAL": {
+      const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
+      const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
+      const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                need_approval: false,
+            ...(state.companyPosts.posts[action.data.post.id] && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
+                post_approval_label: allUsersAgreed
+                  ? "ACCEPTED"
+                  : allUsersDisagreed
+                  ? "REQUEST_UPDATE"
+                  : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                  ? "SPLIT"
+                  : action.data.user_approved.id === state.user.id
+                  ? null
+                  : state.companyPosts.posts[action.data.post.id].post_approval_label,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "SET_POSTREAD": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(state.companyPosts.posts[action.data.postId] && {
+              [action.data.postId]: {
+                ...state.companyPosts.posts[action.data.postId],
+                post_reads: [...action.data.readPosts],
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "CLEAR_COMMENT_APPROVING_STATE": {
+      return {
+        ...state,
+        clearApprovingState: action.data,
+      };
+    }
+    case "SET_CHANGE_REQUESTED_COMMENT": {
+      return {
+        ...state,
+        changeRequestedComment: action.data,
+      };
+    }
+    case "INCOMING_CLOSE_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(state.companyPosts.posts[action.data.post.id] && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
+                is_close: action.data.is_close,
               },
             }),
           },

@@ -60,7 +60,7 @@ const WorkspaceDashboardPanel = (props) => {
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     archived: _t("TIMELINE.ARCHIVED", "archived"),
     unarchived: _t("TIMELINE.UNARCHIVED", "unarchived"),
-    workspace: _t("TIMELINE.UNARCHIVED", "workspace"),
+    workspace: _t("TIMELINE.WORKSPACE", "workspace"),
     created: _t("TIMELINE.CREATED", "created"),
   };
 

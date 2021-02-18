@@ -591,3 +591,29 @@ export function commentApprove(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function getPostRead(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/get-post-read/?${objToUrlParams(payload)}`,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function postClose(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/post-close",
+    data: payload,
+  });
+}

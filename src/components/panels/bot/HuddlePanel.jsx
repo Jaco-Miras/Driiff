@@ -81,7 +81,6 @@ const HuddlePanel = (props) => {
     },
   ];
   const currentDate = new Date();
-  //const defaultTime = addZeroBefore(currentDate.getHours() % 12 || 12) + ":" + addZeroBefore(currentDate.getMinutes());
   const defaultTime = addZeroBefore(currentDate.getHours()) + ":" + addZeroBefore(currentDate.getMinutes());
   const offSetHour = currentDate.getTimezoneOffset() / 60;
 

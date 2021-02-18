@@ -8,6 +8,13 @@ import {objToUrlParams} from "../../helpers/commonFunctions";
  * @returns {Promise<*>}
  */
 export function getWorkspaces(payload) {
+  if (payload.order_by === "channel_date_updated") {
+    payload = {
+      ...payload,
+      order_by: "updated_at",
+    };
+  }
+
   let url = `/v2/workspace?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",

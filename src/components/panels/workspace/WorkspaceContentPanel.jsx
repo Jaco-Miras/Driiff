@@ -1,10 +1,10 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
-import { useIsMember, useTranslation, useUsers, useWorkspace } from "../../hooks";
+import { useIsMember, useTranslation, useUsers, useWorkspaceActions } from "../../hooks";
 import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSearchPanel, WorkspaceSettingsPanel } from "../workspace";
 
 const Wrapper = styled.div`
@@ -57,7 +57,12 @@ const WorkspaceContentPanel = (props) => {
   const dispatch = useDispatch();
 
   const { loggedUser } = useUsers();
-  const { actions, timeline, workspaces, workspacesLoaded, workspace } = useWorkspace();
+  const actions = useWorkspaceActions();
+  const { workspaces, workspacesLoaded, activeTopic: workspace, workspaceTimeline } = useSelector((state) => state.workspaces);
+  let timeline = null;
+  if (Object.keys(workspaceTimeline).length && workspace && workspaceTimeline[workspace.id]) {
+    timeline = workspaceTimeline[workspace.id];
+  }
   const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
   const handleShowWorkspaceModal = () => {
@@ -96,7 +101,7 @@ const WorkspaceContentPanel = (props) => {
                     "/workspace/posts",
                   ]}
                 />
-                <Route render={() => <WorkspaceChatPanel {...props} workspace={workspace} />} path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
+                <Route exact={true} render={() => <WorkspaceChatPanel {...props} workspace={workspace} />} path={["/workspace/:workspaceId/:workspaceName", "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
                 <Route
                   exact={true}
                   {...props}
@@ -117,7 +122,7 @@ const WorkspaceContentPanel = (props) => {
                 <Redirect
                   from="*"
                   to={{
-                    pathname: "/workspace",
+                    pathname: "/workspace/chat",
                     state: { from: props.location },
                   }}
                 />

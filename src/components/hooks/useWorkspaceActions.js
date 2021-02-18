@@ -13,6 +13,7 @@ import {
   fetchMembers,
   fetchPrimaryFiles,
   fetchTimeline,
+  getWorkspace,
   getWorkspaces,
   postWorkspaceRole,
   setActiveTopic,
@@ -29,6 +30,13 @@ const useWorkspaceActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { setGeneralSetting, loggedUser } = useSettings();
+
+  const fetchWorkspace = useCallback(
+    (id, callback) => {
+      dispatch(getWorkspace({ topic_id: id }, callback));
+    },
+    [dispatch]
+  );
 
   const getDetail = useCallback(
     (id, callback) => {
@@ -235,6 +243,7 @@ const useWorkspaceActions = () => {
     clearChannel,
     fetchChannel,
     fetchWorkspaceChannels,
+    fetchWorkspace,
     fetchWorkspaces,
     getDetail,
     getMembers,

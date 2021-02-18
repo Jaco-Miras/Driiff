@@ -20,6 +20,7 @@ const MainNavigationPanel = (props) => {
           "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
           "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
           "/workspace/:page/:workspaceId/:workspaceName",
+          "/workspace/:workspaceId/:workspaceName",
           "/workspace/:page",
           "/profile/:id/:name/:mode",
           "/profile/:id/:name",

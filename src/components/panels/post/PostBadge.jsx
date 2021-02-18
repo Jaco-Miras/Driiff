@@ -16,7 +16,7 @@ const PostBadge = (props) => {
     }
   }, [post]);
 
-  // const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
 
@@ -31,6 +31,13 @@ const PostBadge = (props) => {
       }
       case "REQUEST_UPDATE": {
         if (post.author.id === user.id) return dictionary.changeRequested;
+        return null;
+      }
+      case "SPLIT": {
+        return "Split";
+      }
+      case "REQUEST_APPROVAL": {
+        if (post.author.id === user.id) return dictionary.requestForApproval;
         return null;
       }
       default:
@@ -63,7 +70,7 @@ const PostBadge = (props) => {
             </div>
           )}
           {post.is_must_reply && (post.author.id === user.id || !hasReplied) && (
-            <div className={`${className} mr-3 d-sm-inline d-none`}>
+            <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>
           )}
@@ -74,26 +81,21 @@ const PostBadge = (props) => {
           )}
         </>
       )}
-      {/* {post.need_approval && (
-        <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
-        </div>
-      )} */}
-      {/* {isApprover && hasPendingAproval && (
-        <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.actionNeeded}</div>
-        </div>
-      )}
-      {post.author.id === user.id && hasRequestedChange && (
-        <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.changeRequested}</div>
-        </div>
-      )} */}
       {post.post_approval_label && (
         <div className={`${className} mr-3 d-sm-inline d-none`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
+          <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
         </div>
       )}
+      {post.is_close && (
+        <div className={`${className} mr-3 d-sm-inline d-none`}>
+          <div className={`badge badge-info ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.repliesClosed}</div>
+        </div>
+      )}
+      {/* {hasPendingAproval && post.author.id === user.id && (
+        <div className={`${className} mr-3 d-sm-inline d-none opacity-2`}>
+          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.requestForApproval}</div>
+        </div>
+      )} */}
     </div>
   );
 };

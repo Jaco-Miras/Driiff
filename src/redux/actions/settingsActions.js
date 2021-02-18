@@ -31,6 +31,10 @@ export function setUserChatSetting(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_USER_CHAT_SETTING", payload, callback);
 }
 
+export function setUserWorkspaceSetting(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_SETTING", payload, callback);
+}
+
 export function setUserGeneralSetting(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_USER_GENERAL_SETTING", payload, callback);
 }

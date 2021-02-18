@@ -37,6 +37,8 @@ import {
   putPost as putPostService,
   refetchPostComments as refetchPostCommentsService,
   refetchPosts as refetchPostsService,
+  getPostRead as getPostReadService,
+  postClose as postCloseService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -345,4 +347,28 @@ export function commentApprove(payload, callback) {
 
 export function incomingCommentApproval(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMMENT_APPROVAL", payload, callback);
+}
+
+export function getPostRead(payload, callback) {
+  return dispatchActionToReducer(getPostReadService(payload), "GET_POSTREAD_START", "GET_POSTREAD_SUCCESS", "GET_POSTREAD_FAIL", callback);
+}
+
+export function setPostRead(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_POSTREAD", payload, callback);
+}
+
+export function setChangeRequestedComment(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANGE_REQUESTED_COMMENT", payload, callback);
+}
+
+export function clearApprovingState(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_COMMENT_APPROVING_STATE", payload, callback);
+}
+
+export function postClose(payload, callback) {
+  return dispatchActionToReducer(postCloseService(payload), "POST_CLOSE_START", "POST_CLOSE_SUCCESS", "POST_CLOSE_FAIL", callback);
+}
+
+export function incomingClosePost(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_CLOSE_POST", payload, callback);
 }

@@ -16,6 +16,10 @@ import {
   removeCommentReact,
   setEditComment,
   updateCommentFiles,
+  getPostRead,
+  setPostRead,
+  clearApprovingState,
+  setChangeRequestedComment,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTodoActions } from "./index";
@@ -47,8 +51,8 @@ const useCommentActions = () => {
   );
 
   const create = useCallback(
-    (payload) => {
-      dispatch(postComment(payload));
+    (payload, callback = () => {}) => {
+      dispatch(postComment(payload, callback));
     },
     [dispatch]
   );
@@ -203,6 +207,41 @@ const useCommentActions = () => {
     [dispatch]
   );
 
+  const fetchPostRead = useCallback(
+    (postId, callback) => {
+      dispatch(
+        getPostRead(
+          {
+            post_id: postId,
+          },
+          callback
+        )
+      );
+    },
+    [dispatch]
+  );
+
+  const setPostReadComments = useCallback(
+    (payload, callback) => {
+      dispatch(setPostRead(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const clearApprovingStatus = useCallback(
+    (payload, callback) => {
+      dispatch(clearApprovingState(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const setRequestForChangeComment = useCallback(
+    (payload, callback) => {
+      dispatch(setChangeRequestedComment(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
@@ -220,6 +259,10 @@ const useCommentActions = () => {
     unlike,
     updateCommentImages,
     important,
+    fetchPostRead,
+    setPostReadComments,
+    clearApprovingStatus,
+    setRequestForChangeComment,
   };
 };
 

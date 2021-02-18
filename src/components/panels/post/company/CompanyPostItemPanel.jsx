@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
-import { CompanyPostBadge } from "./index";
+import { PostBadge } from "../index";
 import quillHelper from "../../../../helpers/quillHelper";
 import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../../hooks";
 import { TodoCheckBox } from "../../../forms";
@@ -266,7 +266,7 @@ const CompanyPostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal },
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close },
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -299,9 +299,7 @@ const CompanyPostItemPanel = (props) => {
         .filter((r, i) => i < recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
-            }</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join(", ");
@@ -321,9 +319,7 @@ const CompanyPostItemPanel = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
-            }</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join("");
@@ -373,7 +369,7 @@ const CompanyPostItemPanel = (props) => {
     handleSwipeRight,
   });
 
-  const hasUnread = post.is_unread === 1;
+  const hasUnread = post.is_unread === 1 || post.unread_count > 0;
 
   return (
     <Wrapper
@@ -430,7 +426,7 @@ const CompanyPostItemPanel = (props) => {
           </ArchiveBtn>}
         </SlideOption> */}
       </div>
-      <CompanyPostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
+      <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
       <div className="d-flex">
         {post.type !== "draft_post" && !disableOptions && (
           <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Archive post">
@@ -445,6 +441,7 @@ const CompanyPostItemPanel = (props) => {
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
+            {post.author && post.author.id === user.id && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
           </MoreOptions>
         )}
       </div>

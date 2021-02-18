@@ -229,6 +229,7 @@ const useUserActions = () => {
         "gender",
         "timezone",
         "language",
+        "change_email",
       ];
 
       let payload = {};

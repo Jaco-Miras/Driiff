@@ -37,6 +37,7 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
+    z-index: 0;
     width: 100%;
     @media all and (max-width: 480px) {
       margin-left: 0;
@@ -314,7 +315,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.global.recipients).filter((r) => r.type === "USER");
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [modal, setModal] = useState(true);
 
@@ -354,7 +355,7 @@ const CreateEditWorkspacePostModal = (props) => {
     mention_ids: [],
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions: approverOptions, addressIds } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -602,7 +603,6 @@ const CreateEditWorkspacePostModal = (props) => {
         updated_at: { timestamp: timestamp },
         title: form.title,
         partial_body: form.body,
-        unread_reply_ids: [],
         clap_user_ids: [],
         author: user,
         user_reads: [],
@@ -615,7 +615,6 @@ const CreateEditWorkspacePostModal = (props) => {
         recipients: form.selectedAddressTo,
         recipient_ids: form.selectedAddressTo.map((r) => r.id),
         users_approval: [],
-        need_approval: false,
       };
       if (draftId) {
         payload = {
@@ -664,7 +663,8 @@ const CreateEditWorkspacePostModal = (props) => {
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
       },
-      approval_user_ids: form.showApprover ? form.approvers.map((a) => a.value) : [],
+      approval_user_ids:
+        form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
       body_mention_ids: form.mention_ids,
     };
     // if (draftId) {
@@ -733,6 +733,16 @@ const CreateEditWorkspacePostModal = (props) => {
       ...form,
       selectedAddressTo: [
         ...users.map((user) => {
+          if (user.type === "WORKSPACE" || user.type === "TOPIC") {
+            return {
+              ...user,
+              value: user.id,
+              label: user.name,
+              name: user.name,
+              first_name: user.first_name,
+              type: user.type,
+            };
+          }
           return {
             id: user.id,
             value: user.id,
@@ -750,6 +760,7 @@ const CreateEditWorkspacePostModal = (props) => {
     });
 
     setMentionedUserIds([]);
+    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => parseInt(u.id))]);
   };
 
   const handleIgnoreMentionedUsers = (users) => {
@@ -1096,7 +1107,6 @@ const CreateEditWorkspacePostModal = (props) => {
           updated_at: { timestamp: initTimestamp },
           title: form.title,
           partial_body: form.body,
-          unread_reply_ids: [],
           clap_user_ids: [],
           author: user,
           user_reads: [],
@@ -1109,7 +1119,6 @@ const CreateEditWorkspacePostModal = (props) => {
           recipients: form.selectedAddressTo,
           recipient_ids: form.selectedAddressTo.map((r) => r.id),
           users_approval: [],
-          need_approval: false,
         };
         if (draftId) {
           payload = {
@@ -1162,12 +1171,44 @@ const CreateEditWorkspacePostModal = (props) => {
         approvers: [],
       });
     } else {
-      setForm({
-        ...form,
-        approvers: e,
-      });
+      if (e.find((a) => a.value === "all")) {
+        setForm({
+          ...form,
+          approvers: e.filter((a) => a.value === "all"),
+        });
+      } else {
+        setForm({
+          ...form,
+          approvers: e,
+        });
+      }
     }
   };
+
+  let approverOptions = [
+    ...userOptions
+      .filter((u) => u.id !== user.id)
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
+      }),
+    {
+      id: require("shortid").generate(),
+      value: "all",
+      label: "All users",
+      icon: "users",
+      all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
+    },
+  ];
+
+  if (form.approvers.length && form.approvers.find((a) => a.value === "all")) {
+    approverOptions = approverOptions.filter((a) => a.value === "all");
+  }
 
   return (
     <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
@@ -1222,6 +1263,7 @@ const CreateEditWorkspacePostModal = (props) => {
           mode={mode}
           required
           mentionedUserIds={mentionedUserIds}
+          workspaces={workspaces}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}
@@ -1257,7 +1299,7 @@ const CreateEditWorkspacePostModal = (props) => {
               <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
                 {dictionary.approve}
               </CheckBox>
-              {form.showApprover && <SelectApprover options={approverOptions.filter((ao) => ao.value !== user.id)} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
+              {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
             </ApproveOptions>
             <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>

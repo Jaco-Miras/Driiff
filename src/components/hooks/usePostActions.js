@@ -6,11 +6,13 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { addToModals, deleteDraft, getUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
 import {
+  addCommentReact,
   addPostReact,
   addUserToPostRecipients,
-  archiveAllCallback,
+  //archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
+  commentApprove,
   deletePost,
   fetchDetail,
   fetchPosts,
@@ -37,13 +39,15 @@ import {
   postVisit,
   putCompanyPosts,
   putPost,
-  readAllCallback,
+  //readAllCallback,
   removePost,
   removePostReact,
   setPostToggleFollow,
   starPostReducer,
   updateCompanyPostFilterSort,
   updatePostFiles,
+  postComment,
+  postClose,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -478,7 +482,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null) => {
+    (mode = "create", post = null, comment = null) => {
       let payload = {};
 
       switch (mode) {
@@ -534,7 +538,99 @@ const usePostActions = () => {
               post: post,
             },
             actions: {
-              onSubmit: () => approve({ post_id: post.id, approved: 1 }),
+              onSubmit: () => {
+                if (comment) {
+                  let cpayload = {
+                    post_id: post.id,
+                    body: "<div></div>",
+                    mention_ids: [],
+                    file_ids: [],
+                    post_file_ids: [],
+                    personalized_for_id: null,
+                    parent_id: comment.parent_id ? comment.parent_id : comment.id,
+                    approval_user_ids: [],
+                    code_data: {
+                      push_title: `${user.name} replied in ${post.title}`,
+                      post_id: post.id,
+                      post_title: post.title,
+                    },
+                  };
+                  if (comment.users_approval.length === 1) {
+                    dispatch(
+                      postComment(cpayload, (err, res) => {
+                        if (err) return;
+                        approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
+                          if (err) return;
+                          dispatch(
+                            addCommentReact({
+                              counter: 1,
+                              id: comment.id,
+                              parent_id: comment.parent_id,
+                              post_id: post.id,
+                              reaction: "clap",
+                            })
+                          );
+                        });
+                      })
+                    );
+                  } else {
+                    approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
+                      if (err) return;
+                      dispatch(
+                        addCommentReact({
+                          counter: 1,
+                          id: comment.id,
+                          parent_id: comment.parent_id,
+                          post_id: post.id,
+                          reaction: "clap",
+                        })
+                      );
+                      const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
+                      const allUsersAgreed = comment.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === comment.users_approval.length - 1;
+                      if (isLastUserToAnswer && allUsersAgreed) {
+                        generateSystemMessage(
+                          post,
+                          comment.users_approval.map((ua) => ua.id),
+                          []
+                        );
+                      }
+                    });
+                  }
+                } else {
+                  const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
+                  const allUsersAgreed = post.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === post.users_approval.length - 1;
+                  approve({ post_id: post.id, approved: 1 }, (err, res) => {
+                    if (err) return;
+                    console.log(isLastUserToAnswer, allUsersAgreed, post);
+                    if (isLastUserToAnswer && allUsersAgreed) {
+                      generateSystemMessage(
+                        post,
+                        post.users_approval.map((ua) => ua.id),
+                        []
+                      );
+                    }
+                    if (post.users_approval.length === 1) {
+                      let cpayload = {
+                        post_id: post.id,
+                        body: "<div></div>",
+                        mention_ids: [],
+                        file_ids: [],
+                        post_file_ids: [],
+                        personalized_for_id: null,
+                        parent_id: null,
+                        approval_user_ids: [],
+                        has_accepted: 1,
+                        code_data: {
+                          push_title: `${user.name} replied in ${post.title}`,
+                          post_id: post.id,
+                          post_title: post.title,
+                        },
+                      };
+                      dispatch(postComment(cpayload));
+                    }
+                  });
+                }
+              },
             },
           };
           break;
@@ -824,8 +920,40 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const approveComment = useCallback(
+    (payload = {}, callback) => {
+      dispatch(commentApprove(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const close = useCallback(
+    (post, callback) => {
+      dispatch(postClose({ post_id: post.id, is_close: post.is_close ? 0 : 1 }, callback));
+    },
+    [dispatch]
+  );
+
+  const generateSystemMessage = useCallback(
+    (post, accepted_ids, rejected_ids) => {
+      let payload = {
+        post_id: post.id,
+        //body: rejected_ids.length ? "<div>Everyone disagreed to this post</div>" : "<div>Everyone agreed to this post</div>",
+        body: `COMMENT_APPROVAL::${JSON.stringify({
+          message: rejected_ids.length ? "Everyone disagreed to this post" : "Everyone agreed to this post",
+        })}`,
+        generate_system_message: 1,
+        accepted_user_ids: accepted_ids,
+        rejected_user_ids: rejected_ids,
+      };
+      dispatch(postComment(payload));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
+    approveComment,
     addUserToPost,
     starPost,
     markPost,
@@ -859,6 +987,8 @@ const usePostActions = () => {
     fetchPostDetail,
     updatePostImages,
     getUnreadWsPostsCount,
+    close,
+    generateSystemMessage,
   };
 };
 

@@ -167,6 +167,7 @@ export {
   deleteComment,
   deletePost,
   getUnreadWorkspacePostEntries,
+  getPostRead,
   fetchPost,
   fetchPosts,
   fetchComments,
@@ -200,6 +201,7 @@ export {
   markAllPostAsRead,
   refetchPosts,
   refetchPostComments,
+  postClose,
 } from "./post";
 
 export {

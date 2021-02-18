@@ -15,25 +15,29 @@ const Wrapper = styled.div`
 `;
 
 const PostComments = (props) => {
-  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember, dictionary, disableOptions } = props;
+  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember, dictionary, disableOptions, postActions } = props;
 
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
       {comments && (
         <ul>
           {Object.values(comments).map((c) => {
-            return <Comment key={c.id} 
-                    comment={c} 
-                    post={post} 
-                    user={user} 
-                    commentActions={commentActions} 
-                    onShowFileDialog={onShowFileDialog} 
-                    dropAction={dropAction} 
-                    workspace={workspace} 
-                    isMember={isMember} 
-                    dictionary={dictionary} 
-                    disableOptions={disableOptions}
-                  />;
+            return (
+              <Comment
+                key={c.id}
+                comment={c}
+                post={post}
+                user={user}
+                commentActions={commentActions}
+                onShowFileDialog={onShowFileDialog}
+                dropAction={dropAction}
+                workspace={workspace}
+                isMember={isMember}
+                dictionary={dictionary}
+                disableOptions={disableOptions}
+                postActions={postActions}
+              />
+            );
           })}
         </ul>
       )}

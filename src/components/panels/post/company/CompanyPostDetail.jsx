@@ -285,7 +285,7 @@ const MarkAsRead = styled.div`
 
 const CompanyPostDetail = (props) => {
   const { post, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
@@ -443,13 +443,13 @@ const CompanyPostDetail = (props) => {
             </li>
           </ul>
         </div>
-        {privateWsOnly.length === post.recipients.length && (
+        {/* {privateWsOnly.length === post.recipients.length && (
           <div>
             <span>
               {dictionary.messageInSecureWs} <Icon icon="lock" />
             </span>
           </div>
-        )}
+        )} */}
         <div>
           {post.author.id === user.id && (
             <ul>
@@ -473,6 +473,7 @@ const CompanyPostDetail = (props) => {
               {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+              {post.author.id === user.id && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
             </StyledMoreOptions>
           </div>
         </div>
@@ -581,11 +582,11 @@ const CompanyPostDetail = (props) => {
         )}
         {comments && Object.keys(comments).length > 0 && (
           <>
-            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} />
+            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} postActions={postActions} />
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

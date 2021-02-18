@@ -60,14 +60,7 @@ const CompanyPeoplePanel = (props) => {
     [history]
   );
 
-  const handleUserChat = useCallback(
-    (user) => {
-      selectUserChannel(user, (channel) => {
-        history.push(`/chat/${channel.code}`);
-      });
-    },
-    [history, selectUserChannel]
-  );
+  const handleUserChat = (user) => selectUserChannel(user);
 
   useEffect(() => {
     refs.search.current.focus();
@@ -89,26 +82,6 @@ const CompanyPeoplePanel = (props) => {
 
       return true;
     });
-  // .filter((user) => {
-  //   if (!userChannels.hasOwnProperty(user.id))
-  //     return false;
-
-  //   if (user.type !== "internal")
-  //     return false;
-
-  //   if (user.active !== 1)
-  //     return false;
-
-  //   if (search !== "") {
-  //     if (search !== "") {
-  //       if (user.name.toLowerCase().search(search.toLowerCase()) === -1
-  //         && user.email.toLowerCase().search(search.toLowerCase()) === -1)
-  //         return false;
-  //     }
-  //   }
-
-  //   return true;
-  // });
 
   const { _t } = useTranslation();
 

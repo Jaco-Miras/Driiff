@@ -286,7 +286,7 @@ const MarkAsRead = styled.div`
 
 const PostDetail = (props) => {
   const { post, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
@@ -451,13 +451,13 @@ const PostDetail = (props) => {
             </li>
           </ul>
         </div>
-        {privateWsOnly.length === post.recipients.length && (
+        {/* {privateWsOnly.length === post.recipients.length && (
           <div>
             <span>
               {dictionary.messageInSecureWs} <Icon icon="lock" />
             </span>
           </div>
-        )}
+        )} */}
         <div>
           {post.author.id === user.id && !disableOptions && (
             <ul>
@@ -479,6 +479,7 @@ const PostDetail = (props) => {
                   {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                   {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                  <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                 </StyledMoreOptions>
               </li>
             </ul>
@@ -506,7 +507,7 @@ const PostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
+        <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.author.id !== user.id && post.is_must_read && !hasRead && (
             <MarkAsRead className="d-sm-inline d-none">
@@ -611,11 +612,12 @@ const PostDetail = (props) => {
               isMember={isMember}
               dictionary={dictionary}
               disableOptions={disableOptions}
+              postActions={postActions}
             />
             <hr className="m-0" />
           </>
         )}
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} />
+        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} mainInput={true} />
       </MainBody>
     </>
   );

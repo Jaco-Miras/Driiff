@@ -190,6 +190,13 @@ const WorkspacePostsPanel = (props) => {
     actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
     accepted: _t("POST.ACCEPTED", "Accepted"),
+    requestForApproval: _t("POST.REQUEST_FOR_APPROVAL", "Request for approval"),
+    closeThisPost: _t("POST.CLOSE_THIS_POST", "Close this post"),
+    repliesClosed: _t("POST.REPLIES_CLOSED", "Replies closed"),
+    openThisPost: _t("POST.OPEN_THIS_POST", "Open this post"),
+    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator closed this post for commenting"),
+    reopen: _t("POST.REOPEN", "Reopen"),
+    closed: _t("POST.CLOSED", "Closed"),
   };
 
   const handleLoadMore = () => {
@@ -277,7 +284,7 @@ const WorkspacePostsPanel = (props) => {
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null) return <></>;
-  //console.log(post, 'post')
+
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">

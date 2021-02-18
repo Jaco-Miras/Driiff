@@ -8,17 +8,32 @@ const useComments = (post) => {
   const postComments = useSelector((state) => state.workspaces.postComments);
 
   const [fetchingComments, setFetchingComments] = useState(false);
+  const [fetchingPostReads, setFetchingPostReads] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (!fetchingComments && !postComments.hasOwnProperty(post.id)) {
       setFetchingComments(true);
       let url = `/v1/messages?post_id=${post.id}&skip=${0}&limit=${20}`;
       let payload = {
         url,
       };
-
       commentActions.fetchPostComments(payload, (err, res) => {
         setFetchingComments(false);
+      });
+    }
+
+    if ( !fetchingPostReads && !post.hasOwnProperty("post_reads")) {
+      commentActions.fetchPostRead(parseInt(post.id), (err, res) => {
+        setFetchingPostReads(true);
+        const payload  = {
+          postId: post.id,
+          readPosts: [
+            ...res.data
+          ]
+        }
+        commentActions.setPostReadComments(payload, () => {
+          setFetchingPostReads(false);
+        });
       });
     }
   }, [post]);

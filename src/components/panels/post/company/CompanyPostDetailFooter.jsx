@@ -33,15 +33,19 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  padding-right: 120px;
+  //padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
+  display: flex;
+  .chat-input-wrapper {
+    flex-grow: 1;
+  }
   .feather-send,
   .feather-smile,
   .feather-image {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    // position: absolute;
+    // bottom: 0;
+    // right: 0;
     margin: 4px;
     height: calc(100% - 8px);
     max-height: 38px;
@@ -53,7 +57,7 @@ const ChatInputContainer = styled.div`
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
   .feather-smile {
-    right: 44px;
+    //right: 44px;
     margin: 4px 0;
     background: transparent;
     border-color: transparent;
@@ -67,7 +71,7 @@ const ChatInputContainer = styled.div`
     }
   }
   .feather-image {
-    right: 80px;
+    //right: 80px;
     margin: 4px 0;
     background: transparent;
     border-color: transparent;
@@ -130,9 +134,9 @@ const Dflex = styled.div`
       }
     }
   }
-  svg.feather-send {
-    margin-left: 8px;
-  }
+  // svg.feather-send {
+  //   margin-left: 8px;
+  // }
   svg.feather-paperclip {
     margin-left: 0;
     margin-right: 0;
@@ -141,16 +145,16 @@ const Dflex = styled.div`
     .emojiButton {
       display: none;
     }
-    div:nth-child(4) {
-      order: 1;
-      margin-right: 8px;
-    }
-    div:nth-child(2) {
-      order: 3;
-    }
-    svg:nth-child(3) {
-      order: 3;
-    }
+    // div:nth-child(4) {
+    //   order: 1;
+    //   margin-right: 8px;
+    // }
+    // div:nth-child(2) {
+    //   order: 3;
+    // }
+    // svg:nth-child(3) {
+    //   order: 3;
+    // }
     svg.feather-send {
       margin-right: 0;
     }
@@ -164,6 +168,23 @@ const NoReply = styled.div`
     width: 100%;
     margin-bottom: 0;
     text-align: center;
+  }
+  .request-approval {
+    color: #7a1b8b;
+  }
+`;
+
+const ClosedLabel = styled.div`
+  width: 100%;
+
+  .alert {
+    width: 100%;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    span:last-child {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -181,10 +202,11 @@ const FileNames = styled.div`
 `;
 
 const ApproveCheckBox = styled(CheckBox)`
-  position: absolute;
-  right: 120px;
-  bottom: 0;
-  height: 35px;
+  // position: absolute;
+  // right: 120px;
+  // bottom: 0;
+  // height: 35px;
+  display: inline-block;
 `;
 
 const ApproverSelectWrapper = styled.div`
@@ -193,13 +215,20 @@ const ApproverSelectWrapper = styled.div`
   // justify-content: flex-end;
   padding-bottom: 10px;
   margin-left: auto;
+  flex-direction: column;
   > div.react-select-container {
     width: 300px;
   }
 `;
 
+const PostInputButtons = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+`;
+
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null } = props;
+  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
 
   const postActions = usePostActions();
   const ref = {
@@ -221,6 +250,7 @@ const CompanyPostDetailFooter = (props) => {
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
 
   const handleSend = useCallback(() => {
     setSent(true);
@@ -279,6 +309,18 @@ const CompanyPostDetailFooter = (props) => {
     lockedLabel: _t("CHAT.INFO_PRIVATE_WORKSPACE", "You are in a private workspace."),
     requestChange: _t("POST.REQUEST_CHANGE", "Request for change"),
     accept: _t("POST.ACCEPT", "Accept"),
+    requestApprovalFrom: _t("POST.REQUEST_APPROVAL_FROM", "Request approval from"),
+    requestChangeTo: _t("POST.REQUEST_CHANGE_TO", "Request change to"),
+    addressedTo: _t("POST.ADDRESSED_TO", "Addressed to"),
+    selectApprover: _t("TOOLTIP.SELECT_APPROVER", "Select approver"),
+    emoji: _t("TOOLTIP.EMOJI", "Emoji"),
+    images: _t("TOOLTIP.IMAGES", "Images"),
+    sharedWithAdditionalPeople: _t("POST.INFO_SHARED_WITH_PEOPLE", "Your comment is published in secured workspace(s) & shared with additional people"),
+    sharedWithPublicWs: _t("POST.INFO_SHARED_WITH_PUBLIC_WS", "Your comment is published in secured workspace(s) & public workspace(s)"),
+    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator closed this post for commenting"),
+    reopen: _t("POST.REOPEN", "Reopen"),
+    agree: _t("POST.AGREE", "Agree"),
+    disagree: _t("POST.DISAGREE", "Disagree"),
   };
 
   const handleQuillImage = () => {
@@ -306,22 +348,55 @@ const CompanyPostDetailFooter = (props) => {
     })
     .flat();
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
-  const userOptions = Object.values(users)
-    .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
-    .map((u) => {
-      return {
-        ...u,
-        icon: "user-avatar",
-        value: u.id,
-        label: u.name ? u.name : u.email,
-        type: "USER",
-      };
-    });
+  let approverOptions = [
+    ...Object.values(users)
+      .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
+      }),
+    {
+      id: require("shortid").generate(),
+      value: "all",
+      label: "All users",
+      icon: "users",
+      all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== user.id),
+    },
+  ];
+
+  if (approvers.length && approvers.find((a) => a.value === "all")) {
+    approverOptions = approverOptions.filter((a) => a.value === "all");
+  }
+
   const handleSelectApprover = (e) => {
+    if (e === null || !e.length) {
+      if (changeRequestedComment) {
+        commentActions.clearApprovingStatus(changeRequestedComment.id);
+      }
+      if (props.handleCancelChange) {
+        props.handleCancelChange();
+      }
+      if (approving.change) {
+        setApproving({
+          ...approving,
+          change: false,
+        });
+        setShowApprover(false);
+      }
+    }
     if (e === null) {
       setApprovers([]);
     } else {
-      setApprovers(e);
+      if (e.find((a) => a.value === "all")) {
+        setApprovers(e.filter((a) => a.value === "all"));
+      } else {
+        setApprovers(e);
+      }
     }
   };
 
@@ -361,106 +436,223 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const handleRequestChange = () => {
-    setApproving({
-      ...approving,
-      change: true,
-    });
-    setShowApprover(true);
-    setApprovers([
-      {
-        ...post.author,
-        icon: "user-avatar",
-        value: post.author.id,
-        label: post.author.name,
-        type: "USER",
-        ip_address: null,
-        is_approved: null,
-      },
-    ]);
+    if (post.users_approval.length === 1) {
+      setApproving({
+        ...approving,
+        change: true,
+      });
+      setShowApprover(true);
+      setApprovers([
+        {
+          ...post.author,
+          icon: "user-avatar",
+          value: post.author.id,
+          label: post.author.name,
+          type: "USER",
+          ip_address: null,
+          is_approved: null,
+        },
+      ]);
+    } else {
+      setApproving({
+        ...approving,
+        change: true,
+      });
+      postActions.approve(
+        {
+          post_id: post.id,
+          approved: 0,
+        },
+        (err, res) => {
+          setApproving({
+            ...approving,
+            change: false,
+          });
+          if (err) return;
+          const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
+          const allUsersDisagreed = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === post.users_approval.length - 1;
+          if (isLastUserToAnswer && allUsersDisagreed) {
+            postActions.generateSystemMessage(
+              post,
+              [],
+              post.users_approval.map((ua) => ua.id)
+            );
+          }
+        }
+      );
+    }
   };
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
   const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
+  const approverNames = post.users_approval.map((u) => u.name);
+  const isMultipleApprovers = post.users_approval.length > 1;
+  const hasAnswered = post.users_approval.some((ua) => ua.id === user.id && ua.ip_address !== null);
+  //const isLastUserToAnswer = post.users_approval.length > 0 && post.users_approval.length - post.users_approval.filter((u) => u.ip_address === null).length === 1;
 
-  const requestForChangeCallback = () => {
-    if (hasPendingAproval && isApprover && showApprover) {
-      postActions.approve({
+  const requestForChangeCallback = (err, res) => {
+    if (post.users_approval.length === 1) {
+      if (err) return;
+      if (hasPendingAproval && isApprover && showApprover) {
+        postActions.approve(
+          {
+            post_id: post.id,
+            approved: 0,
+          },
+          (err, res) => {
+            setApproving({
+              ...approving,
+              change: false,
+            });
+          }
+        );
+      }
+    }
+    if (changeRequestedComment) {
+      commentActions.approve({
         post_id: post.id,
         approved: 0,
+        comment_id: changeRequestedComment.id,
+        transfer_comment_id: res.data.id,
       });
     }
+  };
+
+  useEffect(() => {
+    if (changeRequestedComment && commentId && commentId === changeRequestedComment.id) {
+      setShowApprover(true);
+      setApprovers([
+        {
+          ...changeRequestedComment.author,
+          icon: "user-avatar",
+          value: changeRequestedComment.author.id,
+          label: changeRequestedComment.author.name,
+          type: "USER",
+          ip_address: null,
+          is_approved: null,
+        },
+      ]);
+    } else {
+      setShowApprover(false);
+      setApprovers([]);
+    }
+  }, [changeRequestedComment]);
+
+  const hasPrivateRecipient = post.recipients.find((r) => {
+    return r.type === "TOPIC" && r.private === 1;
+  });
+
+  const hasUserRecipient = post.recipients.find((r) => r.type === "USER");
+
+  const hasPublicRecipient = post.recipients.find((r) => {
+    return r.type === "TOPIC" && r.private === 0;
+  });
+
+  const handleReopen = () => {
+    postActions.close(post);
   };
 
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote commentActions={commentActions} commentId={commentId} />
+          <CommentQuote commentActions={commentActions} commentId={editPostComment ? editPostComment.quote.id : commentId} editPostComment={editPostComment} mainInput={mainInput} />
         </Dflex>
       }
       <Dflex className="d-flex alig-items-center">
         {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
+        {hasPrivateRecipient && hasUserRecipient && <div className={"locked-label mb-2"}>{dictionary.sharedWithAdditionalPeople}</div>}
+        {hasPrivateRecipient && hasPublicRecipient && <div className={"locked-label mb-2"}>{dictionary.sharedWithPublicWs}</div>}
         {showApprover && (
           <ApproverSelectWrapper>
-            <FolderSelect options={userOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
+            {approving.change && isApprover && <label>{dictionary.requestChangeTo}</label>}
+            {!isApprover && <label>{dictionary.addressedTo}</label>}
+            <FolderSelect options={approverOptions} value={approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />
           </ApproverSelectWrapper>
         )}
       </Dflex>
-      {(!isApprover || approving.change || userApproved) && (
+      {hasPendingAproval && !isApprover && (
+        <NoReply className="d-flex align-items-center mb-2">
+          <div className="alert alert-primary request-approval">
+            {dictionary.requestApprovalFrom} {approverNames.join(", ")}
+          </div>
+        </NoReply>
+      )}
+      {post.is_close && mainInput && (
+        <ClosedLabel className="d-flex align-items-center">
+          <div className="alert alert-warning">
+            <span>{dictionary.creatorClosedPost}</span>
+            {post.author.id === user.id && <span onClick={handleReopen}>{dictionary.reopen}</span>}
+          </div>
+        </ClosedLabel>
+      )}
+      {post.is_read_only && mainInput && (
         <Dflex className="d-flex align-items-end">
-          {post.is_read_only ? (
-            <NoReply className="d-flex align-items-center">
-              <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
-            </NoReply>
-          ) : (
-            <React.Fragment>
-              <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
-                <CompanyPostInput
-                  handleClearSent={handleClearSent}
-                  sent={sent}
-                  commentId={commentId}
-                  userMention={userMention}
-                  handleClearUserMention={handleClearUserMention}
-                  commentActions={commentActions}
-                  parentId={parentId}
-                  post={post}
-                  selectedGif={selectedGif}
-                  onClearGif={onClearGif}
-                  selectedEmoji={selectedEmoji}
-                  onClearEmoji={onClearEmoji}
-                  dropAction={dropAction}
-                  members={post.users_responsible}
-                  onActive={onActive}
-                  onClosePicker={onClosePicker}
-                  ref={ref.postInput}
-                  prioMentionIds={prioMentionIds}
-                  approvers={showApprover ? approvers : []}
-                  onClearApprovers={handleClearApprovers}
-                  onSubmitCallback={requestForChangeCallback}
-                />
-                <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+          <NoReply className="d-flex align-items-center">
+            <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
+          </NoReply>
+        </Dflex>
+      )}
+      {(!isApprover || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
+        <Dflex className="d-flex align-items-end">
+          <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+            <CompanyPostInput
+              handleClearSent={handleClearSent}
+              sent={sent}
+              commentId={commentId}
+              userMention={userMention}
+              handleClearUserMention={handleClearUserMention}
+              commentActions={commentActions}
+              parentId={parentId}
+              post={post}
+              selectedGif={selectedGif}
+              onClearGif={onClearGif}
+              selectedEmoji={selectedEmoji}
+              onClearEmoji={onClearEmoji}
+              dropAction={dropAction}
+              members={post.users_responsible}
+              onActive={onActive}
+              onClosePicker={onClosePicker}
+              ref={ref.postInput}
+              prioMentionIds={prioMentionIds}
+              approvers={showApprover ? approvers : []}
+              onClearApprovers={handleClearApprovers}
+              onSubmitCallback={requestForChangeCallback}
+              isApprover={approving.change && hasPendingAproval}
+              mainInput={mainInput}
+            />
+            <PostInputButtons>
+              {!isApprover && (
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
+                  <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+                </Tooltip>
+              )}
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
                 <IconButton icon="image" onClick={handleQuillImage} />
-                <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
-                <IconButton onClick={handleSend} icon="send" />
-              </ChatInputContainer>
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
-                <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
               </Tooltip>
-            </React.Fragment>
-          )}
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.emoji}>
+                <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+              </Tooltip>
+              <IconButton onClick={handleSend} icon="send" />
+            </PostInputButtons>
+          </ChatInputContainer>
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
+            <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
+          </Tooltip>
+
           {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
         </Dflex>
       )}
       {editPostComment && editPostComment.files.length > 0 && <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
-      {hasPendingAproval && isApprover && !approving.change && (
+      {((hasPendingAproval && isApprover && !approving.change) || (isMultipleApprovers && isApprover && !hasAnswered)) && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
-              {dictionary.requestChange} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
             <button className="btn btn-primary" onClick={handleApprove}>
-              {dictionary.accept} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
           </div>
         </Dflex>

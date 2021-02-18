@@ -47,7 +47,7 @@ const QuoteWrapper = styled.div`
 const IconButton = styled(SvgIconFeather)``;
 
 const CommentQuote = (props) => {
-  const { commentActions, commentId } = props;
+  const { commentActions, commentId, editPostComment, mainInput } = props;
   const [quote, quoteBody] = useCommentQuote(commentId);
 
   const handleClearQuote = () => {
@@ -55,15 +55,29 @@ const CommentQuote = (props) => {
   };
 
   if (quote) {
-    return (
-      <QuoteWrapper>
-        <span className={"quote-author-name"} dangerouslySetInnerHTML={{ __html: quote.user ? quote.user.name : "" }}></span>
-        <span className={"quote-message"} dangerouslySetInnerHTML={{ __html: quote.body ? quoteBody.split("</p>")[0] : "" }}></span>
-        <span className={"quote-clear-container"} onClick={handleClearQuote}>
-          <IconButton icon="x" />
-        </span>
-      </QuoteWrapper>
-    );
+    if (editPostComment && mainInput) {
+      return (
+        <QuoteWrapper>
+          <span className={"quote-author-name"} dangerouslySetInnerHTML={{ __html: quote.user ? quote.user.name : "" }}></span>
+          <span className={"quote-message"} dangerouslySetInnerHTML={{ __html: quote.body ? quoteBody.split("</p>")[0] : "" }}></span>
+          <span className={"quote-clear-container"} onClick={handleClearQuote}>
+            <IconButton icon="x" />
+          </span>
+        </QuoteWrapper>
+      );
+    } else if (editPostComment && !mainInput) {
+      return null;
+    } else {
+      return (
+        <QuoteWrapper>
+          <span className={"quote-author-name"} dangerouslySetInnerHTML={{ __html: quote.user ? quote.user.name : "" }}></span>
+          <span className={"quote-message"} dangerouslySetInnerHTML={{ __html: quote.body ? quoteBody.split("</p>")[0] : "" }}></span>
+          <span className={"quote-clear-container"} onClick={handleClearQuote}>
+            <IconButton icon="x" />
+          </span>
+        </QuoteWrapper>
+      );
+    }
   } else {
     return null;
   }

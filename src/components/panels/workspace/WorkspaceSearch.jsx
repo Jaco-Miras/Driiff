@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
+import { CheckBox } from "../../forms";
 import { SvgIconFeather } from "../../common";
 import {useTranslation} from "../../hooks";
 
@@ -39,10 +40,57 @@ const CloseIcon = styled(SvgIconFeather)`
   stroke-width: 2px;
 `;
 
+const InputWrapper = styled.div``;
+
+const MoreOption = styled.div`
+  margin-bottom: 5px;
+  @media all and (max-width: 480px) {
+    margin-top: 40px;
+  }
+`;
+
+const FilterLists = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  label {
+      margin: 0;
+  }
+  .custom-control {
+      min-height: 1rem;
+  }
+`;
+
+const CheckBoxGroup = styled.div`
+  overflow: hidden;
+  transition: all 0.3s ease !important;
+  width: 100%;
+
+  &.enter-active {
+    max-height: ${(props) => props.maxHeight}px;
+    overflow: visible;
+  }
+
+  &.leave-active {
+    max-height: 0;
+  }
+
+  label {
+    min-width: auto;
+    font-size: 12.6px;
+
+    &:hover {
+      color: #972c86;
+    }
+  }
+`;
+
 const WorkspaceSearch = (props) => {
   const { actions, search } = props;
-  const { value, searching } = search;
+  const { value, searching, filterBy, filters } = search;
   const [inputValue, setInputValue] = useState(value);
+  const [filter_by, setFilterBy] = useState(filterBy);
+  const [filter, setFilter] = useState(filters);
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !searching) {
@@ -56,6 +104,7 @@ const WorkspaceSearch = (props) => {
         search: inputValue,
         skip: 0,
         limit: 25,
+        filter_by: filter_by
       },
       (err, res) => {
         if (err) {
@@ -67,6 +116,7 @@ const WorkspaceSearch = (props) => {
           actions.updateSearch({
             ...search,
             value: inputValue,
+            filter_by: filter_by,
             searching: false,
             count: res.data.total_count,
             results: res.data.workspaces,
@@ -77,8 +127,10 @@ const WorkspaceSearch = (props) => {
       }
     );
     actions.updateSearch({
-      ...search,
+      // ...search,
+      results: [],
       value: inputValue,
+      filter_by: filter_by,
       searching: true,
     });
   };
@@ -88,6 +140,7 @@ const WorkspaceSearch = (props) => {
       results: [],
       searching: true,
       value: "",
+      filter_by: "",
       page: 1,
       maxPage: 1,
       count: 0,
@@ -97,6 +150,7 @@ const WorkspaceSearch = (props) => {
         search: "",
         skip: 0,
         limit: 25,
+        filter_by:""
       },
       (err, res) => {
         if (err) {
@@ -104,11 +158,13 @@ const WorkspaceSearch = (props) => {
             ...search,
             searching: false,
             value: "",
+            filter_by:""
           });
         } else {
           actions.updateSearch({
             ...search,
             value: "",
+            filter_by: "",
             searching: false,
             count: res.data.total_count,
             results: res.data.workspaces,
@@ -120,6 +176,7 @@ const WorkspaceSearch = (props) => {
     setInputValue("");
   };
 
+  
   const handleSearchChange = (e) => {
     if (e.target.value.trim() === "" && value !== "") {
       handleClearSearch();
@@ -127,6 +184,48 @@ const WorkspaceSearch = (props) => {
       setInputValue(e.target.value);
     }
   };
+
+  const handleFilter = useCallback((filtersPrevState, name) => {
+    setFilterBy((prevState) => !filtersPrevState[name].checked? name : "");
+    filtersPrevState[name].checked = !filtersPrevState[name].checked;
+    const filterState = Object.values(filtersPrevState).reduce(
+      (accumulator, current) => {
+        if (name !== current.key) {
+          current.checked = false;
+          accumulator[current.key] = {...current};
+        }
+        return accumulator
+      }, {});
+
+    return {
+      ...filtersPrevState,
+      ...filterState,
+    }
+  },[setFilterBy]);
+
+  const toggleCheckFilter = useCallback(
+    (e) => {
+      const name = e.target.dataset.name;
+      setFilter((prevState) => handleFilter(prevState, name));
+    },
+    [setFilter]
+  );
+
+  useEffect(()=> {
+    if ((Object.values(filter).map((sf)=> sf.checked ).includes(true) && !searching) || !!value){
+      actions.updateSearch({
+        results: [],
+        value: inputValue,
+        filter_by: filter_by,
+        searching: true,
+      }, () => {
+        handleSearch();  
+      });
+      
+    } else {
+      handleClearSearch();
+    }
+  }, [filter_by]);
 
   useEffect(() => {
     setInputValue(value);
@@ -137,6 +236,12 @@ const WorkspaceSearch = (props) => {
   const dictionary = {
     searchWorkspaceSearchPlaceholder: _t("PLACEHOLDER.SEARCH_WORKSPACE", "Search by workspace name or description"),
     searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
+    filters: _t("PLACEHOLDER.SEARCH_WORKSPACE_FILTER", "Filters", "Filters"),
+    private: _t("WORKSPACE.PRIVATE", "Private"),
+    archived: _t("WORKSPACE.ARCHIVED", "Archived"),
+    nonMember: _t("WORKSPACE.NON_MEMBER", "Non Member"),
+    new: _t("WORKSPACE.NEW", "New"),
+    external: _t("WORKSPACE.EXTERNAL", "External"),
   };
 
   return (
@@ -145,21 +250,45 @@ const WorkspaceSearch = (props) => {
         <div className="row d-flex justify-content-center">
           <h2 className="mb-4 text-center">{dictionary.searchWorkspaceSearchTitle}</h2>
           <div className="input-group">
-            <div className="input-wrap">
+            <InputWrapper className="input-wrap">
               <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder={dictionary.searchWorkspaceSearchPlaceholder} aria-describedby="button-addon1" autoFocus value={inputValue} />
-              {inputValue.trim() !== "" && (
-                <button className="btn-cross" type="button" onClick={handleClearSearch}>
-                  <CloseIcon icon="x" />
-                </button>
-              )}
-            </div>
-
+                {inputValue.trim() !== "" && (
+                  <button className="btn-cross" type="button" onClick={handleClearSearch}>
+                    <CloseIcon icon="x" />
+                  </button>
+                )}
+            </InputWrapper>
             <div className="input-group-append">
               <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
                 <SvgIconFeather icon="search" />
               </button>
             </div>
           </div>
+          
+          <CheckBoxGroup className={"enter-active"}>
+            <div className="row d-flex justify-content-center my-3" >
+              
+              <MoreOption className="px-3">
+                <SvgIconFeather icon="sliders"/>
+              </MoreOption>
+              <FilterLists className="d-flex">
+                {
+                  Object.values(filter).map((sf) => {
+                    return (
+                      <li className="d-flex align-items-center mr-2" key={sf.key}>
+                        <span className="custom-control custom-checkbox custom-checkbox-success">
+                          <CheckBox name={sf.key} checked={sf.checked}  type="danger" onClick={toggleCheckFilter}/>
+                        </span>
+                        <span>{dictionary[sf.key]}</span>
+                      </li>
+                    )
+                  })
+                }
+              </FilterLists>
+
+            </div>
+          </CheckBoxGroup>
+          
         </div>
       </div>
     </Wrapper>
