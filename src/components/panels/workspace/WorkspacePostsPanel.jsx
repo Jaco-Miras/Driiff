@@ -90,7 +90,7 @@ const WorkspacePostsPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, counters, filters } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
@@ -203,6 +203,9 @@ const WorkspacePostsPanel = (props) => {
     creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator/internal closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
     closed: _t("POST.CLOSED", "Closed"),
+    createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
+    addToList: _t("POST.ADD_TO_LIST", "Add to list"),
+    removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
   };
 
   const handleLoadMore = () => {
@@ -322,6 +325,7 @@ const WorkspacePostsPanel = (props) => {
           tag={tag}
           postActions={actions}
           count={count}
+          postLists={postLists}
           counters={counters}
           onGoBack={handleGoback}
           dictionary={dictionary}
@@ -395,7 +399,7 @@ const WorkspacePostsPanel = (props) => {
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
                         {posts &&
                           posts.map((p) => {
-                            return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
+                            return <PostItemPanel key={p.id} post={p} postActions={actions} workspace={workspace} dictionary={dictionary} disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
                           })}
                       </ul>
                     </div>

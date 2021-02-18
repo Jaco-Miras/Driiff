@@ -100,7 +100,6 @@ const useCompanyPosts = () => {
         } else if (tag === "is_close") {
           return p.is_close && !p.hasOwnProperty("draft_type");
         } else if (parseInt(tag) !== NaN) {
-          console.log(p.post_list_connect.length,p);
           return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag));
         } else {
           return true;

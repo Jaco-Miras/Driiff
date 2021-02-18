@@ -71,6 +71,14 @@ export function postListDisconnected(payload, callback) {
   return dispatchActionToReducer(postListDisconnectService(payload), "POST_LIST_DISCONNECT_START", "POST_LIST_DISCONNECT_SUCCESS", "POST_LIST_DISCONNECT_FAIL", callback);
 }
 
+export function incomingPostListConnect(payload, callback) {
+  return SimpleDispatchActionToReducer("POST_LIST_CONNECT", payload, callback);
+}
+
+export function incomingPostListDisconnect(payload, callback) {
+  return SimpleDispatchActionToReducer("POST_LIST_DISCONNECT", payload, callback);
+}
+
 export function postFavorite(payload, callback) {
   return dispatchActionToReducer(postFavoriteService(payload), "POST_FAVORITE_START", "POST_FAVORITE_SUCCESS", "POST_FAVORRITE_FAIL", callback);
 }

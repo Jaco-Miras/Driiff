@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Modal, ModalFooter, ModalBody, Label, InputGroup, Input, Button } from "reactstrap";
 import Select, { components } from "react-select";
 import styled from "styled-components";
@@ -41,8 +41,10 @@ const CreateEditPostListModal = (props) => {
     const { type, message, mode, item } = props.data;
 
     const history = useHistory();
+    const params = useParams();
+    
     const dispatch = useDispatch();
-    const { createNewPostList, connectPostList } = usePostActions();
+    const { createNewPostList, connectPostList, fetchPostList, updatePostListConnect } = usePostActions();
     const postLists = useSelector((state) => state.posts.postsLists);
     const [loading, setLoading] = useState(false);
 
@@ -96,21 +98,29 @@ const CreateEditPostListModal = (props) => {
                 name: form.name
             }
             createNewPostList(payload, (err, res) => {
-                if (res) {
-                    toggle();
-                }
+                if (err) return;
+                toggle();
+                fetchPostList();
             });
         } 
         else if (mode === "add") {
             if (!valid.link_id) return
             setLoading(true);
-
             const payload = {...postListForm};
-            console.log(payload);
+            
+
+            console.log(params, history);
             connectPostList(payload, (err, res) => {
-                if (res) {
+                if (err) return;
+                fetchPostList({}, (error, response) => {
+                    if (error) return;
+                    // let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
+                    let topic_id = item.hasOwnProperty("workspace")? parseInt(item.workspace.id) : null;
+                    res.data["topic_id"] = topic_id;
+                    updatePostListConnect(res.data);
                     toggle();
-                }
+                });
+                
             });
         }
         else if (mode === "edit") {
@@ -179,7 +189,6 @@ const CreateEditPostListModal = (props) => {
     };
     
     const handleListChange = (e) => {
-        console.log( e )
         if (e === null) {
             setValid((prevState) => ({
                 ...prevState,
@@ -232,7 +241,9 @@ const CreateEditPostListModal = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
-      <ModalHeaderSection toggle={toggle}>{dictionary.newList}</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{mode === "add"? dictionary.addToList : dictionary.newList}</ModalHeaderSection>
+      
+      
         <ModalBody>
             <Wrapper className={"modal-input mt-0"}>
                 <div className="w-100">

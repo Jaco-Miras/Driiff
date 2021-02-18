@@ -381,7 +381,6 @@ const CompanyPostItemPanel = (props) => {
         console.log(err, res);
       });
     }
-    
   };
 
 

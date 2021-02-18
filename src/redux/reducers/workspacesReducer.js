@@ -2506,6 +2506,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+<<<<<<< HEAD
     case "ADD_USER_TO_POST_RECIPIENTS": {
       let workspacePost = { ...state.workspacePosts };
       if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
@@ -2547,6 +2548,63 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: workspacePost,
       };
     }
+=======
+    case "POST_LIST_CONNECT": {
+      console.log("workspace reducer connect", action)
+      if (!action.data.hasOwnProperty("topic_id")) return state;
+     return {
+       ...state,
+       workspacePosts: {
+        ...state.workspacePosts,
+        [action.data.topic_id]: {
+          ...state.workspacePosts[action.data.topic_id],
+          posts: {
+            ...state.workspacePosts[action.data.topic_id].posts,
+            [action.data.post_id]: {
+              ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
+              post_list_connect: [{id: action.data.link_id}]
+            }
+          }
+        }
+      }
+     } 
+    }
+    case "POST_LIST_DISCONNECT": {
+      console.log("workspace reducer connect", action)
+      if (!action.data.hasOwnProperty("topic_id")) return state;
+      Object.values(state.workspacePosts).map((wp) => {
+        
+        if (wp.posts.hasOwnProperty(action.data.post_id)) {
+          {
+            wp.posts[]
+          }
+        }
+
+        return wp;
+          
+          
+        
+      })
+
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          [action.data.topic_id]: {
+            ...state.workspacePosts[action.data.topic_id],
+            posts: {
+              ...state.workspacePosts[action.data.topic_id].posts,
+              [action.data.post_id]: {
+                ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
+                post_list_connect: []
+              }
+            }
+          }
+        }
+      }
+    }
+
+>>>>>>> DRIFF-1384 workspace post list in progress
     default:
       return state;
   }

@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../../common";
-import { usePostActions } from "../../../hooks";
-import { useSelector } from "react-redux";
+import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   a {
@@ -10,13 +9,14 @@ const Wrapper = styled.div`
   }
 `;
 
-const CompanyPostList = (props) => {
-    const {className = "", postLists, tag, onGoBack, dictionary} = props;
-    const {setCompanyFilterPosts} = usePostActions();
+const PostList = (props) => {
+    const {className = "", workspace, postLists, tag, onGoBack, dictionary} = props;
+    const dispatch = useDispatch();
+    
     const handleClickFilter = useCallback((e) => {
         e.persist();
-
         let payload = {
+            topic_id: workspace.id,
             tag: e.target.dataset.id,
             filter: null,
         };
@@ -27,10 +27,11 @@ const CompanyPostList = (props) => {
                 filter: "all",
             };
         }
-        setCompanyFilterPosts(payload);
+        // setCompanyFilterPosts(payload);
+        dispatch(updateWorkspacePostFilterSort(payload));
         onGoBack();
         document.body.classList.remove("mobile-modal-open");
-    }, []);
+    }, [workspace]);
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
       {postLists && postLists.map((list) => {
@@ -47,4 +48,4 @@ const CompanyPostList = (props) => {
   );
 };
 
-export default React.memo(CompanyPostList);
+export default React.memo(PostList);

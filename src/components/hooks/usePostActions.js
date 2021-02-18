@@ -55,6 +55,8 @@ import {
   deletePostList,
   postListConnect,
   postListDisconnected,
+  incomingPostListConnect,
+  incomingPostListDisconnect,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -156,7 +158,23 @@ const usePostActions = () => {
       dispatch(
         postListDisconnected(payload, callback)
       )
-    }
+    },
+    [dispatch, params]
+  );
+
+  const updatePostListConnect = useCallback(
+    (payload, callback) => {
+      if (payload.SOCKET_TYPE === "POST_LIST_CONNECTED") {
+        dispatch(
+          incomingPostListConnect(payload, callback)
+        )
+      }else {
+        dispatch(
+          incomingPostListDisconnect(payload, callback)
+        )
+      }
+    },
+    [dispatch, params]
   );
 
   const starPost = useCallback(
@@ -539,7 +557,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null, comment = null, postList = null) => {
+    (mode = "create", post = null, comment = null, workspace = null) => {
       let payload = {};
 
       switch (mode) {
@@ -704,7 +722,8 @@ const usePostActions = () => {
             type: "post_list",
             mode: "add",
             item: {
-              post: post
+              post: post,
+              workspace: workspace
             }
           }
           break;
@@ -1077,6 +1096,7 @@ const usePostActions = () => {
     deletePostsList,
     connectPostList,
     disconnectPostList,
+    updatePostListConnect,
   };
 };
 

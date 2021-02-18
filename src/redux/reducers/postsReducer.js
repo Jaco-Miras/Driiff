@@ -972,10 +972,42 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case 'POST_LIST_SUCCESS': {
+    case "POST_LIST_SUCCESS": {
       return {
         ...state,
         postsLists: [...action.data]
+      }
+    }
+    case "POST_LIST_CONNECT": {
+      const post = {
+        ...state.companyPosts.posts[action.data.post_id],
+        post_list_connect: [{id: action.data.link_id}]
+      }
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: post,
+          },
+        }
+      }
+    }
+    case "POST_LIST_DISCONNECT": {
+      const post = {
+        ...state.companyPosts.posts[action.data.post_id],
+        post_list_connect: []
+      }
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: post
+          },
+        }
       }
     }
     default:

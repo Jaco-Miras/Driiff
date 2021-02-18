@@ -113,6 +113,9 @@ import {
   incomingUpdatedPost,
   refetchPostComments,
   refetchPosts,
+  getPostList,
+  incomingPostListConnect,
+  incomingPostListDisconnect,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -151,9 +154,7 @@ import { toast } from "react-toastify";
 
 class SocketListeners extends Component {
   constructor(props) {
-    console.log("SOCKET LISTENER 1", props);
     super(props);
-    console.log("SOCKET LISTENER 2", this.state, props);
     this.state = {
       reconnected: null,
       disconnectedTimestamp: null,
@@ -870,18 +871,24 @@ class SocketListeners extends Component {
       })
       .listen(".post-list-notification", (e) => {
         console.log(e, "post-list-notification");
-        switch(e.SOCKET_TYPE) {
-          case "POST_LIST_CONNECTED": {
-            console.log(e)
+        this.props.getPostList({}, (err, res) => {
+          if (err) return;
+          let post = {
+            link_id: e.link_id,
+            post_id: e.post_id,
+          };
+          switch(e.SOCKET_TYPE) {
+            case "POST_LIST_CONNECTED": {
+              this.props.incomingPostListConnect(post);
+              break;
+            }
+            case "POST_LIST_DISCONNECTED": {
+              this.props.incomingPostListDisconnect(post);
+              break;
+            }
           }
-          case "POST_LIST_DISCONNECTED": {
-            console.log(e)
-          }
-          default:
-            return null;
-        }
-      })
-      ;
+        });
+      });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
       .listen(".announcement-notification", (e) => {
@@ -1759,6 +1766,9 @@ function mapDispatchToProps(dispatch) {
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
     incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
     incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
+    getPostList: bindActionCreators(getPostList, dispatch),
+    incomingPostListConnect: bindActionCreators(incomingPostListConnect, dispatch),
+    incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
   };
 }
 
