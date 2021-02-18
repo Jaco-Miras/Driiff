@@ -869,7 +869,7 @@ class SocketListeners extends Component {
         }
       })
       .listen(".post-list-notification", (e) => {
-        console.log(e);
+        console.log(e, "post-list-notification");
         switch(e.SOCKET_TYPE) {
           case "POST_LIST_CONNECTED": {
             console.log(e)
