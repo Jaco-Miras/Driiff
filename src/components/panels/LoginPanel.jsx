@@ -178,12 +178,11 @@ const LoginPanel = (props) => {
   };
 
   useEffect(() => {
-    persistor.purge();
-    if (persistenceOn) {
+    if (localStorage.getItem("persist:root")) {
       persistor.purge();
       localStorage.removeItem("persist:root");
     }
-  }, []);
+  });
 
   return (
     <Wrapper className="fadeIn">
