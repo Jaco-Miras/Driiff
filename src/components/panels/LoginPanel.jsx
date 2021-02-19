@@ -178,6 +178,7 @@ const LoginPanel = (props) => {
   };
 
   useEffect(() => {
+    persistor.purge();
     if (persistenceOn) {
       persistor.purge();
       localStorage.removeItem("persist:root");

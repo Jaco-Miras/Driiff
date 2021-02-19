@@ -42,11 +42,12 @@ let persistenceOn = localStorage.getItem("persistence") ? true : false;
 //let persistenceOn = true;
 let store = null;
 
-if (persistenceOn) {
-  store = createStore(persistedReducer, composeWithDevTools(applyMiddleware(...middleware)));
-} else {
-  store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
-}
+// if (persistenceOn) {
+//   store = createStore(persistedReducer, composeWithDevTools(applyMiddleware(...middleware)));
+// } else {
+//   store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
+// }
+store = createStore(persistedReducer, composeWithDevTools(applyMiddleware(...middleware)));
 
 let persistor = persistStore(store);
 
