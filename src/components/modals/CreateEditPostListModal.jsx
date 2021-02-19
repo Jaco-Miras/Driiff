@@ -44,16 +44,16 @@ const CreateEditPostListModal = (props) => {
     const params = useParams();
     
     const dispatch = useDispatch();
-    const { createNewPostList, connectPostList, fetchPostList, updatePostListConnect } = usePostActions();
+    const { createNewPostList, updatePostsList, deletePostsList, connectPostList, fetchPostList, updatePostListConnect } = usePostActions();
     const postLists = useSelector((state) => state.posts.postsLists);
     const [loading, setLoading] = useState(false);
 
     const [modal, setModal] = useState(true);
     const [form, setForm] = useState({
-        name: "",
+        name: mode === "edit"? item.post.name : "",
     });
     const [postListForm, setPostListForm] = useState({
-        post_id: item.post.id,
+        post_id: item && item.post.hasOwnProperty("id")?item.post.id: null,
         link_id: ""
     });
 
@@ -76,12 +76,15 @@ const CreateEditPostListModal = (props) => {
         cancel: _t("BUTTON.CANCEL", "Cancel"),
         saveList: _t("BUTTON.SAVE_LIST", "Save list"),
         addPost: _t("BUTTON.ADD_TO_LIST", "Add"),
+        update: _t("BUTTON.UPDATE", "Update"),
         newList: _t('POST_LIST.NEW_LIST', "New list"),
+        updateList: _t("POST_LIST.UPDATE_LIST", "Update list"),
         addToList: _t("POST_LIST.ADD_TO_LIST", "Add to list"),
         title: _t("LABEL.TITLE", "Title"),
         maxCharacters: _t("FEEDBACK.MAX_CHARACTERS", "Max 50 characters"),
         requiredTitle: _t("FEEDBACK.REQUIRED", "Title is required"),
         requiredPostList: _t("FEEDBACK.REQUIRED_POST_LIST", "Please Select Post List"),
+        archiveThisList: _t("POST_LIST.POST_LIST_ARCHIVE", "Archive this list"),
     };
   
     const toggle = () => {
@@ -107,16 +110,10 @@ const CreateEditPostListModal = (props) => {
             if (!valid.link_id) return
             setLoading(true);
             const payload = {...postListForm};
-            
-
-            console.log(params, history);
             connectPostList(payload, (err, res) => {
                 if (err) return;
                 fetchPostList({}, (error, response) => {
                     if (error) return;
-                    // let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
-                    let topic_id = item.hasOwnProperty("workspace")? parseInt(item.workspace.id) : null;
-                    res.data["topic_id"] = topic_id;
                     updatePostListConnect(res.data);
                     toggle();
                 });
@@ -124,9 +121,28 @@ const CreateEditPostListModal = (props) => {
             });
         }
         else if (mode === "edit") {
-
+            if (!valid.name) return;
+            setLoading(true);
+            const payload = {    
+                name: form.name,
+                id: item.post.id,
+            }
+            updatePostsList(payload, (err, res) => {
+                if (err) return;
+                toggle();
+                fetchPostList();
+            });
         }
     };
+
+    const handleArchiveList = useCallback(() => {
+        setLoading(true);
+        deletePostsList({id: item.post.id}, (err, res) => {
+            if (err) return;
+            toggle();
+            fetchPostList();
+        })
+    }, [form, item]);
 
     const _validateName = useCallback(
       () => {
@@ -237,13 +253,10 @@ const CreateEditPostListModal = (props) => {
                 </components.Option>
             </SelectOption>
         )
-    };
-
+    }; 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
-      <ModalHeaderSection toggle={toggle}>{mode === "add"? dictionary.addToList : dictionary.newList}</ModalHeaderSection>
-      
-      
+      <ModalHeaderSection toggle={toggle}>{mode === "add"? dictionary.addToList : (mode === "edit")? dictionary.updateList: dictionary.newList}</ModalHeaderSection>
         <ModalBody>
             <Wrapper className={"modal-input mt-0"}>
                 <div className="w-100">
@@ -263,6 +276,7 @@ const CreateEditPostListModal = (props) => {
                                         valid={valid.name}
                                         invalid={valid.name !== null && !valid.name}
                                         placeholder={dictionary.title}
+                                        defaultValue={mode === "edit" ? item.post.name : ""}
                                     />
                                     <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                                 </>
@@ -285,6 +299,11 @@ const CreateEditPostListModal = (props) => {
                     </div>
                 </div>
             </Wrapper>
+            { mode === "edit" && (
+                <span onClick={handleArchiveList} className="btn-archive text-link mt-2 cursor-pointer d-flex flex-row-reverse">
+                    {dictionary.archiveThisList}
+                </span>
+            )}
         </ModalBody>
         <ModalFooter>
             <Button outline color="secondary" onClick={toggle}>
@@ -292,7 +311,7 @@ const CreateEditPostListModal = (props) => {
             </Button>
             <Button color="primary" onClick={handleSaveList}>
                 {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-                {mode === "add"? dictionary.addPost : dictionary.saveList}
+                {mode === "add"? dictionary.addPost : (mode === "edit")? dictionary.update: dictionary.saveList}
             </Button>
         </ModalFooter>
       

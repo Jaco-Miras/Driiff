@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 const MobileOverlayFilter = styled.div``;
 
 const CompanyPostSidebar = (props) => {
-  const {workspace, filter, tag, count, postLists, counters, postActions, onGoBack, dictionary, disableOptions} = props;
+  const {workspace, filter, tag, postListTag, count, postLists, counters, postActions, onGoBack, dictionary, disableOptions} = props;
   const handleShowPostModal = () => {
     postActions.showModal("create_company");
   };
@@ -72,7 +72,7 @@ const CompanyPostSidebar = (props) => {
               {dictionary.createNewList}
             </button>
           </div>
-          <CompanyPostList postLists={postLists} tag={tag} onGoBack={onGoBack}
+          <CompanyPostList postLists={postLists} tag={tag} postListTag={postListTag} onGoBack={onGoBack}
                                 dictionary={dictionary}/>
         </div>
       </div>

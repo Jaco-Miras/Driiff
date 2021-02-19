@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 const MobileOverlayFilter = styled.div``;
 
 const PostSidebar = (props) => {
-  const { workspace, isMember, filter, filters, tag, count, postLists, counters, postActions, onGoBack, dictionary, disableOptions } = props;
+  const { workspace, isMember, filter, filters, tag, count, postLists, counters, postActions, onGoBack, dictionary, disableOptions, postListTag } = props;
 
   const handleShowWorkspacePostModal = () => {
     postActions.showModal("create");
@@ -42,7 +42,7 @@ const PostSidebar = (props) => {
     document.body.classList.remove("mobile-modal-open");
   };
   const handleShowNewPostListModal = ()=> {
-
+    postActions.showModal("create_edit_post_list");
   }
 
   return (
@@ -64,17 +64,17 @@ const PostSidebar = (props) => {
           <PostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack} dictionary={dictionary} />
         </div>
       </div>
-      {/* <div className="bottom-modal-mobile_inner">
+      <div className="bottom-modal-mobile_inner">
         <div className="app-sidebar-menu mt-3" tabIndex="2">
           <div className="card-body create-new-post-wrapper">
             <button className="btn btn-primary btn-block" onClick={handleShowNewPostListModal} disabled={disableOptions}>
               {dictionary.createNewList}
             </button>
           </div>
-          <PostList workspace={workspace} postLists={postLists} tag={tag} onGoBack={onGoBack}
+          <PostList workspace={workspace} postLists={postLists} tag={tag} postListTag={postListTag} onGoBack={onGoBack}
                                 dictionary={dictionary}/>
         </div>
-      </div> */}
+      </div>
     </Wrapper>
   );
 };

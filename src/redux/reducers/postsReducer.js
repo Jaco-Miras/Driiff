@@ -13,6 +13,7 @@ const INITIAL_STATE = {
     filter: "inbox",
     sort: "recent",
     tag: null,
+    postListTag: null,
     count: {},
     search: "",
     searchResults: [],
@@ -311,6 +312,7 @@ export default (state = INITIAL_STATE, action) => {
           filter: action.data.filter,
           sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
           tag: action.data.tag,
+          postListTag: action.data.postListTag,
         },
       };
     }

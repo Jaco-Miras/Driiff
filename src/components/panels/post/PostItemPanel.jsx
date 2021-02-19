@@ -374,7 +374,7 @@ const PostItemPanel = (props) => {
 
   const handleAddToListModal = () => {
     if (post.post_list_connect.length  !== 1) {
-      showModal("add_to_list", post, null, workspace );
+      showModal("add_to_list", post);
     } else {
       const payload = {
         link_id: post.post_list_connect[0].id,

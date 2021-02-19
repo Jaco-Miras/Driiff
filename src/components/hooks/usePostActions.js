@@ -557,7 +557,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null, comment = null, workspace = null) => {
+    (mode = "create", post = null, comment = null, ) => {
       let payload = {};
 
       switch (mode) {
@@ -723,7 +723,16 @@ const usePostActions = () => {
             mode: "add",
             item: {
               post: post,
-              workspace: workspace
+            }
+          }
+          break;
+        }
+        case "edit_post_list": {
+          payload = {
+            type: "post_list",
+            mode: "edit",
+            item: {
+              post: post,
             }
           }
           break;

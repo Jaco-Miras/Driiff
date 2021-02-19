@@ -534,6 +534,7 @@ export default (state = INITIAL_STATE, action) => {
             filter: action.data.filter,
             sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
             tag: action.data.tag,
+            postListTag: action.data.postListTag,
           },
         },
       };
@@ -2550,57 +2551,50 @@ export default (state = INITIAL_STATE, action) => {
     }
 =======
     case "POST_LIST_CONNECT": {
-      console.log("workspace reducer connect", action)
-      if (!action.data.hasOwnProperty("topic_id")) return state;
-     return {
-       ...state,
-       workspacePosts: {
-        ...state.workspacePosts,
-        [action.data.topic_id]: {
-          ...state.workspacePosts[action.data.topic_id],
-          posts: {
-            ...state.workspacePosts[action.data.topic_id].posts,
-            [action.data.post_id]: {
-              ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
-              post_list_connect: [{id: action.data.link_id}]
+      const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
+        if (!wp.posts.hasOwnProperty(action.data.post_id)){
+           newValue[topic_id] = wp;
+        } else {
+          newValue[topic_id] = {
+            ...wp,
+            posts: {
+              ...wp.posts,
+              [action.data.post_id]: {
+                ...wp.posts[action.data.post_id],
+                post_list_connect: [{id: action.data.link_id}]
+              }
             }
           }
         }
-      }
-     } 
-    }
-    case "POST_LIST_DISCONNECT": {
-      console.log("workspace reducer connect", action)
-      if (!action.data.hasOwnProperty("topic_id")) return state;
-      Object.values(state.workspacePosts).map((wp) => {
-        
-        if (wp.posts.hasOwnProperty(action.data.post_id)) {
-          {
-            wp.posts[]
-          }
-        }
-
-        return wp;
-          
-          
-        
-      })
-
+        return newValue;
+      }, {});
       return {
         ...state,
-        workspacePosts: {
-          ...state.workspacePosts,
-          [action.data.topic_id]: {
-            ...state.workspacePosts[action.data.topic_id],
+        workspacePosts: newWp,
+      } 
+    }
+    case "POST_LIST_DISCONNECT": {
+      const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
+        if (!wp.posts.hasOwnProperty(action.data.post_id)){
+           newValue[topic_id] = wp;
+        } else {
+          newValue[topic_id] = {
+            ...wp,
             posts: {
-              ...state.workspacePosts[action.data.topic_id].posts,
+              ...wp.posts,
               [action.data.post_id]: {
-                ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
+                ...wp.posts[action.data.post_id],
                 post_list_connect: []
               }
             }
           }
         }
+        return newValue;
+      }, {});
+
+      return {
+        ...state,
+        workspacePosts: newWp
       }
     }
 

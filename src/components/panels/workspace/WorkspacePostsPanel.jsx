@@ -90,7 +90,7 @@ const WorkspacePostsPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
@@ -323,6 +323,7 @@ const WorkspacePostsPanel = (props) => {
           filter={filter}
           filters={filters}
           tag={tag}
+          postListTag={postListTag}
           postActions={actions}
           count={count}
           postLists={postLists}
