@@ -518,16 +518,16 @@ class ChatMessages extends React.PureComponent {
           limit: 20,
         };
       }
-      if (selectedChannel.skip === 0) {
-        scrollComponent.scrollTop = scrollComponent.scrollHeight;
-      }
+      // if (selectedChannel.skip === 0) {
+      //   scrollComponent.scrollTop = scrollComponent.scrollHeight;
+      // }
       chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
         if (err) {
           chatMessageActions.channelActions.fetchingMessages(selectedChannel, false);
           return;
         }
 
-        if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
+        if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
           scrollComponent.scrollTop = scrollComponent.scrollHeight;
           let initialScrollHeight = scrollComponent.scrollHeight;
           console.log("initial load", scrollComponent.scrollHeight);
@@ -559,15 +559,17 @@ class ChatMessages extends React.PureComponent {
 
     const scrollComponent = this.scrollComponent.current;
 
-    if (historicalPositions.length) {
-      historicalPositions.forEach((hp) => {
-        if (hp.channel_id === selectedChannel.id && scrollComponent) {
-          scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
+    if (typeof this.props.history.location.state !== "object") {
+      if (historicalPositions.length) {
+        historicalPositions.forEach((hp) => {
+          if (hp.channel_id === selectedChannel.id && scrollComponent) {
+            scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
+          }
+        });
+      } else {
+        if (scrollComponent) {
+          scrollComponent.scrollTop = scrollComponent.scrollHeight;
         }
-      });
-    } else {
-      if (scrollComponent) {
-        scrollComponent.scrollTop = scrollComponent.scrollHeight;
       }
     }
 

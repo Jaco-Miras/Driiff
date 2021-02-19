@@ -7,6 +7,7 @@ import ChatIconReplyPreview from "./ChatIconReplyPreview";
 import { Badge } from "../../common";
 import { useSelector } from "react-redux";
 import { useInView } from "react-intersection-observer";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.li`
   display: flex;
@@ -109,6 +110,7 @@ const ChannelList = (props) => {
 
   const channelActions = useChannelActions();
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const history = useHistory();
 
   const refs = {
     container: useRef(null),
@@ -135,7 +137,7 @@ const ChannelList = (props) => {
       }
     }
     channelActions.select({ ...channel, selected: true });
-    // history.push(`/chat/${channel.code}`);
+    history.push(`/chat/${channel.code}`);
   };
 
   let timerStart = 0;
