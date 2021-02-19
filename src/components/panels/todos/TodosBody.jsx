@@ -135,28 +135,19 @@ const TodosBody = (props) => {
       let payload = {
         channel_id: todo.data.channel.id,
         skip: 0,
-        after_chat_id: todo.data.chat_message.id,
-        limit: 20,
+        before_chat_id: todo.data.chat_message.id,
+        limit: 10,
       };
       if (channels.hasOwnProperty(todo.data.channel.id)) {
         let channel = { ...channels[todo.data.channel.id] };
+        let cb = () => {
+          history.push(e.currentTarget.dataset.link, { focusOn: todo.data.chat_message.code });
+        };
         if (channel.replies.find((r) => r.id === todo.data.chat_message.id)) {
-          let cb = () => {
-            history.push(e.currentTarget.dataset.link, { focusOn: todo.data.chat_message.id });
-            setTimeout(() => {
-              let chat = document.querySelector(`[data-message-id='${todo.data.chat_message.id}']`);
-              if (chat) chat.scrollIntoView();
-            }, 1000);
-          };
           dispatch(setLastVisitedChannel(channel, cb));
         } else {
-          dispatch(
-            getChatMessages(payload, (err, res) => {
-              let chat = document.querySelector(`[data-message-id='${todo.data.chat_message.id}']`);
-              if (chat) chat.scrollIntoView();
-            })
-          );
-          dispatch(setLastVisitedChannel(channel, () => history.push(e.currentTarget.dataset.link, { focusOn: todo.data.chat_message.id })));
+          dispatch(getChatMessages(payload));
+          dispatch(setLastVisitedChannel(channel, cb));
         }
       }
     }

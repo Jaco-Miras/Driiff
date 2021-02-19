@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useChannels, useUsers } from "./index";
 import { useSelector } from "react-redux";
 import { uniqByProp } from "../../helpers/arrayHelper";
+import { useHistory } from "react-router-dom";
 
 let init = true;
 
@@ -11,6 +12,7 @@ const useUserChannels = () => {
   const userChannels = Object.values(channels).filter((channel) => channel.add_user);
   const recipients = useSelector((state) => state.global.recipients);
   const searchingRef = useRef(null);
+  const history = useHistory();
   // const userChannels = useRef({});
 
   // for (const i in channels) {
@@ -40,6 +42,7 @@ const useUserChannels = () => {
       const channel = Object.values(channels).find((c) => c.profile && c.profile.id === user.id && c.type === "DIRECT");
       if (channel) {
         channelActions.select(channel);
+        history.push(`/chat/${channel.code}`);
       } else {
         //search the channel
         let cb = (err, res) => {
