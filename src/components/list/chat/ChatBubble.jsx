@@ -606,18 +606,18 @@ const ChatBubble = (props) => {
 
   useEffect(() => {
     if (typeof history.location.state === "object") {
-      if (history.location.state && history.location.state.focusOn === reply.code && refs.container.current) {
-        let chat = document.querySelector(`[data-code='${reply.code}']`);
-        if (chat) {
-          //chat.scrollIntoView({ behavior: "smooth", block: "center" });
-          console.log(history.location.state, refs.container.current);
-          refs.container.current.scrollIntoView(false);
-          //refs.main.current.classList.add("bounceIn");
-          history.push(history.location.pathname, null);
+      if (history.location.state && history.location.state.focusOn === reply.code && refs.container.current && contentRef.current) {
+        //chat.scrollIntoView({ behavior: "smooth", block: "center" });
+        console.log(history.location.state, refs.container.current);
+        refs.container.current.scrollIntoView({ block: "center" });
+        if (contentRef.current) {
+          contentRef.current.classList.add("pulse");
         }
+
+        history.push(history.location.pathname, null);
       }
     }
-  }, [history.location.state, refs.container.current]);
+  }, [history.location.state, refs.container.current, contentRef.current]);
 
   useEffect(() => {
     if (addMessageRef && loadInView) {
@@ -673,7 +673,7 @@ const ChatBubble = (props) => {
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"}>
+            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
               {!isAuthor && showAvatar && (
                 <>
                   <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
