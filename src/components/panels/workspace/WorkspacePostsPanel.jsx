@@ -288,7 +288,19 @@ const WorkspacePostsPanel = (props) => {
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+        <PostSidebar
+          disableOptions={disableOptions}
+          isMember={isMember}
+          workspace={workspace}
+          filter={filter}
+          filters={filters}
+          tag={tag}
+          postActions={actions}
+          count={count}
+          counters={counters}
+          onGoBack={handleGoback}
+          dictionary={dictionary}
+        />
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
