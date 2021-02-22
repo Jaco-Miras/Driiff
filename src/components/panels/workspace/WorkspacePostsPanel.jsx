@@ -324,7 +324,7 @@ const WorkspacePostsPanel = (props) => {
                 </div>
               ) : (
                 <>
-                  {filter === "all" && checkedPosts.length > 0 && (
+                  {(filter === "all" || filter === "inbox") && checkedPosts.length > 0 && (
                     <PostsBtnWrapper>
                       <button className="btn all-action-button" onClick={handleArchiveAll}>
                         {dictionary.archive}
