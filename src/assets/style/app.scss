@@ -11031,6 +11031,10 @@ textarea {
   color: #ea4c89 !important;
 }
 
+.text-closed {
+  color: rgba(255, 187, 51, 0.3) !important;
+}
+
 .colorpicker.dropdown-menu {
   visibility: visible;
   opacity: 1;
@@ -13597,6 +13601,11 @@ table .dropdown {
 .badge.badge-linkedin {
   background: #0077b5;
 }
+
+.badge.badge-closed {
+  background: rgba(255, 187, 51, 0.3);
+}
+
 
 .btn {
   position: relative;
