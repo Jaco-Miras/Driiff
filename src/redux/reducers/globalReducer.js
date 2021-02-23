@@ -39,6 +39,7 @@ const INITIAL_STATE = {
       done: 0,
     },
     items: {},
+    doneRecently: [],
   },
 };
 
@@ -241,7 +242,6 @@ export default (state = INITIAL_STATE, action) => {
       let items = state.todos.items;
       action.data.todos.forEach((t) => {
         items[t.id] = t;
-
         switch (t.link_type) {
           case "CHAT": {
             items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
@@ -265,6 +265,32 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
       });
+      let recent = action.data.today_todos.map((t) => {
+        if (t.link_type) {
+          if (t.link_type === "CHAT") {
+            return {
+              ...t,
+              link: `/chat/${t.data.channel.code}/${t.data.chat_message.code}`,
+            };
+          } else if (t.link_type === "POST") {
+            return {
+              ...t,
+              link: t.data.workspaces.length
+                ? `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`
+                : `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`,
+            };
+          } else if (t.link_type === "POST_COMMENT") {
+            return {
+              ...t,
+              link: t.data.workspaces.length
+                ? `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`
+                : `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`,
+            };
+          }
+        } else {
+          return { ...t, link: null };
+        }
+      });
 
       return {
         ...state,
@@ -274,6 +300,7 @@ export default (state = INITIAL_STATE, action) => {
           hasMore: action.data.todos.length === state.todos.limit,
           limit: state.todos.limit + state.todos.limit,
           items: items,
+          doneRecently: recent,
         },
       };
     }
@@ -346,6 +373,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
       let count = state.todos.count;
+      let item = null;
 
       if (typeof items[action.data.id] !== "undefined") {
         if (items[action.data.id].status !== action.data.status) {
@@ -354,6 +382,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         items[action.data.id] = action.data;
+        item = { ...items[action.data.id], status: "DONE", updated_at: action.data.updated_at };
       }
 
       return {
@@ -362,6 +391,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           count: count,
           items: items,
+          doneRecently: [...state.todos.doneRecently, item],
         },
       };
     }

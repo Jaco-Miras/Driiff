@@ -128,13 +128,16 @@ const ChatList = styled.li`
 `;
 const TimestampDiv = styled.div`
   z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
   color: #a7abc3;
-  padding: 26px 0 14px 0;
+  //padding: 26px 0 14px 0;
+  display: inline-block;
+  left: 50%;
   position: sticky;
-  top: 0;
+  top: 10px;
+  transform: translateX(-50%);
   span {
     padding: 4px 8px;
     display: inline-block;
@@ -150,7 +153,7 @@ const TimestampDiv = styled.div`
     }
   }
   @media (max-width: 620px) {
-    padding: 14px 0 10px 0;
+    //padding: 14px 0 10px 0;
   }
 `;
 const ChatBubbleContainer = styled.div`
@@ -515,16 +518,16 @@ class ChatMessages extends React.PureComponent {
           limit: 20,
         };
       }
-      if (selectedChannel.skip === 0) {
-        scrollComponent.scrollTop = scrollComponent.scrollHeight;
-      }
+      // if (selectedChannel.skip === 0) {
+      //   scrollComponent.scrollTop = scrollComponent.scrollHeight;
+      // }
       chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
         if (err) {
           chatMessageActions.channelActions.fetchingMessages(selectedChannel, false);
           return;
         }
 
-        if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
+        if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
           scrollComponent.scrollTop = scrollComponent.scrollHeight;
           let initialScrollHeight = scrollComponent.scrollHeight;
           console.log("initial load", scrollComponent.scrollHeight);
@@ -556,15 +559,17 @@ class ChatMessages extends React.PureComponent {
 
     const scrollComponent = this.scrollComponent.current;
 
-    if (historicalPositions.length) {
-      historicalPositions.forEach((hp) => {
-        if (hp.channel_id === selectedChannel.id && scrollComponent) {
-          scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
+    if (typeof this.props.history.location.state !== "object") {
+      if (historicalPositions.length) {
+        historicalPositions.forEach((hp) => {
+          if (hp.channel_id === selectedChannel.id && scrollComponent) {
+            scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
+          }
+        });
+      } else {
+        if (scrollComponent) {
+          scrollComponent.scrollTop = scrollComponent.scrollHeight;
         }
-      });
-    } else {
-      if (scrollComponent) {
-        scrollComponent.scrollTop = scrollComponent.scrollHeight;
       }
     }
 

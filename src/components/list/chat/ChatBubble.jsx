@@ -553,6 +553,8 @@ const ChatBubble = (props) => {
     container: useRef(null),
   };
 
+  const contentRef = useRef(null);
+
   const [loadRef, loadInView] = useInView({
     threshold: 1,
   });
@@ -588,6 +590,13 @@ const ChatBubble = (props) => {
   useEffect(() => {
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
 
+    // if (contentRef.current) {
+    //   const googleLinks = contentRef.current.querySelectorAll('[data-google-link-retrieve="0"]');
+    //   googleLinks.forEach((gl) => {
+    //     googleApis.init(gl);
+    //   });
+    // }
+
     if (lnkChannelMessage) lnkChannelMessage.addEventListener("click", handleChannelMessageLink, true);
 
     return () => {
@@ -595,18 +604,20 @@ const ChatBubble = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log(history)
-  //   if (typeof history.location.state === "object") {
-  //     console.log(history.location.state)
-  //     if (history.location.state && history.location.state.focusOn === reply.id && refs.container.current) {
-  //       refs.container.current.scrollIntoView();
-  //       //refs.main.current.classList.add("bounceIn");
-  //       //history.push(history.location.pathname, null);
-  //       console.log('trigger scroll to chat')
-  //     }
-  //   }
-  // }, [history.location.state]);
+  useEffect(() => {
+    if (typeof history.location.state === "object") {
+      if (history.location.state && history.location.state.focusOn === reply.code && refs.container.current && contentRef.current) {
+        //chat.scrollIntoView({ behavior: "smooth", block: "center" });
+        console.log(history.location.state, refs.container.current);
+        refs.container.current.scrollIntoView({ block: "center" });
+        if (contentRef.current) {
+          contentRef.current.classList.add("pulse");
+        }
+
+        history.push(history.location.pathname, null);
+      }
+    }
+  }, [history.location.state, refs.container.current, contentRef.current]);
 
   useEffect(() => {
     if (addMessageRef && loadInView) {
@@ -662,7 +673,7 @@ const ChatBubble = (props) => {
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"}>
+            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
               {!isAuthor && showAvatar && (
                 <>
                   <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>

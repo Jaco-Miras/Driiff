@@ -146,6 +146,7 @@ const ChatInput = (props) => {
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const skipIds = useSelector((state) => state.chat.skipIds);
+  const users = useSelector((state) => state.users.users);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -762,7 +763,16 @@ const ChatInput = (props) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: user.type === "external" ? selectedChannel.members : [],
+    members:
+      user.type === "external"
+        ? selectedChannel.members
+        : Object.values(users).filter((u) => {
+            if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || u.type === "internal") {
+              return true;
+            } else {
+              return false;
+            }
+          }),
     prioMentionIds: selectedChannel.members.map((m) => m.id),
   });
 

@@ -537,7 +537,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: users,
+    members: Object.values(users).filter((u) => {
+      if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
+        return true;
+      } else {
+        return false;
+      }
+    }),
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,

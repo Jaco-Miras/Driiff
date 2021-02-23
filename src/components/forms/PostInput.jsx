@@ -151,6 +151,7 @@ const PostInput = forwardRef((props, ref) => {
   const recipients = useSelector((state) => state.global.recipients);
   //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const users = useSelector((state) => state.users.users);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -556,7 +557,16 @@ const PostInput = forwardRef((props, ref) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: user.type === "external" ? members : [],
+    members:
+      user.type === "external"
+        ? members
+        : Object.values(users).filter((u) => {
+            if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
+              return true;
+            } else {
+              return false;
+            }
+          }),
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,

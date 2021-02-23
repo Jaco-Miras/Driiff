@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
+import { usePostActions } from "../../hooks";
+import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 
 const Wrapper = styled.div`
   > span {
@@ -32,23 +34,65 @@ const Wrapper = styled.div`
 `;
 
 const PostFilterItem = (props) => {
-  const { className = "", workspace, filter = "all", onGoBack, counters, dictionary } = props;
+  const { className = "", workspace, filter = "all", filters, onGoBack, counters, dictionary } = props;
 
   const dispatch = useDispatch();
+  const actions = usePostActions();
+  const [fetching, setFetching] = useState(false);
+
+  const fetchArchivePosts = () => {
+    setFetching(true);
+    let filterCb = (err, res) => {
+      setFetching(false);
+      if (err) return;
+      let files = res.data.posts.map((p) => p.files);
+      if (files.length) {
+        files = files.flat();
+      }
+      dispatch(
+        addToWorkspacePosts({
+          topic_id: workspace.id,
+          posts: res.data.posts,
+          filter: res.data.posts,
+          files,
+          filters: {
+            archived: {
+              active: false,
+              skip: res.data.next_skip,
+              hasMore: res.data.total_take === res.data.posts.length,
+            },
+          },
+        })
+      );
+    };
+
+    actions.getPosts(
+      {
+        filters: ["post", "archived"],
+        topic_id: workspace.id,
+      },
+      filterCb
+    );
+  };
 
   const handleClickFilter = (e) => {
-    if (e.target.dataset.value === filter) {
-      onGoBack();
-    } else {
-      let payload = {
-        topic_id: workspace.id,
-        filter: e.target.dataset.value,
-        tag: null,
-      };
-      dispatch(updateWorkspacePostFilterSort(payload));
-      onGoBack();
+    if (filters) {
+      if (e.target.dataset.value === "archive" && workspace && !filters.hasOwnProperty("archived") && !fetching) {
+        fetchArchivePosts();
+      }
+      if (e.target.dataset.value === filter) {
+        onGoBack();
+      } else {
+        let payload = {
+          topic_id: workspace.id,
+          filter: e.target.dataset.value,
+          tag: null,
+        };
+        dispatch(updateWorkspacePostFilterSort(payload));
+        onGoBack();
+      }
+      document.body.classList.remove("mobile-modal-open");
     }
-    document.body.classList.remove("mobile-modal-open");
   };
 
   return (

@@ -328,7 +328,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -413,12 +413,14 @@ const Comment = (props) => {
     if (comment.body.match(/\.(gif)/g) !== null) {
       setShowGifPlayer(true);
     }
-    if (comment.reference_id && comment.id !== comment.reference_id) commentActions.fetchPostReplyHover(comment.id);
+    // if (comment.reference_id && comment.id !== comment.reference_id) commentActions.fetchPostReplyHover(comment.id);
     // commentActions.fetchPostReplyHover(comment.id, (err, res) => {
     //   const clap_user_ids = res.data.claps.map(c => c.user_id);
     //   setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
     // });
-
+    if (comment.clap_count > 0 && comment.clap_user_ids.length !== comment.clap_count) {
+      commentActions.fetchPostReplyHover(comment.id);
+    }
     return () => {
       history.push(history.location.pathname, null);
     };
