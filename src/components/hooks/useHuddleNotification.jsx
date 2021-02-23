@@ -95,26 +95,28 @@ const useHuddle = (props) => {
             return false;
           }
         } else if (h.end_type === "END_AFTER_REPEAT") {
-          if (h.repeat_type === "DAILY") {
-            return true;
-          } else if (h.repeat_type === "WEEKLY") {
-            if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+          if (h.repeat_count < h.end_select_after) {
+            if (h.repeat_type === "DAILY") {
               return true;
-            } else {
-              return false;
-            }
-          } else if (h.repeat_type === "MONTHLY") {
-            if (h.repeat_select_monthly === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
-          } else if (h.repeat_type === "YEARLY") {
-            // same day and month
-            if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
+            } else if (h.repeat_type === "WEEKLY") {
+              if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+                return true;
+              } else {
+                return false;
+              }
+            } else if (h.repeat_type === "MONTHLY") {
+              if (h.repeat_select_monthly === currentDate.getDate()) {
+                return true;
+              } else {
+                return false;
+              }
+            } else if (h.repeat_type === "YEARLY") {
+              // same day and month
+              if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+                return true;
+              } else {
+                return false;
+              }
             }
           }
         }
