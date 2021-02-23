@@ -1,9 +1,12 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { Avatar, Badge } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { replaceChar } from "../../../../helpers/stringFormatter";
+import { addToModals } from "../../../../redux/actions/globalActions";
+import { postResendInvite } from "../../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -59,6 +62,7 @@ const TeamListItem = (props) => {
   const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null } = props;
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleClickName = () => {
     if (member.has_accepted) {
@@ -81,6 +85,29 @@ const TeamListItem = (props) => {
       user_id: member.id,
     };
     actions.deleteRole(payload);
+  };
+
+  const handleResendEmail = () => {
+    let payload = {
+      topic_id: workspace_id,
+      emails: [member.email],
+    };
+    dispatch(postResendInvite(payload));
+  };
+
+  const handleResendInvite = () => {
+    let payload = {
+      type: "confirmation",
+      headerText: dictionary.resendInvite,
+      submitText: dictionary.resend,
+      cancelText: dictionary.cancel,
+      bodyText: `${dictionary.resendInviteConfirmation} ${member.email}?`,
+      actions: {
+        onSubmit: handleResendEmail,
+      },
+    };
+
+    dispatch(addToModals(payload));
   };
 
   return (
@@ -137,6 +164,7 @@ const TeamListItem = (props) => {
           {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>{dictionary.assignAsApprover}</div>}
           {member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
           <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
+          {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
         </MoreOptions>
       )}
     </Wrapper>
