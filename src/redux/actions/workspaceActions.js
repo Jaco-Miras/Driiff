@@ -1,4 +1,4 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   createWorkspace as createWorkspaceService,
   deleteWorkspace as deleteWorkspaceService,
@@ -18,6 +18,7 @@ import {
   getWorkspaceTopics as getWorkspaceTopicsService,
   joinWorkspace as joinWorkspaceService,
   moveWorkspaceTopic as moveWorkspaceTopicService,
+  postResendInvite as postResendInviteService,
   postWorkspaceRole as postWorkspaceRoleService,
   updatePostStatus as updatePostStatusService,
   updateWorkspace as updateWorkspaceService,
@@ -193,4 +194,8 @@ export function getUnreadWorkspacePostEntries(payload, callback) {
 
 export function updateWorkspacePostCount(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_POST_COUNT", payload, callback);
+}
+
+export function postResendInvite(payload, callback) {
+  return dispatchActionToReducer(postResendInviteService(payload), "POST_RESEND_INVITE_START", "POST_RESEND_INVITE_SUCCESS", "POST_RESEND_INVITE_FAIL", callback);
 }

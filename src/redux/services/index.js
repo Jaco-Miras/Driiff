@@ -223,6 +223,7 @@ export {
   joinWorkspace,
   moveWorkspaceTopic,
   postWorkspaceRole,
+  postResendInvite,
   updatePostStatus,
   updateWorkspace,
 } from "./workspace";
