@@ -40,11 +40,11 @@ const useCompanyPosts = () => {
       }
       fetchMore();
 
-      actions.fetchCompanyPosts({
-        skip: 0,
-        limit: 25,
-        filters: ["post", "archived"],
-      });
+      // actions.fetchCompanyPosts({
+      //   skip: 0,
+      //   limit: 25,
+      //   filters: ["post", "archived"],
+      // });
       actions.fetchCompanyPosts({
         skip: 0,
         limit: 100,

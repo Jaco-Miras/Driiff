@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../../common";
 import { usePostActions } from "../../../hooks";
@@ -34,12 +34,26 @@ const Wrapper = styled.div`
 const CompanyPostFilterItem = (props) => {
   const { className = "", filter = "inbox", onGoBack, counters, dictionary } = props;
 
-  const { setCompanyFilterPosts } = usePostActions();
+  const { setCompanyFilterPosts, fetchCompanyPosts } = usePostActions();
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const archived = useSelector((state) => state.posts.archived);
+
+  const [fetching, setFetching] = useState(false);
 
   const handleClickFilter = useCallback(
     (e) => {
       e.persist();
+      if (e.target.dataset.value === "archive" && archived.skip === 0 && !fetching) {
+        setFetching(true);
+        fetchCompanyPosts(
+          {
+            skip: 0,
+            limit: 25,
+            filters: ["post", "archived"],
+          },
+          () => setFetching(false)
+        );
+      }
       if (e.target.dataset.value === filter) {
         onGoBack();
       } else {
@@ -52,7 +66,7 @@ const CompanyPostFilterItem = (props) => {
       }
       document.body.classList.remove("mobile-modal-open");
     },
-    [filter, onGoBack]
+    [filter, onGoBack, fetching]
   );
 
   return (

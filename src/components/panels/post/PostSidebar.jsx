@@ -32,14 +32,14 @@ const Wrapper = styled.div`
 const MobileOverlayFilter = styled.div``;
 
 const PostSidebar = (props) => {
-  const { workspace, isMember, filter, tag, count, counters, postActions, onGoBack, dictionary, disableOptions } = props;
+  const { workspace, isMember, filter, filters, tag, count, counters, postActions, onGoBack, dictionary, disableOptions } = props;
 
   const handleShowWorkspacePostModal = () => {
     postActions.showModal("create");
   };
 
   const closeMobileModal = () => {
-      document.body.classList.remove("mobile-modal-open");
+    document.body.classList.remove("mobile-modal-open");
   };
 
   return (
@@ -54,11 +54,11 @@ const PostSidebar = (props) => {
               </button>
             </div>
           )}
-          <PostFilterItem workspace={workspace} filter={filter} tag={tag} onGoBack={onGoBack} counters={counters} dictionary={dictionary}/>
+          <PostFilterItem workspace={workspace} filter={filter} filters={filters} tag={tag} onGoBack={onGoBack} counters={counters} dictionary={dictionary} />
           <div className="card-body">
             <h6 className="mb-0">{dictionary.category}</h6>
           </div>
-          <PostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack} dictionary={dictionary}/>
+          <PostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack} dictionary={dictionary} />
         </div>
       </div>
     </Wrapper>
