@@ -182,7 +182,7 @@ const TodosBody = (props) => {
       <div className="card-body app-lists" data-loaded={0}>
         {recent.length > 0 && filter === "" && (
           <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {recent.map((rec, i) => {
+            {recent.slice(0, 5).map((rec, i) => {
               return (
                 <TodosList
                   key={rec.id}

@@ -242,7 +242,6 @@ export default (state = INITIAL_STATE, action) => {
       let items = state.todos.items;
       action.data.todos.forEach((t) => {
         items[t.id] = t;
-
         switch (t.link_type) {
           case "CHAT": {
             items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
@@ -374,6 +373,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
       let count = state.todos.count;
+      let item = null;
 
       if (typeof items[action.data.id] !== "undefined") {
         if (items[action.data.id].status !== action.data.status) {
@@ -382,6 +382,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         items[action.data.id] = action.data;
+        item = { ...items[action.data.id], status: "DONE", updated_at: action.data.updated_at };
       }
 
       return {
@@ -390,6 +391,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           count: count,
           items: items,
+          doneRecently: [...state.todos.doneRecently, item],
         },
       };
     }
