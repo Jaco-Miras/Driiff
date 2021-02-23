@@ -354,7 +354,7 @@ const useChannelActions = () => {
           })
         );
         callback(channel);
-        history.push(`/chat/${channel.code}`);
+        // history.push(`/chat/${channel.code}`);
       }
     },
     [dispatch, createByUserChannel, unArchive]

@@ -48,6 +48,9 @@ const Wrapper = styled.div`
       margin-left: 1rem;
     }
   }
+  .tab-panel {
+    overflow-x: hidden;
+  }
 `;
 
 const ChatSidebarContentPanel = (props) => {

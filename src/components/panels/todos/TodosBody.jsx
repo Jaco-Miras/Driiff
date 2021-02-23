@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
-import { useHistory } from "react-router-dom";
-import { useFileActions, useSettings, useTimeFormat } from "../../hooks";
-import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
-import { useDispatch, useSelector } from "react-redux";
+//import { useHistory } from "react-router-dom";
+import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../hooks";
+// import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
+// import { useDispatch, useSelector } from "react-redux";
 import { TodosList } from "./index";
 
 const Wrapper = styled.div`
@@ -108,8 +108,6 @@ const TodosBody = (props) => {
     btnLoadMore: useRef(null),
   };
 
-  const dispatch = useDispatch();
-  const history = useHistory();
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
   const {
@@ -119,7 +117,7 @@ const TodosBody = (props) => {
     loadMore.files();
   };
 
-  const channels = useSelector((state) => state.chat.channels);
+  const redirect = useRedirect();
 
   const handleScroll = (e) => {
     if (e.target.dataset.loading === "false") {
@@ -132,33 +130,7 @@ const TodosBody = (props) => {
   const handleLinkClick = (e, todo) => {
     e.preventDefault();
     if (todo.link_type === "CHAT") {
-      let payload = {
-        channel_id: todo.data.channel.id,
-        skip: 0,
-        after_chat_id: todo.data.chat_message.id,
-        limit: 20,
-      };
-      if (channels.hasOwnProperty(todo.data.channel.id)) {
-        let channel = { ...channels[todo.data.channel.id] };
-        if (channel.replies.find((r) => r.id === todo.data.chat_message.id)) {
-          let cb = () => {
-            history.push(e.currentTarget.dataset.link, { focusOn: todo.data.chat_message.id });
-            setTimeout(() => {
-              let chat = document.querySelector(`[data-message-id='${todo.data.chat_message.id}']`);
-              if (chat) chat.scrollIntoView();
-            }, 1000);
-          };
-          dispatch(setLastVisitedChannel(channel, cb));
-        } else {
-          dispatch(
-            getChatMessages(payload, (err, res) => {
-              let chat = document.querySelector(`[data-message-id='${todo.data.chat_message.id}']`);
-              if (chat) chat.scrollIntoView();
-            })
-          );
-          dispatch(setLastVisitedChannel(channel, () => history.push(e.currentTarget.dataset.link, { focusOn: todo.data.chat_message.id })));
-        }
-      }
+      redirect.toChat(todo.data.channel, todo.data.chat_message);
     }
   };
 

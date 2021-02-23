@@ -168,3 +168,7 @@ export function incomingDeactivatedUser(payload, callback) {
 export function incomingActivatedUser(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ACTIVATED_USER", payload, callback);
 }
+
+export function incomingOnlineUsers(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ONLINE_USERS", payload, callback);
+}

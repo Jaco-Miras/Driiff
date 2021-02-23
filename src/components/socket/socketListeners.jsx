@@ -123,6 +123,7 @@ import {
   incomingUnarchivedUser,
   incomingDeactivatedUser,
   incomingActivatedUser,
+  incomingOnlineUsers,
 } from "../../redux/actions/userAction";
 import {
   getUnreadWorkspacePostEntries,
@@ -198,21 +199,21 @@ class SocketListeners extends Component {
     }
   };
 
-  fetchOnlineUsers = (isMount = false) => {
-    if (isMount) {
-      this.props.getOnlineUsers();
-    }
-    this.onlineUsers.current = setInterval(() => {
-      if (this.props.selectedChannel && this.props.selectedChannel.isFetching) {
-        clearInterval(this.onlineUsers.current);
-        this.onlineUsers.current = setTimeout(() => {
-          this.fetchOnlineUsers();
-        }, 300);
-      } else {
-        this.props.getOnlineUsers();
-      }
-    }, 30000);
-  };
+  // fetchOnlineUsers = (isMount = false) => {
+  //   if (isMount) {
+  //     this.props.getOnlineUsers();
+  //   }
+  //   this.onlineUsers.current = setInterval(() => {
+  //     if (this.props.selectedChannel && this.props.selectedChannel.isFetching) {
+  //       clearInterval(this.onlineUsers.current);
+  //       this.onlineUsers.current = setTimeout(() => {
+  //         this.fetchOnlineUsers();
+  //       }, 300);
+  //     } else {
+  //       this.props.getOnlineUsers();
+  //     }
+  //   }, 30000);
+  // };
 
   componentDidMount() {
     /* uncomment to test driff update notification bar
@@ -259,7 +260,7 @@ class SocketListeners extends Component {
      * @todo Online users are determined every 30 seconds
      * online user reducer should be updated every socket call
      */
-    this.fetchOnlineUsers(true);
+    //this.fetchOnlineUsers(true);
 
     // this.props.addUserToReducers({
     //   id: this.props.user.id,
@@ -864,6 +865,10 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".users-online-broadcast", (e) => {
+        console.log(e);
+        this.props.incomingOnlineUsers(e);
+      })
       .listen(".user-updated", (e) => {
         console.log("user updated", e);
         switch (e.SOCKET_TYPE) {
@@ -1717,6 +1722,7 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
+    incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
   };
 }
 
