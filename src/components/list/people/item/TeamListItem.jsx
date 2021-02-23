@@ -98,10 +98,10 @@ const TeamListItem = (props) => {
   const handleResendInvite = () => {
     let payload = {
       type: "confirmation",
-      headerText: "Resend invite",
-      submitText: "Resend",
-      cancelText: "Cancel",
-      bodyText: `Are you sure you want to resend invite to this email: ${member.email}?`,
+      headerText: dictionary.resendInvite,
+      submitText: dictionary.resend,
+      cancelText: dictionary.cancel,
+      bodyText: `${dictionary.resendInviteConfirmation} ${member.email}?`,
       actions: {
         onSubmit: handleResendEmail,
       },
@@ -164,7 +164,7 @@ const TeamListItem = (props) => {
           {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>{dictionary.assignAsApprover}</div>}
           {member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
           <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
-          {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>Resend invite</div>}
+          {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
         </MoreOptions>
       )}
     </Wrapper>
