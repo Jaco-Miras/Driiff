@@ -216,6 +216,7 @@ class SocketListeners extends Component {
   // };
 
   componentDidMount() {
+    this.props.getOnlineUsers();
     /* uncomment to test driff update notification bar
     const handleReminder = () => {
       setTimeout(() => {
