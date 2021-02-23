@@ -66,6 +66,7 @@ const WorkspaceDashboardPanel = (props) => {
     cancel: _t("MODAL.CANCEL", "Cancel"),
     resendInvite: _t("MODAL.RESEND_INVITE", "Resend invite"),
     resendInviteConfirmation: _t("MODAL.RESEND_INVITE_CONFIRMATION", "Are you sure you want to resend invite to this email:"),
+    invitationSent: _t("TOASTER.INVITE_SENT", "Invitation sent"),
   };
 
   let disableOptions = false;

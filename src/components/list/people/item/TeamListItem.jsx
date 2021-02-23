@@ -7,6 +7,7 @@ import { MoreOptions } from "../../../panels/common";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { postResendInvite } from "../../../../redux/actions/workspaceActions";
+import { useToaster } from "../../../hooks";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -63,6 +64,7 @@ const TeamListItem = (props) => {
 
   const history = useHistory();
   const dispatch = useDispatch();
+  const toaster = useToaster();
 
   const handleClickName = () => {
     if (member.has_accepted) {
@@ -92,7 +94,12 @@ const TeamListItem = (props) => {
       topic_id: workspace_id,
       emails: [member.email],
     };
-    dispatch(postResendInvite(payload));
+    dispatch(
+      postResendInvite(payload, (err, res) => {
+        if (err) return;
+        toaster.success(dictionary.invitationSent);
+      })
+    );
   };
 
   const handleResendInvite = () => {
