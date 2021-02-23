@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const { getSortedItems, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
+  const { getSortedItems, action: todoActions, isLoaded, count, doneRecently } = useTodos(true); //pass true to fetch to do list on mount - default to false
   const { _t } = useTranslation();
 
   const dictionary = {
@@ -61,7 +61,7 @@ const TodosPanel = (props) => {
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded} todoItems={getSortedItems({ filter: { status: filter, search: search } })} dictionary={dictionary} todoActions={todoActions} filter={filter} />
+          <TodosBody complete={false} isLoaded={isLoaded} todoItems={getSortedItems({ filter: { status: filter, search: search } })} recent={doneRecently} dictionary={dictionary} todoActions={todoActions} filter={filter} />
         </div>
       </div>
     </Wrapper>

@@ -87,7 +87,7 @@ const EmptyState = styled.div`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems } = props;
+  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, recent } = props;
 
   const config = {
     angle: 90,
@@ -145,13 +145,33 @@ const TodosBody = (props) => {
       refs.files.current.addEventListener("scroll", handleScroll, false);
     }
   }, [refs.files.current]);
-
+  console.log(filter);
   return (
     <Wrapper className={`todos-body card app-content-body ${className}`}>
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
       <div className="card-body app-lists" data-loaded={0}>
+        {recent.length > 0 && filter === "" && (
+          <ul className="list-group list-group-flush ui-sortable fadeIn">
+            {recent.slice(0, 5).map((rec, i) => {
+              return (
+                <TodosList
+                  key={rec.id}
+                  chatHeader={i === 0 ? "Recently done" : ""}
+                  todo={rec}
+                  todoActions={todoActions}
+                  dictionary={dictionary}
+                  handleLinkClick={handleLinkClick}
+                  dark_mode={dark_mode}
+                  todoFormat={todoFormat}
+                  todoFormatShortCode={todoFormatShortCode}
+                  getFileIcon={getFileIcon}
+                />
+              );
+            })}
+          </ul>
+        )}
         {!isLoaded ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
         ) : todoItems.length !== 0 ? (
@@ -176,6 +196,8 @@ const TodosBody = (props) => {
                     chatHeader = dictionary.statusDone;
                     break;
                   }
+                  default:
+                    return "";
                 }
               } else {
                 let prevTodo = todoItems[index - 1];
@@ -197,6 +219,8 @@ const TodosBody = (props) => {
                       chatHeader = dictionary.statusDone;
                       break;
                     }
+                    default:
+                      return "";
                   }
                 }
               }
