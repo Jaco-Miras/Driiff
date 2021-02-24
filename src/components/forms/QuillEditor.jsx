@@ -41,6 +41,6 @@ Quill.register(Block);
 Quill.register("modules/magicUrl", MagicUrl);
 
 //Quill.register("modules/clipboard", QuillPlainClipboard, true);
-Quill.register("modules/clipboard", QuillPasteSmart);
+//Quill.register("modules/clipboard", QuillPasteSmart);
 
 Quill.register("modules/imageUploader", ImageUploader);
