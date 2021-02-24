@@ -212,6 +212,36 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_CLOSE_POST": {
+      if (action.data.notification) {
+        let postNotification = {
+          ...action.data.notification,
+          is_read: 0,
+          author: action.data.post_author,
+          created_at: { timestamp: Math.round(+new Date() / 1000) },
+          data: {
+            post_id: action.data.post.id,
+            title: action.data.post.title,
+            description: "",
+            created_at: { timestamp: Math.round(+new Date() / 1000) },
+            workspaces: action.data.workspaces.map((ws) => {
+              return {
+                topic_id: ws.topic.id,
+                topic_name: ws.topic.name,
+                workspace_id: ws.workspace ? ws.workspace.id : null,
+                workspace_name: ws.workspace ? ws.workspace.name : null,
+              };
+            }),
+          },
+        };
+        return {
+          ...state,
+          notifications: { ...state.notifications, [postNotification.id]: postNotification },
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }

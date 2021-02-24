@@ -95,6 +95,7 @@ export const NotificationListItem = (props) => {
     hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
     sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
+    closedThePost: _t("NOTIFICATION.CLOSED_THE_POST", "closed the post"),
   };
 
   const notifDisplay = () => {
@@ -164,6 +165,16 @@ export const NotificationListItem = (props) => {
           <div className="notification-container flex-grow-1" onClick={handleRedirect}>
             <span>{notification.author.name}</span>
             <p className="notification-title text-link">{dictionary.sentProposal}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
+        );
+      }
+      case "CLOSED_POST": {
+        return (
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-title text-link">{dictionary.closedThePost}</p>
             <p className="notification-title text-link">{notification.data.title}</p>
             <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
           </div>
