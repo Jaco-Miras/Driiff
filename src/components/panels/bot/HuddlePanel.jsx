@@ -380,6 +380,12 @@ const HuddlePanel = (props) => {
         new_questions: [],
         remove_question_ids: [],
       };
+      if (payload.end_type !== "END_AFTER_REPEAT" && channel.huddle.end_type === "END_AFTER_REPEAT") {
+        payload = {
+          ...payload,
+          reset_repeat_logs: 1,
+        };
+      }
       actions.update(payload, cb);
     } else {
       delete payload.user_bot_id;
