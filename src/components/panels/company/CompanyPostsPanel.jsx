@@ -183,7 +183,7 @@ const CompanyPostsPanel = (props) => {
     closeThisPost: _t("POST.CLOSE_THIS_POST", "Close this post"),
     repliesClosed: _t("POST.REPLIES_CLOSED", "Replies closed"),
     openThisPost: _t("POST.OPEN_THIS_POST", "Open this post"),
-    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator closed this post for commenting"),
+    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator/internal closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
     closed: _t("POST.CLOSED", "Closed"),
   };
