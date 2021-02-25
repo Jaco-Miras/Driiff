@@ -217,7 +217,7 @@ export default (state = INITIAL_STATE, action) => {
         let postNotification = {
           ...action.data.notification,
           is_read: 0,
-          author: action.data.post_author,
+          author: action.data.initiator,
           created_at: { timestamp: Math.round(+new Date() / 1000) },
           data: {
             post_id: action.data.post.id,
