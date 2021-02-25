@@ -177,7 +177,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //                           return r.participant_ids
   //                         }
   //                       }).flat();
-  console.error("IGNORE",ignoredMentionedUserIds, prioMentionIds, post);
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
