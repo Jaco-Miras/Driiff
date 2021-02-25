@@ -681,7 +681,7 @@ const PostDetailFooter = (props) => {
           </NoReply>
         </Dflex>
       )}
-      {((isMember && !disableOptions && !isApprover) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
+      {((isMember && !disableOptions) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
         <>
           <Dflex className="d-flex align-items-end">
             <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
