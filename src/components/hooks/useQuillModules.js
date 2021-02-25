@@ -115,7 +115,7 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
           tags: ["a", "b", "strong", "u", "s", "i", "p", "br", "ul", "ol", "li", "div", "span"],
           attributes: ["href", "rel", "target", "class"],
         },
-        keepSelection: true,
+        //keepSelection: true,
       },
       mention: {
         allowedChars: /^[A-Za-z\sÅÄÖåäöë]*$/,
