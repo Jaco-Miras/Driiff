@@ -557,7 +557,12 @@ const CompanyPostDetailFooter = (props) => {
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote commentActions={commentActions} commentId={editPostComment ? editPostComment.quote.id : commentId} editPostComment={editPostComment} mainInput={mainInput} />
+          <CommentQuote
+            commentActions={commentActions}
+            commentId={editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId}
+            editPostComment={editPostComment}
+            mainInput={mainInput}
+          />
         </Dflex>
       }
       <Dflex className="d-flex alig-items-center">

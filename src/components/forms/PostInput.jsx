@@ -166,7 +166,7 @@ const PostInput = forwardRef((props, ref) => {
   const [draftId, setDraftId] = useState(null);
   const [inlineImages, setInlineImages] = useState([]);
 
-  const [quote] = useCommentQuote(editPostComment ? editPostComment.quote.id : commentId);
+  const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
@@ -444,7 +444,7 @@ const PostInput = forwardRef((props, ref) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editPostComment && !editMode && editMessage === null && mainInput) {
+    if (editPostComment && !editMode && editMessage === null && mainInput && editPostComment.post_id === post.id) {
       handleSetEditMessageStates(editPostComment);
     }
   }, [editPostComment]);

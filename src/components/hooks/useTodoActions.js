@@ -12,7 +12,7 @@ const useTodoActions = () => {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
     toasterUpdateTodo: _t("TOASTER.TODO_UPDATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
-    toasterDoneTodo: _t("TOASTER.TODO_UNDONE_SUCCESS", "You have mark ::todo_title:: as done."),
+    toasterDoneTodo: _t("TOASTER.TODO_DONE_SUCCESS", "You have mark ::todo_title:: as done."),
     toasterUnDoneTodo: _t("TOASTER.TODO_UNDONE_SUCCESS", "You have mark ::todo_title:: as undone."),
     toasterDeleteTodo: _t("TOASTER.TODO_DELETE_SUCCESS", "You have successfully deleted ::todo_title::."),
     modalConfirmationTodoRemoveHeader: _t("MODAL_CONFIRMATION.TODO_REMOVE_HEADER", "Remove reminder item?"),
