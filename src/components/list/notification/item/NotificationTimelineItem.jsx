@@ -112,6 +112,7 @@ export const NotificationTimelineItem = (props) => {
     hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
     sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
+    notificationClosedPost: _t("NOTIFICATION.CLOSED_POST", `closed the <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
   };
 
   const renderTitle = useCallback(() => {
@@ -184,6 +185,16 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+      case "CLOSED_POST": {
+        return (
+          <>
+            <span onClick={handleAuthorNameClick} className="author-name text-link">
+              {notification.author.name}{" "}
+            </span>
+            <span dangerouslySetInnerHTML={{ __html: dictionary.notificationClosedPost }} />
+          </>
+        );
+      }
       default:
         return null;
     }
@@ -209,7 +220,11 @@ export const NotificationTimelineItem = (props) => {
               <div>
                 {notification.type === "NEW_TODO" ? (
                   <>{stripHtml(notification.data.description)}</>
-                ) : notification.type === "POST_CREATE" || notification.type === "POST_REQST_APPROVAL" || notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "POST_REJECT_APPROVAL" ? (
+                ) : notification.type === "POST_CREATE" ||
+                  notification.type === "POST_REQST_APPROVAL" ||
+                  notification.type === "POST_ACCEPT_APPROVAL" ||
+                  notification.type === "POST_REJECT_APPROVAL" ||
+                  notification.type === "CLOSED_POST" ? (
                   <>{notification.data && notification.data.title}</>
                 ) : (
                   <>{stripHtml(notification.data.comment_body)}</>
