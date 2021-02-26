@@ -25,9 +25,6 @@ const Wrapper = styled.div`
     transition: background-color 0.15s ease-in-out;
     padding: 12px;
     margin-right: 1rem;
-    // &:hover {
-    //   background-color: #e1e1e1;
-    // }
     @media (max-width: 480px) {
       margin-right: 0;
     }
@@ -109,7 +106,7 @@ const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
   .feather-send {
-    background: ${(props) => props.backgroundSend};
+    background: ${(props) => props.backgroundSend} !important;
     fill: ${(props) => props.fillSend};
     &:hover {
       cursor: ${(props) => props.cursor};
