@@ -16,7 +16,7 @@ import { replaceChar } from "../../../helpers/stringFormatter";
 const Wrapper = styled.div`
   position: relative;
   z-index: 3;
-  .feather-paperclip {
+  .feather-send {
     border: 1px solid #e1e1e1;
     height: 100%;
     cursor: pointer;
@@ -25,9 +25,9 @@ const Wrapper = styled.div`
     transition: background-color 0.15s ease-in-out;
     padding: 12px;
     margin-right: 1rem;
-    &:hover {
-      background-color: #e1e1e1;
-    }
+    // &:hover {
+    //   background-color: #e1e1e1;
+    // }
     @media (max-width: 480px) {
       margin-right: 0;
     }
@@ -54,7 +54,7 @@ const ChatInputContainer = styled.div`
   padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
-  .feather-send,
+  .feather-paperclip,
   .feather-meet,
   .feather-smile {
     position: absolute;
@@ -99,13 +99,6 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
   }
-  .feather-send {
-    background: ${(props) => props.backgroundSend};
-    fill: ${(props) => props.fillSend};
-    &:hover {
-      cursor: ${(props) => props.cursor};
-    }
-  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -115,6 +108,13 @@ const Icon = styled(SvgIconFeather)`
 const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
+  .feather-send {
+    background: ${(props) => props.backgroundSend};
+    fill: ${(props) => props.fillSend};
+    &:hover {
+      cursor: ${(props) => props.cursor};
+    }
+  }
   .workspace-chat & {
     width: 100%;
     margin: 0 auto;
@@ -354,7 +354,7 @@ const ChatFooterPanel = (props) => {
       <TypingIndicator />
       <LockedLabel channel={selectedChannel} />
       {isMember && (
-        <Dflex className="d-flex align-items-end chat-input-cointainer-footer">
+        <Dflex className="d-flex align-items-end chat-input-cointainer-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
               <Icon icon="archive" />
@@ -366,7 +366,7 @@ const ChatFooterPanel = (props) => {
           ) : (
             <React.Fragment>
               {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
-              <ChatInputContainer className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+              <ChatInputContainer className="flex-grow-1 chat-input-footer">
                 {selectedChannel && !selectedChannel.is_archived && (
                   <Dflex className="d-flex pr-2 pl-2">
                     <ChatQuote />
@@ -376,11 +376,11 @@ const ChatFooterPanel = (props) => {
                 <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
                 <IconButton onClick={handleGoogleMeet} icon="meet" />
-                <IconButton onClick={handleSend} icon="send" />
+                <IconButton onClick={onShowFileDialog} icon="paperclip" />
               </ChatInputContainer>
 
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
-                <IconButton onClick={onShowFileDialog} icon="paperclip" />
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+                <IconButton onClick={handleSend} icon="send" />
               </Tooltip>
             </React.Fragment>
           )}
