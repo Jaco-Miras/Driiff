@@ -294,7 +294,7 @@ const ChatFooterPanel = (props) => {
   const handleStartGoogleMeet = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let reference_id = require("shortid").generate();
-    let messageBody = `<div>I started a google meet. <a href="https://meet.google.com/lookup/${replaceChar(selectedChannel.title)}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`;
+    let messageBody = `<div>I started a google meet: <a href="https://meet.google.com/lookup/${replaceChar(selectedChannel.title)}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`;
     let payload = {
       channel_id: selectedChannel.id,
       body: messageBody,
