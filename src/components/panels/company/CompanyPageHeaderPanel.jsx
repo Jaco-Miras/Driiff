@@ -19,7 +19,7 @@ const Navbar = styled.ul`
   }
 `;
 
-const MainNavLink = styled(NavLink)`  
+const MainNavLink = styled(NavLink)`
   color: #828282;
   margin: 0 1rem;
   transition: color 200ms ease 0ms;
@@ -65,6 +65,7 @@ const CompanyPageHeaderPanel = (props) => {
 
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
+  const { driff: driffSettings, user: userSettings } = useSelector((state) => state.settings);
 
   //const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
 
@@ -76,20 +77,13 @@ const CompanyPageHeaderPanel = (props) => {
             <MainNavLink to="/dashboard">{dictionary.pageTitleDashboard}</MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink
-              to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
-              {dictionary.pageTitleChat}{" "}
-              <div className="ml-2 badge badge-pill badge badge-danger">
-                {unreadCounter.chat_message > 0 ? unreadCounter.chat_message : null}
-              </div>
+            <MainNavLink to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
+              {dictionary.pageTitleChat} <div className="ml-2 badge badge-pill badge badge-danger">{unreadCounter.chat_message > 0 ? unreadCounter.chat_message : null}</div>
             </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink to="/posts">
-              {dictionary.pageTitlePosts}{" "}
-              <div className="ml-2 badge badge-pill badge badge-danger">
-                {unreadCounter.general_post > 0 ? unreadCounter.general_post : null}
-              </div>
+              {dictionary.pageTitlePosts} <div className="ml-2 badge badge-pill badge badge-danger">{unreadCounter.general_post > 0 ? unreadCounter.general_post : null}</div>
             </MainNavLink>
           </li>
           <li className="nav-item">
@@ -97,6 +91,12 @@ const CompanyPageHeaderPanel = (props) => {
           </li>
           <li className="nav-item">
             <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink to="/releases">
+              Releases{" "}
+              <div className="ml-2 badge badge-pill badge badge-danger">{driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES > userSettings.READ_RELEASE_UPDATES ? 1 : null}</div>
+            </MainNavLink>
           </li>
         </Navbar>
       </Wrapper>

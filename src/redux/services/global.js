@@ -1,6 +1,6 @@
-import {getTranslationAPIUrl} from "../../helpers/slugHelper";
-import {apiCall, apiNoTokenCall} from "./index";
-import {objToUrlParams} from "../../helpers/commonFunctions";
+import { getTranslationAPIUrl } from "../../helpers/slugHelper";
+import { apiCall, apiNoTokenCall } from "./index";
+import { objToUrlParams } from "../../helpers/commonFunctions";
 
 export function getConnectedSlugs(payload) {
   let url = "/v2/connected-slugs";
@@ -124,13 +124,13 @@ export function getDrafts(payload) {
 export function deleteUnfurl(payload) {
   let url = "";
   if (payload.type === "task") {
-      url = `/v2/task-comment-unfurl/${payload.unfurl_id}`;
+    url = `/v2/task-comment-unfurl/${payload.unfurl_id}`;
   } else {
-      url = `/v2/post-message-unfurl/${payload.unfurl_id}`;
+    url = `/v2/post-message-unfurl/${payload.unfurl_id}`;
   }
   return apiCall({
-      method: "DELETE",
-      url: url,
+    method: "DELETE",
+    url: url,
   });
 }
 
@@ -149,7 +149,7 @@ export function deletePushSubscription(payload) {
 }
 
 export function postToDo(payload) {
-  let url = `/v2/to-do`;
+  let url = "/v2/to-do";
   return apiCall({
     method: "POST",
     url: url,
@@ -176,7 +176,7 @@ export function getToDo(payload) {
 }
 
 export function getToDoDetail(payload) {
-  let url = `/v2/to-do-detail`;
+  let url = "/v2/to-do-detail";
   return apiCall({
     method: "GET",
     url: url,
@@ -212,7 +212,7 @@ export function refetchMessages(payload) {
 }
 
 export function refetchOtherMessages(payload) {
-  let url = `/v2/re-fetch-module/other-channel-messages`;
+  let url = "/v2/re-fetch-module/other-channel-messages";
   return apiCall({
     method: "POST",
     url: url,
@@ -221,9 +221,44 @@ export function refetchOtherMessages(payload) {
 }
 
 export function getLatestReply(payload) {
-  let url = `/v2/re-fetch-module/get-last-reply`;
+  let url = "/v2/re-fetch-module/get-last-reply";
   return apiCall({
     method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getReleaseAnnouncements(payload) {
+  let url = "/v2/announcement-release";
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}
+
+export function updateReleaseAnnouncement(payload) {
+  let url = `/v2/announcement-release/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+export function createReleaseAnnouncement(payload) {
+  let url = "/v2/announcement-release";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+export function deleteReleaseAnnouncement(payload) {
+  let url = `/v2/announcement-release/${payload.id}`;
+  return apiCall({
+    method: "DELETE",
     url: url,
     data: payload,
   });

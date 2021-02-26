@@ -56,7 +56,7 @@ export const AppRoute = ({ children, ...props }) => {
         <Route {...props} component={TestChat} path={["/test/chat"]}>
           {children}
         </Route>
-        <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/bot"]}>
+        <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/bot", "/releases"]}>
           {children}
         </Route>
         <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token"]}>
