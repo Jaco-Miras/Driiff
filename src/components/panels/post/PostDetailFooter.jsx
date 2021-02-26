@@ -786,7 +786,7 @@ const PostDetailFooter = (props) => {
           </div>
         </Dflex>
       )}
-      {filter && filter === "all" && (
+      {filter && (filter === "all" || filter === 'inbox') && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
             <button className="btn btn-outline-light mr-3" onClick={() => overview()}>
