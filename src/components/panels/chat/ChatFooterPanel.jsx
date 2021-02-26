@@ -245,6 +245,7 @@ const ChatFooterPanel = (props) => {
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
     chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
+    //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
   const handleUnarchive = () => {
@@ -294,14 +295,14 @@ const ChatFooterPanel = (props) => {
   const handleStartGoogleMeet = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let reference_id = require("shortid").generate();
-    let messageBody = `<div>I started a google meet: <a href="https://meet.google.com/lookup/${replaceChar(selectedChannel.title)}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`;
+    let messageBody = `<div>I started a Google meet: <a href="https://meet.google.com/lookup/${replaceChar(selectedChannel.title)}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`;
     let payload = {
       channel_id: selectedChannel.id,
       body: messageBody,
       mention_ids: [],
       file_ids: [],
       reference_id: reference_id,
-      reference_title: `${user.first_name} started a google meeting`,
+      reference_title: `${user.first_name} started a Google meeting`,
       quote: null,
     };
     let obj = {
@@ -309,7 +310,7 @@ const ChatFooterPanel = (props) => {
       body: messageBody,
       mention_ids: [],
       user: user,
-      original_body: `${user.first_name} started a google meet. Click here to join`,
+      original_body: `${user.first_name} started a Google meet. Click here to join`,
       is_read: true,
       editable: true,
       files: [],
