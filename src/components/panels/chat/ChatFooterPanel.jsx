@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
@@ -11,6 +11,7 @@ import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   position: relative;
@@ -50,10 +51,11 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  padding-right: 80px;
+  padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
   .feather-send,
+  .feather-meet,
   .feather-smile {
     position: absolute;
     bottom: 0;
@@ -69,8 +71,23 @@ const ChatInputContainer = styled.div`
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
   .feather-smile {
+    right: 84px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
+  .feather-meet {
     right: 44px;
     margin: 4px 0;
+    bottom: -2px;
     background: transparent;
     border-color: transparent;
     transition: color 0.15s ease-in-out;
@@ -151,7 +168,7 @@ const PickerContainer = styled(CommonPicker)`
 
 const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
-  const { localizeChatDate } = useTimeFormat();
+  const { localizeChatDate, localizeDate } = useTimeFormat();
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -277,6 +294,60 @@ const ChatFooterPanel = (props) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
     });
   };
+  const handleStartGoogleMeet = () => {
+    let timestamp = Math.floor(Date.now() / 1000);
+    let reference_id = require("shortid").generate();
+    let messageBody = `<div>I started a google meet. <a href="https://meet.google.com/lookup/${replaceChar(selectedChannel.title)}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`;
+    let payload = {
+      channel_id: selectedChannel.id,
+      body: messageBody,
+      mention_ids: [],
+      file_ids: [],
+      reference_id: reference_id,
+      reference_title: `${user.first_name} started a google meeting`,
+      quote: null,
+    };
+    let obj = {
+      message: messageBody,
+      body: messageBody,
+      mention_ids: [],
+      user: user,
+      original_body: `${user.first_name} started a google meet. Click here to join`,
+      is_read: true,
+      editable: true,
+      files: [],
+      is_archive: false,
+      is_completed: true,
+      is_transferred: false,
+      is_deleted: false,
+      created_at: { timestamp: timestamp },
+      updated_at: { timestamp: timestamp },
+      channel_id: selectedChannel.id,
+      reactions: [],
+      id: reference_id,
+      reference_id: reference_id,
+      quote: null,
+      unfurls: [],
+      g_date: localizeDate(timestamp, "YYYY-MM-DD"),
+    };
+    dispatch(addChatMessage(obj));
+    dispatch(postChatMessage(payload));
+  };
+
+  const handleGoogleMeet = () => {
+    let modalPayload = {
+      type: "confirmation",
+      cancelText: "No",
+      headerText: "Google meet",
+      submitText: "Yes",
+      bodyText: "Are you sure you want to start a meeting in this channel?",
+      actions: {
+        onSubmit: handleStartGoogleMeet,
+      },
+    };
+
+    dispatch(addToModals(modalPayload));
+  };
 
   return (
     <Wrapper className={`chat-footer ${className}`}>
@@ -304,6 +375,7 @@ const ChatFooterPanel = (props) => {
 
                 <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+                <IconButton onClick={handleGoogleMeet} icon="meet" />
                 <IconButton onClick={handleSend} icon="send" />
               </ChatInputContainer>
 
