@@ -245,6 +245,7 @@ const ChatFooterPanel = (props) => {
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
     chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
+    //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
   const handleUnarchive = () => {
@@ -303,7 +304,7 @@ const ChatFooterPanel = (props) => {
       mention_ids: [],
       file_ids: [],
       reference_id: reference_id,
-      reference_title: `${user.first_name} started a google meeting`,
+      reference_title: `${user.first_name} started a Google meeting`,
       quote: null,
     };
     let obj = {
@@ -311,7 +312,7 @@ const ChatFooterPanel = (props) => {
       body: messageBody,
       mention_ids: [],
       user: user,
-      original_body: `${user.first_name} started a google meet. Click here to join`,
+      original_body: `${user.first_name} started a Google meet. Click here to join`,
       is_read: true,
       editable: true,
       files: [],
