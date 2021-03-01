@@ -10,7 +10,7 @@ import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 
-const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", quillRef, members = [], workspaces = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
+const useQuillModules = ({ mode, callback = null, removeMention = null, mentionOrientation = "top", quillRef, members = [], workspaces = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -20,14 +20,21 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
   const previousChannel = usePreviousValue(selectedChannel);
   const previousPost = usePreviousValue(post);
   const savedCallback = useRef(callback);
+  const removeCallback = useRef(removeMention)
 
   useEffect(() => {
     savedCallback.current = callback;
+    removeCallback.current = removeMention;
   });
 
   const handleSubmit = () => {
     savedCallback.current();
   };
+
+  const handleRemoveMention = () => {
+    removeCallback.current();
+  }
+
   const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
   const handleSetModule = () => {
     if (Object.keys(userMentions).length === 0) return;
@@ -248,6 +255,21 @@ const useQuillModules = ({ mode, callback = null, mentionOrientation = "top", qu
       keyboard: {
         bindings: {
           tab: false,
+          handleBackspace: {
+            key: 8,
+            metaKey: osName.includes("Mac") && mode !== "chat" ? true : false,
+            handler: function (range, context) {
+              if (range.index === 0 && range.length === 0 ) return;
+              if (range.length === 0) { 
+                this.quill.deleteText(range.index - 1, 1, Quill.sources.USER);
+              } else {
+                this.quill.deleteText(range, Quill.sources.USER);
+              }
+              if (mode === "post_comment") {
+                handleRemoveMention(range, context);
+              }
+            }
+          },
           handleEnter: {
             key: 13,
             metaKey: osName.includes("Mac") && mode !== "chat" ? true : false,
