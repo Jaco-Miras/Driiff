@@ -26,9 +26,10 @@ const Wrapper = styled.div`
     display: none;
   }
   @media (max-width: 414px) {
-    .feather-meet,
-    .feather-smile,
-    .feather-paperclip {
+    min-width: ${(props) => (props.showButtons && props.editMode ? "150px" : props.showButtons ? "120px" : props.editMode ? "60px" : "30px")};
+    .btn-meet,
+    .btn-smile,
+    .btn-paperclip {
       display: ${(props) => (props.showButtons ? "block" : "none")};
     }
     .chat-buttons {
@@ -50,6 +51,7 @@ const ChatInputButtons = (props) => {
   const handleShowButtons = () => {
     setShowButtons((prevState) => !prevState);
   };
+  console.log(showButtons);
   return (
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons}>
       {editChatMessage && (
@@ -57,13 +59,13 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
         </IconWrapper>
       )}
-      <IconWrapper>
+      <IconWrapper className="btn-smile">
         <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
       </IconWrapper>
-      <IconWrapper>
+      <IconWrapper className="btn-meet">
         <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
       </IconWrapper>
-      <IconWrapper>
+      <IconWrapper className="btn-paperclip">
         <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
       </IconWrapper>
       <IconWrapper className={"chat-buttons"}>
