@@ -51,7 +51,7 @@ const ChatInputButtons = (props) => {
   const handleShowButtons = () => {
     setShowButtons((prevState) => !prevState);
   };
-  console.log(showButtons);
+
   return (
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons}>
       {editChatMessage && (
