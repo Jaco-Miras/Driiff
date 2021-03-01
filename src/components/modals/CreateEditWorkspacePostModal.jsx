@@ -338,6 +338,7 @@ const CreateEditWorkspacePostModal = (props) => {
   //const [savingDraft, setSavingDraft] = useState(false);
 
   const savingDraft = useRef(null);
+  const toasterRef = useRef(null);
 
   const [form, setForm] = useState({
     must_read: false,
@@ -406,6 +407,8 @@ const CreateEditWorkspacePostModal = (props) => {
       ),
     }),
     approve: _t("POST.APPROVE", "Approve"),
+    uploading: _t("FILE_UPLOADING", "Uploading File"),
+    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
   };
 
   const formRef = {
@@ -991,6 +994,11 @@ const CreateEditWorkspacePostModal = (props) => {
           file: file.bodyFormData,
           file_type: "private",
           folder_id: null,
+          options: { 
+            config: {
+              onUploadProgress: handleOnUploadProgress
+            }
+          }
         })
       )
     ).then((result) => {
@@ -1023,7 +1031,32 @@ const CreateEditWorkspacePostModal = (props) => {
           })
         );
       }
+    })
+    .catch((error) => {
+      handleNetWorkError(error)
     });
+  }
+
+  const handleNetWorkError = () => {
+    if (toasterRef.curent !== null) {
+      setLoading(false);
+      toaster.dismiss(toasterRef.current);
+      toaster.error(
+        <div>{dictionary.unsuccessful}.</div>
+      );
+      toasterRef.current = null;
+    }
+  }
+
+  const handleOnUploadProgress = (progressEvent) => {
+    const progress = progressEvent.loaded / progressEvent.total;
+    if (toasterRef.current === null) {
+      toasterRef.current = toaster.info(
+        <div>{dictionary.uploading}.</div>,
+        {progress: progress, autoClose: true});
+    } else {
+      toaster.update(toasterRef.current, {progress: progress, autoClose: true});
+    }
   }
 
   const handleRemoveFile = (fileId) => {
