@@ -10,7 +10,7 @@ const IconWrapper = styled.div`
   align-items: center;
   padding: 13px 10px;
   align-self: flex-end;
-  @media (max-width: 360px) {
+  @media (max-width: 414px) {
     width: 30px;
     padding: 13px 2px;
   }
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
   .chat-buttons {
     display: none;
   }
-  @media (max-width: 360px) {
+  @media (max-width: 414px) {
     .feather-meet,
     .feather-smile,
     .feather-paperclip {
