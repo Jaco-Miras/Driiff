@@ -195,7 +195,7 @@ const usePostActions = () => {
   );
 
   const archivePost = useCallback(
-    (post) => {
+    (post, callback = () => {}) => {
       if (post.type === "draft_post") {
         const onConfirm = () => {
           dispatch(
@@ -223,6 +223,7 @@ const usePostActions = () => {
                     </>
                   );
                 }
+                callback(err, res);
               }
             )
           );
@@ -277,10 +278,11 @@ const usePostActions = () => {
                       is_archived: post.is_archived === 1 ? 0 : 1,
                     })
                   );
-                  if (params.hasOwnProperty("postId")) {
-                    history.goBack();
-                  }
+                  // if (params.hasOwnProperty("postId")) {
+                  //   history.goBack();
+                  // }
                 }
+                callback(err, res);
               }
             )
           );

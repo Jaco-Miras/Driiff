@@ -284,7 +284,7 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const { post, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -428,28 +428,29 @@ const CompanyPostDetail = (props) => {
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
       <MainHeader className="card-header d-flex justify-content-between">
-        <div>
-          <ul>
-            <li>
+        <div className="d-flex flex-column align-items-start">
+          <div className="d-flex">
+            <div className="align-self-start">
               <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
-            </li>
-            <li>
+            </div>
+            <div>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>
                   {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
                   {post.title}
                 </span>
               </h5>
-            </li>
-          </ul>
-        </div>
-        {/* {privateWsOnly.length === post.recipients.length && (
-          <div>
-            <span>
-              {dictionary.messageInSecureWs} <Icon icon="lock" />
-            </span>
+            </div>
           </div>
-        )} */}
+          {/* {privateWsOnly.length === post.recipients.length && (
+            <div className="ml-4">
+              <span>
+                {dictionary.messageInSecureWs} <Icon icon="lock" />
+              </span>
+            </div>
+          )} */}
+        </div>
+
         <div>
           {post.author.id === user.id && (
             <ul>
@@ -586,7 +587,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );
