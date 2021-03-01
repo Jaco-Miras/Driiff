@@ -10,6 +10,7 @@ const useHuddle = (props) => {
   const toaster = useToaster();
   const history = useHistory();
   const showToasterRef = useRef(null);
+  const huddleRef = useRef(null);
   const currentDate = new Date();
   const currentTime = currentDate.getTime();
   const dispatch = useDispatch();
@@ -80,11 +81,25 @@ const useHuddle = (props) => {
 
     if (selectedChannel && selectedChannel.id !== huddle.channel.id) {
       showToasterRef.current = true;
-
+      huddleRef.current = huddle.id;
       toast(`Huddle time at ${huddle.channel.name}`, options);
     }
   } else if (showToasterRef.current && huddle && selectedChannel && selectedChannel.id === huddle.channel.id) {
     showToasterRef.current = null;
+    huddleRef.current = null;
+    toast.dismiss();
+  }
+
+  if (showToasterRef.current && huddle && huddleRef.current && huddleRef.current !== huddle.id) {
+    console.log("dismiss toaster", huddleRef.current, huddle.id);
+    showToasterRef.current = null;
+    huddleRef.current = null;
+    toast.dismiss();
+  }
+
+  if (typeof huddle === "undefined" && showToasterRef.current) {
+    showToasterRef.current = null;
+    huddleRef.current = null;
     toast.dismiss();
   }
 
