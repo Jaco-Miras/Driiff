@@ -30,13 +30,13 @@ const Wrapper = styled.div`
 `;
 
 const ReleaseItem = (props) => {
-  const { item, fromNow, openModal } = props;
+  const { item, fromNow, openModal, isAuthorizedUser } = props;
 
   return (
     <Wrapper>
       <div className="date-edit">
         <span className="text-muted">{fromNow(item.created_at.timestamp)}</span>
-        <SvgIconFeather icon="pencil" height={12} width={12} onClick={() => openModal(item)} />
+        {isAuthorizedUser && <SvgIconFeather icon="pencil" height={12} width={12} onClick={() => openModal(item)} />}
       </div>
       <div className="title">{item.action_text}</div>
       <p className="description" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(item.body) }}></p>

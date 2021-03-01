@@ -24,8 +24,8 @@ const ReleasesPanel = (props) => {
   const dispatch = useDispatch();
   const { fromNow } = useTimeFormat();
 
-  const { timestamp, items } = useSelector((state) => state.global.releases);
-
+  const { items } = useSelector((state) => state.global.releases);
+  const user = useSelector((state) => state.session.user);
   useEffect(() => {
     dispatch(getReleaseAnnouncements());
   }, []);
@@ -39,6 +39,8 @@ const ReleasesPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const isAuthorizedUser = ["anthea@makedevelopment.com", "jessryll@makedevelopment.com", "nilo@makedevelopment.com", "sander@zuid.com", "johnpaul@makedevelopment.com"].includes(user.email);
+
   return (
     <Wrapper className={"container-fluid h-100"}>
       <div className="row row-user-profile-panel justify-content-center">
@@ -47,12 +49,12 @@ const ReleasesPanel = (props) => {
             <div className="card-body">
               <h6 className="card-title d-flex justify-content-between align-items-center">
                 <span>Announcements</span>
-                <SvgIconFeather icon="edit" height={16} width={16} onClick={() => openModal(null)} />
+                {isAuthorizedUser && <SvgIconFeather icon="edit" height={16} width={16} onClick={() => openModal(null)} />}
               </h6>
               <div>
                 {items.length > 0 &&
                   items.map((item) => {
-                    return <ReleaseItem key={item.id} item={item} fromNow={fromNow} openModal={openModal} />;
+                    return <ReleaseItem key={item.id} item={item} fromNow={fromNow} openModal={openModal} isAuthorizedUser={isAuthorizedUser} />;
                   })}
               </div>
             </div>
