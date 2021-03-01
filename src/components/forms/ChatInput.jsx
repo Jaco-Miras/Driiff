@@ -608,13 +608,6 @@ const ChatInput = (props) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editChatMessage && !editMode && editMessage === null) {
-      handleSetEditMessageStates(editChatMessage);
-    }
-  }, [editChatMessage]);
-
-  //to be converted into hooks
-  useEffect(() => {
     if (selectedEmoji) {
       const editor = reactQuillRef.current.getEditor();
       reactQuillRef.current.focus();
@@ -773,12 +766,22 @@ const ChatInput = (props) => {
     prioMentionIds: selectedChannel.members.map((m) => m.id),
   });
 
+  //to be converted into hooks
+  useEffect(() => {
+    if (editChatMessage && !editMode && editMessage === null) {
+      handleSetEditMessageStates(editChatMessage);
+    }
+    if (editChatMessage === null && editMode && editMessage) {
+      handleEditReplyClose();
+    }
+  }, [editChatMessage]);
+
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
-      {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />}
+      {/* {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />} */}
       {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file" />}
     </div>
   );
