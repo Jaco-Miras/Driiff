@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import Tooltip from "react-tooltip-lite";
 import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
@@ -51,22 +52,36 @@ const ChatInputButtons = (props) => {
   const handleShowButtons = () => {
     setShowButtons((prevState) => !prevState);
   };
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
 
   return (
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons}>
       {editChatMessage && (
         <IconWrapper>
-          <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
+            <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
+          </Tooltip>
         </IconWrapper>
       )}
       <IconWrapper className="btn-smile">
-        <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
+          <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+        </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-meet">
-        <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
+          <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
+        </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
-        <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
+          <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
+        </Tooltip>
       </IconWrapper>
       <IconWrapper className={"chat-buttons"}>
         <SvgIconFeather onClick={handleShowButtons} icon={showButtons ? "x" : "more-vertical"} />
