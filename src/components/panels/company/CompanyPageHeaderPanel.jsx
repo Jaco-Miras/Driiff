@@ -95,7 +95,9 @@ const CompanyPageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink to="/releases">
               Releases{" "}
-              <div className="ml-2 badge badge-pill badge badge-danger">{driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES > userSettings.READ_RELEASE_UPDATES ? 1 : null}</div>
+              <div className="ml-2 badge badge-pill badge badge-danger">
+                {driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp ? 1 : null}
+              </div>
             </MainNavLink>
           </li>
         </Navbar>

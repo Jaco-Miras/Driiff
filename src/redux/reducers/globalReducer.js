@@ -469,7 +469,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         releases: {
-          timestamp: action.data.READ_RELEASE_UPDATES.timeline,
+          timestamp: action.data.READ_RELEASE_UPDATES.timestamp,
           items: action.data.items,
         },
       };

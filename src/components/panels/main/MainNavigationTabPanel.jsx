@@ -256,6 +256,25 @@ const EmptyState = styled.div`
   }
 `;
 
+const GiftWrapper = styled.span`
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  :before {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    right: -6px;
+    border-radius: 50%;
+    top: -2px;
+    background: #f44;
+  }
+`;
+
+const GiftIcon = styled(SvgIconFeather)``;
+
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
   const history = useHistory();
@@ -263,7 +282,7 @@ const MainNavigationTabPanel = (props) => {
 
   const { count } = useTodos();
   const { actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded } = useWorkspace(true);
-  const { updateCompanyName, driffSettings, generalSettings } = useSettings();
+  const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
 
   const { _t } = useTranslation();
 
@@ -421,6 +440,12 @@ const MainNavigationTabPanel = (props) => {
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
         <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
+          {driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp && (
+            <GiftWrapper>
+              <GiftIcon icon="gift" color="#fff" />
+            </GiftWrapper>
+          )}
+
           <div className="driff-logo">
             <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
           </div>

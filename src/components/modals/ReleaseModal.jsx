@@ -6,15 +6,15 @@ import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement } from
 import { useTranslation, useQuillModules } from "../hooks";
 import { ModalHeaderSection } from "./index";
 // import quillHelper from "../../helpers/quillHelper";
-import { FormInput, QuillEditor } from "../forms";
+import { FormInput, QuillEditor, CheckBox } from "../forms";
 // import moment from "moment";
 // import MessageFiles from "../list/chat/Files/MessageFiles";
 // import { FileAttachments } from "../common";
 
 const Wrapper = styled(Modal)`
-  .modal-body {
-    padding-bottom: 3rem !important;
-  }
+  // .modal-body {
+  //   padding-bottom: 3rem !important;
+  // }
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -49,6 +49,10 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
+const CheckBoxContainer = styled.div`
+  text-align: right;
+`;
+
 const ReleaseModal = (props) => {
   /**
    * @todo refactor
@@ -65,6 +69,7 @@ const ReleaseModal = (props) => {
     title: "",
     description: "",
     textOnly: "",
+    major: false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -121,6 +126,13 @@ const ReleaseModal = (props) => {
     }
   };
 
+  const handleCheck = () => {
+    setForm({
+      ...form,
+      major: !form.major,
+    });
+  };
+
   const quillRef = useRef(null);
   const { modules } = useQuillModules({ mode: "description", mentionOrientation: "top", quillRef: quillRef, disableMention: true });
 
@@ -143,12 +155,18 @@ const ReleaseModal = (props) => {
         <div className="col-12">
           <StyledQuillEditor ref={quillRef} onChange={handleQuillChange} modules={modules} name="description" defaultValue={item ? item.body : ""} />
         </div>
+        <br />
+        <CheckBoxContainer className="col-12">
+          <CheckBox name="must_read" checked={form.major} onClick={handleCheck} type="danger">
+            Major release
+          </CheckBox>
+        </CheckBoxContainer>
       </ModalBody>
       <ModalFooter>
         <Button outline color="secondary" onClick={toggle}>
           Cancel
         </Button>
-        <Button color="primary" onClick={handleSubmit}>
+        <Button color="primary" onClick={handleSubmit} disabled={form.textOnly === "" || form.title === ""}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {item ? "Update" : "Save"}
         </Button>{" "}

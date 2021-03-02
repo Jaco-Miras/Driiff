@@ -313,6 +313,24 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_CREATED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          READ_RELEASE_UPDATES: { timestamp: action.data.created_at.timestamp },
+        },
+      };
+    }
+    case "GET_RELEASE_ANNOUNCEMENTS_SUCCESS": {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          READ_RELEASE_UPDATES: { timestamp: action.data.READ_RELEASE_UPDATES.timestamp },
+        },
+      };
+    }
     default:
       return state;
   }
