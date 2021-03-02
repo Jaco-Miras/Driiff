@@ -7,6 +7,7 @@ import styled from "styled-components";
 import botIcon from "../../assets/img/gripp-bot.png";
 import driffIcon from "../../assets/img/driff_logo.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
+import ProfileSlider from "./ProfileSlider";
 
 const Wrapper = styled.div`
   position: relative;
@@ -45,7 +46,25 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  let { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, isHuddleBot = false, forceThumbnail = true, ...rest } = props;
+  let {
+    className = "",
+    imageLink,
+    id,
+    name = "",
+    children,
+    partialName = null,
+    type = "USER",
+    userId,
+    onClick = null,
+    noDefaultClick = false,
+    hasAccepted = null,
+    isBot = false,
+    isHuddleBot = false,
+    forceThumbnail = true,
+    fromSlider = false,
+    showSlider = false,
+    ...rest
+  } = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -53,8 +72,10 @@ const Avatar = (props) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showInitials, setShowInitials] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const toggleTooltip = () => {
+    if (fromSlider) return;
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
@@ -92,13 +113,21 @@ const Avatar = (props) => {
 
     if (onClick) onClick(e);
 
-    if (props.noDefaultClick) return;
+    if (noDefaultClick) return;
 
-    if (type === "USER") {
-      history.push(`/profile/${id}/${replaceChar(name)}`);
-    } else if (type === "TOPIC") {
-      history.push(`/topic/${id}/${replaceChar(name)}`);
+    if (showSlider) {
+      setShowPopup((prevState) => !prevState);
+    } else {
+      if (type === "USER") {
+        history.push(`/profile/${id}/${replaceChar(name)}`);
+      } else if (type === "TOPIC") {
+        history.push(`/topic/${id}/${replaceChar(name)}`);
+      }
     }
+  };
+
+  const handleShowPopup = () => {
+    setShowPopup((prevState) => !prevState);
   };
 
   const handleImageError = () => {
@@ -141,6 +170,8 @@ const Avatar = (props) => {
           </Initials>
         )}
       </Tooltip>
+      {showSlider && !fromSlider && !isBot && showPopup && <ProfileSlider {...props} onShowPopup={handleShowPopup} />}
+
       {children}
     </Wrapper>
   );

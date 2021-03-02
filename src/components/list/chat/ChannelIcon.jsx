@@ -81,43 +81,31 @@ const ChannelIcon = (props) => {
     <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <StyledAvatar
-          type={channel.type}
           imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
           userId={channel.profile.id}
           id={channel.profile.id}
           name={channel.profile.name}
           partialName={channel.profile.partial_name}
           type="USER"
+          showSlider={true}
           //noDefaultClick={false}
         />
       )}
-      {channel.type === "GROUP" && (channel.icon_link ?
-        <StyledAvatar
-          forceThumbnail={false}
-          type={channel.type}
-          imageLink={channel.icon_link}
-          id={`ws_${channel.id}`}
-          name={channel.title}
-          noDefaultClick={false}
-        /> : <Icon icon="users" alt={channel.title}/>)}
-      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
-      {channel.type === "POST" && <Icon icon="users" alt={channel.title}/>}
-      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title}/>}
-      {(channel.members && channel.members.length > 2 && channel.type === "DIRECT")}
-      {channel.type === "TOPIC" && <>
-        {
-          channel.icon_link ?
-            <StyledAvatar
-              forceThumbnail={false}
-              type={channel.type}
-              imageLink={channel.icon_link}
-              id={`ws_${channel.id}`}
-              name={channel.title}
-              noDefaultClick={false}
-            /> :
+      {channel.type === "GROUP" &&
+        (channel.icon_link ? <StyledAvatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} /> : <Icon icon="users" alt={channel.title} />)}
+      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
+      {channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
+      {channel.members && channel.members.length > 2 && channel.type === "DIRECT"}
+      {channel.type === "TOPIC" && (
+        <>
+          {channel.icon_link ? (
+            <StyledAvatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} />
+          ) : (
             <span>{handleInitials(channel.title).substring(0, 3)}</span>
-        }
-      </>}
+          )}
+        </>
+      )}
     </Wrapper>
   );
 };

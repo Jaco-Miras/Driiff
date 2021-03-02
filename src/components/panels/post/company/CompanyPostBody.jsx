@@ -331,7 +331,7 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
-            <Avatar className="mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} />
+            <Avatar className="mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} showSlider={true} />
             <div>
               <span className="author-name">{post.author.first_name}</span>
               {postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}

@@ -328,7 +328,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -530,7 +530,13 @@ const Comment = (props) => {
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
-              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name} imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link} />
+              <Avatar
+                className="mr-2"
+                id={comment.author.id}
+                name={comment.author.name}
+                imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link}
+                showSlider={true}
+              />
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
