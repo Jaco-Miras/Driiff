@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
@@ -65,6 +65,8 @@ const Avatar = (props) => {
     showSlider = false,
     ...rest
   } = props;
+
+  const avatarRef = useRef(null);
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -151,7 +153,7 @@ const Avatar = (props) => {
   }
 
   return (
-    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick}>
+    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={rest.title ? rest.title : name}>
         {isBot ? (
@@ -170,7 +172,7 @@ const Avatar = (props) => {
           </Initials>
         )}
       </Tooltip>
-      {showSlider && !fromSlider && !isBot && showPopup && <ProfileSlider {...props} onShowPopup={handleShowPopup} />}
+      {showSlider && !fromSlider && !isBot && showPopup && <ProfileSlider {...props} onShowPopup={handleShowPopup} avatarRef={avatarRef} />}
 
       {children}
     </Wrapper>

@@ -3,12 +3,12 @@ import styled from "styled-components";
 //import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
 import { SvgIconFeather } from "./SvgIcon";
-import { useOutsideClick, useUserChannels } from "../hooks";
+import { useOutsideClick, useUserChannels, useTooltipOrientation } from "../hooks";
 
 const ProfileWrapper = styled.div``;
 
 const ProfileSlider = (props) => {
-  const { id, onShowPopup } = props;
+  const { id, onShowPopup, avatarRef } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
   const sliderRef = useRef(null);
   //   const users = useSelector((state) => state.users.users);
@@ -20,9 +20,10 @@ const ProfileSlider = (props) => {
   };
   const handleClose = () => {};
   useOutsideClick(sliderRef, onShowPopup, true);
+  const { orientation } = useTooltipOrientation(avatarRef, sliderRef, null, true);
   if (user) {
     return (
-      <ProfileWrapper className="profile-slider" ref={sliderRef}>
+      <ProfileWrapper className={`profile-slider ${orientation ? orientation.vertical : ""}`} ref={sliderRef}>
         <div className="avatar-wrapper">
           <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} />
           <h5>{user.name}</h5>
