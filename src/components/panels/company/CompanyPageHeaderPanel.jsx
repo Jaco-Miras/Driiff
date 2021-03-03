@@ -65,7 +65,7 @@ const CompanyPageHeaderPanel = (props) => {
 
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
-  const { driff: driffSettings, user: userSettings } = useSelector((state) => state.settings);
+  //const { driff: driffSettings, user: userSettings } = useSelector((state) => state.settings);
 
   //const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
 
@@ -92,14 +92,14 @@ const CompanyPageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <MainNavLink to="/releases">
               Releases{" "}
               <div className="ml-2 badge badge-pill badge badge-danger">
                 {driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp ? 1 : null}
               </div>
             </MainNavLink>
-          </li>
+          </li> */}
         </Navbar>
       </Wrapper>
     </>
