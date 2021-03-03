@@ -25,6 +25,7 @@ const ProfileSlider = (props) => {
   if (user) {
     return (
       <ProfileWrapper className={`profile-slider ${orientation ? orientation.vertical : ""}`} ref={sliderRef}>
+        <SvgIconFeather onClick={handleClose} icon="x" />
         <div className="avatar-wrapper">
           <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} />
           <h5>{user.name}</h5>
@@ -38,7 +39,6 @@ const ProfileSlider = (props) => {
         <div className="information-wrapper">
           <div className="info-x">
             <span>Information</span>
-            <SvgIconFeather onClick={handleClose} icon="x" />
           </div>
           <div className="d-flex">
             <div className="labels-wrapper">

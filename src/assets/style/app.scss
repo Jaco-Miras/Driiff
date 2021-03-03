@@ -14521,6 +14521,11 @@ body.modal-open .modal.show .modal-dialog {
   .dark & {
     background: #25282c;
   }
+  .feather-x {
+    position: absolute;
+    right: 10px;
+    width: 1rem;
+  }
   .avatar, img {
     width: 4rem !important;
     height: 4rem !important;

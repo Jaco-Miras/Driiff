@@ -86,8 +86,9 @@ const UserListPopUp = (props) => {
                 name={u.name ? u.name : u.email}
                 partialName={u.partial_name}
                 hasAccepted={u.has_accepted}
-                noDefaultClick={true}
-                onClick={(e) => handleOnNameClick(e, u)}
+                id={u.id}
+                //noDefaultClick={true}
+                //onClick={(e) => handleOnNameClick(e, u)}
               />
               <span className={"user-list-name"} onClick={(e) => handleOnNameClick(e, u)}>
                 {u.name ? u.name : u.email}
