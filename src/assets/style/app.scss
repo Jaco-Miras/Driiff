@@ -14559,6 +14559,13 @@ body.modal-open .modal.show .modal-dialog {
         height: 1rem;
       }
     }
+    .d-flex {
+      overflow: hidden;
+    }
+    .labels-wrapper {
+      display: flex;
+      flex-flow: column;
+    }
     .labels-wrapper, .info-details {
       text-align: left;
     }
@@ -14576,9 +14583,15 @@ body.modal-open .modal.show .modal-dialog {
   }
   @media (max-width: 414px) {
     display: flex;
+    min-width: 300px;
+    max-width: 300px;
     flex-flow: column;
     .information-wrapper {
       margin: 0;
+    }
+    .info-details {
+      margin-left: 2rem;
+      overflow: auto;
     }
   }
 }
