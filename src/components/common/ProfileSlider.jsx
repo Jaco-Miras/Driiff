@@ -8,7 +8,7 @@ import { useOutsideClick, useUserChannels, useTooltipOrientation } from "../hook
 const ProfileWrapper = styled.div``;
 
 const ProfileSlider = (props) => {
-  const { id, onShowPopup, avatarRef } = props;
+  const { id, onShowPopup, avatarRef, scrollRef } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
   const sliderRef = useRef(null);
   //   const users = useSelector((state) => state.users.users);
@@ -20,7 +20,8 @@ const ProfileSlider = (props) => {
   };
   const handleClose = () => {};
   useOutsideClick(sliderRef, onShowPopup, true);
-  const { orientation } = useTooltipOrientation(avatarRef, sliderRef, null, true);
+
+  const { orientation } = useTooltipOrientation(avatarRef, sliderRef, scrollRef, true);
   if (user) {
     return (
       <ProfileWrapper className={`profile-slider ${orientation ? orientation.vertical : ""}`} ref={sliderRef}>

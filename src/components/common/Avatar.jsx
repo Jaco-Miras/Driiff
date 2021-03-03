@@ -63,6 +63,7 @@ const Avatar = (props) => {
     forceThumbnail = true,
     fromSlider = false,
     showSlider = false,
+    scrollRef = null,
     ...rest
   } = props;
 
@@ -172,7 +173,7 @@ const Avatar = (props) => {
           </Initials>
         )}
       </Tooltip>
-      {showSlider && !fromSlider && !isBot && showPopup && <ProfileSlider {...props} onShowPopup={handleShowPopup} avatarRef={avatarRef} />}
+      {showSlider && !fromSlider && !isBot && showPopup && <ProfileSlider {...props} onShowPopup={handleShowPopup} avatarRef={avatarRef} scrollRef={scrollRef} />}
 
       {children}
     </Wrapper>

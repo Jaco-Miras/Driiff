@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline, ArchiveTimeline } from "../dashboard/timeline";
 import TimelinePagination from "../dashboard/timeline/TimelinePagination";
@@ -19,6 +19,7 @@ const Wrapper = styled.div`
 const TimelinePanel = (props) => {
   const { className = "", workspaceTimeline, actions, workspace, dictionary } = props;
 
+  const mainRef = useRef(null);
   const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const TimelinePanel = (props) => {
   }, [workspaceTimeline, workspace, fetching]);
 
   return (
-    <Wrapper className={`timeline-panel card ${className}`}>
+    <Wrapper className={`timeline-panel card ${className}`} ref={mainRef}>
       <div className="card-body">
         <h5 className="card-title">{dictionary.timeline}</h5>
 
@@ -45,17 +46,17 @@ const TimelinePanel = (props) => {
               .map((t) => {
                 switch (t.tag) {
                   case "CHAT_BOT":
-                    return <MemberTimeline key={t.id} data={t.item} dictionary={dictionary} />;
+                    return <MemberTimeline key={t.id} data={t.item} dictionary={dictionary} scrollRef={mainRef.current} />;
                   case "POST":
-                    return <PostTimeline key={t.id} data={t.item} dictionary={dictionary} />;
+                    return <PostTimeline key={t.id} data={t.item} dictionary={dictionary} scrollRef={mainRef.current} />;
                   case "ICON":
                   case "DOCUMENT":
-                    return <AttachFileTimeline key={t.id} data={t.item} dictionary={dictionary} />;
+                    return <AttachFileTimeline key={t.id} data={t.item} dictionary={dictionary} scrollRef={mainRef.current} />;
                   case "TOPIC":
-                    return <TopicTimeline key={t.id} data={t.item} dictionary={dictionary} />;
+                    return <TopicTimeline key={t.id} data={t.item} dictionary={dictionary} scrollRef={mainRef.current} />;
                   case "UNARCHIVED_WORKSPACE":
                   case "ARCHIVED_WORKSPACE":
-                    return <ArchiveTimeline key={t.id} data={t.item} tag={t.tag} dictionary={dictionary} workspace={workspace} />;
+                    return <ArchiveTimeline key={t.id} data={t.item} tag={t.tag} dictionary={dictionary} workspace={workspace} scrollRef={mainRef.current} />;
                   default:
                     return null;
                 }

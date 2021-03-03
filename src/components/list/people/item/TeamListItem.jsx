@@ -60,7 +60,7 @@ const ShowMoreBtn = styled.div`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null } = props;
+  const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -128,6 +128,8 @@ const TeamListItem = (props) => {
             partialName={member.partial_name}
             noDefaultClick={!member.has_accepted}
             hasAccepted={member.has_accepted}
+            showSlider={true}
+            scrollRef={scrollRef}
           />
         </div>
         <div>

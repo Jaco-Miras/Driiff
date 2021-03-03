@@ -13,17 +13,17 @@ const Wrapper = styled.div`
   justify-content: space-between;
   height: 100%;
   width: 100%;
-  
+
   &.page-notifications,
   &.page-profile,
   &.page-settings,
-  &.page-system,    
+  &.page-system,
   &.page-todos {
     .navbar-left {
       .navbar-nav {
         .navbar-wrap {
           .navbar-top {
-            height: 100%;    
+            height: 100%;
           }
         }
       }
@@ -47,7 +47,7 @@ const Wrapper = styled.div`
           margin-top: 4px;
           display: flex;
           align-items: center;
-          height: 40px;          
+          height: 40px;
         }
         .navbar-bottom {
           @media all and (max-width: 700px) {
@@ -71,13 +71,12 @@ const Wrapper = styled.div`
   }
   svg.feather-home {
     color: rgb(80, 80, 80);
-    
+
     .dark & {
-      color: #fff;    
+      color: #fff;
     }
   }
   .dash {
-      
   }
   @media all and (max-width: 700px) {
     align-items: start;
@@ -85,33 +84,37 @@ const Wrapper = styled.div`
 `;
 
 const CompanyName = styled.h2`
-    letter-spacing: 0;
-    margin-bottom: 0;
-    color: rgb(80, 80, 80);
-    font-weight: 500;
-    font-size: 20px;
-    margin-right: 2px;
-    
-    .dark & {
-      color: #fff;    
-    }
-    
-    svg {
-      color: #64625c;
-    }
-    
-    @media all and (max-width: 620px) {
-      font-size: 16px;
-    }
+  letter-spacing: 0;
+  margin-bottom: 0;
+  color: rgb(80, 80, 80);
+  font-weight: 500;
+  font-size: 20px;
+  margin-right: 2px;
+
+  .dark & {
+    color: #fff;
+  }
+
+  svg {
+    color: #64625c;
+  }
+
+  @media all and (max-width: 620px) {
+    font-size: 16px;
+  }
 `;
 
 const CompanyHeaderPanel = () => {
-
   const match = useRouteMatch();
 
-  const {driff, user: {GENERAL_SETTINGS: {dark_mode}}} = useSelector((state) => state.settings);
+  const {
+    driff,
+    user: {
+      GENERAL_SETTINGS: { dark_mode },
+    },
+  } = useSelector((state) => state.settings);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     pageTitleDashboard: _t("PAGE_TITLE.DASHBOARD", "Dashboard"),
@@ -128,9 +131,9 @@ const CompanyHeaderPanel = () => {
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
-      mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode")
-    })
-  }
+      mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode"),
+    }),
+  };
 
   const dispatch = useDispatch();
 
@@ -144,27 +147,51 @@ const CompanyHeaderPanel = () => {
   const renderMainTitle = () => {
     switch (match.params.page) {
       case "notifications": {
-        return <><SvgIconFeather className="mr-2" icon="bell"/>
-          <CompanyName>{dictionary.pageTitleNotifications}</CompanyName></>;
+        return (
+          <>
+            <SvgIconFeather className="mr-2" icon="bell" />
+            <CompanyName>{dictionary.pageTitleNotifications}</CompanyName>
+          </>
+        );
       }
       case "profile": {
-        return <><SvgIconFeather className="mr-2" icon="user"/>
-          <CompanyName>{dictionary.pageTitleProfile}</CompanyName></>;
+        return (
+          <>
+            <SvgIconFeather className="mr-2" icon="user" />
+            <CompanyName>{dictionary.pageTitleProfile}</CompanyName>
+          </>
+        );
       }
       case "settings": {
-        return <><SvgIconFeather className="mr-2" icon="settings"/>
-          <CompanyName>{dictionary.pageTitleSettings}</CompanyName></>;
+        return (
+          <>
+            <SvgIconFeather className="mr-2" icon="settings" />
+            <CompanyName>{dictionary.pageTitleSettings}</CompanyName>
+          </>
+        );
       }
       case "todos": {
-        return <><SvgIconFeather className="mr-2" icon="check"/>
-          <CompanyName>{dictionary.pageTitleTodos}</CompanyName></>;
+        return (
+          <>
+            <SvgIconFeather className="mr-2" icon="check" />
+            <CompanyName>{dictionary.pageTitleTodos}</CompanyName>
+          </>
+        );
       }
       case "system": {
-        return <><SvgIconFeather className="mr-2" icon="user"/>
-          <CompanyName>{dictionary.pageTitleSystemPeople}</CompanyName></>;
+        return (
+          <>
+            <SvgIconFeather className="mr-2" icon="user" />
+            <CompanyName>{dictionary.pageTitleSystemPeople}</CompanyName>
+          </>
+        );
       }
       default: {
-        return <><SvgIconFeather className="mr-2" icon="home"/> <CompanyName>{driff.company_name}</CompanyName></>;
+        return (
+          <>
+            <SvgIconFeather className="mr-2" icon="home" /> <CompanyName>{driff.company_name}</CompanyName>
+          </>
+        );
       }
     }
   };
@@ -172,7 +199,7 @@ const CompanyHeaderPanel = () => {
   useEffect(() => {
     const body = document.body;
 
-    if (["people", "workspace", "post", "posts", "notifications", "settings"].includes(match.params.page)) {
+    if (["people", "workspace", "post", "posts", "settings"].includes(match.params.page)) {
       body.classList.remove("stretch-layout");
     } else {
       body.classList.add("stretch-layout");
@@ -235,29 +262,24 @@ const CompanyHeaderPanel = () => {
             <div className="navbar-top">
               <li className="nav-item navigation-toggler mobile-toggler">
                 <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                  <SvgIconFeather icon="menu"/>
+                  <SvgIconFeather icon="menu" />
                 </a>
               </li>
-              <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
-                {
-                  renderMainTitle()
-                }
-              </li>
+              <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">{renderMainTitle()}</li>
             </div>
-            {
-              !["todos", "system", "notifications", "profile", "settings"].includes(match.params.page) &&
+            {!["todos", "system", "notifications", "profile", "settings"].includes(match.params.page) && (
               <div className="navbar-bottom">
                 <div className="navbar-main">
-                  <CompanyPageHeaderPanel dictionary={dictionary}/>
+                  <CompanyPageHeaderPanel dictionary={dictionary} />
                 </div>
               </div>
-            }
+            )}
           </div>
         </div>
       </div>
 
       <div>
-        <HeaderProfileNavigation dictionary={dictionary}/>
+        <HeaderProfileNavigation dictionary={dictionary} />
       </div>
     </Wrapper>
   );
