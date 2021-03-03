@@ -688,7 +688,7 @@ const CompanyPostDetailFooter = (props) => {
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </button>
             <button className="btn btn-outline-light" onClick={handleNextPost}>
-              {dictionary.archivePostOpenNext} <SvgIconFeather className="mr-2" icon="corner-up-right" />
+              {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
             </button>
           </div>
       </Dflex>
