@@ -287,8 +287,8 @@ const ProfileSettings = (props) => {
     setWorkspaceSetting({
       order_channel: {
         order_by: e.value,
-        sort_by: e.value === "channel_date_updated"? "DESC" : "ASC",
-      }
+        sort_by: e.value === "channel_date_updated" ? "DESC" : "ASC",
+      },
     });
     toaster.success(<span>You have successfully sort channel</span>);
   };
@@ -436,7 +436,7 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               </div>
-              {(["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email)) && (
+              {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-2 mt-4">
                   <div className="col-12 text-right">
                     <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>

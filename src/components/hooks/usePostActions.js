@@ -19,6 +19,7 @@ import {
   fetchRecentPosts,
   fetchTagCounter,
   getCompanyPosts,
+  getUnreadCompanyPosts,
   getPostClapHover,
   getUnreadPostComments,
   getUnreadPostEntries,
@@ -741,6 +742,13 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const fetchUnreadCompanyPosts = useCallback(
+    (payload, callback) => {
+      dispatch(getUnreadCompanyPosts(payload, callback));
+    },
+    [dispatch]
+  );
+
   const setCompanyFilterPosts = useCallback(
     (payload, callback) => {
       dispatch(updateCompanyPostFilterSort(payload, callback));
@@ -991,6 +999,7 @@ const usePostActions = () => {
     getUnreadWsPostsCount,
     close,
     generateSystemMessage,
+    fetchUnreadCompanyPosts,
   };
 };
 

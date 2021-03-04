@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
@@ -7,6 +7,8 @@ import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostItemPanel, 
 import { throttle } from "lodash";
 
 const Wrapper = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: left;
 
   .app-lists {
@@ -23,6 +25,9 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto;
 
     .app-lists {
       overflow: auto;
@@ -80,15 +85,12 @@ const CompanyPostsPanel = (props) => {
 
   const params = useParams();
   const history = useHistory();
-  // const refs = {
-  //   posts: useRef(null),
-  //   btnLoadMore: useRef(null)
-  // };
 
-  const { actions, archived, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
+  const [loadPosts, setLoadPosts] = useState(false);
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -189,44 +191,39 @@ const CompanyPostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "") {
+    if (!fetching && search === "" && !post) {
       setLoading(true);
       fetching = true;
 
       fetchMore((err, res) => {
         setLoading(false);
         fetching = false;
-        //callback(err, res);
+        setLoadPosts(false);
       });
     }
   };
 
-  const bodyScroll = throttle((e) => {
-    // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
-    const offset = 500;
-    if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
-      handleLoadMore();
-    }
-  }, 200);
+  const handleScroll = useMemo(() => {
+    const throttled = throttle((e) => {
+      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+        setLoadPosts(true);
+      }
+    }, 300);
+    return (e) => {
+      e.persist();
+      return throttled(e);
+    };
+  }, []);
 
   useEffect(() => {
-    document.body.addEventListener("scroll", bodyScroll, false);
-    return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [skip, archived, filter, search]);
+    if (loadPosts) {
+      handleLoadMore();
+    }
+  }, [loadPosts]);
 
   useEffect(() => {
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
   }, []);
-
-  // useEffect(() => {
-  //   let el = refs.posts.current;
-  //   if (el && el.dataset.loaded === "0") {
-  //     initLoading();
-
-  //     el.dataset.loaded = "1";
-  //     refs.posts.current.addEventListener("scroll", handleScroll, false);
-  //   }
-  // }, [refs.posts.current]);
 
   const handleMarkAllAsRead = () => {
     actions.readAll({
@@ -246,15 +243,14 @@ const CompanyPostsPanel = (props) => {
   if (posts === null) return <></>;
 
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
-      {/* <span className="d-none" ref={refs.btnLoadMore} onClick={loadMore}>Load more</span> */}
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
         <CompanyPostSidebar filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
           {posts.length === 0 && search === "" ? (
-            <div className="card card-body app-content-body mb-4">
+            <div className="card card-body app-content-body">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252} />
                 <button className="btn btn-outline-primary btn-block" onClick={handleShowPostModal}>
@@ -265,7 +261,7 @@ const CompanyPostsPanel = (props) => {
           ) : (
             <>
               {post ? (
-                <div className="card card-body app-content-body mb-4">
+                <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail readByUsers={readByUsers} post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} />
                   </PostDetailWrapper>
@@ -313,6 +309,7 @@ const CompanyPostsPanel = (props) => {
               )}
             </>
           )}
+          <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>
     </Wrapper>

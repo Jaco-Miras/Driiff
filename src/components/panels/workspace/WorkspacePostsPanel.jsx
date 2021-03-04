@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
@@ -9,6 +9,8 @@ import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { useDispatch } from "react-redux";
 
 const Wrapper = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: left;
 
   .app-lists {
@@ -25,6 +27,9 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto;
 
     .app-lists {
       overflow: auto;
@@ -89,6 +94,7 @@ const WorkspacePostsPanel = (props) => {
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
+  const [loadPosts, setLoadPosts] = useState(false);
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -200,7 +206,7 @@ const WorkspacePostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "") {
+    if (!fetching && search === "" && !post) {
       fetching = true;
       setLoading(true);
       let payload = {
@@ -218,6 +224,7 @@ const WorkspacePostsPanel = (props) => {
       let cb = (err, res) => {
         setLoading(false);
         fetching = false;
+        setLoadPosts(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -251,18 +258,36 @@ const WorkspacePostsPanel = (props) => {
     }
   };
 
-  const bodyScroll = throttle((e) => {
-    // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
-    const offset = 500;
-    if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
-      handleLoadMore();
-    }
-  }, 200);
+  // const bodyScroll = throttle((e) => {
+  //   // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
+  //   const offset = 500;
+  //   if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
+  //     handleLoadMore();
+  //   }
+  // }, 200);
+
+  // useEffect(() => {
+  //   document.body.addEventListener("scroll", bodyScroll, false);
+  //   return () => document.body.removeEventListener("scroll", bodyScroll, false);
+  // }, [filters, workspace, filter, search]);
+
+  const handleScroll = useMemo(() => {
+    const throttled = throttle((e) => {
+      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+        setLoadPosts(true);
+      }
+    }, 300);
+    return (e) => {
+      e.persist();
+      return throttled(e);
+    };
+  }, []);
 
   useEffect(() => {
-    document.body.addEventListener("scroll", bodyScroll, false);
-    return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [filters, workspace, filter, search]);
+    if (loadPosts) {
+      handleLoadMore();
+    }
+  }, [loadPosts]);
 
   const handleMarkAllAsRead = () => {
     actions.readAll({
@@ -286,7 +311,7 @@ const WorkspacePostsPanel = (props) => {
   if (posts === null) return <></>;
 
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
         <PostSidebar
           disableOptions={disableOptions}
@@ -379,6 +404,7 @@ const WorkspacePostsPanel = (props) => {
               )}
             </>
           )}
+          <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>
     </Wrapper>
