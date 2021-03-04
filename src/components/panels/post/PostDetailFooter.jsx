@@ -793,7 +793,7 @@ const PostDetailFooter = (props) => {
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </button>
             <button className="btn btn-outline-light" onClick={handleNextPost}>
-              <SvgIconFeather className="mr-2" icon="corner-up-right" /> {dictionary.archivePostOpenNext}
+            {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
             </button>
           </div>
         </Dflex>
