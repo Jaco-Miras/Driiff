@@ -2507,7 +2507,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-<<<<<<< HEAD
     case "ADD_USER_TO_POST_RECIPIENTS": {
       let workspacePost = { ...state.workspacePosts };
       if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
@@ -2549,7 +2548,6 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: workspacePost,
       };
     }
-=======
     case "POST_LIST_CONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
         if (!wp.posts.hasOwnProperty(action.data.post_id)){
@@ -2598,7 +2596,6 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
 
->>>>>>> DRIFF-1384 workspace post list in progress
     default:
       return state;
   }

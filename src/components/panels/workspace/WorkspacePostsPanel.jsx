@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
+import { SvgEmptyState, SvgIconFeather } from "../../common";
 import { usePosts, useTranslation } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
-import { throttle } from "lodash";
+import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
+import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
 
 const Wrapper = styled.div`
@@ -81,6 +82,24 @@ const PostsBtnWrapper = styled.div`
     margin-left: 10px;
   }
 `;
+
+const PostListWrapper = styled.span`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @media all and (max-width: 1200px) {
+    max-width: 200px;
+  }
+`;
+
+const StyledIcon = styled(SvgIconFeather)`
+  width: 1em;
+  &:hover {
+    color: #000000;
+  }
+`;
+
 let fetching = false;
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
@@ -95,6 +114,7 @@ const WorkspacePostsPanel = (props) => {
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
+  const [activePostListName, setActivePostListName] = useState({});
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -309,6 +329,40 @@ const WorkspacePostsPanel = (props) => {
     setCheckedPosts([]);
   };
 
+  useEffect(() => {
+    if (postListTag) {
+      const activePost = find(postLists, (p) => parseInt(p.id) === parseInt(postListTag));
+      postLists.map((pl) => {
+        if (activePost && parseInt(postListTag) === pl.id) { 
+          setActivePostListName(pl);
+        }
+      });
+      
+      if (!activePost) {
+        setActivePostListName(postLists[0]);
+        let payload = {
+          topic_id: workspace.id,
+          tag: null,
+          postListTag: postLists[0].id,
+          filter: null,
+        };
+        dispatch(updateWorkspacePostFilterSort(payload));
+      }
+    }
+  }, [postListTag, postLists]);
+
+  const handleEditArchivePostList = useCallback(
+    () => {  
+      const payload = {
+        topic_id: workspace.id,
+        tag: null,
+        postListTag: null,
+        filter: "all",
+    };
+    dispatch(updateWorkspacePostFilterSort(payload));
+    }, [activePostListName]
+  )
+
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null) return <></>;
@@ -334,6 +388,18 @@ const WorkspacePostsPanel = (props) => {
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
+          { !!postListTag && (
+            <PostsBtnWrapper>
+              <span>Filter:</span>
+              <PostListWrapper className="ml-2 recipients" >
+                <span className="receiver">
+                  <span onClick={handleEditArchivePostList}><StyledIcon icon="x" className="mr-1" /></span>
+                  {activePostListName.name}
+                </span>
+                
+              </PostListWrapper>
+            </PostsBtnWrapper>
+          )}
           {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>

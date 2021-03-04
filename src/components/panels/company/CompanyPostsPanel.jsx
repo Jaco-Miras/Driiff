@@ -55,7 +55,6 @@ const PostListWrapper = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: block;
   @media all and (max-width: 1200px) {
     max-width: 200px;
   }
@@ -91,16 +90,13 @@ const PostsBtnWrapper = styled.div`
   }
 `;
 
-
 const StyledIcon = styled(SvgIconFeather)`
   width: 1em;
-  vertical-align: bottom;
-  margin-right: 40px;
-  
   &:hover {
     color: #000000;
   }
-`
+`;
+
 let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
@@ -284,7 +280,11 @@ const CompanyPostsPanel = (props) => {
 
   const handleEditArchivePostList = useCallback(
     () => {
-      actions.showModal("edit_post_list", activePostListName);
+      const payload = {
+        tag: null,
+        filter: "all",
+    };
+      actions.setCompanyFilterPosts(payload);
     }, [activePostListName]
   )
 
@@ -313,9 +313,13 @@ const CompanyPostsPanel = (props) => {
           {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
           { !!postListTag && (
             <PostsBtnWrapper>
-              <PostListWrapper >
-                <span className="mr-3">{activePostListName.name}</span>
-                <span onClick={handleEditArchivePostList}><StyledIcon icon="pencil" /></span>
+              <span>Filter:</span>
+              <PostListWrapper className="ml-2 recipients" >
+                <span className="receiver">
+                  <span onClick={handleEditArchivePostList}><StyledIcon icon="x" className="mr-1" /></span>
+                  {activePostListName.name}
+                </span>
+                
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
