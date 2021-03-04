@@ -403,10 +403,10 @@ const PostItemPanel = (props) => {
                       imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             </CreatedBy> */}
           <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
-          <span>
+          <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
-          </span>
+          </div>
           <div className="text-truncate post-partialBody">
             <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }} />
           </div>
