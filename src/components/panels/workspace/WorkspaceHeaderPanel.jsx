@@ -353,7 +353,7 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
 
-    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspacePosts, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
+    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
       body.classList.remove("stretch-layout");
     } else {
       body.classList.add("stretch-layout");

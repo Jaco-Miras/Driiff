@@ -376,3 +376,7 @@ export function postClose(payload, callback) {
 export function incomingClosePost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_CLOSE_POST", payload, callback);
 }
+
+export function getUnreadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_UNREAD_COMPANY_POSTS_START", "GET_UNREAD_COMPANY_POSTS_SUCCESS", "GET_UNREAD_COMPANY_POSTS_FAIL", callback);
+}
