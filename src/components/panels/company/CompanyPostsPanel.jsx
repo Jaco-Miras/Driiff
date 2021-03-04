@@ -91,6 +91,7 @@ const CompanyPostsPanel = (props) => {
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
+  console.log(post);
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -191,7 +192,7 @@ const CompanyPostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "") {
+    if (!fetching && search === "" && !post) {
       setLoading(true);
       fetching = true;
 

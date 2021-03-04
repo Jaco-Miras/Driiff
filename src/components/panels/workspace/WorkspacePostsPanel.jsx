@@ -206,7 +206,7 @@ const WorkspacePostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "") {
+    if (!fetching && search === "" && !post) {
       fetching = true;
       setLoading(true);
       let payload = {
