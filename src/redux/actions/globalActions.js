@@ -229,3 +229,6 @@ export function incomingUpdatedAnnouncement(payload, callback) {
 export function incomingCreatedAnnouncement(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_CREATED_ANNOUNCEMENT", payload, callback);
 }
+export function incomingDeletedAnnouncement(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_ANNOUNCEMENT", payload, callback);
+}
