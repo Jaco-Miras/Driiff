@@ -155,12 +155,12 @@ const ReleaseModal = (props) => {
         <div className="col-12">
           <StyledQuillEditor ref={quillRef} onChange={handleQuillChange} modules={modules} name="description" defaultValue={item ? item.body : ""} />
         </div>
-        <br />
+        {/* <br />
         <CheckBoxContainer className="col-12">
           <CheckBox name="must_read" checked={form.major} onClick={handleCheck} type="danger">
             Major release
           </CheckBox>
-        </CheckBoxContainer>
+        </CheckBoxContainer> */}
       </ModalBody>
       <ModalFooter>
         <Button outline color="secondary" onClick={toggle}>
