@@ -41,7 +41,7 @@ const useHuddle = (props) => {
           }
         } else if (h.repeat_type === "YEARLY") {
           // same day and month
-          if (parseInt(huddle.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
+          if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
             return true;
           } else {
             return false;
