@@ -61,7 +61,7 @@ const CompanyPostList = (props) => {
       {postLists && postLists.map((list) => {
           return (
             <a className={`list-group-item d-flex align-items-center ${postListTag && parseInt(postListTag) === list.id ? "active" : ""}`} data-value={list.name.toLowerCase()} data-id={list.id} key={list.id} onClick={(e) => handleClickFilter(e)} onMouseOver={(e)=>handleHover(e, list)} onMouseLeave={(e)=>setSelectedFilter(null)}>
-                <span className="text-success fa fa-circle mr-2" />
+                <span className="text-primary fa fa-circle mr-2" />
                 {list.name}
                 {(selectedFilter && selectedFilter === list.id && <span className="small ml-auto" onClick={(e) => handleEditArchivePostList(e, list)}><StyledIcon className="mr-0 small" icon="edit-3" /></span>) ||
                 <span className="small ml-auto" >{list.total_post_connected >0 ? list.total_post_connected : ""}</span> }
