@@ -1691,10 +1691,10 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      view_user_ids:
-                        action.data.unread === 0
-                          ? [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id]
-                          : state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
+                      // view_user_ids:
+                      //   action.data.unread === 0
+                      //     ? [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id]
+                      //     : state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
                       is_unread: action.data.unread,
                       unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[action.data.post_id].unread_count,
                     },
@@ -2504,6 +2504,47 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           }),
         },
+      };
+    }
+    case "ADD_USER_TO_POST_RECIPIENTS": {
+      let workspacePost = { ...state.workspacePosts };
+      if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
+        if (workspacePost[action.data.topic_id].posts.hasOwnProperty(action.data.post_id)) {
+          if (!workspacePost[action.data.topic_id].posts[action.data.post_id].hasOwnProperty("to_add")) {
+            workspacePost[action.data.topic_id].posts[action.data.post_id].to_add = [...action.data.recipient_ids];
+          } else {
+            workspacePost[action.data.topic_id].posts[action.data.post_id].to_add = [...workspacePost[action.data.topic_id].posts[action.data.post_id].to_add, ...action.data.recipient_ids];
+          }
+          workspacePost[action.data.topic_id].posts[action.data.post_id].recipients = [...workspacePost[action.data.topic_id].posts[action.data.post_id].recipients, ...action.data.recipients];
+          workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids = [...workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids, ...action.data.recipient_ids];
+        }
+      }
+
+      return {
+        ...state,
+        workspacePosts: workspacePost,
+      };
+    }
+
+    case "REMOVE_USER_TO_POST_RECIPIENTS": {
+      let workspacePost = { ...state.workspacePosts };
+      if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
+        if (workspacePost[action.data.topic_id].posts.hasOwnProperty(action.data.post_id)) {
+          const filteredRecipientsIds = workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids.filter((id) => {
+            return !action.data.remove_recipient_ids.includes(id);
+          });
+
+          const filteredRecipients = workspacePost[action.data.topic_id].posts[action.data.post_id].recipients.filter((r) => {
+            return !action.data.remove_recipient_ids.includes(r.id);
+          });
+          workspacePost[action.data.topic_id].posts[action.data.post_id].recipients = filteredRecipients;
+          workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids = filteredRecipientsIds;
+        }
+      }
+
+      return {
+        ...state,
+        workspacePosts: workspacePost,
       };
     }
     default:

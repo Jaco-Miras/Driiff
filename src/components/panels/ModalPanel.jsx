@@ -21,6 +21,7 @@ import {
   PostSnoozeModal,
   SingleInputModal,
   TodoReminderModal,
+  ReleaseModal,
 } from "../modals";
 import { useHuddleNotification } from "../hooks";
 
@@ -84,6 +85,8 @@ const ModalPanel = () => {
               return <TodoReminderModal key={modal.type} data={modal} />;
             case "update_found":
               return <DriffUpdateModal key={modal.type} data={modal} />;
+            case "release":
+              return <ReleaseModal key={modal.type} data={modal} />;
             default:
               return null;
           }

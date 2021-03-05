@@ -284,7 +284,7 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const { post, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -428,28 +428,29 @@ const CompanyPostDetail = (props) => {
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
       <MainHeader className="card-header d-flex justify-content-between">
-        <div>
-          <ul>
-            <li>
+        <div className="d-flex flex-column align-items-start">
+          <div className="d-flex">
+            <div className="align-self-start">
               <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
-            </li>
-            <li>
+            </div>
+            <div>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>
                   {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
                   {post.title}
                 </span>
               </h5>
-            </li>
-          </ul>
-        </div>
-        {/* {privateWsOnly.length === post.recipients.length && (
-          <div>
-            <span>
-              {dictionary.messageInSecureWs} <Icon icon="lock" />
-            </span>
+            </div>
           </div>
-        )} */}
+          {/* {privateWsOnly.length === post.recipients.length && (
+            <div className="ml-4">
+              <span>
+                {dictionary.messageInSecureWs} <Icon icon="lock" />
+              </span>
+            </div>
+          )} */}
+        </div>
+
         <div>
           {post.author.id === user.id && (
             <ul>
@@ -473,7 +474,7 @@ const CompanyPostDetail = (props) => {
               {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-              {post.author.id === user.id && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+              {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
             </StyledMoreOptions>
           </div>
         </div>
@@ -556,7 +557,7 @@ const CompanyPostDetail = (props) => {
               <div className="user-reads-container">
                 <span className="no-readers">
                   <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
-                  {post.view_user_ids.length}
+                  {viewerIds.length}
                 </span>
                 <span className="hover read-users-container">
                   {viewers.map((u) => {
@@ -586,7 +587,18 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter
+          isMember={isMember}
+          post={post}
+          posts={posts}
+          filter={filter}
+          commentActions={commentActions}
+          postActions={postActions}
+          overview={handleClosePost}
+          onShowFileDialog={handleOpenFileDialog}
+          dropAction={dropAction}
+          mainInput={true}
+        />
       </MainBody>
     </>
   );

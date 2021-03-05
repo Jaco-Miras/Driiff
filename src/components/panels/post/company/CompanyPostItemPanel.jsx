@@ -401,10 +401,10 @@ const CompanyPostItemPanel = (props) => {
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
           </CreatedBy> */}
           <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
-          <span>
+          <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
-          </span>
+          </div>
           <div className="text-truncate post-partialBody">
             <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }} />
           </div>
@@ -441,7 +441,7 @@ const CompanyPostItemPanel = (props) => {
             <div onClick={() => sharePost(post)}>{dictionary.share}</div>
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-            {post.author && post.author.id === user.id && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+            {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
           </MoreOptions>
         )}
       </div>

@@ -18,7 +18,7 @@ const ChatReactionButtonContainer = styled.div`
 `;
 const StyledEmojiButton = styled(SvgIconFeather)`
   @media (max-width: 620px) {
-    display: none;
+    //display: none;
   }
   ${(props) => props.active && "filter: brightness(0) saturate(100%) invert(23%) sepia(21%) saturate(6038%) hue-rotate(284deg) brightness(93%) contrast(91%);"};
 

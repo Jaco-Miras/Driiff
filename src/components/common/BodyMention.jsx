@@ -23,7 +23,7 @@ const BodyMention = (props) => {
   const { onAddUsers, onDoNothing, userIds, type = "post" } = props;
   
   const {_t} = useTranslation();
-  const users = useSelector((state) => state.users.users);
+  const users = useSelector((state) => state.users.mentions);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const toMention = Object.assign({}, users, workspaces);
   const mentionedUsers = Object.values(toMention).filter((user) => {

@@ -311,6 +311,15 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "corner-up-left":
+        strokeWidth = "2";
+        content = (
+          <>
+            <polyline points="9 14 4 9 9 4" />
+            <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+          </>
+        );
+        break;
       case "arrow-left":
         strokeWidth = "2";
         content = (
@@ -515,6 +524,39 @@ export const SvgIconFeather = React.memo(
           <>
             <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />
             <line x1="1" y1="1" x2="23" y2="23" />
+          </>
+        );
+        break;
+      case "meet":
+        content = (
+          <>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="Group">
+                <g>
+                  <polygon id="Path" fill="#A7A7A7" fill-rule="nonzero" points="12.9375 9.5 15.1669318 12.0729167 18.1647727 14.0072222 18.6875 9.51583333 18.1647727 5.12472222 15.1094318 6.82416667"></polygon>
+                  <path
+                    d="M0,13.5902778 L0,17.4166667 C0,18.2914583 0.701761364,19 1.56818182,19 L5.35795455,19 L6.14204545,16.1077778 L5.35795455,13.5902778 L2.75738636,12.7986111 L0,13.5902778 Z"
+                    id="Path"
+                    fill="#949494"
+                    fill-rule="nonzero"
+                  ></path>
+                  <polygon id="Path" fill="#9C9C9C" fill-rule="nonzero" points="5.35795455 0 0 5.40972222 2.75738636 6.20138889 5.35795455 5.40972222 6.12897727 2.92652778"></polygon>
+                  <polygon id="Path" fill="#DADADA" fill-rule="nonzero" points="5.35795455 5.40972222 0 5.40972222 0 13.5902778 5.35795455 13.5902778"></polygon>
+                  <path
+                    d="M21.5886364,2.29055556 L18.1647727,5.12472222 L18.1647727,14.0072222 L21.6043182,16.8545833 C22.1192045,17.2609722 22.8719318,16.8902083 22.8719318,16.2291667 L22.8719318,2.90277778 C22.8719318,2.23381944 22.1022159,1.86701389 21.5886364,2.29055556 Z M12.9375,9.5 L12.9375,13.5902778 L5.35795455,13.5902778 L5.35795455,19 L16.5965909,19 C17.4630114,19 18.1647727,18.2914583 18.1647727,17.4166667 L18.1647727,14.0072222 L12.9375,9.5 Z"
+                    id="Shape"
+                    fill="#CACACA"
+                    fill-rule="nonzero"
+                  ></path>
+                  <path
+                    d="M16.5965909,0 L5.35795455,0 L5.35795455,5.40972222 L12.9375,5.40972222 L12.9375,9.5 L18.1647727,5.12736111 L18.1647727,1.58333333 C18.1647727,0.708541667 17.4630114,0 16.5965909,0 Z"
+                    id="Path"
+                    fill="#E1E1E1"
+                    fill-rule="nonzero"
+                  ></path>
+                </g>
+              </g>
+            </g>
           </>
         );
         break;
@@ -762,19 +804,30 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "sliders":
-          content = (
-            <>
-              <line x1="4" y1="21" x2="4" y2="14"></line>
-              <line x1="4" y1="10" x2="4" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12" y2="3"></line>
-              <line x1="20" y1="21" x2="20" y2="16"></line>
-              <line x1="20" y1="12" x2="20" y2="3"></line>
-              <line x1="1" y1="14" x2="7" y2="14"></line>
-              <line x1="9" y1="8" x2="15" y2="8"></line>
-              <line x1="17" y1="16" x2="23" y2="16"></line>
-            </>
-          )
+        content = (
+          <>
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </>
+        );
+        break;
+      case "gift":
+        content = (
+          <>
+            <polyline points="20 12 20 22 4 22 4 12"></polyline>
+            <rect x="2" y="7" width="20" height="5"></rect>
+            <line x1="12" y1="22" x2="12" y2="7"></line>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+          </>
+        );
         break;
       default:
         console.log(`${icon} not found`);

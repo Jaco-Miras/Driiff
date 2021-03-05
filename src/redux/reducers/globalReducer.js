@@ -41,6 +41,10 @@ const INITIAL_STATE = {
     items: {},
     doneRecently: [],
   },
+  releases: {
+    timestamp: null,
+    items: [],
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -459,6 +463,51 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         unreadCounter: unreadCounter,
+      };
+    }
+    case "GET_RELEASE_ANNOUNCEMENTS_SUCCESS": {
+      return {
+        ...state,
+        releases: {
+          timestamp: action.data.READ_RELEASE_UPDATES.timestamp,
+          items: action.data.items,
+        },
+      };
+    }
+    case "INCOMING_UPDATED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: state.releases.items.map((item) => {
+            if (item.id === action.data.id) {
+              return {
+                ...item,
+                action_text: action.data.action_text,
+                body: action.data.body,
+                // updated_at: { timeline: action.data.updated_at.timestamp },
+              };
+            } else {
+              return item;
+            }
+          }),
+        },
+      };
+    }
+    case "INCOMING_CREATED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: [
+            {
+              ...action.data,
+              // created_at: { timeline: action.data.created_at.timestamp },
+              // updated_at: { timeline: action.data.updated_at.timestamp },
+            },
+            ...state.releases.items,
+          ],
+        },
       };
     }
     default:

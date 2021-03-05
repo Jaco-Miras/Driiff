@@ -595,8 +595,8 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                view_user_ids:
-                  action.data.unread === 0 ? [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] : state.companyPosts.posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
+                // view_user_ids:
+                //   action.data.unread === 0 ? [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] : state.companyPosts.posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
                 is_unread: action.data.unread,
                 unread_count: action.data.unread === 0 ? 0 : state.companyPosts.posts[action.data.post_id].unread_count,
               },
@@ -694,8 +694,32 @@ export default (state = INITIAL_STATE, action) => {
     case "ADD_USER_TO_POST_RECIPIENTS": {
       let companyPosts = { ...state.companyPosts };
       if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        if (!companyPosts.posts[action.data.post_id].hasOwnProperty("to_add")) {
+          companyPosts.posts[action.data.post_id].to_add = [...action.data.recipient_ids];
+        } else {
+          companyPosts.posts[action.data.post_id].to_add = [...companyPosts.posts[action.data.post_id].to_add, ...action.data.recipient_ids];
+        }
+
         companyPosts.posts[action.data.post_id].recipients = [...companyPosts.posts[action.data.post_id].recipients, ...action.data.recipients];
         companyPosts.posts[action.data.post_id].recipient_ids = [...companyPosts.posts[action.data.post_id].recipient_ids, ...action.data.recipient_ids];
+      }
+      return {
+        ...state,
+        companyPosts: companyPosts,
+      };
+    }
+    case "REMOVE_USER_TO_POST_RECIPIENTS": {
+      let companyPosts = { ...state.companyPosts };
+      if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        const filteredRecipientsIds = companyPosts.posts[action.data.post_id].recipient_ids.filter((id) => {
+          return !action.data.remove_recipient_ids.includes(id);
+        });
+        const filteredRecipients = companyPosts.posts[action.data.post_id].recipients.filter((r) => {
+          return !action.data.remove_recipient_ids.includes(r.id);
+        });
+
+        companyPosts.posts[action.data.post_id].recipient_ids = filteredRecipientsIds;
+        companyPosts.posts[action.data.post_id].recipients = filteredRecipients;
       }
       return {
         ...state,
@@ -916,6 +940,33 @@ export default (state = INITIAL_STATE, action) => {
                 is_close: action.data.is_close,
               },
             }),
+          },
+        },
+      };
+    }
+    case "GET_UNREAD_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
           },
         },
       };

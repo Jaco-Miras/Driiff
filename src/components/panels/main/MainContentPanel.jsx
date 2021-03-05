@@ -8,6 +8,7 @@ import { SystemPeoplePanel } from "../system";
 import { TodosPanel } from "../todos";
 import { HuddlePanel } from "../bot";
 import RedirectPanel from "../redirect/RedirectPanel";
+import { ReleasesPanel } from "../news";
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
@@ -36,6 +37,7 @@ const MainContentPanel = (props) => {
         <Route {...props} component={TodosPanel} path={["/todos"]} />
         {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />}
         <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
+        <Route {...props} component={ReleasesPanel} path={["/releases"]} />
         <Redirect
           from="*"
           to={{

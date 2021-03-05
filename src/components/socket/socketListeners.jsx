@@ -79,11 +79,13 @@ import {
   getConnectedSlugs,
   getLatestReply,
   getUnreadNotificationCounterEntries,
+  incomingCreatedAnnouncement,
   incomingDoneToDo,
   incomingFavouriteItem,
   incomingRemoveToDo,
   incomingToDo,
   incomingUpdateToDo,
+  incomingUpdatedAnnouncement,
   refetchMessages,
   refetchOtherMessages,
   setBrowserTabStatus,
@@ -888,8 +890,23 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
-      .listen(".users-online-broadcast", (e) => {
+      .listen(".announcement-notification", (e) => {
         console.log(e);
+        switch (e.SOCKET_TYPE) {
+          case "ANNOUNCEMENT_UPDATED": {
+            this.props.incomingUpdatedAnnouncement(e);
+            break;
+          }
+          case "ANNOUNCEMENT_CREATED": {
+            this.props.incomingCreatedAnnouncement(e);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
+      .listen(".users-online-broadcast", (e) => {
+        //console.log(e);
         this.props.incomingOnlineUsers(e);
       })
       .listen(".user-updated", (e) => {
@@ -1747,6 +1764,8 @@ function mapDispatchToProps(dispatch) {
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
     incomingHuddleSkip: bindActionCreators(incomingHuddleSkip, dispatch),
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
+    incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
+    incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
   };
 }
 

@@ -45,7 +45,7 @@ const useCompanyPosts = () => {
       //   limit: 25,
       //   filters: ["post", "archived"],
       // });
-      actions.fetchCompanyPosts({
+      actions.fetchUnreadCompanyPosts({
         skip: 0,
         limit: 100,
         filters: ["green_dot"],

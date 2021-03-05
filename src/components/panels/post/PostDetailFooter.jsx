@@ -10,6 +10,7 @@ import { useToaster, useTranslation, usePostActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
 import { CheckBox, FolderSelect } from "../../forms";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   position: relative;
@@ -249,8 +250,25 @@ const PostInputButtons = styled.div`
 `;
 
 const PostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, workspace, isMember, disableOptions, mainInput } = props;
-
+  const {
+    className = "",
+    overview,
+    onShowFileDialog,
+    dropAction,
+    post,
+    posts,
+    filter,
+    parentId = null,
+    commentActions,
+    userMention = null,
+    handleClearUserMention = null,
+    commentId = null,
+    innerRef = null,
+    workspace,
+    isMember,
+    disableOptions,
+    mainInput,
+  } = props;
   const postActions = usePostActions();
   const dispatch = useDispatch();
   const ref = {
@@ -347,6 +365,8 @@ const PostDetailFooter = (props) => {
     reopen: _t("POST.REOPEN", "Reopen"),
     agree: _t("POST.AGREE", "Agree"),
     disagree: _t("POST.DISAGREE", "Disagree"),
+    overview: _t("POST.OVERVIEW", "Overview"),
+    archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
   };
 
   const handleUnarchive = () => {
@@ -561,6 +581,28 @@ const PostDetailFooter = (props) => {
     }
   };
 
+  const handleNextPost = () => {
+    const nextPost = posts.reduce((accumulator, { id }, index) => {
+      if (id === post.id) {
+        accumulator = posts[index + 1];
+      }
+      return accumulator;
+    }, null);
+
+    postActions.archivePost(post, () => {
+      if (!nextPost) {
+        overview();
+      } else {
+        const path =
+          workspace.folder_name && workspace.folder_id
+            ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+            : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+        console.error("PATH", path);
+        postActions.openPost(nextPost, path);
+      }
+    });
+  };
+
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
   const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
@@ -644,7 +686,12 @@ const PostDetailFooter = (props) => {
       )}
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote commentActions={commentActions} commentId={editPostComment ? editPostComment.quote.id : commentId} editPostComment={editPostComment} mainInput={mainInput} />
+          <CommentQuote
+            commentActions={commentActions}
+            commentId={editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId}
+            editPostComment={editPostComment}
+            mainInput={mainInput}
+          />
         </Dflex>
       }
       <Dflex className="d-flex alig-items-center">
@@ -670,7 +717,7 @@ const PostDetailFooter = (props) => {
         <ClosedLabel className="d-flex align-items-center">
           <div className="alert alert-warning">
             <span>{dictionary.creatorClosedPost}</span>
-            {post.author.id === user.id && <span onClick={handleReopen}>{dictionary.reopen}</span>}
+            {(post.author.id === user.id || (post.author.type === "external" && user.type === "internal")) && <span onClick={handleReopen}>{dictionary.reopen}</span>}
           </div>
         </ClosedLabel>
       )}
@@ -681,7 +728,7 @@ const PostDetailFooter = (props) => {
           </NoReply>
         </Dflex>
       )}
-      {((isMember && !disableOptions && !isApprover) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
+      {((isMember && !disableOptions) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
         <>
           <Dflex className="d-flex align-items-end">
             <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
@@ -755,6 +802,18 @@ const PostDetailFooter = (props) => {
           </div>
           <div className="channel-action">
             <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspace}</button>
+          </div>
+        </Dflex>
+      )}
+      {filter && (filter === "all" || filter === "inbox") && (
+        <Dflex>
+          <div className="d-flex align-items-center justify-content-center mt-3">
+            <button className="btn btn-outline-light mr-3" onClick={() => overview()}>
+              <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
+            </button>
+            <button className="btn btn-outline-light" onClick={handleNextPost}>
+              {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
+            </button>
           </div>
         </Dflex>
       )}
