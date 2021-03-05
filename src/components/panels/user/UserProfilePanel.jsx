@@ -159,7 +159,7 @@ const UserProfilePanel = (props) => {
     external: _t("PROFILE.EXTERNAL", "External"),
   };
 
-  const isAdmin = loggedUser && loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active;
+  const isAdmin = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
 
   const getValidClass = useCallback((valid) => {
     if (typeof valid !== "boolean") {
@@ -571,7 +571,7 @@ const UserProfilePanel = (props) => {
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
                   {dictionary.information}
-                  {isLoggedUser || (loggedUser.role && loggedUser.role.name === "admin" && user && user.type === "external" && user.active) ? (
+                  {isLoggedUser || (loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active) ? (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                       <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
