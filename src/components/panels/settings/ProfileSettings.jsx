@@ -1,6 +1,7 @@
 import momentTZ from "moment-timezone";
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
@@ -68,9 +69,15 @@ const Wrapper = styled.div`
   }
 `;
 
+const ReleaseLink = styled.span`
+  font-weight: 500;
+  cursor: pointer;
+`;
+
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
+  const history = useHistory();
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -105,18 +112,19 @@ const ProfileSettings = (props) => {
     dateTimeFormatLabel: _t("SETTINGS.DATE_TIME_FORMAT_LABEL", "Date and time format"),
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
+    viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
   };
 
-  const notificationSoundOptions = [
-    {
-      value: "appointed",
-      label: dictionary.notificationSoundDefault,
-    },
-    // {
-    //   value: "jingle-bells",
-    //   label: dictionary.notificationSoundJingleBells,
-    // },
-  ];
+  // const notificationSoundOptions = [
+  //   {
+  //     value: "appointed",
+  //     label: dictionary.notificationSoundDefault,
+  //   },
+  //   // {
+  //   //   value: "jingle-bells",
+  //   //   label: dictionary.notificationSoundJingleBells,
+  //   // },
+  // ];
 
   const channelSortOptions = [
     {
@@ -332,6 +340,10 @@ const ProfileSettings = (props) => {
     });
   };
 
+  const handleViewReleasePage = () => {
+    history.push("/releases");
+  };
+
   return (
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
@@ -535,7 +547,7 @@ const ProfileSettings = (props) => {
         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
       )}
       <span className="version-number">
-        Driff version: {driffData.version} {localizeDate(driffData.timestamp)}
+        Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
     </Wrapper>
   );
