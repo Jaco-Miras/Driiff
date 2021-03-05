@@ -18,22 +18,17 @@ const Wrapper = styled(InputGroup)`
 
 const SelectOption = styled.div`
   display: flex;
+  flex-flow: row;
   align-items: center;
-  .select-option {
-      color: white;
+  transition: background 0.15s ease;
+  svg {
+    transition: none;
   }
   &:hover {
-    background: #deebff;
-  }
-  > div {
-    display: flex;
-    align-items: center;
-  }
-
-  .workspaces {
-    display: block;
-    font-size: 12px;
-    width: 100%;
+    background: #25282c;
+    svg {
+      color: #ffffff;
+    }
   }
 `;
 
@@ -239,21 +234,24 @@ const CreateEditPostListModal = (props) => {
             }
         });
     }
-
+    // d-flex justify-content-start align-items-center
     const Option = (props) => {
         return (
             <SelectOption >
                 <components.Option {...props}>
                     {props.data && (
-                        <div className="select-option">
-                            {props.children}
-                        </div>
-                        
+                        <span className="d-flex justify-content-start align-items-center">
+                            <div className="select-option">
+                                {props.children}
+                            </div>
+                        </span>
                     )}
                 </components.Option>
             </SelectOption>
         )
     }; 
+    console.log(dark_mode)
+    console.log(lightTheme, darkTheme)
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
       <ModalHeaderSection toggle={toggle}>{mode === "add"? dictionary.addToList : (mode === "edit")? dictionary.updateList: dictionary.newList}</ModalHeaderSection>
