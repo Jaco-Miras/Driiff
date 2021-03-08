@@ -43,12 +43,13 @@ const useUserChannels = () => {
       if (channel) {
         channelActions.select(channel);
         history.push(`/chat/${channel.code}`);
+        if (callback) callback();
       } else {
         //search the channel
         let cb = (err, res) => {
           searchingRef.current = null;
           if (err) return;
-          if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code);
+          if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code, callback);
         };
         let user_ids = [user.id, loggedUser.id];
         let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 //import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
@@ -6,19 +6,34 @@ import { SvgIconFeather } from "./SvgIcon";
 import { useOutsideClick, useUserChannels, useTooltipOrientation } from "../hooks";
 
 const ProfileWrapper = styled.div``;
+const Icon = styled(SvgIconFeather)`
+  opacity: ${(props) => (props.loading ? "0" : "1")};
+  width: ${(props) => (props.loading ? "1px !important" : "1rem")};
+`;
 
 const ProfileSlider = (props) => {
   const { id, onShowPopup, avatarRef, scrollRef } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
+  const [loading, setLoading] = useState(false);
+
   const sliderRef = useRef(null);
-  //   const users = useSelector((state) => state.users.users);
+
   const user = users[id];
-  const handleUserChat = () => {
-    if (user) {
-      selectUserChannel(user);
-    }
+  const handleUserChat = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    setLoading(true);
+    const cb = () => {
+      setLoading(false);
+      onShowPopup();
+    };
+    if (!loading) selectUserChannel(user, cb);
   };
-  const handleClose = () => {};
+  const handleClose = () => {
+    onShowPopup();
+  };
+
   useOutsideClick(sliderRef, onShowPopup, true);
 
   const { orientation } = useTooltipOrientation(avatarRef, sliderRef, scrollRef, true);
@@ -31,8 +46,9 @@ const ProfileSlider = (props) => {
           <h5>{user.name}</h5>
           <span className="text-muted small">{user.designation}</span>
           {user.type === "internal" && loggedUser.id !== user.id && (
-            <button className="ml-1 btn btn-outline-light">
-              <SvgIconFeather onClick={handleUserChat} icon="message-circle" />
+            <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
+              {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
+              <Icon icon="message-circle" loading={loading} />
             </button>
           )}
         </div>
