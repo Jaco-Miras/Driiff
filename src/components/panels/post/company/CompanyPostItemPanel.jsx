@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { PostBadge } from "../index";
 import quillHelper from "../../../../helpers/quillHelper";
-import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../../hooks";
+import { useTimeFormat, useTouchActions, useWindowSize } from "../../../hooks";
 import { TodoCheckBox } from "../../../forms";
 import { renderToString } from "react-dom/server";
 
@@ -266,14 +266,13 @@ const CompanyPostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close },
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, snooze },
   } = props;
 
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
 
   const winSize = useWindowSize();
-  const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
   const [postBadgeWidth, setPostBadgeWidth] = useState(0);
@@ -371,6 +370,10 @@ const CompanyPostItemPanel = (props) => {
 
   const hasUnread = post.is_unread === 1 || post.unread_count > 0;
 
+  const handleSnooze = () => {
+    snooze(post);
+  };
+
   return (
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
@@ -442,6 +445,7 @@ const CompanyPostItemPanel = (props) => {
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
             {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+            <div onClick={handleSnooze}>Snooze this post</div>
           </MoreOptions>
         )}
       </div>

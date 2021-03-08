@@ -971,6 +971,22 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "REMOVE_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...Object.keys(state.companyPosts.posts)
+              .filter((key) => parseInt(key) !== action.data.id)
+              .reduce((res, id) => {
+                res[id] = { ...state.companyPosts.posts[id] };
+                return res;
+              }, {}),
+          },
+        },
+      };
+    }
     default:
       return state;
   }

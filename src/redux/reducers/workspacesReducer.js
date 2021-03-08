@@ -653,14 +653,14 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "REMOVE_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];
-      return {
-        ...state,
-        workspacePosts: newWorkspacePosts,
-      };
-    }
+    // case "REMOVE_POST": {
+    //   let newWorkspacePosts = { ...state.workspacePosts };
+    //   delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];
+    //   return {
+    //     ...state,
+    //     workspacePosts: newWorkspacePosts,
+    //   };
+    // }
     case "FETCH_COMMENTS_SUCCESS": {
       let postComments = { ...state.postComments };
       let comments = {};
@@ -2545,6 +2545,32 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspacePosts: workspacePost,
+      };
+    }
+    case "REMOVE_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipients
+            .filter((r) => r.type === "TOPIC")
+            .reduce((res, ws) => {
+              if (state.workspacePosts[ws.id]) {
+                res[ws.id] = {
+                  ...state.workspacePosts[ws.id],
+                  posts: {
+                    ...Object.keys(state.workspacePosts[ws.id].posts)
+                      .filter((key) => parseInt(key) !== action.data.id)
+                      .reduce((post, id) => {
+                        post[id] = { ...state.workspacePosts[ws.id].posts[id] };
+                        return post;
+                      }, {}),
+                  },
+                };
+              }
+              return res;
+            }, {}),
+        },
       };
     }
     default:

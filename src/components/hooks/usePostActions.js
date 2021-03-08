@@ -49,6 +49,7 @@ import {
   updatePostFiles,
   postComment,
   postClose,
+  postSnooze,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -103,6 +104,9 @@ const usePostActions = () => {
       "POST.ACCEPT_GENERAL_CONDITION",
       "You accept the final design provided to you. Zuid will now proceed on the next steps. Any additional changes on the design will be subject for re-estimation and additional work which will be considered as a separate project."
     ),
+    snoozeThisPost: _t("MODAL.SNOOZE_THIS_POST", "Are you sure you want to snooze this post?"),
+    buttonSnooze: _t("BUTTON.SNOOZE", "Snooze"),
+    headerSnoozePost: _t("MODAL.SNOOZE_POST", "Snooze post"),
   };
 
   const starPost = useCallback(
@@ -961,6 +965,40 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const snooze = useCallback(
+    (post) => {
+      const onConfirm = () => {
+        dispatch(
+          postSnooze(
+            {
+              post_id: post.id,
+              set_time: "tomorrow",
+            },
+            (err, res) => {
+              if (err) return;
+              toaster.success("Post successfully snoozed.");
+            }
+          )
+        );
+        dispatch(removePost(post));
+      };
+
+      let payload = {
+        type: "confirmation",
+        headerText: dictionary.headerSnoozePost,
+        submitText: dictionary.buttonSnooze,
+        cancelText: dictionary.buttonCancel,
+        bodyText: dictionary.snoozeThisPost,
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
     approveComment,
@@ -1000,6 +1038,7 @@ const usePostActions = () => {
     close,
     generateSystemMessage,
     fetchUnreadCompanyPosts,
+    snooze,
   };
 };
 
