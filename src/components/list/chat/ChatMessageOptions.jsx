@@ -14,7 +14,7 @@ const ChatMessageOptions = (props) => {
   const scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
-  const { selectUserChannel } = useUserChannels();
+  const { selectUserChannel, loggedUser } = useUserChannels();
 
   useEffect(() => {
     if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && !replyData.hasOwnProperty("huddle_log")) {
@@ -87,7 +87,7 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
-      {replyData.user && replyData.user.type !== "BOT" && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
+      {replyData.user && replyData.user.type !== "BOT" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
     </MoreOptions>
   );
 };
