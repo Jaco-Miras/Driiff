@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addToModals } from "../../../redux/actions/globalActions";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
+import useUserChannels from "../../hooks/useUserChannels";
 
 import { MoreOptions } from "../../panels/common";
 
 const ChatMessageOptions = (props) => {
   const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250 } = props;
   const [showMoreOptions, setShowMoreOptions] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const dispatch = useDispatch();
   const scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
+  const { selectUserChannel } = useUserChannels();
 
   useEffect(() => {
     if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && !replyData.hasOwnProperty("huddle_log")) {
@@ -65,6 +68,14 @@ const ChatMessageOptions = (props) => {
   const handleEditHuddle = () => {
     chatMessageActions.setHuddleAnswers({ id: replyData.id, channel_id: replyData.channel_id, huddle_log: replyData.huddle_log });
   };
+
+  const handleReply = () => {
+    if (!redirecting) {
+      setRedirecting(true);
+      selectUserChannel(replyData.user, () => setRedirecting(false));
+      setShowMoreOptions(!showMoreOptions);
+    }
+  };
   /* dictionary initiated in ChatContentPanel.jsx */
   return (
     <MoreOptions width={width} className={className} scrollRef={scrollEl}>
@@ -76,6 +87,7 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
+      {replyData.user && replyData.user.type !== "BOT" && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
     </MoreOptions>
   );
 };

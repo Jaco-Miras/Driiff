@@ -149,6 +149,7 @@ const ChatContentPanel = (props) => {
     markImportant: _t("CHAT.MARK_IMPORTANT", "Mark as important"),
     unMarkImportant: _t("CHAT.UNMARK_IMPORTANT", "Unmark as important"),
     teamFeedback: _t("HUDDLE.HUDDLE_TEAM_FEEDBACK", "Huddle team feedback"),
+    replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
