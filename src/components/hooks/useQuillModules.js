@@ -350,6 +350,10 @@ const useQuillModules = ({
     }
   }, [mode, post, previousPost]);
 
+  useEffect(() => {
+    handleSetModule();
+  }, [recipients.length]);
+
   const formats = ["background", "bold", "color", "font", "code", "italic", "link", "size", "strike", "script", "blockquote", "header", "indent", "list", "align", "direction", "image", "video"];
 
   return {
