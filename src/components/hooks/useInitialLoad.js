@@ -19,6 +19,7 @@ const useInitialLoad = () => {
       dispatch(getAllRecipients());
       dispatch(getUsers());
       dispatch(getExternalUsers());
+      dispatch(getDrafts());
       //dispatch(getUnreadPostEntries());
       if (Object.keys(notifications).length === 0) {
         dispatch(getNotifications({ skip: 0, limit: 50 }));
