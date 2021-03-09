@@ -571,23 +571,23 @@ export default (state = INITIAL_STATE, action) => {
         search: updatedSearch,
       };
     }
-    case "GET_DRAFTS_SUCCESS": {
-      return {
-        ...state,
-        drafts: action.data.map((d) => {
-          if (d.data.type === "draft_post") {
-            return Object.assign({}, d, {
-              ...d.data,
-              draft_id: d.id,
-              post_id: d.data.id,
-              updated_at: d.data.created_at,
-            });
-          } else {
-            return d;
-          }
-        }),
-      };
-    }
+    // case "GET_DRAFTS_SUCCESS": {
+    //   return {
+    //     ...state,
+    //     drafts: action.data.map((d) => {
+    //       if (d.data.type === "draft_post") {
+    //         return Object.assign({}, d, {
+    //           ...d.data,
+    //           draft_id: d.id,
+    //           post_id: d.data.id,
+    //           updated_at: d.data.created_at,
+    //         });
+    //       } else {
+    //         return d;
+    //       }
+    //     }),
+    //   };
+    // }
     case "SAVE_DRAFT_SUCCESS": {
       if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined") {
         const draft = {
@@ -2550,8 +2550,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "POST_LIST_CONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
-        if (!wp.posts.hasOwnProperty(action.data.post_id)){
-           newValue[topic_id] = wp;
+        if (!wp.posts.hasOwnProperty(action.data.post_id)) {
+          newValue[topic_id] = wp;
         } else {
           newValue[topic_id] = {
             ...wp,
@@ -2559,22 +2559,22 @@ export default (state = INITIAL_STATE, action) => {
               ...wp.posts,
               [action.data.post_id]: {
                 ...wp.posts[action.data.post_id],
-                post_list_connect: [{id: action.data.link_id}]
-              }
-            }
-          }
+                post_list_connect: [{ id: action.data.link_id }],
+              },
+            },
+          };
         }
         return newValue;
       }, {});
       return {
         ...state,
         workspacePosts: newWp,
-      } 
+      };
     }
     case "POST_LIST_DISCONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
-        if (!wp.posts.hasOwnProperty(action.data.post_id)){
-           newValue[topic_id] = wp;
+        if (!wp.posts.hasOwnProperty(action.data.post_id)) {
+          newValue[topic_id] = wp;
         } else {
           newValue[topic_id] = {
             ...wp,
@@ -2582,18 +2582,18 @@ export default (state = INITIAL_STATE, action) => {
               ...wp.posts,
               [action.data.post_id]: {
                 ...wp.posts[action.data.post_id],
-                post_list_connect: []
-              }
-            }
-          }
+                post_list_connect: [],
+              },
+            },
+          };
         }
         return newValue;
       }, {});
 
       return {
         ...state,
-        workspacePosts: newWp
-      }
+        workspacePosts: newWp,
+      };
     }
 
     default:
