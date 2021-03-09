@@ -450,7 +450,7 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-        {driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp && (
+        {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
           <GiftWrapper>
             <GiftIcon icon="gift" color="#fff" onClick={handleGiftClick} />
           </GiftWrapper>
