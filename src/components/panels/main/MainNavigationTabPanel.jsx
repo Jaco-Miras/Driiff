@@ -15,7 +15,11 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px 0 30px 0;
+    //padding: 30px;
+    margin-bottom: 2rem;
+    min-height: 74px;
+    max-height: 74px;
+    background-color: #3f034a;
     .driff-logo {
       width: 90px;
       height: 90px;
@@ -31,7 +35,10 @@ const Wrapper = styled.div`
       }
     }
     @media (max-width: 620px) {
-      padding: 10px 0 20px 0;
+      padding: 20px 0;
+    }
+    .dark & {
+      background-color: inherit;
     }
   }
   .driff-company-name {
@@ -146,7 +153,7 @@ const Wrapper = styled.div`
 
 const DriffLogo = styled(SvgIcon)`
   width: 84px;
-  height: 36px;
+  height: 56px;
   filter: brightness(0) saturate(100%) invert(1);
   cursor: pointer;
 `;
@@ -442,19 +449,13 @@ const MainNavigationTabPanel = (props) => {
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
-      <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-          {/* {driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp && (
-            <GiftWrapper>
-              <GiftIcon icon="gift" color="#fff" onClick={handleGiftClick} />
-            </GiftWrapper>
-          )} */}
-
-          <div className="driff-logo">
+      <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
+        <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />
+        {/* <div className="driff-logo">
             <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
-          </div>
-        </div>
+          </div> */}
       </div>
+
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           {!isExternal && (
