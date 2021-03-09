@@ -2,19 +2,19 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement } from "../../redux/actions/globalActions";
+import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement, deleteReleaseAnnouncement } from "../../redux/actions/globalActions";
 import { useTranslation, useQuillModules } from "../hooks";
 import { ModalHeaderSection } from "./index";
 // import quillHelper from "../../helpers/quillHelper";
 import { FormInput, QuillEditor, CheckBox } from "../forms";
-// import moment from "moment";
-// import MessageFiles from "../list/chat/Files/MessageFiles";
-// import { FileAttachments } from "../common";
 
 const Wrapper = styled(Modal)`
-  // .modal-body {
-  //   padding-bottom: 3rem !important;
-  // }
+  .modal-footer {
+    justify-content: space-between;
+  }
+  .margin-left-auto {
+    margin-left: auto;
+  }
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -69,12 +69,29 @@ const ReleaseModal = (props) => {
     title: "",
     description: "",
     textOnly: "",
-    major: false,
+    major_release: false,
   });
   const [loading, setLoading] = useState(false);
+  const [nestedModal, setNestedModal] = useState(false);
+  const [closeAll, setCloseAll] = useState(false);
 
   const toggle = () => {
     setModal(!modal);
+    dispatch(clearModal({ type: type }));
+  };
+
+  const toggleNested = () => {
+    setNestedModal(!nestedModal);
+    setCloseAll(false);
+  };
+
+  const toggleAll = (toDelete) => {
+    setNestedModal(!nestedModal);
+    setCloseAll(true);
+    setModal(!modal);
+    if (toDelete) {
+      handleDelete();
+    }
     dispatch(clearModal({ type: type }));
   };
 
@@ -103,6 +120,7 @@ const ReleaseModal = (props) => {
         title: item.action_text,
         description: item.body,
         textOnly: item.body,
+        major_release: item.major_release,
       });
     }
   }, []);
@@ -113,6 +131,7 @@ const ReleaseModal = (props) => {
         id: item.id,
         body: form.description,
         action_text: form.title,
+        major_release: form.major_release,
       };
       dispatch(updateReleaseAnnouncement(payload));
       toggle();
@@ -120,6 +139,7 @@ const ReleaseModal = (props) => {
       let payload = {
         body: form.description,
         action_text: form.title,
+        major_release: form.major_release,
       };
       dispatch(createReleaseAnnouncement(payload));
       toggle();
@@ -129,8 +149,13 @@ const ReleaseModal = (props) => {
   const handleCheck = () => {
     setForm({
       ...form,
-      major: !form.major,
+      major_release: !form.major_release,
     });
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteReleaseAnnouncement({ id: item.id }));
+    toggle();
   };
 
   const quillRef = useRef(null);
@@ -140,6 +165,18 @@ const ReleaseModal = (props) => {
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>Release note</ModalHeaderSection>
       <ModalBody>
+        <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
+          <ModalHeaderSection toggle={toggleNested}>Delete log</ModalHeaderSection>
+          <ModalBody>Are you sure you want to delete this release log?</ModalBody>
+          <ModalFooter>
+            <Button className="btn-outline-secondary" onClick={() => toggleAll(false)}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={() => toggleAll(true)}>
+              Delete
+            </Button>
+          </ModalFooter>
+        </Modal>
         <div className="col-12 modal-label">Title</div>
         <div className="col-12">
           <FormInput
@@ -155,21 +192,30 @@ const ReleaseModal = (props) => {
         <div className="col-12">
           <StyledQuillEditor ref={quillRef} onChange={handleQuillChange} modules={modules} name="description" defaultValue={item ? item.body : ""} />
         </div>
-        {/* <br />
+        <br />
         <CheckBoxContainer className="col-12">
-          <CheckBox name="must_read" checked={form.major} onClick={handleCheck} type="danger">
+          <CheckBox name="must_read" checked={form.major_release} onClick={handleCheck} type="danger">
             Major release
           </CheckBox>
-        </CheckBoxContainer> */}
+        </CheckBoxContainer>
       </ModalBody>
       <ModalFooter>
-        <Button outline color="secondary" onClick={toggle}>
-          Cancel
-        </Button>
-        <Button color="primary" onClick={handleSubmit} disabled={form.textOnly === "" || form.title === ""}>
-          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-          {item ? "Update" : "Save"}
-        </Button>{" "}
+        {item && (
+          <div>
+            <Button outline color="secondary" onClick={toggleNested}>
+              Delete
+            </Button>
+          </div>
+        )}
+        <div className={item ? "" : "margin-left-auto"}>
+          <Button outline color="secondary" onClick={toggle}>
+            Cancel
+          </Button>
+          <Button color="primary ml-2" onClick={handleSubmit} disabled={form.textOnly === "" || form.title === ""}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {item ? "Update" : "Save"}
+          </Button>{" "}
+        </div>
       </ModalFooter>
     </Wrapper>
   );

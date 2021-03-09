@@ -90,6 +90,7 @@ import {
   setBrowserTabStatus,
   setGeneralChat,
   setUnreadNotificationCounterEntries,
+  incomingDeletedAnnouncement,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -877,6 +878,10 @@ class SocketListeners extends Component {
           }
           case "ANNOUNCEMENT_CREATED": {
             this.props.incomingCreatedAnnouncement(e);
+            break;
+          }
+          case "ANNOUNCEMENT_DELETED": {
+            this.props.incomingDeletedAnnouncement(e);
             break;
           }
           default:
@@ -1743,6 +1748,7 @@ function mapDispatchToProps(dispatch) {
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
     incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
     incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
+    incomingDeletedAnnouncement: bindActionCreators(incomingDeletedAnnouncement, dispatch),
   };
 }
 
