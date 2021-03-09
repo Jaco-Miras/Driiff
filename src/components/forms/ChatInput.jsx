@@ -704,18 +704,18 @@ const ChatInput = (props) => {
       let recipient_ids = recipients
         .filter((r) => r.type === "USER")
         .filter((r) => {
-          return members.some((m) => m.id === r.type_id);
+          return selectedChannel.members.some((m) => m.id === r.type_id);
         })
         .map((r) => r.id);
       let payload = {
-        recipient_ids: recipient_ids,
+        recipient_ids: [...recipient_ids, ...users.map((u) => u.id)],
         title: title,
       };
       create(payload, createCallback);
     } else {
       let memberPayload = {
         channel_id: selectedChannel.id,
-        recipient_ids: users.map((u) => u.id),
+        recipient_ids: users.map((u) => u.type_id),
       };
       dispatch(
         postChannelMembers(memberPayload, (err, res) => {

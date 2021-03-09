@@ -366,15 +366,15 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   const handleRemoveMention = () => {
     let to_remove = [];
-    if (post.hasOwnProperty("to_add")) { 
-      to_remove = post.to_add.filter( id => !mentionUsers.includes(id));
-    }  
+    if (post.hasOwnProperty("to_add")) {
+      to_remove = post.to_add.filter((id) => !mentionUsers.includes(id));
+    }
     let payload = {
       post_id: post.id,
-      remove_recipient_ids: to_remove
+      remove_recipient_ids: to_remove,
     };
     dispatch(removeUserToPostRecipients(payload));
-  }
+  };
 
   const handleMentionUser = (mention_ids) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
@@ -512,18 +512,16 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //     }
   // };
   const handleAddMentionedUsersToPost = () => {
-    dispatch(
-      addPostRecipients(mentionUsersPayload)
-    );
-  }
+    dispatch(addPostRecipients(mentionUsersPayload));
+  };
 
   const handleAddMentionedUsers = (users) => {
-    const userIds = users.map((u) => u.id);
+    //const userIds = users.map((u) => u.id);
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
 
     const newRecipients = userRecipients.filter((r) => {
-      return users.some((data) => data.id === r.type_id);
+      return users.some((data) => data.id === r.id);
     });
     let payload = {
       post_id: post.id,

@@ -729,32 +729,37 @@ const CreateEditWorkspacePostModal = (props) => {
     //check if users is member of workspace if not add them then add to responsible list
     //if user is already a member of the workspace then add user to responsible list
 
+    const mentionedUsers = addressToOptions.filter((ad) => {
+      return users.some((u) => u.id === ad.id);
+    });
+
     setForm({
       ...form,
       selectedAddressTo: [
-        ...users.map((user) => {
-          if (user.type === "WORKSPACE" || user.type === "TOPIC") {
-            return {
-              ...user,
-              value: user.id,
-              label: user.name,
-              name: user.name,
-              first_name: user.first_name,
-              type: user.type,
-            };
-          }
-          return {
-            id: user.id,
-            value: user.id,
-            label: user.name,
-            name: user.name,
-            first_name: user.first_name,
-            profile_image_link: user.profile_image_link,
-            profile_image_thumbnail_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-            type: "USER",
-            icon: "user-avatar",
-          };
-        }),
+        ...mentionedUsers,
+        // ...users.map((user) => {
+        //   if (user.type === "WORKSPACE" || user.type === "TOPIC") {
+        //     return {
+        //       ...user,
+        //       value: user.id,
+        //       label: user.name,
+        //       name: user.name,
+        //       first_name: user.first_name,
+        //       type: user.type,
+        //     };
+        //   }
+        //   return {
+        //     id: user.id,
+        //     value: user.id,
+        //     label: user.name,
+        //     name: user.name,
+        //     first_name: user.first_name,
+        //     profile_image_link: user.profile_image_link,
+        //     profile_image_thumbnail_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+        //     type: "USER",
+        //     icon: "user-avatar",
+        //   };
+        // }),
         ...form.selectedAddressTo,
       ],
     });

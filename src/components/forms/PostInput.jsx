@@ -301,8 +301,7 @@ const PostInput = forwardRef((props, ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
-    
-    
+
     if (mentionUsers.length) {
       handleAddMentionedUsersToPost();
     }
@@ -363,16 +362,16 @@ const PostInput = forwardRef((props, ref) => {
 
   const handleRemoveMention = () => {
     let to_remove = [];
-    if (post.hasOwnProperty("to_add")) { 
-      to_remove = post.to_add.filter( id => !mentionUsers.includes(id));
-    }  
+    if (post.hasOwnProperty("to_add")) {
+      to_remove = post.to_add.filter((id) => !mentionUsers.includes(id));
+    }
     let payload = {
       post_id: post.id,
       topic_id: workspace.id,
-      remove_recipient_ids: to_remove
+      remove_recipient_ids: to_remove,
     };
     dispatch(removeUserToPostRecipients(payload));
-  }
+  };
 
   const handleMentionUser = (mention_ids) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
@@ -527,17 +526,15 @@ const PostInput = forwardRef((props, ref) => {
   //   setMentionedUserIds([]);
   // };
   const handleAddMentionedUsersToPost = () => {
-    dispatch(
-      addPostRecipients(mentionUsersPayload)
-    );
-  }
+    dispatch(addPostRecipients(mentionUsersPayload));
+  };
 
   const handleAddMentionedUsers = (users) => {
     const userIds = users.map((u) => u.id);
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
     const newRecipients = userRecipients.filter((r) => {
-      return users.some((user) => user.id === r.type_id);
+      return users.some((user) => user.id === r.id);
     });
     let payload = {
       post_id: post.id,
