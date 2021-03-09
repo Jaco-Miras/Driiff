@@ -144,6 +144,7 @@ const PreloadEmojiImage = styled.img`
 class Socket extends PureComponent {
   constructor() {
     super();
+    console.log("SOCKET", this.state);
     this.state = {
       hasInitiateEcho: false,
       hasInitiateNotification: false,
