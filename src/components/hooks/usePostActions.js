@@ -50,6 +50,14 @@ import {
   postComment,
   postClose,
   postSnooze,
+  getPostList,
+  createPostList,
+  updatePostList,
+  deletePostList,
+  postListConnect,
+  postListDisconnected,
+  incomingPostListConnect,
+  incomingPostListDisconnect,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -108,6 +116,44 @@ const usePostActions = () => {
     buttonSnooze: _t("BUTTON.SNOOZE", "Snooze"),
     headerSnoozePost: _t("MODAL.SNOOZE_POST", "Snooze post"),
   };
+
+  const fetchPostList = useCallback((payload = {}, callback) => {
+    dispatch(getPostList(payload, callback));
+  });
+
+  const createNewPostList = useCallback((payload = {}, callback) => {
+    dispatch(createPostList(payload, callback));
+  });
+
+  const updatePostsList = useCallback((payload = {}, callback) => {
+    dispatch(updatePostList(payload, callback));
+  });
+
+  const deletePostsList = useCallback((payload = {}, callback) => {
+    dispatch(deletePostList(payload, callback));
+  });
+
+  const connectPostList = useCallback((payload, callback) => {
+    dispatch(postListConnect(payload, callback));
+  });
+
+  const disconnectPostList = useCallback(
+    (payload, callback) => {
+      dispatch(postListDisconnected(payload, callback));
+    },
+    [dispatch, params]
+  );
+
+  const updatePostListConnect = useCallback(
+    (payload, callback) => {
+      if (payload.SOCKET_TYPE === "POST_LIST_CONNECTED") {
+        dispatch(incomingPostListConnect(payload, callback));
+      } else {
+        dispatch(incomingPostListDisconnect(payload, callback));
+      }
+    },
+    [dispatch, params]
+  );
 
   const starPost = useCallback(
     (post) => {
@@ -642,6 +688,33 @@ const usePostActions = () => {
           };
           break;
         }
+        case "create_edit_post_list": {
+          payload = {
+            type: "post_list",
+            mode: "create",
+          };
+          break;
+        }
+        case "add_to_list": {
+          payload = {
+            type: "post_list",
+            mode: "add",
+            item: {
+              post: post,
+            },
+          };
+          break;
+        }
+        case "edit_post_list": {
+          payload = {
+            type: "post_list",
+            mode: "edit",
+            item: {
+              post: post,
+            },
+          };
+          break;
+        }
         default: {
           payload = {
             type: "workspace_post_create_edit",
@@ -1039,6 +1112,13 @@ const usePostActions = () => {
     generateSystemMessage,
     fetchUnreadCompanyPosts,
     snooze,
+    fetchPostList,
+    createNewPostList,
+    updatePostsList,
+    deletePostsList,
+    connectPostList,
+    disconnectPostList,
+    updatePostListConnect,
   };
 };
 

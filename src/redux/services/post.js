@@ -617,3 +617,78 @@ export function postClose(payload) {
     data: payload,
   });
 }
+
+
+/**
+ * @returns {Promise<*>}
+ */
+export function getPostList() {
+  return apiCall({
+    method: "GET",
+    url: "/v2/user-post-list",
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function createPostList(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/user-post-list",
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function updatePostList(payload, id) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/user-post-list/${id}`,
+    data: payload
+  });
+}
+
+/**
+ * @returns {Promise<*>}
+ */
+export function deletePostList(payload, id) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/user-post-list/${id}`,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.link_id
+ * @returns {Promise<*>}
+ */
+export function postListConnect(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/post-list-connect",
+    data: payload
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.link_id
+ * @returns {Promise<*>}
+ */
+export function postListDisconnect(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: "/v2/post-list-disconnected",
+    data: payload
+  });
+}

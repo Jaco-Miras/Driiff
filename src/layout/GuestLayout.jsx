@@ -6,6 +6,7 @@ import { DriffCreatePanel, ExternalRegisterPanel, LoginPanel, MagicLinkPanel, Re
 import { useUserLogin } from "../components/hooks/useUserLogin";
 import { useSettings, useTranslation } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
+import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
 
 const Wrapper = styled.div``;
 
@@ -132,6 +133,7 @@ const GuestLayout = (props) => {
             <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props} />} />
             <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
             <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
+            <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
           </Switch>
         </>
       )}

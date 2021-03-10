@@ -266,7 +266,7 @@ const CompanyPostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, snooze },
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList },
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -368,6 +368,20 @@ const CompanyPostItemPanel = (props) => {
     handleSwipeRight,
   });
 
+  const handleAddToListModal = () => {
+    if (post.post_list_connect.length !== 1) {
+      showModal("add_to_list", post);
+    } else {
+      const payload = {
+        link_id: post.post_list_connect[0].id,
+        post_id: post.id,
+      };
+      disconnectPostList(payload, (err, res) => {
+        console.log(err, res);
+      });
+    }
+  };
+
   const hasUnread = post.is_unread === 1 || post.unread_count > 0;
 
   // const handleSnooze = () => {
@@ -446,6 +460,7 @@ const CompanyPostItemPanel = (props) => {
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
             {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
             {/* <div onClick={handleSnooze}>Snooze this post</div> */}
+            {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
           </MoreOptions>
         )}
       </div>

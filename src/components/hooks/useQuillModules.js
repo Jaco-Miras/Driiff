@@ -10,17 +10,32 @@ import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 
-const useQuillModules = ({ mode, callback = null, removeMention = null, mentionOrientation = "top", quillRef, members = [], workspaces = [], disableMention = false, setInlineImages = null, prioMentionIds = [], post = null, setImageLoading = null }) => {
+const useQuillModules = ({
+  mode,
+  callback = null,
+  removeMention = null,
+  mentionOrientation = "top",
+  quillRef,
+  members = [],
+  workspaces = [],
+  disableMention = false,
+  setInlineImages = null,
+  prioMentionIds = [],
+  post = null,
+  setImageLoading = null,
+  excludeExternals = false,
+}) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
+  const recipients = useSelector((state) => state.global.recipients);
   const userMentions = useSelector((state) => state.users.mentions);
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const previousChannel = usePreviousValue(selectedChannel);
   const previousPost = usePreviousValue(post);
   const savedCallback = useRef(callback);
-  const removeCallback = useRef(removeMention)
+  const removeCallback = useRef(removeMention);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -33,7 +48,7 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
 
   const handleRemoveMention = () => {
     removeCallback.current();
-  }
+  };
 
   const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
   const handleSetModule = () => {
@@ -52,10 +67,13 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
     if (members.length) {
       newAtValues = [
         ...members.map((user) => {
+          const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
           return Object.assign({}, user, {
             value: user.first_name,
-            id: user.id,
+            id: r ? r.id : user.id,
+            //id: user.id,
             type_id: user.id,
+            user_id: user.id,
             class: "user-pic",
             link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
           });
@@ -64,16 +82,26 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
       ];
     } else {
       newAtValues = [
-        ...Object.entries(userMentions).map(([id, user], index) => {
-          return Object.assign({}, user, {
-            value: user.first_name,
-            id: user.id,
-            type_id: user.id,
-            class: "user-pic all-users",
-            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
-          });
-        }),
+        ...Object.values(userMentions)
+          .filter((user) => {
+            if (excludeExternals) {
+              if (user.type === "external") return false;
+              else return true;
+            } else return true;
+          })
+          .map((user) => {
+            const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
+            return Object.assign({}, user, {
+              value: user.first_name,
+              id: r ? r.id : user.id,
+              //id: user.id,
+              type_id: user.id,
+              user_id: user.id,
+              class: "user-pic all-users",
+              profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
+              link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+            });
+          }),
         all,
       ];
     }
@@ -132,6 +160,7 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
         mentionDenotationChars: ["@", "/"],
         minChars: 0,
         //linkTarget: "_blank",
+        dataAttributes: ["id", "value", "denotationChar", "link", "target", "disabled", "type_id", "type"],
         source: function (searchTerm, renderList, mentionChar) {
           let values;
 
@@ -153,28 +182,6 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
           }
         },
         renderItem: function (item, searchTerm) {
-          // let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          // let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
-          // if (typeof item.id === "string") {
-          //   avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          // }
-
-          // let listDisplay =
-          //   "<span class=\"" +
-          //   item.class +
-          //   "\" style=\"" +
-          //   avatarStyling +
-          //   "\"><img src=\"" +
-          //   (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
-          //   "\" draggable=\"false\" style=\"" +
-          //   avatarImgStyling +
-          //   "\" alt=\"" +
-          //   item.value +
-          //   "\"></span>&nbsp; <span style=\"width: auto; line-height: 1.35;\">" +
-          //   item.name +
-          //   "</span>";
-          // return listDisplay;
-
           let avatarStyling = {
             position: "relative",
             width: "30px",
@@ -259,8 +266,8 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
             key: 8,
             metaKey: osName.includes("Mac") && mode !== "chat" ? true : false,
             handler: function (range, context) {
-              if (range.index === 0 && range.length === 0 ) return;
-              if (range.length === 0) { 
+              if (range.index === 0 && range.length === 0) return;
+              if (range.length === 0) {
                 this.quill.deleteText(range.index - 1, 1, Quill.sources.USER);
               } else {
                 this.quill.deleteText(range, Quill.sources.USER);
@@ -268,7 +275,7 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
               if (mode === "post_comment") {
                 handleRemoveMention(range, context);
               }
-            }
+            },
           },
           handleEnter: {
             key: 13,
@@ -323,6 +330,10 @@ const useQuillModules = ({ mode, callback = null, removeMention = null, mentionO
       handleSetModule();
     }
   }, [mode, post, previousPost]);
+
+  useEffect(() => {
+    handleSetModule();
+  }, [recipients.length]);
 
   const formats = ["background", "bold", "color", "font", "code", "italic", "link", "size", "strike", "script", "blockquote", "header", "indent", "list", "align", "direction", "image", "video"];
 

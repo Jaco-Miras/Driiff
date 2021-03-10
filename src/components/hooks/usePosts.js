@@ -11,6 +11,7 @@ const usePosts = () => {
   const { flipper, workspacePosts: wsPosts } = useSelector((state) => state.workspaces);
   const recentPosts = useSelector((state) => state.posts.recentPosts);
   const user = useSelector((state) => state.session.user);
+  const { postsLists } = useSelector((state) => state.posts);
   const [fetchingPost, setFetchingPost] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const usePosts = () => {
           topic_id: parseInt(params.workspaceId),
         };
         actions.getPosts(payload, cb);
-
+        actions.fetchPostList();
         // let filterCb = (err, res) => {
         //   setFetchingPost(false);
         //   if (err) return;
@@ -117,6 +118,7 @@ const usePosts = () => {
   //let posts = null;
   let activeFilter = null;
   let activeTag = null;
+  let activePostListTag = null;
   let activeSort = "recent";
   let post = null;
   let activeSearch = "";
@@ -142,12 +144,13 @@ const usePosts = () => {
   }
 
   if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
-    let { filter, sort, tag, posts, search, searchResults, filters } = wsPosts[params.workspaceId];
+    let { filter, sort, tag, postListTag, posts, search, searchResults, filters } = wsPosts[params.workspaceId];
     activeSearch = search;
     activeSort = sort;
     activeFilter = filter;
     activeFilters = filters;
     activeTag = tag;
+    activePostListTag = postListTag;
 
     counters = {
       // all: 0,
@@ -205,10 +208,19 @@ const usePosts = () => {
             return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
           } else if (tag === "is_close") {
             return p.is_close && !p.hasOwnProperty("draft_type");
+          } else if (parseInt(activeTag) !== NaN) {
+            return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag));
           } else {
             return true;
           }
-        } else {
+        } else if(activePostListTag) {
+          if (parseInt(activePostListTag) !== NaN) {
+            return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(activePostListTag));
+          } else {
+            return true;
+          }
+        }
+        else {
           return true;
         }
       })
@@ -251,6 +263,7 @@ const usePosts = () => {
     posts: filteredPosts,
     filter: activeFilter,
     tag: activeTag,
+    postListTag: activePostListTag,
     sort: activeSort,
     post: post,
     search: activeSearch,
@@ -259,6 +272,7 @@ const usePosts = () => {
     count,
     counters: counters,
     filters: activeFilters,
+    postLists: postsLists,
   };
 };
 

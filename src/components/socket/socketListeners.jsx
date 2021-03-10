@@ -90,6 +90,7 @@ import {
   setBrowserTabStatus,
   setGeneralChat,
   setUnreadNotificationCounterEntries,
+  incomingDeletedAnnouncement,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -113,6 +114,9 @@ import {
   incomingUpdatedPost,
   refetchPostComments,
   refetchPosts,
+  getPostList,
+  incomingPostListConnect,
+  incomingPostListDisconnect,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -865,6 +869,26 @@ class SocketListeners extends Component {
           default:
             return null;
         }
+      })
+      .listen(".post-list-notification", (e) => {
+        console.log(e, "post-list-notification");
+        this.props.getPostList({}, (err, res) => {
+          if (err) return;
+          let post = {
+            link_id: e.link_id,
+            post_id: e.post_id,
+          };
+          switch (e.SOCKET_TYPE) {
+            case "POST_LIST_CONNECTED": {
+              this.props.incomingPostListConnect(post);
+              break;
+            }
+            case "POST_LIST_DISCONNECTED": {
+              this.props.incomingPostListDisconnect(post);
+              break;
+            }
+          }
+        });
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
@@ -877,6 +901,10 @@ class SocketListeners extends Component {
           }
           case "ANNOUNCEMENT_CREATED": {
             this.props.incomingCreatedAnnouncement(e);
+            break;
+          }
+          case "ANNOUNCEMENT_DELETED": {
+            this.props.incomingDeletedAnnouncement(e);
             break;
           }
           default:
@@ -930,6 +958,7 @@ class SocketListeners extends Component {
         }
       })
       .listen(".updated-version", (e) => {
+        console.log(e, "version");
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
           const { version, requirement } = e;
           const handleReminder = () => {
@@ -1743,6 +1772,10 @@ function mapDispatchToProps(dispatch) {
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
     incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
     incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
+    incomingDeletedAnnouncement: bindActionCreators(incomingDeletedAnnouncement, dispatch),
+    getPostList: bindActionCreators(getPostList, dispatch),
+    incomingPostListConnect: bindActionCreators(incomingPostListConnect, dispatch),
+    incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
   };
 }
 

@@ -6,6 +6,9 @@ const Wrapper = styled.div`
   a {
     cursor: pointer;
   }
+  .list-group-item:last-child {
+    border-bottom-width: thin!important;
+  }
 `;
 
 const CompanyPostFilterTag = (props) => {
