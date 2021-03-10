@@ -958,6 +958,7 @@ class SocketListeners extends Component {
         }
       })
       .listen(".updated-version", (e) => {
+        console.log(e, "version");
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
           const { version, requirement } = e;
           const handleReminder = () => {
