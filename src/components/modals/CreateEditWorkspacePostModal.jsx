@@ -315,6 +315,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
+  const recipients = useSelector((state) => state.global.recipients);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [modal, setModal] = useState(true);
@@ -665,7 +666,7 @@ const CreateEditWorkspacePostModal = (props) => {
       },
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
-      body_mention_ids: form.mention_ids,
+      //body_mention_ids: form.mention_ids,
     };
     // if (draftId) {
     //   dispatch(
@@ -777,8 +778,7 @@ const CreateEditWorkspacePostModal = (props) => {
     const mention_ids = mids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
 
     if (mention_ids.length) {
-      //check for recipients/type
-      let adddressIds = form.selectedAddressTo
+      let addressIds = form.selectedAddressTo
         .map((ad) => {
           if (ad.type === "USER") {
             return ad.type_id;
@@ -787,7 +787,19 @@ const CreateEditWorkspacePostModal = (props) => {
           }
         })
         .flat();
-      let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
+      const userRecipientIds = recipients
+        .filter((r) => {
+          if (r.type === "USER" && user.id === r.type_id) {
+            return true;
+          } else if (r.type === "USER" && addressIds.some((id) => id === r.type_id)) {
+            return true;
+          } else return false;
+        })
+        .map((r) => r.id);
+
+      const recipientIds = form.selectedAddressTo.map((ad) => ad.id);
+
+      let ignoreIds = [...userRecipientIds, ...recipientIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
       });
@@ -802,6 +814,7 @@ const CreateEditWorkspacePostModal = (props) => {
     const textOnly = editor.getText(content);
     let mentionIds = [];
     if (editor.getContents().ops && editor.getContents().ops.length) {
+      console.log(form.selectedAddressTo);
       mentionIds = editor
         .getContents()
         .ops.filter((m) => m.insert.mention)

@@ -73,6 +73,7 @@ const useQuillModules = ({
             id: r ? r.id : user.id,
             //id: user.id,
             type_id: user.id,
+            user_id: user.id,
             class: "user-pic",
             link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
           });
@@ -95,6 +96,7 @@ const useQuillModules = ({
               id: r ? r.id : user.id,
               //id: user.id,
               type_id: user.id,
+              user_id: user.id,
               class: "user-pic all-users",
               profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
               link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
@@ -158,6 +160,7 @@ const useQuillModules = ({
         mentionDenotationChars: ["@", "/"],
         minChars: 0,
         //linkTarget: "_blank",
+        dataAttributes: ["id", "value", "denotationChar", "link", "target", "disabled", "type_id", "type"],
         source: function (searchTerm, renderList, mentionChar) {
           let values;
 
@@ -179,28 +182,6 @@ const useQuillModules = ({
           }
         },
         renderItem: function (item, searchTerm) {
-          // let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          // let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
-          // if (typeof item.id === "string") {
-          //   avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
-          // }
-
-          // let listDisplay =
-          //   "<span class=\"" +
-          //   item.class +
-          //   "\" style=\"" +
-          //   avatarStyling +
-          //   "\"><img src=\"" +
-          //   (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
-          //   "\" draggable=\"false\" style=\"" +
-          //   avatarImgStyling +
-          //   "\" alt=\"" +
-          //   item.value +
-          //   "\"></span>&nbsp; <span style=\"width: auto; line-height: 1.35;\">" +
-          //   item.name +
-          //   "</span>";
-          // return listDisplay;
-
           let avatarStyling = {
             position: "relative",
             width: "30px",

@@ -323,7 +323,8 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
-  const company = useSelector((state) => state.global.recipients).find((r) => r.main_department === true);
+  const recipients = useSelector((state) => state.global.recipients);
+  const company = recipients.find((r) => r.main_department === true);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [init, setInit] = useState(false);
@@ -656,7 +657,7 @@ const CreateEditCompanyPostModal = (props) => {
       },
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
-      body_mention_ids: form.mention_ids,
+      //body_mention_ids: form.mention_ids,
     };
     // if (draftId) {
     //   dispatch(
@@ -777,7 +778,16 @@ const CreateEditCompanyPostModal = (props) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let adddressIds = form.selectedAddressTo
+      // let adddressIds = form.selectedAddressTo
+      //   .map((ad) => {
+      //     if (ad.type === "USER") {
+      //       return ad.type_id;
+      //     } else {
+      //       return ad.participant_ids;
+      //     }
+      //   })
+      //   .flat();
+      let addressIds = form.selectedAddressTo
         .map((ad) => {
           if (ad.type === "USER") {
             return ad.type_id;
@@ -786,7 +796,19 @@ const CreateEditCompanyPostModal = (props) => {
           }
         })
         .flat();
-      let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
+      const userRecipientIds = recipients
+        .filter((r) => {
+          if (r.type === "USER" && user.id === r.type_id) {
+            return true;
+          } else if (r.type === "USER" && addressIds.some((id) => id === r.type_id)) {
+            return true;
+          } else return false;
+        })
+        .map((r) => r.id);
+
+      const recipientIds = form.selectedAddressTo.map((ad) => ad.id);
+
+      let ignoreIds = [...userRecipientIds, ...recipientIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
       });
