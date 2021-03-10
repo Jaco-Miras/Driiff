@@ -173,7 +173,7 @@ const PostInput = forwardRef((props, ref) => {
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
-  const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
+  //const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
@@ -184,10 +184,12 @@ const PostInput = forwardRef((props, ref) => {
 
     if (quillContents.ops && quillContents.ops.length > 0) {
       let mentionIds = quillContents.ops
-        .filter((id) => {
-          return id.insert.mention ? id : null;
+        .filter((m) => m.insert.mention)
+        .filter((m) => {
+          if (m.insert.mention.type === "internal" || m.insert.mention.type === "external") return true;
+          else return false;
         })
-        .map((mid) => Number(mid.insert.mention.id));
+        .map((m) => Number(m.insert.mention.type_id));
 
       mention_ids = [...new Set(mentionIds)];
 
@@ -211,7 +213,8 @@ const PostInput = forwardRef((props, ref) => {
     let payload = {
       post_id: post.id,
       body: text,
-      mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
+      mention_ids: mention_ids,
+      //mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: inlineImages.map((i) => i.id),
       post_file_ids: [],
       reference_id: reference_id,
@@ -301,8 +304,7 @@ const PostInput = forwardRef((props, ref) => {
     //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
-    
-    
+
     if (mentionUsers.length) {
       handleAddMentionedUsersToPost();
     }
@@ -354,7 +356,10 @@ const PostInput = forwardRef((props, ref) => {
       handleMentionUser(
         editor
           .getContents()
-          .ops.filter((m) => m.insert.mention)
+          .ops.filter((m) => {
+            if (m.insert.mention && m.insert.mention.type !== "external") return true;
+            else return false;
+          })
           .map((i) => i.insert.mention.id)
       );
     }
@@ -363,25 +368,45 @@ const PostInput = forwardRef((props, ref) => {
 
   const handleRemoveMention = () => {
     let to_remove = [];
-    if (post.hasOwnProperty("to_add")) { 
-      to_remove = post.to_add.filter( id => !mentionUsers.includes(id));
-    }  
+    if (post.hasOwnProperty("to_add")) {
+      to_remove = post.to_add.filter((id) => !mentionUsers.includes(id));
+    }
     let payload = {
       post_id: post.id,
       topic_id: workspace.id,
-      remove_recipient_ids: to_remove
+      remove_recipient_ids: to_remove,
     };
     dispatch(removeUserToPostRecipients(payload));
-  }
+  };
 
   const handleMentionUser = (mention_ids) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     setMentionUsers(mention_ids);
     if (mention_ids.length) {
       //check for recipients/type
-      const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
-      const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
-      let ignoreIds = [...new Set([user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds])];
+      //const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
+      //const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
+      let addressIds = post.recipients
+        .map((ad) => {
+          if (ad.type === "USER") {
+            return ad.type_id;
+          } else {
+            return ad.participant_ids;
+          }
+        })
+        .flat();
+      const userRecipientIds = recipients
+        .filter((r) => {
+          if (r.type === "USER" && post.author.id === r.type_id) {
+            return true;
+          } else if (r.type === "USER" && addressIds.some((id) => id === r.type_id)) {
+            return true;
+          } else return false;
+        })
+        .map((r) => r.id);
+      const postRecipientIds = post.recipients.map((pr) => pr.id);
+      let ignoreIds = [...new Set([...postRecipientIds, ...userRecipientIds, ...ignoredMentionedUserIds])];
+      //let ignoreIds = [...new Set([user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds])];
       // ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
@@ -527,17 +552,15 @@ const PostInput = forwardRef((props, ref) => {
   //   setMentionedUserIds([]);
   // };
   const handleAddMentionedUsersToPost = () => {
-    dispatch(
-      addPostRecipients(mentionUsersPayload)
-    );
-  }
+    dispatch(addPostRecipients(mentionUsersPayload));
+  };
 
   const handleAddMentionedUsers = (users) => {
-    const userIds = users.map((u) => u.id);
+    //const userIds = users.map((u) => u.id);
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
     const newRecipients = userRecipients.filter((r) => {
-      return users.some((user) => user.id === r.type_id);
+      return users.some((user) => user.id === r.id);
     });
     let payload = {
       post_id: post.id,
@@ -547,9 +570,10 @@ const PostInput = forwardRef((props, ref) => {
     };
 
     console.log(users, payload);
+    const postRecipientIds = post.recipients.map((pr) => pr.id);
     setMentionUsersPayload(payload);
     dispatch(addUserToPostRecipients(payload));
-    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+    setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
     setMentionedUserIds([]);
   };
 
