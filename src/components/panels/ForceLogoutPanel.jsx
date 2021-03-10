@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-
-import useUserLogout from "../hooks/useUserLogout";
+import { sessionService } from "redux-react-session";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.form`
   margin: 50px auto;
@@ -14,10 +14,17 @@ const Wrapper = styled.form`
 `;
 
 const ForceLogoutPanel = (props) => {
-  const { logout } = useUserLogout();
-
+  const history = useHistory();
   useEffect(() => {
-    logout();
+    localStorage.removeItem("userAuthToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("atoken");
+    sessionService
+      .deleteSession()
+      .then(() => sessionService.deleteUser())
+      .then(() => {
+        history.push("/login");
+      });
   }, []);
 
   return <Wrapper className="fadeIn"></Wrapper>;
