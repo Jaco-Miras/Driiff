@@ -420,13 +420,13 @@ const CompanyPostDetail = (props) => {
     // postActions.getUnreadPostsCount();
   }, []);
 
-  const privateWsOnly = post.recipients.filter((r) => {
-    return r.type === "TOPIC" && r.private === 1;
-  });
+  // const privateWsOnly = post.recipients.filter((r) => {
+  //   return r.type === "TOPIC" && r.private === 1;
+  // });
 
-  const handleSnooze = () => {
-    postActions.snooze(post);
-  };
+  // const handleSnooze = () => {
+  //   postActions.snooze(post);
+  // };
 
   return (
     <>
@@ -479,7 +479,7 @@ const CompanyPostDetail = (props) => {
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
-              <div onClick={handleSnooze}>Snooze this post</div>
+              {/* <div onClick={handleSnooze}>Snooze this post</div> */}
             </StyledMoreOptions>
           </div>
         </div>

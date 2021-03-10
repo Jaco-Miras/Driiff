@@ -370,9 +370,9 @@ const CompanyPostItemPanel = (props) => {
 
   const hasUnread = post.is_unread === 1 || post.unread_count > 0;
 
-  const handleSnooze = () => {
-    snooze(post);
-  };
+  // const handleSnooze = () => {
+  //   snooze(post);
+  // };
 
   return (
     <Wrapper
@@ -445,7 +445,7 @@ const CompanyPostItemPanel = (props) => {
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
             {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
-            <div onClick={handleSnooze}>Snooze this post</div>
+            {/* <div onClick={handleSnooze}>Snooze this post</div> */}
           </MoreOptions>
         )}
       </div>
