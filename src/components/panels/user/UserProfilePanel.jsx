@@ -529,7 +529,7 @@ const UserProfilePanel = (props) => {
               )}
               {loggedUser.id !== user.id && (
                 <div className="d-flex justify-content-center">
-                  {user.contact !== "" && user.type === "internal" && (
+                  {user.contact !== "" && loggedUser.type === "internal" && (
                     <button className="btn btn-outline-light mr-1">
                       <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
                         <SvgIconFeather className="" icon="phone" />
@@ -607,19 +607,19 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.external_company_name && user.external_company_name}</div>
                   </div>
                 )}
-                {user.role && user.type === "internal" && (
+                {user.role && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.position}</div>
                     <div className="col col-form">{user.type === "external" ? dictionary.external : user.role.name}</div>
                   </div>
                 )}
-                {user.place && (
+                {user.place && loggedUser.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.city}</div>
                     <div className="col col-form">{user.place}</div>
                   </div>
                 )}
-                {user.address && user.type === "internal" && (
+                {user.address && loggedUser.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.address}</div>
                     <div className="col col-form">{user.address}</div>
@@ -631,13 +631,13 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.zip_code}</div>
                   </div>
                 )}*/}
-                {user.contact && user.type === "internal" && (
+                {user.contact && loggedUser.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.phone}</div>
                     <div className="col col-form">{user.contact}</div>
                   </div>
                 )}
-                {user.email && user.type === "internal" && (
+                {user.email && loggedUser.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.email}</div>
                     <div className="col col-form cursor-pointer" onClick={handleEmailClick}>
