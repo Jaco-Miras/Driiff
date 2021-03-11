@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { CompanyPostFilterItem, CompanyPostFilterTag } from "./index";
+import { SvgIconFeather } from "../../../common";
+import { CompanyPostFilterItem, CompanyPostFilterTag, CompanyPostList } from "./index";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -29,17 +30,49 @@ const Wrapper = styled.div`
   }
 `;
 
+const PostsBtnWrapper = styled.div`
+  //text-align: right;
+  margin-bottom: 10px;
+  .btn {
+    margin-left: 10px;
+  }
+`;
+
+const PostListWrapper = styled.span`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  @media all and (max-width: 1200px) {
+    max-width: 200px;
+  }
+`;
+
+const StyledIcon = styled(SvgIconFeather)`
+  width: 1em;
+  vertical-align: bottom;
+  margin-right: 40px;
+  
+  &:hover {
+    color: #000000;
+  }
+`;
+
 const MobileOverlayFilter = styled.div``;
 
 const CompanyPostSidebar = (props) => {
-  const {workspace, filter, tag, count, counters, postActions, onGoBack, dictionary, disableOptions} = props;
-
+  const {workspace, filter, tag, postListTag, count, postLists, counters, postActions, onGoBack, dictionary, disableOptions} = props;
   const handleShowPostModal = () => {
     postActions.showModal("create_company");
   };
 
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
+  };
+
+  const handleShowNewPostListModal = () => {
+    postActions.showModal("create_edit_post_list");
   };
 
   return (
@@ -55,11 +88,18 @@ const CompanyPostSidebar = (props) => {
           </div>
           <CompanyPostFilterItem filter={filter} tag={tag} onGoBack={onGoBack} counters={counters}
                                  dictionary={dictionary}/>
-          <div className="card-body">
-            <h6 className="mb-0">{dictionary.category}</h6>
+          <div className="post-filter-item list-group list-group-flush">
+            <span className={`list-group-item d-flex align-items-center pr-3`} data-value="inbox">
+              {dictionary.category}
+              <span className="ml-auto" onClick={handleShowNewPostListModal} disabled={disableOptions}>
+                <StyledIcon className="mr-0" icon="plus" />
+              </span>
+            </span>
           </div>
           <CompanyPostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack}
                                 dictionary={dictionary}/>
+          <CompanyPostList postLists={postLists} tag={tag} postListTag={postListTag} onGoBack={onGoBack}
+                                dictionary={dictionary} postActions={postActions}/>
         </div>
       </div>
     </Wrapper>

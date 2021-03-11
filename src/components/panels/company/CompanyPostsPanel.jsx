@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
+import { SvgEmptyState, SvgIconFeather } from "../../common";
 import { useCompanyPosts, useTranslation } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostItemPanel, CompanyPostSidebar } from "../post/company";
-import { throttle } from "lodash";
+import { throttle, find } from "lodash";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -50,6 +50,16 @@ const Wrapper = styled.div`
   }
 `;
 
+const PostListWrapper = styled.span`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @media all and (max-width: 1200px) {
+    max-width: 200px;
+  }
+`;
+
 const PostDetailWrapper = styled.div`
   min-height: 240px;
   .card-body {
@@ -79,6 +89,14 @@ const PostsBtnWrapper = styled.div`
     margin-left: 10px;
   }
 `;
+
+const StyledIcon = styled(SvgIconFeather)`
+  width: 1em;
+  &:hover {
+    color: #000000;
+  }
+`;
+
 let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
@@ -86,12 +104,13 @@ const CompanyPostsPanel = (props) => {
   const params = useParams();
   const history = useHistory();
 
-  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = useCompanyPosts();
+  const { actions, archived, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
 
+  const [activePostListName, setActivePostListName] = useState({});
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
     const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
@@ -188,6 +207,9 @@ const CompanyPostsPanel = (props) => {
     creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator/internal closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
     closed: _t("POST.CLOSED", "Closed"),
+    createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
+    addToList: _t("POST.ADD_TO_LIST", "Add to list"),
+    removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
   };
 
   const handleLoadMore = () => {
@@ -225,6 +247,47 @@ const CompanyPostsPanel = (props) => {
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
   }, []);
 
+  // useEffect(() => {
+  //   let el = refs.posts.current;
+  //   if (el && el.dataset.loaded === "0") {
+  //     initLoading();
+
+  //     el.dataset.loaded = "1";
+  //     refs.posts.current.addEventListener("scroll", handleScroll, false);
+  //   }
+  // }, [refs.posts.current]);
+
+  useEffect(() => {
+    if (postListTag) {
+      const activePost = find(postLists, (p) => parseInt(p.id) === parseInt(postListTag));
+      postLists.map((pl) => {
+        if (activePost && parseInt(postListTag) === pl.id) { 
+          setActivePostListName(pl);
+        }
+      });
+      
+      if (!activePost) {
+        setActivePostListName(postLists[0]);
+        let payload = {
+          tag: null,
+          postListTag: postLists[0].id,
+          filter: null,
+        };
+        actions.setCompanyFilterPosts(payload);
+      }
+    }
+  }, [postListTag, postLists]);
+
+  const handleEditArchivePostList = useCallback(
+    () => {
+      const payload = {
+        tag: null,
+        filter: "all",
+    };
+      actions.setCompanyFilterPosts(payload);
+    }, [activePostListName]
+  )
+
   const handleMarkAllAsRead = () => {
     actions.readAll({
       selected_post_ids: checkedPosts,
@@ -241,14 +304,25 @@ const CompanyPostsPanel = (props) => {
   };
 
   if (posts === null) return <></>;
-
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
-        <CompanyPostSidebar filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+        <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
+          { !!postListTag && (
+            <PostsBtnWrapper>
+              <span>Filter:</span>
+              <PostListWrapper className="ml-2 recipients" >
+                <span className="receiver">
+                  <span onClick={handleEditArchivePostList}><StyledIcon icon="x" className="mr-1" /></span>
+                  {activePostListName.name}
+                </span>
+                
+              </PostListWrapper>
+            </PostsBtnWrapper>
+          )}
           {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body">
               <EmptyState>

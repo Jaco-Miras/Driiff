@@ -13,6 +13,7 @@ const INITIAL_STATE = {
     filter: "inbox",
     sort: "recent",
     tag: null,
+    postListTag: null,
     count: {},
     search: "",
     searchResults: [],
@@ -24,6 +25,7 @@ const INITIAL_STATE = {
     limit: 25,
   },
   posts: {},
+  postsLists: [],
   drafts: [],
   totalPostsCount: 0,
   unreadPostsCount: 0,
@@ -310,6 +312,7 @@ export default (state = INITIAL_STATE, action) => {
           filter: action.data.filter,
           sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
           tag: action.data.tag,
+          postListTag: action.data.postListTag,
         },
       };
     }
@@ -970,6 +973,44 @@ export default (state = INITIAL_STATE, action) => {
           },
         },
       };
+    }
+    case "POST_LIST_SUCCESS": {
+      return {
+        ...state,
+        postsLists: [...action.data]
+      }
+    }
+    case "POST_LIST_CONNECT": {
+      const post = {
+        ...state.companyPosts.posts[action.data.post_id],
+        post_list_connect: [{id: action.data.link_id}]
+      }
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: post,
+          },
+        }
+      }
+    }
+    case "POST_LIST_DISCONNECT": {
+      const post = {
+        ...state.companyPosts.posts[action.data.post_id],
+        post_list_connect: []
+      }
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: post
+          },
+        }
+      }
     }
     default:
       return state;

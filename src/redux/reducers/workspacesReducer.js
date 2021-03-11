@@ -534,6 +534,7 @@ export default (state = INITIAL_STATE, action) => {
             filter: action.data.filter,
             sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
             tag: action.data.tag,
+            postListTag: action.data.postListTag,
           },
         },
       };
@@ -2547,6 +2548,54 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: workspacePost,
       };
     }
+    case "POST_LIST_CONNECT": {
+      const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
+        if (!wp.posts.hasOwnProperty(action.data.post_id)){
+           newValue[topic_id] = wp;
+        } else {
+          newValue[topic_id] = {
+            ...wp,
+            posts: {
+              ...wp.posts,
+              [action.data.post_id]: {
+                ...wp.posts[action.data.post_id],
+                post_list_connect: [{id: action.data.link_id}]
+              }
+            }
+          }
+        }
+        return newValue;
+      }, {});
+      return {
+        ...state,
+        workspacePosts: newWp,
+      } 
+    }
+    case "POST_LIST_DISCONNECT": {
+      const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
+        if (!wp.posts.hasOwnProperty(action.data.post_id)){
+           newValue[topic_id] = wp;
+        } else {
+          newValue[topic_id] = {
+            ...wp,
+            posts: {
+              ...wp.posts,
+              [action.data.post_id]: {
+                ...wp.posts[action.data.post_id],
+                post_list_connect: []
+              }
+            }
+          }
+        }
+        return newValue;
+      }, {});
+
+      return {
+        ...state,
+        workspacePosts: newWp
+      }
+    }
+
     default:
       return state;
   }

@@ -8,12 +8,15 @@ import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.span`
+  //display: flex;
   display: table;
   table-layout: fixed;
   width: 100%;
   font-weight: ${(props) => (props.hasUnRead ? "bold" : "normal")};
 `;
-const LastReplyContent = styled.span``;
+const LastReplyContent = styled.span`
+  display: flex;
+`;
 const DraftContent = styled.span``;
 const LastReplyName = styled.span``;
 const LastReplyBody = styled.div`
@@ -72,15 +75,19 @@ const ReplyPreview = (props) => {
   let lastReplyBody = "";
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
       lastReplyBody = renderToString(<LastReplyContent className="last-reply-content" dangerouslySetInnerHTML={{ __html: lastReplyBody }} />);
 
       //strip html tags and replace it with space
-      //lastReplyBody = lastReplyBody.replace(/(<([^>]+)>)/gi, " ");
-      lastReplyBody = stripHtml(lastReplyBody);
+      try {
+        lastReplyBody = lastReplyBody.replace(/<?(data-value)="[^"]*"/g, " ").replace(/(<([^>]+)>)/gi, " ");
+      } catch (e) {
+        lastReplyBody = stripHtml(lastReplyBody);
+      }
+      //lastReplyBody = stripHtml(lastReplyBody);
     }
 
     if (channel.last_reply.body === "" || (channel.last_reply.files && channel.last_reply.files.length) || (channel.replies.length && channel.replies[channel.replies.length - 1].files.length) || channel.last_reply.body.match(/<img/)) {
@@ -95,6 +102,13 @@ const ReplyPreview = (props) => {
     }
 
     if (channel.last_reply.user) {
+      if (channel.last_reply.body.includes("POST_CREATE::")) {
+        let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+        previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+      }
+      if (channel.last_reply.body.includes("ZAP_SUBMIT::")) {
+        previewText = "System message update...";
+      }
       if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
         if (!noText && showPreviewIcon) {
           previewText = previewText + "Photo";

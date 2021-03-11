@@ -510,6 +510,15 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_DELETED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: state.releases.items.filter((item) => item.id !== action.data.id),
+        },
+      };
+    }
     default:
       return state;
   }
