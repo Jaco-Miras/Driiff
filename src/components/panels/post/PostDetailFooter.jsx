@@ -9,17 +9,14 @@ import { CommentQuote } from "../../list/post/item";
 import { useToaster, useTranslation, usePostActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
-import { CheckBox, FolderSelect } from "../../forms";
+import { FolderSelect } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import PostInputButtons from "./PostInputButtons";
 
 const Wrapper = styled.div`
   position: relative;
-  > div > svg:first-child {
-    margin-left: 0 !important;
-  }
-  flex: unset;
-
-  .feather-paperclip {
+  z-index: 3;
+  .feather-send {
     border: 1px solid #e1e1e1;
     height: 100%;
     cursor: pointer;
@@ -27,8 +24,17 @@ const Wrapper = styled.div`
     border-radius: 8px;
     transition: background-color 0.15s ease-in-out;
     padding: 12px;
-    &:hover {
-      background-color: #e1e1e1;
+    margin-right: 1rem;
+    @media (max-width: 480px) {
+      margin-right: 0;
+    }
+  }
+  .chat-input-wrapper {
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column;
+    .quill {
+      width: 100%;
     }
   }
 `;
@@ -38,32 +44,24 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  // padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
   display: flex;
-  .chat-input-wrapper {
-    flex-grow: 1;
-  }
+  .feather-approver,
   .feather-image,
-  .feather-send,
+  .feather-paperclip,
   .feather-smile {
-    // position: absolute;
-    // bottom: 0;
-    // right: 0;
-    margin: 4px;
-    height: calc(100% - 8px);
-    max-height: 38px;
     border-radius: 4px;
-    min-width: 40px;
-    width: 40px;
-    padding: 10px;
     cursor: pointer;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
   .feather-smile {
-    //right: 44px;
-    margin: 4px 0;
     background: transparent;
     border-color: transparent;
     transition: color 0.15s ease-in-out;
@@ -73,27 +71,6 @@ const ChatInputContainer = styled.div`
     }
     &:hover {
       color: #7a1b8b;
-    }
-  }
-  .feather-image {
-    //right: 80px;
-    margin: 4px 0;
-    background: transparent;
-    border-color: transparent;
-    transition: color 0.15s ease-in-out;
-    color: #cacaca;
-    &.active {
-      color: #7a1b8b;
-    }
-    &:hover {
-      color: #7a1b8b;
-    }
-  }
-  .feather-send {
-    background: ${(props) => props.backgroundSend};
-    fill: ${(props) => props.fillSend};
-    &:hover {
-      cursor: ${(props) => props.cursor};
     }
   }
 `;
@@ -101,7 +78,13 @@ const ChatInputContainer = styled.div`
 const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
-  // width: 100%;
+  .feather-send {
+    background: ${(props) => props.backgroundSend} !important;
+    fill: ${(props) => props.fillSend};
+    &:hover {
+      cursor: ${(props) => props.cursor};
+    }
+  }
   &.channel-viewing {
     display: flex;
     flex-wrap: wrap;
@@ -139,27 +122,10 @@ const Dflex = styled.div`
       }
     }
   }
-  // svg.feather-send {
-  //   margin-left: 8px;
-  // }
-  svg.feather-paperclip {
-    margin-left: 0;
-    margin-right: 0;
-  }
   @media all and (max-width: 620px) {
     .emojiButton {
       display: none;
     }
-    // div:nth-child(4) {
-    //   order: 1;
-    //   margin-right: 8px;
-    // }
-    // div:nth-child(2) {
-    //   order: 3;
-    // }
-    // svg:nth-child(3) {
-    //   order: 3;
-    // }
     svg.feather-send {
       margin-right: 0;
     }
@@ -195,7 +161,12 @@ const ClosedLabel = styled.div`
 
 const PickerContainer = styled(CommonPicker)`
   right: 130px;
-  bottom: 75px;
+  bottom: 120px;
+
+  @media (max-width: 414px) {
+    right: 5px;
+    bottom: 150px;
+  }
 
   .common-picker-btn {
     text-align: right;
@@ -223,30 +194,15 @@ const Icon = styled(SvgIconFeather)`
   width: 20px;
 `;
 
-const ApproveCheckBox = styled(CheckBox)`
-  // position: absolute;
-  // right: 120px;
-  // bottom: 0;
-  //height: 35px;
-  display: inline-block;
-`;
-
 const ApproverSelectWrapper = styled.div`
   padding-right: 55px;
   display: flex;
-  // justify-content: flex-end;
   padding-bottom: 10px;
   margin-left: auto;
   flex-direction: column;
   > div.react-select-container {
     width: 300px;
   }
-`;
-
-const PostInputButtons = styled.div`
-  display: flex;
-  align-items: center;
-  align-self: flex-end;
 `;
 
 const PostDetailFooter = (props) => {
@@ -730,8 +686,8 @@ const PostDetailFooter = (props) => {
       )}
       {((isMember && !disableOptions) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
         <>
-          <Dflex className="d-flex align-items-end">
-            <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+          <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+            <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
               <PostInput
                 handleClearSent={handleClearSent}
                 sent={sent}
@@ -758,24 +714,20 @@ const PostDetailFooter = (props) => {
                 isApprover={approving.change && hasPendingAproval}
                 mainInput={mainInput}
               />
-              <PostInputButtons>
-                {!isApprover && (
-                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
-                    <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
-                  </Tooltip>
-                )}
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
-                  <IconButton icon="image" onClick={handleQuillImage} />
-                </Tooltip>
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.emoji}>
-                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
-                </Tooltip>
-                <IconButton onClick={handleSend} icon="send" />
-              </PostInputButtons>
+              <PostInputButtons
+                parentId={parentId}
+                handleQuillImage={handleQuillImage}
+                handleShowEmojiPicker={handleShowEmojiPicker}
+                onShowFileDialog={onShowFileDialog}
+                showApprover={showApprover}
+                toggleApprover={toggleApprover}
+                editPostComment={editPostComment}
+                mainInput={mainInput}
+              />
             </ChatInputContainer>
 
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
-              <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+              <IconButton onClick={handleSend} icon="send" />
             </Tooltip>
 
             {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
