@@ -339,6 +339,8 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const savingDraft = useRef(null);
   const toasterRef = useRef(null);
+  const progressBar = useRef(0);
+  
 
   const [form, setForm] = useState({
     must_read: false,
@@ -996,7 +998,7 @@ const CreateEditWorkspacePostModal = (props) => {
           folder_id: null,
           options: { 
             config: {
-              onUploadProgress: handleOnUploadProgress
+              onUploadProgress: handleOnUploadProgress(file)
             }
           }
         })
@@ -1047,15 +1049,24 @@ const CreateEditWorkspacePostModal = (props) => {
       toasterRef.current = null;
     }
   }
-
-  const handleOnUploadProgress = (progressEvent) => {
-    const progress = progressEvent.loaded / progressEvent.total;
+  let totalProgress = useRef(null);
+  const handleOnUploadProgress = (file) => (progressEvent) => {
+    let {loaded, total} = progressEvent;
+    const progress = loaded / total;
+    // progressBar.current = progress;
+    totalProgress.current = {
+      ...totalProgress.current,
+      [file.id]: progress,
+    }
+    let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
+    progressBar.current = totalPercent / attachedFiles.length;
+    
     if (toasterRef.current === null) {
       toasterRef.current = toaster.info(
         <div>{dictionary.uploading}.</div>,
-        {progress: progress, autoClose: true});
+        {progress: progressBar.current, autoClose: true});
     } else {
-      toaster.update(toasterRef.current, {progress: progress, autoClose: true});
+      toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
     }
   }
 

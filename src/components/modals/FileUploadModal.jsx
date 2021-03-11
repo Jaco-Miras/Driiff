@@ -212,10 +212,11 @@ const DocDiv = styled.div``;
 const FileUploadModal = (props) => {
   const { type, mode, droppedFiles, post = null, members = [] } = props.data;
 
+  const progressBar = useRef(0);
+  const toaster = useToaster();
   const pickerRef = useRef();
   const { _t } = useTranslation();
   const dispatch = useDispatch();
-  const toaster = useToaster();
   const reactQuillRef = useRef();
   const toasterRef = useRef(null);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -332,7 +333,7 @@ const FileUploadModal = (props) => {
               folder_id: null,
               options: { 
                 config: {
-                  onUploadProgress: handleOnUploadProgress
+                  onUploadProgress: handleOnUploadProgress(files)
                 }
               }
             })
@@ -359,14 +360,25 @@ const FileUploadModal = (props) => {
     }
   }
 
-  const handleOnUploadProgress = (progressEvent) => {
-    const progress = progressEvent.loaded / progressEvent.total;
+  let totalProgress = useRef(null);
+  
+  const handleOnUploadProgress = (file) => (progressEvent) => {
+    let {loaded, total} = progressEvent;
+    const totalFiles = files.filter((f) => typeof f.id === "string").length;
+    const progress = loaded / total;
+    totalProgress.current = {
+      ...totalProgress.current,
+      [file.id]: progress,
+    }
+    let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
+    progressBar.current = totalPercent / totalFiles;
+    
     if (toasterRef.current === null) {
       toasterRef.current = toaster.info(
         <div>{dictionary.uploading}.</div>,
-        {progress: progress, autoClose: true});
+        {progress: progressBar.current, autoClose: true});
     } else {
-      toaster.update(toasterRef.current, {progress: progress, autoClose: true});
+      toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
     }
   }
 
