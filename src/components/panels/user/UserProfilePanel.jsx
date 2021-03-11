@@ -536,7 +536,7 @@ const UserProfilePanel = (props) => {
                       </a>
                     </button>
                   )}
-                  {user.type !== "external" && (
+                  {user.type !== "external" && loggedUser.type === "internal" && (
                     <button className="ml-1 btn btn-outline-light">
                       <SvgIconFeather
                         onClick={() => {
