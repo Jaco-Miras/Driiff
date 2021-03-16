@@ -115,6 +115,7 @@ const usePostActions = () => {
     snoozeThisPost: _t("MODAL.SNOOZE_THIS_POST", "Are you sure you want to snooze this post?"),
     buttonSnooze: _t("BUTTON.SNOOZE", "Snooze"),
     headerSnoozePost: _t("MODAL.SNOOZE_POST", "Snooze post"),
+    postArchivedMuted: _t("TOASTER.POST_ARCHIVED_MUTED", "is archived. Comments for this post will be muted for 48 hours."),
   };
 
   const fetchPostList = useCallback((payload = {}, callback) => {
@@ -311,13 +312,13 @@ const usePostActions = () => {
                   if (!post.is_archived) {
                     toaster.success(
                       <>
-                        <b>{post.title}</b> is archived.
+                        <b>{post.title}</b> {dictionary.postArchivedMuted}
                       </>
                     );
                   } else {
                     toaster.success(
                       <>
-                        <b>{post.title}</b> is restored.
+                        <b>{post.title}</b> is unarchived.
                       </>
                     );
                   }
