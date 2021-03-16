@@ -122,11 +122,16 @@ const useHuddle = (props) => {
       showToasterRef.current = null;
       toaster.info("Huddle skipped.");
       actions.skipHuddle({
-        channel_id: huddle.channel_id,
+        channel_id: huddle.channel.id,
         huddle_id: huddle.id,
         body: `HUDDLE_SKIP::${JSON.stringify({
           huddle_id: huddle.id,
-          author: loggedUser,
+          author: {
+            name: loggedUser.name,
+            first_name: loggedUser.first_name,
+            id: loggedUser.id,
+            profile_image_link: loggedUser.profile_image_link,
+          },
           user_bot: huddle.user_bot,
         })}`,
       });

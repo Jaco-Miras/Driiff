@@ -36,6 +36,7 @@ const INITIAL_STATE = {
     hasMore: false,
   },
   skipIds: [],
+  hasUnpublishedAnswers: [],
 };
 
 const date = new Date();

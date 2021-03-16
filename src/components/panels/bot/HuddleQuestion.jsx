@@ -36,7 +36,12 @@ const HuddleQuestion = (props) => {
       huddle_id: huddle.id,
       body: `HUDDLE_SKIP::${JSON.stringify({
         huddle_id: huddle.id,
-        author: user,
+        author: {
+          name: user.name,
+          first_name: user.first_name,
+          id: user.id,
+          profile_image_link: user.profile_image_link,
+        },
         user_bot: huddle.user_bot,
       })}`,
     });
