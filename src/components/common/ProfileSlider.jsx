@@ -45,7 +45,7 @@ const ProfileSlider = (props) => {
           <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} />
           <h5>{user.name}</h5>
           <span className="text-muted small">{user.designation}</span>
-          {user.type === "internal" && loggedUser.id !== user.id && (
+          {user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
             <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
               {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
               <Icon icon="message-circle" loading={loading} />
