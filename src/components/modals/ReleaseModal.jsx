@@ -296,8 +296,20 @@ const ReleaseModal = (props) => {
       <ModalFooter>
         {item && (
           <div>
-            <Button outline color="secondary" onClick={toggleNested}>
+            <Button className="mr-1" outline color="secondary" onClick={toggleNested}>
               Delete
+            </Button>
+            {item.draft_id && (
+              <Button outline color="secondary" onClick={handleSaveDraft} disabled={form.textOnly === "" || form.title === ""}>
+                Update draft
+              </Button>
+            )}
+          </div>
+        )}
+        {!item && (
+          <div>
+            <Button outline color="secondary" onClick={toggleDraft} disabled={form.textOnly === "" || form.title === ""}>
+              Save as draft
             </Button>
           </div>
         )}
