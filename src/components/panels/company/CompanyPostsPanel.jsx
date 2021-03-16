@@ -1,12 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
+import { SvgEmptyState, SvgIconFeather } from "../../common";
 import { useCompanyPosts, useTranslation } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostItemPanel, CompanyPostSidebar } from "../post/company";
-import { throttle } from "lodash";
+import { throttle, find } from "lodash";
 
 const Wrapper = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: left;
 
   .app-lists {
@@ -23,6 +25,9 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto;
 
     .app-lists {
       overflow: auto;
@@ -42,6 +47,16 @@ const Wrapper = styled.div`
     .dark & {
       color: rgba(255, 255, 255, 0.5);
     }
+  }
+`;
+
+const PostListWrapper = styled.span`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @media all and (max-width: 1200px) {
+    max-width: 200px;
   }
 `;
 
@@ -74,22 +89,28 @@ const PostsBtnWrapper = styled.div`
     margin-left: 10px;
   }
 `;
+
+const StyledIcon = styled(SvgIconFeather)`
+  width: 1em;
+  &:hover {
+    color: #000000;
+  }
+`;
+
 let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
 
   const params = useParams();
   const history = useHistory();
-  // const refs = {
-  //   posts: useRef(null),
-  //   btnLoadMore: useRef(null)
-  // };
 
-  const { actions, archived, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
+  const { actions, archived, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
+  const [loadPosts, setLoadPosts] = useState(false);
 
+  const [activePostListName, setActivePostListName] = useState({});
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
     const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
@@ -186,33 +207,41 @@ const CompanyPostsPanel = (props) => {
     creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator/internal closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
     closed: _t("POST.CLOSED", "Closed"),
+    createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
+    addToList: _t("POST.ADD_TO_LIST", "Add to list"),
+    removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "") {
+    if (!fetching && search === "" && !post) {
       setLoading(true);
       fetching = true;
 
       fetchMore((err, res) => {
         setLoading(false);
         fetching = false;
-        //callback(err, res);
+        setLoadPosts(false);
       });
     }
   };
 
-  const bodyScroll = throttle((e) => {
-    // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
-    const offset = 500;
-    if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
-      handleLoadMore();
-    }
-  }, 200);
+  const handleScroll = useMemo(() => {
+    const throttled = throttle((e) => {
+      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+        setLoadPosts(true);
+      }
+    }, 300);
+    return (e) => {
+      e.persist();
+      return throttled(e);
+    };
+  }, []);
 
   useEffect(() => {
-    document.body.addEventListener("scroll", bodyScroll, false);
-    return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [skip, archived, filter, search]);
+    if (loadPosts) {
+      handleLoadMore();
+    }
+  }, [loadPosts]);
 
   useEffect(() => {
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
@@ -227,6 +256,37 @@ const CompanyPostsPanel = (props) => {
   //     refs.posts.current.addEventListener("scroll", handleScroll, false);
   //   }
   // }, [refs.posts.current]);
+
+  useEffect(() => {
+    if (postListTag) {
+      const activePost = find(postLists, (p) => parseInt(p.id) === parseInt(postListTag));
+      postLists.map((pl) => {
+        if (activePost && parseInt(postListTag) === pl.id) { 
+          setActivePostListName(pl);
+        }
+      });
+      
+      if (!activePost) {
+        setActivePostListName(postLists[0]);
+        let payload = {
+          tag: null,
+          postListTag: postLists[0].id,
+          filter: null,
+        };
+        actions.setCompanyFilterPosts(payload);
+      }
+    }
+  }, [postListTag, postLists]);
+
+  const handleEditArchivePostList = useCallback(
+    () => {
+      const payload = {
+        tag: null,
+        filter: "all",
+    };
+      actions.setCompanyFilterPosts(payload);
+    }, [activePostListName]
+  )
 
   const handleMarkAllAsRead = () => {
     actions.readAll({
@@ -244,17 +304,27 @@ const CompanyPostsPanel = (props) => {
   };
 
   if (posts === null) return <></>;
-
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
-      {/* <span className="d-none" ref={refs.btnLoadMore} onClick={loadMore}>Load more</span> */}
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
-        <CompanyPostSidebar filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+        <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
+          { !!postListTag && (
+            <PostsBtnWrapper>
+              <span>Filter:</span>
+              <PostListWrapper className="ml-2 recipients" >
+                <span className="receiver">
+                  <span onClick={handleEditArchivePostList}><StyledIcon icon="x" className="mr-1" /></span>
+                  {activePostListName.name}
+                </span>
+                
+              </PostListWrapper>
+            </PostsBtnWrapper>
+          )}
           {posts.length === 0 && search === "" ? (
-            <div className="card card-body app-content-body mb-4">
+            <div className="card card-body app-content-body">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252} />
                 <button className="btn btn-outline-primary btn-block" onClick={handleShowPostModal}>
@@ -265,7 +335,7 @@ const CompanyPostsPanel = (props) => {
           ) : (
             <>
               {post ? (
-                <div className="card card-body app-content-body mb-4">
+                <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail readByUsers={readByUsers} post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} />
                   </PostDetailWrapper>
@@ -313,6 +383,7 @@ const CompanyPostsPanel = (props) => {
               )}
             </>
           )}
+          <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>
     </Wrapper>

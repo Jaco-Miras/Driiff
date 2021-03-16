@@ -450,7 +450,7 @@ const ChatInput = (props) => {
         editor
           .getContents()
           .ops.filter((m) => m.insert.mention)
-          .map((i) => i.insert.mention.id)
+          .map((i) => i.insert.mention.type_id)
       );
     }
 
@@ -704,18 +704,18 @@ const ChatInput = (props) => {
       let recipient_ids = recipients
         .filter((r) => r.type === "USER")
         .filter((r) => {
-          return members.some((m) => m.id === r.type_id);
+          return selectedChannel.members.some((m) => m.id === r.type_id);
         })
         .map((r) => r.id);
       let payload = {
-        recipient_ids: recipient_ids,
+        recipient_ids: [...recipient_ids, ...users.map((u) => u.type_id)],
         title: title,
       };
       create(payload, createCallback);
     } else {
       let memberPayload = {
         channel_id: selectedChannel.id,
-        recipient_ids: users.map((u) => u.id),
+        recipient_ids: users.map((u) => u.type_id),
       };
       dispatch(
         postChannelMembers(memberPayload, (err, res) => {
@@ -779,7 +779,9 @@ const ChatInput = (props) => {
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} />}
+      {mentionedUserIds.length > 0 && (
+        <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} basedOnUserId={true} userMentionOnly={true} />
+      )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
       {/* {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />} */}
       {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file" />}

@@ -9,7 +9,9 @@ const useCompanyPosts = () => {
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
-  const { flipper, limit, next_skip, has_more, posts, filter, tag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
+  const { flipper, limit, next_skip, has_more, posts, filter, tag, postListTag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
+  const { postsLists } = useSelector((state) => state.posts);
+
   const archived = useSelector((state) => state.posts.archived);
   const fetchMore = (callback) => {
     if (filter === "archive") {
@@ -39,13 +41,13 @@ const useCompanyPosts = () => {
         actions.fetchPostDetail({ post_id: parseInt(params.postId) });
       }
       fetchMore();
-
+      actions.fetchPostList();
       // actions.fetchCompanyPosts({
       //   skip: 0,
       //   limit: 25,
       //   filters: ["post", "archived"],
       // });
-      actions.fetchCompanyPosts({
+      actions.fetchUnreadCompanyPosts({
         skip: 0,
         limit: 100,
         filters: ["green_dot"],
@@ -97,10 +99,19 @@ const useCompanyPosts = () => {
           return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
         } else if (tag === "is_close") {
           return p.is_close && !p.hasOwnProperty("draft_type");
+        } else if (parseInt(tag) !== NaN) {
+          return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag));
+        }  else {
+          return true;
+        }
+      } else if (postListTag) {
+        if (parseInt(postListTag) !== NaN) {
+          return (p.post_list_connect.length > 0 && parseInt(p.post_list_connect[0].id) === parseInt(postListTag));
         } else {
           return true;
         }
-      } else {
+      }
+      else {
         return !p.hasOwnProperty("author") || p.author.id !== user.id;
       }
     })
@@ -164,6 +175,7 @@ const useCompanyPosts = () => {
     posts: filteredPosts,
     filter: filter,
     tag: tag,
+    postListTag: postListTag,
     sort: sort,
     post: Object.values(posts).filter((p) => p.id === parseInt(params.postId))[0],
     search: search,
@@ -171,6 +183,7 @@ const useCompanyPosts = () => {
     count: count,
     counters: counters,
     skip: next_skip,
+    postLists: postsLists,
   };
 };
 

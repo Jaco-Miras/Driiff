@@ -534,6 +534,7 @@ export default (state = INITIAL_STATE, action) => {
             filter: action.data.filter,
             sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
             tag: action.data.tag,
+            postListTag: action.data.postListTag,
           },
         },
       };
@@ -1691,10 +1692,10 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      view_user_ids:
-                        action.data.unread === 0
-                          ? [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id]
-                          : state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
+                      // view_user_ids:
+                      //   action.data.unread === 0
+                      //     ? [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id]
+                      //     : state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
                       is_unread: action.data.unread,
                       unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[action.data.post_id].unread_count,
                     },
@@ -2507,7 +2508,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_USER_TO_POST_RECIPIENTS": {
-      let workspacePost = {...state.workspacePosts };
+      let workspacePost = { ...state.workspacePosts };
       if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
         if (workspacePost[action.data.topic_id].posts.hasOwnProperty(action.data.post_id)) {
           if (!workspacePost[action.data.topic_id].posts[action.data.post_id].hasOwnProperty("to_add")) {
@@ -2522,19 +2523,19 @@ export default (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        workspacePosts: workspacePost
-      }
+        workspacePosts: workspacePost,
+      };
     }
 
     case "REMOVE_USER_TO_POST_RECIPIENTS": {
-      let workspacePost = {...state.workspacePosts };
+      let workspacePost = { ...state.workspacePosts };
       if (action.data.hasOwnProperty("topic_id") && workspacePost.hasOwnProperty(action.data.topic_id)) {
         if (workspacePost[action.data.topic_id].posts.hasOwnProperty(action.data.post_id)) {
-          const filteredRecipientsIds = workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids.filter( (id) => {
+          const filteredRecipientsIds = workspacePost[action.data.topic_id].posts[action.data.post_id].recipient_ids.filter((id) => {
             return !action.data.remove_recipient_ids.includes(id);
           });
 
-          const filteredRecipients = workspacePost[action.data.topic_id].posts[action.data.post_id].recipients.filter( (r) => {
+          const filteredRecipients = workspacePost[action.data.topic_id].posts[action.data.post_id].recipients.filter((r) => {
             return !action.data.remove_recipient_ids.includes(r.id);
           });
           workspacePost[action.data.topic_id].posts[action.data.post_id].recipients = filteredRecipients;
@@ -2544,9 +2545,57 @@ export default (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        workspacePosts: workspacePost
+        workspacePosts: workspacePost,
+      };
+    }
+    case "POST_LIST_CONNECT": {
+      const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
+        if (!wp.posts.hasOwnProperty(action.data.post_id)){
+           newValue[topic_id] = wp;
+        } else {
+          newValue[topic_id] = {
+            ...wp,
+            posts: {
+              ...wp.posts,
+              [action.data.post_id]: {
+                ...wp.posts[action.data.post_id],
+                post_list_connect: [{id: action.data.link_id}]
+              }
+            }
+          }
+        }
+        return newValue;
+      }, {});
+      return {
+        ...state,
+        workspacePosts: newWp,
+      } 
+    }
+    case "POST_LIST_DISCONNECT": {
+      const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
+        if (!wp.posts.hasOwnProperty(action.data.post_id)){
+           newValue[topic_id] = wp;
+        } else {
+          newValue[topic_id] = {
+            ...wp,
+            posts: {
+              ...wp.posts,
+              [action.data.post_id]: {
+                ...wp.posts[action.data.post_id],
+                post_list_connect: []
+              }
+            }
+          }
+        }
+        return newValue;
+      }, {});
+
+      return {
+        ...state,
+        workspacePosts: newWp
       }
     }
+
     default:
       return state;
   }

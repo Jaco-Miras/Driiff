@@ -1,7 +1,9 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
+  createReleaseAnnouncement as createReleaseAnnouncementService,
   deleteDraft as deleteDraftService,
   deletePushSubscription as deletePushSubscriptionService,
+  deleteReleaseAnnouncement as deleteReleaseAnnouncementService,
   deleteUnfurl as deleteUnfurlService,
   delRemoveToDo as delRemoveToDoService,
   generateUnfurl as generateUnfurlService,
@@ -11,6 +13,7 @@ import {
   getLatestReply as getLatestReplyService,
   getPushNotification as getPushNotificationService,
   getQuickLinks as getQuickLinksService,
+  getReleaseAnnouncements as getReleaseAnnouncementsService,
   getToDo as getToDoService,
   getToDoDetail as getToDoDetailService,
   getTranslationObject as getTranslationObjectService,
@@ -24,6 +27,7 @@ import {
   saveDraft as saveDraftService,
   subscribePushNotifications as subscribePushNotificationsService,
   updateDraft as updateDraftService,
+  updateReleaseAnnouncement as updateReleaseAnnouncementService,
   uploadDocument as uploadDocumentService,
 } from "../services";
 
@@ -200,4 +204,31 @@ export function refetchOtherMessages(payload, callback) {
 
 export function getLatestReply(payload, callback) {
   return dispatchActionToReducer(getLatestReplyService(payload), "GET_LATEST_REPLY_START", "GET_LATEST_REPLY_SUCCESS", "GET_LATEST_REPLY_FAIL", callback);
+}
+
+export function getReleaseAnnouncements(payload, callback) {
+  return dispatchActionToReducer(getReleaseAnnouncementsService(payload), "GET_RELEASE_ANNOUNCEMENTS_START", "GET_RELEASE_ANNOUNCEMENTS_SUCCESS", "GET_RELEASE_ANNOUNCEMENTS_FAIL", callback);
+}
+
+export function createReleaseAnnouncement(payload, callback) {
+  return dispatchActionToReducer(createReleaseAnnouncementService(payload), "CREATE_RELEASE_ANNOUNCEMENTS_START", "CREATE_RELEASE_ANNOUNCEMENTS_SUCCESS", "CREATE_RELEASE_ANNOUNCEMENTS_FAIL", callback);
+}
+
+export function deleteReleaseAnnouncement(payload, callback) {
+  return dispatchActionToReducer(deleteReleaseAnnouncementService(payload), "DELETE_RELEASE_ANNOUNCEMENTS_START", "DELETE_RELEASE_ANNOUNCEMENTS_SUCCESS", "DELETE_RELEASE_ANNOUNCEMENTS_FAIL", callback);
+}
+
+export function updateReleaseAnnouncement(payload, callback) {
+  return dispatchActionToReducer(updateReleaseAnnouncementService(payload), "UPDATE_RELEASE_ANNOUNCEMENTS_START", "UPDATE_RELEASE_ANNOUNCEMENTS_SUCCESS", "UPDATE_RELEASE_ANNOUNCEMENTS_FAIL", callback);
+}
+
+export function incomingUpdatedAnnouncement(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_ANNOUNCEMENT", payload, callback);
+}
+
+export function incomingCreatedAnnouncement(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_CREATED_ANNOUNCEMENT", payload, callback);
+}
+export function incomingDeletedAnnouncement(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_ANNOUNCEMENT", payload, callback);
 }

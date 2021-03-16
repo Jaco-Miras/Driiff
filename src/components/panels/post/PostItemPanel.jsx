@@ -267,7 +267,8 @@ const PostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close },
+    workspace,
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList, updatePostListConnect},
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -371,6 +372,22 @@ const PostItemPanel = (props) => {
     handleSwipeRight,
   });
 
+  const handleAddToListModal = () => {
+    if (post.post_list_connect.length  !== 1) {
+      showModal("add_to_list", post);
+    } else {
+      const payload = {
+        link_id: post.post_list_connect[0].id,
+        post_id: post.id
+      }
+      disconnectPostList(payload, (err, res) => {
+        if (err) return;
+        res.data["topic_id"] = workspace && workspace.id? workspace.id : null;
+        updatePostListConnect(res.data);
+      });
+    }
+  };
+
   const hasUnread = post.is_unread === 1 || post.unread_count > 0;
 
   return (
@@ -404,10 +421,10 @@ const PostItemPanel = (props) => {
                       imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             </CreatedBy> */}
           <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
-          <span>
+          <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
-          </span>
+          </div>
           <div className="text-truncate post-partialBody">
             <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }} />
           </div>
@@ -445,6 +462,7 @@ const PostItemPanel = (props) => {
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
             {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+            {post.post_list_connect && <div onClick={() => handleAddToListModal()}  >{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div> }
           </MoreOptions>
         )}
       </div>

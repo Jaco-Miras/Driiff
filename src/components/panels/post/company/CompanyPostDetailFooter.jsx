@@ -228,7 +228,7 @@ const PostInputButtons = styled.div`
 `;
 
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, postActions: { openPost, archivePost }, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
+  const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
 
   const postActions = usePostActions();
   const ref = {
@@ -486,21 +486,21 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const handleNextPost = () => {
-    const nextPost = posts.reduce( (accumulator, {id}, index) => {
+    const nextPost = posts.reduce((accumulator, { id }, index) => {
       if (id === post.id) {
-        accumulator = posts[index+1];
+        accumulator = posts[index + 1];
       }
       return accumulator;
     }, null);
 
-    archivePost(post, () => {
+    postActions.archivePost(post, () => {
       if (!nextPost) {
         overview();
       } else {
-        openPost(nextPost, "/posts");
+        postActions.openPost(nextPost, "/posts");
       }
-    }); 
-  }
+    });
+  };
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
@@ -681,20 +681,18 @@ const CompanyPostDetailFooter = (props) => {
           </div>
         </Dflex>
       )}
-      {filter && (filter === "all" || filter === 'inbox') && (
+      {filter && (filter === "all" || filter === "inbox") && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <button className="btn btn-outline-light mr-3" onClick={overview} >
+            <button className="btn btn-outline-light mr-3" onClick={overview}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </button>
             <button className="btn btn-outline-light" onClick={handleNextPost}>
-              <SvgIconFeather className="mr-2" icon="corner-up-right" /> {dictionary.archivePostOpenNext}
+              {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
             </button>
           </div>
-      </Dflex>
+        </Dflex>
       )}
-      
-      
     </Wrapper>
   );
 };

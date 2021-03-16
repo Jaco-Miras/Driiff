@@ -49,16 +49,6 @@ const ChatReplyContainer = styled.div`
 `;
 
 const ChatList = styled.li`
-  @media (max-width: 620px) {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
-
   position: relative;
   display: inline-block;
   width: 100%;
@@ -754,26 +744,26 @@ class ChatMessages extends React.PureComponent {
     return loadMoreRef;
   };
 
-  handleChatListTouchStart = (e) => {
-    this.varRefs.timerStart.current = e.timeStamp;
-    this.varRefs.xDown.current = e.touches[0].clientX;
-    this.varRefs.yDown.current = e.touches[0].clientY;
-  };
+  // handleChatListTouchStart = (e) => {
+  //   this.varRefs.timerStart.current = e.timeStamp;
+  //   this.varRefs.xDown.current = e.touches[0].clientX;
+  //   this.varRefs.yDown.current = e.touches[0].clientY;
+  // };
 
-  handleChatListTouchMove = (e) => {
-    this.varRefs.timerStart.current += 2000;
-  };
+  // handleChatListTouchMove = (e) => {
+  //   this.varRefs.timerStart.current += 2000;
+  // };
 
-  handleChatListTouchEnd = (e) => {
-    if (e.timeStamp - this.varRefs.timerStart.current > 125) {
-      this.setState({
-        showEmoji: {
-          ...this.state.showEmoji,
-          [e.currentTarget.dataset.messageId]: !this.state.showEmoji[e.currentTarget.dataset.messageId],
-        },
-      });
-    }
-  };
+  // handleChatListTouchEnd = (e) => {
+  //   if (e.timeStamp - this.varRefs.timerStart.current > 125) {
+  //     this.setState({
+  //       showEmoji: {
+  //         ...this.state.showEmoji,
+  //         [e.currentTarget.dataset.messageId]: !this.state.showEmoji[e.currentTarget.dataset.messageId],
+  //       },
+  //     });
+  //   }
+  // };
 
   handleToggleStar = (e) => {
     const { messageId, star } = e.currentTarget.dataset;
@@ -916,9 +906,9 @@ class ChatMessages extends React.PureComponent {
                               data-timestamp={reply.created_at.timestamp}
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
                               showTimestamp={showTimestamp}
-                              onTouchStart={this.handleChatListTouchStart}
-                              onTouchMove={this.handleChatListTouchMove}
-                              onTouchEnd={this.handleChatListTouchEnd}
+                              // onTouchStart={this.handleChatListTouchStart}
+                              // onTouchMove={this.handleChatListTouchMove}
+                              // onTouchEnd={this.handleChatListTouchEnd}
                               isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                             >
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}

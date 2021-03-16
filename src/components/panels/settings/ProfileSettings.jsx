@@ -1,6 +1,7 @@
 import momentTZ from "moment-timezone";
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
@@ -68,9 +69,15 @@ const Wrapper = styled.div`
   }
 `;
 
+const ReleaseLink = styled.span`
+  font-weight: 500;
+  cursor: pointer;
+`;
+
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
+  const history = useHistory();
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -105,18 +112,19 @@ const ProfileSettings = (props) => {
     dateTimeFormatLabel: _t("SETTINGS.DATE_TIME_FORMAT_LABEL", "Date and time format"),
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
+    viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
   };
 
-  const notificationSoundOptions = [
-    {
-      value: "appointed",
-      label: dictionary.notificationSoundDefault,
-    },
-    // {
-    //   value: "jingle-bells",
-    //   label: dictionary.notificationSoundJingleBells,
-    // },
-  ];
+  // const notificationSoundOptions = [
+  //   {
+  //     value: "appointed",
+  //     label: dictionary.notificationSoundDefault,
+  //   },
+  //   // {
+  //   //   value: "jingle-bells",
+  //   //   label: dictionary.notificationSoundJingleBells,
+  //   // },
+  // ];
 
   const channelSortOptions = [
     {
@@ -287,8 +295,8 @@ const ProfileSettings = (props) => {
     setWorkspaceSetting({
       order_channel: {
         order_by: e.value,
-        sort_by: e.value === "channel_date_updated"? "DESC" : "ASC",
-      }
+        sort_by: e.value === "channel_date_updated" ? "DESC" : "ASC",
+      },
     });
     toaster.success(<span>You have successfully sort channel</span>);
   };
@@ -330,6 +338,10 @@ const ProfileSettings = (props) => {
         a.click();
       }, 1000);
     });
+  };
+
+  const handleViewReleasePage = () => {
+    history.push("/releases");
   };
 
   return (
@@ -436,7 +448,7 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               </div>
-              {(["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email)) && (
+              {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-2 mt-4">
                   <div className="col-12 text-right">
                     <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>
@@ -534,8 +546,8 @@ const ProfileSettings = (props) => {
       ) : (
         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
       )}
-      <span className="version-number">
-        Driff version: {driffData.version} {localizeDate(driffData.timestamp)}
+      <span className="version-number mb-3">
+        Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
     </Wrapper>
   );

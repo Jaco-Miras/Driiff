@@ -557,7 +557,7 @@ const CompanyPostDetail = (props) => {
               <div className="user-reads-container">
                 <span className="no-readers">
                   <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
-                  {post.view_user_ids.length}
+                  {viewerIds.length}
                 </span>
                 <span className="hover read-users-container">
                   {viewers.map((u) => {
@@ -587,7 +587,18 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter
+          isMember={isMember}
+          post={post}
+          posts={posts}
+          filter={filter}
+          commentActions={commentActions}
+          postActions={postActions}
+          overview={handleClosePost}
+          onShowFileDialog={handleOpenFileDialog}
+          dropAction={dropAction}
+          mainInput={true}
+        />
       </MainBody>
     </>
   );

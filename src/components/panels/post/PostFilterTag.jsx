@@ -7,6 +7,9 @@ const Wrapper = styled.div`
   a {
     cursor: pointer;
   }
+  .list-group-item:last-child {
+    border-bottom-width: thin!important;
+  }
 `;
 const PostFilterTag = (props) => {
   const { className = "", workspace, tag, count, onGoBack, dictionary } = props;

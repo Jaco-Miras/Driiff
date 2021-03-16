@@ -9,8 +9,8 @@ import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, Works
 
 const Wrapper = styled.div`
   position: relative;
-  padding-bottom: 0 !important;
-  overflow: hidden;
+  //padding-bottom: 0 !important;
+  // overflow: hidden;
 
   .spinner-container {
     display: flex;
@@ -75,7 +75,7 @@ const WorkspaceContentPanel = (props) => {
   };
 
   return (
-    <Wrapper className={`main-content h-100 ${className}`}>
+    <Wrapper className={`main-content ${className}`}>
       {!workspacesLoaded ? (
         <div className="spinner-container">
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
@@ -101,7 +101,11 @@ const WorkspaceContentPanel = (props) => {
                     "/workspace/posts",
                   ]}
                 />
-                <Route exact={true} render={() => <WorkspaceChatPanel {...props} workspace={workspace} />} path={["/workspace/:workspaceId/:workspaceName", "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
+                <Route
+                  exact={true}
+                  render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
+                  path={["/workspace/:workspaceId/:workspaceName", "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]}
+                />
                 <Route
                   exact={true}
                   {...props}

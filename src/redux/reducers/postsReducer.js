@@ -13,6 +13,7 @@ const INITIAL_STATE = {
     filter: "inbox",
     sort: "recent",
     tag: null,
+    postListTag: null,
     count: {},
     search: "",
     searchResults: [],
@@ -24,6 +25,7 @@ const INITIAL_STATE = {
     limit: 25,
   },
   posts: {},
+  postsLists: [],
   drafts: [],
   totalPostsCount: 0,
   unreadPostsCount: 0,
@@ -310,6 +312,7 @@ export default (state = INITIAL_STATE, action) => {
           filter: action.data.filter,
           sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
           tag: action.data.tag,
+          postListTag: action.data.postListTag,
         },
       };
     }
@@ -595,8 +598,8 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                view_user_ids:
-                  action.data.unread === 0 ? [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] : state.companyPosts.posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
+                // view_user_ids:
+                //   action.data.unread === 0 ? [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] : state.companyPosts.posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
                 is_unread: action.data.unread,
                 unread_count: action.data.unread === 0 ? 0 : state.companyPosts.posts[action.data.post_id].unread_count,
               },
@@ -697,9 +700,9 @@ export default (state = INITIAL_STATE, action) => {
         if (!companyPosts.posts[action.data.post_id].hasOwnProperty("to_add")) {
           companyPosts.posts[action.data.post_id].to_add = [...action.data.recipient_ids];
         } else {
-          companyPosts.posts[action.data.post_id].to_add = [...companyPosts.posts[action.data.post_id].to_add,...action.data.recipient_ids];
+          companyPosts.posts[action.data.post_id].to_add = [...companyPosts.posts[action.data.post_id].to_add, ...action.data.recipient_ids];
         }
-        
+
         companyPosts.posts[action.data.post_id].recipients = [...companyPosts.posts[action.data.post_id].recipients, ...action.data.recipients];
         companyPosts.posts[action.data.post_id].recipient_ids = [...companyPosts.posts[action.data.post_id].recipient_ids, ...action.data.recipient_ids];
       }
@@ -710,12 +713,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "REMOVE_USER_TO_POST_RECIPIENTS": {
       let companyPosts = { ...state.companyPosts };
-      if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {  
-        const filteredRecipientsIds = companyPosts.posts[action.data.post_id].recipient_ids.filter( (id) => {
+      if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        const filteredRecipientsIds = companyPosts.posts[action.data.post_id].recipient_ids.filter((id) => {
           return !action.data.remove_recipient_ids.includes(id);
         });
-        const filteredRecipients = companyPosts.posts[action.data.post_id].recipients.filter( (r) => {
-          return !action.data.remove_recipient_ids.includes(r.id )
+        const filteredRecipients = companyPosts.posts[action.data.post_id].recipients.filter((r) => {
+          return !action.data.remove_recipient_ids.includes(r.id);
         });
 
         companyPosts.posts[action.data.post_id].recipient_ids = filteredRecipientsIds;
@@ -724,7 +727,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         companyPosts: companyPosts,
-      }
+      };
     }
     case "REFETCH_POSTS_SUCCESS": {
       return {
@@ -943,6 +946,71 @@ export default (state = INITIAL_STATE, action) => {
           },
         },
       };
+    }
+    case "GET_UNREAD_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "POST_LIST_SUCCESS": {
+      return {
+        ...state,
+        postsLists: [...action.data]
+      }
+    }
+    case "POST_LIST_CONNECT": {
+      const post = {
+        ...state.companyPosts.posts[action.data.post_id],
+        post_list_connect: [{id: action.data.link_id}]
+      }
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: post,
+          },
+        }
+      }
+    }
+    case "POST_LIST_DISCONNECT": {
+      const post = {
+        ...state.companyPosts.posts[action.data.post_id],
+        post_list_connect: []
+      }
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: post
+          },
+        }
+      }
     }
     default:
       return state;

@@ -285,7 +285,6 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-
   const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
@@ -577,7 +576,7 @@ const PostDetail = (props) => {
               <div className="user-reads-container">
                 <span className="no-readers">
                   <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
-                  {post.view_user_ids.length}
+                  {viewerIds.length}
                 </span>
                 <span className="hover read-users-container">
                   {viewers.map((u) => {
@@ -619,7 +618,20 @@ const PostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <PostDetailFooter post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} overview={handleClosePost} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} mainInput={true} />
+        <PostDetailFooter
+          post={post}
+          posts={posts}
+          filter={filter}
+          commentActions={commentActions}
+          postActions={postActions}
+          overview={handleClosePost}
+          onShowFileDialog={handleOpenFileDialog}
+          dropAction={dropAction}
+          workspace={workspace}
+          isMember={isMember}
+          disableOptions={disableOptions}
+          mainInput={true}
+        />
       </MainBody>
     </>
   );
