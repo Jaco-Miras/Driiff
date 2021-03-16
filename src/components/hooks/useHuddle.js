@@ -34,18 +34,10 @@ const useHuddle = (props) => {
             return false;
           }
         } else if (h.repeat_type === "MONTHLY") {
-          if (h.repeat_select_monthly === currentDate.getDate()) {
-            return true;
-          } else {
-            return false;
-          }
+          return h.showToday;
         } else if (h.repeat_type === "YEARLY") {
           // same day and month
-          if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-            return true;
-          } else {
-            return false;
-          }
+          return h.showToday;
         }
       } else if (h.end_type === "END_ON") {
         const endDate = new Date(h.end_select_on.substr(0, 4), parseInt(h.end_select_on.substr(5, 2)) - 1, h.end_select_on.substr(8, 2));
@@ -59,18 +51,10 @@ const useHuddle = (props) => {
               return false;
             }
           } else if (h.repeat_type === "MONTHLY") {
-            if (h.repeat_select_monthly === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
+            return h.showToday;
           } else if (h.repeat_type === "YEARLY") {
             // same day and month
-            if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
+            return h.showToday;
           }
         } else {
           return false;
@@ -86,18 +70,10 @@ const useHuddle = (props) => {
               return false;
             }
           } else if (h.repeat_type === "MONTHLY") {
-            if (h.repeat_select_monthly === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
+            return h.showToday;
           } else if (h.repeat_type === "YEARLY") {
             // same day and month
-            if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
+            return h.showToday;
           }
         }
       }

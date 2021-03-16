@@ -38,6 +38,44 @@ const INITIAL_STATE = {
   skipIds: [],
 };
 
+const date = new Date();
+const today = date.getDate();
+const thisYear = date.getFullYear();
+const thisMonth = date.getMonth();
+const isLeapYear = (thisYear % 4 === 0 && thisYear % 100 !== 0) || thisYear % 400 === 0;
+
+const monthDates = {
+  0: { maxDate: 31 },
+  1: { maxDate: isLeapYear ? 29 : 28 },
+  2: { maxDate: 31 },
+  3: { maxDate: 30 },
+  4: { maxDate: 31 },
+  5: { maxDate: 30 },
+  6: { maxDate: 31 },
+  7: { maxDate: 31 },
+  8: { maxDate: 30 },
+  9: { maxDate: 31 },
+  10: { maxDate: 30 },
+  11: { maxDate: 31 },
+};
+const monthHasDate = (month, date) => {
+  return monthDates[month].maxDate >= date;
+};
+
+const isWeekend = (d) => {
+  if (d.getDay() === 0 || d.getDay() === 6) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const toNextMonday = (d, plusDays) => {
+  const adjustedDate = d;
+  adjustedDate.setDate(d.getDate() + plusDays);
+  return adjustedDate;
+};
+
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case "SET_SIDEBAR_SEARCH": {
@@ -1668,6 +1706,7 @@ export default function (state = INITIAL_STATE, action) {
         huddleBots: action.data.map((h) => {
           return {
             ...h,
+            showToday: false,
             questions: h.questions
               .sort((a, b) => a.id - b.id)
               .map((q, k) => {
@@ -2022,6 +2061,118 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         skipIds: [...state.skipIds, action.data],
+      };
+    }
+    case "ADJUST_HUDDLE_DATE": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.repeat_select_monthly) {
+            if (today <= 3) {
+              //check if last month is in range is adjusted to current month
+              const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+              if (monthHasDate(lastMonth, h.repeat_select_monthly)) {
+                const lastMonthDate = new Date(thisMonth === 0 ? thisYear - 1 : thisYear, thisMonth === 0 ? 11 : thisMonth - 1, h.repeat_select_monthly);
+                if (isWeekend(lastMonthDate)) {
+                  const adjustedDate = toNextMonday(lastMonthDate, lastMonthDate.getDay() === 0 ? 1 : 2);
+                  if (adjustedDate.getMonth() === thisMonth) {
+                    return {
+                      ...h,
+                      showToday: adjustedDate.getDate() === today,
+                    };
+                  } else {
+                    return {
+                      ...h,
+                      showToday: false,
+                    };
+                  }
+                } else {
+                  return {
+                    ...h,
+                    showToday: false,
+                  };
+                }
+              } else {
+                //adjust date to first date of the current month
+                const firstDateOfTheMonth = new Date(thisYear, thisMonth, 1);
+                if (isWeekend(firstDateOfTheMonth)) {
+                  const adjustedDate = toNextMonday(firstDateOfTheMonth, firstDateOfTheMonth.getDay() === 0 ? 1 : 2);
+                  return {
+                    ...h,
+                    showToday: adjustedDate.getDate() === today,
+                  };
+                } else {
+                  return {
+                    ...h,
+                    showToday: firstDateOfTheMonth.getDate() === today,
+                  };
+                }
+              }
+            } else if (today > 3 && monthHasDate(thisMonth, h.repeat_select_monthly)) {
+              //check if show date is not on weekend and adjusted date is still in range(same month)
+              const showDate = new Date(thisYear, thisMonth, h.repeat_select_monthly);
+              if (isWeekend(showDate)) {
+                const adjustedDate = toNextMonday(showDate, showDate.getDay() === 0 ? 1 : 2);
+                if (adjustedDate.getMonth() === thisMonth) {
+                  return {
+                    ...h,
+                    showToday: adjustedDate.getDate() === today,
+                  };
+                } else {
+                  return {
+                    ...h,
+                    showToday: false,
+                  };
+                }
+              } else {
+                return {
+                  ...h,
+                  showToday: h.repeat_select_monthly === today,
+                };
+              }
+            } else {
+              return {
+                ...h,
+                showToday: false,
+              };
+            }
+          } else if (h.repeat_select_yearly) {
+            const parseYear = parseInt(h.repeat_select_yearly.substr(0, 4));
+            const parseMonth = parseInt(h.repeat_select_yearly.substr(5, 2)) - 1;
+            const parseDate = parseInt(h.repeat_select_yearly.substr(8, 2));
+            const showDate = new Date(parseYear, parseMonth, parseDate);
+            if (parseMonth === 11 && (parseDate === 30 || parseDate === 31)) {
+              if (isWeekend(showDate)) {
+                const adjustedDate = toNextMonday(showDate, showDate.getDay() === 0 ? 1 : 2);
+                return {
+                  ...h,
+                  showToday: adjustedDate.getDate() === today && adjustedDate.getMonth() === thisMonth,
+                };
+              } else {
+                return {
+                  ...h,
+                  showToday: showDate.getDate() === today && parseMonth === thisMonth,
+                };
+              }
+            } else {
+              if (isWeekend(showDate)) {
+                const adjustedDate = toNextMonday(showDate, showDate.getDay() === 0 ? 1 : 2);
+                return {
+                  ...h,
+                  showToday: adjustedDate.getDate() === today && adjustedDate.getMonth() === thisMonth,
+                };
+              } else {
+                return {
+                  ...h,
+                  showToday: showDate.getDate() === today && parseMonth === thisMonth,
+                };
+              }
+            }
+          } else {
+            //other repeat type
+            return h;
+          }
+        }),
       };
     }
     default:

@@ -416,3 +416,7 @@ export function incomingHuddleSkip(payload, callback) {
 export function addSkipId(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_SKIP_ID", payload, callback);
 }
+
+export function adjustHuddleDate(payload, callback) {
+  return SimpleDispatchActionToReducer("ADJUST_HUDDLE_DATE", payload, callback);
+}

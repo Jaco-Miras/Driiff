@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { setSelectedChannel, clearHuddleAnswers } from "../../redux/actions/chatActions";
+import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate } from "../../redux/actions/chatActions";
 import { useToaster, useHuddleChatbot } from "./index";
 
 const useHuddle = (props) => {
@@ -30,6 +30,7 @@ const useHuddle = (props) => {
     { day: "TH", value: 4 },
     { day: "F", value: 5 },
   ];
+
   const huddle = huddleBots.find((h) => {
     if (h.questions.filter((q) => q.answer === null).length > 0) {
       let inTimeRange = false;
@@ -55,18 +56,10 @@ const useHuddle = (props) => {
               return false;
             }
           } else if (h.repeat_type === "MONTHLY") {
-            if (h.repeat_select_monthly === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
+            return h.showToday;
           } else if (h.repeat_type === "YEARLY") {
             // same day and month
-            if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-              return true;
-            } else {
-              return false;
-            }
+            return h.showToday;
           }
         } else if (h.end_type === "END_ON") {
           const endDate = new Date(h.end_select_on.substr(0, 4), parseInt(h.end_select_on.substr(5, 2)) - 1, h.end_select_on.substr(8, 2));
@@ -80,18 +73,10 @@ const useHuddle = (props) => {
                 return false;
               }
             } else if (h.repeat_type === "MONTHLY") {
-              if (h.repeat_select_monthly === currentDate.getDate()) {
-                return true;
-              } else {
-                return false;
-              }
+              return h.showToday;
             } else if (h.repeat_type === "YEARLY") {
               // same day and month
-              if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-                return true;
-              } else {
-                return false;
-              }
+              return h.showToday;
             }
           } else {
             return false;
@@ -107,18 +92,10 @@ const useHuddle = (props) => {
                 return false;
               }
             } else if (h.repeat_type === "MONTHLY") {
-              if (h.repeat_select_monthly === currentDate.getDate()) {
-                return true;
-              } else {
-                return false;
-              }
+              return h.showToday;
             } else if (h.repeat_type === "YEARLY") {
               // same day and month
-              if (parseInt(h.repeat_select_yearly.substr(5, 2)) - 1 === currentDate.getMonth() && parseInt(h.repeat_select_yearly.substr(8, 2)) === currentDate.getDate()) {
-                return true;
-              } else {
-                return false;
-              }
+              return h.showToday;
             }
           }
         }
@@ -204,8 +181,8 @@ const useHuddle = (props) => {
   }
 
   setInterval(() => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDay();
+    const d = new Date();
+    const currentDay = d.getDay();
     const huddleStorage = localStorage.getItem("huddle");
     //setCurrentTime(currentDate.getTime());
     if (huddleStorage) {
@@ -214,6 +191,10 @@ const useHuddle = (props) => {
         localStorage.removeItem("huddle");
         dispatch(clearHuddleAnswers());
       }
+    }
+
+    if (d.getDate() !== currentDate.getDate()) {
+      dispatch(adjustHuddleDate());
     }
   }, 60000);
 };
