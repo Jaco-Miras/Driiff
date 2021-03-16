@@ -454,34 +454,17 @@ const ChatInput = (props) => {
       );
     }
 
-    let channel = null;
-    if (selectedChannel.is_shared) {
-      if (window[selectedChannel.slug_owner]) {
-        channel = window[selectedChannel.slug_owner].private(selectedChannel.slug_owner + `.App.Channel.${selectedChannel.id}`);
-        channel.whisper("typing", {
-          user: {
-            id: user.id,
-            name: user.name,
-            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-            email: user.email,
-          },
-          typing: true,
-          channel_id: selectedChannel.id,
-        });
-      }
-    } else {
-      channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
-      channel.whisper("typing", {
-        user: {
-          id: user.id,
-          name: user.name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-          email: user.email,
-        },
-        typing: true,
-        channel_id: selectedChannel.id,
-      });
-    }
+    let channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
+    channel.whisper("typing", {
+      user: {
+        id: user.id,
+        name: user.name,
+        profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+        email: user.email,
+      },
+      typing: true,
+      channel_id: selectedChannel.id,
+    });
   };
 
   const handleMentionUser = (mention_ids) => {
