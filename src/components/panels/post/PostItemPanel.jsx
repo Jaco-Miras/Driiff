@@ -121,6 +121,13 @@ const Wrapper = styled.li`
     background-color: rgba(210, 210, 210, 0.2);
     font-size: 11px;
     margin-right: 3px;
+    display: inline-flex;
+    align-items: center;
+    svg {
+      height: 12px;
+      width: 12px;
+      margin-left: 0.2rem;
+    }
   }
 
   .ellipsis-hover {
@@ -268,7 +275,7 @@ const PostItemPanel = (props) => {
     toggleCheckbox,
     checked,
     workspace,
-    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList, updatePostListConnect},
+    postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList, updatePostListConnect },
   } = props;
 
   const user = useSelector((state) => state.session.user);
@@ -302,7 +309,7 @@ const PostItemPanel = (props) => {
         .filter((r, i) => i < recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join(", ");
@@ -322,7 +329,7 @@ const PostItemPanel = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join("");
@@ -373,16 +380,16 @@ const PostItemPanel = (props) => {
   });
 
   const handleAddToListModal = () => {
-    if (post.post_list_connect.length  !== 1) {
+    if (post.post_list_connect.length !== 1) {
       showModal("add_to_list", post);
     } else {
       const payload = {
         link_id: post.post_list_connect[0].id,
-        post_id: post.id
-      }
+        post_id: post.id,
+      };
       disconnectPostList(payload, (err, res) => {
         if (err) return;
-        res.data["topic_id"] = workspace && workspace.id? workspace.id : null;
+        res.data["topic_id"] = workspace && workspace.id ? workspace.id : null;
         updatePostListConnect(res.data);
       });
     }
@@ -461,7 +468,7 @@ const PostItemPanel = (props) => {
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
             {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
-            {post.post_list_connect && <div onClick={() => handleAddToListModal()}  >{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div> }
+            {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
           </MoreOptions>
         )}
       </div>

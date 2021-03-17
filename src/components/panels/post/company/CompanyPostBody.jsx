@@ -184,7 +184,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -282,7 +282,7 @@ const CompanyPostBody = (props) => {
         .map(
           (r) =>
             `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
             }</span>`
         )
         .join(", ");
@@ -303,7 +303,7 @@ const CompanyPostBody = (props) => {
         .map(
           (r) =>
             `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
             }</span>`
         )
         .join("");
@@ -316,7 +316,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });

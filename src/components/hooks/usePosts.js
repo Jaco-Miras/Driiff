@@ -209,33 +209,22 @@ const usePosts = () => {
           } else if (tag === "is_close") {
             return p.is_close && !p.hasOwnProperty("draft_type");
           } else if (parseInt(activeTag) !== NaN) {
-            return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag));
+            return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag);
           } else {
             return true;
           }
-        } else if(activePostListTag) {
+        } else if (activePostListTag) {
           if (parseInt(activePostListTag) !== NaN) {
-            return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(activePostListTag));
+            return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(activePostListTag);
           } else {
             return true;
           }
-        }
-        else {
+        } else {
           return true;
         }
       })
       .sort((a, b) => {
-        if (sort === "favorite") {
-          return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-        } else if (sort === "unread") {
-          if (a.unread_count > 0) {
-            return -1;
-          } else {
-            return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
-          }
-        } else {
-          return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
-        }
+        return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
       });
 
     count = {

@@ -266,7 +266,7 @@ const ChatHeaderPanel = (props) => {
           <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
         )}
         {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
-          <Icon className={"ml-1"} icon={"share"} strokeWidth="3" width={12} />
+          <Icon className={"ml-1"} icon={"eye"} strokeWidth="3" width={12} />
         )}
       </h2>
       <div className="chat-header-right">

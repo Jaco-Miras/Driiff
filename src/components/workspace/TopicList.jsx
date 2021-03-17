@@ -99,7 +99,7 @@ const TopicList = (props) => {
         >
           <span className={"topic-text"}>{topic.name}</span>
           {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
-          {topic.is_shared && <Icon icon={"share"} strokeWidth="3" />}
+          {topic.is_shared && <Icon icon={"eye"} strokeWidth="3" />}
           {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
         </a>
       </div>

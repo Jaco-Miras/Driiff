@@ -110,15 +110,11 @@ const ExternalWorkspaceList = (props) => {
         <div>
           {workspace.name}
 
-          {workspace.is_lock !== 0 && <Icon icon="lock" strokeWidth="2"/>}
+          {workspace.is_lock !== 0 && <Icon icon="lock" strokeWidth="2" />}
           {workspace.is_active === 0 && <Icon icon="archive" />}
-          {workspace.is_shared && <Icon icon={"share"} strokeWidth="3" />}
+          {workspace.is_shared && <Icon icon={"eye"} strokeWidth="3" />}
 
-          {unread_count > 0 && (
-            <Badge color="danger">
-              {unread_count}
-            </Badge>
-          )}
+          {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
         </div>
       </a>
     </Wrapper>
