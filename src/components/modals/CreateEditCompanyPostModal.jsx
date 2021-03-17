@@ -434,7 +434,7 @@ const CreateEditCompanyPostModal = (props) => {
     setNestedModal(!nestedModal);
     setCloseAll(true);
     if (saveDraft) {
-      handleSaveDraft();
+      //handleSaveDraft();
     } else if (draftId) {
       dispatch(
         deleteDraft(
