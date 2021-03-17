@@ -354,6 +354,7 @@ const CreateEditWorkspacePostModal = (props) => {
     approvers: [],
     showApprover: false,
     mention_ids: [],
+    requiredUsers: [],
   });
 
   const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
@@ -667,6 +668,12 @@ const CreateEditWorkspacePostModal = (props) => {
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
       //body_mention_ids: form.mention_ids,
+      required_user_ids:
+        (form.must_read || form.reply_required) && form.requiredUsers.find((a) => a.value === "all")
+          ? addressIds.filter((id) => id !== user.id)
+          : form.must_read || form.reply_required
+          ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
+          : [],
     };
     // if (draftId) {
     //   dispatch(
@@ -814,7 +821,6 @@ const CreateEditWorkspacePostModal = (props) => {
     const textOnly = editor.getText(content);
     let mentionIds = [];
     if (editor.getContents().ops && editor.getContents().ops.length) {
-      console.log(form.selectedAddressTo);
       mentionIds = editor
         .getContents()
         .ops.filter((m) => m.insert.mention)
@@ -1052,6 +1058,15 @@ const CreateEditWorkspacePostModal = (props) => {
       setForm({
         ...form,
         selectedAddressTo: getDefaultAddressTo(),
+        requiredUsers: [
+          {
+            id: "all",
+            value: "all",
+            label: "All users",
+            icon: "users",
+            all_ids: addressIds,
+          },
+        ],
       });
       let ws = getDefaultAddressTo();
       setIgnoredMentionedUserIds(ws[0].member_ids);
@@ -1203,6 +1218,27 @@ const CreateEditWorkspacePostModal = (props) => {
     }
   };
 
+  const handleSelectRequiredUsers = (e) => {
+    if (e === null) {
+      setForm({
+        ...form,
+        requiredUsers: [],
+      });
+    } else {
+      if (e.find((a) => a.value === "all")) {
+        setForm({
+          ...form,
+          requiredUsers: e.filter((a) => a.value === "all"),
+        });
+      } else {
+        setForm({
+          ...form,
+          requiredUsers: e,
+        });
+      }
+    }
+  };
+
   let approverOptions = [
     ...userOptions
       .filter((u) => u.id !== user.id)
@@ -1216,16 +1252,21 @@ const CreateEditWorkspacePostModal = (props) => {
         };
       }),
     {
-      id: require("shortid").generate(),
+      id: "all",
       value: "all",
       label: "All users",
       icon: "users",
       all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
     },
   ];
+  let requiredUserOptions = [...approverOptions];
 
   if (form.approvers.length && form.approvers.find((a) => a.value === "all")) {
     approverOptions = approverOptions.filter((a) => a.value === "all");
+  }
+
+  if (form.requiredUsers.length && form.requiredUsers.find((a) => a.value === "all")) {
+    requiredUserOptions = approverOptions.filter((a) => a.value === "all");
   }
 
   return (
@@ -1313,6 +1354,9 @@ const CreateEditWorkspacePostModal = (props) => {
                 {dictionary.noReplies}
               </CheckBox>
             </div>
+            <ApproveOptions className="d-flex align-items-center">
+              {(form.must_read || form.reply_required) && <SelectApprover options={requiredUserOptions} value={form.requiredUsers} onChange={handleSelectRequiredUsers} isMulti={true} isClearable={true} menuPlacement="top" />}
+            </ApproveOptions>
             <ApproveOptions className="d-flex align-items-center">
               <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
                 {dictionary.approve}

@@ -491,7 +491,7 @@ const CompanyPostDetail = (props) => {
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && (
+          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}

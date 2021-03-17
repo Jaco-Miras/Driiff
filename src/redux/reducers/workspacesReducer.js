@@ -2550,8 +2550,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "POST_LIST_CONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
-        if (!wp.posts.hasOwnProperty(action.data.post_id)){
-           newValue[topic_id] = wp;
+        if (!wp.posts.hasOwnProperty(action.data.post_id)) {
+          newValue[topic_id] = wp;
         } else {
           newValue[topic_id] = {
             ...wp,
@@ -2559,22 +2559,22 @@ export default (state = INITIAL_STATE, action) => {
               ...wp.posts,
               [action.data.post_id]: {
                 ...wp.posts[action.data.post_id],
-                post_list_connect: [{id: action.data.link_id}]
-              }
-            }
-          }
+                post_list_connect: [{ id: action.data.link_id }],
+              },
+            },
+          };
         }
         return newValue;
       }, {});
       return {
         ...state,
         workspacePosts: newWp,
-      } 
+      };
     }
     case "POST_LIST_DISCONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
-        if (!wp.posts.hasOwnProperty(action.data.post_id)){
-           newValue[topic_id] = wp;
+        if (!wp.posts.hasOwnProperty(action.data.post_id)) {
+          newValue[topic_id] = wp;
         } else {
           newValue[topic_id] = {
             ...wp,
@@ -2582,20 +2582,46 @@ export default (state = INITIAL_STATE, action) => {
               ...wp.posts,
               [action.data.post_id]: {
                 ...wp.posts[action.data.post_id],
-                post_list_connect: []
-              }
-            }
-          }
+                post_list_connect: [],
+              },
+            },
+          };
         }
         return newValue;
       }, {});
 
       return {
         ...state,
-        workspacePosts: newWp
-      }
+        workspacePosts: newWp,
+      };
     }
-
+    case "INCOMING_POST_REQUIRED": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces.length > 0 && {
+            ...state.workspacePosts,
+            ...action.data.workspaces.reduce((res, ws) => {
+              if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post.id]) {
+                res[ws.topic.id] = {
+                  ...state.workspacePosts[ws.topic.id],
+                  posts: {
+                    ...state.workspacePosts[ws.topic.id].posts,
+                    [action.data.post.id]: {
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      required_users: action.data.required_users,
+                      user_reads: action.data.user_reads,
+                    },
+                  },
+                };
+              }
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
     default:
       return state;
   }

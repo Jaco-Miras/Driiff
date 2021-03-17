@@ -511,8 +511,11 @@ const CompanyPostDetailFooter = (props) => {
   //const isLastUserToAnswer = post.users_approval.length > 0 && post.users_approval.length - post.users_approval.filter((u) => u.ip_address === null).length === 1;
 
   const requestForChangeCallback = (err, res) => {
+    if (err) return;
+    if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+      postActions.markReplyRequirement(post);
+    }
     if (post.users_approval.length === 1) {
-      if (err) return;
       if (hasPendingAproval && isApprover && showApprover) {
         postActions.approve(
           {

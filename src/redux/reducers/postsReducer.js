@@ -977,14 +977,14 @@ export default (state = INITIAL_STATE, action) => {
     case "POST_LIST_SUCCESS": {
       return {
         ...state,
-        postsLists: [...action.data]
-      }
+        postsLists: [...action.data],
+      };
     }
     case "POST_LIST_CONNECT": {
       const post = {
         ...state.companyPosts.posts[action.data.post_id],
-        post_list_connect: [{id: action.data.link_id}]
-      }
+        post_list_connect: [{ id: action.data.link_id }],
+      };
       return {
         ...state,
         companyPosts: {
@@ -993,24 +993,42 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             [action.data.post_id]: post,
           },
-        }
-      }
+        },
+      };
     }
     case "POST_LIST_DISCONNECT": {
       const post = {
         ...state.companyPosts.posts[action.data.post_id],
-        post_list_connect: []
-      }
+        post_list_connect: [],
+      };
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.post_id]: post
+            [action.data.post_id]: post,
           },
-        }
-      }
+        },
+      };
+    }
+    case "INCOMING_POST_REQUIRED": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
+                required_users: action.data.required_users,
+                user_reads: action.data.user_reads,
+              },
+            }),
+          },
+        },
+      };
     }
     default:
       return state;

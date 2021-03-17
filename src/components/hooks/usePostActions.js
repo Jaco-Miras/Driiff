@@ -57,6 +57,7 @@ import {
   postListDisconnected,
   incomingPostListConnect,
   incomingPostListDisconnect,
+  postRequired,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -113,51 +114,29 @@ const usePostActions = () => {
     ),
   };
 
-  const fetchPostList = useCallback(
-    (payload = {}, callback) => {
-      dispatch(
-        getPostList(payload, callback)
-      );
-    }
-  );
+  const fetchPostList = useCallback((payload = {}, callback) => {
+    dispatch(getPostList(payload, callback));
+  });
 
-  const createNewPostList = useCallback(
-    (payload = {}, callback)=> {
-      dispatch(
-        createPostList(payload, callback)
-      );
-    }
-  );
+  const createNewPostList = useCallback((payload = {}, callback) => {
+    dispatch(createPostList(payload, callback));
+  });
 
-  const updatePostsList = useCallback(
-    (payload = {}, callback) => {
-      dispatch(
-        updatePostList(payload, callback)
-      );
-    }
-  );
+  const updatePostsList = useCallback((payload = {}, callback) => {
+    dispatch(updatePostList(payload, callback));
+  });
 
-  const deletePostsList = useCallback(
-    (payload= {}, callback) => {
-      dispatch(
-        deletePostList(payload, callback)
-      );
-    }
-  );
+  const deletePostsList = useCallback((payload = {}, callback) => {
+    dispatch(deletePostList(payload, callback));
+  });
 
-  const connectPostList = useCallback(
-    (payload, callback) => {
-      dispatch(
-        postListConnect(payload, callback)
-      );
-    }
-  );
+  const connectPostList = useCallback((payload, callback) => {
+    dispatch(postListConnect(payload, callback));
+  });
 
   const disconnectPostList = useCallback(
     (payload, callback) => {
-      dispatch(
-        postListDisconnected(payload, callback)
-      )
+      dispatch(postListDisconnected(payload, callback));
     },
     [dispatch, params]
   );
@@ -165,13 +144,9 @@ const usePostActions = () => {
   const updatePostListConnect = useCallback(
     (payload, callback) => {
       if (payload.SOCKET_TYPE === "POST_LIST_CONNECTED") {
-        dispatch(
-          incomingPostListConnect(payload, callback)
-        )
-      }else {
-        dispatch(
-          incomingPostListDisconnect(payload, callback)
-        )
+        dispatch(incomingPostListConnect(payload, callback));
+      } else {
+        dispatch(incomingPostListDisconnect(payload, callback));
       }
     },
     [dispatch, params]
@@ -557,7 +532,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null, comment = null, ) => {
+    (mode = "create", post = null, comment = null) => {
       let payload = {};
 
       switch (mode) {
@@ -723,8 +698,8 @@ const usePostActions = () => {
             mode: "add",
             item: {
               post: post,
-            }
-          }
+            },
+          };
           break;
         }
         case "edit_post_list": {
@@ -733,8 +708,8 @@ const usePostActions = () => {
             mode: "edit",
             item: {
               post: post,
-            }
-          }
+            },
+          };
           break;
         }
         default: {
@@ -873,13 +848,26 @@ const usePostActions = () => {
     (post) => {
       let payload = {
         post_id: post.id,
-        personalized_for_id: null,
-        mark_as_read: 1,
+        must_read: 1,
+        must_reply: 0,
+        is_approved: 0,
       };
-      let cb = (err, res) => {
-        if (err) return;
+
+      dispatch(postRequired(payload));
+    },
+    [dispatch, params]
+  );
+
+  const markReplyRequirement = useCallback(
+    (post) => {
+      let payload = {
+        post_id: post.id,
+        must_read: 0,
+        must_reply: 1,
+        is_approved: 0,
       };
-      dispatch(postMarkRead(payload, cb));
+
+      dispatch(postRequired(payload));
     },
     [dispatch, params]
   );
@@ -1106,6 +1094,7 @@ const usePostActions = () => {
     connectPostList,
     disconnectPostList,
     updatePostListConnect,
+    markReplyRequirement,
   };
 };
 
