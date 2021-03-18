@@ -1072,6 +1072,18 @@ const CreateEditWorkspacePostModal = (props) => {
       setIgnoredMentionedUserIds(ws[0].member_ids);
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
+      let requiredUserIds = item.post.recipients
+        .map((ad) => {
+          if (ad.type === "USER") {
+            return ad.type_id;
+          } else {
+            return ad.participant_ids;
+          }
+        })
+        .flat();
+
+      requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
+      const isAllSelected = requiredUserIds.length === item.post.required_users.length;
       setForm({
         ...form,
         body: item.post.body,
@@ -1099,6 +1111,28 @@ const CreateEditWorkspacePostModal = (props) => {
                   is_approved: hasRequestedChange ? false : u.is_approved,
                 };
               })
+            : [],
+        requiredUsers:
+          item.post.required_users.length > 0
+            ? isAllSelected
+              ? [
+                  {
+                    id: "all",
+                    value: "all",
+                    label: "All users",
+                    icon: "users",
+                    all_ids: requiredUserIds,
+                  },
+                ]
+              : item.post.required_users.map((u) => {
+                  return {
+                    ...u,
+                    icon: "user-avatar",
+                    value: u.id,
+                    label: u.name,
+                    type: "USER",
+                  };
+                })
             : [],
       });
       if (item.post.end_at !== null || item.post.show_at !== null || item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply) {
@@ -1180,11 +1214,11 @@ const CreateEditWorkspacePostModal = (props) => {
     []
   );
 
-  useEffect(() => {
-    if (mounted && !savingDraft.current) {
-      //autoUpdateDraft(form, draftId);
-    }
-  }, [form, draftId, mounted]);
+  // useEffect(() => {
+  //   if (mounted && !savingDraft.current) {
+  //     //autoUpdateDraft(form, draftId);
+  //   }
+  // }, [form, draftId, mounted]);
 
   const onDragEnter = () => {
     if (!showDropzone) setShowDropzone(true);
