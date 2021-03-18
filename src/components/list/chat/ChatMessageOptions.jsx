@@ -14,7 +14,7 @@ const ChatMessageOptions = (props) => {
   const scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
-  const { selectUserChannel, loggedUser } = useUserChannels();
+  const { selectUserChannel, loggedUser, users } = useUserChannels();
 
   useEffect(() => {
     if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && !replyData.hasOwnProperty("huddle_log")) {
@@ -71,12 +71,21 @@ const ChatMessageOptions = (props) => {
 
   const handleReply = () => {
     if (!redirecting) {
+      const callback = (data) => {
+        if (data && data.id) {
+          chatMessageActions.setQuote({ ...replyData, channel_id: data.id });
+        }
+        setRedirecting(false);
+      };
       setRedirecting(true);
-      selectUserChannel(replyData.user, () => setRedirecting(false));
+      selectUserChannel(replyData.user, callback);
       setShowMoreOptions(!showMoreOptions);
+      //chatMessageActions.setQuote(replyData);
     }
   };
   /* dictionary initiated in ChatContentPanel.jsx */
+  const isInternalUser = replyData.user && users[replyData.user.id] && users[replyData.user.id].type === "internal";
+
   return (
     <MoreOptions width={width} className={className} scrollRef={scrollEl}>
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={() => chatMessageActions.remind(replyData, selectedChannel)}>{dictionary.remindMeAboutThis}</div>}
@@ -87,7 +96,9 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>Edit huddle</div>}
-      {replyData.user && replyData.user.type !== "BOT" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
+      {replyData.user && replyData.user.type !== "BOT" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && replyData.user.code !== "huddle_bot" && isInternalUser && (
+        <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
+      )}
     </MoreOptions>
   );
 };
