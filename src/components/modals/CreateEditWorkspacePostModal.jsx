@@ -1285,20 +1285,25 @@ const CreateEditWorkspacePostModal = (props) => {
               <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
                 {dictionary.mustRead}
               </CheckBox>
+              <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
+                {dictionary.replyRequired}
+              </CheckBox>
+            </ApproveOptions>
+            <ApproveOptions className="d-flex align-items-center">
               {(form.must_read || form.reply_required) && (
                 <SelectApprover options={form.selectedAddressTo.length > 0 ? requiredUserOptions : []} value={form.requiredUsers} onChange={handleSelectRequiredUsers} isMulti={true} isClearable={true} menuPlacement="top" />
               )}
             </ApproveOptions>
-            <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
-              {dictionary.replyRequired}
-            </CheckBox>
-            <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
-              {dictionary.noReplies}
-            </CheckBox>
+
             <ApproveOptions className="d-flex align-items-center">
+              <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
+                {dictionary.noReplies}
+              </CheckBox>
               <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
                 {dictionary.approve}
               </CheckBox>
+            </ApproveOptions>
+            <ApproveOptions className="d-flex align-items-center">
               {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
             </ApproveOptions>
             {/* <WrapperDiv className="schedule-post">
