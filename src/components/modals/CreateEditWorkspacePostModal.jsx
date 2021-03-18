@@ -270,7 +270,6 @@ const CreateEditWorkspacePostModal = (props) => {
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const [showMoreOptions, setShowMoreOptions] = useState(true);
-  const [maxHeight, setMaxHeight] = useState(120);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -691,33 +690,7 @@ const CreateEditWorkspacePostModal = (props) => {
 
     setForm({
       ...form,
-      selectedAddressTo: [
-        ...mentionedUsers,
-        // ...users.map((user) => {
-        //   if (user.type === "WORKSPACE" || user.type === "TOPIC") {
-        //     return {
-        //       ...user,
-        //       value: user.id,
-        //       label: user.name,
-        //       name: user.name,
-        //       first_name: user.first_name,
-        //       type: user.type,
-        //     };
-        //   }
-        //   return {
-        //     id: user.id,
-        //     value: user.id,
-        //     label: user.name,
-        //     name: user.name,
-        //     first_name: user.first_name,
-        //     profile_image_link: user.profile_image_link,
-        //     profile_image_thumbnail_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-        //     type: "USER",
-        //     icon: "user-avatar",
-        //   };
-        // }),
-        ...form.selectedAddressTo,
-      ],
+      selectedAddressTo: [...mentionedUsers, ...form.selectedAddressTo],
     });
 
     setMentionedUserIds([]);
@@ -814,10 +787,6 @@ const CreateEditWorkspacePostModal = (props) => {
     [setForm]
   );
 
-  const toggleMoreOptions = () => {
-    setShowMoreOptions(!showMoreOptions);
-  };
-
   const handlePostVisibilityRef = (e) => {
     const handleUserPopUpMouseEnter = () => {
       if (formRef.visibilityInfo.current) {
@@ -860,25 +829,25 @@ const CreateEditWorkspacePostModal = (props) => {
     }
   };
 
-  const handleSelectStartDate = useCallback(
-    (value) => {
-      setForm((f) => ({
-        ...f,
-        show_at: value,
-      }));
-    },
-    [setForm]
-  );
+  // const handleSelectStartDate = useCallback(
+  //   (value) => {
+  //     setForm((f) => ({
+  //       ...f,
+  //       show_at: value,
+  //     }));
+  //   },
+  //   [setForm]
+  // );
 
-  const handleSelectEndDate = useCallback(
-    (value) => {
-      setForm((f) => ({
-        ...f,
-        end_at: value,
-      }));
-    },
-    [setForm]
-  );
+  // const handleSelectEndDate = useCallback(
+  //   (value) => {
+  //     setForm((f) => ({
+  //       ...f,
+  //       end_at: value,
+  //     }));
+  //   },
+  //   [setForm]
+  // );
 
   const handleOpenFileDialog = () => {
     if (formRef.dropzone.current) {
@@ -991,13 +960,6 @@ const CreateEditWorkspacePostModal = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (formRef.more_options.current !== null && maxHeight === null && draftId === null) {
-  //     setMaxHeight(formRef.more_options.current.offsetHeight);
-  //     setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
-  //   }
-  // }, [formRef, setMaxHeight]);
-
   useEffect(() => {
     if (activeTopic !== null && item.hasOwnProperty("draft")) {
       setForm(item.draft.form);
@@ -1083,12 +1045,6 @@ const CreateEditWorkspacePostModal = (props) => {
                 })
             : [],
       });
-      if (item.post.end_at !== null || item.post.show_at !== null || item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply) {
-        if (formRef.more_options.current !== null) {
-          setMaxHeight(formRef.more_options.current.offsetHeight);
-        }
-        setShowMoreOptions(true);
-      }
       setUploadedFiles(
         item.post.files.map((f) => {
           return {
@@ -1324,21 +1280,21 @@ const CreateEditWorkspacePostModal = (props) => {
             {/* <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} /> */}
           </MoreOption>
 
-          <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight} className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
-            <div className="d-flex">
+          <CheckBoxGroup>
+            <ApproveOptions className="d-flex align-items-center">
               <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
                 {dictionary.mustRead}
               </CheckBox>
-              <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
-                {dictionary.replyRequired}
-              </CheckBox>
-              <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
-                {dictionary.noReplies}
-              </CheckBox>
-            </div>
-            <ApproveOptions className="d-flex align-items-center">
-              {(form.must_read || form.reply_required) && <SelectApprover options={requiredUserOptions} value={form.requiredUsers} onChange={handleSelectRequiredUsers} isMulti={true} isClearable={true} menuPlacement="top" />}
+              {(form.must_read || form.reply_required) && (
+                <SelectApprover options={form.selectedAddressTo.length > 0 ? requiredUserOptions : []} value={form.requiredUsers} onChange={handleSelectRequiredUsers} isMulti={true} isClearable={true} menuPlacement="top" />
+              )}
             </ApproveOptions>
+            <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
+              {dictionary.replyRequired}
+            </CheckBox>
+            <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
+              {dictionary.noReplies}
+            </CheckBox>
             <ApproveOptions className="d-flex align-items-center">
               <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
                 {dictionary.approve}
