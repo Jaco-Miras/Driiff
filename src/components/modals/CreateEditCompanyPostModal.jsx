@@ -182,6 +182,9 @@ const WrapperDiv = styled(InputGroup)`
   }
   .post-visibility-container {
     width: 100%;
+    .post-info {
+      .8rem;
+    }
   }
   .dark & {
     input {
@@ -193,65 +196,10 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
-// const SelectPostVisibility = styled(PostVisibilitySelect)`
-//   flex: 1 0 0;
-//   width: 1%;
-//   @media all and (max-width: 480px) {
-//     width: 100%;
-//   }
-// `;
-
-// const SelectWorkspace = styled(FolderSelect)`
-//   flex: 1 0 0;
-//   width: 1%;
-//   @media all and (max-width: 480px) {
-//     width: 100%;
-//   }
-// `;
-
-// const SelectPeople = styled(PeopleSelect)`
-//   flex: 1 0 0;
-//   width: 1%;
-//   .react-select__control--menu-is-open {
-//     border-color: #7a1b8b !important;
-//     box-shadow: none;
-//   }
-//   .react-select__option {
-//     background-color: #ffffff;
-//   }
-//   .react-select__menu-list--is-multi > div {
-//     &:hover {
-//       background: #8c3b9b;
-//       color: #ffffff;
-//       cursor: pointer;
-//       .react-select__option {
-//         background: #8c3b9b;
-//         cursor: pointer;
-//       }
-//     }
-//   }
-//   .react-select__control--is-focused {
-//     border-color: #7a1b8b !important;
-//     box-shadow: none;
-//   }
-//   @media all and (max-width: 480px) {
-//     width: 100%;
-//   }
-// `;
-
 const CheckBoxGroup = styled.div`
   overflow: hidden;
   transition: all 0.3s ease !important;
   width: 100%;
-
-  &.enter-active {
-    max-height: ${(props) => props.maxHeight}px;
-    overflow: visible;
-  }
-
-  &.leave-active {
-    max-height: 0;
-  }
 
   label {
     min-width: auto;
@@ -308,7 +256,7 @@ const ApproveOptions = styled.div`
 
 const SelectApprover = styled(FolderSelect)``;
 
-const StyledDatePicker = styled(DatePicker)``;
+//const StyledDatePicker = styled(DatePicker)``;
 
 const initTimestamp = Math.floor(Date.now() / 1000);
 
@@ -1384,9 +1332,9 @@ const CreateEditCompanyPostModal = (props) => {
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option">
-          <MoreOption onClick={toggleMoreOptions}>
+          <MoreOption>
             {dictionary.moreOptions}
-            <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} />
+            {/* <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} /> */}
           </MoreOption>
 
           <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight} className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
@@ -1412,13 +1360,19 @@ const CreateEditCompanyPostModal = (props) => {
               </CheckBox>
               {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
             </ApproveOptions>
-            <WrapperDiv className="schedule-post">
+            {/* <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar" />
               <StyledDatePicker className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate} value={form.show_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
               <StyledDatePicker className="react-datetime-picker end-date" onChange={handleSelectEndDate} value={form.end_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
-            </WrapperDiv>
+            </WrapperDiv> */}
           </CheckBoxGroup>
+        </WrapperDiv>
+        <WrapperDiv>
+          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
+          </button>
         </WrapperDiv>
         <WrapperDiv>
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
@@ -1445,14 +1399,8 @@ const CreateEditCompanyPostModal = (props) => {
                   );
                 })}
             </span>
-            <span className="d-flex justify-content-end align-items-center" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
+            <span className="d-flex justify-content-end align-items-center post-info" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
           </div>
-        </WrapperDiv>
-        <WrapperDiv>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
-          </button>
         </WrapperDiv>
       </ModalBody>
     </Modal>
