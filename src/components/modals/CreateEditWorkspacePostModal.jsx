@@ -175,7 +175,7 @@ const WrapperDiv = styled(InputGroup)`
   .post-visibility-container {
     width: 100%;
     .post-info {
-      .8rem;
+      font-size: 0.8rem;
     }
   }
   .dark & {
