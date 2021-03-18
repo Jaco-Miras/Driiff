@@ -36,7 +36,7 @@ const ReleaseItem = (props) => {
     <Wrapper>
       <div className="date-edit">
         <span className="text-muted">
-          {fromNow(item.created_at.timestamp)} &nbsp; {item?.draft_type && <i>draft</i>}
+          {fromNow(item.created_at.timestamp)} &nbsp; {item?.draft_type && <div className={"badge badge-warning"}>draft</div>}
         </span>
         {isAuthorizedUser && <SvgIconFeather icon="pencil" height={12} width={12} onClick={() => openModal(item)} />}
       </div>
