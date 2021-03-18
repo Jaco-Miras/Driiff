@@ -20,16 +20,34 @@ const BodyMentionDiv = styled.div`
   }
 `;
 const BodyMention = (props) => {
-  const { onAddUsers, onDoNothing, userIds, type = "post" } = props;
-  
-  const {_t} = useTranslation();
-  const users = useSelector((state) => state.users.mentions);
-  const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const toMention = Object.assign({}, users, workspaces);
-  const mentionedUsers = Object.values(toMention).filter((user) => {
-    return userIds.some((id) => id === user.id);
-  });
+  const { onAddUsers, onDoNothing, userIds, type = "post", basedOnUserId = false, userMentionOnly = false } = props;
 
+  const { _t } = useTranslation();
+  const users = useSelector((state) => state.users.mentions);
+  //const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const recipients = useSelector((state) => state.global.recipients);
+  //const toMention = Object.assign({}, users, workspaces);
+  const toMention = [...recipients]
+    .filter((r) => {
+      if (userMentionOnly) return r.type === "USER";
+      else return true;
+    })
+    .map((r) => {
+      if (r.type === "USER") {
+        return {
+          ...r,
+          type: users[r.type_id] ? users[r.type_id].type : "internal",
+        };
+      } else return r;
+    });
+  const mentionedUsers = Object.values(toMention).filter((user) => {
+    if (basedOnUserId) {
+      return userIds.some((id) => id === user.type_id);
+    } else {
+      return userIds.some((id) => id === user.id);
+    }
+  });
+  //console.log(toMention, userIds);
   // const userRecipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   // const mentionedUsers = userRecipients.filter((user) => {
   //   let userFound = false;
@@ -58,7 +76,7 @@ const BodyMention = (props) => {
     notPostRecipients: _t("MENTION.NOT_POST_RECIPIENTS", "but they are not recipients of this post"),
     doNothing: _t("MENTION.DO_NOTHING", "Do nothing"),
     youMentioned: _t("MENTION.YOU_MENTIONED", "You mentioned"),
-    and: _t("GENERAL.AND", "and")
+    and: _t("GENERAL.AND", "and"),
   };
 
   let pText = dictionary.notPostRecipients;
@@ -76,7 +94,7 @@ const BodyMention = (props) => {
         <p>
           {dictionary.youMentioned}&nbsp;
           {mentionedUsers.map((mu, i) => {
-            const denotation = mu.type === "WORKSPACE" || mu.type === "TOPIC"? "/" : "@";
+            const denotation = mu.type === "WORKSPACE" || mu.type === "TOPIC" ? "/" : "@";
             if (i === mentionedUsers.length - 1 && mentionedUsers.length > 1) {
               return (
                 <div className={"mention-data"}>

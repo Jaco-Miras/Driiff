@@ -314,13 +314,17 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CREATED_ANNOUNCEMENT": {
-      return {
-        ...state,
-        driff: {
-          ...state.driff,
-          READ_RELEASE_UPDATES: { timestamp: action.data.created_at.timestamp },
-        },
-      };
+      if (action.data.major_release) {
+        return {
+          ...state,
+          driff: {
+            ...state.driff,
+            READ_RELEASE_UPDATES: { timestamp: action.data.created_at.timestamp },
+          },
+        };
+      } else {
+        return state;
+      }
     }
     case "GET_RELEASE_ANNOUNCEMENTS_SUCCESS": {
       return {

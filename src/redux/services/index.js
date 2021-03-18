@@ -206,6 +206,12 @@ export {
   refetchPosts,
   refetchPostComments,
   postClose,
+  getPostList,
+  createPostList,
+  updatePostList,
+  deletePostList,
+  postListConnect,
+  postListDisconnect,
 } from "./post";
 
 export {

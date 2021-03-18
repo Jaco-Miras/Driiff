@@ -546,7 +546,7 @@ const ProfileSettings = (props) => {
       ) : (
         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
       )}
-      <span className="version-number">
+      <span className="version-number mb-3">
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
     </Wrapper>
