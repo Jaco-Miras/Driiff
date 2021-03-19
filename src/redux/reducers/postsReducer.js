@@ -755,6 +755,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       return {
         ...state,

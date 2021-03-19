@@ -418,3 +418,7 @@ export function incomingClosePost(payload, callback) {
 export function getUnreadCompanyPosts(payload, callback) {
   return dispatchActionToReducer(getCompanyPostsService(payload), "GET_UNREAD_COMPANY_POSTS_START", "GET_UNREAD_COMPANY_POSTS_SUCCESS", "GET_UNREAD_COMPANY_POSTS_FAIL", callback);
 }
+
+export function getUnarchivePost(payload, callback) {
+  return dispatchActionToReducer(fetchPostService(payload), "GET_UNARCHIVE_POST_DETAIL_START", "GET_UNARCHIVE_POST_DETAIL_SUCCESS", "GET_UNARCHIVE_POST_DETAIL_FAIL", callback);
+}

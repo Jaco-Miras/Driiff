@@ -2098,6 +2098,7 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let post = { ...action.data, clap_user_ids: [] };
