@@ -169,7 +169,11 @@ const useWorkspaceAndUserOptions = (props) => {
       if (ad.type === "USER") {
         return ad.type_id;
       } else {
-        return ad.participant_ids;
+        if (ad.main_department) {
+          return Object.values(actualUsers).map((u) => u.id);
+        } else {
+          return ad.participant_ids;
+        }
       }
     })
     .flat();

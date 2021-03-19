@@ -37,7 +37,8 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
-    z-index: 0;
+    //z-index: 0;
+    overflow: unset;
     width: 100%;
     @media all and (max-width: 480px) {
       margin-left: 0;
@@ -189,7 +190,7 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const CheckBoxGroup = styled.div`
-  overflow: hidden;
+  //overflow: hidden;
   transition: all 0.3s ease !important;
   width: 100%;
 
@@ -1314,13 +1315,13 @@ const CreateEditWorkspacePostModal = (props) => {
             </WrapperDiv> */}
           </CheckBoxGroup>
         </WrapperDiv>
-        <WrapperDiv>
+        <WrapperDiv className={"mt-0 mb-0"}>
           <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || form.body === "<div><br></div>" || imageLoading} onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>
         </WrapperDiv>
-        <WrapperDiv>
+        <WrapperDiv className={"mb-0 mt-1"}>
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {approverOptions.map((u) => {
