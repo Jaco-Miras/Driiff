@@ -36,6 +36,9 @@ const WrapperDiv = styled(InputGroup)`
     align-self: center;
   }
 
+  &.modal-input {
+    z-index: 2;
+  }
   &.more-option {
     //z-index: 0;
     overflow: unset;
@@ -1292,7 +1295,15 @@ const CreateEditWorkspacePostModal = (props) => {
             </ApproveOptions>
             <ApproveOptions className="d-flex align-items-center">
               {(form.must_read || form.reply_required) && (
-                <SelectApprover options={form.selectedAddressTo.length > 0 ? requiredUserOptions : []} value={form.requiredUsers} onChange={handleSelectRequiredUsers} isMulti={true} isClearable={true} menuPlacement="top" />
+                <SelectApprover
+                  options={form.selectedAddressTo.length > 0 ? requiredUserOptions : []}
+                  value={form.requiredUsers}
+                  onChange={handleSelectRequiredUsers}
+                  isMulti={true}
+                  isClearable={true}
+                  maxMenuHeight={250}
+                  menuPlacement="top"
+                />
               )}
             </ApproveOptions>
 
@@ -1305,7 +1316,7 @@ const CreateEditWorkspacePostModal = (props) => {
               </CheckBox>
             </ApproveOptions>
             <ApproveOptions className="d-flex align-items-center">
-              {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
+              {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
             </ApproveOptions>
             {/* <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
