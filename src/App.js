@@ -8,8 +8,11 @@ import { AppRoute } from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
 import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 import { Slide, ToastContainer } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { isIPAddress } from "./helpers/commonFunctions";
+import ProfileSlider from "./components/common/ProfileSlider";
+import { CSSTransition } from "react-transition-group";
+import { setProfileSlider } from "./redux/actions/globalActions";
 
 import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
@@ -19,12 +22,41 @@ const Wrapper = styled.div`
   .Toastify__toast {
     border-radius: 8px;
   }
+  /* slide enter */
+  .mobile-slide-enter,
+  .mobile-slide-appear {
+    opacity: 0;
+    transform: scale(0.97) translateY(200px);
+    z-index: 1;
+  }
+  .mobile-slide-enter.mobile-slide-enter-active,
+  .mobile-slide-appear.mobile-slide-appear-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  }
+
+  /* slide exit */
+  .mobile-slide-exit {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .mobile-slide-exit.mobile-slide-exit-active {
+    opacity: 0;
+    transform: scale(0.97) translateY(5px);
+    transition: opacity 150ms linear, transform 150ms ease-out;
+  }
+  .mobile-slide-exit-done {
+    opacity: 0;
+  }
 `;
 
 function App() {
   const { driffSettings } = useSettings();
   const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { profileSlider: userProfile } = useSelector((state) => state.users);
 
   const session = useSelector((state) => state.session);
   // const [initUserSnap, setInitUserSnap] = useState(null);
@@ -72,6 +104,10 @@ function App() {
     };
   }, []);
 
+  const handleShowSlider = () => {
+    dispatch(setProfileSlider({ id: null }));
+  };
+
   //if there is no login possible. maintenance mode
   if (driffSettings.settings.maintenance_mode) {
     return (
@@ -106,6 +142,11 @@ function App() {
             </>
           )}
         </>
+      )}
+      {userProfile && (
+        <CSSTransition appear in={userProfile !== null || userProfile !== undefined} timeout={300} classNames="mobile-slide">
+          <ProfileSlider profile={userProfile} onShowPopup={handleShowSlider} classNames={"mobile"} />
+        </CSSTransition>
       )}
       <ModalPanel />
     </Wrapper>

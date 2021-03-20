@@ -14500,6 +14500,8 @@ body.modal-open .modal.show .modal-dialog {
   font-size: 19px;
 }
 
+.App .profile-slider,
+.component-user-list-pop-up-container .profile-slider,
 .avatar .profile-slider {
   height: auto;
   width: auto;
@@ -14517,6 +14519,10 @@ body.modal-open .modal.show .modal-dialog {
   &.top {
     top: unset;
     bottom: 40px;
+  }
+  &.left {
+    left: unset;
+    right: 0;
   }
   .dark & {
     background: #25282c;
@@ -14547,7 +14553,7 @@ body.modal-open .modal.show .modal-dialog {
     }
   }
   .information-wrapper {
-    margin-left: 2rem;
+    margin-left: 1rem;
     padding: 10px 5px;
     .info-x {
       display: flex;
@@ -14575,7 +14581,7 @@ body.modal-open .modal.show .modal-dialog {
     .info-details {
       display: flex;
       flex-flow: column;
-      margin-left: 3rem;
+      margin-left: 2rem;
       span {
         margin-bottom: .5rem;
       }
@@ -14583,9 +14589,17 @@ body.modal-open .modal.show .modal-dialog {
   }
   @media (max-width: 414px) {
     display: flex;
-    min-width: 300px;
-    max-width: 300px;
     flex-flow: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 9;
+    width: calc(100% - 20px);
+    height: 380px;
+    top: unset;
+    max-width: calc(100% - 20px);
+    right: unset;
+    margin: 0 10px;
     .information-wrapper {
       margin: 0;
     }
@@ -14593,6 +14607,18 @@ body.modal-open .modal.show .modal-dialog {
       margin-left: 2rem;
       overflow: auto;
     }
+  }
+  &.mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 9;
+    width: calc(100% - 20px);
+    height: 380px;
+    top: unset;
+    max-width: calc(100% - 20px);
+    right: unset;
+    margin: 0 10px;
   }
 }
 
@@ -15227,11 +15253,12 @@ body.form-membership .form-wrapper hr {
 }
 
 .timeline .timeline-item > div:last-child {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -moz-box-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+  // -webkit-box-flex: 1;
+  // -webkit-flex: 1;
+  // -moz-box-flex: 1;
+  // -ms-flex: 1;
+  // flex: 1;
+  width: calc(100% - 60px);
 }
 
 .timeline .timeline-item::before {

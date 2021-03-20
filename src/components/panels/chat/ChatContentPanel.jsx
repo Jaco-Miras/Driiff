@@ -12,7 +12,10 @@ import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 
 const Wrapper = styled.div`
   width: 100%;
-  z-index: 1;
+  z-index: 2;
+  @media (max-width: 992px) {
+    z-index: 1;
+  }
 `;
 
 const ChatMessagesPlaceholder = styled.div`

@@ -9,6 +9,7 @@ const Wrapper = styled.div`
   .feather-edit {
     cursor: pointer;
   }
+  overflow: unset;
 
   .card-title {
     position: relative;

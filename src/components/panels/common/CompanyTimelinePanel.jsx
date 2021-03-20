@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { CompanyAttachFileTimeline, CompanyMemberTimeline, CompanyPostTimeline, CompanyTopicTimeline } from "../dashboard/timeline/company";
 
 const Wrapper = styled.div`
+  overflow: unset;
   @media (max-width: 620px) {
     .timeline-item .d-flex.justify-content-between.mb-4 {
       flex-direction: column;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
@@ -8,6 +8,8 @@ import botIcon from "../../assets/img/gripp-bot.png";
 import driffIcon from "../../assets/img/driff_logo.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
 import ProfileSlider from "./ProfileSlider";
+import { CSSTransition } from "react-transition-group";
+import { setProfileSlider } from "../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -23,6 +25,63 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     position: absolute;
+  }
+  /* slide enter */
+  .slide-enter,
+  .slide-appear {
+    opacity: 0;
+    transform: scale(0.97) translateY(5px);
+    z-index: 1;
+  }
+  .slide-enter.slide-enter-active,
+  .slide-appear.slide-appear-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  }
+  // .slide-enter.slide-enter-done {
+  //   opacity: 1;
+  //   transform: scale(1) translateY(0);
+  //   transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  // }
+
+  /* slide exit */
+  .slide-exit {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .slide-exit.slide-exit-active {
+    opacity: 0;
+    transform: scale(0.97) translateY(5px);
+    transition: opacity 150ms linear, transform 150ms ease-out;
+  }
+  .slide-exit-done {
+    opacity: 0;
+  }
+
+  .fade-appear {
+    opacity: 0;
+  }
+  .fade-appear.fade-appear-active {
+    opacity: 1;
+    transition: opacity 500ms linear;
+  }
+  .fade-enter {
+    opacity: 1;
+  }
+  // .fade-enter.fade-enter-done {
+  //   opacity: 1;
+  //   transition: opacity 500ms linear;
+  // }
+  .fade-exit {
+    opacity: 1;
+  }
+  .fade-exit.fade-exit-active {
+    opacity: 0;
+    transition: opacity 500ms linear;
+  }
+  .fade-exit-done {
+    opacity: 0;
   }
 `;
 
@@ -52,17 +111,15 @@ const Avatar = (props) => {
     id,
     name = "",
     children,
-    partialName = null,
     type = "USER",
     userId,
     onClick = null,
     noDefaultClick = false,
-    hasAccepted = null,
     isBot = false,
     isHuddleBot = false,
     forceThumbnail = true,
     fromSlider = false,
-    showSlider = false,
+    showSlider = true,
     scrollRef = null,
     ...rest
   } = props;
@@ -70,12 +127,14 @@ const Avatar = (props) => {
   const avatarRef = useRef(null);
 
   const history = useHistory();
+  const dispatch = useDispatch();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const isOnline = onlineUsers.some((ou) => ou.user_id === userId);
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showInitials, setShowInitials] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [orientation, setOrientation] = useState(null);
 
   const toggleTooltip = () => {
     if (fromSlider) return;
@@ -110,16 +169,43 @@ const Avatar = (props) => {
     }
   }, []);
 
+  const calculateOrientationPosition = () => {
+    const { bottom, left } = avatarRef.current.getBoundingClientRect();
+    setShowPopup((prevState) => !prevState);
+    let vertical = null;
+    let horizontal = null;
+    if (document.body.clientHeight - bottom < 230) {
+      //top
+      vertical = "top";
+    } else {
+      //bottom
+      vertical = "bottom";
+    }
+    if (document.body.clientWidth - left < 530) {
+      //left
+      horizontal = "left";
+    } else {
+      //right
+      horizontal = "right";
+    }
+    setOrientation({ vertical, horizontal });
+  };
+
   const handleOnClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
-
-    if (onClick) onClick(e);
-
     if (noDefaultClick) return;
-
-    if (showSlider) {
-      setShowPopup((prevState) => !prevState);
+    if (onClick) {
+      onClick(e);
+      return;
+    }
+    if (showSlider && !fromSlider && !isBot) {
+      if (document.body.clientWidth <= 414) {
+        //save user data
+        dispatch(setProfileSlider({ id: id }));
+      } else {
+        calculateOrientationPosition();
+      }
     } else {
       if (type === "USER") {
         history.push(`/profile/${id}/${replaceChar(name)}`);
@@ -131,6 +217,10 @@ const Avatar = (props) => {
 
   const handleShowPopup = () => {
     setShowPopup((prevState) => !prevState);
+    setOrientation(null);
+    if (document.body.clientWidth <= 414) {
+      dispatch(setProfileSlider({ id: null }));
+    }
   };
 
   const handleImageError = () => {
@@ -173,8 +263,11 @@ const Avatar = (props) => {
           </Initials>
         )}
       </Tooltip>
-      {showSlider && !fromSlider && !isBot && showPopup && <ProfileSlider {...props} onShowPopup={handleShowPopup} avatarRef={avatarRef} scrollRef={scrollRef} />}
-
+      {showPopup && (
+        <CSSTransition appear in={showPopup} timeout={300} classNames="slide">
+          <ProfileSlider {...props} onShowPopup={handleShowPopup} showPopup={showPopup} orientation={orientation} />
+        </CSSTransition>
+      )}
       {children}
     </Wrapper>
   );
