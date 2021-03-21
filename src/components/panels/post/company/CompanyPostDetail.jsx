@@ -525,7 +525,7 @@ const CompanyPostDetail = (props) => {
             )}
           </div>
           <div className="readers-container ml-auto text-muted">
-            {(readByUsers.length > 0 || post.required_users.length > 0) && (
+            {(readByUsers.length > 0 || post.required_users.length > 0) && post.is_must_read && (
               <div className="user-reads-container read-by">
                 {hasRead && (
                   <span className="mr-2">
