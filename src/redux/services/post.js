@@ -618,7 +618,6 @@ export function postClose(payload) {
   });
 }
 
-
 /**
  * @returns {Promise<*>}
  */
@@ -651,7 +650,7 @@ export function updatePostList(payload, id) {
   return apiCall({
     method: "PUT",
     url: `/v2/user-post-list/${id}`,
-    data: payload
+    data: payload,
   });
 }
 
@@ -675,7 +674,7 @@ export function postListConnect(payload) {
   return apiCall({
     method: "POST",
     url: "/v2/post-list-connect",
-    data: payload
+    data: payload,
   });
 }
 
@@ -689,6 +688,21 @@ export function postListDisconnect(payload) {
   return apiCall({
     method: "DELETE",
     url: "/v2/post-list-disconnected",
-    data: payload
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.must_reply
+ * @param {number} payload.must_read
+ * @returns {Promise<*>}
+ */
+export function postRequired(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/post-required",
+    data: payload,
   });
 }

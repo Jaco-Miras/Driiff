@@ -83,12 +83,14 @@ const MainBody = styled.div`
     align-items: center;
 
     &:hover {
+      .not-read-users-container,
       .read-users-container {
         opacity: 1;
         max-height: 300px;
       }
     }
 
+    .not-read-users-container,
     .read-users-container {
       position: absolute;
       left: 22px;
@@ -140,6 +142,7 @@ const MainBody = styled.div`
     display: inline-flex;
     margin-right: 0.5rem;
 
+    .not-read-users-container,
     .read-users-container {
       transition: all 0.5s ease;
       position: absolute;
@@ -186,6 +189,7 @@ const MainBody = styled.div`
   }
 
   .user-reads-container {
+    span.not-readers:hover ~ span.not-read-users-container,
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
       max-height: 165px;
@@ -240,6 +244,7 @@ const Counters = styled.div`
         margin-right: 0.5rem;
       }
       .user-reads-container {
+        .not-read-users-container,
         .read-users-container {
           right: -75px;
         }
@@ -248,6 +253,7 @@ const Counters = styled.div`
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .not-read-users-container,
           .read-users-container {
             right: -20px;
           }
@@ -420,9 +426,11 @@ const CompanyPostDetail = (props) => {
     // postActions.getUnreadPostsCount();
   }, []);
 
-  const privateWsOnly = post.recipients.filter((r) => {
-    return r.type === "TOPIC" && r.private === 1;
-  });
+  // const privateWsOnly = post.recipients.filter((r) => {
+  //   return r.type === "TOPIC" && r.private === 1;
+  // });
+
+  //const hasNotReadUsers = post.required_users.filter((u) => !u.must_read);
 
   return (
     <>
@@ -475,6 +483,7 @@ const CompanyPostDetail = (props) => {
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+              {/* <div onClick={handleSnooze}>Snooze this post</div> */}
             </StyledMoreOptions>
           </div>
         </div>
@@ -491,7 +500,7 @@ const CompanyPostDetail = (props) => {
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && (
+          {post.author.id !== user.id && post.is_must_read && !hasRead && post && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
@@ -517,7 +526,7 @@ const CompanyPostDetail = (props) => {
             )}
           </div>
           <div className="readers-container ml-auto text-muted">
-            {readByUsers.length > 0 && (
+            {(readByUsers.length > 0 || (post.required_users && post.required_users.length > 0)) && post.is_must_read && (
               <div className="user-reads-container read-by">
                 {hasRead && (
                   <span className="mr-2">
@@ -533,6 +542,17 @@ const CompanyPostDetail = (props) => {
                       </span>
                     );
                   })}
+                </span>
+                {post.required_users && post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
+                <span className="hover not-read-users-container">
+                  {post.required_users &&
+                    post.required_users.map((u) => {
+                      return (
+                        <span key={u.id}>
+                          <Avatar className="mr-2" key={u.id} name={u.name} imageLink={null} id={u.id} /> <span className="name">{u.name}</span>
+                        </span>
+                      );
+                    })}
                 </span>
               </div>
             )}

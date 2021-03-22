@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { PostBadge } from "../index";
 import quillHelper from "../../../../helpers/quillHelper";
-import { useTimeFormat, useTouchActions, useTranslation, useWindowSize } from "../../../hooks";
+import { useTimeFormat, useTouchActions, useWindowSize } from "../../../hooks";
 import { TodoCheckBox } from "../../../forms";
 import { renderToString } from "react-dom/server";
 
@@ -280,7 +280,6 @@ const CompanyPostItemPanel = (props) => {
   const flipper = useSelector((state) => state.workspaces.flipper);
 
   const winSize = useWindowSize();
-  const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
   const [postBadgeWidth, setPostBadgeWidth] = useState(0);
@@ -415,12 +414,6 @@ const CompanyPostItemPanel = (props) => {
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
         <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-          {/* <CreatedBy>
-            <ByIcon icon="corner-up-right"/>
-            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
-                    name={post.author.name}
-                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
-          </CreatedBy> */}
           <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
           <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
@@ -437,15 +430,6 @@ const CompanyPostItemPanel = (props) => {
             </span>
           </PostReplyCounter>
         </div>
-        {/* <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-          <CompanyPostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
-          {post.type !== "draft_post" && !disableOptions &&
-          <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
-                      data-toggle="tooltip"
-                      title="" data-original-title="Archive post">
-            <Icon icon="archive"/>
-          </ArchiveBtn>}
-        </SlideOption> */}
       </div>
       <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
       <div className="d-flex">
