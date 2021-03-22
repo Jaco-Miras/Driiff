@@ -13,13 +13,12 @@ const useWorkspaceAndUserOptions = (props) => {
   const workspaces = r.filter((r) => r.type === "TOPIC");
   const users = r.filter((r) => r.type === "USER" && r.active === 1).sort((a, b) => a.name.localeCompare(b.name));
 
+  const internalUsers = Object.values(actualUsers).filter((u) => u.active === 1 && u.type === "internal");
+
   const [options, setOptions] = useState([]);
   const [progress, setProgress] = useState(false);
 
   const getAddressTo = (postRecipients) => {
-    const internalUsers = Object.values(actualUsers)
-      .filter((u) => u.active === 1 && u.type === "internal")
-      .map((u) => u);
     return postRecipients.map((r) => {
       return {
         ...r,
@@ -56,9 +55,6 @@ const useWorkspaceAndUserOptions = (props) => {
   };
 
   const getDefaultAddressToAsCompany = () => {
-    const internalUsers = Object.values(actualUsers)
-      .filter((u) => u.active === 1 && u.type === "internal")
-      .map((u) => u);
     return [
       {
         ...company,
@@ -103,9 +99,6 @@ const useWorkspaceAndUserOptions = (props) => {
         }
       });
 
-      const internalUsers = Object.values(actualUsers)
-        .filter((u) => u.active === 1 && u.type === "internal")
-        .map((u) => u);
       setOptions([
         ...(company && [
           {
@@ -169,16 +162,18 @@ const useWorkspaceAndUserOptions = (props) => {
       if (ad.type === "USER") {
         return ad.type_id;
       } else {
-        if (ad.main_department) {
-          return Object.values(actualUsers).map((u) => u.id);
-        } else {
-          return ad.participant_ids;
-        }
+        return ad.participant_ids;
+        // if (ad.main_department) {
+        //   return Object.values(actualUsers).map((u) => u.id);
+        // } else {
+        //   return ad.participant_ids;
+        // }
       }
     })
     .flat();
 
   addressIds = [...new Set(addressIds)];
+  //let addressInternalIds = addressIds.filter((id) => internalUsers.some((u) => u.id === id));
 
   const user_options = Object.values(actualUsers)
     .filter((u) => addressIds.some((id) => id === u.id))
@@ -194,6 +189,7 @@ const useWorkspaceAndUserOptions = (props) => {
 
   return {
     addressIds,
+    //addressInternalIds,
     options,
     userOptions: user_options,
     user_ids: [...new Set(user_ids)],
