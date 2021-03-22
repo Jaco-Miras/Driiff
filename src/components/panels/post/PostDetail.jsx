@@ -518,7 +518,7 @@ const PostDetail = (props) => {
         />
         <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
@@ -544,7 +544,7 @@ const PostDetail = (props) => {
             )}
           </div>
           <div className="readers-container ml-auto text-muted">
-            {(readByUsers.length > 0 || post.required_users.length > 0) && post.is_must_read && (
+            {(readByUsers.length > 0 || (post.required_users && post.required_users.length > 0)) && post.is_must_read && (
               <div className="user-reads-container read-by">
                 {hasRead && (
                   <span className="mr-2">
@@ -561,15 +561,16 @@ const PostDetail = (props) => {
                     );
                   })}
                 </span>
-                {post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
+                {post.required_users && post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
                 <span className="hover not-read-users-container">
-                  {post.required_users.map((u) => {
-                    return (
-                      <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={null} id={u.id} /> <span className="name">{u.name}</span>
-                      </span>
-                    );
-                  })}
+                  {post.required_users &&
+                    post.required_users.map((u) => {
+                      return (
+                        <span key={u.id}>
+                          <Avatar className="mr-2" key={u.id} name={u.name} imageLink={null} id={u.id} /> <span className="name">{u.name}</span>
+                        </span>
+                      );
+                    })}
                 </span>
               </div>
             )}
