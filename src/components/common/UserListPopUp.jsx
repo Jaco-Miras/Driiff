@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, ProfileSlider } from "../common";
 import { useOutsideClick } from "../hooks";
 import { useHistory } from "react-router-dom";
-import { replaceChar } from "../../helpers/stringFormatter";
+//import { replaceChar } from "../../helpers/stringFormatter";
 import { CSSTransition } from "react-transition-group";
 
 const UserListPopUpContainer = styled.div`
@@ -94,16 +94,12 @@ const UserListPopUpContainer = styled.div`
 const UserListPopUp = (props) => {
   const { users, className, onShowList } = props;
   const listRef = useRef();
-  const history = useHistory();
+  //const history = useHistory();
   const [showSlider, setShowSlider] = useState(false);
   const [user, setUser] = useState(null);
 
   const handleShowList = () => {
     if (onShowList) onShowList();
-  };
-
-  const handleOnNameClick = (e, user) => {
-    //history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
   };
 
   const handleUserClick = (e, user) => {
@@ -138,7 +134,7 @@ const UserListPopUp = (props) => {
                 //noDefaultClick={true}
                 onClick={(e) => handleUserClick(e, u)}
               />
-              <span className={"user-list-name"} onClick={(e) => handleOnNameClick(e, u)}>
+              <span className={"user-list-name"} onClick={(e) => handleUserClick(e, u)}>
                 {u.name ? u.name : u.email}
               </span>
             </li>
