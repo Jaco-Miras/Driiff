@@ -623,7 +623,7 @@ export default (state = INITIAL_STATE, action) => {
               ...(state.companyPosts.posts[action.data.post_id] && {
                 [action.data.post_id]: {
                   ...state.companyPosts.posts[action.data.post_id],
-                  is_archived: 0,
+                  // is_archived: 0,
                   //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
                   updated_at: action.data.updated_at,
@@ -755,6 +755,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       return {
         ...state,
@@ -1008,6 +1009,22 @@ export default (state = INITIAL_STATE, action) => {
           posts: {
             ...state.companyPosts.posts,
             [action.data.post_id]: post,
+          },
+        },
+      };
+    }
+    case "REMOVE_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...Object.keys(state.companyPosts.posts)
+              .filter((key) => parseInt(key) !== action.data.id)
+              .reduce((res, id) => {
+                res[id] = { ...state.companyPosts.posts[id] };
+                return res;
+              }, {}),
           },
         },
       };

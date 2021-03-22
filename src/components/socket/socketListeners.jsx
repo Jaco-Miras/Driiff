@@ -117,6 +117,7 @@ import {
   getPostList,
   incomingPostListConnect,
   incomingPostListDisconnect,
+  getUnarchivePost,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -279,6 +280,12 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".unarchive-post-notification", (e) => {
+        console.log(e);
+        e.posts.forEach((p) => {
+          this.props.getUnarchivePost({ post_id: p.id });
+        });
+      })
       .listen(".huddle-notification", (e) => {
         console.log("huddle notification", e);
         switch (e.SOCKET_TYPE) {
@@ -1776,6 +1783,7 @@ function mapDispatchToProps(dispatch) {
     getPostList: bindActionCreators(getPostList, dispatch),
     incomingPostListConnect: bindActionCreators(incomingPostListConnect, dispatch),
     incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
+    getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
   };
 }
 
