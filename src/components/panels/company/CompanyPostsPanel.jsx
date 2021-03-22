@@ -106,6 +106,7 @@ const CompanyPostsPanel = (props) => {
 
   const { actions, archived, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
+  const ofNumberofUsers = post ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -210,6 +211,9 @@ const CompanyPostsPanel = (props) => {
     createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
     addToList: _t("POST.ADD_TO_LIST", "Add to list"),
     removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
+    ofNumberofUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
+      user_count: ofNumberofUsers.length,
+    }),
   };
 
   const handleLoadMore = () => {
@@ -261,11 +265,11 @@ const CompanyPostsPanel = (props) => {
     if (postListTag) {
       const activePost = find(postLists, (p) => parseInt(p.id) === parseInt(postListTag));
       postLists.map((pl) => {
-        if (activePost && parseInt(postListTag) === pl.id) { 
+        if (activePost && parseInt(postListTag) === pl.id) {
           setActivePostListName(pl);
         }
       });
-      
+
       if (!activePost) {
         setActivePostListName(postLists[0]);
         let payload = {
@@ -278,15 +282,13 @@ const CompanyPostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(
-    () => {
-      const payload = {
-        tag: null,
-        filter: "all",
+  const handleEditArchivePostList = useCallback(() => {
+    const payload = {
+      tag: null,
+      filter: "all",
     };
-      actions.setCompanyFilterPosts(payload);
-    }, [activePostListName]
-  )
+    actions.setCompanyFilterPosts(payload);
+  }, [activePostListName]);
 
   const handleMarkAllAsRead = () => {
     actions.readAll({
@@ -311,15 +313,16 @@ const CompanyPostsPanel = (props) => {
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
-          { !!postListTag && (
+          {!!postListTag && (
             <PostsBtnWrapper>
               <span>Filter:</span>
-              <PostListWrapper className="ml-2 recipients" >
+              <PostListWrapper className="ml-2 recipients">
                 <span className="receiver">
-                  <span onClick={handleEditArchivePostList}><StyledIcon icon="x" className="mr-1" /></span>
+                  <span onClick={handleEditArchivePostList}>
+                    <StyledIcon icon="x" className="mr-1" />
+                  </span>
                   {activePostListName.name}
                 </span>
-                
               </PostListWrapper>
             </PostsBtnWrapper>
           )}

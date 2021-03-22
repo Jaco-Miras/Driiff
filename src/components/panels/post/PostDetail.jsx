@@ -559,7 +559,7 @@ const PostDetail = (props) => {
                     );
                   })}
                 </span>
-                {post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; of {post.required_users.length} users</span>}
+                {post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
                 <span className="hover not-read-users-container">
                   {post.required_users.map((u) => {
                     return (

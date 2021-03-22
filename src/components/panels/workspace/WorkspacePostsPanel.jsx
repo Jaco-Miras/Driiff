@@ -111,6 +111,7 @@ const WorkspacePostsPanel = (props) => {
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
+  const ofNumberofUsers = post ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -226,6 +227,9 @@ const WorkspacePostsPanel = (props) => {
     createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
     addToList: _t("POST.ADD_TO_LIST", "Add to list"),
     removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
+    ofNumberofUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
+      user_count: ofNumberofUsers.length,
+    }),
   };
 
   const handleLoadMore = () => {
@@ -333,11 +337,11 @@ const WorkspacePostsPanel = (props) => {
     if (postListTag) {
       const activePost = find(postLists, (p) => parseInt(p.id) === parseInt(postListTag));
       postLists.map((pl) => {
-        if (activePost && parseInt(postListTag) === pl.id) { 
+        if (activePost && parseInt(postListTag) === pl.id) {
           setActivePostListName(pl);
         }
       });
-      
+
       if (!activePost) {
         setActivePostListName(postLists[0]);
         let payload = {
@@ -351,17 +355,15 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(
-    () => {  
-      const payload = {
-        topic_id: workspace.id,
-        tag: null,
-        postListTag: null,
-        filter: "all",
+  const handleEditArchivePostList = useCallback(() => {
+    const payload = {
+      topic_id: workspace.id,
+      tag: null,
+      postListTag: null,
+      filter: "all",
     };
     dispatch(updateWorkspacePostFilterSort(payload));
-    }, [activePostListName]
-  )
+  }, [activePostListName]);
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
@@ -388,15 +390,16 @@ const WorkspacePostsPanel = (props) => {
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
-          { !!postListTag && (
+          {!!postListTag && (
             <PostsBtnWrapper>
               <span>Filter:</span>
-              <PostListWrapper className="ml-2 recipients" >
+              <PostListWrapper className="ml-2 recipients">
                 <span className="receiver">
-                  <span onClick={handleEditArchivePostList}><StyledIcon icon="x" className="mr-1" /></span>
+                  <span onClick={handleEditArchivePostList}>
+                    <StyledIcon icon="x" className="mr-1" />
+                  </span>
                   {activePostListName.name}
                 </span>
-                
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
@@ -466,7 +469,18 @@ const WorkspacePostsPanel = (props) => {
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
                         {posts &&
                           posts.map((p) => {
-                            return <PostItemPanel key={p.id} post={p} postActions={actions} workspace={workspace} dictionary={dictionary} disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
+                            return (
+                              <PostItemPanel
+                                key={p.id}
+                                post={p}
+                                postActions={actions}
+                                workspace={workspace}
+                                dictionary={dictionary}
+                                disableOptions={disableOptions}
+                                toggleCheckbox={handleToggleCheckbox}
+                                checked={checkedPosts.some((id) => id === p.id)}
+                              />
+                            );
                           })}
                       </ul>
                     </div>
