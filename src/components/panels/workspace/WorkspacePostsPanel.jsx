@@ -111,7 +111,7 @@ const WorkspacePostsPanel = (props) => {
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
-  const ofNumberofUsers = post ? post.required_users : [];
+  const ofNumberOfUsers = post ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -227,8 +227,8 @@ const WorkspacePostsPanel = (props) => {
     createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
     addToList: _t("POST.ADD_TO_LIST", "Add to list"),
     removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
-    ofNumberofUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
-      user_count: ofNumberofUsers.length,
+    ofNumberOfUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
+      user_count: ofNumberOfUsers.length,
     }),
   };
 
