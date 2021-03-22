@@ -13,6 +13,20 @@ const ChatReactionsContainer = styled.div`
   z-index: 1;
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
   align-self: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
+  .profile-slider {
+    left: 60px !important;
+    right: unset !important;
+    bottom: 0px !important;
+    top: unset !important;
+  }
+  .chat-right & {
+    .profile-slider {
+      left: unset !important;
+      right: 0 !important;
+      bottom: 100% !important;
+      top: unset !important;
+    }
+  }
 `;
 
 const MoreEmojis = styled.div`

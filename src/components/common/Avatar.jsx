@@ -30,7 +30,7 @@ const Wrapper = styled.div`
   .slide-enter,
   .slide-appear {
     opacity: 0;
-    transform: scale(0.97) translateY(5px);
+    transform: scale(0.97) translateY(50px);
     z-index: 1;
   }
   .slide-enter.slide-enter-active,
@@ -52,7 +52,7 @@ const Wrapper = styled.div`
   }
   .slide-exit.slide-exit-active {
     opacity: 0;
-    transform: scale(0.97) translateY(5px);
+    transform: scale(0.97) translateY(50px);
     transition: opacity 150ms linear, transform 150ms ease-out;
   }
   .slide-exit-done {
