@@ -485,48 +485,48 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "SAVE_DRAFT_SUCCESS": {
-      if (action.data.data.draft_type === "draft_post") {
-        const draft = {
-          ...action.data,
-          ...action.data.data,
-          id: action.data.data.id,
-          post_id: action.data.data.id,
-          draft_id: action.data.id,
-        };
-        return {
-          ...state,
-          drafts: [...state.drafts, draft],
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [draft.id]: draft,
-            },
-          },
-        };
-      } else {
-        return state;
-      }
-    }
-    case "UPDATE_DRAFT_SUCCESS": {
-      if (action.data.data.type === "draft_post") {
-        const companyPosts = { ...state.companyPosts };
-        companyPosts.posts[action.data.data.id] = {
-          ...companyPosts.posts[action.data.data.post_id],
-          ...action.data.data,
-          id: action.data.data.post_id,
-          post_id: action.data.data.post_id,
-          draft_id: action.data.id,
-        };
-        return {
-          ...state,
-          companyPosts: companyPosts,
-        };
-      } else {
-        return state;
-      }
-    }
+    // case "SAVE_DRAFT_SUCCESS": {
+    //   if (action.data.data.draft_type === "draft_post") {
+    //     const draft = {
+    //       ...action.data,
+    //       ...action.data.data,
+    //       id: action.data.data.id,
+    //       post_id: action.data.data.id,
+    //       draft_id: action.data.id,
+    //     };
+    //     return {
+    //       ...state,
+    //       drafts: [...state.drafts, draft],
+    //       companyPosts: {
+    //         ...state.companyPosts,
+    //         posts: {
+    //           ...state.companyPosts.posts,
+    //           [draft.id]: draft,
+    //         },
+    //       },
+    //     };
+    //   } else {
+    //     return state;
+    //   }
+    // }
+    // case "UPDATE_DRAFT_SUCCESS": {
+    //   if (action.data.data.type === "draft_post") {
+    //     const companyPosts = { ...state.companyPosts };
+    //     companyPosts.posts[action.data.data.id] = {
+    //       ...companyPosts.posts[action.data.data.post_id],
+    //       ...action.data.data,
+    //       id: action.data.data.post_id,
+    //       post_id: action.data.data.post_id,
+    //       draft_id: action.data.id,
+    //     };
+    //     return {
+    //       ...state,
+    //       companyPosts: companyPosts,
+    //     };
+    //   } else {
+    //     return state;
+    //   }
+    // }
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
@@ -1009,6 +1009,22 @@ export default (state = INITIAL_STATE, action) => {
           posts: {
             ...state.companyPosts.posts,
             [action.data.post_id]: post,
+          },
+        },
+      };
+    }
+    case "REMOVE_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...Object.keys(state.companyPosts.posts)
+              .filter((key) => parseInt(key) !== action.data.id)
+              .reduce((res, id) => {
+                res[id] = { ...state.companyPosts.posts[id] };
+                return res;
+              }, {}),
           },
         },
       };

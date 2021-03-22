@@ -588,51 +588,51 @@ export default (state = INITIAL_STATE, action) => {
     //     }),
     //   };
     // }
-    case "SAVE_DRAFT_SUCCESS": {
-      if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined") {
-        const draft = {
-          ...action.data,
-          ...action.data.data,
-          id: action.data.data.id,
-          post_id: action.data.data.id,
-          draft_id: action.data.id,
-        };
-        return {
-          ...state,
-          drafts: [...state.drafts, draft],
-          workspacePosts: {
-            ...state.workspacePosts,
-            [action.data.data.topic_id]: {
-              ...state.workspacePosts[action.data.data.topic_id],
-              posts: {
-                ...state.workspacePosts[action.data.data.topic_id].posts,
-                [draft.id]: draft,
-              },
-            },
-          },
-        };
-      } else {
-        return state;
-      }
-    }
-    case "UPDATE_DRAFT_SUCCESS": {
-      if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined" && typeof state.workspacePosts[action.data.data.topic_id] !== "undefined") {
-        const workspacePosts = { ...state.workspacePosts };
-        workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
-          ...workspacePosts[action.data.data.topic_id].posts[action.data.data.post_id],
-          ...action.data.data,
-          id: action.data.data.post_id,
-          post_id: action.data.data.post_id,
-          draft_id: action.data.id,
-        };
-        return {
-          ...state,
-          workspacePosts: workspacePosts,
-        };
-      } else {
-        return state;
-      }
-    }
+    // case "SAVE_DRAFT_SUCCESS": {
+    //   if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined") {
+    //     const draft = {
+    //       ...action.data,
+    //       ...action.data.data,
+    //       id: action.data.data.id,
+    //       post_id: action.data.data.id,
+    //       draft_id: action.data.id,
+    //     };
+    //     return {
+    //       ...state,
+    //       drafts: [...state.drafts, draft],
+    //       workspacePosts: {
+    //         ...state.workspacePosts,
+    //         [action.data.data.topic_id]: {
+    //           ...state.workspacePosts[action.data.data.topic_id],
+    //           posts: {
+    //             ...state.workspacePosts[action.data.data.topic_id].posts,
+    //             [draft.id]: draft,
+    //           },
+    //         },
+    //       },
+    //     };
+    //   } else {
+    //     return state;
+    //   }
+    // }
+    // case "UPDATE_DRAFT_SUCCESS": {
+    //   if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined" && typeof state.workspacePosts[action.data.data.topic_id] !== "undefined") {
+    //     const workspacePosts = { ...state.workspacePosts };
+    //     workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
+    //       ...workspacePosts[action.data.data.topic_id].posts[action.data.data.post_id],
+    //       ...action.data.data,
+    //       id: action.data.data.post_id,
+    //       post_id: action.data.data.post_id,
+    //       draft_id: action.data.id,
+    //     };
+    //     return {
+    //       ...state,
+    //       workspacePosts: workspacePosts,
+    //     };
+    //   } else {
+    //     return state;
+    //   }
+    // }
     case "DELETE_DRAFT": {
       if (action.data.draft_type === "draft_post" && action.data.topic_id && typeof state.workspacePosts[action.data.topic_id] !== "undefined") {
         const drafts = [...state.drafts.filter((d) => d.draft_id !== action.data.draft_id)];
