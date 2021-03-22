@@ -470,7 +470,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         releases: {
           timestamp: action.data.READ_RELEASE_UPDATES.timestamp,
-          items: action.data.items,
+          items: [...state.releases.items.filter((r) => r.draft_type), ...action.data.items],
         },
       };
     }
@@ -518,6 +518,68 @@ export default (state = INITIAL_STATE, action) => {
           items: state.releases.items.filter((item) => item.id !== action.data.id),
         },
       };
+    }
+    case "SAVE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "release") {
+        const draft = {
+          draft_id: action.data.id,
+          ...action.data.data,
+          created_at: { timestamp: Math.floor(Date.now() / 1000) },
+        };
+        return {
+          ...state,
+          releases: {
+            ...state.releases,
+            items: [draft, ...state.releases.items],
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "GET_DRAFTS_SUCCESS": {
+      let drafts = action.data
+        .filter((d) => d.data.draft_type === "release")
+        .map((d) => {
+          return {
+            ...d.data,
+            draft_id: d.id,
+            action_text: d.data.title,
+            body: d.data.description,
+            created_at: { timestamp: Math.floor(Date.now() / 1000) },
+          };
+        });
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: [...drafts, ...state.releases.items],
+        },
+      };
+    }
+    case "UPDATE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "release") {
+        const draft = {
+          draft_id: action.data.id,
+          ...action.data.data,
+          created_at: { timestamp: Math.floor(Date.now() / 1000) },
+        };
+        return {
+          ...state,
+          releases: {
+            ...state.releases,
+            items: state.releases.items.map((item) => {
+              if (item.draft_id && item.draft_id === parseInt(action.data.id)) {
+                return draft;
+              } else {
+                return item;
+              }
+            }),
+          },
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

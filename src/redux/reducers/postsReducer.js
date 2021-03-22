@@ -442,35 +442,35 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "GET_DRAFTS_SUCCESS": {
-      let drafts = action.data.map((d) => {
-        if (d.data.type === "draft_post") {
-          return Object.assign({}, d, {
-            ...d.data,
-            post_id: d.data.id,
-            draft_id: d.id,
-            updated_at: d.data.created_at,
-          });
-        } else {
-          return d;
-        }
-      });
-      let postDrafts = [];
-      if (drafts.length) {
-        postDrafts = convertArrayToObject(drafts, "post_id");
-      }
-      return {
-        ...state,
-        drafts: drafts,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            ...postDrafts,
-          },
-        },
-      };
-    }
+    // case "GET_DRAFTS_SUCCESS": {
+    //   let drafts = action.data.map((d) => {
+    //     if (d.data.type === "draft_post") {
+    //       return Object.assign({}, d, {
+    //         ...d.data,
+    //         post_id: d.data.id,
+    //         draft_id: d.id,
+    //         updated_at: d.data.created_at,
+    //       });
+    //     } else {
+    //       return d;
+    //     }
+    //   });
+    //   let postDrafts = [];
+    //   if (drafts.length) {
+    //     postDrafts = convertArrayToObject(drafts, "post_id");
+    //   }
+    //   return {
+    //     ...state,
+    //     drafts: drafts,
+    //     companyPosts: {
+    //       ...state.companyPosts,
+    //       posts: {
+    //         ...state.companyPosts.posts,
+    //         ...postDrafts,
+    //       },
+    //     },
+    //   };
+    // }
     case "DELETE_DRAFT": {
       if (action.data.draft_type === "draft_post") {
         const drafts = [...state.drafts.filter((d) => d.draft_id !== action.data.draft_id)];
@@ -977,14 +977,14 @@ export default (state = INITIAL_STATE, action) => {
     case "POST_LIST_SUCCESS": {
       return {
         ...state,
-        postsLists: [...action.data]
-      }
+        postsLists: [...action.data],
+      };
     }
     case "POST_LIST_CONNECT": {
       const post = {
         ...state.companyPosts.posts[action.data.post_id],
-        post_list_connect: [{id: action.data.link_id}]
-      }
+        post_list_connect: [{ id: action.data.link_id }],
+      };
       return {
         ...state,
         companyPosts: {
@@ -993,24 +993,24 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             [action.data.post_id]: post,
           },
-        }
-      }
+        },
+      };
     }
     case "POST_LIST_DISCONNECT": {
       const post = {
         ...state.companyPosts.posts[action.data.post_id],
-        post_list_connect: []
-      }
+        post_list_connect: [],
+      };
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.post_id]: post
+            [action.data.post_id]: post,
           },
-        }
-      }
+        },
+      };
     }
     default:
       return state;
