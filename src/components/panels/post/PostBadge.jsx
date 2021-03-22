@@ -16,7 +16,7 @@ const PostBadge = (props) => {
     }
   }, [post]);
 
-  const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
+  //const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
 
@@ -64,12 +64,12 @@ const PostBadge = (props) => {
               <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
             </div>
           )}
-          {post.is_must_read && (post.author.id === user.id || !hasRead) && (
+          {((post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) || (post.author.id === user.id && post.is_must_read)) && (
             <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}
-          {post.is_must_reply && (post.author.id === user.id || !hasReplied) && (
+          {((post.is_must_reply && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) || (post.author.id === user.id && post.is_must_reply)) && (
             <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>

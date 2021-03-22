@@ -15135,10 +15135,10 @@ body.form-membership .form-wrapper hr {
 
 .chat-block .chat-content .messages .message-item.message-item-divider span {
   padding: 0 10px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  // -webkit-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
 }
 
 .chat-block .chat-content .messages .message-item.message-item-divider:after,
@@ -16144,10 +16144,10 @@ body:not(.stretch-layout) .app-block .app-content .app-content-body {
     -ms-transform: translate(0, -50%);
     -o-transform: translate(0, -50%);
     transform: translate(0, -50%);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    // -webkit-user-select: none;
+    // -moz-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
     z-index: 9999;
     -webkit-transition: right 0.3s;
     -o-transition: right 0.3s;
@@ -18946,10 +18946,10 @@ small {
 }
 
 .todo-item {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  // -webkit-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
   margin-bottom: 10px;
 }
 

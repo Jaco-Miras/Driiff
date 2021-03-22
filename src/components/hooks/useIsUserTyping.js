@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import usePreviousValue from "./usePreviousValue";
 
@@ -45,24 +45,13 @@ const useIsUserTyping = (props) => {
 
   const handleSubscribeToChannel = (leaveId = null) => {
     setUsersTyping([]);
-    if (channel.is_shared) {
-      if (window[channel.slug_owner]) {
-        if (leaveId) {
-          window[channel.slug_owner].leave(channel.slug_owner + ".App.Channel." + leaveId);
-        }
-        window[channel.slug_owner].private(channel.slug_owner + ".App.Channel." + channel.id).listenForWhisper("typing", (e) => {
-          handleSetUserTyping(e);
-        });
+    if (window.Echo) {
+      if (leaveId) {
+        window.Echo.leave(localStorage.getItem("slug") + ".App.Channel." + leaveId);
       }
-    } else {
-      if (window.Echo) {
-        if (leaveId) {
-          window.Echo.leave(localStorage.getItem("slug") + ".App.Channel." + leaveId);
-        }
-        window.Echo.private(localStorage.getItem("slug") + ".App.Channel." + channel.id).listenForWhisper("typing", (e) => {
-          handleSetUserTyping(e);
-        });
-      }
+      window.Echo.private(localStorage.getItem("slug") + ".App.Channel." + channel.id).listenForWhisper("typing", (e) => {
+        handleSetUserTyping(e);
+      });
     }
   };
 

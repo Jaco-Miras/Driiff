@@ -442,35 +442,35 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "GET_DRAFTS_SUCCESS": {
-      let drafts = action.data.map((d) => {
-        if (d.data.type === "draft_post") {
-          return Object.assign({}, d, {
-            ...d.data,
-            post_id: d.data.id,
-            draft_id: d.id,
-            updated_at: d.data.created_at,
-          });
-        } else {
-          return d;
-        }
-      });
-      let postDrafts = [];
-      if (drafts.length) {
-        postDrafts = convertArrayToObject(drafts, "post_id");
-      }
-      return {
-        ...state,
-        drafts: drafts,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            ...postDrafts,
-          },
-        },
-      };
-    }
+    // case "GET_DRAFTS_SUCCESS": {
+    //   let drafts = action.data.map((d) => {
+    //     if (d.data.type === "draft_post") {
+    //       return Object.assign({}, d, {
+    //         ...d.data,
+    //         post_id: d.data.id,
+    //         draft_id: d.id,
+    //         updated_at: d.data.created_at,
+    //       });
+    //     } else {
+    //       return d;
+    //     }
+    //   });
+    //   let postDrafts = [];
+    //   if (drafts.length) {
+    //     postDrafts = convertArrayToObject(drafts, "post_id");
+    //   }
+    //   return {
+    //     ...state,
+    //     drafts: drafts,
+    //     companyPosts: {
+    //       ...state.companyPosts,
+    //       posts: {
+    //         ...state.companyPosts.posts,
+    //         ...postDrafts,
+    //       },
+    //     },
+    //   };
+    // }
     case "DELETE_DRAFT": {
       if (action.data.draft_type === "draft_post") {
         const drafts = [...state.drafts.filter((d) => d.draft_id !== action.data.draft_id)];
@@ -485,48 +485,48 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "SAVE_DRAFT_SUCCESS": {
-      if (action.data.data.draft_type === "draft_post") {
-        const draft = {
-          ...action.data,
-          ...action.data.data,
-          id: action.data.data.id,
-          post_id: action.data.data.id,
-          draft_id: action.data.id,
-        };
-        return {
-          ...state,
-          drafts: [...state.drafts, draft],
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [draft.id]: draft,
-            },
-          },
-        };
-      } else {
-        return state;
-      }
-    }
-    case "UPDATE_DRAFT_SUCCESS": {
-      if (action.data.data.type === "draft_post") {
-        const companyPosts = { ...state.companyPosts };
-        companyPosts.posts[action.data.data.id] = {
-          ...companyPosts.posts[action.data.data.post_id],
-          ...action.data.data,
-          id: action.data.data.post_id,
-          post_id: action.data.data.post_id,
-          draft_id: action.data.id,
-        };
-        return {
-          ...state,
-          companyPosts: companyPosts,
-        };
-      } else {
-        return state;
-      }
-    }
+    // case "SAVE_DRAFT_SUCCESS": {
+    //   if (action.data.data.draft_type === "draft_post") {
+    //     const draft = {
+    //       ...action.data,
+    //       ...action.data.data,
+    //       id: action.data.data.id,
+    //       post_id: action.data.data.id,
+    //       draft_id: action.data.id,
+    //     };
+    //     return {
+    //       ...state,
+    //       drafts: [...state.drafts, draft],
+    //       companyPosts: {
+    //         ...state.companyPosts,
+    //         posts: {
+    //           ...state.companyPosts.posts,
+    //           [draft.id]: draft,
+    //         },
+    //       },
+    //     };
+    //   } else {
+    //     return state;
+    //   }
+    // }
+    // case "UPDATE_DRAFT_SUCCESS": {
+    //   if (action.data.data.type === "draft_post") {
+    //     const companyPosts = { ...state.companyPosts };
+    //     companyPosts.posts[action.data.data.id] = {
+    //       ...companyPosts.posts[action.data.data.post_id],
+    //       ...action.data.data,
+    //       id: action.data.data.post_id,
+    //       post_id: action.data.data.post_id,
+    //       draft_id: action.data.id,
+    //     };
+    //     return {
+    //       ...state,
+    //       companyPosts: companyPosts,
+    //     };
+    //   } else {
+    //     return state;
+    //   }
+    // }
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
@@ -623,7 +623,7 @@ export default (state = INITIAL_STATE, action) => {
               ...(state.companyPosts.posts[action.data.post_id] && {
                 [action.data.post_id]: {
                   ...state.companyPosts.posts[action.data.post_id],
-                  is_archived: 0,
+                  // is_archived: 0,
                   //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
                   updated_at: action.data.updated_at,
@@ -755,6 +755,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       return {
         ...state,
@@ -977,14 +978,14 @@ export default (state = INITIAL_STATE, action) => {
     case "POST_LIST_SUCCESS": {
       return {
         ...state,
-        postsLists: [...action.data]
-      }
+        postsLists: [...action.data],
+      };
     }
     case "POST_LIST_CONNECT": {
       const post = {
         ...state.companyPosts.posts[action.data.post_id],
-        post_list_connect: [{id: action.data.link_id}]
-      }
+        post_list_connect: [{ id: action.data.link_id }],
+      };
       return {
         ...state,
         companyPosts: {
@@ -993,24 +994,58 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             [action.data.post_id]: post,
           },
-        }
-      }
+        },
+      };
     }
     case "POST_LIST_DISCONNECT": {
       const post = {
         ...state.companyPosts.posts[action.data.post_id],
-        post_list_connect: []
-      }
+        post_list_connect: [],
+      };
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.post_id]: post
+            [action.data.post_id]: post,
           },
-        }
-      }
+        },
+      };
+    }
+    case "REMOVE_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...Object.keys(state.companyPosts.posts)
+              .filter((key) => parseInt(key) !== action.data.id)
+              .reduce((res, id) => {
+                res[id] = { ...state.companyPosts.posts[id] };
+                return res;
+              }, {}),
+          },
+        },
+      };
+    }
+    case "INCOMING_POST_REQUIRED": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
+                required_users: action.data.required_users,
+                user_reads: action.data.user_reads,
+              },
+            }),
+          },
+        },
+      };
     }
     default:
       return state;

@@ -212,6 +212,7 @@ export {
   deletePostList,
   postListConnect,
   postListDisconnect,
+  postRequired,
 } from "./post";
 
 export {

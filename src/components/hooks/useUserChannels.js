@@ -37,19 +37,24 @@ const useUserChannels = () => {
   const selectUserChannel = (user, callback = () => {}) => {
     const userChannel = userChannels.find((c) => c.profile.id === user.id);
     if (userChannel) {
-      channelActions.createByUserChannel(userChannel);
+      channelActions.createByUserChannel(userChannel, callback);
     } else {
       const channel = Object.values(channels).find((c) => c.profile && c.profile.id === user.id && c.type === "DIRECT");
       if (channel) {
         channelActions.select(channel);
         history.push(`/chat/${channel.code}`);
-        if (callback) callback();
+        if (callback) {
+          callback(channel);
+        }
       } else {
         //search the channel
         let cb = (err, res) => {
           searchingRef.current = null;
           if (err) return;
-          if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code, callback);
+          if (res.data.channel_code) channelActions.fetchSelectChannel(res.data.channel_code);
+          if (res.data && callback) {
+            callback({ id: res.data.channel_id, code: res.data.channel_code });
+          }
         };
         let user_ids = [user.id, loggedUser.id];
         let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));

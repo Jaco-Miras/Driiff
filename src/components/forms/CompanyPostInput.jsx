@@ -488,6 +488,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     if (editPostComment && !editMode && editMessage === null && mainInput && editPostComment.post_id === post.id) {
       handleSetEditMessageStates(editPostComment);
     }
+    if (editPostComment === null && editMode && editMessage) {
+      handleEditReplyClose();
+    }
   }, [editPostComment]);
 
   //to be converted into hooks
@@ -599,7 +602,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     <Wrapper className="chat-input-wrapper" ref={ref}>
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
-      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
+      {/* {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />} */}
     </Wrapper>
   );
 });
