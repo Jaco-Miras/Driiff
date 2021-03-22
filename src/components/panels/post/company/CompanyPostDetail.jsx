@@ -542,7 +542,7 @@ const CompanyPostDetail = (props) => {
                     );
                   })}
                 </span>
-                <span className="not-readers">{post.required_users.length > 0 && ` of ${post.required_users.length} users`}</span>
+                {post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; of {post.required_users.length} users</span>}
                 <span className="hover not-read-users-container">
                   {post.required_users.map((u) => {
                     return (
