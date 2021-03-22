@@ -118,6 +118,7 @@ import {
   incomingPostListConnect,
   incomingPostListDisconnect,
   getUnarchivePost,
+  incomingPostRequired,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -532,6 +533,10 @@ class SocketListeners extends Component {
             this.props.incomingPostApproval(e);
             break;
           }
+          case "POST_REQUIRED": {
+            this.props.incomingPostRequired(e);
+            break;
+          }
           case "POST_COMMENT_APPROVED": {
             this.props.incomingCommentApproval({
               ...e,
@@ -592,9 +597,7 @@ class SocketListeners extends Component {
             if (this.props.user.id !== e.author.id) {
               this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
             }
-            if (typeof e.channel_messages === "undefined") {
-              console.log(e);
-            }
+
             e.channel_messages &&
               e.channel_messages.forEach((m) => {
                 m.system_message.files = [];
@@ -1784,6 +1787,7 @@ function mapDispatchToProps(dispatch) {
     incomingPostListConnect: bindActionCreators(incomingPostListConnect, dispatch),
     incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
     getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
+    incomingPostRequired: bindActionCreators(incomingPostRequired, dispatch),
   };
 }
 

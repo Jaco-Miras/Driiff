@@ -83,12 +83,13 @@ const MainBody = styled.div`
     align-items: center;
 
     &:hover {
+      .not-read-users-container,
       .read-users-container {
         opacity: 1;
         max-height: 300px;
       }
     }
-
+    .not-read-users-container,
     .read-users-container {
       position: absolute;
       left: 22px;
@@ -140,6 +141,7 @@ const MainBody = styled.div`
     display: inline-flex;
     margin-right: 0.5rem;
 
+    .not-read-users-container,
     .read-users-container {
       transition: all 0.5s ease;
       position: absolute;
@@ -186,6 +188,7 @@ const MainBody = styled.div`
   }
 
   .user-reads-container {
+    span.not-readers:hover ~ span.not-read-users-container,
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
       max-height: 165px;
@@ -240,15 +243,16 @@ const Counters = styled.div`
         margin-right: 0.5rem;
       }
       .user-reads-container {
+        .not-read-users-container,
         .read-users-container {
           right: -75px;
         }
-
         &.read-by {
           width: 100%;
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .not-read-users-container,
           .read-users-container {
             right: -20px;
           }
@@ -431,9 +435,7 @@ const PostDetail = (props) => {
     return r.type === "TOPIC" && r.private === 1;
   });
 
-  // const handleSnooze = () => {
-  //   postActions.snooze(post);
-  // };
+  // const hasNotReadUsers = post.required_users.filter((u) => !u.must_read);
 
   return (
     <>
@@ -516,7 +518,7 @@ const PostDetail = (props) => {
         />
         <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && (
+          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
@@ -542,7 +544,7 @@ const PostDetail = (props) => {
             )}
           </div>
           <div className="readers-container ml-auto text-muted">
-            {readByUsers.length > 0 && (
+            {(readByUsers.length > 0 || post.required_users.length > 0) && post.is_must_read && (
               <div className="user-reads-container read-by">
                 {hasRead && (
                   <span className="mr-2">
@@ -554,7 +556,17 @@ const PostDetail = (props) => {
                   {readByUsers.map((u) => {
                     return (
                       <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                      </span>
+                    );
+                  })}
+                </span>
+                {post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
+                <span className="hover not-read-users-container">
+                  {post.required_users.map((u) => {
+                    return (
+                      <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={null} id={u.id} /> <span className="name">{u.name}</span>
                       </span>
                     );
                   })}

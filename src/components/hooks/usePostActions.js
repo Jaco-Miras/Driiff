@@ -58,6 +58,7 @@ import {
   postListDisconnected,
   incomingPostListConnect,
   incomingPostListDisconnect,
+  postRequired,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -852,13 +853,26 @@ const usePostActions = () => {
     (post) => {
       let payload = {
         post_id: post.id,
-        personalized_for_id: null,
-        mark_as_read: 1,
+        must_read: 1,
+        must_reply: 0,
+        is_approved: 0,
       };
-      let cb = (err, res) => {
-        if (err) return;
+
+      dispatch(postRequired(payload));
+    },
+    [dispatch, params]
+  );
+
+  const markReplyRequirement = useCallback(
+    (post) => {
+      let payload = {
+        post_id: post.id,
+        must_read: 0,
+        must_reply: 1,
+        is_approved: 0,
       };
-      dispatch(postMarkRead(payload, cb));
+
+      dispatch(postRequired(payload));
     },
     [dispatch, params]
   );
@@ -1120,6 +1134,7 @@ const usePostActions = () => {
     connectPostList,
     disconnectPostList,
     updatePostListConnect,
+    markReplyRequirement,
   };
 };
 

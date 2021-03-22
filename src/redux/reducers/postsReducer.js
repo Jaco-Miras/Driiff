@@ -1013,18 +1013,20 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "REMOVE_POST": {
+    case "INCOMING_POST_REQUIRED": {
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
-            ...Object.keys(state.companyPosts.posts)
-              .filter((key) => parseInt(key) !== action.data.id)
-              .reduce((res, id) => {
-                res[id] = { ...state.companyPosts.posts[id] };
-                return res;
-              }, {}),
+            ...state.companyPosts.posts,
+            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
+              [action.data.post.id]: {
+                ...state.companyPosts.posts[action.data.post.id],
+                required_users: action.data.required_users,
+                user_reads: action.data.user_reads,
+              },
+            }),
           },
         },
       };

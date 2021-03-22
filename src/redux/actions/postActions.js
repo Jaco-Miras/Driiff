@@ -45,6 +45,7 @@ import {
   deletePostList as deletePostListService,
   postListConnect as postListConnectService,
   postListDisconnect as postListDisconnectService,
+  postRequired as postRequiredService,
 } from "../services";
 
 export function getPostList(payload, callback) {
@@ -421,4 +422,12 @@ export function getUnreadCompanyPosts(payload, callback) {
 
 export function getUnarchivePost(payload, callback) {
   return dispatchActionToReducer(fetchPostService(payload), "GET_UNARCHIVE_POST_DETAIL_START", "GET_UNARCHIVE_POST_DETAIL_SUCCESS", "GET_UNARCHIVE_POST_DETAIL_FAIL", callback);
+}
+
+export function postRequired(payload, callback) {
+  return dispatchActionToReducer(postRequiredService(payload), "POST_REQUIRED_START", "POST_REQUIRED_SUCCESS", "POST_REQUIRED_FAIL", callback);
+}
+
+export function incomingPostRequired(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_REQUIRED", payload, callback);
 }
