@@ -225,6 +225,22 @@ const AuthorRecipients = styled.div`
       border-radius: unset;
     }
   }
+  .client-shared {
+    background: #fb3;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
+  .client-not-shared {
+    background: #33b5e5;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
 `;
 
 const CreatedBy = styled.div`
@@ -300,6 +316,12 @@ const CompanyPostItemPanel = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
+    const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    if (post.shared_with_client && hasExternalWorkspace) {
+      recipient_names += `<span class="receiver client-shared">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
+    } else if (!post.shared_with_client && hasExternalWorkspace) {
+      recipient_names += `<span class="receiver client-not-shared">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
+    }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
@@ -414,7 +436,7 @@ const CompanyPostItemPanel = (props) => {
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
         <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
+          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients text-truncate" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
           <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
