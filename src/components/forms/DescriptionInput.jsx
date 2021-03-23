@@ -259,7 +259,7 @@ const DescriptionInput = (props) => {
     setInlineImages,
     setImageLoading,
     prioMentionIds: [...new Set(prioMentionIds)],
-    excludeExternals: true,
+    excludeExternals: false,
   });
 
   return (
