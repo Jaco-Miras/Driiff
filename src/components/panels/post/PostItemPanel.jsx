@@ -421,7 +421,7 @@ const PostItemPanel = (props) => {
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
       appListWidthDiff={postBadgeWidth + 50}
-      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
+      className={`list-group-item post-item-panel ${hasUnread ? "has-unread-temp" : ""} ${className}`}
       onTouchStart={touchStart}
       onTouchMove={touchMove}
       onTouchEnd={touchEnd}
@@ -440,7 +440,7 @@ const PostItemPanel = (props) => {
         />
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
-        <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
+        <div className={`app-list-title text-truncate ${hasUnread ? "has-unread-temp" : ""}`}>
           <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
           <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
