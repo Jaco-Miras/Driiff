@@ -14557,7 +14557,6 @@ body.modal-open .modal.show .modal-dialog {
     padding: 10px 5px;
     .info-x {
       display: flex;
-      justify-content: space-between;
       margin-bottom: 2rem;
       align-items: center;
       .feather-x {
@@ -14584,6 +14583,7 @@ body.modal-open .modal.show .modal-dialog {
       margin-left: 2rem;
       span {
         margin-bottom: .5rem;
+        white-space: nowrap;
       }
     }
   }
