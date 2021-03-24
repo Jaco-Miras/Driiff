@@ -30,7 +30,7 @@ const HuddleQuestion = (props) => {
     skip: _t("SKIP", "skip"),
   };
   const handleSkip = () => {
-    const currentDate = new Date();
+    //const currentDate = new Date();
     actions.skipHuddle({
       channel_id: selectedChannel.id,
       huddle_id: huddle.id,
@@ -45,13 +45,13 @@ const HuddleQuestion = (props) => {
         user_bot: huddle.user_bot,
       })}`,
     });
-    const huddleAnswered = localStorage.getItem("huddle");
-    if (huddleAnswered) {
-      const { channels, day } = JSON.parse(huddleAnswered);
-      localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, huddle.channel.id], day: day }));
-    } else {
-      localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
-    }
+    // const huddleAnswered = localStorage.getItem("huddle");
+    // if (huddleAnswered) {
+    //   const { channels, day } = JSON.parse(huddleAnswered);
+    //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, huddle.channel.id], day: day }));
+    // } else {
+    //   localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
+    // }
   };
   return (
     <Wrapper>

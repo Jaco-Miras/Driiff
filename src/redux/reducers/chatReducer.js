@@ -1905,6 +1905,7 @@ export default function (state = INITIAL_STATE, action) {
       }
       return {
         ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel.id],
         selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
         channels:
           channel !== null
@@ -2075,6 +2076,7 @@ export default function (state = INITIAL_STATE, action) {
       }
       return {
         ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel.id],
         selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
         channels:
           channel !== null
@@ -2089,6 +2091,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         skipIds: [...state.skipIds, action.data],
+        hasUnpublishedAnswers: state.hasUnpublishedAnswers.filter((id) => id !== action.data.channel_id),
       };
     }
     case "ADJUST_HUDDLE_DATE": {
@@ -2201,6 +2204,25 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+      };
+    }
+    case "GET_SKIPPED_ANSWERS_SUCCESS": {
+      return {
+        ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, ...action.data.map((d) => d.channel_id)],
+      };
+    }
+    case "ADD_HAS_UNPUBLISHED_ANSWERS": {
+      console.log(action.data);
+      return {
+        ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel_id],
+      };
+    }
+    case "CLEAR_HAS_UNPUBLISHED_ANSWERS": {
+      return {
+        ...state,
+        hasUnpublishedAnswers: [],
       };
     }
     default:

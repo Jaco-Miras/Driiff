@@ -13,6 +13,7 @@ import {
   getChatStar as getChatStarService,
   getGlobalRecipients as getGlobalRecipientsService,
   getHuddleChatbot as getHuddleChatbotService,
+  getSkippedAnswers as getSkippedAnswersService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
   getSearchChannels as getSearchChannelsService,
@@ -419,4 +420,16 @@ export function addSkipId(payload, callback) {
 
 export function adjustHuddleDate(payload, callback) {
   return SimpleDispatchActionToReducer("ADJUST_HUDDLE_DATE", payload, callback);
+}
+
+export function getSkippedAnswers(payload, callback) {
+  return dispatchActionToReducer(getSkippedAnswersService(payload), "GET_SKIPPED_ANSWERS_START", "GET_SKIPPED_ANSWERS_SUCCESS", "GET_SKIPPED_ANSWERS_FAIL", callback);
+}
+
+export function clearHasUnpiblishedAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_HAS_UNPUBLISHED_ANSWERS", payload, callback);
+}
+
+export function addHasUnpublishedAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_HAS_UNPUBLISHED_ANSWERS", payload, callback);
 }

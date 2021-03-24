@@ -11,6 +11,7 @@ const useHuddle = (props) => {
   //const loggedUser = useSelector((state) => state.session.user);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const editHuddle = useSelector((state) => state.chat.editHuddle);
+  const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
 
   //const isOwner = loggedUser.role && loggedUser.role.name === "owner";
   const weekDays = [
@@ -82,7 +83,8 @@ const useHuddle = (props) => {
     }
   });
 
-  let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
+  //let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
+  let answeredChannels = [...hasUnpublishedAnswers];
   let inTimeRange = false;
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
   if (huddle) {
