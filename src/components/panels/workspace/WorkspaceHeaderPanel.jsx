@@ -76,6 +76,10 @@ const NavBarLeft = styled.div`
   svg.feather-menu {
     color: #7a1b8b !important;
   }
+  .component-user-list-pop-up-container .profile-slider {
+    right: 165px;
+    top: 0;
+  }
 `;
 
 const NavBar = styled.ul`

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import styled from "styled-components";
 import { TeamListItem } from "../../list/people/item";
 import { SvgIconFeather } from "../../common";
@@ -9,6 +9,7 @@ const Wrapper = styled.div`
   .feather-edit {
     cursor: pointer;
   }
+  overflow: unset;
 
   .card-title {
     position: relative;
@@ -56,6 +57,7 @@ const Wrapper = styled.div`
 
 const DashboardTeam = (props) => {
   const { className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions } = props;
+  const mainRef = useRef(null);
   const [scrollRef, setScrollRef] = useState(null);
 
   const [showMore, setShowMore] = useState(false);
@@ -101,7 +103,7 @@ const DashboardTeam = (props) => {
   };
 
   return (
-    <Wrapper className={`dashboard-team card ${className}`}>
+    <Wrapper className={`dashboard-team card ${className}`} ref={mainRef}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
           {dictionary.team} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather onClick={onEditClick} icon="plus" />}
@@ -128,6 +130,7 @@ const DashboardTeam = (props) => {
                   toggleShow={handleToggleShow}
                   loggedUser={loggedUser}
                   workspace={workspace}
+                  scrollRef={mainRef.current}
                 />
               );
             })}

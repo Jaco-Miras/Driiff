@@ -73,16 +73,16 @@ const Wrapper = styled.ul`
 `;
 
 const HomeProfileNavigation = (props) => {
-  const {className = "", dictionary} = props;
+  const { className = "", dictionary } = props;
 
   const {
     users,
     loggedUser,
-    actions: {fetchById},
+    actions: { fetchById },
   } = useUsers();
-  const {notifications} = useNotifications();
+  const { notifications } = useNotifications();
   const {
-    generalSettings: {dark_mode},
+    generalSettings: { dark_mode },
     setGeneralSetting,
   } = useSettings();
 
@@ -106,10 +106,10 @@ const HomeProfileNavigation = (props) => {
     e.preventDefault();
 
     const name = e.currentTarget.dataset.toggle;
-    setDropDown(prevState => ({
+    setDropDown((prevState) => ({
       ...prevState,
       ...(prevState.name !== name && { name: name }),
-      value: prevState.name === name ? !prevState.value : true
+      value: prevState.name === name ? !prevState.value : true,
     }));
   };
 
@@ -151,49 +151,35 @@ const HomeProfileNavigation = (props) => {
       <li className="nav-item dropdown">
         <a href="/" className="nav-link" data-toggle="search" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalSearch}>
-            <SvgIconFeather icon="search"/>
+            <SvgIconFeather icon="search" />
           </ToolTip>
         </a>
-        {
-          dropDown.name === "search" && dropDown.value &&
-          <SearchDropDown/>
-        }
+        {dropDown.name === "search" && dropDown.value && <SearchDropDown />}
       </li>
       <li className="nav-item dropdown">
-        <a href="/"
-           className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`}
-           data-toggle="notification" onClick={toggleDropdown}>
+        <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} data-toggle="notification" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalNotifications}>
-            <SvgIconFeather icon="bell"/>
+            <SvgIconFeather icon="bell" />
           </ToolTip>
         </a>
-        {
-          dropDown.name === "notification" && dropDown.value &&
-          <NotificationDropDown toggleDropdown={toggleDropdown}/>
-        }
+        {dropDown.name === "notification" && dropDown.value && <NotificationDropDown toggleDropdown={toggleDropdown} />}
       </li>
       <li className="nav-item">
-        <a href="/" className={`nav-link dark-mode-switch`} onClick={setThemeButton}>
+        <a href="/" className={"nav-link dark-mode-switch"} onClick={setThemeButton}>
           <ToolTip content={dictionary.generalSwitchTheme}>
-            <SvgIconFeather icon="sun"/>
-            <SvgIconFeather icon="moon"/>
+            <SvgIconFeather icon="sun" />
+            <SvgIconFeather icon="moon" />
           </ToolTip>
         </a>
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link profile-button" data-toggle="profile"
-           onClick={toggleDropdown}><ToolTip content={loggedUser.name}>
-          <div className="avatar-overlay"/>
-          <Avatar
-            name={form.name} id={form.id} type="USER" className="avatar-top-bar"
-            imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link}
-            noDefaultClick={true}/>
-        </ToolTip>
+        <a href="/" className="nav-link profile-button" data-toggle="profile" onClick={toggleDropdown}>
+          <ToolTip content={loggedUser.name}>
+            <div className="avatar-overlay" />
+            <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link} noDefaultClick={true} showSlider={false} />
+          </ToolTip>
         </a>
-        {
-          dropDown.name === "profile" && dropDown.value &&
-          <UserProfileDropDown user={loggedUser}/>
-        }
+        {dropDown.name === "profile" && dropDown.value && <UserProfileDropDown user={loggedUser} />}
       </li>
     </Wrapper>
   );

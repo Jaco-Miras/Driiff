@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   roles: {},
   externalUsers: [],
   archivedUsers: [],
+  profileSlider: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -293,6 +294,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         onlineUsers: action.data.result,
+      };
+    }
+    case "SET_PROFILE_SLIDER": {
+      return {
+        ...state,
+        profileSlider: action.data.id && state.users[action.data.id] ? state.users[action.data.id] : null,
       };
     }
     default:

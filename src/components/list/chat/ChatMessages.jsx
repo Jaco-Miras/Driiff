@@ -985,6 +985,7 @@ class ChatMessages extends React.PureComponent {
                                       name={reply.user.name}
                                       isBot={isBot}
                                       isHuddleBot={reply.user.code === "huddle_bot"}
+                                      showSlider={true}
                                     />
                                   )}
                                 </ChatBubbleContainer>

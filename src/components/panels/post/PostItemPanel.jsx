@@ -412,6 +412,7 @@ const PostItemPanel = (props) => {
           id={post.author.id}
           name={post.author.name}
           imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
+          showSlider={true}
         />
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">

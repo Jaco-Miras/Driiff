@@ -13,7 +13,7 @@ import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
 
   .chat-header-left {
@@ -56,6 +56,9 @@ const Wrapper = styled.div`
     @media (max-width: 991.99px) {
       display: none;
     }
+  }
+  .component-user-list-pop-up-container .profile-slider {
+    right: 255px !important;
   }
 `;
 

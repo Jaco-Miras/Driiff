@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 `;
 
 const AttachFileTimeline = (props) => {
-  const { className = "", data, dictionary } = props;
+  const { className = "", data, dictionary, scrollRef } = props;
   const { params } = useRouteMatch();
 
   const dispatch = useDispatch();
@@ -49,9 +49,7 @@ const AttachFileTimeline = (props) => {
   return (
     <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name}
-                imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link}
-                id={data.user.id}/>
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
       </div>
       {
         <div>

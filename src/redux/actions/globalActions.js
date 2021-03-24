@@ -232,3 +232,6 @@ export function incomingCreatedAnnouncement(payload, callback) {
 export function incomingDeletedAnnouncement(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_ANNOUNCEMENT", payload, callback);
 }
+export function setProfileSlider(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_PROFILE_SLIDER", payload, callback);
+}
