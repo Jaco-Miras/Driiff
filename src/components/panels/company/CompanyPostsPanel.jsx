@@ -288,6 +288,12 @@ const CompanyPostsPanel = (props) => {
 
   useEffect(() => {
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    if (filter && filter === "inbox" && unreadPosts.length === 0 && readPosts.length > 0) {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
   }, []);
 
   // useEffect(() => {

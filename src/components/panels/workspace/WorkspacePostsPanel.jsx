@@ -178,6 +178,12 @@ const WorkspacePostsPanel = (props) => {
     if (params.hasOwnProperty("workspaceId")) {
       actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
     }
+    if (filter && filter === "inbox" && unreadPosts.length === 0 && readPosts.length > 0) {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
   }, []);
 
   useEffect(() => {
