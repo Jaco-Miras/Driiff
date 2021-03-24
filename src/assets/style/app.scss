@@ -214,6 +214,11 @@ body {
   background-color: rgba(210, 210, 210, 0.2);
   font-size: 11px;
   margin-right: 3px;
+  svg {
+        height: 12px;
+        width: 12px;
+        margin-left: 0.2rem;
+      }
 }
 
 body.dark {

@@ -35,10 +35,6 @@ const Wrapper = styled.li`
     padding-left: 12px;
   }
 
-  .post-partialBody {
-    //max-width: calc(100% - 170px);
-  }
-
   .app-list-title {
     color: #343a40;
     font-weight: normal;
@@ -115,21 +111,6 @@ const Wrapper = styled.li`
     }
   }
 
-  .receiver {
-    border-radius: 6px;
-    padding: 3px 5px;
-    background-color: rgba(210, 210, 210, 0.2);
-    font-size: 11px;
-    margin-right: 3px;
-    display: inline-flex;
-    align-items: center;
-    svg {
-      height: 12px;
-      width: 12px;
-      margin-left: 0.2rem;
-    }
-  }
-
   .ellipsis-hover {
     position: relative;
     cursor: pointer;
@@ -142,20 +123,6 @@ const Wrapper = styled.li`
     }
   }
 `;
-
-// const SlideOption = styled.div`
-//   @media (max-width: 576px) {
-//     transition: all 0.3s ease;
-//     max-width: 0;
-//     overflow: hidden;
-//     ${(props) =>
-//       props.showOptions &&
-//       `
-//       max-width: 576px;
-//       overflow: initial;
-//     `}
-//   }
-// `;
 
 const Icon = styled(SvgIconFeather)`
   width: 16px;
@@ -243,13 +210,6 @@ const AuthorRecipients = styled.div`
     }
   }
 `;
-
-// const CreatedBy = styled.div`
-//   position: absolute;
-//   top: 1rem;
-//   left: 2rem;
-//   bottom: 0;
-// `;
 
 const PostReplyCounter = styled.div`
   display: flex;
@@ -420,7 +380,7 @@ const PostItemPanel = (props) => {
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
       appListWidthDiff={postBadgeWidth + 50}
-      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
+      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className} pl-3`}
       onTouchStart={touchStart}
       onTouchMove={touchMove}
       onTouchEnd={touchEnd}

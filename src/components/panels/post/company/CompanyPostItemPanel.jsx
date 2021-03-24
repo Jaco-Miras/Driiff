@@ -35,10 +35,6 @@ const Wrapper = styled.li`
     padding-left: 12px;
   }
 
-  .post-partialBody {
-    //max-width: calc(100% - 170px);
-  }
-
   .app-list-title {
     color: #343a40;
     font-weight: normal;
@@ -114,21 +110,6 @@ const Wrapper = styled.li`
     }
   }
 
-  .receiver {
-    border-radius: 6px;
-    padding: 3px 5px;
-    background-color: rgba(210, 210, 210, 0.2);
-    font-size: 11px;
-    margin-right: 3px;
-    display: inline-flex;
-    align-items: center;
-    svg {
-      height: 12px;
-      width: 12px;
-      margin-left: 0.2rem;
-    }
-  }
-
   .ellipsis-hover {
     position: relative;
     cursor: pointer;
@@ -139,20 +120,6 @@ const Wrapper = styled.li`
         max-height: 300px;
       }
     }
-  }
-`;
-
-const SlideOption = styled.div`
-  @media (max-width: 576px) {
-    transition: all 0.3s ease;
-    max-width: 0;
-    overflow: hidden;
-    ${(props) =>
-      props.showOptions &&
-      `
-      max-width: 576px;
-      overflow: initial;      
-    `}
   }
 `;
 
@@ -241,13 +208,6 @@ const AuthorRecipients = styled.div`
       margin-right: 5px;
     }
   }
-`;
-
-const CreatedBy = styled.div`
-  position: absolute;
-  top: 1rem;
-  left: 2rem;
-  bottom: 0;
 `;
 
 const PostReplyCounter = styled.div`
@@ -381,14 +341,14 @@ const CompanyPostItemPanel = (props) => {
     if (!touchActions) openPost(post, "/posts");
   };
 
-  const [showOptions, setShowOptions] = useState(false);
+  //const [showOptions, setShowOptions] = useState(false);
   const handleSwipeLeft = (e) => {
     touchActions = true;
-    setShowOptions(true);
+    //setShowOptions(true);
   };
   const handleSwipeRight = (e) => {
     touchActions = true;
-    setShowOptions(false);
+    //setShowOptions(false);
   };
 
   const { touchStart, touchMove, touchEnd } = useTouchActions({
@@ -436,7 +396,7 @@ const CompanyPostItemPanel = (props) => {
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
         <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients text-truncate" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
+          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
           <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
