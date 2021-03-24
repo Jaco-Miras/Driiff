@@ -276,6 +276,7 @@ const WorkspacePostsPanel = (props) => {
     ofNumberOfUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
       user_count: ofNumberOfUsers.length,
     }),
+    allOthers: _t("POST.ALL_OTHERS", "All others"),
   };
 
   const handleLoadMore = () => {
@@ -547,7 +548,7 @@ const WorkspacePostsPanel = (props) => {
                             >
                               <span className="badge badge-light">
                                 <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                                Unread posts
+                                {dictionary.unread}
                               </span>
                             </UnreadPostsHeader>
                           </div>
@@ -555,7 +556,9 @@ const WorkspacePostsPanel = (props) => {
                         {unreadPosts.length > 0 && (
                           <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                             {unreadPosts.map((p, k) => {
-                              return <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
+                              return (
+                                <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={true} />
+                              );
                             })}
                           </UnreadPostsContainer>
                         )}
@@ -564,7 +567,7 @@ const WorkspacePostsPanel = (props) => {
                             <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={() => handleShowPosts("showRead")} showPosts={showPosts.showRead}>
                               <span className="badge badge-light">
                                 <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                                Other
+                                {dictionary.allOthers}
                               </span>
                             </ReadPostsHeader>
                           </div>
@@ -572,7 +575,9 @@ const WorkspacePostsPanel = (props) => {
                         {readPosts.length > 0 && (
                           <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                             {readPosts.map((p, k) => {
-                              return <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
+                              return (
+                                <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={false} />
+                              );
                             })}
                           </ReadPostsContainer>
                         )}
