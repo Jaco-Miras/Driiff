@@ -70,13 +70,14 @@ const ChatMessageOptions = (props) => {
   };
 
   const handleUnskip = () => {
-    const huddleStorage = localStorage.getItem("huddle");
-    //setCurrentTime(currentDate.getTime());
-    if (huddleStorage) {
-      const { day, channels } = JSON.parse(huddleStorage);
-      localStorage.setItem("huddle", JSON.stringify({ channels: channels.filter((id) => id !== replyData.channel_id), day: day }));
-      chatMessageActions.addSkip({ channel_id: replyData.channel_id, id: replyData.id });
-    }
+    // const huddleStorage = localStorage.getItem("huddle");
+    // //setCurrentTime(currentDate.getTime());
+    // if (huddleStorage) {
+    //   const { day, channels } = JSON.parse(huddleStorage);
+    //   localStorage.setItem("huddle", JSON.stringify({ channels: channels.filter((id) => id !== replyData.channel_id), day: day }));
+    //   chatMessageActions.addSkip({ channel_id: replyData.channel_id, id: replyData.id });
+    // }
+    chatMessageActions.addSkip({ channel_id: replyData.channel_id, id: replyData.id });
   };
 
   const handleReply = () => {

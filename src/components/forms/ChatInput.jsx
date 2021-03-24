@@ -165,7 +165,7 @@ const ChatInput = (props) => {
 
   const toaster = useToaster();
 
-  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
+  const { huddle, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
 
   const setEditedAnswerId = useRef(null);
 
@@ -207,7 +207,7 @@ const ChatInput = (props) => {
     // }
     if (showQuestions) {
       if (question.isLastQuestion) {
-        const currentDate = new Date();
+        //const currentDate = new Date();
         const skipId = skipIds.find((s) => s.channel_id === selectedChannel.id);
         let payload = {
           huddle_id: huddle.id,
@@ -226,12 +226,12 @@ const ChatInput = (props) => {
             toaster.error("Error huddle");
             return;
           }
-          if (huddleAnswered) {
-            const { channels } = JSON.parse(huddleAnswered);
-            localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
-          } else {
-            localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
-          }
+          // if (huddleAnswered) {
+          //   const { channels } = JSON.parse(huddleAnswered);
+          //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
+          // } else {
+          //   localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
+          // }
           toaster.success(closingMessage);
         };
         if (editHuddle) {

@@ -460,3 +460,16 @@ export function postSkipHuddle(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function getSkippedAnswers(payload) {
+  let url = `/v2/get-skip-answer?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

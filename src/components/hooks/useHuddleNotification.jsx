@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate } from "../../redux/actions/chatActions";
+import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate, clearHasUnpiblishedAnswers } from "../../redux/actions/chatActions";
 import { useToaster, useHuddleChatbot } from "./index";
 
 const useHuddle = (props) => {
@@ -20,6 +20,7 @@ const useHuddle = (props) => {
   const channels = useSelector((state) => state.chat.channels);
   const isOwner = loggedUser.role && loggedUser.role.name === "owner";
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
 
   const huddleAnswered = localStorage.getItem("huddle");
   const huddleBots = useSelector((state) => state.chat.huddleBots);
@@ -108,7 +109,8 @@ const useHuddle = (props) => {
   });
 
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-  let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
+  //let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
+  let answeredChannels = [...hasUnpublishedAnswers];
 
   const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
 
@@ -136,12 +138,12 @@ const useHuddle = (props) => {
         })}`,
       });
 
-      if (huddleAnswered) {
-        const { channels } = JSON.parse(huddleAnswered);
-        localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, huddle.channel.id], day: currentDate.getDay() }));
-      } else {
-        localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
-      }
+      // if (huddleAnswered) {
+      //   const { channels } = JSON.parse(huddleAnswered);
+      //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, huddle.channel.id], day: currentDate.getDay() }));
+      // } else {
+      //   localStorage.setItem("huddle", JSON.stringify({ channels: [huddle.channel.id], day: currentDate.getDay() }));
+      // }
     };
     const CloseButton = ({ closeToast }) => (
       <i
@@ -187,19 +189,21 @@ const useHuddle = (props) => {
 
   setInterval(() => {
     const d = new Date();
-    const currentDay = d.getDay();
-    const huddleStorage = localStorage.getItem("huddle");
-    //setCurrentTime(currentDate.getTime());
-    if (huddleStorage) {
-      const { day } = JSON.parse(huddleStorage);
-      if (day !== currentDay || currentDay === 0 || currentDay === 6) {
-        localStorage.removeItem("huddle");
-        dispatch(clearHuddleAnswers());
-      }
-    }
+    // const currentDay = d.getDay();
+    // const huddleStorage = localStorage.getItem("huddle");
+    // //setCurrentTime(currentDate.getTime());
+    // if (huddleStorage) {
+    //   const { day } = JSON.parse(huddleStorage);
+    //   if (day !== currentDay || currentDay === 0 || currentDay === 6) {
+    //     localStorage.removeItem("huddle");
+    //     dispatch(clearHuddleAnswers());
+    //   }
+    // }
 
     if (d.getDate() !== currentDate.getDate()) {
+      dispatch(clearHuddleAnswers());
       dispatch(adjustHuddleDate());
+      dispatch(clearHasUnpiblishedAnswers());
     }
   }, 60000);
 };

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
-import { getGlobalRecipients, getHuddleChatbot, adjustHuddleDate, getUnpublishedAnswers } from "../../redux/actions/chatActions";
+import { getGlobalRecipients, getHuddleChatbot, adjustHuddleDate, getUnpublishedAnswers, getSkippedAnswers, addHasUnpublishedAnswers } from "../../redux/actions/chatActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -14,7 +14,14 @@ const useInitialLoad = () => {
   const dispatch = useDispatch();
 
   const getChannelsWithUnpublishedMessage = (id) => {
-    dispatch(getUnpublishedAnswers({ channel_id: id }));
+    dispatch(
+      getUnpublishedAnswers({ channel_id: id }, (err, res) => {
+        if (err) return;
+        if (res.data && res.data.length > 0) {
+          dispatch(addHasUnpublishedAnswers({ channel_id: id }));
+        }
+      })
+    );
   };
 
   useEffect(() => {
@@ -35,6 +42,7 @@ const useInitialLoad = () => {
       //dispatch(getDrafts());
     };
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
+    dispatch(getSkippedAnswers({}));
     dispatch(
       getHuddleChatbot({}, (err, res) => {
         if (err) return;
