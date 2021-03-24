@@ -358,6 +358,12 @@ const CompanyPostsPanel = (props) => {
         showRead: true,
       });
     }
+    if (filter && filter === "all" && unreadPosts.length === 0 && readPosts.length > 0) {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
   }, [filter]);
 
   if (posts === null) return <></>;
@@ -448,7 +454,7 @@ const CompanyPostsPanel = (props) => {
                           </div>
                         )}
                         {unreadPosts.length > 0 && (
-                          <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
+                          <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                             {unreadPosts.map((p, k) => {
                               return <CompanyPostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
                             })}
@@ -465,7 +471,7 @@ const CompanyPostsPanel = (props) => {
                           </div>
                         )}
                         {readPosts.length > 0 && (
-                          <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
+                          <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
                             {readPosts.map((p, k) => {
                               return <CompanyPostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
                             })}
