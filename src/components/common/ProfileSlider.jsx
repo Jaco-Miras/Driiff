@@ -72,7 +72,7 @@ const ProfileSlider = (props) => {
             <Icon icon="message-circle" loading={loading} />
           </button>
         )}
-        {user && user.type === "external" && loggedUser.type === "internal" && <Badge label={dictionary.external} badgeClassName="badge badge-info text-white mt-2" />}
+        {user && user.type === "external" && loggedUser.type === "internal" && <span className="badge badge-info text-white mt-2">{dictionary.external}</span>}
       </div>
       <div className="information-wrapper">
         <div className="info-x">
