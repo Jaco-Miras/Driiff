@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement, deleteReleaseAnnouncement } from "../../redux/actions/globalActions";
+import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement, deleteReleaseAnnouncement, saveDraft, deleteDraft, updateDraft, incomingDeletedAnnouncement } from "../../redux/actions/globalActions";
 import { useTranslation, useQuillModules } from "../hooks";
 import { ModalHeaderSection } from "./index";
 // import quillHelper from "../../helpers/quillHelper";
@@ -74,10 +74,29 @@ const ReleaseModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [nestedModal, setNestedModal] = useState(false);
   const [closeAll, setCloseAll] = useState(false);
+  const [nestedDraft, setNestedDraft] = useState(false);
 
   const toggle = () => {
-    setModal(!modal);
-    dispatch(clearModal({ type: type }));
+    if (!item) {
+      if (form.title !== "" && form.description !== "") {
+        setNestedDraft(true);
+      } else {
+        setModal(!modal);
+        dispatch(clearModal({ type: type }));
+      }
+    } else {
+      if (item.draft_id && (item.body !== form.description || item.action_text !== form.title)) {
+        setNestedDraft(true);
+      } else {
+        setModal(!modal);
+        dispatch(clearModal({ type: type }));
+      }
+    }
+  };
+
+  const toggleDraft = () => {
+    setNestedDraft(!nestedDraft);
+    setCloseAll(false);
   };
 
   const toggleNested = () => {
@@ -133,7 +152,17 @@ const ReleaseModal = (props) => {
         action_text: form.title,
         major_release: form.major_release,
       };
-      dispatch(updateReleaseAnnouncement(payload));
+      if (item.draft_id) {
+        delete payload.id;
+        dispatch(
+          createReleaseAnnouncement(payload, (err, res) => {
+            if (err) return;
+            handleDeleteDraft();
+          })
+        );
+      } else {
+        dispatch(updateReleaseAnnouncement(payload));
+      }
       toggle();
     } else {
       let payload = {
@@ -153,9 +182,62 @@ const ReleaseModal = (props) => {
     });
   };
 
+  const handleUpdateDraft = () => {
+    dispatch(
+      updateDraft(
+        {
+          type: "release",
+          draft_id: item.draft_id,
+          ...form,
+          action_text: form.title,
+          body: form.description,
+        },
+        (err, res) => {
+          if (err) return;
+        }
+      )
+    );
+  };
+
+  const handleDeleteDraft = () => {
+    dispatch(
+      deleteDraft(
+        {
+          type: "release",
+          draft_id: item.draft_id,
+        },
+        (err, res) => {
+          if (err) return;
+          dispatch(incomingDeletedAnnouncement({ id: item.draft_id }));
+        }
+      )
+    );
+  };
   const handleDelete = () => {
-    dispatch(deleteReleaseAnnouncement({ id: item.id }));
+    if (item && item.draft_id) {
+      handleDeleteDraft();
+    } else {
+      dispatch(deleteReleaseAnnouncement({ id: item.id }));
+    }
     toggle();
+  };
+
+  const handleSaveDraft = () => {
+    if (item && item.draft_id) {
+      handleUpdateDraft();
+    } else {
+      dispatch(
+        saveDraft({
+          ...form,
+          action_text: form.title,
+          body: form.description,
+          type: "release",
+        })
+      );
+    }
+
+    setModal(!modal);
+    dispatch(clearModal({ type: type }));
   };
 
   const quillRef = useRef(null);
@@ -174,6 +256,18 @@ const ReleaseModal = (props) => {
             </Button>
             <Button color="primary" onClick={() => toggleAll(true)}>
               Delete
+            </Button>
+          </ModalFooter>
+        </Modal>
+        <Modal isOpen={nestedDraft} toggle={toggleDraft} onClosed={closeAll ? toggle : undefined} centered>
+          <ModalHeaderSection toggle={toggleDraft}>Save as draft</ModalHeaderSection>
+          <ModalBody>Save entry as draft?</ModalBody>
+          <ModalFooter>
+            <Button className="btn-outline-secondary" onClick={() => toggleAll(false)}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={handleSaveDraft}>
+              Save
             </Button>
           </ModalFooter>
         </Modal>
@@ -202,8 +296,20 @@ const ReleaseModal = (props) => {
       <ModalFooter>
         {item && (
           <div>
-            <Button outline color="secondary" onClick={toggleNested}>
+            <Button className="mr-1" outline color="secondary" onClick={toggleNested}>
               Delete
+            </Button>
+            {item.draft_id && (
+              <Button outline color="secondary" onClick={handleSaveDraft} disabled={form.textOnly === "" || form.title === ""}>
+                Update draft
+              </Button>
+            )}
+          </div>
+        )}
+        {!item && (
+          <div>
+            <Button outline color="secondary" onClick={toggleDraft} disabled={form.textOnly === "" || form.title === ""}>
+              Save as draft
             </Button>
           </div>
         )}
@@ -213,7 +319,7 @@ const ReleaseModal = (props) => {
           </Button>
           <Button color="primary ml-2" onClick={handleSubmit} disabled={form.textOnly === "" || form.title === ""}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            {item ? "Update" : "Save"}
+            {item && item.draft_id ? "Save" : item ? "Update" : "Save"}
           </Button>{" "}
         </div>
       </ModalFooter>

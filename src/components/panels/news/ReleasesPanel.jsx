@@ -54,7 +54,7 @@ const ReleasesPanel = (props) => {
               <div>
                 {items.length > 0 &&
                   items.map((item) => {
-                    return <ReleaseItem key={item.id} item={item} fromNow={fromNow} openModal={openModal} isAuthorizedUser={isAuthorizedUser} />;
+                    return <ReleaseItem key={item.draft_id ? item.draft_id : item.id} item={item} fromNow={fromNow} openModal={openModal} isAuthorizedUser={isAuthorizedUser} />;
                   })}
               </div>
             </div>

@@ -145,6 +145,9 @@ const useChannelActions = () => {
               renameChannelKey(newchannel, () => {
                 history.push(`/chat/${newchannel.code}`);
                 dispatch(setSelectedChannel(newchannel));
+                if (callback) {
+                  callback(newchannel);
+                }
               })
             );
           }

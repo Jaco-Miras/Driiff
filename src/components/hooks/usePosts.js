@@ -199,9 +199,9 @@ const usePosts = () => {
           }
         } else if (activeTag) {
           if (activeTag === "is_must_reply") {
-            return p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
+            return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
           } else if (activeTag === "is_must_read") {
-            return p.is_must_read && !p.is_archived && !p.hasOwnProperty("draft_type");
+            return (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_read);
           } else if (activeTag === "is_read_only") {
             return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
           } else if (tag === "is_unread") {
@@ -209,18 +209,17 @@ const usePosts = () => {
           } else if (tag === "is_close") {
             return p.is_close && !p.hasOwnProperty("draft_type");
           } else if (parseInt(activeTag) !== NaN) {
-            return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag));
+            return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag);
           } else {
             return true;
           }
-        } else if(activePostListTag) {
+        } else if (activePostListTag) {
           if (parseInt(activePostListTag) !== NaN) {
-            return (p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(activePostListTag));
+            return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(activePostListTag);
           } else {
             return true;
           }
-        }
-        else {
+        } else {
           return true;
         }
       })
@@ -240,10 +239,10 @@ const usePosts = () => {
 
     count = {
       is_must_reply: Object.values(posts).filter((p) => {
-        return p.is_must_reply && p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
+        return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
       }).length,
       is_must_read: Object.values(posts).filter((p) => {
-        return p.is_must_read && p.is_must_read && !p.is_archived && !p.hasOwnProperty("draft_type");
+        return (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_read);
       }).length,
       is_read_only: Object.values(posts).filter((p) => {
         return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");

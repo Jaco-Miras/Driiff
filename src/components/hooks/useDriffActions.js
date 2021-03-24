@@ -14,21 +14,27 @@ const useDriffActions = () => {
    */
   const checkUpdateVersion = useCallback(
     (callback = () => {}) => {
-      if (localStorage.getItem("site_ver") !== driffData.version) {
-        dispatch(
-          patchUpdateDriffVersion(
-            {
-              version: driffData.version,
-              requirement: driffData.requirement,
-            },
-            (err, res) => {
-              if (res) {
-                localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
+      if (!localStorage.getItem("site_ver")) {
+        localStorage.setItem("site_ver", driffData.version);
+      } else {
+        const storageVersion = parseFloat(localStorage.getItem("site_ver").substr(2));
+        const latestVersion = parseFloat(driffData.version.substr(2));
+        if (storageVersion < latestVersion) {
+          dispatch(
+            patchUpdateDriffVersion(
+              {
+                version: driffData.version,
+                requirement: driffData.requirement,
+              },
+              (err, res) => {
+                if (res) {
+                  localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
+                }
+                callback(err, res);
               }
-              callback(err, res);
-            }
-          )
-        );
+            )
+          );
+        }
       }
     },
     [dispatch]

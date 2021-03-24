@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
 import {
@@ -23,7 +23,7 @@ import useChannelActions from "./useChannelActions";
 import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
 
 const useChatMessageActions = () => {
-  const sharedSlugs = useSelector((state) => state.global.slugs);
+  //const sharedSlugs = useSelector((state) => state.global.slugs);
 
   const dispatch = useDispatch();
   const toaster = useToaster();

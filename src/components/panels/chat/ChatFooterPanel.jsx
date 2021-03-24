@@ -160,6 +160,10 @@ const PickerContainer = styled(CommonPicker)`
   right: 100px;
   bottom: 80px;
 
+  @media (max-width: 414px) {
+    right: -10px;
+  }
+
   .common-picker-btn {
     text-align: right;
   }
