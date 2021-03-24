@@ -78,16 +78,19 @@ import {
   getConnectedSlugs,
   getLatestReply,
   getUnreadNotificationCounterEntries,
+  incomingCreatedAnnouncement,
   incomingDoneToDo,
   incomingFavouriteItem,
   incomingRemoveToDo,
   incomingToDo,
   incomingUpdateToDo,
+  incomingUpdatedAnnouncement,
   refetchMessages,
   refetchOtherMessages,
   setBrowserTabStatus,
   setGeneralChat,
   setUnreadNotificationCounterEntries,
+  incomingDeletedAnnouncement,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -111,6 +114,11 @@ import {
   incomingUpdatedPost,
   refetchPostComments,
   refetchPosts,
+  getPostList,
+  incomingPostListConnect,
+  incomingPostListDisconnect,
+  getUnarchivePost,
+  incomingPostRequired,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -123,6 +131,7 @@ import {
   incomingUnarchivedUser,
   incomingDeactivatedUser,
   incomingActivatedUser,
+  incomingOnlineUsers,
 } from "../../redux/actions/userAction";
 import {
   getUnreadWorkspacePostEntries,
@@ -198,23 +207,24 @@ class SocketListeners extends Component {
     }
   };
 
-  fetchOnlineUsers = (isMount = false) => {
-    if (isMount) {
-      this.props.getOnlineUsers();
-    }
-    this.onlineUsers.current = setInterval(() => {
-      if (this.props.selectedChannel && this.props.selectedChannel.isFetching) {
-        clearInterval(this.onlineUsers.current);
-        this.onlineUsers.current = setTimeout(() => {
-          this.fetchOnlineUsers();
-        }, 300);
-      } else {
-        this.props.getOnlineUsers();
-      }
-    }, 30000);
-  };
+  // fetchOnlineUsers = (isMount = false) => {
+  //   if (isMount) {
+  //     this.props.getOnlineUsers();
+  //   }
+  //   this.onlineUsers.current = setInterval(() => {
+  //     if (this.props.selectedChannel && this.props.selectedChannel.isFetching) {
+  //       clearInterval(this.onlineUsers.current);
+  //       this.onlineUsers.current = setTimeout(() => {
+  //         this.fetchOnlineUsers();
+  //       }, 300);
+  //     } else {
+  //       this.props.getOnlineUsers();
+  //     }
+  //   }, 30000);
+  // };
 
   componentDidMount() {
+    this.props.getOnlineUsers();
     /* uncomment to test driff update notification bar
     const handleReminder = () => {
       setTimeout(() => {
@@ -259,7 +269,7 @@ class SocketListeners extends Component {
      * @todo Online users are determined every 30 seconds
      * online user reducer should be updated every socket call
      */
-    this.fetchOnlineUsers(true);
+    //this.fetchOnlineUsers(true);
 
     // this.props.addUserToReducers({
     //   id: this.props.user.id,
@@ -271,6 +281,12 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".unarchive-post-notification", (e) => {
+        console.log(e);
+        e.posts.forEach((p) => {
+          this.props.getUnarchivePost({ post_id: p.id });
+        });
+      })
       .listen(".huddle-notification", (e) => {
         console.log("huddle notification", e);
         switch (e.SOCKET_TYPE) {
@@ -517,6 +533,10 @@ class SocketListeners extends Component {
             this.props.incomingPostApproval(e);
             break;
           }
+          case "POST_REQUIRED": {
+            this.props.incomingPostRequired(e);
+            break;
+          }
           case "POST_COMMENT_APPROVED": {
             this.props.incomingCommentApproval({
               ...e,
@@ -577,9 +597,7 @@ class SocketListeners extends Component {
             if (this.props.user.id !== e.author.id) {
               this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
             }
-            if (typeof e.channel_messages === "undefined") {
-              console.log(e);
-            }
+
             e.channel_messages &&
               e.channel_messages.forEach((m) => {
                 m.system_message.files = [];
@@ -861,9 +879,52 @@ class SocketListeners extends Component {
           default:
             return null;
         }
+      })
+      .listen(".post-list-notification", (e) => {
+        console.log(e, "post-list-notification");
+        this.props.getPostList({}, (err, res) => {
+          if (err) return;
+          let post = {
+            link_id: e.link_id,
+            post_id: e.post_id,
+          };
+          switch (e.SOCKET_TYPE) {
+            case "POST_LIST_CONNECTED": {
+              this.props.incomingPostListConnect(post);
+              break;
+            }
+            case "POST_LIST_DISCONNECTED": {
+              this.props.incomingPostListDisconnect(post);
+              break;
+            }
+          }
+        });
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".announcement-notification", (e) => {
+        console.log(e);
+        switch (e.SOCKET_TYPE) {
+          case "ANNOUNCEMENT_UPDATED": {
+            this.props.incomingUpdatedAnnouncement(e);
+            break;
+          }
+          case "ANNOUNCEMENT_CREATED": {
+            this.props.incomingCreatedAnnouncement(e);
+            break;
+          }
+          case "ANNOUNCEMENT_DELETED": {
+            this.props.incomingDeletedAnnouncement(e);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
+      .listen(".users-online-broadcast", (e) => {
+        //console.log(e);
+        this.props.incomingOnlineUsers(e);
+      })
       .listen(".user-updated", (e) => {
         console.log("user updated", e);
         switch (e.SOCKET_TYPE) {
@@ -907,6 +968,7 @@ class SocketListeners extends Component {
         }
       })
       .listen(".updated-version", (e) => {
+        console.log(e, "version");
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
           const { version, requirement } = e;
           const handleReminder = () => {
@@ -1717,6 +1779,15 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
+    incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
+    incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
+    incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
+    incomingDeletedAnnouncement: bindActionCreators(incomingDeletedAnnouncement, dispatch),
+    getPostList: bindActionCreators(getPostList, dispatch),
+    incomingPostListConnect: bindActionCreators(incomingPostListConnect, dispatch),
+    incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
+    getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
+    incomingPostRequired: bindActionCreators(incomingPostRequired, dispatch),
   };
 }
 

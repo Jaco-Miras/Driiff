@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 import { useToaster } from "../hooks";
-import { setLastVisitedChannel, getChatMessages } from "../../redux/actions/chatActions";
+import { setLastVisitedChannel, getChatMessages, getSelectChannel } from "../../redux/actions/chatActions";
 
 const useRedirect = () => {
   const dispatch = useDispatch();
@@ -12,6 +12,21 @@ const useRedirect = () => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const toaster = useToaster();
+
+  const fetchSelectChannel = useCallback(
+    (code, callback) => {
+      dispatch(
+        getSelectChannel({ code: code }, (err, res) => {
+          if (err) {
+            return;
+          }
+          history.push(`/chat/${res.data.code}`);
+          if (callback) callback();
+        })
+      );
+    },
+    [dispatch]
+  );
 
   const toChannel = useCallback((channel, callback) => {
     history.push(`/chat/${channel.code}`);
@@ -21,14 +36,14 @@ const useRedirect = () => {
     (cnl, message, callback) => {
       console.log(cnl);
       //history.push(`/chat/${channel.code}/${message.code}`);
+      let cb = () => {
+        history.push({
+          pathname: `/chat/${cnl.code}/${message.code}`,
+          state: { focusOn: message.code },
+        });
+      };
       if (channels.hasOwnProperty(cnl.id)) {
         let channel = { ...channels[cnl.id] };
-        let cb = () => {
-          history.push({
-            pathname: `/chat/${channel.code}/${message.code}`,
-            state: { focusOn: message.code },
-          });
-        };
         if (channel.replies.find((r) => r.id === message.id)) {
           dispatch(setLastVisitedChannel(channel, cb));
         } else {
@@ -41,6 +56,8 @@ const useRedirect = () => {
           dispatch(getChatMessages(payload));
           dispatch(setLastVisitedChannel(channel, cb));
         }
+      } else {
+        fetchSelectChannel(cnl.code, cb);
       }
     },
     [channels, history]

@@ -34,9 +34,12 @@ const WrapperDiv = styled(InputGroup)`
   .react-select__multi-value__label {
     align-self: center;
   }
-
+  &.modal-input {
+    z-index: 2;
+  }
   &.more-option {
-    z-index: 0;
+    //z-index: 0;
+    overflow: unset;
     width: 100%;
     @media all and (max-width: 480px) {
       margin-left: 0;
@@ -182,6 +185,9 @@ const WrapperDiv = styled(InputGroup)`
   }
   .post-visibility-container {
     width: 100%;
+    .post-info {
+      font-size: 0.8rem;
+    }
   }
   .dark & {
     input {
@@ -193,65 +199,10 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
-// const SelectPostVisibility = styled(PostVisibilitySelect)`
-//   flex: 1 0 0;
-//   width: 1%;
-//   @media all and (max-width: 480px) {
-//     width: 100%;
-//   }
-// `;
-
-// const SelectWorkspace = styled(FolderSelect)`
-//   flex: 1 0 0;
-//   width: 1%;
-//   @media all and (max-width: 480px) {
-//     width: 100%;
-//   }
-// `;
-
-// const SelectPeople = styled(PeopleSelect)`
-//   flex: 1 0 0;
-//   width: 1%;
-//   .react-select__control--menu-is-open {
-//     border-color: #7a1b8b !important;
-//     box-shadow: none;
-//   }
-//   .react-select__option {
-//     background-color: #ffffff;
-//   }
-//   .react-select__menu-list--is-multi > div {
-//     &:hover {
-//       background: #8c3b9b;
-//       color: #ffffff;
-//       cursor: pointer;
-//       .react-select__option {
-//         background: #8c3b9b;
-//         cursor: pointer;
-//       }
-//     }
-//   }
-//   .react-select__control--is-focused {
-//     border-color: #7a1b8b !important;
-//     box-shadow: none;
-//   }
-//   @media all and (max-width: 480px) {
-//     width: 100%;
-//   }
-// `;
-
 const CheckBoxGroup = styled.div`
-  overflow: hidden;
+  // overflow: hidden;
   transition: all 0.3s ease !important;
   width: 100%;
-
-  &.enter-active {
-    max-height: ${(props) => props.maxHeight}px;
-    overflow: visible;
-  }
-
-  &.leave-active {
-    max-height: 0;
-  }
 
   label {
     min-width: auto;
@@ -308,7 +259,7 @@ const ApproveOptions = styled.div`
 
 const SelectApprover = styled(FolderSelect)``;
 
-const StyledDatePicker = styled(DatePicker)``;
+//const StyledDatePicker = styled(DatePicker)``;
 
 const initTimestamp = Math.floor(Date.now() / 1000);
 
@@ -323,13 +274,13 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
-  const company = useSelector((state) => state.global.recipients).find((r) => r.main_department === true);
+  const recipients = useSelector((state) => state.global.recipients);
+  const company = recipients.find((r) => r.main_department === true);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(true);
   const [showMoreOptions, setShowMoreOptions] = useState(true);
-  const [maxHeight, setMaxHeight] = useState(120);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -361,6 +312,7 @@ const CreateEditCompanyPostModal = (props) => {
     approvers: [],
     showApprover: false,
     mention_ids: [],
+    requiredUsers: [],
   });
 
   const { options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
@@ -432,7 +384,7 @@ const CreateEditCompanyPostModal = (props) => {
     setNestedModal(!nestedModal);
     setCloseAll(true);
     if (saveDraft) {
-      handleSaveDraft();
+      //handleSaveDraft();
     } else if (draftId) {
       dispatch(
         deleteDraft(
@@ -656,7 +608,13 @@ const CreateEditCompanyPostModal = (props) => {
       },
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
-      body_mention_ids: form.mention_ids,
+      //body_mention_ids: form.mention_ids,
+      required_user_ids:
+        (form.must_read || form.reply_required) && form.requiredUsers.find((a) => a.value === "all")
+          ? addressIds.filter((id) => id !== user.id)
+          : form.must_read || form.reply_required
+          ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
+          : [],
     };
     // if (draftId) {
     //   dispatch(
@@ -728,34 +686,13 @@ const CreateEditCompanyPostModal = (props) => {
     //check if users is member of workspace if not add them then add to responsible list
     //if user is already a member of the workspace then add user to responsible list
 
+    const mentionedUsers = addressToOptions.filter((ad) => {
+      return users.some((u) => u.id === ad.id);
+    });
+
     setForm({
       ...form,
-      selectedAddressTo: [
-        ...users.map((user) => {
-          if (user.type === "WORKSPACE" || user.type === "TOPIC") {
-            return {
-              ...user,
-              value: user.id,
-              label: user.name,
-              name: user.name,
-              first_name: user.first_name,
-              type: user.type,
-              icon: "compass",
-            };
-          }
-          return {
-            id: user.id,
-            value: user.id,
-            label: user.name,
-            name: user.name,
-            first_name: user.first_name,
-            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-            type: "USER",
-            icon: "user-avatar",
-          };
-        }),
-        ...form.selectedAddressTo,
-      ],
+      selectedAddressTo: [...mentionedUsers, ...form.selectedAddressTo],
     });
 
     setMentionedUserIds([]);
@@ -771,7 +708,16 @@ const CreateEditCompanyPostModal = (props) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let adddressIds = form.selectedAddressTo
+      // let adddressIds = form.selectedAddressTo
+      //   .map((ad) => {
+      //     if (ad.type === "USER") {
+      //       return ad.type_id;
+      //     } else {
+      //       return ad.participant_ids;
+      //     }
+      //   })
+      //   .flat();
+      let addressIds = form.selectedAddressTo
         .map((ad) => {
           if (ad.type === "USER") {
             return ad.type_id;
@@ -780,7 +726,19 @@ const CreateEditCompanyPostModal = (props) => {
           }
         })
         .flat();
-      let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
+      const userRecipientIds = recipients
+        .filter((r) => {
+          if (r.type === "USER" && user.id === r.type_id) {
+            return true;
+          } else if (r.type === "USER" && addressIds.some((id) => id === r.type_id)) {
+            return true;
+          } else return false;
+        })
+        .map((r) => r.id);
+
+      const recipientIds = form.selectedAddressTo.map((ad) => ad.id);
+
+      let ignoreIds = [...userRecipientIds, ...recipientIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
       });
@@ -826,6 +784,10 @@ const CreateEditCompanyPostModal = (props) => {
             ...prevState,
             [name]: !prevState[name],
             no_reply: !prevState[name] === true ? false : prevState["no_reply"],
+            requiredUsers:
+              prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
+                ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+                : prevState.requiredUsers,
           }));
           break;
         }
@@ -833,16 +795,16 @@ const CreateEditCompanyPostModal = (props) => {
           setForm((prevState) => ({
             ...prevState,
             [name]: !prevState[name],
+            requiredUsers:
+              prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
+                ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+                : prevState.requiredUsers,
           }));
         }
       }
     },
     [setForm]
   );
-
-  const toggleMoreOptions = () => {
-    setShowMoreOptions(!showMoreOptions);
-  };
 
   const handlePostVisibilityRef = (e) => {
     const handleUserPopUpMouseEnter = () => {
@@ -886,25 +848,25 @@ const CreateEditCompanyPostModal = (props) => {
     }
   };
 
-  const handleSelectStartDate = useCallback(
-    (value) => {
-      setForm((f) => ({
-        ...f,
-        show_at: value,
-      }));
-    },
-    [setForm]
-  );
+  // const handleSelectStartDate = useCallback(
+  //   (value) => {
+  //     setForm((f) => ({
+  //       ...f,
+  //       show_at: value,
+  //     }));
+  //   },
+  //   [setForm]
+  // );
 
-  const handleSelectEndDate = useCallback(
-    (value) => {
-      setForm((f) => ({
-        ...f,
-        end_at: value,
-      }));
-    },
-    [setForm]
-  );
+  // const handleSelectEndDate = useCallback(
+  //   (value) => {
+  //     setForm((f) => ({
+  //       ...f,
+  //       end_at: value,
+  //     }));
+  //   },
+  //   [setForm]
+  // );
 
   const handleOpenFileDialog = () => {
     if (formRef.dropzone.current) {
@@ -1019,24 +981,29 @@ const CreateEditCompanyPostModal = (props) => {
   };
 
   useEffect(() => {
-    if (formRef.more_options.current !== null && maxHeight === null && draftId === null) {
-      setMaxHeight(formRef.more_options.current.offsetHeight);
-      setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
-    }
-  }, [formRef, setMaxHeight]);
-
-  useEffect(() => {
     if (item.hasOwnProperty("draft")) {
       setForm(item.draft.form);
       setDraftId(item.draft.draft_id);
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
+      let requiredUserIds = item.post.recipients
+        .map((ad) => {
+          if (ad.type === "USER") {
+            return ad.type_id;
+          } else {
+            return ad.participant_ids;
+          }
+        })
+        .flat();
+
+      requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
+      const isAllSelected = requiredUserIds.length === item.post.required_users.length;
       setForm({
         ...form,
         body: item.post.body,
         textOnly: item.post.body,
         title: item.post.title,
-        has_folder: true,
+        has_folder: item.post.recipients.find((r) => r.type === "TOPIC") ? true : false,
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
@@ -1059,13 +1026,29 @@ const CreateEditCompanyPostModal = (props) => {
                 };
               })
             : [],
+        requiredUsers:
+          item.post.required_users.length > 0
+            ? isAllSelected
+              ? [
+                  {
+                    id: "all",
+                    value: "all",
+                    label: "All users",
+                    icon: "users",
+                    all_ids: requiredUserIds,
+                  },
+                ]
+              : item.post.required_users.map((u) => {
+                  return {
+                    ...u,
+                    icon: "user-avatar",
+                    value: u.id,
+                    label: u.name,
+                    type: "USER",
+                  };
+                })
+            : [],
       });
-      if (item.post.end_at !== null || item.post.show_at !== null || item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply) {
-        if (formRef.more_options.current !== null) {
-          setMaxHeight(formRef.more_options.current.offsetHeight);
-        }
-        setShowMoreOptions(true);
-      }
       setUploadedFiles(
         item.post.files.map((f) => {
           return {
@@ -1149,11 +1132,11 @@ const CreateEditCompanyPostModal = (props) => {
     []
   );
 
-  useEffect(() => {
-    if (mounted && !savingDraft.current) {
-      //autoUpdateDraft(form, draftId);
-    }
-  }, [form, draftId, mounted]);
+  // useEffect(() => {
+  //   if (mounted && !savingDraft.current) {
+  //     //autoUpdateDraft(form, draftId);
+  //   }
+  // }, [form, draftId, mounted]);
 
   const onDragEnter = () => {
     if (!showDropzone) setShowDropzone(true);
@@ -1187,6 +1170,27 @@ const CreateEditCompanyPostModal = (props) => {
     }
   };
 
+  const handleSelectRequiredUsers = (e) => {
+    if (e === null) {
+      setForm({
+        ...form,
+        requiredUsers: [],
+      });
+    } else {
+      if (e.find((a) => a.value === "all")) {
+        setForm({
+          ...form,
+          requiredUsers: e.filter((a) => a.value === "all"),
+        });
+      } else {
+        setForm({
+          ...form,
+          requiredUsers: e,
+        });
+      }
+    }
+  };
+
   let approverOptions = [
     ...userOptions
       .filter((u) => u.id !== user.id)
@@ -1208,8 +1212,14 @@ const CreateEditCompanyPostModal = (props) => {
     },
   ];
 
+  let requiredUserOptions = [...approverOptions];
+
   if (form.approvers.length && form.approvers.find((a) => a.value === "all")) {
     approverOptions = approverOptions.filter((a) => a.value === "all");
+  }
+
+  if (form.requiredUsers.length && form.requiredUsers.find((a) => a.value === "all")) {
+    requiredUserOptions = approverOptions.filter((a) => a.value === "all");
   }
 
   return (
@@ -1279,39 +1289,62 @@ const CreateEditCompanyPostModal = (props) => {
             <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
           </WrapperDiv>
         )}
-        <WrapperDiv className="modal-label more-option">
-          <MoreOption onClick={toggleMoreOptions}>
+        <WrapperDiv className="modal-label more-option mb-0">
+          <MoreOption>
             {dictionary.moreOptions}
-            <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} />
+            {/* <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} /> */}
           </MoreOption>
 
-          <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight} className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
-            <div className="d-flex">
+          <CheckBoxGroup>
+            <ApproveOptions className="d-flex align-items-center">
               <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
                 {dictionary.mustRead}
               </CheckBox>
               <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
                 {dictionary.replyRequired}
               </CheckBox>
+            </ApproveOptions>
+            <ApproveOptions className="d-flex align-items-center">
+              {(form.must_read || form.reply_required) && (
+                <SelectApprover
+                  options={form.selectedAddressTo.length > 0 ? requiredUserOptions : []}
+                  value={form.requiredUsers}
+                  onChange={handleSelectRequiredUsers}
+                  isMulti={true}
+                  isClearable={true}
+                  maxMenuHeight={250}
+                  menuPlacement="top"
+                />
+              )}
+            </ApproveOptions>
+
+            <ApproveOptions className="d-flex align-items-center">
               <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
                 {dictionary.noReplies}
               </CheckBox>
-            </div>
-            <ApproveOptions className="d-flex align-items-center">
               <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
                 {dictionary.approve}
               </CheckBox>
-              {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} menuPlacement="top" />}
             </ApproveOptions>
-            <WrapperDiv className="schedule-post">
+            <ApproveOptions className="d-flex align-items-center">
+              {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
+            </ApproveOptions>
+
+            {/* <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar" />
               <StyledDatePicker className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate} value={form.show_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
               <StyledDatePicker className="react-datetime-picker end-date" onChange={handleSelectEndDate} value={form.end_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
-            </WrapperDiv>
+            </WrapperDiv> */}
           </CheckBoxGroup>
         </WrapperDiv>
-        <WrapperDiv>
+        <WrapperDiv className={"mt-0 mb-0"}>
+          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
+          </button>
+        </WrapperDiv>
+        <WrapperDiv className={"mb-0 mt-1"}>
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {approverOptions.map((u) => {
@@ -1336,14 +1369,8 @@ const CreateEditCompanyPostModal = (props) => {
                   );
                 })}
             </span>
-            <span className="d-flex justify-content-end align-items-center" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
+            <span className="d-flex justify-content-end align-items-center post-info" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
           </div>
-        </WrapperDiv>
-        <WrapperDiv>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
-          </button>
         </WrapperDiv>
       </ModalBody>
     </Modal>

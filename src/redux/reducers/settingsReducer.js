@@ -18,6 +18,7 @@ const INITIAL_STATE = {
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
+    READ_RELEASE_UPDATES: null,
   },
   user: {
     isLoaded: false,
@@ -75,14 +76,13 @@ const INITIAL_STATE = {
       order_channel: {
         order_by: "channel_date_updated",
         sort_by: "DESC",
-      }
-
+      },
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {
       order_by: "channel_date_updated",
-      sort_by: "DESC"
-    }
+      sort_by: "DESC",
+    },
   },
   isLoaded: false,
 };
@@ -105,12 +105,15 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
+      console.log(action.data);
       let settings = state.driff.settings;
       let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
+      let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
         if (s.ANNOUNCEMENT_LINK) ANNOUNCEMENT_LINK = s.ANNOUNCEMENT_LINK;
+        if (s.READ_RELEASE_UPDATES) READ_RELEASE_UPDATES = s.READ_RELEASE_UPDATES;
         settings = { ...settings, ...s };
       });
 
@@ -132,6 +135,7 @@ export default (state = INITIAL_STATE, action) => {
           settings: settings,
           ANNOUNCEMENT_LINK,
           ANNOUNCEMENT_AT,
+          READ_RELEASE_UPDATES,
         },
       };
     }
@@ -301,11 +305,33 @@ export default (state = INITIAL_STATE, action) => {
           ...state.user,
           GENERAL_SETTINGS: {
             ...state.user.GENERAL_SETTINGS,
-            ...action.data
+            ...action.data,
           },
           ORDER_CHANNEL: {
-            ...action.data.order_channel
-          }
+            ...action.data.order_channel,
+          },
+        },
+      };
+    }
+    case "INCOMING_CREATED_ANNOUNCEMENT": {
+      if (action.data.major_release) {
+        return {
+          ...state,
+          driff: {
+            ...state.driff,
+            READ_RELEASE_UPDATES: { timestamp: action.data.created_at.timestamp },
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "GET_RELEASE_ANNOUNCEMENTS_SUCCESS": {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          READ_RELEASE_UPDATES: { timestamp: action.data.READ_RELEASE_UPDATES.timestamp },
         },
       };
     }

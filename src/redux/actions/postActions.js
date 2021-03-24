@@ -39,7 +39,46 @@ import {
   refetchPosts as refetchPostsService,
   getPostRead as getPostReadService,
   postClose as postCloseService,
+  getPostList as getPostListService,
+  createPostList as createPostListService,
+  updatePostList as updatePostListService,
+  deletePostList as deletePostListService,
+  postListConnect as postListConnectService,
+  postListDisconnect as postListDisconnectService,
+  postRequired as postRequiredService,
 } from "../services";
+
+export function getPostList(payload, callback) {
+  return dispatchActionToReducer(getPostListService(payload), "POST_LIST_START", "POST_LIST_SUCCESS", "POST_LIST_FAIL", callback);
+}
+
+export function createPostList(payload, callback) {
+  return dispatchActionToReducer(createPostListService(payload), "POST_LIST_CREATE_START", "POST_LIST_CREATE_SUCCESS", "POST_LIST_CREATE_FAIL", callback);
+}
+
+export function updatePostList(payload, callback) {
+  return dispatchActionToReducer(updatePostListService(payload, payload.id), "POST_LIST_UPDATE_START", "POST_LIST_UPDATE_SUCCESS", "POST_LIST_UPDATE_FAIL", callback);
+}
+
+export function deletePostList(payload, callback) {
+  return dispatchActionToReducer(deletePostListService(payload, payload.id), "POST_LIST_DELETE_START", "POST_LIST_DELETE_SUCCESS", "POST_LIST_DELETE_FAIL", callback);
+}
+
+export function postListConnect(payload, callback) {
+  return dispatchActionToReducer(postListConnectService(payload), "POST_LIST_CONNECT_START", "POST_LIST_CONNECT_SUCCESS", "POST_LIST_CONNECT_FAIL", callback);
+}
+
+export function postListDisconnected(payload, callback) {
+  return dispatchActionToReducer(postListDisconnectService(payload), "POST_LIST_DISCONNECT_START", "POST_LIST_DISCONNECT_SUCCESS", "POST_LIST_DISCONNECT_FAIL", callback);
+}
+
+export function incomingPostListConnect(payload, callback) {
+  return SimpleDispatchActionToReducer("POST_LIST_CONNECT", payload, callback);
+}
+
+export function incomingPostListDisconnect(payload, callback) {
+  return SimpleDispatchActionToReducer("POST_LIST_DISCONNECT", payload, callback);
+}
 
 export function postFavorite(payload, callback) {
   return dispatchActionToReducer(postFavoriteService(payload), "POST_FAVORITE_START", "POST_FAVORITE_SUCCESS", "POST_FAVORRITE_FAIL", callback);
@@ -269,6 +308,10 @@ export function addUserToPostRecipients(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_USER_TO_POST_RECIPIENTS", payload, callback);
 }
 
+export function removeUserToPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_USER_TO_POST_RECIPIENTS", payload, callback);
+}
+
 export function incomingPostRecipients(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_RECIPIENTS", payload, callback);
 }
@@ -371,4 +414,20 @@ export function postClose(payload, callback) {
 
 export function incomingClosePost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_CLOSE_POST", payload, callback);
+}
+
+export function getUnreadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_UNREAD_COMPANY_POSTS_START", "GET_UNREAD_COMPANY_POSTS_SUCCESS", "GET_UNREAD_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getUnarchivePost(payload, callback) {
+  return dispatchActionToReducer(fetchPostService(payload), "GET_UNARCHIVE_POST_DETAIL_START", "GET_UNARCHIVE_POST_DETAIL_SUCCESS", "GET_UNARCHIVE_POST_DETAIL_FAIL", callback);
+}
+
+export function postRequired(payload, callback) {
+  return dispatchActionToReducer(postRequiredService(payload), "POST_REQUIRED_START", "POST_REQUIRED_SUCCESS", "POST_REQUIRED_FAIL", callback);
+}
+
+export function incomingPostRequired(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_REQUIRED", payload, callback);
 }

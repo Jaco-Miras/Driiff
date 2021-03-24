@@ -83,12 +83,13 @@ const MainBody = styled.div`
     align-items: center;
 
     &:hover {
+      .not-read-users-container,
       .read-users-container {
         opacity: 1;
         max-height: 300px;
       }
     }
-
+    .not-read-users-container,
     .read-users-container {
       position: absolute;
       left: 22px;
@@ -140,6 +141,7 @@ const MainBody = styled.div`
     display: inline-flex;
     margin-right: 0.5rem;
 
+    .not-read-users-container,
     .read-users-container {
       transition: all 0.5s ease;
       position: absolute;
@@ -186,6 +188,7 @@ const MainBody = styled.div`
   }
 
   .user-reads-container {
+    span.not-readers:hover ~ span.not-read-users-container,
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
       max-height: 165px;
@@ -240,15 +243,16 @@ const Counters = styled.div`
         margin-right: 0.5rem;
       }
       .user-reads-container {
+        .not-read-users-container,
         .read-users-container {
           right: -75px;
         }
-
         &.read-by {
           width: 100%;
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .not-read-users-container,
           .read-users-container {
             right: -20px;
           }
@@ -285,7 +289,7 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
+  const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -431,16 +435,18 @@ const PostDetail = (props) => {
     return r.type === "TOPIC" && r.private === 1;
   });
 
+  // const hasNotReadUsers = post.required_users.filter((u) => !u.must_read);
+
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
       <MainHeader className="card-header d-flex justify-content-between">
-        <div>
-          <ul>
-            <li>
+        <div className="d-flex flex-column align-items-start">
+          <div className="d-flex">
+            <div className="align-self-start">
               <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
-            </li>
-            <li>
+            </div>
+            <div>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>
                   {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
@@ -448,16 +454,16 @@ const PostDetail = (props) => {
                   {privateWsOnly.length === post.recipients.length && <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={14} height={14} />}
                 </span>
               </h5>
-            </li>
-          </ul>
-        </div>
-        {/* {privateWsOnly.length === post.recipients.length && (
-          <div>
-            <span>
-              {dictionary.messageInSecureWs} <Icon icon="lock" />
-            </span>
+            </div>
           </div>
-        )} */}
+          {/* {privateWsOnly.length === post.recipients.length && (
+            <div className="ml-4">
+              <span>
+                {dictionary.messageInSecureWs} <Icon icon="lock" />
+              </span>
+            </div>
+          )} */}
+        </div>
         <div>
           {post.author.id === user.id && !disableOptions && (
             <ul>
@@ -480,6 +486,7 @@ const PostDetail = (props) => {
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                   {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
                   <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+                  {/* <div onClick={handleSnooze}>Snooze this post</div> */}
                 </StyledMoreOptions>
               </li>
             </ul>
@@ -492,6 +499,8 @@ const PostDetail = (props) => {
                 <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                {post.author.type === "external" && user.type === "internal" && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+                {/* <div onClick={handleSnooze}>Snooze this post</div> */}
               </StyledMoreOptions>
             </div>
           )}
@@ -509,7 +518,7 @@ const PostDetail = (props) => {
         />
         <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && (
+          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
@@ -535,7 +544,7 @@ const PostDetail = (props) => {
             )}
           </div>
           <div className="readers-container ml-auto text-muted">
-            {readByUsers.length > 0 && (
+            {(readByUsers.length > 0 || (post.required_users && post.required_users.length > 0)) && post.is_must_read && (
               <div className="user-reads-container read-by">
                 {hasRead && (
                   <span className="mr-2">
@@ -547,10 +556,21 @@ const PostDetail = (props) => {
                   {readByUsers.map((u) => {
                     return (
                       <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
                       </span>
                     );
                   })}
+                </span>
+                {post.required_users && post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
+                <span className="hover not-read-users-container">
+                  {post.required_users &&
+                    post.required_users.map((u) => {
+                      return (
+                        <span key={u.id}>
+                          <Avatar className="mr-2" key={u.id} name={u.name} imageLink={null} id={u.id} /> <span className="name">{u.name}</span>
+                        </span>
+                      );
+                    })}
                 </span>
               </div>
             )}
@@ -575,7 +595,7 @@ const PostDetail = (props) => {
               <div className="user-reads-container">
                 <span className="no-readers">
                   <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
-                  {post.view_user_ids.length}
+                  {viewerIds.length}
                 </span>
                 <span className="hover read-users-container">
                   {viewers.map((u) => {
@@ -617,7 +637,20 @@ const PostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} mainInput={true} />
+        <PostDetailFooter
+          post={post}
+          posts={posts}
+          filter={filter}
+          commentActions={commentActions}
+          postActions={postActions}
+          overview={handleClosePost}
+          onShowFileDialog={handleOpenFileDialog}
+          dropAction={dropAction}
+          workspace={workspace}
+          isMember={isMember}
+          disableOptions={disableOptions}
+          mainInput={true}
+        />
       </MainBody>
     </>
   );

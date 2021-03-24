@@ -9,16 +9,14 @@ import { CommentQuote } from "../../list/post/item";
 import { useToaster, useTranslation, usePostActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
-import { CheckBox, FolderSelect } from "../../forms";
+import { FolderSelect } from "../../forms";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import PostInputButtons from "./PostInputButtons";
 
 const Wrapper = styled.div`
   position: relative;
-  > div > svg:first-child {
-    margin-left: 0 !important;
-  }
-  flex: unset;
-
-  .feather-paperclip {
+  z-index: 3;
+  .feather-send {
     border: 1px solid #e1e1e1;
     height: 100%;
     cursor: pointer;
@@ -26,8 +24,17 @@ const Wrapper = styled.div`
     border-radius: 8px;
     transition: background-color 0.15s ease-in-out;
     padding: 12px;
-    &:hover {
-      background-color: #e1e1e1;
+    margin-right: 1rem;
+    @media (max-width: 480px) {
+      margin-right: 0;
+    }
+  }
+  .chat-input-wrapper {
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column;
+    .quill {
+      width: 100%;
     }
   }
 `;
@@ -37,32 +44,24 @@ const ChatInputContainer = styled.div`
   border: 1px solid #e1e1e1;
   box-shadow: 0 3px 10px #7a1b8b12;
   border-radius: 8px;
-  // padding-right: 120px;
   margin-right: 8px;
   min-height: 48px;
   display: flex;
-  .chat-input-wrapper {
-    flex-grow: 1;
-  }
+  .feather-approver,
   .feather-image,
-  .feather-send,
+  .feather-paperclip,
   .feather-smile {
-    // position: absolute;
-    // bottom: 0;
-    // right: 0;
-    margin: 4px;
-    height: calc(100% - 8px);
-    max-height: 38px;
     border-radius: 4px;
-    min-width: 40px;
-    width: 40px;
-    padding: 10px;
     cursor: pointer;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
   .feather-smile {
-    //right: 44px;
-    margin: 4px 0;
     background: transparent;
     border-color: transparent;
     transition: color 0.15s ease-in-out;
@@ -72,27 +71,6 @@ const ChatInputContainer = styled.div`
     }
     &:hover {
       color: #7a1b8b;
-    }
-  }
-  .feather-image {
-    //right: 80px;
-    margin: 4px 0;
-    background: transparent;
-    border-color: transparent;
-    transition: color 0.15s ease-in-out;
-    color: #cacaca;
-    &.active {
-      color: #7a1b8b;
-    }
-    &:hover {
-      color: #7a1b8b;
-    }
-  }
-  .feather-send {
-    background: ${(props) => props.backgroundSend};
-    fill: ${(props) => props.fillSend};
-    &:hover {
-      cursor: ${(props) => props.cursor};
     }
   }
 `;
@@ -100,7 +78,13 @@ const ChatInputContainer = styled.div`
 const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
-  // width: 100%;
+  .feather-send {
+    background: ${(props) => props.backgroundSend} !important;
+    fill: ${(props) => props.fillSend};
+    &:hover {
+      cursor: ${(props) => props.cursor};
+    }
+  }
   &.channel-viewing {
     display: flex;
     flex-wrap: wrap;
@@ -138,27 +122,10 @@ const Dflex = styled.div`
       }
     }
   }
-  // svg.feather-send {
-  //   margin-left: 8px;
-  // }
-  svg.feather-paperclip {
-    margin-left: 0;
-    margin-right: 0;
-  }
   @media all and (max-width: 620px) {
     .emojiButton {
       display: none;
     }
-    // div:nth-child(4) {
-    //   order: 1;
-    //   margin-right: 8px;
-    // }
-    // div:nth-child(2) {
-    //   order: 3;
-    // }
-    // svg:nth-child(3) {
-    //   order: 3;
-    // }
     svg.feather-send {
       margin-right: 0;
     }
@@ -194,7 +161,12 @@ const ClosedLabel = styled.div`
 
 const PickerContainer = styled(CommonPicker)`
   right: 130px;
-  bottom: 75px;
+  bottom: 120px;
+
+  @media (max-width: 414px) {
+    right: 5px;
+    bottom: 150px;
+  }
 
   .common-picker-btn {
     text-align: right;
@@ -222,18 +194,9 @@ const Icon = styled(SvgIconFeather)`
   width: 20px;
 `;
 
-const ApproveCheckBox = styled(CheckBox)`
-  // position: absolute;
-  // right: 120px;
-  // bottom: 0;
-  //height: 35px;
-  display: inline-block;
-`;
-
 const ApproverSelectWrapper = styled.div`
   padding-right: 55px;
   display: flex;
-  // justify-content: flex-end;
   padding-bottom: 10px;
   margin-left: auto;
   flex-direction: column;
@@ -242,15 +205,26 @@ const ApproverSelectWrapper = styled.div`
   }
 `;
 
-const PostInputButtons = styled.div`
-  display: flex;
-  align-items: center;
-  align-self: flex-end;
-`;
-
 const PostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, workspace, isMember, disableOptions, mainInput } = props;
-
+  const {
+    className = "",
+    overview,
+    onShowFileDialog,
+    dropAction,
+    post,
+    posts,
+    filter,
+    parentId = null,
+    commentActions,
+    userMention = null,
+    handleClearUserMention = null,
+    commentId = null,
+    innerRef = null,
+    workspace,
+    isMember,
+    disableOptions,
+    mainInput,
+  } = props;
   const postActions = usePostActions();
   const dispatch = useDispatch();
   const ref = {
@@ -347,6 +321,8 @@ const PostDetailFooter = (props) => {
     reopen: _t("POST.REOPEN", "Reopen"),
     agree: _t("POST.AGREE", "Agree"),
     disagree: _t("POST.DISAGREE", "Disagree"),
+    overview: _t("POST.OVERVIEW", "Overview"),
+    archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
   };
 
   const handleUnarchive = () => {
@@ -561,6 +537,28 @@ const PostDetailFooter = (props) => {
     }
   };
 
+  const handleNextPost = () => {
+    const nextPost = posts.reduce((accumulator, { id }, index) => {
+      if (id === post.id) {
+        accumulator = posts[index + 1];
+      }
+      return accumulator;
+    }, null);
+
+    postActions.archivePost(post, () => {
+      if (!nextPost) {
+        overview();
+      } else {
+        const path =
+          workspace.folder_name && workspace.folder_id
+            ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+            : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+        console.error("PATH", path);
+        postActions.openPost(nextPost, path);
+      }
+    });
+  };
+
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
   const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
@@ -570,8 +568,11 @@ const PostDetailFooter = (props) => {
   //const isLastUserToAnswer = post.users_approval.length > 0 && post.users_approval.length - post.users_approval.filter((u) => u.ip_address === null).length === 1;
 
   const requestForChangeCallback = (err, res) => {
+    if (err) return;
+    if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+      postActions.markReplyRequirement(post);
+    }
     if (post.users_approval.length === 1) {
-      if (err) return;
       if (hasPendingAproval && isApprover && showApprover) {
         postActions.approve(
           {
@@ -644,7 +645,12 @@ const PostDetailFooter = (props) => {
       )}
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote commentActions={commentActions} commentId={editPostComment ? editPostComment.quote.id : commentId} editPostComment={editPostComment} mainInput={mainInput} />
+          <CommentQuote
+            commentActions={commentActions}
+            commentId={editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId}
+            editPostComment={editPostComment}
+            mainInput={mainInput}
+          />
         </Dflex>
       }
       <Dflex className="d-flex alig-items-center">
@@ -670,7 +676,7 @@ const PostDetailFooter = (props) => {
         <ClosedLabel className="d-flex align-items-center">
           <div className="alert alert-warning">
             <span>{dictionary.creatorClosedPost}</span>
-            {post.author.id === user.id && <span onClick={handleReopen}>{dictionary.reopen}</span>}
+            {(post.author.id === user.id || (post.author.type === "external" && user.type === "internal")) && <span onClick={handleReopen}>{dictionary.reopen}</span>}
           </div>
         </ClosedLabel>
       )}
@@ -681,10 +687,10 @@ const PostDetailFooter = (props) => {
           </NoReply>
         </Dflex>
       )}
-      {((isMember && !disableOptions && !isApprover) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
+      {((isMember && !disableOptions) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
         <>
-          <Dflex className="d-flex align-items-end">
-            <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+          <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+            <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
               <PostInput
                 handleClearSent={handleClearSent}
                 sent={sent}
@@ -711,24 +717,20 @@ const PostDetailFooter = (props) => {
                 isApprover={approving.change && hasPendingAproval}
                 mainInput={mainInput}
               />
-              <PostInputButtons>
-                {!isApprover && (
-                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
-                    <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
-                  </Tooltip>
-                )}
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
-                  <IconButton icon="image" onClick={handleQuillImage} />
-                </Tooltip>
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.emoji}>
-                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
-                </Tooltip>
-                <IconButton onClick={handleSend} icon="send" />
-              </PostInputButtons>
+              <PostInputButtons
+                parentId={parentId}
+                handleQuillImage={handleQuillImage}
+                handleShowEmojiPicker={handleShowEmojiPicker}
+                onShowFileDialog={onShowFileDialog}
+                showApprover={showApprover}
+                toggleApprover={toggleApprover}
+                editPostComment={editPostComment}
+                mainInput={mainInput}
+              />
             </ChatInputContainer>
 
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
-              <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+              <IconButton onClick={handleSend} icon="send" />
             </Tooltip>
 
             {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
@@ -755,6 +757,18 @@ const PostDetailFooter = (props) => {
           </div>
           <div className="channel-action">
             <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspace}</button>
+          </div>
+        </Dflex>
+      )}
+      {filter && (filter === "all" || filter === "inbox") && (
+        <Dflex>
+          <div className="d-flex align-items-center justify-content-center mt-3">
+            <button className="btn btn-outline-light mr-3" onClick={() => overview()}>
+              <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
+            </button>
+            <button className="btn btn-outline-light" onClick={handleNextPost}>
+              {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
+            </button>
           </div>
         </Dflex>
       )}

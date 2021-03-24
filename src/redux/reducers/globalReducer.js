@@ -39,6 +39,11 @@ const INITIAL_STATE = {
       done: 0,
     },
     items: {},
+    doneRecently: [],
+  },
+  releases: {
+    timestamp: null,
+    items: [],
   },
 };
 
@@ -241,7 +246,6 @@ export default (state = INITIAL_STATE, action) => {
       let items = state.todos.items;
       action.data.todos.forEach((t) => {
         items[t.id] = t;
-
         switch (t.link_type) {
           case "CHAT": {
             items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
@@ -265,6 +269,32 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
       });
+      let recent = action.data.today_todos.map((t) => {
+        if (t.link_type) {
+          if (t.link_type === "CHAT") {
+            return {
+              ...t,
+              link: `/chat/${t.data.channel.code}/${t.data.chat_message.code}`,
+            };
+          } else if (t.link_type === "POST") {
+            return {
+              ...t,
+              link: t.data.workspaces.length
+                ? `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`
+                : `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`,
+            };
+          } else if (t.link_type === "POST_COMMENT") {
+            return {
+              ...t,
+              link: t.data.workspaces.length
+                ? `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`
+                : `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`,
+            };
+          }
+        } else {
+          return { ...t, link: null };
+        }
+      });
 
       return {
         ...state,
@@ -274,6 +304,7 @@ export default (state = INITIAL_STATE, action) => {
           hasMore: action.data.todos.length === state.todos.limit,
           limit: state.todos.limit + state.todos.limit,
           items: items,
+          doneRecently: recent,
         },
       };
     }
@@ -346,6 +377,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
       let count = state.todos.count;
+      let item = null;
 
       if (typeof items[action.data.id] !== "undefined") {
         if (items[action.data.id].status !== action.data.status) {
@@ -354,6 +386,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         items[action.data.id] = action.data;
+        item = { ...items[action.data.id], status: "DONE", updated_at: action.data.updated_at };
       }
 
       return {
@@ -362,6 +395,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           count: count,
           items: items,
+          doneRecently: [...state.todos.doneRecently, item],
         },
       };
     }
@@ -430,6 +464,122 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         unreadCounter: unreadCounter,
       };
+    }
+    case "GET_RELEASE_ANNOUNCEMENTS_SUCCESS": {
+      return {
+        ...state,
+        releases: {
+          timestamp: action.data.READ_RELEASE_UPDATES.timestamp,
+          items: [...state.releases.items.filter((r) => r.draft_type), ...action.data.items],
+        },
+      };
+    }
+    case "INCOMING_UPDATED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: state.releases.items.map((item) => {
+            if (item.id === action.data.id) {
+              return {
+                ...item,
+                action_text: action.data.action_text,
+                body: action.data.body,
+                // updated_at: { timeline: action.data.updated_at.timestamp },
+              };
+            } else {
+              return item;
+            }
+          }),
+        },
+      };
+    }
+    case "INCOMING_CREATED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: [
+            {
+              ...action.data,
+              // created_at: { timeline: action.data.created_at.timestamp },
+              // updated_at: { timeline: action.data.updated_at.timestamp },
+            },
+            ...state.releases.items,
+          ],
+        },
+      };
+    }
+    case "INCOMING_DELETED_ANNOUNCEMENT": {
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: state.releases.items.filter((item) => item.id !== action.data.id),
+        },
+      };
+    }
+    case "SAVE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "release") {
+        const draft = {
+          draft_id: action.data.id,
+          ...action.data.data,
+          created_at: { timestamp: Math.floor(Date.now() / 1000) },
+        };
+        return {
+          ...state,
+          releases: {
+            ...state.releases,
+            items: [draft, ...state.releases.items],
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "GET_DRAFTS_SUCCESS": {
+      let drafts = action.data
+        .filter((d) => d.data.draft_type === "release")
+        .map((d) => {
+          return {
+            ...d.data,
+            draft_id: d.id,
+            action_text: d.data.title,
+            body: d.data.description,
+            created_at: { timestamp: Math.floor(Date.now() / 1000) },
+          };
+        });
+      return {
+        ...state,
+        releases: {
+          ...state.releases,
+          items: [...drafts, ...state.releases.items],
+        },
+      };
+    }
+    case "UPDATE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "release") {
+        const draft = {
+          draft_id: action.data.id,
+          ...action.data.data,
+          created_at: { timestamp: Math.floor(Date.now() / 1000) },
+        };
+        return {
+          ...state,
+          releases: {
+            ...state.releases,
+            items: state.releases.items.map((item) => {
+              if (item.draft_id && item.draft_id === parseInt(action.data.id)) {
+                return draft;
+              } else {
+                return item;
+              }
+            }),
+          },
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

@@ -289,6 +289,12 @@ export default (state = INITIAL_STATE, action) => {
         archivedUsers: state.archivedUsers.filter((m) => m.id !== action.data.user.id),
       };
     }
+    case "INCOMING_ONLINE_USERS": {
+      return {
+        ...state,
+        onlineUsers: action.data.result,
+      };
+    }
     default:
       return state;
   }

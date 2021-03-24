@@ -494,7 +494,7 @@ const FileUploadModal = (props) => {
             height={80}
           />
           <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-          {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} showPreview={false} />}
+          {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
         </DescriptionInputWrapper>
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
       </ModalBody>

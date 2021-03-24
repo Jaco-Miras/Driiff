@@ -450,38 +450,21 @@ const ChatInput = (props) => {
         editor
           .getContents()
           .ops.filter((m) => m.insert.mention)
-          .map((i) => i.insert.mention.id)
+          .map((i) => i.insert.mention.type_id)
       );
     }
 
-    let channel = null;
-    if (selectedChannel.is_shared) {
-      if (window[selectedChannel.slug_owner]) {
-        channel = window[selectedChannel.slug_owner].private(selectedChannel.slug_owner + `.App.Channel.${selectedChannel.id}`);
-        channel.whisper("typing", {
-          user: {
-            id: user.id,
-            name: user.name,
-            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-            email: user.email,
-          },
-          typing: true,
-          channel_id: selectedChannel.id,
-        });
-      }
-    } else {
-      channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
-      channel.whisper("typing", {
-        user: {
-          id: user.id,
-          name: user.name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-          email: user.email,
-        },
-        typing: true,
-        channel_id: selectedChannel.id,
-      });
-    }
+    let channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
+    channel.whisper("typing", {
+      user: {
+        id: user.id,
+        name: user.name,
+        profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+        email: user.email,
+      },
+      typing: true,
+      channel_id: selectedChannel.id,
+    });
   };
 
   const handleMentionUser = (mention_ids) => {
@@ -608,13 +591,6 @@ const ChatInput = (props) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editChatMessage && !editMode && editMessage === null) {
-      handleSetEditMessageStates(editChatMessage);
-    }
-  }, [editChatMessage]);
-
-  //to be converted into hooks
-  useEffect(() => {
     if (selectedEmoji) {
       const editor = reactQuillRef.current.getEditor();
       reactQuillRef.current.focus();
@@ -711,18 +687,18 @@ const ChatInput = (props) => {
       let recipient_ids = recipients
         .filter((r) => r.type === "USER")
         .filter((r) => {
-          return members.some((m) => m.id === r.type_id);
+          return selectedChannel.members.some((m) => m.id === r.type_id);
         })
         .map((r) => r.id);
       let payload = {
-        recipient_ids: recipient_ids,
+        recipient_ids: [...recipient_ids, ...users.map((u) => u.type_id)],
         title: title,
       };
       create(payload, createCallback);
     } else {
       let memberPayload = {
         channel_id: selectedChannel.id,
-        recipient_ids: users.map((u) => u.id),
+        recipient_ids: users.map((u) => u.type_id),
       };
       dispatch(
         postChannelMembers(memberPayload, (err, res) => {
@@ -773,12 +749,24 @@ const ChatInput = (props) => {
     prioMentionIds: selectedChannel.members.map((m) => m.id),
   });
 
+  //to be converted into hooks
+  useEffect(() => {
+    if (editChatMessage && !editMode && editMessage === null) {
+      handleSetEditMessageStates(editChatMessage);
+    }
+    if (editChatMessage === null && editMode && editMessage) {
+      handleEditReplyClose();
+    }
+  }, [editChatMessage]);
+
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} />}
+      {mentionedUserIds.length > 0 && (
+        <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} basedOnUserId={true} userMentionOnly={true} />
+      )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
-      {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />}
+      {/* {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />} */}
       {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file" />}
     </div>
   );

@@ -19,6 +19,7 @@ import {
   fetchRecentPosts,
   fetchTagCounter,
   getCompanyPosts,
+  getUnreadCompanyPosts,
   getPostClapHover,
   getUnreadPostComments,
   getUnreadPostEntries,
@@ -48,6 +49,16 @@ import {
   updatePostFiles,
   postComment,
   postClose,
+  postSnooze,
+  getPostList,
+  createPostList,
+  updatePostList,
+  deletePostList,
+  postListConnect,
+  postListDisconnected,
+  incomingPostListConnect,
+  incomingPostListDisconnect,
+  postRequired,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -102,7 +113,49 @@ const usePostActions = () => {
       "POST.ACCEPT_GENERAL_CONDITION",
       "You accept the final design provided to you. Zuid will now proceed on the next steps. Any additional changes on the design will be subject for re-estimation and additional work which will be considered as a separate project."
     ),
+    snoozeThisPost: _t("MODAL.SNOOZE_THIS_POST", "Are you sure you want to snooze this post?"),
+    buttonSnooze: _t("BUTTON.SNOOZE", "Snooze"),
+    headerSnoozePost: _t("MODAL.SNOOZE_POST", "Snooze post"),
+    postArchivedMuted: _t("TOASTER.POST_ARCHIVED_MUTED", "is archived. Comments for this post will be muted for 48 hours."),
   };
+
+  const fetchPostList = useCallback((payload = {}, callback) => {
+    dispatch(getPostList(payload, callback));
+  });
+
+  const createNewPostList = useCallback((payload = {}, callback) => {
+    dispatch(createPostList(payload, callback));
+  });
+
+  const updatePostsList = useCallback((payload = {}, callback) => {
+    dispatch(updatePostList(payload, callback));
+  });
+
+  const deletePostsList = useCallback((payload = {}, callback) => {
+    dispatch(deletePostList(payload, callback));
+  });
+
+  const connectPostList = useCallback((payload, callback) => {
+    dispatch(postListConnect(payload, callback));
+  });
+
+  const disconnectPostList = useCallback(
+    (payload, callback) => {
+      dispatch(postListDisconnected(payload, callback));
+    },
+    [dispatch, params]
+  );
+
+  const updatePostListConnect = useCallback(
+    (payload, callback) => {
+      if (payload.SOCKET_TYPE === "POST_LIST_CONNECTED") {
+        dispatch(incomingPostListConnect(payload, callback));
+      } else {
+        dispatch(incomingPostListDisconnect(payload, callback));
+      }
+    },
+    [dispatch, params]
+  );
 
   const starPost = useCallback(
     (post) => {
@@ -195,7 +248,7 @@ const usePostActions = () => {
   );
 
   const archivePost = useCallback(
-    (post) => {
+    (post, callback = () => {}) => {
       if (post.type === "draft_post") {
         const onConfirm = () => {
           dispatch(
@@ -223,6 +276,7 @@ const usePostActions = () => {
                     </>
                   );
                 }
+                callback(err, res);
               }
             )
           );
@@ -259,13 +313,13 @@ const usePostActions = () => {
                   if (!post.is_archived) {
                     toaster.success(
                       <>
-                        <b>{post.title}</b> is archived.
+                        <b>{post.title}</b> {dictionary.postArchivedMuted}
                       </>
                     );
                   } else {
                     toaster.success(
                       <>
-                        <b>{post.title}</b> is restored.
+                        <b>{post.title}</b> is unarchived.
                       </>
                     );
                   }
@@ -277,10 +331,11 @@ const usePostActions = () => {
                       is_archived: post.is_archived === 1 ? 0 : 1,
                     })
                   );
-                  if (params.hasOwnProperty("postId")) {
-                    history.goBack();
-                  }
+                  // if (params.hasOwnProperty("postId")) {
+                  //   history.goBack();
+                  // }
                 }
+                callback(err, res);
               }
             )
           );
@@ -635,6 +690,33 @@ const usePostActions = () => {
           };
           break;
         }
+        case "create_edit_post_list": {
+          payload = {
+            type: "post_list",
+            mode: "create",
+          };
+          break;
+        }
+        case "add_to_list": {
+          payload = {
+            type: "post_list",
+            mode: "add",
+            item: {
+              post: post,
+            },
+          };
+          break;
+        }
+        case "edit_post_list": {
+          payload = {
+            type: "post_list",
+            mode: "edit",
+            item: {
+              post: post,
+            },
+          };
+          break;
+        }
         default: {
           payload = {
             type: "workspace_post_create_edit",
@@ -739,6 +821,13 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const fetchUnreadCompanyPosts = useCallback(
+    (payload, callback) => {
+      dispatch(getUnreadCompanyPosts(payload, callback));
+    },
+    [dispatch]
+  );
+
   const setCompanyFilterPosts = useCallback(
     (payload, callback) => {
       dispatch(updateCompanyPostFilterSort(payload, callback));
@@ -764,13 +853,26 @@ const usePostActions = () => {
     (post) => {
       let payload = {
         post_id: post.id,
-        personalized_for_id: null,
-        mark_as_read: 1,
+        must_read: 1,
+        must_reply: 0,
+        is_approved: 0,
       };
-      let cb = (err, res) => {
-        if (err) return;
+
+      dispatch(postRequired(payload));
+    },
+    [dispatch, params]
+  );
+
+  const markReplyRequirement = useCallback(
+    (post) => {
+      let payload = {
+        post_id: post.id,
+        must_read: 0,
+        must_reply: 1,
+        is_approved: 0,
       };
-      dispatch(postMarkRead(payload, cb));
+
+      dispatch(postRequired(payload));
     },
     [dispatch, params]
   );
@@ -951,6 +1053,40 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const snooze = useCallback(
+    (post) => {
+      const onConfirm = () => {
+        dispatch(
+          postSnooze(
+            {
+              post_id: post.id,
+              set_time: "tomorrow",
+            },
+            (err, res) => {
+              if (err) return;
+              toaster.success("Post successfully snoozed.");
+            }
+          )
+        );
+        dispatch(removePost(post));
+      };
+
+      let payload = {
+        type: "confirmation",
+        headerText: dictionary.headerSnoozePost,
+        submitText: dictionary.buttonSnooze,
+        cancelText: dictionary.buttonCancel,
+        bodyText: dictionary.snoozeThisPost,
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
     approveComment,
@@ -989,6 +1125,16 @@ const usePostActions = () => {
     getUnreadWsPostsCount,
     close,
     generateSystemMessage,
+    fetchUnreadCompanyPosts,
+    snooze,
+    fetchPostList,
+    createNewPostList,
+    updatePostsList,
+    deletePostsList,
+    connectPostList,
+    disconnectPostList,
+    updatePostListConnect,
+    markReplyRequirement,
   };
 };
 

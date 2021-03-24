@@ -279,9 +279,14 @@ body.dark {
     background-color: #25282c;
   }
 
-  .feather-paperclip:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+  .feather-send {
+    border: 0;
+    background-color: #25282c;
   }
+
+  // .feather-paperclip:hover {
+  //   background-color: rgba(255, 255, 255, 0.05);
+  // }
 
   .chat-sidebar-content::after {
     background: #333539;
@@ -11031,6 +11036,10 @@ textarea {
   color: #ea4c89 !important;
 }
 
+.text-closed {
+  color: rgba(255, 187, 51, 0.3) !important;
+}
+
 .colorpicker.dropdown-menu {
   visibility: visible;
   opacity: 1;
@@ -13598,6 +13607,11 @@ table .dropdown {
   background: #0077b5;
 }
 
+.badge.badge-closed {
+  background: rgba(255, 187, 51, 0.3);
+}
+
+
 .btn {
   position: relative;
 }
@@ -14991,10 +15005,10 @@ body.form-membership .form-wrapper hr {
 
 .chat-block .chat-content .messages .message-item.message-item-divider span {
   padding: 0 10px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  // -webkit-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
 }
 
 .chat-block .chat-content .messages .message-item.message-item-divider:after,
@@ -15999,10 +16013,10 @@ body:not(.stretch-layout) .app-block .app-content .app-content-body {
     -ms-transform: translate(0, -50%);
     -o-transform: translate(0, -50%);
     transform: translate(0, -50%);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    // -webkit-user-select: none;
+    // -moz-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
     z-index: 9999;
     -webkit-transition: right 0.3s;
     -o-transition: right 0.3s;
@@ -18801,10 +18815,10 @@ small {
 }
 
 .todo-item {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  // -webkit-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
   margin-bottom: 10px;
 }
 

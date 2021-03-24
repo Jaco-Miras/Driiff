@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ProfileSettings from "../settings/ProfileSettings";
 
 const Wrapper = styled.div`
+  overflow: auto;
   .row-settings {
     justify-content: center;
   }

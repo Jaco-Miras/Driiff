@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
+import { SvgEmptyState, SvgIconFeather } from "../../common";
 import { usePosts, useTranslation } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
-import { throttle } from "lodash";
+import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
+import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
 
 const Wrapper = styled.div`
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: left;
 
   .app-lists {
@@ -25,6 +28,9 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto;
 
     .app-lists {
       overflow: auto;
@@ -76,6 +82,24 @@ const PostsBtnWrapper = styled.div`
     margin-left: 10px;
   }
 `;
+
+const PostListWrapper = styled.span`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @media all and (max-width: 1200px) {
+    max-width: 200px;
+  }
+`;
+
+const StyledIcon = styled(SvgIconFeather)`
+  width: 1em;
+  &:hover {
+    color: #000000;
+  }
+`;
+
 let fetching = false;
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
@@ -85,10 +109,13 @@ const WorkspacePostsPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, counters, filters } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
+  const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
+  const [loadPosts, setLoadPosts] = useState(false);
+  const [activePostListName, setActivePostListName] = useState({});
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -194,13 +221,19 @@ const WorkspacePostsPanel = (props) => {
     closeThisPost: _t("POST.CLOSE_THIS_POST", "Close this post"),
     repliesClosed: _t("POST.REPLIES_CLOSED", "Replies closed"),
     openThisPost: _t("POST.OPEN_THIS_POST", "Open this post"),
-    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator closed this post for commenting"),
+    creatorClosedPost: _t("POST.CREATOR_CLOSED_POST", "The creator/internal closed this post for commenting"),
     reopen: _t("POST.REOPEN", "Reopen"),
     closed: _t("POST.CLOSED", "Closed"),
+    createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
+    addToList: _t("POST.ADD_TO_LIST", "Add to list"),
+    removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
+    ofNumberOfUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
+      user_count: ofNumberOfUsers.length,
+    }),
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "") {
+    if (!fetching && search === "" && !post) {
       fetching = true;
       setLoading(true);
       let payload = {
@@ -218,6 +251,7 @@ const WorkspacePostsPanel = (props) => {
       let cb = (err, res) => {
         setLoading(false);
         fetching = false;
+        setLoadPosts(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -251,18 +285,36 @@ const WorkspacePostsPanel = (props) => {
     }
   };
 
-  const bodyScroll = throttle((e) => {
-    // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
-    const offset = 500;
-    if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
-      handleLoadMore();
-    }
-  }, 200);
+  // const bodyScroll = throttle((e) => {
+  //   // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
+  //   const offset = 500;
+  //   if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
+  //     handleLoadMore();
+  //   }
+  // }, 200);
+
+  // useEffect(() => {
+  //   document.body.addEventListener("scroll", bodyScroll, false);
+  //   return () => document.body.removeEventListener("scroll", bodyScroll, false);
+  // }, [filters, workspace, filter, search]);
+
+  const handleScroll = useMemo(() => {
+    const throttled = throttle((e) => {
+      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+        setLoadPosts(true);
+      }
+    }, 300);
+    return (e) => {
+      e.persist();
+      return throttled(e);
+    };
+  }, []);
 
   useEffect(() => {
-    document.body.addEventListener("scroll", bodyScroll, false);
-    return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  }, [filters, workspace, filter, search]);
+    if (loadPosts) {
+      handleLoadMore();
+    }
+  }, [loadPosts]);
 
   const handleMarkAllAsRead = () => {
     actions.readAll({
@@ -281,17 +333,76 @@ const WorkspacePostsPanel = (props) => {
     setCheckedPosts([]);
   };
 
+  useEffect(() => {
+    if (postListTag) {
+      const activePost = find(postLists, (p) => parseInt(p.id) === parseInt(postListTag));
+      postLists.map((pl) => {
+        if (activePost && parseInt(postListTag) === pl.id) {
+          setActivePostListName(pl);
+        }
+      });
+
+      if (!activePost) {
+        setActivePostListName(postLists[0]);
+        let payload = {
+          topic_id: workspace.id,
+          tag: null,
+          postListTag: postLists[0].id,
+          filter: null,
+        };
+        dispatch(updateWorkspacePostFilterSort(payload));
+      }
+    }
+  }, [postListTag, postLists]);
+
+  const handleEditArchivePostList = useCallback(() => {
+    const payload = {
+      topic_id: workspace.id,
+      tag: null,
+      postListTag: null,
+      filter: "all",
+    };
+    dispatch(updateWorkspacePostFilterSort(payload));
+  }, [activePostListName]);
+
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null) return <></>;
 
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
-        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+        <PostSidebar
+          disableOptions={disableOptions}
+          isMember={isMember}
+          workspace={workspace}
+          filter={filter}
+          filters={filters}
+          tag={tag}
+          postListTag={postListTag}
+          postActions={actions}
+          count={count}
+          postLists={postLists}
+          counters={counters}
+          onGoBack={handleGoback}
+          dictionary={dictionary}
+        />
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
+          {!!postListTag && (
+            <PostsBtnWrapper>
+              <span>Filter:</span>
+              <PostListWrapper className="ml-2 recipients">
+                <span className="receiver">
+                  <span onClick={handleEditArchivePostList}>
+                    <StyledIcon icon="x" className="mr-1" />
+                  </span>
+                  {activePostListName.name}
+                </span>
+              </PostListWrapper>
+            </PostsBtnWrapper>
+          )}
           {posts.length === 0 && search === "" ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
@@ -311,6 +422,8 @@ const WorkspacePostsPanel = (props) => {
                     <PostDetail
                       readByUsers={readByUsers}
                       post={post}
+                      posts={posts}
+                      filter={filter}
                       postActions={actions}
                       user={user}
                       history={history}
@@ -324,7 +437,7 @@ const WorkspacePostsPanel = (props) => {
                 </div>
               ) : (
                 <>
-                  {filter === "all" && checkedPosts.length > 0 && (
+                  {(filter === "all" || filter === "inbox") && checkedPosts.length > 0 && (
                     <PostsBtnWrapper>
                       <button className="btn all-action-button" onClick={handleArchiveAll}>
                         {dictionary.archive}
@@ -356,7 +469,18 @@ const WorkspacePostsPanel = (props) => {
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
                         {posts &&
                           posts.map((p) => {
-                            return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} disableOptions={disableOptions} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
+                            return (
+                              <PostItemPanel
+                                key={p.id}
+                                post={p}
+                                postActions={actions}
+                                workspace={workspace}
+                                dictionary={dictionary}
+                                disableOptions={disableOptions}
+                                toggleCheckbox={handleToggleCheckbox}
+                                checked={checkedPosts.some((id) => id === p.id)}
+                              />
+                            );
                           })}
                       </ul>
                     </div>
@@ -365,6 +489,7 @@ const WorkspacePostsPanel = (props) => {
               )}
             </>
           )}
+          <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>
     </Wrapper>

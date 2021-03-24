@@ -1,6 +1,6 @@
 // import {getAPIUrl} from "../../helpers/slugHelper";
-import {apiCall} from "./service";
-import {objToUrlParams} from "../../helpers/commonFunctions";
+import { apiCall } from "./service";
+import { objToUrlParams } from "../../helpers/commonFunctions";
 
 /**
  * @param {Object} payload
@@ -277,7 +277,7 @@ export function getWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function postWorkspaceRole(payload) {
-  let url = `/v2/workspace-role`;
+  let url = "/v2/workspace-role";
   return apiCall({
     method: "POST",
     url: url,
@@ -292,7 +292,7 @@ export function postWorkspaceRole(payload) {
  * @returns {Promise<*>}
  */
 export function deleteWorkspaceRole(payload) {
-  let url = `/v2/workspace-role`;
+  let url = "/v2/workspace-role";
   return apiCall({
     method: "DELETE",
     url: url,
@@ -332,5 +332,13 @@ export function getAllWorkspace(payload) {
   return apiCall({
     method: "GET",
     url: `/v2/search-workspace?${objToUrlParams(payload)}`,
+  });
+}
+
+export function postResendInvite(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/resend-emails",
+    data: payload,
   });
 }

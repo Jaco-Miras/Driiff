@@ -6,6 +6,9 @@ const Wrapper = styled.div`
   a {
     cursor: pointer;
   }
+  .list-group-item:last-child {
+    border-bottom-width: thin!important;
+  }
 `;
 
 const CompanyPostFilterTag = (props) => {
@@ -55,7 +58,7 @@ const CompanyPostFilterTag = (props) => {
         <span className="small ml-auto">{count && count.is_unread > 0 && count.is_unread}</span>
       </a>
       <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_close" ? "active" : ""}`} data-value="is_close" onClick={handleClickFilter}>
-        <span className="text-linkedin fa fa-circle mr-2" />
+        <span className="text-closed fa fa-circle mr-2" />
         {dictionary.closed}
         <span className="small ml-auto">{count && count.is_close > 0 && count.is_close}</span>
       </a>

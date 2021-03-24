@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import {NavLink} from "../../common";
+import { NavLink } from "../../common";
 import { useTranslation } from "../../hooks";
 
 const Wrapper = styled.div``;
@@ -66,24 +66,25 @@ const WorkspacePageHeaderPanel = (props) => {
   const { className = "", workspace } = props;
 
   let pathname = props.match.url;
-  if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?" || props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?") {
+  if (
+    props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?" ||
+    props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?"
+  ) {
     pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "");
   } else if (
     props.match.path === "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
     props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName"
   ) {
     pathname = pathname.split("/folder/")[0].replace(`/workspace/${props.match.params.page}`, "");
-  } 
-  else if (props.match.path === "/workspace/:workspaceId/:workspaceName" && typeof( props.match.params.page ) === "undefined") {
+  } else if (props.match.path === "/workspace/:workspaceId/:workspaceName" && typeof props.match.params.page === "undefined") {
     const split_pathname = pathname.split("/");
-    split_pathname.splice(2, 0, "chat")
+    split_pathname.splice(2, 0, "chat");
     history.push(split_pathname.join("/"));
-  } 
-  else {
+  } else {
     pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
   }
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     pageTitleDashboard: _t("PAGE_TITLE.DASHBOARD", "Dashboard"),
@@ -124,6 +125,11 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitlePeople}
             </MainNavLink>
           </li>
+          {/* <li className="nav-item">
+            <MainNavLink isSub={true} to={"/releases"}>
+              Releases
+            </MainNavLink>
+          </li> */}
         </Navbar>
       </Wrapper>
     </>
