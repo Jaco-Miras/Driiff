@@ -338,6 +338,24 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "arrow-down":
+        strokeWidth = "2";
+        content = (
+          <>
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </>
+        );
+        break;
+      case "arrow-up":
+        strokeWidth = "2";
+        content = (
+          <>
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </>
+        );
+        break;
       case "download":
         strokeWidth = "2";
         content = (
