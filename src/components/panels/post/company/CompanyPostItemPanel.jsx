@@ -120,6 +120,13 @@ const Wrapper = styled.li`
     background-color: rgba(210, 210, 210, 0.2);
     font-size: 11px;
     margin-right: 3px;
+    display: inline-flex;
+    align-items: center;
+    svg {
+      height: 12px;
+      width: 12px;
+      margin-left: 0.2rem;
+    }
   }
 
   .ellipsis-hover {
@@ -218,6 +225,22 @@ const AuthorRecipients = styled.div`
       border-radius: unset;
     }
   }
+  .client-shared {
+    background: #fb3;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
+  .client-not-shared {
+    background: #33b5e5;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
 `;
 
 const CreatedBy = styled.div`
@@ -266,6 +289,7 @@ const CompanyPostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
+    firstPost,
     postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList },
   } = props;
 
@@ -293,12 +317,18 @@ const CompanyPostItemPanel = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
+    const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    if (post.shared_with_client && hasExternalWorkspace) {
+      recipient_names += `<span class="receiver client-shared">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
+    } else if (!post.shared_with_client && hasExternalWorkspace) {
+      recipient_names += `<span class="receiver client-not-shared">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
+    }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join(", ");
@@ -318,7 +348,7 @@ const CompanyPostItemPanel = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="share" />) : ""}</span>`;
+            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
           else return `<span class="receiver">${r.name}</span>`;
         })
         .join("");
@@ -384,15 +414,11 @@ const CompanyPostItemPanel = (props) => {
 
   const hasUnread = post.is_unread === 1 || post.unread_count > 0;
 
-  // const handleSnooze = () => {
-  //   snooze(post);
-  // };
-
   return (
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
       appListWidthDiff={postBadgeWidth + 50}
-      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className} pl-3`}
+      className={`list-group-item post-item-panel ${hasUnread ? "has-unreadtemp" : ""} ${className} pl-3`}
       onTouchStart={touchStart}
       onTouchMove={touchMove}
       onTouchEnd={touchEnd}
@@ -411,14 +437,8 @@ const CompanyPostItemPanel = (props) => {
         />
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
-        <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-          {/* <CreatedBy>
-            <ByIcon icon="corner-up-right"/>
-            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
-                    name={post.author.name}
-                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
-          </CreatedBy> */}
-          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
+        <div className={`app-list-title text-truncate ${hasUnread ? "has-unreadtemp" : ""}`}>
+          <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients text-truncate" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
           <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
@@ -434,15 +454,6 @@ const CompanyPostItemPanel = (props) => {
             </span>
           </PostReplyCounter>
         </div>
-        {/* <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-          <CompanyPostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
-          {post.type !== "draft_post" && !disableOptions &&
-          <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
-                      data-toggle="tooltip"
-                      title="" data-original-title="Archive post">
-            <Icon icon="archive"/>
-          </ArchiveBtn>}
-        </SlideOption> */}
       </div>
       <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
       <div className="d-flex">
@@ -460,7 +471,6 @@ const CompanyPostItemPanel = (props) => {
             {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
             {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
-            {/* <div onClick={handleSnooze}>Snooze this post</div> */}
             {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
           </MoreOptions>
         )}

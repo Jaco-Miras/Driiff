@@ -115,32 +115,8 @@ const useCompanyPosts = () => {
       }
     })
     .sort((a, b) => {
-      if (sort === "favorite") {
-        return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-      } else if (sort === "unread") {
-        if (a.unread_count > 0) {
-          return -1;
-        } else {
-          return a.is_unread === b.is_unread ? 0 : a.post_unread === 1 ? 1 : -1;
-        }
-      } else {
-        return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
-      }
+      return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
     });
-  //if (count) {
-  // count.is_must_reply = Object.values(posts).filter((p) => {
-  //   return p.is_must_reply && p.is_must_reply && !p.is_archived && !p.hasOwnProperty("draft_type");
-  // }).length;
-  // count.is_must_read = Object.values(posts).filter((p) => {
-  //   return p.is_must_read && p.is_must_read && !p.is_archived && !p.hasOwnProperty("draft_type");
-  // }).length;
-  // count.is_read_only = Object.values(posts).filter((p) => {
-  //   return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
-  // }).length;
-  // count.is_unread = Object.values(posts).filter((p) => {
-  //   return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
-  // }).length;
-  //}
 
   count.is_must_reply = Object.values(posts).filter((p) => {
     return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
@@ -159,10 +135,6 @@ const useCompanyPosts = () => {
   }).length;
 
   const counters = {
-    // all: Object.values(posts).filter((p) => !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id)).length,
-    // my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
-    // starred: Object.values(posts).filter((p) => p.is_favourite).length,
-    // archived: Object.values(posts).filter((p) => p.is_archived).length,
     drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
   };
 

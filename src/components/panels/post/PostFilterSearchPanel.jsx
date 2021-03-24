@@ -1,10 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
-import { ButtonDropdown, SvgIconFeather } from "../../common";
-
-// import {useCountRenders} from "../../hooks";
+import { SvgIconFeather } from "../../common";
 import { PostSearch } from "./index";
 
 const Wrapper = styled.div`
@@ -18,42 +14,13 @@ const Wrapper = styled.div`
       margin-left: 8px;
     }
   }
+  .action-right {
+    margin: 0 !important;
+  }
 `;
 
 const PostFilterSearchPanel = (props) => {
-  const { className = "", activeSort = null, workspace, search, dictionary } = props;
-
-  const dispatch = useDispatch();
-
-  const handleClickSort = (e) => {
-    dispatch(
-      updateWorkspacePostFilterSort({
-        topic_id: workspace.id,
-        sort: e.target.dataset.value,
-      })
-    );
-  };
-
-  const sortDropdown = {
-    label: dictionary.sortBy,
-    items: [
-      {
-        value: "favorite",
-        label: dictionary.starredFavorite,
-        onClick: handleClickSort,
-      },
-      {
-        value: "recent",
-        label: dictionary.recent,
-        onClick: handleClickSort,
-      },
-      {
-        value: "unread",
-        label: dictionary.unread,
-        onClick: handleClickSort,
-      },
-    ],
-  };
+  const { className = "", search, dictionary } = props;
 
   const openMobileModal = () => {
     document.body.classList.toggle("mobile-modal-open");
@@ -62,14 +29,6 @@ const PostFilterSearchPanel = (props) => {
   return (
     <Wrapper className={`post-filter-search-panel app-action ${className}`}>
       <div className="action-left">
-        <ul className="list-inline">
-          {/* <li className="list-inline-item mb-0" style={{position: "relative"}}>
-                     <ButtonDropdown dropdown={filterDropdown}/>
-                     </li> */}
-          <li className="list-inline-item mb-0">
-            <ButtonDropdown value={activeSort} dropdown={sortDropdown} />
-          </li>
-        </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
           <SvgIconFeather icon="menu" />
         </span>

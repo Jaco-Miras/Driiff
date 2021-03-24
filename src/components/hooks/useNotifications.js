@@ -6,6 +6,7 @@ const useNotifications = (props) => {
   return {
     notifications,
     unreadCount,
+    unreadNotifications: Object.values(notifications).filter((n) => n.is_read === 0).length,
   };
 };
 

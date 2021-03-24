@@ -115,8 +115,18 @@ const NavBar = styled.ul`
         display: none;
       }
     }
+    .badge {
+      display: flex;
+    }
     svg {
       color: #b8b8b8;
+    }
+    svg.feather-eye {
+      color: inherit;
+      margin-left: 0;
+      margin-right: 0.4rem;
+      width: 11px !important;
+      height: 11px !important;
     }
     svg.feather-pencil {
       width: 16px;
@@ -203,8 +213,7 @@ const SubWorkspaceName = styled.h3`
   svg {
     color: #64625c;
   }
-  .feather-lock,
-  .feather-share {
+  .feather-lock {
     color: #64625c;
   }
   @media all and (max-width: 620px) {
@@ -431,7 +440,13 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
+                      <li className="nav-item">
+                        {activeTopic.is_shared && (
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"}>
+                            <Icon icon="eye" /> With client
+                          </div>
+                        )}
+                      </li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -467,7 +482,13 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
+                      <li className="nav-item">
+                        {activeTopic.is_shared && (
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"}>
+                            <Icon icon="eye" /> With client
+                          </div>
+                        )}
+                      </li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}

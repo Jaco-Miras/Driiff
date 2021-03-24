@@ -69,6 +69,24 @@ const Wrapper = styled.ul`
       height: 2rem;
       width: 2rem;
     }
+    .notif-bell {
+      position: relative;
+    }
+  }
+`;
+
+const NotificationBadge = styled.span`
+  position: absolute;
+  top: 1px;
+  padding: 3px 5px;
+  right: 0;
+  z-index: 1;
+  min-width: 20px;
+  &.double {
+    right: -3px;
+  }
+  &.triple {
+    right: -8px;
   }
 `;
 
@@ -80,7 +98,7 @@ const HomeProfileNavigation = (props) => {
     loggedUser,
     actions: { fetchById },
   } = useUsers();
-  const { notifications } = useNotifications();
+  const { notifications, unreadNotifications } = useNotifications();
   const {
     generalSettings: { dark_mode },
     setGeneralSetting,
@@ -157,7 +175,10 @@ const HomeProfileNavigation = (props) => {
         {dropDown.name === "search" && dropDown.value && <SearchDropDown />}
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} data-toggle="notification" onClick={toggleDropdown}>
+        <a href="/" className={"nav-link notif-bell"} data-toggle="notification" onClick={toggleDropdown}>
+          {unreadNotifications > 0 && (
+            <NotificationBadge className={`badge badge-danger badge-pill ${unreadNotifications > 99 ? "triple" : unreadNotifications > 9 ? "double" : "single"}`}>{unreadNotifications > 99 ? "99+" : unreadNotifications}</NotificationBadge>
+          )}
           <ToolTip content={dictionary.generalNotifications}>
             <SvgIconFeather icon="bell" />
           </ToolTip>
