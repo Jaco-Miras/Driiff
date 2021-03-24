@@ -457,7 +457,7 @@ const CompanyPostsPanel = (props) => {
                           </div>
                         )}
                         {readPosts.length > 0 && readPosts && showPosts.showRead && (
-                          <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} showPosts={showPosts.showRead}>
+                          <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                             {readPosts.map((p, k) => {
                               return <CompanyPostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
                             })}
