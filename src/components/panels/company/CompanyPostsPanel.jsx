@@ -48,6 +48,9 @@ const Wrapper = styled.div`
       color: rgba(255, 255, 255, 0.5);
     }
   }
+  .unset-flex {
+    flex: unset !important;
+  }
 `;
 
 const PostListWrapper = styled.span`
@@ -346,11 +349,16 @@ const CompanyPostsPanel = (props) => {
       ...showPosts,
       [type]: !showPosts[type],
     });
-    // setTimeout(() => {
-    //   document.getElementById("multiCollapseExample2").classList.remove("collapsing");
-    //   document.getElementById("multiCollapseExample2").classList.add("show");
-    // }, 300);
   };
+
+  useEffect(() => {
+    if (filter && filter === "archive") {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
+  }, [filter]);
 
   if (posts === null) return <></>;
   return (
@@ -402,7 +410,7 @@ const CompanyPostsPanel = (props) => {
                       </button>
                     </PostsBtnWrapper>
                   )}
-                  <div className="card card-body app-content-body mb-4">
+                  <div className="card card-body app-content-body mb-4 unset-flex">
                     <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
                       {search !== "" && (
                         <>
@@ -428,7 +436,7 @@ const CompanyPostsPanel = (props) => {
                               className={"list-group-item post-item-panel pl-3 unread-posts-header"}
                               onClick={() => {
                                 handleShowPosts("showUnread");
-                                //document.getElementById("multiCollapseExample2").classList.add("collapsing");
+                                document.getElementById("unread-posts-container").classList.add("collapsing");
                               }}
                               showPosts={showPosts.showUnread}
                             >
@@ -440,7 +448,7 @@ const CompanyPostsPanel = (props) => {
                           </div>
                         )}
                         {unreadPosts.length > 0 && (
-                          <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} showPosts={showPosts.showUnread}>
+                          <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                             {unreadPosts.map((p, k) => {
                               return <CompanyPostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
                             })}
@@ -456,7 +464,7 @@ const CompanyPostsPanel = (props) => {
                             </ReadPostsHeader>
                           </div>
                         )}
-                        {readPosts.length > 0 && readPosts && showPosts.showRead && (
+                        {readPosts.length > 0 && (
                           <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                             {readPosts.map((p, k) => {
                               return <CompanyPostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
