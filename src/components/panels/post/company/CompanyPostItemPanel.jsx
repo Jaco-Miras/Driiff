@@ -289,7 +289,7 @@ const CompanyPostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    firstPost,
+    hasUnread,
     postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList },
   } = props;
 
@@ -412,13 +412,11 @@ const CompanyPostItemPanel = (props) => {
     }
   };
 
-  const hasUnread = post.is_unread === 1 || post.unread_count > 0;
-
   return (
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
       appListWidthDiff={postBadgeWidth + 50}
-      className={`list-group-item post-item-panel ${hasUnread ? "has-unread-temp" : ""} ${className} pl-3`}
+      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className} pl-3`}
       onTouchStart={touchStart}
       onTouchMove={touchMove}
       onTouchEnd={touchEnd}
@@ -437,7 +435,7 @@ const CompanyPostItemPanel = (props) => {
         />
       </Author>
       <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
-        <div className={`app-list-title text-truncate ${hasUnread ? "has-unread-temp" : ""}`}>
+        <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
           <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients text-truncate" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
           <div className="text-truncate">
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}

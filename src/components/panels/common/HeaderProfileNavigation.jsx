@@ -88,6 +88,16 @@ const NotificationBadge = styled.span`
   &.triple {
     right: -8px;
   }
+  @media (max-width: 414px) {
+    padding: 2px 3px;
+    font-size: 8px;
+    top: 5px;
+    &.single {
+      padding: 2px 0;
+      border-radius: 100%;
+      min-width: 14px;
+    }
+  }
 `;
 
 const HomeProfileNavigation = (props) => {
@@ -98,7 +108,7 @@ const HomeProfileNavigation = (props) => {
     loggedUser,
     actions: { fetchById },
   } = useUsers();
-  const { notifications, unreadNotifications } = useNotifications();
+  const { unreadNotifications } = useNotifications();
   const {
     generalSettings: { dark_mode },
     setGeneralSetting,
