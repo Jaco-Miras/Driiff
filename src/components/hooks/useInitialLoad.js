@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
-import { getGlobalRecipients, getHuddleChatbot } from "../../redux/actions/chatActions";
+import { getGlobalRecipients, getHuddleChatbot, adjustHuddleDate, getUnpublishedAnswers } from "../../redux/actions/chatActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -12,6 +12,10 @@ const useInitialLoad = () => {
   const channelActions = useChannelActions();
 
   const dispatch = useDispatch();
+
+  const getChannelsWithUnpublishedMessage = (id) => {
+    dispatch(getUnpublishedAnswers({ channel_id: id }));
+  };
 
   useEffect(() => {
     document.body.classList.remove("form-membership");
@@ -31,7 +35,17 @@ const useInitialLoad = () => {
       //dispatch(getDrafts());
     };
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
-    dispatch(getHuddleChatbot({}));
+    dispatch(
+      getHuddleChatbot({}, (err, res) => {
+        if (err) return;
+        dispatch(adjustHuddleDate());
+        if (res.data) {
+          res.data.forEach((d) => {
+            getChannelsWithUnpublishedMessage(d.channel.id);
+          });
+        }
+      })
+    );
   }, []);
 };
 

@@ -110,7 +110,7 @@ const Option = (props) => {
                 partialName={props.data.partial_name}
               />
             ) : (
-              <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"} />
+              props.data.icon && <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"} />
             )}
             {props.children}
             {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" />}

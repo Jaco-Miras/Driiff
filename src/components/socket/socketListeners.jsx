@@ -34,6 +34,7 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  incomingHuddleSkip,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -343,6 +344,27 @@ class SocketListeners extends Component {
               ...e.message,
               huddle_log: e.huddle_log,
             });
+            const huddleAnswered = localStorage.getItem("huddle");
+            if (huddleAnswered) {
+              const { channels, day } = JSON.parse(huddleAnswered);
+              localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            } else {
+              const currentDate = new Date();
+              localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            }
+            break;
+          }
+          case "HUDDLE_SKIP": {
+            this.props.incomingHuddleSkip(e);
+            const huddleAnswered = localStorage.getItem("huddle");
+
+            if (huddleAnswered) {
+              const { channels, day } = JSON.parse(huddleAnswered);
+              localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            } else {
+              const currentDate = new Date();
+              localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            }
             break;
           }
           default:
@@ -1779,6 +1801,7 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
+    incomingHuddleSkip: bindActionCreators(incomingHuddleSkip, dispatch),
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
     incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
     incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),

@@ -145,6 +145,7 @@ const ChatInput = (props) => {
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const skipIds = useSelector((state) => state.chat.skipIds);
   const users = useSelector((state) => state.users.users);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
@@ -207,6 +208,7 @@ const ChatInput = (props) => {
     if (showQuestions) {
       if (question.isLastQuestion) {
         const currentDate = new Date();
+        const skipId = skipIds.find((s) => s.channel_id === selectedChannel.id);
         let payload = {
           huddle_id: huddle.id,
           answers: huddle.questions.map((q) => {
@@ -216,6 +218,7 @@ const ChatInput = (props) => {
               answer: q.isLastQuestion ? textOnly : q.answer,
             };
           }),
+          skip_message_ids: skipId ? [skipId.id] : [],
         };
         const closingMessage = huddle.closing_message ? huddle.closing_message : "Huddle submitted";
         let cb = (err, res) => {
@@ -761,7 +764,7 @@ const ChatInput = (props) => {
 
   return (
     <div className="chat-input-wrapper">
-      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
+      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
       {mentionedUserIds.length > 0 && (
         <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} basedOnUserId={true} userMentionOnly={true} />
       )}

@@ -2,11 +2,12 @@ import React, { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { setSelectedChannel, clearHuddleAnswers } from "../../redux/actions/chatActions";
-import { useToaster } from "./index";
+import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate } from "../../redux/actions/chatActions";
+import { useToaster, useHuddleChatbot } from "./index";
 
 const useHuddle = (props) => {
   //const [time, setCurrentTime] = useState(null);
+  const actions = useHuddleChatbot();
   const toaster = useToaster();
   const history = useHistory();
   const showToasterRef = useRef(null);
@@ -16,13 +17,23 @@ const useHuddle = (props) => {
   const dispatch = useDispatch();
   const loggedUser = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const channels = useSelector((state) => state.chat.channels);
   const isOwner = loggedUser.role && loggedUser.role.name === "owner";
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
 
   const huddleAnswered = localStorage.getItem("huddle");
   const huddleBots = useSelector((state) => state.chat.huddleBots);
+  const weekDays = [
+    { day: "M", value: 1 },
+    { day: "T", value: 2 },
+    { day: "W", value: 3 },
+    { day: "TH", value: 4 },
+    { day: "F", value: 5 },
+  ];
+
   const huddle = huddleBots.find((h) => {
     if (h.questions.filter((q) => q.answer === null).length > 0) {
+      let inTimeRange = false;
       const startAtHour = parseInt(h.start_at.time.substr(0, 2));
       const startAtMinutes = parseInt(h.start_at.time.substr(3, 2));
       const publishAtHour = parseInt(h.publish_at.time.substr(0, 2));
@@ -33,7 +44,64 @@ const useHuddle = (props) => {
       let publishAtDate = new Date();
       publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
       publishAtDate.setDate(currentDate.getDate());
-      return currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
+      inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
+      if (selectedChannel && h.channel.id !== selectedChannel.id && inTimeRange) {
+        if (h.end_type === "NEVER") {
+          if (h.repeat_type === "DAILY") {
+            return true;
+          } else if (h.repeat_type === "WEEKLY") {
+            if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+              return true;
+            } else {
+              return false;
+            }
+          } else if (h.repeat_type === "MONTHLY") {
+            return h.showToday;
+          } else if (h.repeat_type === "YEARLY") {
+            // same day and month
+            return h.showToday;
+          }
+        } else if (h.end_type === "END_ON") {
+          const endDate = new Date(h.end_select_on.substr(0, 4), parseInt(h.end_select_on.substr(5, 2)) - 1, h.end_select_on.substr(8, 2));
+          if (currentDate.getTime() < endDate.getTime()) {
+            if (h.repeat_type === "DAILY") {
+              return true;
+            } else if (h.repeat_type === "WEEKLY") {
+              if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+                return true;
+              } else {
+                return false;
+              }
+            } else if (h.repeat_type === "MONTHLY") {
+              return h.showToday;
+            } else if (h.repeat_type === "YEARLY") {
+              // same day and month
+              return h.showToday;
+            }
+          } else {
+            return false;
+          }
+        } else if (h.end_type === "END_AFTER_REPEAT") {
+          if (h.repeat_count < h.end_select_after) {
+            if (h.repeat_type === "DAILY") {
+              return true;
+            } else if (h.repeat_type === "WEEKLY") {
+              if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+                return true;
+              } else {
+                return false;
+              }
+            } else if (h.repeat_type === "MONTHLY") {
+              return h.showToday;
+            } else if (h.repeat_type === "YEARLY") {
+              // same day and month
+              return h.showToday;
+            }
+          }
+        }
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -53,6 +121,21 @@ const useHuddle = (props) => {
     const handleDismiss = () => {
       showToasterRef.current = null;
       toaster.info("Huddle skipped.");
+      actions.skipHuddle({
+        channel_id: huddle.channel.id,
+        huddle_id: huddle.id,
+        body: `HUDDLE_SKIP::${JSON.stringify({
+          huddle_id: huddle.id,
+          author: {
+            name: loggedUser.name,
+            first_name: loggedUser.first_name,
+            id: loggedUser.id,
+            profile_image_link: loggedUser.profile_image_link,
+          },
+          user_bot: huddle.user_bot,
+        })}`,
+      });
+
       if (huddleAnswered) {
         const { channels } = JSON.parse(huddleAnswered);
         localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, huddle.channel.id], day: currentDate.getDay() }));
@@ -79,11 +162,10 @@ const useHuddle = (props) => {
       closeButton: CloseButton,
     };
 
-    if (selectedChannel && selectedChannel.id !== huddle.channel.id) {
-      showToasterRef.current = true;
-      huddleRef.current = huddle.id;
-      toast(`Huddle time at ${huddle.channel.name}`, options);
-    }
+    showToasterRef.current = true;
+    huddleRef.current = huddle.id;
+
+    toast(`Huddle time at ${huddle.channel.name}`, options);
   } else if (showToasterRef.current && huddle && selectedChannel && selectedChannel.id === huddle.channel.id) {
     showToasterRef.current = null;
     huddleRef.current = null;
@@ -104,8 +186,8 @@ const useHuddle = (props) => {
   }
 
   setInterval(() => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDay();
+    const d = new Date();
+    const currentDay = d.getDay();
     const huddleStorage = localStorage.getItem("huddle");
     //setCurrentTime(currentDate.getTime());
     if (huddleStorage) {
@@ -114,6 +196,10 @@ const useHuddle = (props) => {
         localStorage.removeItem("huddle");
         dispatch(clearHuddleAnswers());
       }
+    }
+
+    if (d.getDate() !== currentDate.getDate()) {
+      dispatch(adjustHuddleDate());
     }
   }, 60000);
 };
