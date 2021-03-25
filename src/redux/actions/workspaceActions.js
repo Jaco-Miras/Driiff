@@ -204,3 +204,6 @@ export function postResendInvite(payload, callback) {
 export function createTeamChannel(payload, callback) {
   return dispatchActionToReducer(createTeamChannelService(payload), "CREATE_TEAM_CHANNEL_START", "CREATE_TEAM_CHANNEL_SUCCESS", "CREATE_TEAM_CHANNEL_FAIL", callback);
 }
+export function incomingTeamChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_TEAM_CHANNEL", payload, callback);
+}
