@@ -66,7 +66,9 @@ const ChatTitleDate = (props) => {
     <Wrapper className={"d-flex justify-content-between align-items-center"}>
       <ChannelTitleContainer className={`mb-1 ${channel.is_read ? "" : "is-unread"} ${className}`} selectedChannel={selectedChannel} channel={channel}>
         <ToolTip direction="up-start" arrow={false} content={channel.title}>
-          <span>{chatTitle}</span>
+          <span>
+            {chatTitle} {channel.team && channel.type === "TOPIC" && "(team chat)"} {!channel.team && channel.is_shared && channel.type === "TOPIC" && "(client chat)"}
+          </span>
         </ToolTip>
       </ChannelTitleContainer>
       <span className={"small text-muted chat-timestamp_text"} dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }} />

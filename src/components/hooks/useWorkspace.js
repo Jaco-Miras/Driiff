@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, useHistory } from "react-router-dom";
 import { useSettings, useWorkspaceActions, useToaster } from "../hooks";
 
 const useWorkspace = () => {
@@ -10,11 +10,13 @@ const useWorkspace = () => {
   } = useSettings();
   const toaster = useToaster();
   const route = useRouteMatch();
+  const history = useHistory();
   const { params, url } = route;
   const actions = useWorkspaceActions();
   const { activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded } = useSelector((state) => state.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const user = useSelector((state) => state.session.user);
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
@@ -44,6 +46,9 @@ const useWorkspace = () => {
       sort_by: orderChannel.sort_by.toLowerCase(),
       order_by: orderChannel.order_by,
     });
+    if (user.type === "external" && url.startsWith("/workspace/team-chat")) {
+      history.push("/workspace/chat");
+    }
   }, []);
 
   useEffect(() => {
@@ -136,9 +141,9 @@ const useWorkspace = () => {
     //check if workspace is active and channel is not set yet
     if (activeTopic && !selectedChannel && Object.keys(channels).length && url.startsWith("/workspace")) {
       if (url.startsWith("/workspace/team-chat")) {
-        if (activeTopic.team_channel.code && channels.hasOwnProperty(activeTopic.team_channel.code)) {
+        if (activeTopic.team_channel.code && channels.hasOwnProperty(activeTopic.team_channel.id)) {
           actions.selectChannel(channels[activeTopic.team_channel.id]);
-        } else if (activeTopic.team_channel.code && !channels.hasOwnProperty(activeTopic.team_channel.code)) {
+        } else if (activeTopic.team_channel.code && !channels.hasOwnProperty(activeTopic.team_channel.id)) {
           if (!fetchingChannel) {
             setFetchingChannel(true);
             actions.fetchChannel({ code: activeTopic.team_channel.code }, () => setFetchingChannel(false));
@@ -180,7 +185,7 @@ const useWorkspace = () => {
         }
       }
     }
-  }, [activeTopic, selectedChannel, fetchingChannel, url]);
+  }, [activeTopic, selectedChannel, fetchingChannel, url, channels]);
 
   useEffect(() => {
     if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/")) {

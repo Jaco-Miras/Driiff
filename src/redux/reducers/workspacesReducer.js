@@ -133,11 +133,7 @@ export default (state = INITIAL_STATE, action) => {
               is_lock: t.private,
               folder_id: ws.id,
               folder_name: ws.name,
-              team_channel: {
-                id: 0,
-                code: null,
-                icon_link: null,
-              },
+              team_channel: t.team_channel,
               type: "WORKSPACE",
             };
           });
@@ -2658,6 +2654,43 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           }),
         },
+      };
+    }
+    case "CREATE_TEAM_CHANNEL_SUCCESS": {
+      return {
+        ...state,
+        workspaces: {
+          ...Object.values(state.workspaces)
+            .map((ws) => {
+              if (ws.id === action.data.post_id) {
+                return {
+                  ...ws,
+                  team_channel: {
+                    id: action.data.id,
+                    code: action.data.code,
+                    icon_link: null,
+                  },
+                };
+              } else {
+                return ws;
+              }
+            })
+            .reduce((workspaces, workspace) => {
+              workspaces[workspace.id] = workspace;
+              return workspaces;
+            }, {}),
+        },
+        activeTopic:
+          state.activeTopic && state.activeTopic.id === action.data.post_id
+            ? {
+                ...state.activeTopic,
+                team_channel: {
+                  id: action.data.id,
+                  code: action.data.code,
+                  icon_link: null,
+                },
+              }
+            : state.activeTopic,
       };
     }
     default:

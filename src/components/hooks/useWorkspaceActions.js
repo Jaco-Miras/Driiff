@@ -114,8 +114,9 @@ const useWorkspaceActions = () => {
     (payload, callback) => {
       dispatch(
         getChannel(payload, (err, res) => {
-          callback();
-          if (err) return;
+          if (err) {
+            callback();
+          }
           let channel = {
             ...res.data,
             hasMore: true,
@@ -125,7 +126,7 @@ const useWorkspaceActions = () => {
             isFetching: false,
           };
           dispatch(addToChannels(channel));
-          // selectChannel(channel)
+          selectChannel(channel, () => callback());
         })
       );
     },
