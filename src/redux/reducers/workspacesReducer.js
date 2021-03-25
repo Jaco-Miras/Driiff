@@ -2656,18 +2656,18 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "CREATE_TEAM_CHANNEL_SUCCESS": {
+    case "INCOMING_TEAM_CHANNEL": {
       return {
         ...state,
         workspaces: {
           ...Object.values(state.workspaces)
             .map((ws) => {
-              if (ws.id === action.data.post_id) {
+              if (ws.id === action.data.workspace_id) {
                 return {
                   ...ws,
                   team_channel: {
-                    id: action.data.id,
-                    code: action.data.code,
+                    id: action.data.team_channel.id,
+                    code: action.data.team_channel.code,
                     icon_link: null,
                   },
                 };
@@ -2681,12 +2681,12 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
         },
         activeTopic:
-          state.activeTopic && state.activeTopic.id === action.data.post_id
+          state.activeTopic && state.activeTopic.id === action.data.workspace_id
             ? {
                 ...state.activeTopic,
                 team_channel: {
-                  id: action.data.id,
-                  code: action.data.code,
+                  id: action.data.team_channel.id,
+                  code: action.data.team_channel.code,
                   icon_link: null,
                 },
               }

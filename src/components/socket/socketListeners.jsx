@@ -140,6 +140,7 @@ import {
   incomingArchivedWorkspaceChannel,
   incomingDeletedWorkspaceFolder,
   incomingMovedTopic,
+  incomingTeamChannel,
   incomingTimeline,
   incomingUnArchivedWorkspaceChannel,
   incomingUpdatedWorkspaceFolder,
@@ -902,6 +903,10 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".workspace-team-channel", (e) => {
+        console.log(e);
+        this.props.incomingTeamChannel(e);
+      })
       .listen(".announcement-notification", (e) => {
         console.log(e);
         switch (e.SOCKET_TYPE) {
@@ -1788,6 +1793,7 @@ function mapDispatchToProps(dispatch) {
     incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
     getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
     incomingPostRequired: bindActionCreators(incomingPostRequired, dispatch),
+    incomingTeamChannel: bindActionCreators(incomingTeamChannel, dispatch),
   };
 }
 
