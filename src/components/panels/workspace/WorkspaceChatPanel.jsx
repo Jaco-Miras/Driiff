@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ChatContentPanel } from "../chat";
 import { useRouteMatch } from "react-router-dom";
 import { SvgEmptyState } from "../../common";
+import { createTeamChannel } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div``;
 
@@ -31,19 +32,27 @@ const EmptyState = styled.div`
 const WorkspaceChatPanel = (props) => {
   const { className = "", workspace } = props;
   const route = useRouteMatch();
+  const dispatch = useDispatch();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const user = useSelector((state) => state.session.user);
   const [activating, setActivating] = useState(false);
 
   const handleActivateTeamChat = () => {
     if (!activating) {
       setActivating(true);
+      dispatch(
+        createTeamChannel({ id: workspace.id }, (err, res) => {
+          console.log(res, "create team channel");
+          setActivating(false);
+        })
+      );
     }
   };
 
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>
       <Chatblock className="row no-gutters chat-block">
-        {workspace && !workspace.team_channel.code && route.path.startsWith("/workspace/team-chat/") && (
+        {workspace && !workspace.team_channel.code && route.path.startsWith("/workspace/team-chat/") && user.type === "internal" && (
           <EmptyState>
             <SvgEmptyState icon={3} height={252} />
             <button className="btn btn-outline-primary btn-block" disable={activating} onClick={handleActivateTeamChat}>
@@ -51,7 +60,7 @@ const WorkspaceChatPanel = (props) => {
             </button>
           </EmptyState>
         )}
-        {(route.path.startsWith("/workspace/chat") || (workspace && workspace.team_channel.code)) && <ChatContentPanel className={"col-lg-12"} isWorkspace="true" selectedChannel={selectedChannel} />}
+        {(route.path.startsWith("/workspace/chat") || (workspace && workspace.team_channel.code && user.type === "internal")) && <ChatContentPanel className={"col-lg-12"} isWorkspace="true" selectedChannel={selectedChannel} />}
       </Chatblock>
     </Wrapper>
   );

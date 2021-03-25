@@ -342,3 +342,16 @@ export function postResendInvite(payload) {
     data: payload,
   });
 }
+/**
+ * @param {Object} payload
+ * @param {string} payload.id
+ * @returns {Promise<*>}
+ */
+export function createTeamChannel(payload) {
+  let url = `/v2/workspace/${payload.id}/team-channel`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    //data: payload,
+  });
+}

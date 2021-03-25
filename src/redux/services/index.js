@@ -219,6 +219,7 @@ export {
 
 export {
   createWorkspace,
+  createTeamChannel,
   deleteWorkspace,
   deleteWorkspaceRole,
   deleteWorkspaceFolder,
