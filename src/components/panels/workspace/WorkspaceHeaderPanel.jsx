@@ -494,7 +494,7 @@ const WorspaceHeaderPanel = (props) => {
                   <Route
                     {...props}
                     exact={true}
-                    render={(props) => <WorkspacePageHeaderPanel {...props} workspace={activeTopic} />}
+                    render={(props) => <WorkspacePageHeaderPanel {...props} user={user} workspace={activeTopic} />}
                     path={[
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",

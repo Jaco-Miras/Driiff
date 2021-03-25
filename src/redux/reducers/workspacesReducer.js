@@ -133,6 +133,11 @@ export default (state = INITIAL_STATE, action) => {
               is_lock: t.private,
               folder_id: ws.id,
               folder_name: ws.name,
+              team_channel: {
+                id: 0,
+                code: null,
+                icon_link: null,
+              },
               type: "WORKSPACE",
             };
           });
@@ -147,6 +152,7 @@ export default (state = INITIAL_STATE, action) => {
             unread_posts: ws.topic_detail.unread_posts,
             folder_id: null,
             folder_name: null,
+            team_channel: ws.topic_detail.team_channel,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -219,6 +225,11 @@ export default (state = INITIAL_STATE, action) => {
             code: action.data.channel.code,
             id: action.data.channel.id,
             loaded: false,
+          },
+          team_channel: {
+            code: null,
+            id: 0,
+            icon_link: null,
           },
           created_at: action.data.topic.created_at,
           updated_at: action.data.topic.created_at,
@@ -417,21 +428,21 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? { ...state.workspaces[action.data.id] } : state.activeTopic,
       };
     }
-    case "SET_SELECTED_CHANNEL": {
-      // let workspace = { ...state.activeTopic };
-      // let workspaces = { ...state.workspaces };
-      // if (action.data.type === "TOPIC") {
-      //   workspaces[workspace.id].channel.loaded = true;
-      //   workspace.channel.loaded = true;
-      // }
+    // case "SET_SELECTED_CHANNEL": {
+    //   // let workspace = { ...state.activeTopic };
+    //   // let workspaces = { ...state.workspaces };
+    //   // if (action.data.type === "TOPIC") {
+    //   //   workspaces[workspace.id].channel.loaded = true;
+    //   //   workspace.channel.loaded = true;
+    //   // }
 
-      return {
-        ...state,
-        // activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
-        // workspaces: workspaces,
-        activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId,
-      };
-    }
+    //   return {
+    //     ...state,
+    //     // activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
+    //     // workspaces: workspaces,
+    //     activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId,
+    //   };
+    // }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       action.data.forEach((c) => {

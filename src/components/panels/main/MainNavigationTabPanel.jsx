@@ -288,7 +288,7 @@ const MainNavigationTabPanel = (props) => {
   const dispatch = useDispatch();
 
   const { count } = useTodos();
-  const { actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded } = useWorkspace(true);
+  const { actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded } = useWorkspace();
   const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
 
   const { _t } = useTranslation();
