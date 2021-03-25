@@ -63,7 +63,7 @@ const MainNavLink = styled(NavLink)`
 
 const WorkspacePageHeaderPanel = (props) => {
   const history = useHistory();
-  const { className = "", workspace } = props;
+  const { className = "", workspace, user } = props;
 
   let pathname = props.match.url;
   if (
@@ -92,6 +92,8 @@ const WorkspacePageHeaderPanel = (props) => {
     pageTitleChat: _t("PAGE_TITLE.CHAT", "Chat"),
     pageTitleFiles: _t("PAGE_TITLE.FILES", "Files"),
     pageTitlePeople: _t("PAGE_TITLE.PEOPLE", "People"),
+    pageTitleClientChat: _t("PAGE_TITLE.CLIENT_CHAT", "Client chat"),
+    pageTitleTeamChat: _t("PAGE_TITLE.TEAM_CHAT", "Team chat"),
   };
 
   return (
@@ -103,9 +105,17 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
+          {workspace && user.type === "internal" && workspace.is_shared && (
+            <li className="nav-item">
+              <MainNavLink isSub={true} to={`/workspace/team-chat${pathname}`}>
+                {dictionary.pageTitleTeamChat}
+                {/* {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>} */}
+              </MainNavLink>
+            </li>
+          )}
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
-              {dictionary.pageTitleChat}
+              {workspace && workspace.is_shared && user.type === "internal" ? dictionary.pageTitleClientChat : dictionary.pageTitleChat}
               {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
             </MainNavLink>
           </li>
@@ -125,11 +135,6 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitlePeople}
             </MainNavLink>
           </li>
-          {/* <li className="nav-item">
-            <MainNavLink isSub={true} to={"/releases"}>
-              Releases
-            </MainNavLink>
-          </li> */}
         </Navbar>
       </Wrapper>
     </>
