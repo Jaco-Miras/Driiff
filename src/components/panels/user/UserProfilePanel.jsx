@@ -159,7 +159,8 @@ const UserProfilePanel = (props) => {
     external: _t("PROFILE.EXTERNAL", "External"),
   };
 
-  const isAdmin = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
+  //const isAdmin = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
+  const isAdmin = loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active;
 
   const getValidClass = useCallback((valid) => {
     if (typeof valid !== "boolean") {
@@ -822,7 +823,7 @@ const UserProfilePanel = (props) => {
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.email}</div>
                   <div className="col col-form">
-                    {readOnlyFields.includes("email") || user.hasOwnProperty("history_email_change") ? (
+                    {readOnlyFields.includes("email") ? (
                       <Label>{user.email}</Label>
                     ) : (
                       <>
