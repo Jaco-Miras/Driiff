@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTimeFormat } from "../../hooks";
 import { Badge, ToolTip } from "../../common";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -42,6 +43,8 @@ const ChatTitleDate = (props) => {
 
   const { className = "", search = "", selectedChannel, channel } = props;
 
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+
   const getHighlightedSearchTitle = (title) => {
     if (search === "") {
       return title;
@@ -67,7 +70,8 @@ const ChatTitleDate = (props) => {
       <ChannelTitleContainer className={`mb-1 ${channel.is_read ? "" : "is-unread"} ${className}`} selectedChannel={selectedChannel} channel={channel}>
         <ToolTip direction="up-start" arrow={false} content={channel.title}>
           <span>
-            {chatTitle} {channel.team && channel.is_shared && channel.type === "TOPIC" && "(team chat)"} {!channel.team && channel.is_shared && channel.type === "TOPIC" && "(client chat)"}
+            {chatTitle} {channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(team chat)"}{" "}
+            {!channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(client chat)"}
           </span>
         </ToolTip>
       </ChannelTitleContainer>
