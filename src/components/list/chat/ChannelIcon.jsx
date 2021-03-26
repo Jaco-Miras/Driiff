@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   position: relative;
@@ -100,6 +101,7 @@ const handleInitials = (title) => {
 
 const ChannelIcon = (props) => {
   const { className = "", channel } = props;
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channelTitle = channel.title ? channel.title.toLowerCase() : "";
   return (
     <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)}>
@@ -130,8 +132,8 @@ const ChannelIcon = (props) => {
           )}
         </>
       )}
-      {channel.team && channel.is_shared && channel.type === "TOPIC" && <EyeIcon icon="eye" />}
-      {!channel.team && channel.is_shared && channel.type === "TOPIC" && <EyeIcon icon="eye-off" />}
+      {channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye-off" />}
+      {!channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye" />}
     </Wrapper>
   );
 };
