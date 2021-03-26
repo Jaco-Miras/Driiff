@@ -130,7 +130,7 @@ const ChannelIcon = (props) => {
           )}
         </>
       )}
-      {channel.team && channel.type === "TOPIC" && <EyeIcon icon="eye" />}
+      {channel.team && channel.is_shared && channel.type === "TOPIC" && <EyeIcon icon="eye" />}
       {!channel.team && channel.is_shared && channel.type === "TOPIC" && <EyeIcon icon="eye-off" />}
     </Wrapper>
   );

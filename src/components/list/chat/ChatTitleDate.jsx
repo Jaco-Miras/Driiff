@@ -67,7 +67,7 @@ const ChatTitleDate = (props) => {
       <ChannelTitleContainer className={`mb-1 ${channel.is_read ? "" : "is-unread"} ${className}`} selectedChannel={selectedChannel} channel={channel}>
         <ToolTip direction="up-start" arrow={false} content={channel.title}>
           <span>
-            {chatTitle} {channel.team && channel.type === "TOPIC" && "(team chat)"} {!channel.team && channel.is_shared && channel.type === "TOPIC" && "(client chat)"}
+            {chatTitle} {channel.team && channel.is_shared && channel.type === "TOPIC" && "(team chat)"} {!channel.team && channel.is_shared && channel.type === "TOPIC" && "(client chat)"}
           </span>
         </ToolTip>
       </ChannelTitleContainer>
