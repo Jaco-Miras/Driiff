@@ -199,6 +199,7 @@ const CreateEditWorkspaceModal = (props) => {
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.folders);
   const [userOptions, setUserOptions] = useState([]);
@@ -259,6 +260,8 @@ const CreateEditWorkspaceModal = (props) => {
   };
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+
+  const allUsers = [...Object.values(users), ...inactiveUsers];
 
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
@@ -432,7 +435,7 @@ const CreateEditWorkspaceModal = (props) => {
     const isSelectedOption = selectValue.some((o) => o.email === inputValue);
     if (!isExistingOption && !isSelectedOption && inputValue !== "") {
       if (EmailRegex.test(inputValue)) {
-        const userExists = selectOptions.some((uo) => uo.email === inputValue);
+        const userExists = allUsers.some((uo) => uo.email === inputValue);
         if (!userExists) {
           return true;
         }
