@@ -220,11 +220,12 @@ export default (state = INITIAL_STATE, action) => {
           channel: {
             code: action.data.channel.code,
             id: action.data.channel.id,
+            icon_link: null,
             loaded: false,
           },
           team_channel: {
-            code: null,
-            id: 0,
+            code: action.data.team_channel.code,
+            id: action.data.team_channel.id,
             icon_link: null,
           },
           created_at: action.data.topic.created_at,

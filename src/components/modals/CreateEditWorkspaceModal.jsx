@@ -723,6 +723,11 @@ const CreateEditWorkspaceModal = (props) => {
                   id: res.data.channel.id,
                   loaded: false,
                 },
+                team_channel: {
+                  code: res.data.team_channel.code,
+                  id: res.data.team_channel.id,
+                  icon_link: res.data.team_channel.icon_link,
+                },
                 created_at: res.data.topic.created_at,
                 updated_at: res.data.topic.created_at,
                 is_shared: form.has_externals,
