@@ -228,8 +228,8 @@ export default (state = INITIAL_STATE, action) => {
             loaded: false,
           },
           team_channel: {
-            code: null,
-            id: 0,
+            code: action.data.members.filter((m) => m.type === "external").length > 0 && action.data.team_channel.code ? action.data.team_channel.code : null,
+            id: action.data.members.filter((m) => m.type === "external").length > 0 && action.data.team_channel.ud ? action.data.team_channel.id : null,
             icon_link: null,
           },
           created_at: action.data.topic.created_at,
