@@ -102,7 +102,7 @@ const ExternalWorkspaceList = (props) => {
     //history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
   };
 
-  let unread_count = workspace.unread_chats + workspace.unread_posts;
+  let unread_count = workspace.unread_chats + workspace.unread_posts + workspace.team_unread_chats;
 
   return (
     <Wrapper ref={ref.container} className={`workspace-list workspace-list-external fadeIn ${className}`} selected={activeTopic && activeTopic.id === workspace.id} show={show}>
