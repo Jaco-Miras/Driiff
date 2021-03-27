@@ -160,7 +160,7 @@ const UserProfilePanel = (props) => {
   };
 
   //const isAdmin = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
-  const isAdmin = loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active;
+  const isAdmin = loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1;
 
   const getValidClass = useCallback((valid) => {
     if (typeof valid !== "boolean") {
@@ -204,7 +204,6 @@ const UserProfilePanel = (props) => {
     (e) => {
       if (e.target !== null) {
         const { name, value } = e.target;
-
         if (user[name] === form[name]) {
           setFormUpdate((prevState) => ({
             valid: {
@@ -353,7 +352,86 @@ const UserProfilePanel = (props) => {
         }
       }
     } else {
-      toaster.info("Nothing was updated.");
+      // check for changes in email
+      if (user && form.email && user.email !== form.email) {
+        if (requiredFields.includes("email") && form.email.trim() === "") {
+          setFormUpdate((prevState) => ({
+            valid: {
+              ...prevState.valid,
+              email: false,
+            },
+            feedbackState: {
+              ...prevState.feedbackState,
+              email: false,
+            },
+            feedbackText: {
+              ...prevState.feedbackText,
+              email: "Email is required",
+            },
+          }));
+        } else if (form.email.trim() !== "" && !EmailRegex.test(form.email.trim())) {
+          setFormUpdate((prevState) => ({
+            valid: {
+              ...prevState.valid,
+              email: false,
+            },
+            feedbackState: {
+              ...prevState.feedbackState,
+              email: false,
+            },
+            feedbackText: {
+              ...prevState.feedbackText,
+              email: "Invalid email format",
+            },
+          }));
+        } else {
+          checkEmail(form.email, (err, res) => {
+            if (res) {
+              if (res.data.status) {
+                setFormUpdate((prevState) => ({
+                  valid: {
+                    ...prevState.valid,
+                    email: false,
+                  },
+                  feedbackState: {
+                    ...prevState.feedbackState,
+                    email: false,
+                  },
+                  feedbackText: {
+                    ...prevState.feedbackText,
+                    email: "Email is already taken",
+                  },
+                }));
+              } else {
+                if (isAdmin) {
+                  if (user.email !== form.email) {
+                    update({ ...form, change_email: 1 }, (err, res) => {
+                      if (res) {
+                        setEditInformation(false);
+                      }
+                    });
+                  } else {
+                    update({ ...form }, (err, res) => {
+                      if (res) {
+                        setEditInformation(false);
+                      }
+                    });
+                  }
+                } else {
+                  update(form, (err, res) => {
+                    if (res) {
+                      setEditInformation(false);
+                    }
+                  });
+                }
+              }
+            }
+          });
+        }
+      } else {
+        toaster.info("Nothing was updated.");
+      }
+
       setEditInformation(false);
     }
   }, [form, formUpdate, update, setEditInformation, user, isAdmin]);
@@ -572,7 +650,7 @@ const UserProfilePanel = (props) => {
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
                   {dictionary.information}
-                  {isLoggedUser || (loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active) ? (
+                  {isLoggedUser || isAdmin ? (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                       <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
