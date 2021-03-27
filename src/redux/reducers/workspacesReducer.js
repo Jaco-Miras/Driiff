@@ -228,8 +228,8 @@ export default (state = INITIAL_STATE, action) => {
             loaded: false,
           },
           team_channel: {
-            code: action.data.team_channel.code,
-            id: action.data.team_channel.id,
+            code: null,
+            id: 0,
             icon_link: null,
           },
           created_at: action.data.topic.created_at,
