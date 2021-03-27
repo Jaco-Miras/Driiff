@@ -88,7 +88,7 @@ const TopicList = (props) => {
     }
   }, [workspaceRef, showTopics, triggerFocus, topic]);
 
-  let unread_count = topic.unread_chats + topic.unread_posts;
+  let unread_count = topic.unread_chats + topic.unread_posts + topic.team_unread_chats;
 
   return (
     <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>

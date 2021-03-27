@@ -273,11 +273,12 @@ const CompanyPostItemPanel = (props) => {
   );
 
   const renderUserResponsibleNames = () => {
+    const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
     const hasMe = postRecipients.some((r) => r.type_id === user.id);
-    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
+    const recipientSize = winSize.width > 576 ? (hasExternalWorkspace ? 3 : hasMe ? 4 : 5) : hasMe || hasExternalWorkspace ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-    const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
+
     if (post.shared_with_client && hasExternalWorkspace) {
       recipient_names += `<span class="receiver client-shared">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
     } else if (!post.shared_with_client && hasExternalWorkspace) {

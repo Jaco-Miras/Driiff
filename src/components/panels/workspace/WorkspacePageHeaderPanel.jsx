@@ -105,11 +105,11 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
-          {workspace && user.type === "internal" && workspace.team_channel.code && (
+          {workspace && user.type === "internal" && (
             <li className="nav-item">
               <MainNavLink isSub={true} to={`/workspace/team-chat${pathname}`}>
                 {dictionary.pageTitleTeamChat}
-                {/* {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>} */}
+                {workspace !== null && workspace?.team_unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.team_unread_chats}</div>}
               </MainNavLink>
             </li>
           )}
