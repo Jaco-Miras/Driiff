@@ -156,6 +156,7 @@ const WorkspacePostsPanel = (props) => {
   const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: false });
   const readPosts = posts.filter((p) => p.is_unread === 0 && p.unread_count === 0);
   const unreadPosts = posts.filter((p) => p.is_unread === 1 || p.unread_count > 0);
+  const isExternalUser = user.type === "external";
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -501,6 +502,7 @@ const WorkspacePostsPanel = (props) => {
                       workspace={workspace}
                       isMember={isMember}
                       disableOptions={disableOptions}
+                      isExternalUser={isExternalUser}
                     />
                   </PostDetailWrapper>
                 </div>
@@ -557,7 +559,17 @@ const WorkspacePostsPanel = (props) => {
                           <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                             {unreadPosts.map((p, k) => {
                               return (
-                                <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={true} />
+                                <PostItemPanel
+                                  key={p.id}
+                                  firstPost={k === 0}
+                                  post={p}
+                                  postActions={actions}
+                                  dictionary={dictionary}
+                                  toggleCheckbox={handleToggleCheckbox}
+                                  checked={checkedPosts.some((id) => id === p.id)}
+                                  hasUnread={true}
+                                  isExternalUser={isExternalUser}
+                                />
                               );
                             })}
                           </UnreadPostsContainer>
@@ -576,7 +588,17 @@ const WorkspacePostsPanel = (props) => {
                           <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                             {readPosts.map((p, k) => {
                               return (
-                                <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={false} />
+                                <PostItemPanel
+                                  key={p.id}
+                                  firstPost={k === 0}
+                                  post={p}
+                                  postActions={actions}
+                                  dictionary={dictionary}
+                                  toggleCheckbox={handleToggleCheckbox}
+                                  checked={checkedPosts.some((id) => id === p.id)}
+                                  hasUnread={false}
+                                  isExternalUser={isExternalUser}
+                                />
                               );
                             })}
                           </ReadPostsContainer>

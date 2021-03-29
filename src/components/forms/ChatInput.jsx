@@ -513,11 +513,7 @@ const ChatInput = (props) => {
           let lastReply = selectedChannel.replies
             .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
             .filter((r) => {
-              if (selectedChannel.is_shared && slugs.length) {
-                return slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].external_id && typeof r.id === "number" && !r.is_deleted;
-              } else {
-                return !r.is_deleted && r.user && r.user.id === user.id;
-              }
+              return !r.is_deleted && r.user && r.user.id === user.id;
             })[0];
 
           if (typeof lastReply !== "undefined") {
