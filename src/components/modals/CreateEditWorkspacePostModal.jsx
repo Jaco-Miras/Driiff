@@ -1259,6 +1259,7 @@ const CreateEditWorkspacePostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           prioMentionIds={addressIds}
+          disableBodyMention={isExternalUser}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
