@@ -734,7 +734,6 @@ const CreateEditWorkspacePostModal = (props) => {
     if (editor.getContents().ops && editor.getContents().ops.length) {
       mentionIds = editor
         .getContents()
-        .ops.filter((m) => m.insert.mention)
         .ops.filter((m) => m.insert.mention && m.insert.mention.type !== "external")
         .map((i) => i.insert.mention.id);
       handleMentionUser(mentionIds);
