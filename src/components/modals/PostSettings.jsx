@@ -28,7 +28,7 @@ const ApproveOptions = styled.div`
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { approverOptions, dictionary, form, requiredUserOptions, toggleCheck, toggleApprover, handleSelectApprover, handleSelectRequiredUsers } = props;
+  const { approverOptions, dictionary, form, requiredUserOptions, toggleCheck, toggleApprover, handleSelectApprover, handleSelectRequiredUsers, isExternalUser } = props;
   const hasExternal = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
@@ -60,19 +60,21 @@ const PostSettings = (props) => {
       <ApproveOptions className="d-flex align-items-center">
         {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
       </ApproveOptions>
-      <div className="d-flex align-items-center">
-        <CheckBox
-          name="shared_with_client"
-          checked={form.shared_with_client}
-          onClick={(e) => {
-            if (hasExternal) toggleCheck(e);
-          }}
-          type="success"
-          disabled={!hasExternal || form.selectedAddressTo.length === 0}
-        >
-          {dictionary.shareWithClient}
-        </CheckBox>
-      </div>
+      {!isExternalUser && (
+        <div className="d-flex align-items-center">
+          <CheckBox
+            name="shared_with_client"
+            checked={form.shared_with_client}
+            onClick={(e) => {
+              if (hasExternal) toggleCheck(e);
+            }}
+            type="success"
+            disabled={!hasExternal || form.selectedAddressTo.length === 0}
+          >
+            {dictionary.shareWithClient}
+          </CheckBox>
+        </div>
+      )}
     </CheckBoxGroup>
   );
 };
