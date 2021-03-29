@@ -274,6 +274,7 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
+  const isExternalUser = user.type === "external";
   const recipients = useSelector((state) => state.global.recipients);
   const company = recipients.find((r) => r.main_department === true);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -1291,6 +1292,7 @@ const CreateEditCompanyPostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           prioMentionIds={addressIds}
+          disableBodyMention={isExternalUser}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
