@@ -283,6 +283,7 @@ const WorspaceHeaderPanel = (props) => {
     toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
       topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
     }),
+    withClient: _t("PAGE.WITH_CLIENT", "With client"),
   };
 
   const actions = useWorkspaceSearchActions();
@@ -436,13 +437,13 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      <li className="nav-item">
-                        {activeTopic.is_shared && (
+                      {activeTopic.is_shared && !isExternal && (
+                        <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"}>
-                            <Icon icon="eye" /> With client
+                            <Icon icon="eye" /> {dictionary.withClient}
                           </div>
-                        )}
-                      </li>
+                        </li>
+                      )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -478,13 +479,13 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      <li className="nav-item">
-                        {activeTopic.is_shared && (
+                      {activeTopic.is_shared && !isExternal && (
+                        <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"}>
-                            <Icon icon="eye" /> With client
+                            <Icon icon="eye" /> {dictionary.withClient}
                           </div>
-                        )}
-                      </li>
+                        </li>
+                      )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}
