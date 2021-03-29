@@ -14,7 +14,7 @@ import { useFileActions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getExternalUsers } from "../../redux/actions/userAction";
-import Tooltip from "react-tooltip-lite";
+import { debounce } from "lodash";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -117,6 +117,14 @@ const WrapperDiv = styled(InputGroup)`
     flex-flow: row !important;
     label {
       min-width: 0;
+    }
+  }
+  &.external-select {
+    .invalid-feedback {
+      display: block;
+    }
+    .react-select__control {
+      border-color: ${(props) => (props.valid === false ? "red" : "#cccccc")}!important;
     }
   }
 `;
@@ -245,12 +253,14 @@ const CreateEditWorkspaceModal = (props) => {
     description: null,
     has_folder: null,
     team: null,
+    external: null,
   });
   const [feedback, setFeedback] = useState({
     name: "",
     description: "",
     folder: "",
     team: "",
+    external: "",
   });
   const refs = {
     container: useRef(null),
@@ -301,6 +311,8 @@ const CreateEditWorkspaceModal = (props) => {
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     workspaceWithExternalsInfo1: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO1", "This function will allow users outside your company be invited on this workspace."),
     workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
+    emailExists: _t("WORKSPACE.EMAIL_EXISTS", "Email already used"),
+    invalidEmail: _t("WORKSPACE.INVALID_EMAIL", "Invalid email"),
   };
 
   const _validateName = useCallback(() => {
@@ -430,6 +442,41 @@ const CreateEditWorkspaceModal = (props) => {
     }));
   };
 
+  const validateExternalEmail = useCallback(
+    debounce((valid, invalidEmail) => {
+      if (valid) {
+        setFeedback((prevState) => {
+          return { ...prevState, external: "" };
+        });
+        setValid((prevState) => {
+          return { ...prevState, external: null };
+        });
+      } else if (valid === false && invalidEmail === false) {
+        setFeedback((prevState) => {
+          return { ...prevState, external: dictionary.emailExists };
+        });
+        setValid((prevState) => {
+          return { ...prevState, external: false };
+        });
+      } else if (valid === false && invalidEmail === true) {
+        setFeedback((prevState) => {
+          return { ...prevState, external: dictionary.invalidEmail };
+        });
+        setValid((prevState) => {
+          return { ...prevState, external: false };
+        });
+      } else {
+        setFeedback((prevState) => {
+          return { ...prevState, external: "" };
+        });
+        setValid((prevState) => {
+          return { ...prevState, external: null };
+        });
+      }
+    }, 300),
+    []
+  );
+
   const handleExternalValidation = (inputValue, selectValue, selectOptions) => {
     const isExistingOption = selectOptions.some((o) => o.email === inputValue);
     const isSelectedOption = selectValue.some((o) => o.email === inputValue);
@@ -437,9 +484,18 @@ const CreateEditWorkspaceModal = (props) => {
       if (EmailRegex.test(inputValue)) {
         const userExists = allUsers.some((uo) => uo.email === inputValue);
         if (!userExists) {
+          validateExternalEmail(true);
           return true;
+        } else {
+          validateExternalEmail(false, false);
         }
+      } else {
+        //invalid email
+        validateExternalEmail(false, true);
       }
+    } else {
+      //reset to default
+      validateExternalEmail(null);
     }
   };
 
@@ -1265,8 +1321,9 @@ const CreateEditWorkspaceModal = (props) => {
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
         {form.has_externals === true && (
-          <WrapperDiv className={"modal-input"}>
+          <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
             <Label for="people">{dictionary.externalGuest}</Label>
+            <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
             <SelectPeople
               creatable={true}
               valid={valid.team}
@@ -1280,6 +1337,7 @@ const CreateEditWorkspaceModal = (props) => {
               filterOption={filterOptions}
               formatCreateLabel={formatCreateLabel}
               isSearchable
+              classNamePrefix="react-select"
             />
           </WrapperDiv>
         )}
