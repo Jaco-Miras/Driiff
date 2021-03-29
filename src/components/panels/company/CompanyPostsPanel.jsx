@@ -151,6 +151,8 @@ const CompanyPostsPanel = (props) => {
   const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: false });
   const readPosts = posts.filter((p) => p.is_unread === 0 && p.unread_count === 0);
   const unreadPosts = posts.filter((p) => p.is_unread === 1 || p.unread_count > 0);
+  const isExternalUser = user.type === "external";
+
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
     const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
@@ -408,7 +410,18 @@ const CompanyPostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail readByUsers={readByUsers} post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} />
+                    <CompanyPostDetail
+                      readByUsers={readByUsers}
+                      post={post}
+                      posts={posts}
+                      filter={filter}
+                      postActions={actions}
+                      user={user}
+                      history={history}
+                      onGoBack={handleGoback}
+                      dictionary={dictionary}
+                      isExternalUser={isExternalUser}
+                    />
                   </PostDetailWrapper>
                 </div>
               ) : (
@@ -463,7 +476,18 @@ const CompanyPostsPanel = (props) => {
                         {unreadPosts.length > 0 && (
                           <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                             {unreadPosts.map((p) => {
-                              return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={true} />;
+                              return (
+                                <CompanyPostItemPanel
+                                  key={p.id}
+                                  post={p}
+                                  postActions={actions}
+                                  dictionary={dictionary}
+                                  toggleCheckbox={handleToggleCheckbox}
+                                  checked={checkedPosts.some((id) => id === p.id)}
+                                  hasUnread={true}
+                                  isExternalUser={isExternalUser}
+                                />
+                              );
                             })}
                           </UnreadPostsContainer>
                         )}
@@ -480,7 +504,18 @@ const CompanyPostsPanel = (props) => {
                         {readPosts.length > 0 && (
                           <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
                             {readPosts.map((p) => {
-                              return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={false} />;
+                              return (
+                                <CompanyPostItemPanel
+                                  key={p.id}
+                                  post={p}
+                                  postActions={actions}
+                                  dictionary={dictionary}
+                                  toggleCheckbox={handleToggleCheckbox}
+                                  checked={checkedPosts.some((id) => id === p.id)}
+                                  hasUnread={false}
+                                  isExternalUser={isExternalUser}
+                                />
+                              );
                             })}
                           </ReadPostsContainer>
                         )}

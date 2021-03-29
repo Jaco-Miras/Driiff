@@ -208,6 +208,8 @@ const PostBadgeWrapper = styled.div`
 const CompanyPostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions } = props;
 
+  const isExternalUser = user.type === "external";
+
   const dispatch = useDispatch();
 
   const refs = {
@@ -360,9 +362,9 @@ const CompanyPostBody = (props) => {
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
     const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
-    if (post.shared_with_client && hasExternalWorkspace) {
+    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
       recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
-    } else if (!post.shared_with_client && hasExternalWorkspace) {
+    } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
       recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
     }
     if (otherPostRecipients.length) {
