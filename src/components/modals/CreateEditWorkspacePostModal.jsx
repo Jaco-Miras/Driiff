@@ -242,6 +242,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
+  const isExternalUser = user.type === "external";
   const recipients = useSelector((state) => state.global.recipients);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
@@ -604,7 +605,7 @@ const CreateEditWorkspacePostModal = (props) => {
           : form.must_read || form.reply_required
           ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
           : [],
-      shared_with_client: form.shared_with_client && hasExternal ? 1 : 0,
+      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
     };
     // if (draftId) {
     //   dispatch(
@@ -1273,6 +1274,7 @@ const CreateEditWorkspacePostModal = (props) => {
             toggleApprover={toggleApprover}
             handleSelectApprover={handleSelectApprover}
             handleSelectRequiredUsers={handleSelectRequiredUsers}
+            isExternalUser={isExternalUser}
           />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>

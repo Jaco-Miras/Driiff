@@ -249,6 +249,7 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
+  const isExternalUser = user.type === "external";
   const recipients = useSelector((state) => state.global.recipients);
   const company = recipients.find((r) => r.main_department === true);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -594,7 +595,7 @@ const CreateEditCompanyPostModal = (props) => {
           : form.must_read || form.reply_required
           ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
           : [],
-      shared_with_client: form.shared_with_client && hasExternal ? 1 : 0,
+      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
     };
     // if (draftId) {
     //   dispatch(
@@ -1284,6 +1285,7 @@ const CreateEditCompanyPostModal = (props) => {
             toggleApprover={toggleApprover}
             handleSelectApprover={handleSelectApprover}
             handleSelectRequiredUsers={handleSelectRequiredUsers}
+            isExternalUser={isExternalUser}
           />
           {/* <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
