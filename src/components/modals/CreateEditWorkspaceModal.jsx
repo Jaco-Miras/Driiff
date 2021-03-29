@@ -253,7 +253,7 @@ const CreateEditWorkspaceModal = (props) => {
     description: null,
     has_folder: null,
     team: null,
-    external: null,
+    external: true,
   });
   const [feedback, setFeedback] = useState({
     name: "",
@@ -470,12 +470,18 @@ const CreateEditWorkspaceModal = (props) => {
           return { ...prevState, external: "" };
         });
         setValid((prevState) => {
-          return { ...prevState, external: null };
+          return { ...prevState, external: true };
         });
       }
     }, 300),
     []
   );
+
+  const handleMenuClose = () => {
+    setValid((prevState) => {
+      return { ...prevState, external: true };
+    });
+  };
 
   const handleExternalValidation = (inputValue, selectValue, selectOptions) => {
     const isExistingOption = selectOptions.some((o) => o.email === inputValue);
@@ -1333,6 +1339,7 @@ const CreateEditWorkspaceModal = (props) => {
               formatCreateLabel={formatCreateLabel}
               isSearchable
               classNamePrefix="react-select"
+              onMenuClose={handleMenuClose}
             />
           </WrapperDiv>
         )}
