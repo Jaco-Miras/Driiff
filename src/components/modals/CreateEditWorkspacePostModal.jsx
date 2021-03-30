@@ -498,11 +498,16 @@ const CreateEditWorkspacePostModal = (props) => {
       setForm({
         ...form,
         selectedAddressTo: [],
+        shared_with_client: false,
       });
     } else {
+      const hasExternal = e.some((r) => {
+        return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+      });
       setForm({
         ...form,
         selectedAddressTo: e,
+        shared_with_client: !hasExternal ? false : form.shared_with_client,
       });
     }
   };

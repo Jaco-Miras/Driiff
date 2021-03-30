@@ -16,13 +16,13 @@ const Wrapper = styled.li`
     margin-right: 0.25rem;
     width: 12px;
   }
-  &.has-unread {
-    background-color: #f7f7f7 !important;
+  // &.has-unread {
+  //   background-color: #f7f7f7 !important;
 
-    .dark & {
-      background-color: #2b2e31 !important;
-    }
-  }
+  //   .dark & {
+  //     background-color: #2b2e31 !important;
+  //   }
+  // }
   &:first-of-type {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -193,22 +193,22 @@ const AuthorRecipients = styled.div`
       border-radius: unset;
     }
   }
-  .client-shared {
-    background: #fb3;
-    color: #212529;
-    margin-right: 5px;
-    .feather {
-      margin-right: 5px;
-    }
-  }
-  .client-not-shared {
-    background: #33b5e5;
-    color: #212529;
-    margin-right: 5px;
-    .feather {
-      margin-right: 5px;
-    }
-  }
+  // .client-shared {
+  //   background: #fb3;
+  //   color: #212529;
+  //   margin-right: 5px;
+  //   .feather {
+  //     margin-right: 5px;
+  //   }
+  // }
+  // .client-not-shared {
+  //   background: #33b5e5;
+  //   color: #212529;
+  //   margin-right: 5px;
+  //   .feather {
+  //     margin-right: 5px;
+  //   }
+  // }
 `;
 
 const PostReplyCounter = styled.div`
@@ -240,6 +240,35 @@ const CheckBox = styled(TodoCheckBox)`
 const LockIcon = styled(SvgIconFeather)`
   width: 12px;
   margin: 0;
+`;
+
+const SharedBadge = styled.span`
+  border-radius: 6px;
+  font-size: 11px;
+  position: absolute;
+  top: -11px;
+  left: -10px;
+  padding: 2px 5px;
+  > svg {
+    width: 12px;
+    height: 12px;
+  }
+  &.client-shared {
+    background: #fb3;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
+  &.client-not-shared {
+    background: #33b5e5;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
 `;
 
 const PostItemPanel = (props) => {
@@ -276,16 +305,10 @@ const PostItemPanel = (props) => {
   );
 
   const renderUserResponsibleNames = () => {
-    const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
     const hasMe = postRecipients.some((r) => r.type_id === user.id);
-    const recipientSize = winSize.width > 576 ? (hasExternalWorkspace && !isExternalUser ? 3 : hasMe ? 4 : 5) : hasMe || (hasExternalWorkspace && !isExternalUser) ? 0 : 1;
+    const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-shared">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
-    } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-not-shared">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
-    }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
@@ -377,6 +400,8 @@ const PostItemPanel = (props) => {
     }
   };
 
+  const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
+
   return (
     <Wrapper
       data-toggle={flipper ? "1" : "0"}
@@ -387,9 +412,25 @@ const PostItemPanel = (props) => {
       onTouchEnd={touchEnd}
       onClick={() => openPost(post)}
     >
+      {hasExternalWorkspace && !isExternalUser && (
+        <SharedBadge className={post.shared_with_client ? "client-shared" : "client-not-shared"}>
+          {post.shared_with_client && (
+            <>
+              <LockIcon icon="eye" />
+              {dictionary.sharedClientBadge}
+            </>
+          )}
+          {!post.shared_with_client && (
+            <>
+              <LockIcon icon="eye-off" />
+              {dictionary.notSharedClientBadge}
+            </>
+          )}
+        </SharedBadge>
+      )}
       <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)} />
       <Author className="d-flex ml-2 mr-2">
-        <ByIcon icon="corner-up-right" />
+        {/* <ByIcon icon="corner-up-right" /> */}
         <Avatar
           title={`FROM: ${post.author.name}`}
           className="author-avatar mr-2"
@@ -405,9 +446,9 @@ const PostItemPanel = (props) => {
             {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
             {post.title}
           </div>
-          <div className="text-truncate post-partialBody">
+          {/* <div className="text-truncate post-partialBody">
             <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }} />
-          </div>
+          </div> */}
           <PostReplyCounter>
             {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
             <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>

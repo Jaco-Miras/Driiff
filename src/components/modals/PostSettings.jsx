@@ -32,7 +32,7 @@ const PostSettings = (props) => {
   const hasExternal = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
-  console.log(form.shared_with_client);
+
   return (
     <CheckBoxGroup>
       <ApproveOptions className="d-flex align-items-center">
@@ -60,7 +60,7 @@ const PostSettings = (props) => {
       <ApproveOptions className="d-flex align-items-center">
         {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
       </ApproveOptions>
-      {!isExternalUser && (
+      {!isExternalUser && hasExternal && (
         <div className="d-flex align-items-center">
           <CheckBox
             name="shared_with_client"
