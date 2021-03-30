@@ -571,13 +571,21 @@ const CreateEditCompanyPostModal = (props) => {
     if (loading || imageLoading) return;
 
     setLoading(true);
-    const mentionedIds =
-      quillContents.ops && quillContents.ops.length > 0
-        ? quillContents.ops.filter((m) => m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external")).map((i) => parseInt(i.insert.mention.type_id))
-        : [];
     const hasExternal = form.selectedAddressTo.some((r) => {
       return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
     });
+    const mentionedIds =
+      quillContents.ops && quillContents.ops.length > 0
+        ? quillContents.ops
+            .filter((m) => {
+              if (form.shared_with_client && hasExternal) {
+                return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
+              } else {
+                return m.insert.mention && m.insert.mention.type === "internal";
+              }
+            })
+            .map((i) => parseInt(i.insert.mention.type_id))
+        : [];
     let payload = {
       title: form.title,
       body: form.body,
@@ -605,8 +613,8 @@ const CreateEditCompanyPostModal = (props) => {
           : form.must_read || form.reply_required
           ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
           : [],
-      body_mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
       shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
+      body_mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
     };
     // if (draftId) {
     //   dispatch(
