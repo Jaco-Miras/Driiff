@@ -574,12 +574,17 @@ const CreateEditCompanyPostModal = (props) => {
     const hasExternal = form.selectedAddressTo.some((r) => {
       return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
     });
-    // const hasExternal = form.selectedAddressTo.some((r) => {
-    //   return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
-    // });
     const mentionedIds =
       quillContents.ops && quillContents.ops.length > 0
-        ? quillContents.ops.filter((m) => m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external")).map((i) => parseInt(i.insert.mention.type_id))
+        ? quillContents.ops
+            .filter((m) => {
+              if ((form.shared_with_client && hasExternal) || isExternalUser) {
+                return m.insert.mention && m.insert.mention.type === "internal";
+              } else {
+                return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
+              }
+            })
+            .map((i) => parseInt(i.insert.mention.type_id))
         : [];
     let payload = {
       title: form.title,
