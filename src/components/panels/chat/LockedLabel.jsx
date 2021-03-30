@@ -25,7 +25,7 @@ const LockedLabel = (props) => {
 
   return (
     <>
-      {channel && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
+      {channel && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].active === 1 && (
         <Wrapper className={`locked-label ${className}`}>
           {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id && user.type === "internal" && dictionary.clientChat}
           {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].team_channel.id === channel.id && user.type === "internal" && dictionary.teamChat}
