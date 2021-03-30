@@ -263,6 +263,7 @@ const CreateEditWorkspacePostModal = (props) => {
   const [imageLoading, setImageLoading] = useState(null);
   const [mounted, setMounted] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
+  const [quillContents, setQuillContents] = useState([]);
 
   const savingDraft = useRef(null);
 
@@ -583,6 +584,10 @@ const CreateEditWorkspacePostModal = (props) => {
     const hasExternal = form.selectedAddressTo.some((r) => {
       return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
     });
+    const mentionedIds =
+      quillContents.ops && quillContents.ops.length > 0
+        ? quillContents.ops.filter((m) => m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external")).map((i) => parseInt(i.insert.mention.type_id))
+        : [];
     let payload = {
       title: form.title,
       body: form.body,
@@ -611,6 +616,7 @@ const CreateEditWorkspacePostModal = (props) => {
           ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
           : [],
       shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
+      body_mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
     };
     // if (draftId) {
     //   dispatch(
@@ -734,10 +740,11 @@ const CreateEditWorkspacePostModal = (props) => {
     if (editor.getContents().ops && editor.getContents().ops.length) {
       mentionIds = editor
         .getContents()
-        .ops.filter((m) => m.insert.mention)
+        .ops.filter((m) => m.insert.mention && m.insert.mention.type !== "external")
         .map((i) => i.insert.mention.id);
       handleMentionUser(mentionIds);
     }
+    setQuillContents(editor.getContents());
     setForm({
       ...form,
       body: content,
@@ -1257,6 +1264,7 @@ const CreateEditWorkspacePostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           prioMentionIds={addressIds}
+          disableBodyMention={isExternalUser}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />

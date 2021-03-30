@@ -71,7 +71,9 @@ const useQuillModules = ({
           return Object.assign({}, user, {
             value: user.first_name,
             id: r ? r.id : user.id,
+            name: user.name,
             //id: user.id,
+            type: user.type,
             type_id: user.id,
             user_id: user.id,
             class: "user-pic",
@@ -94,7 +96,9 @@ const useQuillModules = ({
             return Object.assign({}, user, {
               value: user.first_name,
               id: r ? r.id : user.id,
+              name: user.name,
               //id: user.id,
+              type: user.type,
               type_id: user.id,
               user_id: user.id,
               class: "user-pic all-users",
@@ -112,7 +116,9 @@ const useQuillModules = ({
           return Object.assign({}, workspace, {
             ...workspace,
             value: workspace.name,
+            name: workspace.name,
             id: workspace.id,
+            type: "TOPIC",
             type_id: workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
