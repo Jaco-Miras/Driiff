@@ -341,6 +341,10 @@ const useQuillModules = ({
     handleSetModule();
   }, [recipients.length]);
 
+  useEffect(() => {
+    handleSetModule();
+  }, [excludeExternals]);
+
   const formats = ["background", "bold", "color", "font", "code", "italic", "link", "size", "strike", "script", "blockquote", "header", "indent", "list", "align", "direction", "image", "video"];
 
   return {
