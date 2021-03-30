@@ -578,10 +578,10 @@ const CreateEditCompanyPostModal = (props) => {
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
             .filter((m) => {
-              if ((form.shared_with_client && hasExternal) || isExternalUser) {
-                return m.insert.mention && m.insert.mention.type === "internal";
-              } else {
+              if (form.shared_with_client && hasExternal) {
                 return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
+              } else {
+                return m.insert.mention && m.insert.mention.type === "internal";
               }
             })
             .map((i) => parseInt(i.insert.mention.type_id))
