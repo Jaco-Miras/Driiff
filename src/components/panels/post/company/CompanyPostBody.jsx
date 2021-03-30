@@ -12,6 +12,7 @@ import { replaceChar } from "../../../../helpers/stringFormatter";
 import { renderToString } from "react-dom/server";
 
 const Wrapper = styled.div`
+  position: relative;
   flex: unset;
   svg {
     cursor: pointer;
@@ -205,6 +206,37 @@ const PostBadgeWrapper = styled.div`
   min-width: 150px;
 `;
 
+const SharedBadge = styled.span`
+  border-radius: 6px;
+  font-size: 11px;
+  position: absolute;
+  top: -11px;
+  left: -10px;
+  padding: 2px 5px;
+  display: flex;
+  align-items: center;
+  > svg {
+    width: 12px;
+    height: 12px;
+  }
+  &.client-shared {
+    background: #fb3;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
+  &.client-not-shared {
+    background: #33b5e5;
+    color: #212529;
+    margin-right: 5px;
+    .feather {
+      margin-right: 5px;
+    }
+  }
+`;
+
 const CompanyPostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions } = props;
 
@@ -269,7 +301,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -361,12 +393,11 @@ const CompanyPostBody = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-    const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
-    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
-    } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
-    }
+    // if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+    //   recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
+    // } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+    //   recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
+    // }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
@@ -409,7 +440,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -418,9 +449,26 @@ const CompanyPostBody = (props) => {
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isMultipleApprovers = post.users_approval.length > 1;
+  const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
 
   return (
     <Wrapper ref={refs.container} className="card-body">
+      {hasExternalWorkspace && !isExternalUser && (
+        <SharedBadge className={post.shared_with_client ? "client-shared" : "client-not-shared"}>
+          {post.shared_with_client && (
+            <>
+              <LockIcon icon="eye" />
+              {dictionary.sharedClientBadge}
+            </>
+          )}
+          {!post.shared_with_client && (
+            <>
+              <LockIcon icon="eye-off" />
+              {dictionary.notSharedClientBadge}
+            </>
+          )}
+        </SharedBadge>
+      )}
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
