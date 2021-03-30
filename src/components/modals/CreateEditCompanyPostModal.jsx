@@ -1284,6 +1284,7 @@ const CreateEditCompanyPostModal = (props) => {
           setImageLoading={setImageLoading}
           prioMentionIds={addressIds}
           disableBodyMention={isExternalUser}
+          excludeExternals={!form.shared_with_client}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
