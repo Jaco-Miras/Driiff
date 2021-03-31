@@ -369,13 +369,13 @@ const CompanyPostsPanel = (props) => {
         showRead: true,
       });
     }
-    if (filter && filter === "all" && unreadPosts.length === 0 && readPosts.length > 0) {
+    if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
       setShowPosts({
         ...showPosts,
         showRead: true,
       });
     }
-  }, [filter]);
+  }, [filter, params]);
 
   if (posts === null) return <></>;
   return (
