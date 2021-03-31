@@ -679,7 +679,7 @@ const ChatBubble = (props) => {
               {!isAuthor && showAvatar && (
                 <>
                   <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
-                    {reply.user.code.includes("huddle_bot") ? reply.user.name.substr(0, reply.user.name.length / 2) : reply.user.name}
+                    {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? reply.user.name.substr(0, reply.user.name.length / 2) : reply.user.name}
                   </ChatNameNotAuthor>
                 </>
               )}
