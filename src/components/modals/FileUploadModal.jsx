@@ -212,6 +212,10 @@ const ExternalLabel = styled.span`
   font-weight: 500;
 `;
 
+const StyledModalFooter = styled(ModalFooter)`
+  flex-wrap: nowrap;
+`;
+
 const FileUploadModal = (props) => {
   const { type, mode, droppedFiles, post = null, members = [] } = props.data;
 
@@ -512,7 +516,7 @@ const FileUploadModal = (props) => {
         </DescriptionInputWrapper>
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
       </ModalBody>
-      <ModalFooter>
+      <StyledModalFooter>
         {((workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") || (hasExternal && user.type === "internal")) && (
           <ExternalLabel>{dictionary.fileUploadLabel}</ExternalLabel>
         )}
@@ -523,7 +527,7 @@ const FileUploadModal = (props) => {
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.upload}
         </Button>
-      </ModalFooter>
+      </StyledModalFooter>
     </Modal>
   );
 };
