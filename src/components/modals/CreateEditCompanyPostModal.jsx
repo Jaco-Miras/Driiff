@@ -351,6 +351,7 @@ const CreateEditCompanyPostModal = (props) => {
     }),
     approve: _t("POST.APPROVE", "Approve"),
     shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Share with client"),
+    fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
   };
 
   const formRef = {
@@ -1271,6 +1272,10 @@ const CreateEditCompanyPostModal = (props) => {
     }
   }, [form.shared_with_client]);
 
+  const hasExternalWs = form.selectedAddressTo.some((r) => {
+    return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+  });
+
   if (form.approvers.length && form.approvers.find((a) => a.value === "all")) {
     approverOptions = approverOptions.filter((a) => a.value === "all");
   }
@@ -1346,6 +1351,7 @@ const CreateEditCompanyPostModal = (props) => {
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
             <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            {hasExternalWs && !isExternalUser && <span>{dictionary.fileUploadLabel}</span>}
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option mb-0">

@@ -208,6 +208,10 @@ const PickerContainer = styled(CommonPicker)`
 
 const DocDiv = styled.div``;
 
+const ExternalLabel = styled.span`
+  font-weight: 500;
+`;
+
 const FileUploadModal = (props) => {
   const { type, mode, droppedFiles, post = null, members = [] } = props.data;
 
@@ -215,6 +219,7 @@ const FileUploadModal = (props) => {
   const { _t } = useTranslation();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const savedInput = useSelector((state) => state.global.dataFromInput);
@@ -257,6 +262,7 @@ const FileUploadModal = (props) => {
     upload: _t("BUTTON.UPLOAD", "Upload"),
     fileUpload: _t("FILE_UPLOAD", "File upload"),
     quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here..."),
+    fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
   };
 
   useEffect(() => {
@@ -476,6 +482,14 @@ const FileUploadModal = (props) => {
     }
   }, [init]);
 
+  let hasExternal = false;
+
+  if (post) {
+    hasExternal = post.recipients.some((r) => {
+      return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+    });
+  }
+
   const { modules } = useQuillModules({ mode: "chat_upload", mentionOrientation: "bottom", quillRef: reactQuillRef, members });
 
   return (
@@ -499,6 +513,9 @@ const FileUploadModal = (props) => {
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
       </ModalBody>
       <ModalFooter>
+        {((workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") || (hasExternal && user.type === "internal")) && (
+          <ExternalLabel>{dictionary.fileUploadLabel}</ExternalLabel>
+        )}
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
