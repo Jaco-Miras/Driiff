@@ -429,13 +429,13 @@ const WorkspacePostsPanel = (props) => {
         showRead: true,
       });
     }
-    if (filter && filter === "all" && unreadPosts.length === 0 && readPosts.length > 0) {
+    if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
       setShowPosts({
         ...showPosts,
         showRead: true,
       });
     }
-  }, [filter]);
+  }, [filter, params]);
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
