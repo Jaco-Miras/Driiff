@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
 //import { addQuote } from "../../redux/actions/chatActions";
-import { SvgIconFeather } from "../common";
+//import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useTranslation } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -90,26 +90,35 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
-const CloseButton = styled(SvgIconFeather)`
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  margin: 4px;
-  height: calc(100% - 8px);
-  background: white;
-  border: 1px solid white;
-  border-radius: 4px;
-  min-width: 40px;
-  width: 40px;
-  padding: 9px;
-  cursor: pointer;
-  right: 40px;
-  z-index: 9;
-  color: #cacaca;
-  transition: color 0.15s ease-in-out;
-  &:hover {
-    color: #7a1b8b;
+// const CloseButton = styled(SvgIconFeather)`
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   margin: 0;
+//   margin: 4px;
+//   height: calc(100% - 8px);
+//   background: white;
+//   border: 1px solid white;
+//   border-radius: 4px;
+//   min-width: 40px;
+//   width: 40px;
+//   padding: 9px;
+//   cursor: pointer;
+//   right: 40px;
+//   z-index: 9;
+//   color: #cacaca;
+//   transition: color 0.15s ease-in-out;
+//   &:hover {
+//     color: #7a1b8b;
+//   }
+// `;
+
+const ToggleDisable = styled.div`
+  padding: 5px;
+  font-size: 0.8rem;
+  color: mediumblue;
+  > span {
+    cursor: pointer;
   }
 `;
 
@@ -129,7 +138,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     userMention,
     handleClearUserMention,
     commentId,
-    members,
+    //members,
     onActive,
     onClosePicker,
     prioMentionIds,
@@ -137,9 +146,17 @@ const CompanyPostInput = forwardRef((props, ref) => {
     onClearApprovers,
     onSubmitCallback,
     mainInput,
+    readOnly,
+    onToggleButtons,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    addInternalNote: _t("POST_COMMENT.ADD_INTERNAL_NOTE", "Add internal note"),
+    replyToCustomer: _t("POST_COMMENT.REPLY_TO_CUSTOMER", "Reply to customer"),
+  };
   //const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const slugs = useSelector(state => state.global.slugs);
   const user = useSelector((state) => state.session.user);
@@ -600,8 +617,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
+      {readOnly && (
+        <ToggleDisable>
+          <span onClick={() => onToggleButtons("internal")}>{dictionary.addInternalNote}</span> / <span onClick={() => onToggleButtons("external")}>{dictionary.replyToCustomer}</span>
+        </ToggleDisable>
+      )}
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} readOnly={readOnly} />
       {/* {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />} */}
     </Wrapper>
   );

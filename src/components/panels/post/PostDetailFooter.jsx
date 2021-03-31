@@ -53,11 +53,15 @@ const ChatInputContainer = styled.div`
   .feather-smile {
     border-radius: 4px;
     cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
     &.active {
       color: #7a1b8b;
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => (props.disableButtons ? "inherit" : "#7a1b8b")};
     }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
@@ -70,7 +74,7 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => (props.disableButtons ? "inherit" : "#7a1b8b")};
     }
   }
 `;
@@ -225,6 +229,7 @@ const PostDetailFooter = (props) => {
     disableOptions,
     mainInput,
   } = props;
+  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
   const postActions = usePostActions();
   const dispatch = useDispatch();
   const ref = {
@@ -242,6 +247,8 @@ const PostDetailFooter = (props) => {
   const [showApprover, setShowApprover] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approving, setApproving] = useState({ approve: false, change: false });
+  const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client ? true : false);
+  const [commentType, setCommentType] = useState(null);
 
   //const topic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
@@ -250,15 +257,15 @@ const PostDetailFooter = (props) => {
   const users = useSelector((state) => state.users.users);
 
   const handleSend = useCallback(() => {
-    setSent(true);
-  }, [setSent]);
+    if (disableButtons) setSent(true);
+  }, [setSent, disableButtons]);
 
   const handleClearSent = useCallback(() => {
     setSent(false);
   }, [setSent]);
 
   const handleShowEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker);
+    if (!disableButtons) setShowEmojiPicker(!showEmojiPicker);
   };
 
   const onSelectEmoji = (e) => {
@@ -380,19 +387,19 @@ const PostDetailFooter = (props) => {
   };
 
   const handleQuillImage = () => {
-    if (ref.postInput) {
+    if (ref.postInput && !disableButtons) {
       const imgBtn = ref.postInput.current.parentNode.querySelector("button.ql-image");
       if (imgBtn) imgBtn.click();
     }
   };
 
   const toggleApprover = () => {
-    setShowApprover((prevState) => !prevState);
+    if (!disableButtons) setShowApprover((prevState) => !prevState);
   };
 
-  const privateWsOnly = post.recipients.filter((r) => {
-    return r.type === "TOPIC" && r.private === 1;
-  });
+  // const privateWsOnly = post.recipients.filter((r) => {
+  //   return r.type === "TOPIC" && r.private === 1;
+  // });
   const prioMentionIds = post.recipients
     .filter((r) => r.type !== "DEPARTMENT")
     .map((r) => {
@@ -632,6 +639,11 @@ const PostDetailFooter = (props) => {
     postActions.close(post);
   };
 
+  const handleToggleButtons = (type) => {
+    setDisableButtons((prevState) => !prevState);
+    setCommentType(type);
+  };
+
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
       {disableOptions && (
@@ -690,7 +702,7 @@ const PostDetailFooter = (props) => {
       {((isMember && !disableOptions) || approving.change || hasAnswered) && !post.is_close && !post.is_read_only && (
         <>
           <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
-            <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
+            <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" disableButtons={disableButtons}>
               <PostInput
                 handleClearSent={handleClearSent}
                 sent={sent}
@@ -716,6 +728,8 @@ const PostDetailFooter = (props) => {
                 onSubmitCallback={requestForChangeCallback}
                 isApprover={approving.change && hasPendingAproval}
                 mainInput={mainInput}
+                readOnly={disableButtons}
+                onToggleButtons={handleToggleButtons}
               />
               <PostInputButtons
                 parentId={parentId}
@@ -726,6 +740,7 @@ const PostDetailFooter = (props) => {
                 toggleApprover={toggleApprover}
                 editPostComment={editPostComment}
                 mainInput={mainInput}
+                disableButtons={disableButtons}
               />
             </ChatInputContainer>
 
