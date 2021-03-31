@@ -92,6 +92,7 @@ const NavBar = styled.ul`
       justify-content: flex-end;
       padding-right: 15px;
       border-right: 1px solid #f1f1f1;
+      max-width: 80px;
       @media all and (max-width: 700px) {
         display: none;
       }

@@ -62,7 +62,8 @@ const PostSettings = (props) => {
       </ApproveOptions>
       {!isExternalUser && hasExternal && (
         <ApproveOptions className="d-flex align-items-center">
-          <CheckBox
+          <span>{dictionary.shareWithClient}</span>
+          {/* <CheckBox
             name="shared_with_client"
             checked={form.shared_with_client}
             onClick={(e) => {
@@ -72,7 +73,7 @@ const PostSettings = (props) => {
             disabled={!hasExternal || form.selectedAddressTo.length === 0}
           >
             {dictionary.shareWithClient}
-          </CheckBox>
+          </CheckBox> */}
         </ApproveOptions>
       )}
       {!isExternalUser && hasExternal && (

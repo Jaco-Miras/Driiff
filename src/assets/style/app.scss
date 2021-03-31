@@ -504,9 +504,9 @@ body.dark {
     background-color: $dm-bg-2 !important;
   }
 
-  .post-item-panel:hover {
-    background-color: #ffffff14 !important;
-  }
+  // .post-item-panel:hover {
+  //   background-color: #ffffff14 !important;
+  // }
 
   .feather-moon {
     display: none;
@@ -15866,7 +15866,7 @@ button.toast-close-button {
 
 .app-block .app-content .app-content-body .app-lists ul.list-group li.list-group-item:hover {
   cursor: pointer;
-  background-color: #fafafa;
+  // background-color: #fafafa;
 }
 
 .app-block .app-content .app-content-body .app-lists ul.list-group li.list-group-item.active {
@@ -20558,9 +20558,9 @@ body.dark .chat-block .chat-content .messages .message-item.message-item-divider
   background-color: #ffffff14;
 }
 
-body.dark .app-block .app-content .app-content-body .app-lists ul.list-group li:hover {
-  background-color: #3b425c;
-}
+// body.dark .app-block .app-content .app-content-body .app-lists ul.list-group li:hover {
+//   background-color: #3b425c;
+// }
 
 body.dark .app-block .app-content .app-content-body .app-lists ul.list-group li.list-group-item.active {
   background-color: #ffffff14;
