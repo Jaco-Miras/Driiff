@@ -289,13 +289,6 @@ const CreateEditWorkspacePostModal = (props) => {
     shared_with_client: false,
   });
 
-  const [shareOption, setShareOption] = useState({
-    id: "internal",
-    value: "internal",
-    label: "Internal team",
-    icon: null,
-  });
-
   const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
@@ -348,7 +341,16 @@ const CreateEditWorkspacePostModal = (props) => {
     approve: _t("POST.APPROVE", "Approve"),
     shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Who can read this post"),
     fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
+    internalTeamLabel: _t("LABEL.INTERNAL_TEAM", "Internal team"),
+    internalAndExternalTeamLabel: _t("LABEL.INTERNAL_AND_EXTERTNAL_TEAM", "Internal and external team"),
   };
+
+  const [shareOption, setShareOption] = useState({
+    id: "internal",
+    value: "internal",
+    label: dictionary.internalTeamLabel,
+    icon: null,
+  });
 
   const formRef = {
     reactQuillRef: useRef(null),
@@ -1228,13 +1230,13 @@ const CreateEditWorkspacePostModal = (props) => {
     {
       id: "internal",
       value: "internal",
-      label: "Internal team",
+      label: dictionary.internalTeamLabel,
       icon: "eye-off",
     },
     {
       id: "external",
       value: "external",
-      label: "With client",
+      label: dictionary.internalAndExternalTeamLabel,
       icon: "eye",
     },
   ];
@@ -1259,14 +1261,14 @@ const CreateEditWorkspacePostModal = (props) => {
       setShareOption({
         id: "external",
         value: "external",
-        label: "With client",
+        label: dictionary.internalAndExternalTeamLabel,
         icon: "eye",
       });
     } else {
       setShareOption({
         id: "internal",
         value: "internal",
-        label: "Internal team",
+        label: dictionary.internalTeamLabel,
         icon: "eye-off",
       });
     }

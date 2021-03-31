@@ -54,6 +54,9 @@ const Wrapper = styled.div`
   .unset-flex {
     flex: unset !important;
   }
+  .other-posts-header {
+    background-color: #fafafa !important;
+  }
 `;
 
 const PostDetailWrapper = styled.div`
@@ -117,7 +120,8 @@ const ReadPostsContainer = styled.div`
 
 const UnreadPostsHeader = styled.li`
   border-radius: 6px 6px 0 0 !important;
-  border-bottom: ${(props) => (props.showPosts ? "0" : "1px solid #ebebeb")};
+  border-bottom: 1px solid #ebebeb;
+  // border-bottom: ${(props) => (props.showPosts ? "0" : "1px solid #ebebeb")};
   .badge-light {
     background: rgb(175, 184, 189, 0.2);
     .dark & {
@@ -540,23 +544,20 @@ const WorkspacePostsPanel = (props) => {
                         </>
                       )}
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
-                        {unreadPosts.length > 0 && (
-                          <div>
-                            <UnreadPostsHeader
-                              className={"list-group-item post-item-panel pl-3 unread-posts-header"}
-                              onClick={() => {
-                                handleShowPosts("showUnread");
-                                document.getElementById("unread-posts-container").classList.add("collapsing");
-                              }}
-                              showPosts={showPosts.showUnread}
-                            >
-                              <span className="badge badge-light">
-                                <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                                {dictionary.unread}
-                              </span>
-                            </UnreadPostsHeader>
-                          </div>
-                        )}
+                        <div>
+                          <UnreadPostsHeader
+                            className={"list-group-item post-item-panel pl-3 unread-posts-header"}
+                            onClick={() => {
+                              handleShowPosts("showUnread");
+                            }}
+                            showPosts={showPosts.showUnread}
+                          >
+                            <span className="badge badge-light">
+                              <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                              {dictionary.unread}
+                            </span>
+                          </UnreadPostsHeader>
+                        </div>
                         {unreadPosts.length > 0 && (
                           <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                             {unreadPosts.map((p, k) => {
@@ -576,16 +577,14 @@ const WorkspacePostsPanel = (props) => {
                             })}
                           </UnreadPostsContainer>
                         )}
-                        {readPosts.length > 0 && unreadPosts.length > 0 && (
-                          <div>
-                            <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={() => handleShowPosts("showRead")} showPosts={showPosts.showRead}>
-                              <span className="badge badge-light">
-                                <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                                {dictionary.allOthers}
-                              </span>
-                            </ReadPostsHeader>
-                          </div>
-                        )}
+                        <div>
+                          <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={() => handleShowPosts("showRead")} showPosts={showPosts.showRead}>
+                            <span className="badge badge-light">
+                              <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                              {dictionary.allOthers}
+                            </span>
+                          </ReadPostsHeader>
+                        </div>
                         {readPosts.length > 0 && (
                           <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                             {readPosts.map((p, k) => {

@@ -17,6 +17,9 @@ const Navbar = styled.ul`
       display: inline-flex !important;
       justify-content: flex-end;
     }
+    a {
+      white-space: nowrap;
+    }
   }
 `;
 
