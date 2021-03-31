@@ -191,6 +191,9 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
+  &.file-attachment-wrapper .file-label {
+    font-size: 0.8rem;
+  }
 `;
 
 const MoreOption = styled.div`
@@ -343,7 +346,7 @@ const CreateEditWorkspacePostModal = (props) => {
       ),
     }),
     approve: _t("POST.APPROVE", "Approve"),
-    shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Share with client"),
+    shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Who can read this post"),
     fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
   };
 
@@ -1340,7 +1343,7 @@ const CreateEditWorkspacePostModal = (props) => {
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
             <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-            {hasExternalWs && !isExternalUser && <span>{dictionary.fileUploadLabel}</span>}
+            {hasExternalWs && !isExternalUser && <span className="file-label">{dictionary.fileUploadLabel}</span>}
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option">

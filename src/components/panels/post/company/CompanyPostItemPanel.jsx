@@ -253,7 +253,7 @@ const SharedBadge = styled.span`
     height: 12px;
   }
   &.client-shared {
-    background: #fb3;
+    background: #ffdb92;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -261,7 +261,7 @@ const SharedBadge = styled.span`
     }
   }
   &.client-not-shared {
-    background: #33b5e5;
+    background: #d6edff;
     color: #212529;
     margin-right: 5px;
     .feather {

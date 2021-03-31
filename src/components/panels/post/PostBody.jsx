@@ -192,7 +192,7 @@ const AuthorRecipients = styled.div`
     }
   }
   .receiver.client-shared {
-    background: #fb3;
+    background: #ffdb92;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -200,7 +200,7 @@ const AuthorRecipients = styled.div`
     }
   }
   .receiver.client-not-shared {
-    background: #33b5e5;
+    background: #d6edff;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -227,7 +227,7 @@ const SharedBadge = styled.span`
     height: 12px;
   }
   &.client-shared {
-    background: #fb3;
+    background: #ffdb92;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -235,7 +235,7 @@ const SharedBadge = styled.span`
     }
   }
   &.client-not-shared {
-    background: #33b5e5;
+    background: #d6edff;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -319,7 +319,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -459,7 +459,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
