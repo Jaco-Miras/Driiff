@@ -28,7 +28,7 @@ const ApproveOptions = styled.div`
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { approverOptions, dictionary, form, requiredUserOptions, toggleCheck, toggleApprover, handleSelectApprover, handleSelectRequiredUsers, isExternalUser } = props;
+  const { approverOptions, dictionary, form, requiredUserOptions, toggleCheck, toggleApprover, handleSelectApprover, handleSelectRequiredUsers, isExternalUser, shareOptions, shareOption, handleSelectShareOption } = props;
   const hasExternal = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
@@ -61,7 +61,7 @@ const PostSettings = (props) => {
         {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
       </ApproveOptions>
       {!isExternalUser && hasExternal && (
-        <div className="d-flex align-items-center">
+        <ApproveOptions className="d-flex align-items-center">
           <CheckBox
             name="shared_with_client"
             checked={form.shared_with_client}
@@ -73,7 +73,12 @@ const PostSettings = (props) => {
           >
             {dictionary.shareWithClient}
           </CheckBox>
-        </div>
+        </ApproveOptions>
+      )}
+      {!isExternalUser && hasExternal && (
+        <ApproveOptions className="d-flex align-items-center">
+          <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" />
+        </ApproveOptions>
       )}
     </CheckBoxGroup>
   );

@@ -286,6 +286,13 @@ const CreateEditWorkspacePostModal = (props) => {
     shared_with_client: false,
   });
 
+  const [shareOption, setShareOption] = useState({
+    id: "internal",
+    value: "internal",
+    label: "Internal team",
+    icon: null,
+  });
+
   const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
@@ -1213,6 +1220,54 @@ const CreateEditWorkspacePostModal = (props) => {
     requiredUserOptions = approverOptions.filter((a) => a.value === "all");
   }
 
+  let shareOptions = [
+    {
+      id: "internal",
+      value: "internal",
+      label: "Internal team",
+      icon: "eye-off",
+    },
+    {
+      id: "external",
+      value: "external",
+      label: "With client",
+      icon: "eye",
+    },
+  ];
+
+  const handleSelectShareOption = (e) => {
+    setShareOption(e);
+    if (e.id === "external") {
+      setForm({
+        ...form,
+        shared_with_client: true,
+      });
+    } else {
+      setForm({
+        ...form,
+        shared_with_client: false,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (form.shared_with_client) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: "With client",
+        icon: "eye",
+      });
+    } else {
+      setShareOption({
+        id: "internal",
+        value: "internal",
+        label: "Internal team",
+        icon: "eye-off",
+      });
+    }
+  }, [form.shared_with_client]);
+
   return (
     <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
@@ -1297,6 +1352,9 @@ const CreateEditWorkspacePostModal = (props) => {
             handleSelectApprover={handleSelectApprover}
             handleSelectRequiredUsers={handleSelectRequiredUsers}
             isExternalUser={isExternalUser}
+            shareOptions={shareOptions}
+            shareOption={shareOption}
+            handleSelectShareOption={handleSelectShareOption}
           />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
