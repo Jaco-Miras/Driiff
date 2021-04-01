@@ -53,6 +53,9 @@ const Wrapper = styled.div`
   }
   .other-posts-header {
     background-color: #fafafa !important;
+    .dark & {
+      background-color: hsla(0, 0%, 100%, 0.0784313725490196) !important;
+    }
   }
 `;
 
