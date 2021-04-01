@@ -35,7 +35,7 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const CompanyMemberTimeline = (props) => {
-  const { className = "", data, dictionary } = props;
+  const { className = "", data, dictionary, scrollRef } = props;
   const { fromNow, localizeDate } = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
@@ -56,10 +56,17 @@ const CompanyMemberTimeline = (props) => {
       }
     } else {
       if (data.body.includes("NEW_ACCOUNT_ACTIVATED")) {
-        return `${data.body.replace(`NEW_ACCOUNT_ACTIVATED `, "")} ${dictionary.isAddedToCompany}`;
+        return `${data.body.replace("NEW_ACCOUNT_ACTIVATED ", "")} ${dictionary.isAddedToCompany}`;
       } else if (data.body.includes("POST_CREATE")) {
         let item = JSON.parse(data.body.replace("POST_CREATE::", ""));
-        return <>{item.author.name} <b>{dictionary.createdThePost} {item.post.title}</b></>
+        return (
+          <>
+            {item.author.name}{" "}
+            <b>
+              {dictionary.createdThePost} {item.post.title}
+            </b>
+          </>
+        );
       } else {
         console.log(data);
         return data.body;
@@ -68,8 +75,7 @@ const CompanyMemberTimeline = (props) => {
   };
 
   const renderAddedMembers = (joined = false) => {
-    if (message.author === null)
-      return "";
+    if (message.author === null) return "";
 
     if (joined) {
       if (message.accepted_members && message.accepted_members.length) {
@@ -97,8 +103,7 @@ const CompanyMemberTimeline = (props) => {
   };
 
   const renderRemovedMembers = (left = false) => {
-    if (message.author === null)
-      return "";
+    if (message.author === null) return "";
 
     if (left) {
       let author = recipients.filter((r) => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
@@ -117,17 +122,26 @@ const CompanyMemberTimeline = (props) => {
     }
   };
 
-  if (data.body.includes("POST_CREATE"))
-    return <></>
+  if (data.body.includes("POST_CREATE")) return <></>;
 
   return (
     <Wrapper className={`member-timeline timeline-item ${className}`}>
       <div>
         {message !== null ? (
-          <>{message.author ? <Avatar className="mr-3" name={message.author.name}
-                                      imageLink={message.author.profile_image_thumbnail_link ? message.author.profile_image_thumbnail_link : message.author.profile_image_link}
-                                      id={message.author.id}/> :
-            <Avatar className="mr-3" imageLink={null} isBot={true}/>}</>
+          <>
+            {message.author ? (
+              <Avatar
+                className="mr-3"
+                name={message.author.name}
+                imageLink={message.author.profile_image_thumbnail_link ? message.author.profile_image_thumbnail_link : message.author.profile_image_link}
+                id={message.author.id}
+                showSlider={true}
+                scrollRef={scrollRef}
+              />
+            ) : (
+              <Avatar className="mr-3" imageLink={null} isBot={true} />
+            )}
+          </>
         ) : (
           <Avatar className="mr-3" imageLink={null} isBot={true} />
         )}

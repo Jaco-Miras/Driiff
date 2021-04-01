@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
@@ -7,6 +7,9 @@ import styled from "styled-components";
 import botIcon from "../../assets/img/gripp-bot.png";
 import driffIcon from "../../assets/img/driff_logo.svg";
 import { replaceChar } from "../../helpers/stringFormatter";
+import ProfileSlider from "./ProfileSlider";
+import { CSSTransition } from "react-transition-group";
+import { setProfileSlider } from "../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -22,6 +25,63 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     position: absolute;
+  }
+  /* slide enter */
+  .slide-enter,
+  .slide-appear {
+    opacity: 0;
+    transform: scale(0.97) translateY(50px);
+    z-index: 1;
+  }
+  .slide-enter.slide-enter-active,
+  .slide-appear.slide-appear-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  }
+  // .slide-enter.slide-enter-done {
+  //   opacity: 1;
+  //   transform: scale(1) translateY(0);
+  //   transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  // }
+
+  /* slide exit */
+  .slide-exit {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .slide-exit.slide-exit-active {
+    opacity: 0;
+    transform: scale(0.97) translateY(50px);
+    transition: opacity 150ms linear, transform 150ms ease-out;
+  }
+  .slide-exit-done {
+    opacity: 0;
+  }
+
+  .fade-appear {
+    opacity: 0;
+  }
+  .fade-appear.fade-appear-active {
+    opacity: 1;
+    transition: opacity 500ms linear;
+  }
+  .fade-enter {
+    opacity: 1;
+  }
+  // .fade-enter.fade-enter-done {
+  //   opacity: 1;
+  //   transition: opacity 500ms linear;
+  // }
+  .fade-exit {
+    opacity: 1;
+  }
+  .fade-exit.fade-exit-active {
+    opacity: 0;
+    transition: opacity 500ms linear;
+  }
+  .fade-exit-done {
+    opacity: 0;
   }
 `;
 
@@ -45,16 +105,39 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  let { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, isHuddleBot = false, forceThumbnail = true, ...rest } = props;
+  let {
+    className = "",
+    imageLink,
+    id,
+    name = "",
+    children,
+    type = "USER",
+    userId,
+    onClick = null,
+    noDefaultClick = false,
+    isBot = false,
+    isHuddleBot = false,
+    forceThumbnail = true,
+    fromSlider = false,
+    showSlider = true,
+    scrollRef = null,
+    ...rest
+  } = props;
+
+  const avatarRef = useRef(null);
 
   const history = useHistory();
+  const dispatch = useDispatch();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const isOnline = onlineUsers.some((ou) => ou.user_id === userId);
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showInitials, setShowInitials] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [orientation, setOrientation] = useState(null);
 
   const toggleTooltip = () => {
+    if (fromSlider) return;
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
@@ -86,18 +169,57 @@ const Avatar = (props) => {
     }
   }, []);
 
+  const calculateOrientationPosition = () => {
+    const { bottom, left } = avatarRef.current.getBoundingClientRect();
+    setShowPopup((prevState) => !prevState);
+    let vertical = null;
+    let horizontal = null;
+    if (document.body.clientHeight - bottom < 230) {
+      //top
+      vertical = "top";
+    } else {
+      //bottom
+      vertical = "bottom";
+    }
+    if (document.body.clientWidth - left < 530) {
+      //left
+      horizontal = "left";
+    } else {
+      //right
+      horizontal = "right";
+    }
+    setOrientation({ vertical, horizontal });
+  };
+
   const handleOnClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
+    if (noDefaultClick) return;
+    if (onClick) {
+      onClick(e);
+      return;
+    }
+    if (showSlider && !fromSlider && !isBot) {
+      if (document.body.clientWidth <= 414) {
+        //save user data
+        dispatch(setProfileSlider({ id: id }));
+      } else {
+        calculateOrientationPosition();
+      }
+    } else {
+      if (type === "USER") {
+        history.push(`/profile/${id}/${replaceChar(name)}`);
+      } else if (type === "TOPIC") {
+        history.push(`/topic/${id}/${replaceChar(name)}`);
+      }
+    }
+  };
 
-    if (onClick) onClick(e);
-
-    if (props.noDefaultClick) return;
-
-    if (type === "USER") {
-      history.push(`/profile/${id}/${replaceChar(name)}`);
-    } else if (type === "TOPIC") {
-      history.push(`/topic/${id}/${replaceChar(name)}`);
+  const handleShowPopup = () => {
+    setShowPopup((prevState) => !prevState);
+    setOrientation(null);
+    if (document.body.clientWidth <= 414) {
+      dispatch(setProfileSlider({ id: null }));
     }
   };
 
@@ -122,28 +244,33 @@ const Avatar = (props) => {
   }
 
   return (
-    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick}>
+    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={rest.title ? rest.title : name}>
         {isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
-          <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
+          <Initials className="rounded-circle" avatarColor={avatarColor(name)} onClick={handleOnClick}>
             {handleInitials(name)}
           </Initials>
         ) : name === "Gripp Offerte Bot" ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
         ) : showInitials === false ? (
-          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} />
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} onClick={handleOnClick} />
         ) : (
-          <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
+          <Initials className="rounded-circle" avatarColor={avatarColor(name)} onClick={handleOnClick}>
             {handleInitials(name)}
           </Initials>
         )}
       </Tooltip>
+      {showPopup && (
+        <CSSTransition appear in={showPopup} timeout={300} classNames="slide">
+          <ProfileSlider {...props} onShowPopup={handleShowPopup} showPopup={showPopup} orientation={orientation} />
+        </CSSTransition>
+      )}
       {children}
     </Wrapper>
   );
 };
 
-export default React.memo(Avatar);
+export default Avatar;

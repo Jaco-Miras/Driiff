@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
+import { Avatar, FileAttachments, ReminderNote } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter, PostVideos, PostChangeAccept } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
@@ -10,6 +10,7 @@ import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
+import CommentCounters from "./CommentCounters";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -190,14 +191,6 @@ const CommentBody = styled.div`
 const CommentInput = styled(PostDetailFooter)``;
 
 const CompanyCommentInput = styled(CompanyPostDetailFooter)``;
-
-const Reply = styled.span`
-  cursor: pointer;
-`;
-
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
-`;
 
 const Comment = (props) => {
   const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false, postActions } = props;
@@ -504,13 +497,6 @@ const Comment = (props) => {
   // useEffect(() => {
   //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
   // }, [comment.clap_user_ids]);
-  const userReadPost = useCallback(() => {
-    let filter_post_read = [];
-    if (post.post_reads) {
-      return post.post_reads.filter((u) => u.last_read_timestamp >= comment.updated_at.timestamp);
-    }
-    return filter_post_read;
-  }, [post]);
 
   useEffect(() => {
     if (clearApprovingState && clearApprovingState === comment.id) {
@@ -530,7 +516,13 @@ const Comment = (props) => {
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
-              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name} imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link} />
+              <Avatar
+                className="mr-2"
+                id={comment.author.id}
+                name={comment.author.name}
+                imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link}
+                showSlider={true}
+              />
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
@@ -567,45 +559,7 @@ const Comment = (props) => {
               <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment} />
             </>
           )}
-          <div className="d-flex align-items-center justify-content-start">
-            <div className="clap-count-wrapper">
-              <Icon className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="thumbs-up" onClick={handleReaction} />
-              {comment.clap_count}
-              {likers.length !== 0 && (
-                <span className="hover read-users-container">
-                  {likers.map((u) => {
-                    return (
-                      <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
-                      </span>
-                    );
-                  })}
-                </span>
-              )}
-            </div>
-            {!post.is_read_only && !disableOptions && !post.is_close && (
-              <Reply className="ml-3" onClick={handleShowInput}>
-                {dictionary.comment}
-              </Reply>
-            )}
-            {
-              <div className="user-reads-container">
-                <span className="no-readers">
-                  <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
-                  {userReadPost().length}
-                </span>
-                <span className="hover read-users-container">
-                  {userReadPost().map((u) => {
-                    return (
-                      <span key={u.id}>
-                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
-                      </span>
-                    );
-                  })}
-                </span>
-              </div>
-            }
-          </div>
+          <CommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} likers={likers} post={post} handleReaction={handleReaction} handleShowInput={handleShowInput} />
         </CommentWrapper>
       </Wrapper>
       {type === "main" && Object.values(comment.replies).length > 0 && (
