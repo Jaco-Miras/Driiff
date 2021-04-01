@@ -184,22 +184,22 @@ const AuthorRecipients = styled.div`
       margin-left: 5px;
     }
   }
-  .receiver.client-shared {
-    background: #ffdb92;
-    color: #212529;
-    margin-right: 5px;
-    .feather {
-      margin-right: 5px;
-    }
-  }
-  .receiver.client-not-shared {
-    background: #d6edff;
-    color: #212529;
-    margin-right: 5px;
-    .feather {
-      margin-right: 5px;
-    }
-  }
+  // .receiver.client-shared {
+  //   background: #ffdb92;
+  //   color: #212529;
+  //   margin-right: 5px;
+  //   .feather {
+  //     margin-right: 5px;
+  //   }
+  // }
+  // .receiver.client-not-shared {
+  //   background: #d6edff;
+  //   color: #212529;
+  //   margin-right: 5px;
+  //   .feather {
+  //     margin-right: 5px;
+  //   }
+  // }
 `;
 
 const PostBadgeWrapper = styled.div`
@@ -209,11 +209,10 @@ const PostBadgeWrapper = styled.div`
 const SharedBadge = styled.span`
   border-radius: 6px;
   font-size: 11px;
-  position: absolute;
-  top: -11px;
-  left: -10px;
+  display: inline-flex;
+  margin-bottom: 5px;
+  margin-left: -30px;
   padding: 2px 5px;
-  display: flex;
   align-items: center;
   > svg {
     width: 12px;
