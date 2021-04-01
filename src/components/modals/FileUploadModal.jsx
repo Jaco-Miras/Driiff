@@ -9,7 +9,7 @@ import { uploadDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { postComment, putComment, setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
+import { postComment, putComment, setEditComment, setParentIdForUpload, addComment } from "../../redux/actions/postActions";
 import { osName } from "react-device-detect";
 
 const DescriptionInputWrapper = styled.div`
@@ -389,12 +389,13 @@ const FileUploadModal = (props) => {
         }
       });
     } else if (mode === "post") {
+      let reference_id = require("shortid").generate();
       let payload = {
         post_id: post.id,
         body: body,
         mention_ids: mention_ids,
         file_ids: uploadedFiles.map((f) => f.id),
-        reference_id: require("shortid").generate(),
+        reference_id: reference_id,
         personalized_for_id: null,
         parent_id: parentId,
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
@@ -413,6 +414,39 @@ const FileUploadModal = (props) => {
         dispatch(putComment(payload));
         dispatch(setEditComment(null));
       } else {
+        let timestamp = Math.floor(Date.now() / 1000);
+        let commentObj = {
+          author: user,
+          body: body,
+          clap_count: 0,
+          code: timestamp,
+          created_at: { timestamp: timestamp },
+          files: [],
+          id: reference_id,
+          is_archive: false,
+          is_editable: true,
+          is_edited: 0,
+          is_favourite: false,
+          mention_ids: mention_ids,
+          original_body: body,
+          parent_id: parentId,
+          personalized_for_id: null,
+          post_id: post.id,
+          quote: null,
+          reference_id: reference_id,
+          ref_quote: null,
+          replies: {},
+          todo_reminder: null,
+          total_replies: 0,
+          total_unread_replies: 0,
+          updated_at: { timestamp: timestamp },
+          unfurls: [],
+          user_clap_count: 0,
+          clap_user_ids: [],
+          users_approval: [],
+        };
+
+        dispatch(addComment(commentObj));
         dispatch(postComment(payload));
       }
       dispatch(clearModal({ type: type }));
