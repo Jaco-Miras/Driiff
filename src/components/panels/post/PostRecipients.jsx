@@ -22,8 +22,11 @@ const Wrapper = styled.div`
     }
   }
   .receiver {
-    display: inline-flex;
+    display: inline-block;
     align-items: center;
+  }
+  .feather-eye {
+    vertical-align: text-top;
   }
   .ellipsis-hover {
     position: relative;
