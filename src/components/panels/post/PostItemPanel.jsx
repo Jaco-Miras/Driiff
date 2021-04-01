@@ -11,6 +11,8 @@ const Wrapper = styled.li`
   flex-flow: column;
   .post-recipients {
     margin-bottom: 0.5rem;
+  }
+  .post-recipients.has-external {
     margin-left: -25px;
   }
   .feather-eye-off {
