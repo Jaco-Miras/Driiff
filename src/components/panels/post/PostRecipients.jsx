@@ -116,7 +116,7 @@ const PostRecipients = (props) => {
     return `${recipient_names} ${otherRecipientNames}`;
   };
   return (
-    <Wrapper className={`post-recipients ${classNames} ${hasExternalWorkspace && "has-external"}`}>
+    <Wrapper className={`post-recipients ${classNames} ${hasExternalWorkspace && !isExternalUser && "has-external"}`}>
       <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />
     </Wrapper>
   );
