@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BodyMention from "../common/BodyMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useTranslation } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -86,6 +86,15 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
+const ToggleDisable = styled.div`
+  padding: 5px;
+  font-size: 0.8rem;
+  color: mediumblue;
+  > span {
+    cursor: pointer;
+  }
+`;
+
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = forwardRef((props, ref) => {
   const {
@@ -111,9 +120,18 @@ const PostInput = forwardRef((props, ref) => {
     onClearApprovers,
     onSubmitCallback = () => {},
     mainInput,
+    readOnly,
+    onToggleButtons,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    addInternalNote: _t("POST_COMMENT.ADD_INTERNAL_NOTE", "Add internal note"),
+    replyToCustomer: _t("POST_COMMENT.REPLY_TO_CUSTOMER", "Reply to customer"),
+  };
+
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
@@ -572,8 +590,13 @@ const PostInput = forwardRef((props, ref) => {
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
+      {readOnly && (
+        <ToggleDisable>
+          <span onClick={() => onToggleButtons("internal")}>{dictionary.addInternalNote}</span> / <span onClick={() => onToggleButtons("external")}>{dictionary.replyToCustomer}</span>
+        </ToggleDisable>
+      )}
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} />}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} readOnly={readOnly} />
     </Wrapper>
   );
 });
