@@ -1923,7 +1923,13 @@ export default function (state = INITIAL_STATE, action) {
                 return r;
               }
             })
-            .filter((r) => !action.data.skip_message_ids.some((id) => id === r.id)),
+            .filter((r) => {
+              if (action.data.skip_message_ids) {
+                return !action.data.skip_message_ids.some((id) => id === r.id);
+              } else {
+                return true;
+              }
+            }),
         };
       }
       return {
@@ -1941,6 +1947,10 @@ export default function (state = INITIAL_STATE, action) {
           if (h.channel.id === action.data.channel.id) {
             return {
               ...h,
+              huddle_log: {
+                ...action.data.huddle_log,
+                huddle_id: h.id,
+              },
               questions: h.questions.map((q) => {
                 let answer = action.data.huddle_answers.find((ha) => ha.huddle_question_id === q.id);
                 if (answer) {
@@ -2021,7 +2031,7 @@ export default function (state = INITIAL_STATE, action) {
         editHuddle: huddle
           ? {
               ...huddle,
-              huddle_log: action.data.huddle_log,
+              // huddle_log: action.data.huddle_log,
               questions: huddle.questions.map((q) => {
                 return {
                   ...q,
@@ -2236,7 +2246,6 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "ADD_HAS_UNPUBLISHED_ANSWERS": {
-      console.log(action.data);
       return {
         ...state,
         hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel_id],
@@ -2247,6 +2256,43 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         hasUnpublishedAnswers: [],
       };
+    }
+    case "GET_UNPUBLISHED_ANSWERS_SUCCESS": {
+      if (action.data.length) {
+        const huddleLog = action.data[0].huddle_log;
+        const answers = action.data[0].huddle_answers;
+        return {
+          ...state,
+          huddleBots: state.huddleBots.map((h) => {
+            if (h.id === huddleLog.huddle_id) {
+              return {
+                ...h,
+                huddle_log: {
+                  ...huddleLog,
+                  message_id: huddleLog.connected_message_id,
+                },
+                questions: h.questions.map((q) => {
+                  const answer = answers.find((a) => a.huddle_question_id === q.id);
+                  if (answer) {
+                    return {
+                      ...q,
+                      answer_id: answer.id,
+                      answer: answer.answer,
+                      original_answer: answer.answer,
+                    };
+                  } else {
+                    return q;
+                  }
+                }),
+              };
+            } else {
+              return h;
+            }
+          }),
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

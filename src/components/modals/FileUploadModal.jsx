@@ -551,9 +551,8 @@ const FileUploadModal = (props) => {
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
       </ModalBody>
       <StyledModalFooter>
-        {((workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") || (hasExternal && user.type === "internal")) && (
-          <ExternalLabel>{dictionary.fileUploadLabel}</ExternalLabel>
-        )}
+        {((workspaces[selectedChannel.entity_id] && workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") ||
+          (hasExternal && user.type === "internal")) && <ExternalLabel>{dictionary.fileUploadLabel}</ExternalLabel>}
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
