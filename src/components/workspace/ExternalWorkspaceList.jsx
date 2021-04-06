@@ -102,7 +102,7 @@ const ExternalWorkspaceList = (props) => {
     //history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
   };
 
-  let unread_count = workspace.unread_chats + workspace.unread_posts;
+  let unread_count = workspace.unread_chats + workspace.unread_posts + workspace.team_unread_chats;
 
   return (
     <Wrapper ref={ref.container} className={`workspace-list workspace-list-external fadeIn ${className}`} selected={activeTopic && activeTopic.id === workspace.id} show={show}>
@@ -110,15 +110,11 @@ const ExternalWorkspaceList = (props) => {
         <div>
           {workspace.name}
 
-          {workspace.is_lock !== 0 && <Icon icon="lock" strokeWidth="2"/>}
+          {workspace.is_lock !== 0 && <Icon icon="lock" strokeWidth="2" />}
           {workspace.is_active === 0 && <Icon icon="archive" />}
-          {workspace.is_shared && <Icon icon={"share"} strokeWidth="3" />}
+          {/* {workspace.is_shared && <Icon icon={"eye"} strokeWidth="3" />} */}
 
-          {unread_count > 0 && (
-            <Badge color="danger">
-              {unread_count}
-            </Badge>
-          )}
+          {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
         </div>
       </a>
     </Wrapper>

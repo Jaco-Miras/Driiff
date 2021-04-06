@@ -495,7 +495,7 @@ const useChannelActions = () => {
         if (callback) callback();
         if (err) return;
         if (channel.type === "TOPIC") {
-          dispatch(readChannelReducer({ id: channel.entity_id, count: channel.replies.filter((r) => !r.is_read).length }));
+          dispatch(readChannelReducer({ id: channel.entity_id, channel_id: channel.id, count: channel.replies.filter((r) => !r.is_read).length }));
         }
       };
       dispatch(

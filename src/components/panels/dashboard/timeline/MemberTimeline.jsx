@@ -28,7 +28,7 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const MemberTimeline = (props) => {
-  const { className = "", data, dictionary } = props;
+  const { className = "", data, dictionary, scrollRef } = props;
   const { fromNow, localizeDate } = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
@@ -108,7 +108,7 @@ const MemberTimeline = (props) => {
         {message !== null ? (
           <>
             {author ? (
-              <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_thumbnail_link ? author.profile_image_thumbnail_link : author.profile_image_link} id={author.id} />
+              <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_thumbnail_link ? author.profile_image_thumbnail_link : author.profile_image_link} id={author.id} showSlider={true} scrollRef={scrollRef} />
             ) : (
               <Avatar className="mr-3" imageLink={null} isBot={true} />
             )}

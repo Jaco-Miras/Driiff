@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTimeFormat } from "../../hooks";
 import { Badge, ToolTip } from "../../common";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -42,6 +43,8 @@ const ChatTitleDate = (props) => {
 
   const { className = "", search = "", selectedChannel, channel } = props;
 
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+
   const getHighlightedSearchTitle = (title) => {
     if (search === "") {
       return title;
@@ -66,7 +69,10 @@ const ChatTitleDate = (props) => {
     <Wrapper className={"d-flex justify-content-between align-items-center"}>
       <ChannelTitleContainer className={`mb-1 ${channel.is_read ? "" : "is-unread"} ${className}`} selectedChannel={selectedChannel} channel={channel}>
         <ToolTip direction="up-start" arrow={false} content={channel.title}>
-          <span>{chatTitle}</span>
+          <span>
+            {chatTitle} {channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(team chat)"}{" "}
+            {!channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(client chat)"}
+          </span>
         </ToolTip>
       </ChannelTitleContainer>
       <span className={"small text-muted chat-timestamp_text"} dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }} />

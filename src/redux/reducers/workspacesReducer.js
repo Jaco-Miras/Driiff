@@ -133,6 +133,7 @@ export default (state = INITIAL_STATE, action) => {
               is_lock: t.private,
               folder_id: ws.id,
               folder_name: ws.name,
+              team_channel: t.team_channel,
               type: "WORKSPACE",
             };
           });
@@ -147,6 +148,8 @@ export default (state = INITIAL_STATE, action) => {
             unread_posts: ws.topic_detail.unread_posts,
             folder_id: null,
             folder_name: null,
+            team_channel: ws.topic_detail.team_channel,
+            team_unread_chats: ws.topic_detail.team_unread_chats,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -165,6 +168,8 @@ export default (state = INITIAL_STATE, action) => {
       let ws = {
         ...action.data.workspace_data,
         channel: action.data.workspace_data.topic_detail.channel,
+        team_channel: action.data.workspace_data.topic_detail.team_channel,
+        team_unread_chats: action.data.workspace_data.topic_detail.team_unread_chats,
         unread_chats: action.data.workspace_data.topic_detail.unread_chats,
         unread_posts: action.data.workspace_data.topic_detail.unread_posts,
         folder_id: action.data.workspace_id,
@@ -215,10 +220,17 @@ export default (state = INITIAL_STATE, action) => {
           folder_name: action.data.workspace ? action.data.workspace.name : null,
           member_ids: action.data.member_ids,
           members: action.data.members,
+          team_unread_chats: 0,
           channel: {
             code: action.data.channel.code,
             id: action.data.channel.id,
+            icon_link: null,
             loaded: false,
+          },
+          team_channel: {
+            code: action.data.members.filter((m) => m.type === "external").length > 0 && action.data.team_channel.code ? action.data.team_channel.code : null,
+            id: action.data.members.filter((m) => m.type === "external").length > 0 && action.data.team_channel.ud ? action.data.team_channel.id : null,
+            icon_link: null,
           },
           created_at: action.data.topic.created_at,
           updated_at: action.data.topic.created_at,
@@ -417,21 +429,21 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? { ...state.workspaces[action.data.id] } : state.activeTopic,
       };
     }
-    case "SET_SELECTED_CHANNEL": {
-      // let workspace = { ...state.activeTopic };
-      // let workspaces = { ...state.workspaces };
-      // if (action.data.type === "TOPIC") {
-      //   workspaces[workspace.id].channel.loaded = true;
-      //   workspace.channel.loaded = true;
-      // }
+    // case "SET_SELECTED_CHANNEL": {
+    //   // let workspace = { ...state.activeTopic };
+    //   // let workspaces = { ...state.workspaces };
+    //   // if (action.data.type === "TOPIC") {
+    //   //   workspaces[workspace.id].channel.loaded = true;
+    //   //   workspace.channel.loaded = true;
+    //   // }
 
-      return {
-        ...state,
-        // activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
-        // workspaces: workspaces,
-        activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId,
-      };
-    }
+    //   return {
+    //     ...state,
+    //     // activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
+    //     // workspaces: workspaces,
+    //     activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId,
+    //   };
+    // }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       action.data.forEach((c) => {
@@ -1795,9 +1807,14 @@ export default (state = INITIAL_STATE, action) => {
         let updatedWorkspaces = { ...state.workspaces };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
-            updatedWorkspaces[action.data.workspace_id].unread_chats = updatedWorkspaces[action.data.workspace_id].unread_chats + 1;
             if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
-              updatedTopic.unread_chats = updatedTopic.unread_chats + 1;
+              if (state.activeTopic.team_channel && state.activeTopic.team_channel.id === action.data.channel_id) {
+                updatedTopic.team_unread_chats = updatedTopic.team_unread_chats + 1;
+                updatedWorkspaces[action.data.workspace_id].team_unread_chats = updatedWorkspaces[action.data.workspace_id].team_unread_chats + 1;
+              } else {
+                updatedTopic.unread_chats = updatedTopic.unread_chats + 1;
+                updatedWorkspaces[action.data.workspace_id].unread_chats = updatedWorkspaces[action.data.workspace_id].unread_chats + 1;
+              }
             }
           }
           return {
@@ -1812,9 +1829,14 @@ export default (state = INITIAL_STATE, action) => {
         let updatedWorkspaces = { ...state.workspaces };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
-            updatedWorkspaces[action.data.workspace_id].unread_chats = 0;
             if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
-              updatedTopic.unread_chats = 0;
+              if (state.activeTopic.team_channel && state.activeTopic.team_channel.id === action.data.channel_id) {
+                updatedTopic.team_unread_chats = 0;
+                updatedWorkspaces[action.data.workspace_id].team_unread_chats = 0;
+              } else {
+                updatedWorkspaces[action.data.workspace_id].unread_chats = 0;
+                updatedTopic.unread_chats = 0;
+              }
             }
           }
           return {
@@ -1828,20 +1850,34 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "READ_CHANNEL_REDUCER": {
-      let updatedWorkspaces = { ...state.workspaces };
-      let updatedTopic = { ...state.activeTopic };
-      if (Object.keys(updatedWorkspaces).length > 0) {
-        if (updatedWorkspaces.hasOwnProperty(action.data.id)) {
-          updatedWorkspaces[action.data.id].unread_chats = 0;
-          if (state.activeTopic && state.activeTopic.id === action.data.id) {
-            updatedTopic.unread_chats = 0;
-          }
-        }
-      }
       return {
         ...state,
-        workspaces: updatedWorkspaces,
-        activeTopic: updatedTopic,
+        workspaces: {
+          ...Object.values(state.workspaces)
+            .map((ws) => {
+              if (ws.id === action.data.id) {
+                return {
+                  ...ws,
+                  team_unread_chats: action.data.channel_id === ws.team_channel.id ? 0 : ws.team_unread_chats,
+                  unread_chats: action.data.channel_id === ws.channel.id ? 0 : ws.unread_chats,
+                };
+              } else {
+                return ws;
+              }
+            })
+            .reduce((workspaces, workspace) => {
+              workspaces[workspace.id] = workspace;
+              return workspaces;
+            }, {}),
+        },
+        activeTopic:
+          state.activeTopic && state.activeTopic.id === action.data.id
+            ? {
+                ...state.activeTopic,
+                team_unread_chats: action.data.channel_id === state.activeTopic.team_channel.id ? 0 : state.activeTopic.team_unread_chats,
+                unread_chats: action.data.channel_id === state.activeTopic.channel.id ? 0 : state.activeTopic.unread_chats,
+              }
+            : state.activeTopic,
       };
     }
     // case "GET_WORKSPACE_SUCCESS": {
@@ -2647,6 +2683,43 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           }),
         },
+      };
+    }
+    case "INCOMING_TEAM_CHANNEL": {
+      return {
+        ...state,
+        workspaces: {
+          ...Object.values(state.workspaces)
+            .map((ws) => {
+              if (ws.id === action.data.workspace_id) {
+                return {
+                  ...ws,
+                  team_channel: {
+                    id: action.data.team_channel.id,
+                    code: action.data.team_channel.code,
+                    icon_link: null,
+                  },
+                };
+              } else {
+                return ws;
+              }
+            })
+            .reduce((workspaces, workspace) => {
+              workspaces[workspace.id] = workspace;
+              return workspaces;
+            }, {}),
+        },
+        activeTopic:
+          state.activeTopic && state.activeTopic.id === action.data.workspace_id
+            ? {
+                ...state.activeTopic,
+                team_channel: {
+                  id: action.data.team_channel.id,
+                  code: action.data.team_channel.code,
+                  icon_link: null,
+                },
+              }
+            : state.activeTopic,
       };
     }
     default:

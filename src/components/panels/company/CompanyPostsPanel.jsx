@@ -48,6 +48,15 @@ const Wrapper = styled.div`
       color: rgba(255, 255, 255, 0.5);
     }
   }
+  .unset-flex {
+    flex: unset !important;
+  }
+  .other-posts-header {
+    background-color: #fafafa !important;
+    .dark & {
+      background-color: hsla(0, 0%, 100%, 0.0784313725490196) !important;
+    }
+  }
 `;
 
 const PostListWrapper = styled.span`
@@ -97,6 +106,41 @@ const StyledIcon = styled(SvgIconFeather)`
   }
 `;
 
+const UnreadPostsContainer = styled.div`
+  li {
+    border-radius: 0 !important;
+  }
+`;
+
+const ReadPostsContainer = styled.div`
+  li {
+    border-radius: 0 !important;
+  }
+`;
+
+const UnreadPostsHeader = styled.li`
+  border-radius: 6px 6px 0 0 !important;
+  border-bottom: 1px solid #ebebeb;
+  // border-bottom: ${(props) => (props.showPosts ? "0" : "1px solid #ebebeb")};
+  .badge-light {
+    background: rgb(175, 184, 189, 0.2);
+    .dark & {
+      color: #fff;
+    }
+  }
+`;
+
+const ReadPostsHeader = styled.li`
+  border-radius: ${(props) => (props.showPosts ? "0" : "0 0 6px 6px !important")};
+  border-bottom: ${(props) => (props.showPosts ? "0" : "1px solid #ebebeb")};
+  .badge-light {
+    background: rgb(175, 184, 189, 0.2);
+    .dark & {
+      color: #fff;
+    }
+  }
+`;
+
 let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
@@ -110,8 +154,12 @@ const CompanyPostsPanel = (props) => {
   const [loading, setLoading] = useState(false);
   const [checkedPosts, setCheckedPosts] = useState([]);
   const [loadPosts, setLoadPosts] = useState(false);
-
   const [activePostListName, setActivePostListName] = useState({});
+  const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: false });
+  const readPosts = posts.filter((p) => p.is_unread === 0 && p.unread_count === 0);
+  const unreadPosts = posts.filter((p) => p.is_unread === 1 || p.unread_count > 0);
+  const isExternalUser = user.type === "external";
+
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
     const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
@@ -214,6 +262,9 @@ const CompanyPostsPanel = (props) => {
     ofNumberOfUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
       user_count: ofNumberOfUsers.length,
     }),
+    allOthers: _t("POST.ALL_OTHERS", "All others"),
+    sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
+    notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
   };
 
   const handleLoadMore = () => {
@@ -249,6 +300,12 @@ const CompanyPostsPanel = (props) => {
 
   useEffect(() => {
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    if (filter && filter === "inbox" && unreadPosts.length === 0 && readPosts.length > 0) {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
   }, []);
 
   // useEffect(() => {
@@ -305,6 +362,28 @@ const CompanyPostsPanel = (props) => {
     setCheckedPosts([]);
   };
 
+  const handleShowPosts = (type) => {
+    setShowPosts({
+      ...showPosts,
+      [type]: !showPosts[type],
+    });
+  };
+
+  useEffect(() => {
+    if (filter && filter === "archive") {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
+    if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
+      setShowPosts({
+        ...showPosts,
+        showRead: true,
+      });
+    }
+  }, [filter, params]);
+
   if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
@@ -340,7 +419,18 @@ const CompanyPostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail readByUsers={readByUsers} post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} />
+                    <CompanyPostDetail
+                      readByUsers={readByUsers}
+                      post={post}
+                      posts={posts}
+                      filter={filter}
+                      postActions={actions}
+                      user={user}
+                      history={history}
+                      onGoBack={handleGoback}
+                      dictionary={dictionary}
+                      isExternalUser={isExternalUser}
+                    />
                   </PostDetailWrapper>
                 </div>
               ) : (
@@ -355,7 +445,7 @@ const CompanyPostsPanel = (props) => {
                       </button>
                     </PostsBtnWrapper>
                   )}
-                  <div className="card card-body app-content-body mb-4">
+                  <div className="card card-body app-content-body mb-4 unset-flex">
                     <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
                       {search !== "" && (
                         <>
@@ -375,10 +465,64 @@ const CompanyPostsPanel = (props) => {
                         </>
                       )}
                       <ul className="list-group list-group-flush ui-sortable fadeIn">
-                        {posts &&
-                          posts.map((p) => {
-                            return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} />;
-                          })}
+                        <div>
+                          <UnreadPostsHeader
+                            className={"list-group-item post-item-panel pl-3 unread-posts-header"}
+                            onClick={() => {
+                              handleShowPosts("showUnread");
+                            }}
+                            showPosts={showPosts.showUnread}
+                          >
+                            <span className="badge badge-light">
+                              <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                              {dictionary.unread}
+                            </span>
+                          </UnreadPostsHeader>
+                        </div>
+                        {unreadPosts.length > 0 && (
+                          <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
+                            {unreadPosts.map((p) => {
+                              return (
+                                <CompanyPostItemPanel
+                                  key={p.id}
+                                  post={p}
+                                  postActions={actions}
+                                  dictionary={dictionary}
+                                  toggleCheckbox={handleToggleCheckbox}
+                                  checked={checkedPosts.some((id) => id === p.id)}
+                                  hasUnread={true}
+                                  isExternalUser={isExternalUser}
+                                />
+                              );
+                            })}
+                          </UnreadPostsContainer>
+                        )}
+                        <div>
+                          <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={() => handleShowPosts("showRead")} showPosts={showPosts.showRead}>
+                            <span className="badge badge-light">
+                              <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                              {dictionary.allOthers}
+                            </span>
+                          </ReadPostsHeader>
+                        </div>
+                        {readPosts.length > 0 && (
+                          <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
+                            {readPosts.map((p) => {
+                              return (
+                                <CompanyPostItemPanel
+                                  key={p.id}
+                                  post={p}
+                                  postActions={actions}
+                                  dictionary={dictionary}
+                                  toggleCheckbox={handleToggleCheckbox}
+                                  checked={checkedPosts.some((id) => id === p.id)}
+                                  hasUnread={false}
+                                  isExternalUser={isExternalUser}
+                                />
+                              );
+                            })}
+                          </ReadPostsContainer>
+                        )}
                       </ul>
                     </div>
                   </div>

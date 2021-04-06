@@ -114,18 +114,21 @@ const useWorkspaceActions = () => {
     (payload, callback) => {
       dispatch(
         getChannel(payload, (err, res) => {
-          callback();
-          if (err) return;
-          let channel = {
-            ...res.data,
-            hasMore: true,
-            skip: 0,
-            replies: [],
-            selected: true,
-            isFetching: false,
-          };
-          dispatch(addToChannels(channel));
-          // selectChannel(channel)
+          if (err) {
+            callback();
+          }
+          if (res.data) {
+            let channel = {
+              ...res.data,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              selected: true,
+              isFetching: false,
+            };
+            dispatch(addToChannels(channel));
+            selectChannel(channel, () => callback());
+          }
         })
       );
     },

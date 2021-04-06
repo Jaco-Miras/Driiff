@@ -1,5 +1,6 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
+  createTeamChannel as createTeamChannelService,
   createWorkspace as createWorkspaceService,
   deleteWorkspace as deleteWorkspaceService,
   deleteWorkspaceFolder as deleteWorkspaceFolderService,
@@ -198,4 +199,11 @@ export function updateWorkspacePostCount(payload, callback) {
 
 export function postResendInvite(payload, callback) {
   return dispatchActionToReducer(postResendInviteService(payload), "POST_RESEND_INVITE_START", "POST_RESEND_INVITE_SUCCESS", "POST_RESEND_INVITE_FAIL", callback);
+}
+
+export function createTeamChannel(payload, callback) {
+  return dispatchActionToReducer(createTeamChannelService(payload), "CREATE_TEAM_CHANNEL_START", "CREATE_TEAM_CHANNEL_SUCCESS", "CREATE_TEAM_CHANNEL_FAIL", callback);
+}
+export function incomingTeamChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_TEAM_CHANNEL", payload, callback);
 }

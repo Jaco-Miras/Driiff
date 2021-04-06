@@ -544,7 +544,7 @@ const CompanyPostDetailFooter = (props) => {
         </Dflex>
       }
       <Dflex className="d-flex alig-items-center">
-        {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>}
+        {/* {privateWsOnly.length === post.recipients.length && <div className={"locked-label mb-2"}>{dictionary.lockedLabel}</div>} */}
         {hasPrivateRecipient && hasUserRecipient && <div className={"locked-label mb-2"}>{dictionary.sharedWithAdditionalPeople}</div>}
         {hasPrivateRecipient && hasPublicRecipient && <div className={"locked-label mb-2"}>{dictionary.sharedWithPublicWs}</div>}
         {showApprover && (

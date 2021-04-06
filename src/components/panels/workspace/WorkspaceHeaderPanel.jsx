@@ -76,6 +76,10 @@ const NavBarLeft = styled.div`
   svg.feather-menu {
     color: #7a1b8b !important;
   }
+  .component-user-list-pop-up-container .profile-slider {
+    right: 165px;
+    top: 0;
+  }
 `;
 
 const NavBar = styled.ul`
@@ -92,6 +96,7 @@ const NavBar = styled.ul`
       justify-content: flex-end;
       padding-right: 15px;
       border-right: 1px solid #f1f1f1;
+      max-width: 80px;
       @media all and (max-width: 700px) {
         display: none;
       }
@@ -111,8 +116,18 @@ const NavBar = styled.ul`
         display: none;
       }
     }
+    .badge {
+      display: flex;
+    }
     svg {
       color: #b8b8b8;
+    }
+    svg.feather-eye {
+      color: inherit;
+      margin-left: 0;
+      margin-right: 0.4rem;
+      width: 11px !important;
+      height: 11px !important;
     }
     svg.feather-pencil {
       width: 16px;
@@ -199,8 +214,7 @@ const SubWorkspaceName = styled.h3`
   svg {
     color: #64625c;
   }
-  .feather-lock,
-  .feather-share {
+  .feather-lock {
     color: #64625c;
   }
   @media all and (max-width: 620px) {
@@ -274,6 +288,7 @@ const WorspaceHeaderPanel = (props) => {
     toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
       topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
     }),
+    withClient: _t("PAGE.WITH_CLIENT", "With client"),
   };
 
   const actions = useWorkspaceSearchActions();
@@ -427,7 +442,13 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
+                      {activeTopic.is_shared && !isExternal && (
+                        <li className="nav-item">
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+                            <Icon icon="eye" /> {dictionary.withClient}
+                          </div>
+                        </li>
+                      )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -463,7 +484,13 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      <li className="nav-item">{activeTopic.is_shared && <Icon icon="share" strokeWidth="3" />}</li>
+                      {activeTopic.is_shared && !isExternal && (
+                        <li className="nav-item">
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+                            <Icon icon="eye" /> {dictionary.withClient}
+                          </div>
+                        </li>
+                      )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}
@@ -473,7 +500,7 @@ const WorspaceHeaderPanel = (props) => {
                   <Route
                     {...props}
                     exact={true}
-                    render={(props) => <WorkspacePageHeaderPanel {...props} workspace={activeTopic} />}
+                    render={(props) => <WorkspacePageHeaderPanel {...props} user={user} workspace={activeTopic} />}
                     path={[
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",

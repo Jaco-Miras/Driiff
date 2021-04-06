@@ -5,9 +5,9 @@ import { Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter } from 
 import styled from "styled-components";
 import { clearModal, deleteDraft, deleteDraftReducer, saveDraft, updateDraft } from "../../redux/actions/globalActions";
 import { postCreate, putCompanyPosts, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
-import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
+import { Avatar, FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
-import { CheckBox, DescriptionInput, FolderSelect } from "../forms";
+import { DescriptionInput, FolderSelect } from "../forms";
 import { useToaster, useTranslation, useWindowSize, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
@@ -15,6 +15,7 @@ import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
+import PostSettings from "./PostSettings";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -197,20 +198,8 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
-`;
-
-const CheckBoxGroup = styled.div`
-  // overflow: hidden;
-  transition: all 0.3s ease !important;
-  width: 100%;
-
-  label {
-    min-width: auto;
-    font-size: 12.6px;
-
-    &:hover {
-      color: #972c86;
-    }
+  &.file-attachment-wrapper .file-label {
+    font-size: 0.8rem;
   }
 `;
 
@@ -248,17 +237,6 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-const ApproveOptions = styled.div`
-  .react-select-container {
-    width: 300px;
-    @media all and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-const SelectApprover = styled(FolderSelect)``;
-
 //const StyledDatePicker = styled(DatePicker)``;
 
 const initTimestamp = Math.floor(Date.now() / 1000);
@@ -274,13 +252,14 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
+  const isExternalUser = user.type === "external";
   const recipients = useSelector((state) => state.global.recipients);
   const company = recipients.find((r) => r.main_department === true);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(true);
-  const [showMoreOptions, setShowMoreOptions] = useState(true);
+  //const [showMoreOptions, setShowMoreOptions] = useState(true);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -294,6 +273,7 @@ const CreateEditCompanyPostModal = (props) => {
   const [imageLoading, setImageLoading] = useState(null);
   const [mounted, setMounted] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
+  const [quillContents, setQuillContents] = useState([]);
 
   const savingDraft = useRef(null);
 
@@ -313,6 +293,7 @@ const CreateEditCompanyPostModal = (props) => {
     showApprover: false,
     mention_ids: [],
     requiredUsers: [],
+    shared_with_client: false,
   });
 
   const { options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
@@ -365,7 +346,18 @@ const CreateEditCompanyPostModal = (props) => {
       ),
     }),
     approve: _t("POST.APPROVE", "Approve"),
+    shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Who can read this post"),
+    fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
+    internalTeamLabel: _t("LABEL.INTERNAL_TEAM", "Internal team"),
+    internalAndExternalTeamLabel: _t("LABEL.INTERNAL_AND_EXTERTNAL_TEAM", "Internal and external team"),
   };
+
+  const [shareOption, setShareOption] = useState({
+    id: "internal",
+    value: "internal",
+    label: dictionary.internalTeamLabel,
+    icon: null,
+  });
 
   const formRef = {
     reactQuillRef: useRef(null),
@@ -512,11 +504,16 @@ const CreateEditCompanyPostModal = (props) => {
       setForm({
         ...form,
         selectedAddressTo: [],
+        shared_with_client: false,
       });
     } else {
+      const hasExternal = e.some((r) => {
+        return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+      });
       setForm({
         ...form,
         selectedAddressTo: e,
+        shared_with_client: !hasExternal ? false : form.shared_with_client,
       });
     }
   };
@@ -587,7 +584,21 @@ const CreateEditCompanyPostModal = (props) => {
     if (loading || imageLoading) return;
 
     setLoading(true);
-
+    const hasExternal = form.selectedAddressTo.some((r) => {
+      return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+    });
+    const mentionedIds =
+      quillContents.ops && quillContents.ops.length > 0
+        ? quillContents.ops
+            .filter((m) => {
+              if (form.shared_with_client && hasExternal) {
+                return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
+              } else {
+                return m.insert.mention && m.insert.mention.type === "internal";
+              }
+            })
+            .map((i) => parseInt(i.insert.mention.type_id))
+        : [];
     let payload = {
       title: form.title,
       body: form.body,
@@ -615,6 +626,8 @@ const CreateEditCompanyPostModal = (props) => {
           : form.must_read || form.reply_required
           ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
           : [],
+      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
+      body_mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
     };
     // if (draftId) {
     //   dispatch(
@@ -755,10 +768,11 @@ const CreateEditCompanyPostModal = (props) => {
     if (editor.getContents().ops && editor.getContents().ops.length) {
       mentionIds = editor
         .getContents()
-        .ops.filter((m) => m.insert.mention)
+        .ops.filter((m) => m.insert.mention && m.insert.mention.type !== "external")
         .map((i) => i.insert.mention.id);
       handleMentionUser(mentionIds);
     }
+    setQuillContents(editor.getContents());
     setForm({
       ...form,
       body: content,
@@ -1012,6 +1026,7 @@ const CreateEditCompanyPostModal = (props) => {
         show_at: item.post.show_at,
         end_at: item.post.end_at,
         showApprover: item.post.users_approval.length > 0,
+        shared_with_client: item.post.shared_with_client,
         approvers:
           item.post.users_approval.length > 0
             ? item.post.users_approval.map((u) => {
@@ -1214,6 +1229,58 @@ const CreateEditCompanyPostModal = (props) => {
 
   let requiredUserOptions = [...approverOptions];
 
+  let shareOptions = [
+    {
+      id: "internal",
+      value: "internal",
+      label: dictionary.internalTeamLabel,
+      icon: "eye-off",
+    },
+    {
+      id: "external",
+      value: "external",
+      label: dictionary.internalAndExternalTeamLabel,
+      icon: "eye",
+    },
+  ];
+
+  const handleSelectShareOption = (e) => {
+    setShareOption(e);
+    if (e.id === "external") {
+      setForm({
+        ...form,
+        shared_with_client: true,
+      });
+    } else {
+      setForm({
+        ...form,
+        shared_with_client: false,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (form.shared_with_client) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
+    } else {
+      setShareOption({
+        id: "internal",
+        value: "internal",
+        label: dictionary.internalTeamLabel,
+        icon: "eye-off",
+      });
+    }
+  }, [form.shared_with_client]);
+
+  const hasExternalWs = form.selectedAddressTo.some((r) => {
+    return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+  });
+
   if (form.approvers.length && form.approvers.find((a) => a.value === "all")) {
     approverOptions = approverOptions.filter((a) => a.value === "all");
   }
@@ -1281,12 +1348,15 @@ const CreateEditCompanyPostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           prioMentionIds={addressIds}
+          disableBodyMention={isExternalUser}
+          excludeExternals={!form.shared_with_client}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
             <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            {hasExternalWs && !isExternalUser && <span className="file-label">{dictionary.fileUploadLabel}</span>}
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option mb-0">
@@ -1294,49 +1364,26 @@ const CreateEditCompanyPostModal = (props) => {
             {dictionary.moreOptions}
             {/* <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} /> */}
           </MoreOption>
-
-          <CheckBoxGroup>
-            <ApproveOptions className="d-flex align-items-center">
-              <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
-                {dictionary.mustRead}
-              </CheckBox>
-              <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
-                {dictionary.replyRequired}
-              </CheckBox>
-            </ApproveOptions>
-            <ApproveOptions className="d-flex align-items-center">
-              {(form.must_read || form.reply_required) && (
-                <SelectApprover
-                  options={form.selectedAddressTo.length > 0 ? requiredUserOptions : []}
-                  value={form.requiredUsers}
-                  onChange={handleSelectRequiredUsers}
-                  isMulti={true}
-                  isClearable={true}
-                  maxMenuHeight={250}
-                  menuPlacement="top"
-                />
-              )}
-            </ApproveOptions>
-
-            <ApproveOptions className="d-flex align-items-center">
-              <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
-                {dictionary.noReplies}
-              </CheckBox>
-              <CheckBox name="must_read" checked={form.showApprover} onClick={toggleApprover}>
-                {dictionary.approve}
-              </CheckBox>
-            </ApproveOptions>
-            <ApproveOptions className="d-flex align-items-center">
-              {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
-            </ApproveOptions>
-
-            {/* <WrapperDiv className="schedule-post">
+          <PostSettings
+            approverOptions={approverOptions}
+            dictionary={dictionary}
+            form={form}
+            requiredUserOptions={requiredUserOptions}
+            toggleCheck={toggleCheck}
+            toggleApprover={toggleApprover}
+            handleSelectApprover={handleSelectApprover}
+            handleSelectRequiredUsers={handleSelectRequiredUsers}
+            isExternalUser={isExternalUser}
+            shareOptions={shareOptions}
+            shareOption={shareOption}
+            handleSelectShareOption={handleSelectShareOption}
+          />
+          {/* <WrapperDiv className="schedule-post">
               <Label>{dictionary.schedulePost}</Label>
               <SvgIconFeather className="mr-2" width={18} icon="calendar" />
               <StyledDatePicker className="react-datetime-picker mr-2 start-date" onChange={handleSelectStartDate} value={form.show_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
               <StyledDatePicker className="react-datetime-picker end-date" onChange={handleSelectEndDate} value={form.end_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
             </WrapperDiv> */}
-          </CheckBoxGroup>
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
           <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>

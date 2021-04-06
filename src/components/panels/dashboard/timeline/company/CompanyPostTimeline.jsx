@@ -58,7 +58,7 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const CompanyPostTimeline = (props) => {
-  const { className = "", data, dictionary } = props;
+  const { className = "", data, dictionary, scrollRef } = props;
   const history = useHistory();
   const { fromNow, localizeDate } = useTimeFormat();
 
@@ -70,9 +70,7 @@ const CompanyPostTimeline = (props) => {
   return (
     <Wrapper className={`post-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name}
-                imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link}
-                id={data.user.id}/>
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
       </div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">

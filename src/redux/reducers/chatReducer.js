@@ -660,25 +660,48 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "ARCHIVE_REDUCER": {
-      let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
-        channel = {
-          ...channel,
-          is_archived: action.data.status === "ARCHIVED" ? true : false,
-        };
-      }
+      const isArchived = action.data.status === "ARCHIVED";
       return {
         ...state,
-        channels:
-          channel !== null
-            ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
+        channels: {
+          ...Object.values(state.channels)
+            .map((channel) => {
+              if (isArchived) {
+                if (action.data.topic_detail) {
+                  if (channel.entity_id === action.data.topic_detail.id) {
+                    return {
+                      ...channel,
+                      is_archived: true,
+                    };
+                  } else {
+                    return channel;
+                  }
+                } else {
+                  if (action.data.channel_id === channel.id) {
+                    return {
+                      ...channel,
+                      is_archived: true,
+                    };
+                  } else {
+                    return channel;
+                  }
+                }
+              } else {
+                return channel;
               }
-            : state.channels,
+            })
+            .reduce((channels, channel) => {
+              channels[channel.id] = channel;
+              return channels;
+            }, {}),
+        },
         selectedChannel:
-          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+          state.selectedChannel && action.data.topic_detail && action.data.topic_detail.id === state.selectedChannel.entity_id
+            ? {
+                ...state.selectedChannel,
+                is_archived: action.data.status === "ARCHIVED" ? true : false,
+              }
+            : state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
                 ...state.selectedChannel,
                 is_archived: action.data.status === "ARCHIVED" ? true : false,

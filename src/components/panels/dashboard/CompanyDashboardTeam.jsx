@@ -1,6 +1,6 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState, useRef } from "react";
 import styled from "styled-components";
-import {TeamListItem} from "../../list/people/item";
+import { TeamListItem } from "../../list/people/item";
 //import {useUsers} from "../../hooks";
 import { useSelector } from "react-redux";
 
@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   .feather-edit {
     cursor: pointer;
   }
+  overflow: unset;
 
   .card-title {
     position: relative;
@@ -48,7 +49,8 @@ const Wrapper = styled.div`
 `;
 
 const CompanyDashboardTeam = (props) => {
-  const {className = "", onEditClick, dictionary, actions} = props;
+  const { className = "", onEditClick, dictionary, actions } = props;
+  const mainRef = useRef(null);
   const [scrollRef, setScrollRef] = useState(null);
   const users = useSelector((state) => state.users.users);
   const loggedUser = useSelector((state) => state.session.user);
@@ -64,36 +66,29 @@ const CompanyDashboardTeam = (props) => {
   }, []);
 
   const handleToggleShow = () => {
-    setShowMore(prevState => !prevState)
+    setShowMore((prevState) => !prevState);
   };
-  
-  const filteredUsers = Object.values(users).filter((m) => m.active === 1
-                          && m.type === "internal"
-                          && !["gripp_project_bot",
-                            "gripp_account_activation",
-                            "gripp_offerte_bot",
-                            "gripp_invoice_bot",
-                            "gripp_police_bot"].includes(m.email))
-                          .sort((a, b) => a.name.localeCompare(b.name))
+
+  const filteredUsers = Object.values(users)
+    .filter((m) => m.active === 1 && m.type === "internal" && !["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot"].includes(m.email))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const slicedUsers = () => {
     if (showMore) {
-      return filteredUsers
+      return filteredUsers;
     } else {
-      return filteredUsers.slice(0,5)
+      return filteredUsers.slice(0, 5);
     }
-  }
+  };
 
   return (
-    <Wrapper className={`dashboard-team card ${className}`}>
+    <Wrapper className={`dashboard-team card ${className}`} ref={mainRef}>
       <div ref={assignRef} className="card-body">
-        <h5 className="card-title">
-          {dictionary.team}
-        </h5>
+        <h5 className="card-title">{dictionary.team}</h5>
         <ul className="list-group list-group-flush">
-          {slicedUsers()
-            .map((member, i) => {
-              return <TeamListItem
+          {slicedUsers().map((member, i) => {
+            return (
+              <TeamListItem
                 key={member.id}
                 member={member}
                 hideOptions={true}
@@ -106,8 +101,10 @@ const CompanyDashboardTeam = (props) => {
                 showMore={showMore}
                 toggleShow={handleToggleShow}
                 loggedUser={loggedUser}
-                />;
-            })}
+                scrollRef={mainRef.current}
+              />
+            );
+          })}
         </ul>
       </div>
     </Wrapper>

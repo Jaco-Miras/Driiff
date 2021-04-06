@@ -13,7 +13,7 @@ import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
 
   .chat-header-left {
@@ -56,6 +56,9 @@ const Wrapper = styled.div`
     @media (max-width: 991.99px) {
       display: none;
     }
+  }
+  .component-user-list-pop-up-container .profile-slider {
+    right: 255px !important;
   }
 `;
 
@@ -266,7 +269,7 @@ const ChatHeaderPanel = (props) => {
           <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
         )}
         {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
-          <Icon className={"ml-1"} icon={"share"} strokeWidth="3" width={12} />
+          <Icon className={"ml-1"} icon={"eye"} strokeWidth="3" width={12} />
         )}
       </h2>
       <div className="chat-header-right">

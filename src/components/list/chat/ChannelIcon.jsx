@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
+  position: relative;
   line-height: 0;
   > span {
     font-size: 13px;
@@ -23,6 +25,18 @@ const Wrapper = styled.div`
     border-radius: 50%;
     &.dark {
       background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
+    }
+    &.feather-eye,
+    &.feather-eye-off {
+      padding: 0;
+      background-color: #fff;
+      border: 2px solid #fff;
+      color: #7a1b8b;
+      .dark & {
+        background-color: #191c20;
+        color: #fff;
+        border: 2px solid #191c20;
+      }
     }
   }
   .chat-header-icon-left & {
@@ -47,6 +61,17 @@ const Icon = styled(SvgIconFeather)`
     height: 28px;
     width: 28px;
   }
+`;
+
+const EyeIcon = styled(SvgIconFeather)`
+  position: absolute;
+  top: -2px;
+  right: 15px;
+  background-color: unset;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  z-index: 1;
 `;
 
 const iconColor = (input) => {
@@ -76,48 +101,39 @@ const handleInitials = (title) => {
 
 const ChannelIcon = (props) => {
   const { className = "", channel } = props;
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channelTitle = channel.title ? channel.title.toLowerCase() : "";
   return (
     <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <StyledAvatar
-          type={channel.type}
           imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
           userId={channel.profile.id}
           id={channel.profile.id}
           name={channel.profile.name}
           partialName={channel.profile.partial_name}
           type="USER"
+          showSlider={true}
           //noDefaultClick={false}
         />
       )}
-      {channel.type === "GROUP" && (channel.icon_link ?
-        <StyledAvatar
-          forceThumbnail={false}
-          type={channel.type}
-          imageLink={channel.icon_link}
-          id={`ws_${channel.id}`}
-          name={channel.title}
-          noDefaultClick={false}
-        /> : <Icon icon="users" alt={channel.title}/>)}
-      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
-      {channel.type === "POST" && <Icon icon="users" alt={channel.title}/>}
-      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title}/>}
-      {(channel.members && channel.members.length > 2 && channel.type === "DIRECT")}
-      {channel.type === "TOPIC" && <>
-        {
-          channel.icon_link ?
-            <StyledAvatar
-              forceThumbnail={false}
-              type={channel.type}
-              imageLink={channel.icon_link}
-              id={`ws_${channel.id}`}
-              name={channel.title}
-              noDefaultClick={false}
-            /> :
+      {channel.type === "GROUP" &&
+        (channel.icon_link ? <StyledAvatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} /> : <Icon icon="users" alt={channel.title} />)}
+      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
+      {channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
+      {channel.members && channel.members.length > 2 && channel.type === "DIRECT"}
+      {channel.type === "TOPIC" && (
+        <>
+          {channel.icon_link ? (
+            <StyledAvatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} />
+          ) : (
             <span>{handleInitials(channel.title).substring(0, 3)}</span>
-        }
-      </>}
+          )}
+        </>
+      )}
+      {channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye-off" />}
+      {!channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye" />}
     </Wrapper>
   );
 };

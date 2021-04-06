@@ -42,6 +42,9 @@ const StyledUserListPopUp = styled(UserListPopUp)`
     max-height: 250px;
     padding: 5px 10px;
   }
+  .profile-slider {
+    display: none !important;
+  }
 `;
 
 const MoreEmojiLists = (props) => {

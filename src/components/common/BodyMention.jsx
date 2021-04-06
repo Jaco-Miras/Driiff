@@ -23,6 +23,8 @@ const BodyMention = (props) => {
   const { onAddUsers, onDoNothing, userIds, type = "post", basedOnUserId = false, userMentionOnly = false } = props;
 
   const { _t } = useTranslation();
+  const user = useSelector((state) => state.session.user);
+  const isExternalUser = user.type === "external";
   const users = useSelector((state) => state.users.mentions);
   //const workspaces = useSelector((state) => state.workspaces.workspaces);
   const recipients = useSelector((state) => state.global.recipients);
@@ -88,6 +90,8 @@ const BodyMention = (props) => {
     pText = dictionary.notWorkspaceMembers;
     addText = dictionary.addToWorkspace;
   }
+
+  if (isExternalUser) return null;
   return (
     <BodyMentionDiv>
       <div>

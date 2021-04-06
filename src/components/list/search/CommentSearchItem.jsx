@@ -53,13 +53,16 @@ const CommentSearchItem = (props) => {
       {data !== null && (
         <>
           <div>
-            <Avatar id={data.comment.author.id} name={data.comment.author.name}
-                    imageLink={data.comment.author.profile_image_link ? data.comment.author.profile_image_thumbnail_link : data.comment.author.profile_image_thumbnail_link}/>
+            <Avatar
+              id={data.comment.author.id}
+              name={data.comment.author.name}
+              imageLink={data.comment.author.profile_image_link ? data.comment.author.profile_image_thumbnail_link : data.comment.author.profile_image_thumbnail_link}
+              showSlider={true}
+            />
           </div>
           <div className="ml-2">
             <p>{data.comment.author.name}</p>
-            <ResultContent className="text-muted"
-                           dangerouslySetInnerHTML={{ __html: data.comment.body }}></ResultContent>
+            <ResultContent className="text-muted" dangerouslySetInnerHTML={{ __html: data.comment.body }}></ResultContent>
           </div>
         </>
       )}
