@@ -59,27 +59,43 @@ const useQuillModules = ({
       value: "All",
       name: "All users in this channel",
       class: "all-pic",
+      show_line: false,
     };
 
     let newAtValues = [];
     let newWorkSpaceValues = [];
-
+    let prioIds = prioMentionIds.filter((id) => id !== user.id);
     if (members.length) {
       newAtValues = [
-        ...members.map((user) => {
-          const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
-          return Object.assign({}, user, {
-            value: user.first_name,
-            id: r ? r.id : user.id,
-            name: user.name,
-            //id: user.id,
-            type: user.type,
-            type_id: user.id,
-            user_id: user.id,
-            class: "user-pic",
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
-          });
-        }),
+        ...members
+          .sort((a, b) => {
+            if (prioMentionIds.length) {
+              if (prioIds.some((id) => id === a.id) && prioIds.some((id) => id === b.id)) {
+                return 0;
+              } else if (prioIds.some((id) => id === a.id)) {
+                return -1;
+              } else {
+                return 1;
+              }
+            } else {
+              return 0;
+            }
+          })
+          .map((user, k) => {
+            const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
+            return Object.assign({}, user, {
+              value: user.first_name,
+              id: r ? r.id : user.id,
+              name: user.name,
+              //id: user.id,
+              type: user.type,
+              type_id: user.id,
+              user_id: user.id,
+              class: "user-pic",
+              link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+              show_line: prioMentionIds.length === k + 1,
+            });
+          }),
         all,
       ];
     } else {
@@ -91,7 +107,20 @@ const useQuillModules = ({
               else return true;
             } else return true;
           })
-          .map((user) => {
+          .sort((a, b) => {
+            if (prioMentionIds.length) {
+              if (prioIds.some((id) => id === a.id) && prioIds.some((id) => id === b.id)) {
+                return 0;
+              } else if (prioIds.some((id) => id === a.id)) {
+                return -1;
+              } else {
+                return 1;
+              }
+            } else {
+              return 0;
+            }
+          })
+          .map((user, k) => {
             const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
             return Object.assign({}, user, {
               value: user.first_name,
@@ -104,6 +133,7 @@ const useQuillModules = ({
               class: "user-pic all-users",
               profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
               link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+              show_line: prioMentionIds.length === k + 1,
             });
           }),
         all,
@@ -136,19 +166,6 @@ const useQuillModules = ({
       newWorkSpaceValues = [];
     }
 
-    if (prioMentionIds.length) {
-      let prioIds = prioMentionIds.filter((id) => id !== user.id);
-      newAtValues.sort((a, b) => {
-        if (prioIds.some((id) => id === a.id) && prioIds.some((id) => id === b.id)) {
-          return 0;
-        } else if (prioIds.some((id) => id === a.id)) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-    }
-
     const modules = {
       magicUrl: true,
       clipboard: {
@@ -166,7 +183,7 @@ const useQuillModules = ({
         mentionDenotationChars: ["@", "/"],
         minChars: 0,
         //linkTarget: "_blank",
-        dataAttributes: ["id", "value", "denotationChar", "link", "target", "disabled", "type_id", "type"],
+        dataAttributes: ["id", "value", "denotationChar", "link", "target", "disabled", "type_id", "type", "show_line"],
         source: function (searchTerm, renderList, mentionChar) {
           let values;
 
