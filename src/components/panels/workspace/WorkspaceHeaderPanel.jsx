@@ -76,6 +76,10 @@ const NavBarLeft = styled.div`
   svg.feather-menu {
     color: #7a1b8b !important;
   }
+  .component-user-list-pop-up-container .profile-slider {
+    right: 165px;
+    top: 0;
+  }
 `;
 
 const NavBar = styled.ul`
@@ -92,6 +96,7 @@ const NavBar = styled.ul`
       justify-content: flex-end;
       padding-right: 15px;
       border-right: 1px solid #f1f1f1;
+      max-width: 80px;
       @media all and (max-width: 700px) {
         display: none;
       }
@@ -439,7 +444,7 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
-                          <div className={"badge badge-warning ml-1 d-flex align-items-center"}>
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
                             <Icon icon="eye" /> {dictionary.withClient}
                           </div>
                         </li>
@@ -481,7 +486,7 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
-                          <div className={"badge badge-warning ml-1 d-flex align-items-center"}>
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
                             <Icon icon="eye" /> {dictionary.withClient}
                           </div>
                         </li>

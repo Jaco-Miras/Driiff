@@ -168,7 +168,7 @@ const ChatBubbleContainer = styled.div`
   &:before {
     ${(props) => props.showAvatar && "content: '';"};
     border: 10px solid transparent;
-    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : "#f0f0f0")};
+    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? "#FFDB92" : "#f0f0f0")};
     position: absolute;
     top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
     left: 30px;
@@ -920,6 +920,7 @@ class ChatMessages extends React.PureComponent {
                                   showAvatar={showAvatar}
                                   isBot={isBot}
                                   isImportant={reply.is_important}
+                                  isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
                                 >
                                   {reply.message_failed ? (
                                     <FailedSpan>
@@ -985,6 +986,7 @@ class ChatMessages extends React.PureComponent {
                                       name={reply.user.name}
                                       isBot={isBot}
                                       isHuddleBot={reply.user.code === "huddle_bot"}
+                                      showSlider={true}
                                     />
                                   )}
                                 </ChatBubbleContainer>

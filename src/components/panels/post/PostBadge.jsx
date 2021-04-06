@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from "react";
 const PostBadge = (props) => {
   const { className = "", isBadgePill = false, post, dictionary, user, cbGetWidth = () => {} } = props;
 
-  const hasRead = post.user_reads.some((u) => u.id === user.id);
-  const hasReplied = typeof post.has_replied === "undefined" || !post.has_replied ? false : true;
+  // const hasRead = post.user_reads.some((u) => u.id === user.id);
+  // const hasReplied = typeof post.has_replied === "undefined" || !post.has_replied ? false : true;
 
   const refs = {
     container: useRef(null),
@@ -91,11 +91,6 @@ const PostBadge = (props) => {
           <div className={`badge badge-closed ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.repliesClosed}</div>
         </div>
       )}
-      {/* {hasPendingAproval && post.author.id === user.id && (
-        <div className={`${className} mr-3 d-sm-inline d-none opacity-2`}>
-          <div className={`badge badge-primary ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.requestForApproval}</div>
-        </div>
-      )} */}
     </div>
   );
 };

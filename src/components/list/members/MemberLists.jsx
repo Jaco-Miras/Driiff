@@ -31,14 +31,21 @@ const MembersLists = (props) => {
   return (
     <MembersListContainer className={`d-flex ${classNames}`}>
       {firstMembers.map((m, i) => {
-        return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                             name={m.name ? m.name : m.email}
-                             imageLink={m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link}
-                             hasAccepted={m.has_accepted}/>;
+        return (
+          <StyledAvatar
+            id={m.id}
+            firstUser={i === 0}
+            className="chat-members"
+            key={m.id}
+            name={m.name ? m.name : m.email}
+            imageLink={m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link}
+            hasAccepted={m.has_accepted}
+          />
+        );
       })}
-      {afterMembers.length != null && afterMembers[0] && <PlusRecipients recipients={afterMembers}></PlusRecipients>}
+      {afterMembers.length > 0 && <PlusRecipients recipients={afterMembers}></PlusRecipients>}
     </MembersListContainer>
   );
 };
 
-export default React.memo(MembersLists);
+export default MembersLists;

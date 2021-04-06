@@ -14,6 +14,7 @@ const Wrapper = styled.div`
       color: #972c86;
     }
   }
+  overflow: auto;
 `;
 
 const UserNotificationPanel = (props) => {

@@ -101,6 +101,19 @@ const Wrapper = styled.li`
     padding: 3px;
     top: 1px;
   }
+  .avatar .profile-slider {
+    display: flex;
+    min-width: 300px;
+    max-width: 370px;
+    flex-flow: column;
+    .information-wrapper {
+      margin: 0;
+    }
+    .info-details {
+      margin-left: 2rem;
+      overflow: auto;
+    }
+  }
 `;
 
 const ChannelTitlePreview = styled.div``;

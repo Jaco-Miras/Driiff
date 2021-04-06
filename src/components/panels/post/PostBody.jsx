@@ -191,22 +191,22 @@ const AuthorRecipients = styled.div`
       margin-left: 5px;
     }
   }
-  .receiver.client-shared {
-    background: #fb3;
-    color: #212529;
-    margin-right: 5px;
-    .feather {
-      margin-right: 5px;
-    }
-  }
-  .receiver.client-not-shared {
-    background: #33b5e5;
-    color: #212529;
-    margin-right: 5px;
-    .feather {
-      margin-right: 5px;
-    }
-  }
+  // .receiver.client-shared {
+  //   background: #ffdb92;
+  //   color: #212529;
+  //   margin-right: 5px;
+  //   .feather {
+  //     margin-right: 5px;
+  //   }
+  // }
+  // .receiver.client-not-shared {
+  //   background: #d6edff;
+  //   color: #212529;
+  //   margin-right: 5px;
+  //   .feather {
+  //     margin-right: 5px;
+  //   }
+  // }
 `;
 
 const PostBadgeWrapper = styled.div`
@@ -216,18 +216,17 @@ const PostBadgeWrapper = styled.div`
 const SharedBadge = styled.span`
   border-radius: 6px;
   font-size: 11px;
-  position: absolute;
-  top: -11px;
-  left: -10px;
+  display: inline-flex;
+  margin-bottom: 5px;
+  margin-left: -30px;
   padding: 2px 5px;
-  display: flex;
   align-items: center;
   > svg {
     width: 12px;
     height: 12px;
   }
   &.client-shared {
-    background: #fb3;
+    background: #ffdb92;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -235,7 +234,7 @@ const SharedBadge = styled.span`
     }
   }
   &.client-not-shared {
-    background: #33b5e5;
+    background: #d6edff;
     color: #212529;
     margin-right: 5px;
     .feather {
@@ -319,7 +318,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -459,7 +458,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });

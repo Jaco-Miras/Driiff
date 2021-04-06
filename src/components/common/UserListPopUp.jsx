@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import { Avatar } from "../common";
+import { Avatar, ProfileSlider } from "../common";
 import { useOutsideClick } from "../hooks";
 import { useHistory } from "react-router-dom";
-import { replaceChar } from "../../helpers/stringFormatter";
+//import { replaceChar } from "../../helpers/stringFormatter";
+import { CSSTransition } from "react-transition-group";
 
 const UserListPopUpContainer = styled.div`
   ul {
@@ -56,29 +57,71 @@ const UserListPopUpContainer = styled.div`
       color: #c7c7c7;
     }
   }
+  /* slide enter */
+  .slide-enter,
+  .slide-appear {
+    opacity: 0;
+    transform: scale(0.97) translateY(50px);
+    z-index: 1;
+  }
+  .slide-enter.slide-enter-active,
+  .slide-appear.slide-appear-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  }
+  // .slide-enter.slide-enter-done {
+  //   opacity: 1;
+  //   transform: scale(1) translateY(0);
+  //   transition: opacity 300ms linear 100ms, transform 300ms ease-in-out 100ms;
+  // }
+
+  /* slide exit */
+  .slide-exit {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .slide-exit.slide-exit-active {
+    opacity: 0;
+    transform: scale(0.97) translateY(50px);
+    transition: opacity 150ms linear, transform 150ms ease-out;
+  }
+  .slide-exit-done {
+    opacity: 0;
+  }
 `;
 
 const UserListPopUp = (props) => {
   const { users, className, onShowList } = props;
   const listRef = useRef();
-  const history = useHistory();
+  //const history = useHistory();
+  const [showSlider, setShowSlider] = useState(false);
+  const [user, setUser] = useState(null);
 
   const handleShowList = () => {
     if (onShowList) onShowList();
   };
 
-  const handleOnNameClick = (e, user) => {
-    history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
+  const handleUserClick = (e, user) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowSlider(true);
+    setUser(user);
   };
 
   useOutsideClick(listRef, handleShowList, true);
+
+  const orientation = {
+    vertical: "bottom",
+    horizontal: "left",
+  };
 
   return (
     <UserListPopUpContainer className={`component-user-list-pop-up-container ${className}`} ref={listRef}>
       <ul>
         {users.map((u, k) => {
           return (
-            <li key={u.id}>
+            <li key={u.id} onClick={(e) => handleUserClick(e, u)}>
               <Avatar
                 size={"xs"}
                 imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
@@ -86,16 +129,23 @@ const UserListPopUp = (props) => {
                 name={u.name ? u.name : u.email}
                 partialName={u.partial_name}
                 hasAccepted={u.has_accepted}
-                noDefaultClick={true}
-                onClick={(e) => handleOnNameClick(e, u)}
+                id={u.id}
+                showSlider={false}
+                //noDefaultClick={true}
+                onClick={(e) => handleUserClick(e, u)}
               />
-              <span className={"user-list-name"} onClick={(e) => handleOnNameClick(e, u)}>
+              <span className={"user-list-name"} onClick={(e) => handleUserClick(e, u)}>
                 {u.name ? u.name : u.email}
               </span>
             </li>
           );
         })}
       </ul>
+      {showSlider && (
+        <CSSTransition appear in={showSlider} timeout={300} classNames="slide">
+          <ProfileSlider id={user ? user.id : null} onShowPopup={() => setShowSlider((prevState) => !prevState)} showPopup={showSlider} orientation={orientation} />
+        </CSSTransition>
+      )}
     </UserListPopUpContainer>
   );
 };

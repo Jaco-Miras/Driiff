@@ -191,6 +191,9 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
+  &.file-attachment-wrapper .file-label {
+    font-size: 0.8rem;
+  }
 `;
 
 const MoreOption = styled.div`
@@ -336,8 +339,18 @@ const CreateEditWorkspacePostModal = (props) => {
       ),
     }),
     approve: _t("POST.APPROVE", "Approve"),
-    shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Share with client"),
+    shareWithClient: _t("POST.SHARE_WITH_CLIENT", "Who can read this post"),
+    fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
+    internalTeamLabel: _t("LABEL.INTERNAL_TEAM", "Internal team"),
+    internalAndExternalTeamLabel: _t("LABEL.INTERNAL_AND_EXTERTNAL_TEAM", "Internal and external team"),
   };
+
+  const [shareOption, setShareOption] = useState({
+    id: "internal",
+    value: "internal",
+    label: dictionary.internalTeamLabel,
+    icon: null,
+  });
 
   const formRef = {
     reactQuillRef: useRef(null),
@@ -1213,6 +1226,58 @@ const CreateEditWorkspacePostModal = (props) => {
     requiredUserOptions = approverOptions.filter((a) => a.value === "all");
   }
 
+  let shareOptions = [
+    {
+      id: "internal",
+      value: "internal",
+      label: dictionary.internalTeamLabel,
+      icon: "eye-off",
+    },
+    {
+      id: "external",
+      value: "external",
+      label: dictionary.internalAndExternalTeamLabel,
+      icon: "eye",
+    },
+  ];
+
+  const handleSelectShareOption = (e) => {
+    setShareOption(e);
+    if (e.id === "external") {
+      setForm({
+        ...form,
+        shared_with_client: true,
+      });
+    } else {
+      setForm({
+        ...form,
+        shared_with_client: false,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (form.shared_with_client) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
+    } else {
+      setShareOption({
+        id: "internal",
+        value: "internal",
+        label: dictionary.internalTeamLabel,
+        icon: "eye-off",
+      });
+    }
+  }, [form.shared_with_client]);
+
+  const hasExternalWs = form.selectedAddressTo.some((r) => {
+    return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
+  });
+
   return (
     <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
@@ -1280,6 +1345,7 @@ const CreateEditWorkspacePostModal = (props) => {
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
             <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            {hasExternalWs && !isExternalUser && <span className="file-label">{dictionary.fileUploadLabel}</span>}
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option">
@@ -1297,6 +1363,9 @@ const CreateEditWorkspacePostModal = (props) => {
             handleSelectApprover={handleSelectApprover}
             handleSelectRequiredUsers={handleSelectRequiredUsers}
             isExternalUser={isExternalUser}
+            shareOptions={shareOptions}
+            shareOption={shareOption}
+            handleSelectShareOption={handleSelectShareOption}
           />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>

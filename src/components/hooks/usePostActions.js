@@ -657,7 +657,7 @@ const usePostActions = () => {
                   approve({ post_id: post.id, approved: 1 }, (err, res) => {
                     if (err) return;
                     console.log(isLastUserToAnswer, allUsersAgreed, post);
-                    if (isLastUserToAnswer && allUsersAgreed) {
+                    if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
                       generateSystemMessage(
                         post,
                         post.users_approval.map((ua) => ua.id),

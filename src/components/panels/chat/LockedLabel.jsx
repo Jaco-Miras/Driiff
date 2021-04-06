@@ -2,11 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useTranslation } from "../../hooks";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   font-weight: 500;
   color: #9b9b9b;
   padding: 10px 10px 10px 0;
+`;
+
+const EyeIcon = styled(SvgIconFeather)`
+  width: 14px;
+  height: 14px;
+  margin-left: 5px;
 `;
 
 const LockedLabel = (props) => {
@@ -27,8 +34,17 @@ const LockedLabel = (props) => {
     <>
       {channel && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].active === 1 && (
         <Wrapper className={`locked-label ${className}`}>
-          {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id && user.type === "internal" && dictionary.clientChat}
-          {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].team_channel.id === channel.id && user.type === "internal" && dictionary.teamChat}
+          {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id && user.type === "internal" && (
+            <span>
+              {dictionary.clientChat}
+              <EyeIcon icon="eye" />
+            </span>
+          )}
+          {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].team_channel.id === channel.id && user.type === "internal" && (
+            <span>
+              {dictionary.teamChat} <EyeIcon icon="eye-off" />
+            </span>
+          )}
           {/* {workspaces[channel.entity_id].is_shared && user.type === "internal" && " / "} */}
           {/* {dictionary.lockedLabel} */}
         </Wrapper>

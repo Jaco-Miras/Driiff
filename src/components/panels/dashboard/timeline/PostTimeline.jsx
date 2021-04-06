@@ -29,9 +29,9 @@ const Wrapper = styled.div`
     max-height: 255px;
     overflow: hidden;
     position: relative;
-    
+
     svg {
-      cursor:pointer;
+      cursor: pointer;
       cursor: hand;
       position: absolute;
       right: 6px;
@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const PostTimeline = (props) => {
-  const { className = "", data, dictionary } = props;
+  const { className = "", data, dictionary, scrollRef } = props;
   const history = useHistory();
   const { params } = useRouteMatch();
   const { fromNow } = useTimeFormat();
@@ -57,9 +57,7 @@ const PostTimeline = (props) => {
   return (
     <Wrapper className={`post-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name}
-                imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link}
-                id={data.user.id}/>
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
       </div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">
@@ -74,8 +72,8 @@ const PostTimeline = (props) => {
         {data.body.replace(/<\/?[^>]+(>|$)/g, "") && (
           <span onClick={handleLinkClick}>
             <div className="mb-3 border p-3 border-radius-1 post-body">
-              <SvgIconFeather icon="arrow-right"/>
-              <div dangerouslySetInnerHTML={{__html: data.body}}/>
+              <SvgIconFeather icon="arrow-right" />
+              <div dangerouslySetInnerHTML={{ __html: data.body }} />
             </div>
           </span>
         )}
