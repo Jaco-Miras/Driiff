@@ -569,7 +569,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: Object.values(users).filter((u) => {
-      if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
+      if (u.id === user.id) {
+        return false;
+      } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
         return true;
       } else {
         return false;
@@ -578,7 +580,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
-    prioMentionIds: [...new Set(prioMentionIds)],
+    prioMentionIds: [...new Set(prioMentionIds)].filter((id) => id !== user.id),
     post,
   });
 
