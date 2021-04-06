@@ -106,7 +106,7 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>}
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
-      {replyData.user.code && replyData.user.code.includes("huddle_bot") && replyData.body.includes("<div><p>Your Unpublished") && <div onClick={handleEditHuddle}>Edit huddle</div>}
+      {replyData.user && replyData.user.code && replyData.user.code.includes("huddle_bot") && replyData.body.includes("<div><p>Your Unpublished") && <div onClick={handleEditHuddle}>Edit huddle</div>}
       {replyData.body.startsWith("HUDDLE_SKIP::") && <div onClick={handleUnskip}>Unskip</div>}
       {replyData.user && replyData.user.type !== "BOT" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && replyData.user.code && replyData.user.code !== "huddle_bot" && isInternalUser && (
         <div onClick={handleReply}>{dictionary.replyInPrivate}</div>

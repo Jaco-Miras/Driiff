@@ -139,7 +139,6 @@ const ChatInput = (props) => {
   const { setSidebarSearch, create, fetchChannelLastReply } = useChannelActions();
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const slugs = useSelector((state) => state.global.slugs);
   const recipients = useSelector((state) => state.global.recipients);
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
@@ -166,8 +165,6 @@ const ChatInput = (props) => {
   const toaster = useToaster();
 
   const { huddle, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
-
-  const setEditedAnswerId = useRef(null);
 
   useEffect(() => {
     if (editHuddle && question && answerId !== question.answer_id && textOnly !== question.original_answer) {
@@ -327,9 +324,6 @@ const ChatInput = (props) => {
       reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-      // token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-      // slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
-      //test_case: "web_push"
     };
 
     if (quote) {
