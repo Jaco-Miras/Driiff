@@ -262,7 +262,13 @@ export function getWorkspaceGoogleFileAttachments(payload, callback) {
 }
 
 export function getWorkspaceGoogleFolderAttachments(payload, callback) {
-  return dispatchActionToReducer(getWorkspaceGoogleFolderAttachmentsService(payload), "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_START", "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS", "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_FAIL", callback);
+  return dispatchActionToReducer(
+    getWorkspaceGoogleFolderAttachmentsService(payload),
+    "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_START",
+    "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS",
+    "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_FAIL",
+    callback
+  );
 }
 
 export function incomingGoogleFile(payload, callback) {
@@ -459,4 +465,20 @@ export function incomingFileData(payload, callback) {
 
 export function incomingFileThumbnailData(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FILE_THUMBNAIL_DATA", payload, callback);
+}
+
+export function getTeamChatFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_TEAM_CHAT_FILES_START", "GET_TEAM_CHAT_FILES_SUCCESS", "GET_TEAM_CHAT_FILES_FAIL", callback);
+}
+
+export function getClientChatFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_CLIENT_CHAT_FILES_START", "GET_CLIENT_CHAT_FILES_SUCCESS", "GET_CLIENT_CHAT_FILES_FAIL", callback);
+}
+
+export function getTeamPostFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_TEAM_POST_FILES_START", "GET_TEAM_POST_FILES_SUCCESS", "GET_TEAM_POST_FILES_FAIL", callback);
+}
+
+export function getPrivatePostFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_PRIVATE_POST_FILES_START", "GET_PRIVATE_POST_FILES_SUCCESS", "GET_PRIVATE_POST_FILES_FAIL", callback);
 }

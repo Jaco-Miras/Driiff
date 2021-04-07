@@ -183,6 +183,7 @@ export function putCompanyPosts(payload) {
  * @param {number} payload.post_id
  * @param {number} payload.personalized_for_id
  * @param {number} payload.parent_id
+ * @param {number} payload.channel_id
  * @param {number} payload.reference_id
  * @returns {Promise<*>}
  */

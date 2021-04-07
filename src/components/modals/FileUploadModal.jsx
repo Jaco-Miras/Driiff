@@ -217,7 +217,7 @@ const StyledModalFooter = styled(ModalFooter)`
 `;
 
 const FileUploadModal = (props) => {
-  const { type, mode, droppedFiles, post = null, members = [] } = props.data;
+  const { type, mode, droppedFiles, post = null, members = [], team_channel } = props.data;
 
   const pickerRef = useRef();
   const { _t } = useTranslation();
@@ -335,6 +335,7 @@ const FileUploadModal = (props) => {
               file: file.bodyFormData,
               file_type: "private",
               folder_id: null,
+              channel_id: team_channel,
             })
           )
       ).then((result) => {

@@ -1010,6 +1010,8 @@ export default (state = INITIAL_STATE, action) => {
                   popular_files: [],
                   recently_edited: [],
                   favorite_files: [],
+                  team_chat: [],
+                  client_chat: [],
                   trash_files: {},
                   search_results: [],
                   search_value: "",
@@ -1896,6 +1898,36 @@ export default (state = INITIAL_STATE, action) => {
         fileThumbnailBlobs: {
           ...state.fileThumbnailBlobs,
           [action.data.id]: action.data.src,
+        },
+      };
+    }
+    case "GET_TEAM_CHAT_FILES_SUCCESS": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+              team_chat: [...state.workspaceFiles[action.data.topic_id].team_chat, ...action.data.files.map((f) => f.id)],
+            },
+          }),
+        },
+      };
+    }
+    case "GET_CLIENT_CHAT_FILES_SUCCESS": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+              client_chat: [...state.workspaceFiles[action.data.topic_id].client_chat, ...action.data.files.map((f) => f.id)],
+            },
+          }),
         },
       };
     }
