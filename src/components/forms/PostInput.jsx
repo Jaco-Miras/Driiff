@@ -565,6 +565,7 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
+  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -586,7 +587,9 @@ const PostInput = forwardRef((props, ref) => {
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
-    prioMentionIds: [...new Set(prioMentionIds)].filter((id) => id !== user.id),
+    prioMentionIds: Object.values(users)
+      .filter((u) => prioIds.some((id) => id === u.id))
+      .map((u) => u.id),
     post,
   });
 
