@@ -59,6 +59,9 @@ export function uploadDocument(payload) {
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
   }
+  if (payload.channel_id) {
+    url += `&channel_id=${payload.channel_id}`;
+  }
   return apiCall({
     method: "POST",
     url: url,

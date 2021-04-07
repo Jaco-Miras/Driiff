@@ -103,6 +103,7 @@ const ChatContentPanel = (props) => {
       droppedFiles: attachedFiles,
       mode: "chat",
       members: selectedChannel ? selectedChannel.members : [],
+      team_channel: selectedChannel.team && selectedChannel.type === "TOPIC" ? selectedChannel.id : null,
     };
 
     dispatch(addToModals(modal));

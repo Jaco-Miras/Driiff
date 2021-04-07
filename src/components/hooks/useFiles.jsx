@@ -8,6 +8,7 @@ const useFiles = (triggerFetch = false) => {
   const fileActions = useFileActions(params);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const user = useSelector((state) => state.session.user);
   const { workspaceFiles, googleDriveApiFiles, gifBlobs, fileBlobs, fileThumbnailBlobs } = useSelector((state) => state.files);
 
   const [fetchingFiles, setFetchingFiles] = useState(false);
@@ -25,6 +26,10 @@ const useFiles = (triggerFetch = false) => {
           fileActions.getTrashFiles(activeTopic.id);
           fileActions.getGoogleDriveFiles(activeTopic.id);
           fileActions.getGoogleDriveFolders(activeTopic.id);
+          if (user.type === "internal" && activeTopic && activeTopic.team_channel && activeTopic.team_channel.code) {
+            fileActions.fetchClientChatFiles({ topic_id: activeTopic.id, filter: "client" });
+            fileActions.fetchTeamChatFiles({ topic_id: activeTopic.id, filter: "team" });
+          }
         };
         setFetchingFiles(true);
         fileActions.getFiles({ topic_id: activeTopic.id }, cb);
@@ -35,7 +40,7 @@ const useFiles = (triggerFetch = false) => {
             setFetchingFiles(false);
           };
           setFetchingFiles(true);
-  
+
           let payload = {
             topic_id: activeTopic.id,
             folder_id: parseInt(params.fileFolderId),
@@ -59,7 +64,7 @@ const useFiles = (triggerFetch = false) => {
       }
     } else {
       fileIds = Object.values(workspaceFiles[activeTopic.id].files)
-        .filter(f => f.folder_id === null)
+        .filter((f) => f.folder_id === null)
         .map((f) => f.id)
         .sort((a, b) => {
           return b > a ? 1 : -1;

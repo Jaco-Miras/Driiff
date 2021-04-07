@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useFiles, useTranslation} from "../../hooks";
-import {FilesBody, FilesHeader, FilesSidebar} from "../files";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useFiles, useTranslation } from "../../hooks";
+import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -154,14 +154,13 @@ const WorkspaceFilesPanel = (props) => {
       type: "single_input",
       defaultValue: "",
       label: dictionary.folderName,
-      postInputLabel:
-        !folder ? (
-          ""
-        ) : (
-          <CreateFolderLabel>
-            The folder will be created inside <b>#{folder.search}</b>
-          </CreateFolderLabel>
-        ),
+      postInputLabel: !folder ? (
+        ""
+      ) : (
+        <CreateFolderLabel>
+          The folder will be created inside <b>#{folder.search}</b>
+        </CreateFolderLabel>
+      ),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };
@@ -219,6 +218,7 @@ const WorkspaceFilesPanel = (props) => {
               activeFolder={folder}
               dictionary={dictionary}
               disableOptions={disableOptions}
+              workspace={workspace}
             />
             <div className="col-md-9 app-content mb-4">
               <div className="app-content-overlay" />
