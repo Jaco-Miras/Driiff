@@ -257,7 +257,7 @@ const PostDetailFooter = (props) => {
   const users = useSelector((state) => state.users.users);
 
   const handleSend = useCallback(() => {
-    if (disableButtons) setSent(true);
+    if (!disableButtons) setSent(true);
   }, [setSent, disableButtons]);
 
   const handleClearSent = useCallback(() => {
