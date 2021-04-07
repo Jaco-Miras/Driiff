@@ -215,7 +215,7 @@ const CompanyPostDetailFooter = (props) => {
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
 
   const handleSend = useCallback(() => {
-    if (disableButtons) setSent(true);
+    if (!disableButtons) setSent(true);
   }, [setSent, disableButtons]);
 
   const handleClearSent = useCallback(() => {
