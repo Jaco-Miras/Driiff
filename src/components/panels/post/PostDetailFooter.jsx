@@ -236,6 +236,12 @@ const PostDetailFooter = (props) => {
     picker: useRef(),
     postInput: useRef(null),
   };
+
+  const user = useSelector((state) => state.session.user);
+  const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
+  const users = useSelector((state) => state.users.users);
+
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
@@ -247,14 +253,8 @@ const PostDetailFooter = (props) => {
   const [showApprover, setShowApprover] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approving, setApproving] = useState({ approve: false, change: false });
-  const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client ? true : false);
+  const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client && user.type === "internal" ? true : false);
   const [commentType, setCommentType] = useState(null);
-
-  //const topic = useSelector((state) => state.workspaces.activeTopic);
-  const user = useSelector((state) => state.session.user);
-  const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
-  const users = useSelector((state) => state.users.users);
 
   const handleSend = useCallback(() => {
     if (!disableButtons) setSent(true);
@@ -639,7 +639,7 @@ const PostDetailFooter = (props) => {
     postActions.close(post);
   };
 
-  const handleToggleButtons = (type) => {
+  const handleCommentType = (type) => {
     setDisableButtons((prevState) => !prevState);
     setCommentType(type);
   };
@@ -729,7 +729,9 @@ const PostDetailFooter = (props) => {
                 isApprover={approving.change && hasPendingAproval}
                 mainInput={mainInput}
                 readOnly={disableButtons}
-                onToggleButtons={handleToggleButtons}
+                onToggleCommentType={handleCommentType}
+                commentType={commentType}
+                setCommentType={setCommentType}
               />
               <PostInputButtons
                 parentId={parentId}

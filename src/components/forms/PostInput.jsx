@@ -150,7 +150,9 @@ const PostInput = forwardRef((props, ref) => {
     onSubmitCallback = () => {},
     mainInput,
     readOnly,
-    onToggleButtons,
+    onToggleCommentType,
+    commentType,
+    setCommentType,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -244,6 +246,7 @@ const PostInput = forwardRef((props, ref) => {
         post_title: post.title,
       },
       approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
+      shared_with_client: commentType && commentType === "internal" ? false : true,
     };
 
     if (quote) {
@@ -329,6 +332,7 @@ const PostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
+    setCommentType(null);
   };
 
   const handleClearQuillInput = () => {
@@ -647,7 +651,7 @@ const PostInput = forwardRef((props, ref) => {
     <Wrapper className="chat-input-wrapper" ref={ref}>
       {readOnly && (
         <ToggleDisable>
-          <span onClick={() => onToggleButtons("internal")}>{dictionary.addInternalNote}</span> / <span onClick={() => onToggleButtons("external")}>{dictionary.replyToCustomer}</span>
+          <span onClick={() => onToggleCommentType("internal")}>{dictionary.addInternalNote}</span> / <span onClick={() => onToggleCommentType("external")}>{dictionary.replyToCustomer}</span>
         </ToggleDisable>
       )}
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} />}
