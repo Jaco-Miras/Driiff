@@ -149,7 +149,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     readOnly,
     onToggleCommentType,
     commentType,
-    setCommentType,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -326,7 +325,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
-    setCommentType(null);
+    onToggleCommentType(null);
     //if (onSubmitCallback) onSubmitCallback();
   };
 

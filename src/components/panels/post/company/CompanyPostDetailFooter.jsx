@@ -619,7 +619,6 @@ const CompanyPostDetailFooter = (props) => {
               readOnly={disableButtons}
               onToggleCommentType={handleCommentType}
               commentType={commentType}
-              setCommentType={setCommentType}
             />
             <PostInputButtons
               parentId={parentId}

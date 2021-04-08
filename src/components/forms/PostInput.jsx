@@ -152,7 +152,6 @@ const PostInput = forwardRef((props, ref) => {
     readOnly,
     onToggleCommentType,
     commentType,
-    setCommentType,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -332,7 +331,7 @@ const PostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
-    setCommentType(null);
+    onToggleCommentType(null);
   };
 
   const handleClearQuillInput = () => {
