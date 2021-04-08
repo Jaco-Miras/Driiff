@@ -92,6 +92,7 @@ export {
   subscribePushNotifications,
   updateDraft,
   uploadDocument,
+  uploadBulkDocument,
   getUnreadNotificationCounterEntries,
   postGenerateTranslationRaw,
   deletePushSubscription,
