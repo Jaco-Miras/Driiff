@@ -6,7 +6,7 @@ import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
-import { uploadDocument } from "../../redux/services/global";
+import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
@@ -320,30 +320,44 @@ const FileUploadModal = (props) => {
 
   async function uploadFiles() {
     if (files.filter((f) => typeof f.id === "string").length) {
-      await Promise.all(
-        files
-          .filter((f) => {
-            return typeof f.id === "string";
-          })
-          .map((file) =>
-            uploadDocument({
-              user_id: user.id,
-              file: file.bodyFormData,
-              file_type: "private",
-              folder_id: null,
-              options: { 
-                config: {
-                  onUploadProgress: handleOnUploadProgress(files)
-                }
-              }
-            })
-          )
-      ).then((result) => {
-        setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
+
+      let formData = new FormData();
+      let payload = {
+        user_id: user.id,
+        file_type: "private",
+        folder_id: null,
+        options: { 
+          config: {
+            onUploadProgress: handleOnUploadProgress
+          }
+        }
+      }
+      files.filter((f) => {
+        return typeof f.id === "string";
       })
-      .catch((error) => {
-        handleNetWorkError(error)
+        .map((file, index) => {
+        formData.append(`files[${index}]`, file.bodyFormData.get('file'))
       });
+      payload['files'] = formData;
+      await new Promise((resolve, reject) => {
+        resolve(uploadBulkDocument(payload))
+      })
+        .then(result => {
+          setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
+        })
+        .catch(error => {
+          handleNetWorkError(error);
+        });
+      // await Promise.all(
+      //   uploadBulkDocument(payload)
+      // ).then((result) => {
+      //   console.log(result)
+      //   console.log( files)
+      //   setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
+      // })
+      //   .catch((error) => {
+      //   console.log(error)
+      // });
     } else {
       setUploadedFiles(files);
     }
@@ -360,28 +374,38 @@ const FileUploadModal = (props) => {
     }
   }
 
-  let totalProgress = useRef(null);
+  // let totalProgress = useRef(null);
   
-  const handleOnUploadProgress = (file) => (progressEvent) => {
-    let {loaded, total} = progressEvent;
-    const totalFiles = files.filter((f) => typeof f.id === "string").length;
-    const progress = loaded / total;
-    totalProgress.current = {
-      ...totalProgress.current,
-      [file.id]: progress,
-    }
-    let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
-    progressBar.current = totalPercent / totalFiles;
+  // const handleOnUploadProgress = (file) => (progressEvent) => {
+  //   let {loaded, total} = progressEvent;
+  //   const totalFiles = files.filter((f) => typeof f.id === "string").length;
+  //   const progress = loaded / total;
+  //   totalProgress.current = {
+  //     ...totalProgress.current,
+  //     [file.id]: progress,
+  //   }
+  //   let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
+  //   progressBar.current = totalPercent / totalFiles;
     
+  //   if (toasterRef.current === null) {
+  //     toasterRef.current = toaster.info(
+  //       <div>{dictionary.uploading}.</div>,
+  //       {progress: progressBar.current, autoClose: true});
+  //   } else {
+  //     toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
+  //   }
+  // }
+  const handleOnUploadProgress = (progressEvent) => {
+    const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
       toasterRef.current = toaster.info(
-        <div>{dictionary.uploading}.</div>,
-        {progress: progressBar.current, autoClose: true});
+      <div>{dictionary.uploading}.</div>,
+      {progress: progressBar.current, autoClose: true});
     } else {
-      toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
+      toaster.update(toasterRef.current, {progress: progress, autoClose:true});
     }
   }
-
+  
   const handleUpload = () => {
     if (!loading && !sending) {
       setLoading(true);

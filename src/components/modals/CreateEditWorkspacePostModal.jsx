@@ -11,7 +11,7 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
 import { useToaster, useTranslation, useWindowSize, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { uploadDocument } from "../../redux/services/global";
+import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
@@ -989,31 +989,36 @@ const CreateEditWorkspacePostModal = (props) => {
   };
 
   async function uploadFiles(payload, type = "create") {
-    await Promise.all(
-      attachedFiles.map((file) =>
-        uploadDocument({
-          user_id: user.id,
-          file: file.bodyFormData,
-          file_type: "private",
-          folder_id: null,
-          options: { 
-            config: {
-              onUploadProgress: handleOnUploadProgress(file)
-            }
-          }
-        })
-      )
-    ).then((result) => {
+    let formData = new FormData();
+    
+    let uploadData = {
+      user_id: user.id,
+      file_type: "private",
+      folder_id: null,
+      options: {
+        config: {
+          onUploadProgress: handleOnUploadProgress
+        }
+      }
+    };
+    attachedFiles.map((file, index) =>
+      formData.append(`files[${index}]`, file.bodyFormData.get('file'))
+    );
+    uploadData['files'] = formData;
+
+    await new Promise((resolve, reject) => {
+      resolve(uploadBulkDocument(uploadData))
+    }).then((result) => {
       if (type === "edit") {
         payload = {
           ...payload,
-          file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
+          file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
         };
         dispatch(putPost(payload));
       } else {
         payload = {
           ...payload,
-          file_ids: result.map((res) => res.data.id),
+          file_ids: result.data.map((res) => res.id),
         };
         dispatch(
           postCreate(payload, (err, res) => {
@@ -1034,14 +1039,14 @@ const CreateEditWorkspacePostModal = (props) => {
         );
       }
     })
-    .catch((error) => {
+      .catch((error) => {
+      console.log(error)
       handleNetWorkError(error)
     });
   }
 
   const handleNetWorkError = () => {
     if (toasterRef.curent !== null) {
-      setLoading(false);
       toaster.dismiss(toasterRef.current);
       toaster.error(
         <div>{dictionary.unsuccessful}.</div>
@@ -1049,24 +1054,15 @@ const CreateEditWorkspacePostModal = (props) => {
       toasterRef.current = null;
     }
   }
-  let totalProgress = useRef(null);
-  const handleOnUploadProgress = (file) => (progressEvent) => {
-    let {loaded, total} = progressEvent;
-    const progress = loaded / total;
-    // progressBar.current = progress;
-    totalProgress.current = {
-      ...totalProgress.current,
-      [file.id]: progress,
-    }
-    let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
-    progressBar.current = totalPercent / attachedFiles.length;
-    
+
+  const handleOnUploadProgress = (progressEvent) => {
+    const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
       toasterRef.current = toaster.info(
-        <div>{dictionary.uploading}.</div>,
-        {progress: progressBar.current, autoClose: true});
+      <div>{dictionary.uploading}.</div>,
+      {progress: progressBar.current, autoClose: true});
     } else {
-      toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
+      toaster.update(toasterRef.current, {progress: progress, autoClose:true});
     }
   }
 
