@@ -29,6 +29,8 @@ const useFiles = (triggerFetch = false) => {
           if (user.type === "internal" && activeTopic && activeTopic.team_channel && activeTopic.team_channel.code) {
             fileActions.fetchClientChatFiles({ topic_id: activeTopic.id, filter: "client" });
             fileActions.fetchTeamChatFiles({ topic_id: activeTopic.id, filter: "team" });
+            fileActions.fetchPrivatePostFiles({ topic_id: activeTopic.id, filter: "privatePost" });
+            fileActions.fetchClientPostFiles({ topic_id: activeTopic.id, filter: "clientPost" });
           }
         };
         setFetchingFiles(true);

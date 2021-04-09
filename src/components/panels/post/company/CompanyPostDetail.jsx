@@ -329,15 +329,15 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-    const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
-    const isExternalUser = user.type === "external";
-    const externalWorkspace = post.recipients.find((r) => r.type === "TOPIC" && r.is_shared);
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
+    // const externalWorkspace = post.recipients.find((r) => r.type === "TOPIC" && r.is_shared);
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
-      team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? externalWorkspace.id : null,
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? externalWorkspace.id : null,
     };
 
     dispatch(addToModals(modal));

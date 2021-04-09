@@ -335,15 +335,15 @@ const PostDetail = (props) => {
       }
     });
     handleHideDropzone();
-    const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
-    const isExternalUser = user.type === "external";
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
       members: workspace ? workspace.members : [],
-      team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? workspace.team_channel.id : null,
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? workspace.team_channel.id : null,
     };
 
     dispatch(addToModals(modal));

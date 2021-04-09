@@ -335,7 +335,7 @@ const FileUploadModal = (props) => {
               file: file.bodyFormData,
               file_type: "private",
               folder_id: null,
-              channel_id: team_channel,
+              //channel_id: team_channel,
             })
           )
       ).then((result) => {

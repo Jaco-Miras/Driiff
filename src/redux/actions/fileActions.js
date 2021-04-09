@@ -475,8 +475,8 @@ export function getClientChatFiles(payload, callback) {
   return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_CLIENT_CHAT_FILES_START", "GET_CLIENT_CHAT_FILES_SUCCESS", "GET_CLIENT_CHAT_FILES_FAIL", callback);
 }
 
-export function getTeamPostFiles(payload, callback) {
-  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_TEAM_POST_FILES_START", "GET_TEAM_POST_FILES_SUCCESS", "GET_TEAM_POST_FILES_FAIL", callback);
+export function getClientPostFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_CLIENT_POST_FILES_START", "GET_CLIENT_POST_FILES_SUCCESS", "GET_CLIENT_POST_FILES_FAIL", callback);
 }
 
 export function getPrivatePostFiles(payload, callback) {
