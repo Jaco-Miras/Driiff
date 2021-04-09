@@ -63,6 +63,7 @@ export const apiCall = async ({ method, url, data = null, register = false, mock
         "X-Timezone-Offset": tzOffset,
         "X-Timezone-Name": tzName,
       },
+      onUploadProgress: config.onUploadProgress,
       config,
     });
   }

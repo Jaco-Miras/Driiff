@@ -29,6 +29,7 @@ import {
   updateDraft as updateDraftService,
   updateReleaseAnnouncement as updateReleaseAnnouncementService,
   uploadDocument as uploadDocumentService,
+  uploadBulkDocument as uploadBulkDocumentService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -85,6 +86,10 @@ export function deleteDraftReducer(payload, callback) {
 
 export function uploadDocument(payload, callback) {
   return dispatchActionToReducer(uploadDocumentService(payload), "UPLOAD_DOCUMENT_START", "UPLOAD_DOCUMENT_SUCCESS", "UPLOAD_DOCUMENT_FAIL", callback);
+}
+
+export function uploadBulkDocument(payload, callback) {
+  return dispatchActionToReducer(uploadBulkDocumentService(payload), "UPLOAD_BULK_DOCUMENT_START", "UPLOAD_BULK_DOCUMENT_SUCCESS", "UPLOAD_BULK_DOCUMENT_FAIL", callback);  
 }
 
 export function saveInputData(payload, callback) {
