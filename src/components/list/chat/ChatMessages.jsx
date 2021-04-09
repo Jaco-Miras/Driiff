@@ -636,9 +636,9 @@ class ChatMessages extends React.PureComponent {
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
             }
           } else if (this.props.isLastChatVisible) {
-            if (this.props.isBrowserActive) {
+            if (this.props.isBrowserActive && this.props.isIdle() === false) {
               if (selectedChannel.is_read) {
-                this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
+                this.handleReadChannel();
               }
               if (scrollComponent) {
                 //other user message scroll to bottom after receiving
@@ -650,15 +650,10 @@ class ChatMessages extends React.PureComponent {
       }
     }
 
-    if (this.props.unreadCount > 0 && this.props.isLastChatVisible) {
+    if (this.props.unreadCount > 0 && this.props.isLastChatVisible && this.props.isIdle() === false) {
       //need clarification if need to trigger if channel is unread
       this.handleReadChannel();
     }
-
-    // intersectionRatio not working propperly
-    // const observer = new IntersectionObserver(([e]) => e.target.toggleAttribute("stuck", e.intersectionRatio < 1), { threshold: [1], root: null, rootMargin: "20px" });
-
-    // document.querySelectorAll(".timestamp-container").forEach((element) => observer.observe(element));
   }
 
   handleResendMessage = (payload) => {
