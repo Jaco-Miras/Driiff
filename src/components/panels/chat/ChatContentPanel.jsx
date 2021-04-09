@@ -9,6 +9,7 @@ import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
+import { useIdleTimer } from "react-idle-timer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -24,6 +25,8 @@ const ChatMessagesPlaceholder = styled.div`
 
 const ChatContentPanel = (props) => {
   const { className = "", isWorkspace = false } = props;
+
+  const { isIdle } = useIdleTimer({ timeout: 1000 * 60 });
 
   const dispatch = useDispatch();
   const chatMessageActions = useChatMessageActions();
@@ -172,9 +175,9 @@ const ChatContentPanel = (props) => {
       {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
       {selectedChannel !== null ? (
         virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} isIdle={isIdle} />
         ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} isIdle={isIdle} />
         )
       ) : (
         <ChatMessagesPlaceholder />
