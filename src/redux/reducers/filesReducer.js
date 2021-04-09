@@ -1787,11 +1787,14 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
 
       if (action.data.workspaces.length && action.data.files.length) {
-        action.data.workspaces.forEach((ws) => {
-          if (newWorkspaceFiles.hasOwnProperty(ws.topic_id)) {
-            newWorkspaceFiles[ws.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[ws.topic_id].files };
-          }
-        });
+        if (action.data.files[0].shared_with_client === 1 || (state.user.type === "internal" && action.data.files[0].shared_with_client === 0)) {
+          action.data.workspaces.forEach((ws) => {
+            if (newWorkspaceFiles.hasOwnProperty(ws.topic_id)) {
+              newWorkspaceFiles[ws.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[ws.topic_id].files };
+            }
+          });
+        }
+
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,

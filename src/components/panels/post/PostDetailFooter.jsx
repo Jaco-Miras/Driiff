@@ -742,6 +742,7 @@ const PostDetailFooter = (props) => {
                 editPostComment={editPostComment}
                 mainInput={mainInput}
                 disableButtons={disableButtons}
+                commentType={commentType}
               />
             </ChatInputContainer>
 
