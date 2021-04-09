@@ -254,7 +254,7 @@ const PostDetailFooter = (props) => {
   const [approvers, setApprovers] = useState([]);
   const [approving, setApproving] = useState({ approve: false, change: false });
   const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client && user.type === "internal" ? true : false);
-  const [commentType, setCommentType] = useState(null);
+  const [commentType, setCommentType] = useState(!post.shared_with_client ? "internal" : null);
 
   const handleSend = useCallback(() => {
     if (!disableButtons) setSent(true);

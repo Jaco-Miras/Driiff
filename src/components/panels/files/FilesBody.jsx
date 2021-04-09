@@ -6,7 +6,7 @@ import { DropDocument } from "../../dropzone/DropDocument";
 import { useToaster } from "../../hooks";
 import { FileListItem, FolderListItem } from "../../list/file/item";
 import { MoreOptions } from "../common";
-import { FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles, TeamChatFiles, ClientChatFiles } from "./index";
+import { FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles, TeamChatFiles, ClientChatFiles, PrivatePostFiles, ClientPostFiles } from "./index";
 
 const Wrapper = styled.div`
   .card-body {
@@ -314,6 +314,26 @@ const FilesBody = (props) => {
           <>
             <ClientChatFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />
             {!(wsFiles && wsFiles.client_chat.length > 0) && (
+              <EmptyState>
+                <SvgEmptyState icon={4} height={282} />
+              </EmptyState>
+            )}
+          </>
+        )}
+        {filter === "privatePost" && (
+          <>
+            <PrivatePostFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />
+            {!(wsFiles && wsFiles.private_post.length > 0) && (
+              <EmptyState>
+                <SvgEmptyState icon={4} height={282} />
+              </EmptyState>
+            )}
+          </>
+        )}
+        {filter === "clientPost" && (
+          <>
+            <ClientPostFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />
+            {!(wsFiles && wsFiles.client_post.length > 0) && (
               <EmptyState>
                 <SvgEmptyState icon={4} height={282} />
               </EmptyState>

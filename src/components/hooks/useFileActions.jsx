@@ -28,7 +28,7 @@ import {
   getClientChatFiles,
   getPrivatePostFiles,
   getTeamChatFiles,
-  getTeamPostFiles,
+  getClientPostFiles,
   getWorkspaceFavoriteFiles,
   getWorkspaceFiles,
   getWorkspaceFilesDetail,
@@ -1157,9 +1157,9 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
-  const fetchTeamPostFiles = useCallback(
+  const fetchClientPostFiles = useCallback(
     (payload, callback) => {
-      dispatch(getTeamPostFiles(payload, callback));
+      dispatch(getClientPostFiles(payload, callback));
     },
     [dispatch]
   );
@@ -1239,6 +1239,8 @@ const useFileActions = (params = null) => {
     setFileThumbnailSrc,
     fetchTeamChatFiles,
     fetchClientChatFiles,
+    fetchClientPostFiles,
+    fetchPrivatePostFiles,
   };
 };
 

@@ -102,6 +102,10 @@ const FileSidebar = (props) => {
     storageStatus: _t("FILES.STORAGE_STATUS", "Storage Status"),
     usedOf: _t("FILE.USED_OF", "used of"),
     gigabyte: _t("FILE.GIGABYTE", "GB"),
+    teamChat: _t("FILES_SIDEBAR.TEAM_CHAT", "Team chat"),
+    clientChat: _t("FILES_SIDEBAR.CLIENT_CHAT", "Client chat"),
+    privatePost: _t("FILES_SIDEBAR.PRIVATE_POST", "Private post"),
+    postWithClient: _t("FILES_SIDEBAR.POST_WITH_CLIENT", "Post with client"),
   };
 
   const closeMobileModal = () => {
@@ -147,19 +151,19 @@ const FileSidebar = (props) => {
               <>
                 <Filter onClick={filterFile} data-filter="team" active={filter === "team"} className="list-group-item d-flex align-items-center">
                   <Icon className="mr-2" icon="eye-off" />
-                  Team chat
+                  {dictionary.teamChat}
                 </Filter>
                 <Filter onClick={filterFile} data-filter="client" active={filter === "client"} className="list-group-item d-flex align-items-center">
                   <Icon className="mr-2" icon="eye" />
-                  Client chat
+                  {dictionary.clientChat}
                 </Filter>
-                <Filter onClick={filterFile} data-filter="post_private" active={filter === "post_private"} className="list-group-item d-flex align-items-center">
+                <Filter onClick={filterFile} data-filter="privatePost" active={filter === "privatePost"} className="list-group-item d-flex align-items-center">
                   <Icon className="mr-2" icon="eye-off" />
-                  Private post
+                  {dictionary.privatePost}
                 </Filter>
-                <Filter onClick={filterFile} data-filter="post_client" active={filter === "post_client"} className="list-group-item d-flex align-items-center">
+                <Filter onClick={filterFile} data-filter="clientPost" active={filter === "clientPost"} className="list-group-item d-flex align-items-center">
                   <Icon className="mr-2" icon="eye" />
-                  Post with client
+                  {dictionary.postWithClient}
                 </Filter>
               </>
             )}
