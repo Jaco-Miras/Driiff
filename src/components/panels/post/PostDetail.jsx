@@ -281,8 +281,9 @@ const PostDetail = (props) => {
     dropZoneRef: useRef(null),
   };
 
-  const handleOpenFileDialog = (parentId) => {
+  const handleOpenFileDialog = (parentId, commentType = null) => {
     dispatch(setParentIdForUpload(parentId));
+    postActions.setCommentType(commentType);
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
     }

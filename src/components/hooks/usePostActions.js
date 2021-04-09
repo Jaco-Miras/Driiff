@@ -59,6 +59,7 @@ import {
   incomingPostListConnect,
   incomingPostListDisconnect,
   postRequired,
+  setPostCommentType,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -1087,6 +1088,13 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const setCommentType = useCallback(
+    (type, callback = () => {}) => {
+      dispatch(setPostCommentType(type, callback));
+    },
+    [dispatch]
+  );
+
   return {
     approve,
     approveComment,
@@ -1135,6 +1143,7 @@ const usePostActions = () => {
     disconnectPostList,
     updatePostListConnect,
     markReplyRequirement,
+    setCommentType,
   };
 };
 
