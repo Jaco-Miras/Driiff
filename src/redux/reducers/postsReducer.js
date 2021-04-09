@@ -35,6 +35,7 @@ const INITIAL_STATE = {
   recentPosts: {},
   clearApprovingState: null,
   changeRequestedComment: null,
+  commentType: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -1045,6 +1046,12 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         },
+      };
+    }
+    case "SET_POST_COMMENT_TYPE": {
+      return {
+        ...state,
+        commentType: action.data,
       };
     }
     default:

@@ -630,6 +630,7 @@ const CompanyPostDetailFooter = (props) => {
               editPostComment={editPostComment}
               mainInput={mainInput}
               disableButtons={disableButtons}
+              commentType={commentType}
             />
           </ChatInputContainer>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">

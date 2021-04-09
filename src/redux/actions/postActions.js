@@ -431,3 +431,7 @@ export function postRequired(payload, callback) {
 export function incomingPostRequired(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_REQUIRED", payload, callback);
 }
+
+export function setPostCommentType(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_POST_COMMENT_TYPE", payload, callback);
+}

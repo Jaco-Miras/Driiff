@@ -56,7 +56,7 @@ const ApproveCheckBox = styled(CheckBox)`
 `;
 
 const PostInputButtons = (props) => {
-  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput, disableButtons } = props;
+  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput, disableButtons, commentType } = props;
   const dispatch = useDispatch();
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
@@ -75,7 +75,7 @@ const PostInputButtons = (props) => {
   };
 
   const handleShowFileDialog = () => {
-    if (!disableButtons) onShowFileDialog(parentId);
+    if (!disableButtons) onShowFileDialog(parentId, commentType);
   };
 
   return (
