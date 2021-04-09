@@ -27,10 +27,10 @@ const useFiles = (triggerFetch = false) => {
           fileActions.getGoogleDriveFiles(activeTopic.id);
           fileActions.getGoogleDriveFolders(activeTopic.id);
           if (user.type === "internal" && activeTopic && activeTopic.team_channel && activeTopic.team_channel.code) {
-            fileActions.fetchClientChatFiles({ topic_id: activeTopic.id, filter: "client" });
-            fileActions.fetchTeamChatFiles({ topic_id: activeTopic.id, filter: "team" });
-            fileActions.fetchPrivatePostFiles({ topic_id: activeTopic.id, filter: "privatePost" });
-            fileActions.fetchClientPostFiles({ topic_id: activeTopic.id, filter: "clientPost" });
+            fileActions.fetchClientChatFiles({ topic_id: activeTopic.id, filter_by: "client" });
+            fileActions.fetchTeamChatFiles({ topic_id: activeTopic.id, filter_by: "team" });
+            fileActions.fetchPrivatePostFiles({ topic_id: activeTopic.id, filter_by: "privatePost" });
+            fileActions.fetchClientPostFiles({ topic_id: activeTopic.id, filter_by: "clientPost" });
           }
         };
         setFetchingFiles(true);
