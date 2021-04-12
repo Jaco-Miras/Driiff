@@ -734,7 +734,7 @@ const ChatInput = (props) => {
     quillRef: reactQuillRef,
     members:
       user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id)
+        ? selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted)
         : Object.values(users).filter((u) => {
             if (u.id === user.id) {
               return false;
@@ -744,7 +744,7 @@ const ChatInput = (props) => {
               return false;
             }
           }),
-    prioMentionIds: selectedChannel.members.map((m) => m.id).filter((id) => id !== user.id),
+    prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted).map((m) => m.id),
   });
 
   //to be converted into hooks
