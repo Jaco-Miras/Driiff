@@ -962,7 +962,15 @@ class ChatMessages extends React.PureComponent {
                                         </span> */}
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
+                                          <MessageOptions
+                                            dictionary={this.props.dictionary}
+                                            className={"chat-message-options"}
+                                            selectedChannel={this.props.selectedChannel}
+                                            isAuthor={isAuthor}
+                                            replyData={reply}
+                                            teamChannelId={this.props.teamChannelId}
+                                            isExternalUser={this.props.user.type === "external"}
+                                          />
                                         )}
                                       </ChatActionsContainer>
                                     </ChatBubble>
@@ -1041,6 +1049,8 @@ class ChatMessages extends React.PureComponent {
                                             className={"chat-message-options"}
                                             selectedChannel={this.props.selectedChannel}
                                             isAuthor={isAuthor}
+                                            teamChannelId={this.props.teamChannelId}
+                                            isExternalUser={this.props.user.type === "external"}
                                           />
                                         )}
                                       </SystemChatActionsContainer>

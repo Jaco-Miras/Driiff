@@ -250,7 +250,7 @@ const WorspaceHeaderPanel = (props) => {
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const history = useHistory();
+  //const history = useHistory();
   const { activeTopic, folders, workspacesLoaded } = useSelector((state) => state.workspaces);
   const {
     driff,

@@ -122,6 +122,19 @@ body {
 .ql-mention-list-container::-webkit-scrollbar {
   width: 0;
 }
+li[data-show_line="true"] {
+  margin-bottom: 1rem;
+  position: relative;
+  :before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 6px;
+    width: calc(100% - 12px);
+    height: 2px;
+    border: 1px solid #505050;
+  }
+}
 
 .mention {
   font-weight: bold;
@@ -15982,7 +15995,7 @@ button.toast-close-button {
 .app-block .app-content .app-content-body .app-lists ul.list-group li.list-group-item {
   padding-top: 15px;
   padding-bottom: 15px;
-  background: 0 0;
+  //background: 0 0;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
