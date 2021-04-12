@@ -722,7 +722,7 @@ class SocketListeners extends Component {
                     link = `/posts/${e.post_id}/${replaceChar(e.post_title)}`;
                   }
                   const redirect = () => this.props.history.push(link, { focusOnMessage: e.id });
-                  if (link !== this.props.location.pathname || !this.props.isBrowserActive) {
+                  if (link !== this.props.location.pathname || this.props.isIdle || !this.props.isBrowserActive || !document.hasFocus()) {
                     pushBrowserNotification(`${e.author.first_name} replied in a post`, stripHtml(e.body), e.author.profile_image_link, redirect);
                   }
                 }
@@ -773,7 +773,7 @@ class SocketListeners extends Component {
       })
       .listen(".chat-notification", (e) => {
         console.log(e, "chat-notification");
-        const { user, selectedChannel, isBrowserActive } = this.props;
+        const { user, selectedChannel, isIdle, isBrowserActive } = this.props;
 
         switch (e.SOCKET_TYPE) {
           case "CHAT_CREATE": {
@@ -813,10 +813,9 @@ class SocketListeners extends Component {
             if (message.user === null || this.props.user.id !== message.user.id) {
               delete message.reference_id;
               message.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
-              if (isBrowserActive) {
-                if (this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id) {
-                  message.is_read = true;
-                }
+
+              if (!isIdle && isBrowserActive && document.hasFocus() && this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id) {
+                message.is_read = true;
               }
             }
             this.props.incomingChatMessage(message);
@@ -825,7 +824,7 @@ class SocketListeners extends Component {
             if (e.user.id !== user.id) {
               if (!e.is_muted) {
                 if (this.props.notificationsOn && isSafari) {
-                  if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || !isBrowserActive) {
+                  if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || isIdle || !isBrowserActive || !document.hasFocus()) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
                     pushBrowserNotification(`${e.reference_title}`, e.reference_title.includes("in a direct message") ? `${stripHtml(e.body)}` : `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
                   }
@@ -1642,7 +1641,7 @@ function mapStateToProps({
   settings: { userSettings },
   chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
   workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
-  global: { isBrowserActive, unreadCounter, todos, recipients },
+  global: { unreadCounter, todos, recipients, isIdle, isBrowserActive },
   users: { mentions, users },
 }) {
   return {
@@ -1651,7 +1650,6 @@ function mapStateToProps({
     settings: userSettings,
     channels,
     selectedChannel,
-    isBrowserActive,
     workspacePosts,
     folders,
     mentions,
@@ -1664,6 +1662,8 @@ function mapStateToProps({
     todos,
     recipients,
     postComments,
+    isIdle,
+    isBrowserActive,
   };
 }
 

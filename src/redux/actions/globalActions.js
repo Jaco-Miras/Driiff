@@ -235,3 +235,6 @@ export function incomingDeletedAnnouncement(payload, callback) {
 export function setProfileSlider(payload, callback) {
   return SimpleDispatchActionToReducer("SET_PROFILE_SLIDER", payload, callback);
 }
+export function setIdleStatus(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_IDLE_STATUS", payload, callback);
+}

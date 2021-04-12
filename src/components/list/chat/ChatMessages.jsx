@@ -636,9 +636,9 @@ class ChatMessages extends React.PureComponent {
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
             }
           } else if (this.props.isLastChatVisible) {
-            if (this.props.isBrowserActive && this.props.isIdle() === false) {
+            if (!this.props.isIdle && this.props.isBrowserActive && document.hasFocus()) {
               if (selectedChannel.is_read) {
-                this.handleReadChannel();
+                this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
               }
               if (scrollComponent) {
                 //other user message scroll to bottom after receiving
@@ -650,7 +650,7 @@ class ChatMessages extends React.PureComponent {
       }
     }
 
-    if (this.props.unreadCount > 0 && this.props.isLastChatVisible && this.props.isIdle() === false) {
+    if (this.props.unreadCount > 0 && this.props.isLastChatVisible && !this.props.isIdle && this.props.isBrowserActive && document.hasFocus()) {
       //need clarification if need to trigger if channel is unread
       this.handleReadChannel();
     }
@@ -1080,7 +1080,7 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
   const {
-    global: { isBrowserActive, recipients },
+    global: { recipients, isIdle, isBrowserActive },
     session: { user },
     chat: { historicalPositions, isLastChatVisible },
     users: { users },
@@ -1089,11 +1089,12 @@ function mapStateToProps(state) {
   return {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
-    isBrowserActive,
     historicalPositions,
     recipients,
     isLastChatVisible,
     users,
+    isIdle,
+    isBrowserActive,
   };
 }
 
