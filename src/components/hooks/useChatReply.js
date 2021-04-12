@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
-import { getEmojiRegexPattern, GifRegex, stripGif } from "../../helpers/stringFormatter";
+import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
 
 const StyledImageTextLink = styled(ImageTextLink)`
@@ -421,7 +421,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
 
   let isEmoticonOnly = false;
   const emoji = replyBody.substring(5, replyBody.length - 6);
-  if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern())) {
+  if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
 
