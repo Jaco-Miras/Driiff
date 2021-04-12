@@ -59,11 +59,25 @@ export function uploadDocument(payload) {
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
   }
-  return apiCall({
+  const payloadRequest = Object.assign({
     method: "POST",
     url: url,
     data: payload.file,
-  });
+  }, payload.options? payload.options : {} );
+  return apiCall(payloadRequest);
+}
+
+export function uploadBulkDocument(payload) {
+  let url = `/v1/bulk-files?file_type=${payload.file_type}`;
+  if (payload.folder_id) {
+    url += `&folder_id=${payload.folder_id}`;
+  }
+  const payloadRequest = Object.assign({
+    method: "POST",
+    url: url,
+    data: payload.files,
+  }, payload.options? payload.options : {} );
+  return apiCall(payloadRequest);
 }
 
 export function getTranslationObject(payload) {

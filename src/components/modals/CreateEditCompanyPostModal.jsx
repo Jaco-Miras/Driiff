@@ -10,7 +10,7 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { DescriptionInput, FolderSelect } from "../forms";
 import { useToaster, useTranslation, useWindowSize, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { uploadDocument } from "../../redux/services/global";
+import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
@@ -276,6 +276,8 @@ const CreateEditCompanyPostModal = (props) => {
   const [quillContents, setQuillContents] = useState([]);
 
   const savingDraft = useRef(null);
+  const toasterRef = useRef(null);
+  const progressBar = useRef(0);
 
   const [form, setForm] = useState({
     must_read: false,
@@ -350,6 +352,8 @@ const CreateEditCompanyPostModal = (props) => {
     fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
     internalTeamLabel: _t("LABEL.INTERNAL_TEAM", "Internal team"),
     internalAndExternalTeamLabel: _t("LABEL.INTERNAL_AND_EXTERTNAL_TEAM", "Internal and external team"),
+    uploading: _t("FILE_UPLOADING", "Uploading File"),
+    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
   };
 
   const [shareOption, setShareOption] = useState({
@@ -940,48 +944,76 @@ const CreateEditCompanyPostModal = (props) => {
   };
 
   async function uploadFiles(payload, type = "create") {
-    await Promise.all(
-      attachedFiles.map((file) =>
-        uploadDocument({
-          user_id: user.id,
-          file: file.bodyFormData,
-          file_type: "private",
-          folder_id: null,
-        })
-      )
-    ).then((result) => {
-      if (type === "edit") {
-        payload = {
-          ...payload,
-          file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
-        };
-        dispatch(
-          putPost(payload, () => {
-            setLoading(false);
-            toggleAll(false);
-          })
-        );
-      } else {
-        payload = {
-          ...payload,
-          file_ids: result.map((res) => res.data.id),
-        };
-        dispatch(
-          postCreate(payload, (err, res) => {
-            setLoading(false);
-            toggleAll(false);
-            if (err) return;
-            let payload = {
-              filter: "my_posts",
-              tag: null,
-            };
-            dispatch(updateCompanyPostFilterSort(payload));
-            history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`);
-          })
-        );
-      }
-    });
+    let formData = new FormData();
+
+    let uploadData = {
+      user_id: user.id,
+      file_type: "private",
+      folder_id: null,
+      options: {
+        config: {
+          onUploadProgress: handleOnUploadProgress,
+        },
+      },
+    };
+    attachedFiles.map((file, index) => formData.append(`files[${index}]`, file.bodyFormData.get("file")));
+    uploadData["files"] = formData;
+
+    await new Promise((resolve, reject) => resolve(uploadBulkDocument(uploadData)))
+      .then((result) => {
+        if (type === "edit") {
+          payload = {
+            ...payload,
+            file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
+          };
+          dispatch(
+            putPost(payload, () => {
+              setLoading(false);
+              toggleAll(false);
+            })
+          );
+        } else {
+          payload = {
+            ...payload,
+            file_ids: result.data.map((res) => res.id),
+          };
+          dispatch(
+            postCreate(payload, (err, res) => {
+              setLoading(false);
+              toggleAll(false);
+              if (err) return;
+              let payload = {
+                filter: "my_posts",
+                tag: null,
+              };
+              dispatch(updateCompanyPostFilterSort(payload));
+              history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`);
+            })
+          );
+        }
+      })
+      .catch((error) => {
+        handleNetWorkError(error);
+      });
   }
+
+  const handleNetWorkError = () => {
+    if (toasterRef.curent !== null) {
+      setLoading(false);
+      toaster.dismiss(toasterRef.current);
+      toaster.error(<div>{dictionary.unsuccessful}.</div>);
+      toasterRef.current = null;
+    }
+  };
+
+  const handleOnUploadProgress = (progressEvent) => {
+    const progress = progressEvent.loaded / progressEvent.total;
+    if (toasterRef.current === null) {
+      toasterRef.current = toaster.info(<div>{dictionary.uploading}.</div>, { progress: progressBar.current, autoClose: true });
+    } else {
+      toaster.update(toasterRef.current, { progress: progress, autoClose: true });
+    }
+  };
 
   const handleRemoveFile = (fileId) => {
     setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
