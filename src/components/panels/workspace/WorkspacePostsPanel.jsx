@@ -118,6 +118,10 @@ const UnreadPostsContainer = styled.div`
 const ReadPostsContainer = styled.div`
   li {
     border-radius: 0 !important;
+    background-color: #fafafa !important;
+    .dark & {
+      background-color: hsla(0, 0%, 100%, 0.0784313725490196) !important;
+    }
   }
 `;
 

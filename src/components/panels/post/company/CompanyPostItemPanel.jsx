@@ -73,7 +73,7 @@ const Wrapper = styled.li`
   &:hover {
     .more-options,
     .hover-btns {
-      display: flex;
+      display: inline-block;
     }
   }
 
@@ -158,8 +158,13 @@ const PostContent = styled.div`
 `;
 
 const HoverButtons = styled.div`
-  > button {
-    padding: 5px;
+  display: inline-block;
+  > svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .feather-pencil {
+    margin-right: 5px;
   }
 `;
 
@@ -232,9 +237,15 @@ const CompanyPostItemPanel = (props) => {
         </Author>
         <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
           <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-            <div className="text-truncate">
-              {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
-              {post.title}
+            <div className="text-truncate d-flex">
+              <span className="text-truncate">
+                {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
+                {post.title}
+              </span>
+              <HoverButtons className="hover-btns ml-1">
+                {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}
+                {post.type !== "draft_post" && !disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
+              </HoverButtons>
             </div>
             <PostReplyCounter>
               {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
@@ -245,18 +256,6 @@ const CompanyPostItemPanel = (props) => {
             </PostReplyCounter>
           </div>
         </div>
-        <HoverButtons className="hover-btns">
-          {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
-            <button onClick={handleEditPost} className="btn button-darkmode btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Edit post">
-              <Icon icon="pencil" />
-            </button>
-          )}
-          {post.type !== "draft_post" && !disableOptions && (
-            <button onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Archive post">
-              <Icon icon="archive" />
-            </button>
-          )}
-        </HoverButtons>
         <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
         <div className="d-flex">
           {post.type !== "draft_post" && !disableOptions && (
