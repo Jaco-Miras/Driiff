@@ -23,7 +23,6 @@ const useQuillModules = ({
   prioMentionIds = [],
   post = null,
   setImageLoading = null,
-  excludeExternals = false,
 }) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
@@ -101,12 +100,6 @@ const useQuillModules = ({
     } else {
       newAtValues = [
         ...Object.values(userMentions)
-          .filter((user) => {
-            if (excludeExternals) {
-              if (user.type === "external") return false;
-              else return true;
-            } else return true;
-          })
           .sort((a, b) => {
             if (prioMentionIds.length) {
               if (prioIds.some((id) => id === a.id) && prioIds.some((id) => id === b.id)) {
@@ -356,11 +349,7 @@ const useQuillModules = ({
 
   useEffect(() => {
     handleSetModule();
-  }, [recipients.length]);
-
-  useEffect(() => {
-    handleSetModule();
-  }, [excludeExternals]);
+  }, [recipients.length, members.length, prioMentionIds.length]);
 
   const formats = ["background", "bold", "color", "font", "code", "italic", "link", "size", "strike", "script", "blockquote", "header", "indent", "list", "align", "direction", "image", "video"];
 
