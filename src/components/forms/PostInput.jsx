@@ -504,12 +504,12 @@ const PostInput = forwardRef((props, ref) => {
   //     }
   // };
 
-  const handleAddMentionedUsers = (users) => {
+  const handleAddMentionedUsers = (mentions) => {
     //const userIds = users.map((u) => u.id);
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
     const newRecipients = userRecipients.filter((r) => {
-      return users.some((user) => user.id === r.id);
+      return mentions.some((m) => m.id === r.id);
     });
     let payload = {
       post_id: post.id,
@@ -518,10 +518,10 @@ const PostInput = forwardRef((props, ref) => {
       recipients: newRecipients,
     };
 
-    console.log(users, payload);
+    console.log(mentions, payload);
     const postRecipientIds = post.recipients.map((pr) => pr.id);
     setMentionUsersPayload(payload);
-    setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+    setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...mentions.map((u) => u.id)]);
     setMentionedUserIds([]);
   };
 
