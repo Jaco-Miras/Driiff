@@ -175,12 +175,17 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
-      {selectedChannel !== null ? (
+      {/* {selectedChannel !== null ? (
         virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} isIdle={isIdle} teamChannelId={teamChannelId} />
+          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
         ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} isIdle={isIdle} teamChannelId={teamChannelId} />
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
         )
+      ) : (
+        <ChatMessagesPlaceholder />
+      )} */}
+      {selectedChannel !== null ? (
+        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
       ) : (
         <ChatMessagesPlaceholder />
       )}

@@ -152,7 +152,7 @@ const CompanyPostsPanel = (props) => {
   const params = useParams();
   const history = useHistory();
 
-  const { actions, archived, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters, skip } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
@@ -304,23 +304,14 @@ const CompanyPostsPanel = (props) => {
 
   useEffect(() => {
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    if (filter && filter === "inbox" && unreadPosts.length === 0 && readPosts.length > 0) {
-      setShowPosts({
-        ...showPosts,
-        showRead: true,
-      });
-    }
+    // if (filter && filter === "inbox" && unreadPosts.length === 0 && readPosts.length > 0) {
+    //   setShowPosts({
+    //     ...showPosts,
+    //     showRead: true,
+    //   });
+    // }
+    return () => actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
   }, []);
-
-  // useEffect(() => {
-  //   let el = refs.posts.current;
-  //   if (el && el.dataset.loaded === "0") {
-  //     initLoading();
-
-  //     el.dataset.loaded = "1";
-  //     refs.posts.current.addEventListener("scroll", handleScroll, false);
-  //   }
-  // }, [refs.posts.current]);
 
   useEffect(() => {
     if (postListTag) {
@@ -373,20 +364,20 @@ const CompanyPostsPanel = (props) => {
     });
   };
 
-  useEffect(() => {
-    if (filter && filter === "archive") {
-      setShowPosts({
-        ...showPosts,
-        showRead: true,
-      });
-    }
-    if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
-      setShowPosts({
-        ...showPosts,
-        showRead: true,
-      });
-    }
-  }, [filter, params]);
+  // useEffect(() => {
+  //   if (filter && filter === "archive") {
+  //     setShowPosts({
+  //       ...showPosts,
+  //       showRead: true,
+  //     });
+  //   }
+  //   if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
+  //     setShowPosts({
+  //       ...showPosts,
+  //       showRead: true,
+  //     });
+  //   }
+  // }, [filter, params]);
 
   if (posts === null) return <></>;
   return (

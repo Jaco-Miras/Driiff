@@ -190,12 +190,12 @@ const WorkspacePostsPanel = (props) => {
     if (params.hasOwnProperty("workspaceId")) {
       actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
     }
-    if (filter && (filter === "inbox" || filter === "all") && unreadPosts.length === 0 && readPosts.length > 0) {
-      setShowPosts({
-        ...showPosts,
-        showRead: true,
-      });
-    }
+    // if (filter && (filter === "inbox" || filter === "all") && unreadPosts.length === 0 && readPosts.length > 0) {
+    //   setShowPosts({
+    //     ...showPosts,
+    //     showRead: true,
+    //   });
+    // }
   }, []);
 
   useEffect(() => {
@@ -346,19 +346,6 @@ const WorkspacePostsPanel = (props) => {
     }
   };
 
-  // const bodyScroll = throttle((e) => {
-  //   // console.log(e.srcElement.scrollHeight,e.srcElement.scrollTop)
-  //   const offset = 500;
-  //   if (e.srcElement.scrollHeight - e.srcElement.scrollTop < 1000 + offset) {
-  //     handleLoadMore();
-  //   }
-  // }, 200);
-
-  // useEffect(() => {
-  //   document.body.addEventListener("scroll", bodyScroll, false);
-  //   return () => document.body.removeEventListener("scroll", bodyScroll, false);
-  // }, [filters, workspace, filter, search]);
-
   const handleScroll = useMemo(() => {
     const throttled = throttle((e) => {
       if (e.target.scrollHeight - e.target.scrollTop < 1500) {
@@ -433,20 +420,20 @@ const WorkspacePostsPanel = (props) => {
     });
   };
 
-  useEffect(() => {
-    if (filter && filter === "archive") {
-      setShowPosts({
-        ...showPosts,
-        showRead: true,
-      });
-    }
-    if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
-      setShowPosts({
-        ...showPosts,
-        showRead: true,
-      });
-    }
-  }, [filter, params]);
+  // useEffect(() => {
+  //   if (filter && filter === "archive") {
+  //     setShowPosts({
+  //       ...showPosts,
+  //       showRead: true,
+  //     });
+  //   }
+  //   if (filter && unreadPosts.length === 0 && readPosts.length > 0) {
+  //     setShowPosts({
+  //       ...showPosts,
+  //       showRead: true,
+  //     });
+  //   }
+  // }, [filter, params]);
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;

@@ -9,6 +9,8 @@ import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
 import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
+import { useIdleTimer } from "react-idle-timer";
+import { setIdleStatus } from "../redux/actions/globalActions";
 
 const MainContent = styled.div``;
 
@@ -67,9 +69,7 @@ const MainLayout = (props) => {
             /**
              * @todo need a fallback in case autoplay is not allowed
              **/
-            if (error.name === "NotAllowedError") {
-            } else {
-            }
+            console.log("error sound play");
           });
       }
     }
@@ -96,6 +96,23 @@ const MainLayout = (props) => {
       refs.audio.current.load();
     }
   }, [notification_sound]);
+
+  const handleOnActive = () => {
+    console.log("on active");
+    dispatch(setIdleStatus(false));
+  };
+
+  const handleOnIdle = () => {
+    console.log("on idle");
+    dispatch(setIdleStatus(true));
+  };
+
+  useIdleTimer({
+    timeout: 1000 * 60,
+    onIdle: handleOnIdle,
+    onActive: handleOnActive,
+    debounce: 250,
+  });
 
   return (
     <>
