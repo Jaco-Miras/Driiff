@@ -7,14 +7,14 @@ import useUserChannels from "../../hooks/useUserChannels";
 import { MoreOptions } from "../../panels/common";
 
 const ChatMessageOptions = (props) => {
-  const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250 } = props;
+  const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250, teamChannelId = null, isExternalUser } = props;
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const dispatch = useDispatch();
   const scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
-  const { selectUserChannel, loggedUser, users } = useUserChannels();
+  const { selectUserChannel, loggedUser, users, channels, history, match } = useUserChannels();
 
   useEffect(() => {
     if (replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && !replyData.hasOwnProperty("huddle_log")) {
@@ -83,6 +83,37 @@ const ChatMessageOptions = (props) => {
       //chatMessageActions.setQuote(replyData);
     }
   };
+
+  const handleDiscussInTeam = () => {
+    if (!redirecting) {
+      const callback = (data) => {
+        if (data && data.id) {
+          chatMessageActions.setQuote({ ...replyData, channel_id: data.id });
+          //need history push
+          let pathname = match.url;
+          if (match.path === "/chat/:code") {
+            history.push(`/chat/${teamChannelId.code}`);
+          } else if (match.path.startsWith("/workspace/chat")) {
+            history.push(pathname.replace("/workspace/chat", "/workspace/team-chat"));
+          }
+        }
+        setRedirecting(false);
+      };
+      setRedirecting(true);
+      if (channels[teamChannelId]) {
+        chatMessageActions.channelActions.select(channels[teamChannelId.id], callback);
+      } else {
+        //fetch the channel
+        chatMessageActions.channelActions.fetchByCode(teamChannelId.code, (err, res) => {
+          if (err) return;
+          callback(res.data);
+          chatMessageActions.channelActions.select({ ...res.data, selected: true, hasMore: false, isFetching: false, skip: 0, replies: [] });
+        });
+      }
+      setShowMoreOptions(!showMoreOptions);
+      //chatMessageActions.setQuote(replyData);
+    }
+  };
   /* dictionary initiated in ChatContentPanel.jsx */
   const isInternalUser = replyData.user && users[replyData.user.id] && users[replyData.user.id].type === "internal";
 
@@ -99,6 +130,7 @@ const ChatMessageOptions = (props) => {
       {replyData.user && replyData.user.type !== "BOT" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && replyData.user.code !== "huddle_bot" && isInternalUser && (
         <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
       )}
+      {teamChannelId && !isExternalUser && <div onClick={handleDiscussInTeam}>Discuss on team chat</div>}
     </MoreOptions>
   );
 };

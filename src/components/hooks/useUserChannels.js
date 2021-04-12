@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useChannels, useUsers } from "./index";
 import { useSelector } from "react-redux";
 import { uniqByProp } from "../../helpers/arrayHelper";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 let init = true;
 
@@ -13,6 +13,7 @@ const useUserChannels = () => {
   const recipients = useSelector((state) => state.global.recipients);
   const searchingRef = useRef(null);
   const history = useHistory();
+  const match = useRouteMatch();
   // const userChannels = useRef({});
 
   // for (const i in channels) {
@@ -96,6 +97,8 @@ const useUserChannels = () => {
     userActions,
     userChannels,
     selectUserChannel,
+    history,
+    match,
   };
 };
 
