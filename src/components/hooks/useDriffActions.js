@@ -19,7 +19,7 @@ const useDriffActions = () => {
       } else {
         const storageVersion = parseFloat(localStorage.getItem("site_ver").substr(2));
         const latestVersion = parseFloat(driffData.version.substr(2));
-        if (storageVersion < latestVersion * 10) {
+        if (storageVersion < latestVersion) {
           dispatch(
             patchUpdateDriffVersion(
               {
