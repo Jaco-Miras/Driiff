@@ -602,6 +602,7 @@ const PostInput = forwardRef((props, ref) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
+  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -610,9 +611,11 @@ const PostInput = forwardRef((props, ref) => {
     quillRef: reactQuillRef,
     members:
       user.type === "external"
-        ? members
+        ? members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
-            if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
+            if (u.id === user.id) {
+              return false;
+            } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
               return true;
             } else {
               return false;
@@ -621,7 +624,9 @@ const PostInput = forwardRef((props, ref) => {
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
-    prioMentionIds: [...new Set(prioMentionIds)],
+    prioMentionIds: Object.values(users)
+      .filter((u) => prioIds.some((id) => id === u.id))
+      .map((u) => u.id),
     post,
   });
 

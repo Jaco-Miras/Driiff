@@ -577,7 +577,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-
+  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -585,7 +585,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: Object.values(users).filter((u) => {
-      if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
+      if (u.id === user.id) {
+        return false;
+      } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
         return true;
       } else {
         return false;
@@ -594,7 +596,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
-    prioMentionIds: [...new Set(prioMentionIds)],
+    prioMentionIds: Object.values(users)
+      .filter((u) => prioIds.some((id) => id === u.id))
+      .map((u) => u.id),
     post,
   });
 
