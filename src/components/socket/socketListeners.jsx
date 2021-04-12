@@ -156,6 +156,7 @@ import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
+import { driffData } from "../../config/environment.json";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1002,8 +1003,11 @@ class SocketListeners extends Component {
       })
       .listen(".updated-version", (e) => {
         console.log(e, "version");
-        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
-          const { version, requirement } = e;
+        const { version, requirement } = e;
+        const socketVersion = parseFloat(version.substr(2));
+        const latestVersion = parseFloat(driffData.version.substr(2));
+
+        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && socketVersion < latestVersion) {
           const handleReminder = () => {
             // setTimeout(() => {
             //   this.props.addToModals({
