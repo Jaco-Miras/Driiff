@@ -1244,6 +1244,23 @@ export default function (state = INITIAL_STATE, action) {
                 }),
               },
             }),
+          ...(action.data.type === "WORKSPACE" &&
+            action.data.is_shared &&
+            action.data.team_channel &&
+            state.channels[action.data.team_channel.id] && {
+              [action.data.team_channel.id]: {
+                ...state.channels[action.data.team_channel.id],
+                icon_link: action.data.channel.icon_link,
+                title: action.data.name,
+                members: action.data.members.map((m) => {
+                  return {
+                    ...m,
+                    bot_profile_image_link: null,
+                    last_visited_at: null,
+                  };
+                }),
+              },
+            }),
         },
         ...(state.selectedChannel &&
           state.selectedChannel.id === action.data.channel.id && {
@@ -1264,6 +1281,23 @@ export default function (state = INITIAL_STATE, action) {
                   },
                 ],
               }),
+              icon_link: action.data.channel.icon_link,
+              title: action.data.name,
+              members: action.data.members.map((m) => {
+                return {
+                  ...m,
+                  bot_profile_image_link: null,
+                  last_visited_at: null,
+                };
+              }),
+            },
+          }),
+        ...(state.selectedChannel &&
+          action.data.is_shared &&
+          action.data.team_channel &&
+          state.selectedChannel.id === action.data.team_channel.id && {
+            selectedChannel: {
+              ...state.selectedChannel,
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
               members: action.data.members.map((m) => {
