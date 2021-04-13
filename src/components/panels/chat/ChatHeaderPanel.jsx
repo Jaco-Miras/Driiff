@@ -231,7 +231,7 @@ const ChatHeaderPanel = (props) => {
         return (
           <>
             <a onClick={(e) => handleRedirectToProfile(e, chatChannel.profile)} data-href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`} href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}>
-              {chatChannel.title}
+              {chatChannel.profile ? chatChannel.profile.name : chatChannel.title}
             </a>
           </>
         );
