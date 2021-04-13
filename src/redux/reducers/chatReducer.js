@@ -1185,13 +1185,15 @@ export default function (state = INITIAL_STATE, action) {
                 ...state.channels[action.data.team_channel.id],
                 icon_link: action.data.channel.icon_link,
                 title: action.data.name,
-                members: action.data.members.map((m) => {
-                  return {
-                    ...m,
-                    bot_profile_image_link: null,
-                    last_visited_at: null,
-                  };
-                }),
+                members: action.data.members
+                  .filter((m) => m.type !== "external")
+                  .map((m) => {
+                    return {
+                      ...m,
+                      bot_profile_image_link: null,
+                      last_visited_at: null,
+                    };
+                  }),
               },
             }),
         },
@@ -1233,13 +1235,15 @@ export default function (state = INITIAL_STATE, action) {
               ...state.selectedChannel,
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
-              members: action.data.members.map((m) => {
-                return {
-                  ...m,
-                  bot_profile_image_link: null,
-                  last_visited_at: null,
-                };
-              }),
+              members: action.data.members
+                .filter((m) => m.type !== "external")
+                .map((m) => {
+                  return {
+                    ...m,
+                    bot_profile_image_link: null,
+                    last_visited_at: null,
+                  };
+                }),
             },
           }),
       };
