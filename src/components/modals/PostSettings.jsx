@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { CheckBox, FolderSelect } from "../forms";
 
@@ -28,7 +28,153 @@ const ApproveOptions = styled.div`
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { approverOptions, dictionary, form, requiredUserOptions, toggleCheck, toggleApprover, handleSelectApprover, handleSelectRequiredUsers, isExternalUser, shareOptions, shareOption, handleSelectShareOption } = props;
+  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user } = props;
+
+  let approverOptions = [
+    ...userOptions
+      .filter((u) => u.id !== user.id)
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
+      }),
+    {
+      id: require("shortid").generate(),
+      value: "all",
+      label: "All users",
+      icon: "users",
+      all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
+    },
+  ];
+
+  let requiredUserOptions = [...approverOptions];
+
+  let shareOptions = [
+    {
+      id: "internal",
+      value: "internal",
+      label: dictionary.internalTeamLabel,
+      icon: "eye-off",
+    },
+    {
+      id: "external",
+      value: "external",
+      label: dictionary.internalAndExternalTeamLabel,
+      icon: "eye",
+    },
+  ];
+
+  const toggleApprover = () => {
+    setForm({
+      ...form,
+      showApprover: !form.showApprover,
+    });
+  };
+
+  const toggleCheck = useCallback(
+    (e) => {
+      const name = e.target.dataset.name;
+      switch (name) {
+        case "no_reply": {
+          setForm((prevState) => ({
+            ...prevState,
+            [name]: !prevState[name],
+            reply_required: !prevState[name] === true ? false : prevState["reply_required"],
+          }));
+          break;
+        }
+        case "reply_required": {
+          setForm((prevState) => ({
+            ...prevState,
+            [name]: !prevState[name],
+            no_reply: !prevState[name] === true ? false : prevState["no_reply"],
+            requiredUsers:
+              prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
+                ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+                : prevState.requiredUsers,
+          }));
+          break;
+        }
+        default: {
+          setForm((prevState) => ({
+            ...prevState,
+            [name]: !prevState[name],
+            requiredUsers:
+              prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
+                ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+                : prevState.requiredUsers,
+          }));
+        }
+      }
+    },
+    [setForm]
+  );
+
+  const handleSelectShareOption = (e) => {
+    setShareOption(e);
+    if (e.id === "external") {
+      setForm({
+        ...form,
+        shared_with_client: true,
+      });
+    } else {
+      setForm({
+        ...form,
+        shared_with_client: false,
+      });
+    }
+  };
+
+  const handleSelectRequiredUsers = (e) => {
+    if (e === null) {
+      setForm({
+        ...form,
+        requiredUsers: [],
+      });
+    } else {
+      if (e.find((a) => a.value === "all")) {
+        setForm({
+          ...form,
+          requiredUsers: e.filter((a) => a.value === "all"),
+        });
+      } else {
+        setForm({
+          ...form,
+          requiredUsers: e,
+        });
+      }
+    }
+  };
+
+  const handleSelectApprover = (e) => {
+    if (e === null) {
+      setForm({
+        ...form,
+        approvers: [],
+      });
+    } else {
+      if (e.find((a) => a.value === "all")) {
+        setForm({
+          ...form,
+          approvers: e.filter((a) => a.value === "all"),
+        });
+      } else {
+        setForm({
+          ...form,
+          approvers: e,
+        });
+      }
+    }
+  };
+
+  if (form.requiredUsers.length && form.requiredUsers.find((a) => a.value === "all")) {
+    requiredUserOptions = approverOptions.filter((a) => a.value === "all");
+  }
+
   const hasExternal = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
@@ -63,17 +209,6 @@ const PostSettings = (props) => {
       {!isExternalUser && hasExternal && (
         <ApproveOptions className="d-flex align-items-center">
           <span>{dictionary.shareWithClient}</span>
-          {/* <CheckBox
-            name="shared_with_client"
-            checked={form.shared_with_client}
-            onClick={(e) => {
-              if (hasExternal) toggleCheck(e);
-            }}
-            type="success"
-            disabled={!hasExternal || form.selectedAddressTo.length === 0}
-          >
-            {dictionary.shareWithClient}
-          </CheckBox> */}
         </ApproveOptions>
       )}
       {!isExternalUser && hasExternal && (

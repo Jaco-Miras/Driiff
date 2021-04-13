@@ -11,7 +11,7 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { DescriptionInput, FolderSelect } from "../forms";
 import { useToaster, useTranslation, useWindowSize, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
+import { uploadBulkDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
@@ -230,8 +230,6 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-//const StyledDatePicker = styled(DatePicker)``;
-
 const initTimestamp = Math.floor(Date.now() / 1000);
 
 const CreateEditWorkspacePostModal = (props) => {
@@ -252,7 +250,6 @@ const CreateEditWorkspacePostModal = (props) => {
   const [modal, setModal] = useState(true);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const [showMoreOptions, setShowMoreOptions] = useState(true);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -264,7 +261,6 @@ const CreateEditWorkspacePostModal = (props) => {
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
-  const [mounted, setMounted] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
 
@@ -1107,7 +1103,6 @@ const CreateEditWorkspacePostModal = (props) => {
         })
       );
     }
-    setMounted(true);
   }, []);
 
   const autoUpdateDraft = useCallback(
