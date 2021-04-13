@@ -443,8 +443,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_DRAFTS_SUCCESS": {
-      let drafts = action.data.map((d) => {
-        if (d.data.type === "draft_post") {
+      let drafts = action.data
+        .filter((d) => d.data.type === "draft_post")
+        .map((d) => {
           return Object.assign({}, d, {
             ...d.data,
             post_id: d.data.id,
@@ -455,10 +456,7 @@ export default (state = INITIAL_STATE, action) => {
             is_close: false,
             approval_label: null,
           });
-        } else {
-          return d;
-        }
-      });
+        });
       let postDrafts = [];
       if (drafts.length) {
         postDrafts = convertArrayToObject(drafts, "post_id");
