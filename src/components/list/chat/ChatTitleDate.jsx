@@ -46,10 +46,14 @@ const ChatTitleDate = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const getHighlightedSearchTitle = (title) => {
+    let newTitle = title;
+    if (channel.type === "DIRECT" && channel.profile) {
+      newTitle = channel.profile.name;
+    }
     if (search === "") {
-      return title;
+      return newTitle;
     } else {
-      const parts = title.split(new RegExp(`(${search})`, "gi"));
+      const parts = newTitle.split(new RegExp(`(${search})`, "gi"));
       return <span>{parts.map((part) => (part.toLowerCase() === search.toLowerCase() ? <b>{part}</b> : part))}</span>;
     }
   };
