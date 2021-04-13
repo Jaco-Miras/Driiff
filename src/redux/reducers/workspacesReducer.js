@@ -640,8 +640,9 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_DRAFTS_SUCCESS": {
       return {
         ...state,
-        drafts: action.data.map((d) => {
-          if (d.data.type === "draft_post") {
+        drafts: action.data
+          .filter((d) => d.data.type === "draft_post")
+          .map((d) => {
             return Object.assign({}, d, {
               ...d.data,
               draft_id: d.id,
@@ -652,10 +653,7 @@ export default (state = INITIAL_STATE, action) => {
               is_close: false,
               post_approval_label: null,
             });
-          } else {
-            return d;
-          }
-        }),
+          }),
       };
     }
     case "SAVE_DRAFT_SUCCESS": {
