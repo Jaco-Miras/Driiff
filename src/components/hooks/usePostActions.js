@@ -225,11 +225,12 @@ const usePostActions = () => {
     (post, path = null) => {
       if (post.type === "draft_post") {
         let payload = {
-          type: "workspace_post_create_edit",
+          type: "post_modal",
           mode: "create",
           item: {
             draft: post,
           },
+          params: params,
         };
 
         dispatch(addToModals(payload));
@@ -245,7 +246,7 @@ const usePostActions = () => {
         }
       }
     },
-    [dispatch, history, location]
+    [dispatch, history, location, params]
   );
 
   const archivePost = useCallback(
@@ -544,7 +545,7 @@ const usePostActions = () => {
       switch (mode) {
         case "create_company": {
           payload = {
-            type: "company_post_create_edit",
+            type: "post_modal",
             mode: "create",
             item: {
               post: post,
@@ -557,7 +558,7 @@ const usePostActions = () => {
         }
         case "edit_company": {
           payload = {
-            type: "company_post_create_edit",
+            type: "post_modal",
             mode: "edit",
             item: {
               post: post,
@@ -570,7 +571,7 @@ const usePostActions = () => {
         }
         case "edit": {
           payload = {
-            type: "workspace_post_create_edit",
+            type: "post_modal",
             mode: mode,
             item: {
               post: post,
@@ -578,6 +579,7 @@ const usePostActions = () => {
             action: {
               update: update,
             },
+            params: params,
           };
           break;
         }
@@ -720,7 +722,7 @@ const usePostActions = () => {
         }
         default: {
           payload = {
-            type: "workspace_post_create_edit",
+            type: "post_modal",
             mode: mode,
             item: {
               post: post,
@@ -728,13 +730,14 @@ const usePostActions = () => {
             action: {
               create: create,
             },
+            params: params,
           };
         }
       }
 
       dispatch(addToModals(payload));
     },
-    [dispatch]
+    [dispatch, params]
   );
 
   const create = useCallback(

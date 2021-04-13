@@ -11,7 +11,7 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { DescriptionInput, FolderSelect } from "../forms";
 import { useToaster, useTranslation, useWindowSize, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
+import { uploadBulkDocument } from "../../redux/services/global";
 import { renderToString } from "react-dom/server";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
@@ -230,8 +230,6 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-//const StyledDatePicker = styled(DatePicker)``;
-
 const initTimestamp = Math.floor(Date.now() / 1000);
 
 const CreateEditWorkspacePostModal = (props) => {
@@ -252,7 +250,6 @@ const CreateEditWorkspacePostModal = (props) => {
   const [modal, setModal] = useState(true);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const [showMoreOptions, setShowMoreOptions] = useState(true);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
@@ -264,7 +261,6 @@ const CreateEditWorkspacePostModal = (props) => {
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
-  const [mounted, setMounted] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
 
@@ -291,7 +287,7 @@ const CreateEditWorkspacePostModal = (props) => {
     shared_with_client: false,
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -1107,7 +1103,6 @@ const CreateEditWorkspacePostModal = (props) => {
         })
       );
     }
-    setMounted(true);
   }, []);
 
   const autoUpdateDraft = useCallback(
@@ -1370,9 +1365,21 @@ const CreateEditWorkspacePostModal = (props) => {
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
-          prioMentionIds={addressIds}
           disableBodyMention={isExternalUser}
-          excludeExternals={!form.shared_with_client}
+          prioMentionIds={addressIds.filter((id) => id !== user.id)}
+          members={Object.values(actualUsers).filter((u) => {
+            if (user.type === "external") {
+              return addressIds.some((id) => u.id === id);
+            } else {
+              if (u.id === user.id) {
+                return false;
+              } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          })}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
