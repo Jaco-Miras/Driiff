@@ -191,10 +191,10 @@ const DescriptionInput = (props) => {
     showFileButton = false,
     onOpenFileDialog,
     defaultValue = "",
-    mode = "",
+    //mode = "",
     valid = null,
     feedback = "",
-    height = 80,
+    //height = 80,
     members = [],
     workspaces = [],
     disableMention = false,
@@ -206,7 +206,6 @@ const DescriptionInput = (props) => {
     setInlineImages = null,
     setImageLoading = null,
     prioMentionIds = [],
-    excludeExternals = false,
     ...otherProps
   } = props;
 
@@ -260,7 +259,6 @@ const DescriptionInput = (props) => {
     setInlineImages,
     setImageLoading,
     prioMentionIds: [...new Set(prioMentionIds)],
-    excludeExternals: excludeExternals,
   });
 
   return (

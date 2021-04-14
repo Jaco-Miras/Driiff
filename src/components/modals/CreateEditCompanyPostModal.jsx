@@ -296,7 +296,7 @@ const CreateEditCompanyPostModal = (props) => {
     shared_with_client: false,
   });
 
-  const { options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo, user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -1347,9 +1347,21 @@ const CreateEditCompanyPostModal = (props) => {
           onDoNothing={handleIgnoreMentionedUsers}
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
-          prioMentionIds={addressIds}
           disableBodyMention={isExternalUser}
-          excludeExternals={!form.shared_with_client}
+          prioMentionIds={addressIds.filter((id) => id !== user.id)}
+          members={Object.values(actualUsers).filter((u) => {
+            if (user.type === "external") {
+              return addressIds.some((id) => u.id === id);
+            } else {
+              if (u.id === user.id) {
+                return false;
+              } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          })}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />

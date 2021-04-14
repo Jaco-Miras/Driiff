@@ -1364,34 +1364,50 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "INCOMING_POST_NOTIFICATION_MESSAGE": {
-      let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
-        channel = {
-          ...channel,
-          is_hidden: false,
-          last_reply: action.data,
-          replies: channel.replies.some((r) => r.id === action.data.id)
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.id) {
-                  return action.data;
+      let channels = { ...state.channels };
+      if (Object.keys(channels).length && channels.hasOwnProperty(action.data.channel_id)) {
+        channels = {
+          ...Object.values(state.channels)
+            .map((channel) => {
+              if (channel.id === action.data.channel_id) {
+                return {
+                  ...channel,
+                  is_hidden: false,
+                  last_reply: action.data,
+                  replies: channel.replies.some((r) => r.id === action.data.id)
+                    ? channel.replies.map((r) => {
+                        if (r.id === action.data.id) {
+                          return action.data;
+                        } else {
+                          return r;
+                        }
+                      })
+                    : [...channel.replies, action.data],
+                };
+              } else if (!action.data.new_post && action.data.topic) {
+                if (channel.type === "TOPIC" && channel.entity_id === action.data.topic.id) {
+                  return {
+                    ...channel,
+                    replies: channel.replies.filter((r) => r.id !== action.data.id),
+                    //replies: (channel.team && action.data.shared_with_client) || (channel.team && !action.data.shared_with_client) ? channel.replies.filter((r) => r.id !== action.data.id) : channel.replies,
+                  };
                 } else {
-                  return r;
+                  return channel;
                 }
-              })
-            : [...channel.replies, action.data],
+              } else {
+                return channel;
+              }
+            })
+            .reduce((channels, channel) => {
+              channels[channel.id] = channel;
+              return channels;
+            }, {}),
         };
       }
       return {
         ...state,
-        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? channel : state.selectedChannel,
-        channels:
-          channel !== null
-            ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
-            : state.channels,
+        selectedChannel: state.selectedChannel && channels[state.selectedChannel.id] ? { ...channels[state.selectedChannel.id], selected: true } : state.selectedChannel,
+        channels: channels,
       };
     }
     case "REFETCH_MESSAGES_SUCCESS": {

@@ -156,6 +156,7 @@ import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
+import { driffData } from "../../config/environment.json";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -632,6 +633,9 @@ class SocketListeners extends Component {
                 m.system_message.is_read = false;
                 m.system_message.is_completed = false;
                 m.system_message.user = null;
+                m.system_message.new_post = true;
+                m.system_message.topic = m.topic;
+                m.system_message.shared_with_client = e.shared_with_client;
                 this.props.incomingPostNotificationMessage(m.system_message);
               });
             break;
@@ -658,6 +662,9 @@ class SocketListeners extends Component {
                     m.system_message.is_read = true;
                     m.system_message.is_completed = false;
                     m.system_message.user = null;
+                    m.system_message.new_post = false;
+                    m.system_message.topic = m.topic;
+                    m.system_message.shared_with_client = e.shared_with_client;
                     this.props.incomingPostNotificationMessage(m.system_message);
                   });
               } else if (e.post_participant_data.from_company) {
@@ -996,8 +1003,11 @@ class SocketListeners extends Component {
       })
       .listen(".updated-version", (e) => {
         console.log(e, "version");
-        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
-          const { version, requirement } = e;
+        const { version, requirement } = e;
+        const socketVersion = parseFloat(version.substr(2));
+        const latestVersion = parseFloat(driffData.version.substr(2));
+
+        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && socketVersion < latestVersion) {
           const handleReminder = () => {
             // setTimeout(() => {
             //   this.props.addToModals({
