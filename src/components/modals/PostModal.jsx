@@ -133,8 +133,7 @@ const WrapperDiv = styled(InputGroup)`
       background: #191c20;
     }
 
-    &.active,
-    &:hover {
+    &.active {
       padding: 5px 10px;
       opacity: 1;
       max-height: 255px;
@@ -169,8 +168,7 @@ const WrapperDiv = styled(InputGroup)`
       background: #191c20;
     }
 
-    &.active,
-    &:hover {
+    &.active {
       padding: 5px 10px;
       opacity: 1;
       max-height: 255px;
