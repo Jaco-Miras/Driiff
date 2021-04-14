@@ -104,10 +104,8 @@ const MoreOptions = forwardRef((props, ref) => {
   };
 
   return (
-    <Wrapper className={`more-options ${showMoreOptions ? "more-options-active" : ""} ${className}`}
-             onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
-      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout"
-                      data-tip="Message options" icon={moreButton}/>
+    <Wrapper className={`more-options ${showMoreOptions ? "more-options-active" : ""} ${className}`} onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
+      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} />
       {showMoreOptions && (
         <MoreTooltip
           ref={refs.options}

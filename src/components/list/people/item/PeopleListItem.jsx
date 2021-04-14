@@ -122,6 +122,12 @@ const PeopleListItem = (props) => {
       case "APPROVER": {
         return dictionary.roleApprover;
       }
+      case "CLIENT": {
+        return dictionary.roleClient;
+      }
+      case "COMMUNICATION_LEAD": {
+        return dictionary.roleCommunicationLead;
+      }
       case "DEVELOPER": {
         return dictionary.roleDeveloper;
       }
@@ -139,6 +145,12 @@ const PeopleListItem = (props) => {
       }
       case "TECHNICAL_ADVISOR": {
         return dictionary.roleTechnicalAdvisor;
+      }
+      case "TECHNICAL_LEAD": {
+        return dictionary.roleTechnicalLead;
+      }
+      case "WATCHER": {
+        return dictionary.roleWatcher;
       }
       default:
         return "";
