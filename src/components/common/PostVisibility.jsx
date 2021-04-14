@@ -5,27 +5,43 @@ const PostVisibility = (props) => {
   const { dictionary, formRef, selectedAddressTo, workspaceIds, userOptions } = props;
 
   const handlePostVisibilityRef = (e) => {
+    let userTimeout;
+    let wsTimeout;
     const handleUserPopUpMouseEnter = () => {
       if (formRef.visibilityInfo.current) {
-        formRef.visibilityInfo.current.querySelector(".user-list").classList.add("active");
+        const el = formRef.visibilityInfo.current.querySelector(".user-list");
+        const elPopUp = formRef.visibilityInfo.current.querySelector(".user-popup");
+        userTimeout = setTimeout(() => {
+          if (elPopUp.matches(":hover")) {
+            el.classList.add("active");
+          }
+        }, 1000);
       }
     };
 
     const handleUserPopUpMouseOut = () => {
       if (formRef.visibilityInfo.current) {
         formRef.visibilityInfo.current.querySelector(".user-list").classList.remove("active");
+        clearTimeout(userTimeout);
       }
     };
 
     const handleWorkspacePopUpMouseEnter = () => {
       if (formRef.visibilityInfo.current) {
-        formRef.visibilityInfo.current.querySelector(".workspace-list").classList.add("active");
+        const el = formRef.visibilityInfo.current.querySelector(".workspace-list");
+        const elPopUp = formRef.visibilityInfo.current.querySelector(".workspace-popup");
+        wsTimeout = setTimeout(() => {
+          if (elPopUp.matches(":hover")) {
+            el.classList.add("active");
+          }
+        }, 1000);
       }
     };
 
     const handleWorkspacePopUpMouseOut = () => {
       if (formRef.visibilityInfo.current) {
         formRef.visibilityInfo.current.querySelector(".workspace-list").classList.remove("active");
+        clearTimeout(wsTimeout);
       }
     };
 
@@ -33,15 +49,15 @@ const PostVisibility = (props) => {
       formRef.visibilityInfo.current = e;
       let el = e.querySelector(".user-popup:not([data-event='1'])");
       if (el) {
-        el.addEventListener("mouseenter", handleUserPopUpMouseEnter);
+        el.addEventListener("mouseover", handleUserPopUpMouseEnter);
         el.addEventListener("mouseout", handleUserPopUpMouseOut);
         el.dataset.event = "1";
       }
-      el = e.querySelector(".workspace-popup:not([data-event='1'])");
-      if (el) {
-        el.addEventListener("mouseenter", handleWorkspacePopUpMouseEnter);
-        el.addEventListener("mouseout", handleWorkspacePopUpMouseOut);
-        el.dataset.event = "1";
+      let wsel = e.querySelector(".workspace-popup:not([data-event='1'])");
+      if (wsel) {
+        wsel.addEventListener("mouseover", handleWorkspacePopUpMouseEnter);
+        wsel.addEventListener("mouseout", handleWorkspacePopUpMouseOut);
+        wsel.dataset.event = "1";
       }
     }
   };
