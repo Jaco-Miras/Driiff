@@ -39,7 +39,21 @@ const Wrapper = styled.div`
 `;
 
 const PeopleListItem = (props) => {
-  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary, showOptions = false, onUpdateRole = null, roles, onArchiveUser = null, onActivateUser = null, showInactive = false } = props;
+  const {
+    className = "",
+    loggedUser,
+    onNameClick = null,
+    onChatClick = null,
+    user,
+    dictionary,
+    showOptions = false,
+    onUpdateRole = null,
+    roles,
+    onArchiveUser = null,
+    onActivateUser = null,
+    showInactive = false,
+    showWorkspaceRole = false,
+  } = props;
 
   const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
 
@@ -100,6 +114,37 @@ const PeopleListItem = (props) => {
     onActivateUser(user);
   };
 
+  const roleDisplay = () => {
+    switch (user.workspace_role) {
+      case "ADVISOR": {
+        return dictionary.roleAdvisor;
+      }
+      case "APPROVER": {
+        return dictionary.roleApprover;
+      }
+      case "DEVELOPER": {
+        return dictionary.roleDeveloper;
+      }
+      case "DESIGNER": {
+        return dictionary.roleDesigner;
+      }
+      case "FREELANCER": {
+        return dictionary.roleFreelancer;
+      }
+      case "SUPERVISOR": {
+        return dictionary.roleSupervisor;
+      }
+      case "TEAM_LEAD": {
+        return dictionary.roleTeamLead;
+      }
+      case "TECHNICAL_ADVISOR": {
+        return dictionary.roleTechnicalAdvisor;
+      }
+      default:
+        return "";
+    }
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
       <div className="col-12">
@@ -133,6 +178,9 @@ const PeopleListItem = (props) => {
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
+                        {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
+                          <Badge badgeClassName={user.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={roleDisplay()} />
+                        )}
                       </span>
                     </h6>
                   )}
