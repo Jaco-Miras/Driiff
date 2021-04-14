@@ -60,7 +60,7 @@ const ShowMoreBtn = styled.div`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef, onAddRole = null } = props;
+  const { className = "", member, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef, onAddRole = null } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -116,6 +116,12 @@ const TeamListItem = (props) => {
       case "APPROVER": {
         return dictionary.roleApprover;
       }
+      case "CLIENT": {
+        return dictionary.roleClient;
+      }
+      case "COMMUNICATION_LEAD": {
+        return dictionary.roleCommunicationLead;
+      }
       case "DEVELOPER": {
         return dictionary.roleDeveloper;
       }
@@ -133,6 +139,12 @@ const TeamListItem = (props) => {
       }
       case "TECHNICAL_ADVISOR": {
         return dictionary.roleTechnicalAdvisor;
+      }
+      case "TECHNICAL_LEAD": {
+        return dictionary.roleTechnicalLead;
+      }
+      case "WATCHER": {
+        return dictionary.roleWatcher;
       }
       default:
         return "";
@@ -187,11 +199,15 @@ const TeamListItem = (props) => {
         </ShowMoreBtn>
       )}
       {!hideOptions && (
-        <MoreOptions moreButton="more-horizontal" scrollRef={parentRef} width={250}>
+        <MoreOptions moreButton="more-horizontal" width={250}>
           {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>}
           {member.workspace_role !== "APPROVER" && <div onClick={() => onAddRole(member, "approver")}>{dictionary.assignAsApprover}</div>}
           {member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
+          {member.workspace_role !== "CLIENT" && <div onClick={() => onAddRole(member, "client")}>{dictionary.assignAsClient}</div>}
+          {member.workspace_role === "CLIENT" && <div onClick={handleRemoveRole}>{dictionary.revokeAsClient}</div>}
+          {member.workspace_role !== "COMMUNICATION_LEAD" && <div onClick={() => onAddRole(member, "communication_lead")}>{dictionary.assignAsCommunicationLead}</div>}
+          {member.workspace_role === "COMMUNICATION_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsCommunicationLead}</div>}
           {member.workspace_role !== "DESIGNER" && <div onClick={() => onAddRole(member, "designer")}>{dictionary.assignAsDesigner}</div>}
           {member.workspace_role === "DESIGNER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsDesigner}</div>}
           {member.workspace_role !== "DEVELOPER" && <div onClick={() => onAddRole(member, "developer")}>{dictionary.assignAsDeveloper}</div>}
@@ -204,6 +220,10 @@ const TeamListItem = (props) => {
           {member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTeamLead}</div>}
           {member.workspace_role !== "TECHNICAL_ADVISOR" && <div onClick={() => onAddRole(member, "technical_advisor")}>{dictionary.assignAsTechnicalAdvisor}</div>}
           {member.workspace_role === "TECHNICAL_ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTechnicalAdvisor}</div>}
+          {member.workspace_role !== "TECHNICAL_LEAD" && <div onClick={() => onAddRole(member, "technical_lead")}>{dictionary.assignAsTechnicalLead}</div>}
+          {member.workspace_role === "TECHNICAL_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTechnicalLead}</div>}
+          {member.workspace_role !== "WATCHER" && <div onClick={() => onAddRole(member, "watcher")}>{dictionary.assignAsWatcher}</div>}
+          {member.workspace_role === "WATCHER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsWatcher}</div>}
           <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
           {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
         </MoreOptions>
