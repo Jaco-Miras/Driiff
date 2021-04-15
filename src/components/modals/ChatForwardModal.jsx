@@ -132,34 +132,32 @@ const ChatForwardModal = (props) => {
     setInputValue(e.target.value);
   };
 
-  //const [sortedChannels] = useSortChannels(channels, inputValue, {}, inputValue !== "" ? true : false);
-
   const sortByActivity = () => {
-    return Object.values(channels).sort((a,b) => {
+    return Object.values(channels).sort((a, b) => {
       let compare = 0;
       compare = b.is_pinned - a.is_pinned;
       if (compare !== 0) return compare;
-      if ( a.last_reply &&  b.last_reply) {
-        if ( a.last_reply.created_at.timestamp ===  b.last_reply.created_at.timestamp) {
-          return  a.title.localeCompare(b.title);
+      if (a.last_reply && b.last_reply) {
+        if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+          return a.title.localeCompare(b.title);
         } else {
-          return  b.last_reply.created_at.timestamp -  a.last_reply.created_at.timestamp;
+          return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
         }
       }
-  
+
       if (a.last_reply && !b.last_reply) {
         return -1;
       }
-  
+
       if (!a.last_reply && b.last_reply) {
         return 1;
       }
-  
+
       if (!a.last_reply && !b.last_reply) {
         return a.title.localeCompare(b.title);
       }
-    })
-  }
+    });
+  };
 
   const filteredChannels = sortByActivity().filter((c) => {
     if (!c.is_archived) {

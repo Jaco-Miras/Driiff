@@ -3,6 +3,7 @@ import { useSettings } from "./index";
 
 const useSortChannels = (channels, search, options = {}, workspace) => {
   const user = useSelector((state) => state.session.user);
+  const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings: settings } = useSettings();
 
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
@@ -86,9 +87,21 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           return channel.members
             .filter((m) => m.id !== user.id)
             .some((m) => {
-              if (m.email.toLowerCase().search(search.toLowerCase()) !== -1) return true;
+              if (m.email.toLowerCase().search(search.toLowerCase()) !== -1) {
+                if (searchArchivedChannels) {
+                  return true;
+                } else {
+                  return !channel.is_archived;
+                }
+              }
 
-              if (m.name.toLowerCase().search(search.toLowerCase()) !== -1) return true;
+              if (m.name.toLowerCase().search(search.toLowerCase()) !== -1) {
+                if (searchArchivedChannels) {
+                  return true;
+                } else {
+                  return !channel.is_archived;
+                }
+              }
 
               return false;
             });
@@ -99,7 +112,11 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           channel.title.toLowerCase().search(search.toLowerCase()) !== -1 ||
           channel.members.filter((m) => m.id !== user.id).some((m) => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase() !== -1))
         ) {
-          return true;
+          if (searchArchivedChannels) {
+            return true;
+          } else {
+            return !channel.is_archived;
+          }
         } else {
           return false;
         }
@@ -218,7 +235,10 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         // }
       }
     });
-  return [results];
+  return {
+    sortedChannels: results,
+    searchArchivedChannels,
+  };
 };
 
 export default useSortChannels;

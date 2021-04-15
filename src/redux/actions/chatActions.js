@@ -433,3 +433,7 @@ export function clearHasUnpiblishedAnswers(payload, callback) {
 export function addHasUnpublishedAnswers(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_HAS_UNPUBLISHED_ANSWERS", payload, callback);
 }
+
+export function setSearchArchivedChannels(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SEARCH_ARCHIVED_CHANNELS", payload, callback);
+}

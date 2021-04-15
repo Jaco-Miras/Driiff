@@ -37,6 +37,7 @@ const INITIAL_STATE = {
   },
   skipIds: [],
   hasUnpublishedAnswers: [],
+  searchArchivedChannels: false,
 };
 
 const date = new Date();
@@ -2347,6 +2348,12 @@ export default function (state = INITIAL_STATE, action) {
       } else {
         return state;
       }
+    }
+    case "SET_SEARCH_ARCHIVED_CHANNELS": {
+      return {
+        ...state,
+        searchArchivedChannels: action.data,
+      };
     }
     default:
       return state;
