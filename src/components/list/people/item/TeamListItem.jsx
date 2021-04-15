@@ -59,6 +59,50 @@ const ShowMoreBtn = styled.div`
   }
 `;
 
+const StyledBadge = styled(Badge)`
+  .badge {
+    background: ${(props) => {
+      switch (props.role) {
+        case "APPROVER": {
+          return "#00CDAC";
+        }
+        case "CLIENT": {
+          return "#4DD091";
+        }
+        case "COMMUNICATION_LEAD": {
+          return "#00B0BA";
+        }
+        case "DEVELOPER": {
+          return "#0065A2";
+        }
+        case "DESIGNER": {
+          return "#FF60A8";
+        }
+        case "FREELANCER": {
+          return "#C05780";
+        }
+        case "SUPERVISOR": {
+          return "#FC6238";
+        }
+        case "TEAM_LEAD": {
+          return "#CFF800";
+        }
+        case "TECHNICAL_ADVISOR": {
+          return "#FFA23A";
+        }
+        case "TECHNICAL_LEAD": {
+          return "#6C88C4";
+        }
+        case "WATCHER": {
+          return "#FFEC59";
+        }
+        default:
+          return "#fb3";
+      }
+    }};
+  }
+`;
+
 const TeamListItem = (props) => {
   const { className = "", member, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef, onAddRole = null } = props;
 
@@ -175,7 +219,9 @@ const TeamListItem = (props) => {
         </div>
       </div>
       <div className="ml-auto">
-        {member.workspace_role && member.workspace_role !== "" && <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={roleDisplay()} />}
+        {member.workspace_role && member.workspace_role !== "" && (
+          <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
+        )}
         {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
         {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
         {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
@@ -200,8 +246,8 @@ const TeamListItem = (props) => {
       )}
       {!hideOptions && (
         <MoreOptions moreButton="more-horizontal" width={250}>
-          {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
-          {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>}
+          {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
+          {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}
           {member.workspace_role !== "APPROVER" && <div onClick={() => onAddRole(member, "approver")}>{dictionary.assignAsApprover}</div>}
           {member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
           {member.workspace_role !== "CLIENT" && <div onClick={() => onAddRole(member, "client")}>{dictionary.assignAsClient}</div>}

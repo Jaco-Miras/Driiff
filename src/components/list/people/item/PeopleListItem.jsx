@@ -38,6 +38,50 @@ const Wrapper = styled.div`
   }
 `;
 
+const StyledBadge = styled(Badge)`
+  .badge {
+    background: ${(props) => {
+      switch (props.role) {
+        case "APPROVER": {
+          return "#00CDAC";
+        }
+        case "CLIENT": {
+          return "#4DD091";
+        }
+        case "COMMUNICATION_LEAD": {
+          return "#00B0BA";
+        }
+        case "DEVELOPER": {
+          return "#0065A2";
+        }
+        case "DESIGNER": {
+          return "#FF60A8";
+        }
+        case "FREELANCER": {
+          return "#C05780";
+        }
+        case "SUPERVISOR": {
+          return "#FC6238";
+        }
+        case "TEAM_LEAD": {
+          return "#CFF800";
+        }
+        case "TECHNICAL_ADVISOR": {
+          return "#FFA23A";
+        }
+        case "TECHNICAL_LEAD": {
+          return "#6C88C4";
+        }
+        case "WATCHER": {
+          return "#FFEC59";
+        }
+        default:
+          return "#fb3";
+      }
+    }};
+  }
+`;
+
 const PeopleListItem = (props) => {
   const {
     className = "",
@@ -191,7 +235,7 @@ const PeopleListItem = (props) => {
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                         {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
-                          <Badge badgeClassName={user.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={roleDisplay()} />
+                          <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
                         )}
                       </span>
                     </h6>
