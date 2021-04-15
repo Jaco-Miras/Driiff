@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
@@ -108,12 +108,13 @@ const StyledMoreOptions = styled(MoreOptions)`
   }
 `;
 
-let hiddenArchivedLoaded = false;
+//let hiddenArchivedLoaded = false;
 
 const ChatSidebarPanel = (props) => {
   const { className = "" } = props;
 
   const dispatch = useDispatch();
+  const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings, setChatSetting } = useSettings();
   const { actions: channelActions, chatSidebarSearch } = useChannels();
   useLoadChannel();
@@ -152,10 +153,19 @@ const ChatSidebarPanel = (props) => {
       channelActions.setSidebarSearch({
         value: query,
       });
-      if (query.trim() !== "") channelActions.search({ search: query, skip: 0, limit: 50, type: "DIRECT" });
+      if (query.trim() !== "") {
+        let payload = { search: query, skip: 0, limit: 50 };
+        if (searchArchivedChannels) {
+          payload = {
+            ...payload,
+            filter: "archived",
+          };
+        }
+        channelActions.search(payload);
+      }
     }, 300);
     return () => clearTimeout(timeOutId);
-  }, [query]);
+  }, [query, searchArchivedChannels]);
 
   const emptySearchInput = () => {
     setSearch("");
@@ -198,6 +208,7 @@ const ChatSidebarPanel = (props) => {
     messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed."),
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
     you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
+    showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
   };
 
   const handleOpenGroupChatModal = () => {

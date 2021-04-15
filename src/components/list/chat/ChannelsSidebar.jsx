@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useSortChannels, useChannelActions } from "../../hooks";
 import ChannelList from "./ChannelList";
+import { CustomInput } from "reactstrap";
 
 const ChannelsSidebarContainer = styled.div``;
 const Channels = styled.ul`
@@ -20,11 +21,18 @@ const Channels = styled.ul`
     padding-right: 15px;
   }
 `;
+
+const ChatHeaderContainer = styled.div`
+  border-bottom: 1px solid #ebebeb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+`;
+
 const ChatHeader = styled.h4`
   font-weight: 300;
-  padding-bottom: 16px;
   margin: 24px 0 6px 0;
-  border-bottom: 1px solid #ebebeb;
 `;
 
 const ChannelsSidebar = (props) => {
@@ -32,7 +40,7 @@ const ChannelsSidebar = (props) => {
 
   const [fetchingChannels, setFetchingChannels] = useState(false);
   const actions = useChannelActions();
-  const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
+  const { sortedChannels, searchArchivedChannels } = useSortChannels(channels, search, {}, workspace);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
   const handleLoadMore = () => {
@@ -42,12 +50,16 @@ const ChannelsSidebar = (props) => {
       actions.loadMore({ skip: skip }, cb);
     }
   };
+  const handleShowArchiveToggle = () => {
+    actions.searchArchivedChannels(!searchArchivedChannels);
+  };
 
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
       <Channels className={"list-group list-group-flush"}>
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
+          let showArchiveButton = false;
 
           if (k !== 0) {
             let a = arr[k - 1];
@@ -88,12 +100,20 @@ const ChannelsSidebar = (props) => {
               chatHeader = dictionary.contacts;
             } else {
               chatHeader = dictionary.chats;
+              showArchiveButton = true;
             }
           }
 
           return (
             <React.Fragment key={channel.id}>
-              {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
+              {search !== "" && chatHeader !== "" && (
+                <ChatHeaderContainer>
+                  <ChatHeader>{chatHeader} </ChatHeader>
+                  {showArchiveButton && (
+                    <CustomInput className="cursor-pointer text-muted" checked={searchArchivedChannels} type="switch" id="show_archive" name="show archive" onChange={handleShowArchiveToggle} label={<span>{dictionary.showArchived}</span>} />
+                  )}
+                </ChatHeaderContainer>
+              )}
               <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} search={search} addLoadRef={search === "" && k > sortedChannels.length - 5} onLoadMore={handleLoadMore} />
             </React.Fragment>
           );

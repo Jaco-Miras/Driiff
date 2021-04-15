@@ -35,6 +35,7 @@ const INITIAL_STATE = {
     fetching: false,
     hasMore: false,
   },
+  searchArchivedChannels: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -2019,6 +2020,12 @@ export default function (state = INITIAL_STATE, action) {
                 [action.data.channel_id]: channel,
               }
             : state.channels,
+      };
+    }
+    case "SET_SEARCH_ARCHIVED_CHANNELS": {
+      return {
+        ...state,
+        searchArchivedChannels: action.data,
       };
     }
     default:
