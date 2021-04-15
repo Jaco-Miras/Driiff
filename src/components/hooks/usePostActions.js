@@ -539,7 +539,7 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null, comment = null) => {
+    (mode = "create", post = null, comment = null, rewardRef = null) => {
       let payload = {};
 
       switch (mode) {
@@ -597,6 +597,9 @@ const usePostActions = () => {
             },
             actions: {
               onSubmit: () => {
+                if (rewardRef && rewardRef.current) {
+                  rewardRef.current.rewardMe();
+                }
                 if (comment) {
                   let cpayload = {
                     post_id: post.id,

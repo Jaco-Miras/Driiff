@@ -7,6 +7,7 @@ import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput, FolderSelect } from "../../../forms";
 import { useTranslation, usePostActions } from "../../../hooks";
 import PostInputButtons from "../PostInputButtons";
+import Reward from "react-rewards";
 
 const Wrapper = styled.div`
   position: relative;
@@ -201,6 +202,7 @@ const CompanyPostDetailFooter = (props) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
 
+  const rewardRef = useRef();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
@@ -397,7 +399,7 @@ const CompanyPostDetailFooter = (props) => {
   //const showApproveCheckbox = post.users_approval.length === 0;
 
   const handleApprove = () => {
-    postActions.showModal("confirmation", post);
+    postActions.showModal("confirmation", post, null, rewardRef);
   };
 
   const handleRequestChange = () => {
@@ -647,9 +649,20 @@ const CompanyPostDetailFooter = (props) => {
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
-            <button className="btn btn-primary" onClick={handleApprove}>
-              {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-            </button>
+            <Reward
+              ref={rewardRef}
+              type="confetti"
+              config={{
+                elementCount: 65,
+                elementSize: 10,
+                spread: 140,
+                lifetime: 250,
+              }}
+            >
+              <button className="btn btn-primary" onClick={handleApprove}>
+                {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+              </button>
+            </Reward>
           </div>
         </Dflex>
       )}

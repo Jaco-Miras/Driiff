@@ -11,6 +11,7 @@ import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import CommentCounters from "./CommentCounters";
+import Reward from "react-rewards";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -203,6 +204,7 @@ const Comment = (props) => {
     main: useRef(null),
     content: useRef(null),
   };
+  const rewardRef = useRef();
 
   const {
     fileBlobs,
@@ -491,7 +493,7 @@ const Comment = (props) => {
   };
 
   const handleApprove = () => {
-    postActions.showModal("confirmation", post, comment);
+    postActions.showModal("confirmation", post, comment, rewardRef);
   };
 
   // useEffect(() => {
@@ -540,17 +542,28 @@ const Comment = (props) => {
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (
-            <PostChangeAccept
-              approving={approving}
-              fromNow={fromNow}
-              usersApproval={comment.users_approval}
-              user={user}
-              handleApprove={handleApprove}
-              handleRequestChange={handleRequestChange}
-              post={post}
-              isMultipleApprovers={comment.users_approval.length > 1}
-              isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
-            />
+            <Reward
+              ref={rewardRef}
+              type="confetti"
+              config={{
+                elementCount: 65,
+                elementSize: 10,
+                spread: 140,
+                lifetime: 250,
+              }}
+            >
+              <PostChangeAccept
+                approving={approving}
+                fromNow={fromNow}
+                usersApproval={comment.users_approval}
+                user={user}
+                handleApprove={handleApprove}
+                handleRequestChange={handleRequestChange}
+                post={post}
+                isMultipleApprovers={comment.users_approval.length > 1}
+                isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
+              />
+            </Reward>
           )}
           {comment.files.length >= 1 && (
             <>

@@ -1784,7 +1784,8 @@ export default (state = INITIAL_STATE, action) => {
         },
         activeTopic: {
           ...state.activeTopic,
-          ...(state.workspacePosts.hasOwnProperty(state.activeTopic.id) &&
+          ...(state.activeTopic &&
+            state.workspacePosts.hasOwnProperty(state.activeTopic.id) &&
             state.workspacePosts[state.activeTopic.id].posts.hasOwnProperty(action.data.post_id) && {
               unread_count: state.activeTopic.unread_count + (action.data.unread ? 1 : -1),
               unread_posts: state.activeTopic.unread_posts + (action.data.unread ? 1 : -1),
