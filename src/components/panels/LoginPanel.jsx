@@ -13,15 +13,14 @@ const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 const Wrapper = styled.form`
   margin: 50px auto;
   max-width: 430px;
-  
+
   .btn-magic-link {
     background-color: #7a1b8b;
     color: #fff;
-  }  
+  }
 `;
 
 const LoginPanel = (props) => {
-
   const { dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
@@ -45,21 +44,27 @@ const LoginPanel = (props) => {
     message: {},
   });
 
-  const toggleCheck = useCallback((e) => {
-    e.persist();
-    setForm(prevState => ({
-      ...prevState,
-      [e.target.dataset.name]: !prevState[e.target.dataset.name],
-    }));
-  }, [setForm]);
+  const toggleCheck = useCallback(
+    (e) => {
+      e.persist();
+      setForm((prevState) => ({
+        ...prevState,
+        [e.target.dataset.name]: !prevState[e.target.dataset.name],
+      }));
+    },
+    [setForm]
+  );
 
-  const handleInputChange = useCallback((e) => {
-    e.persist();
-    setForm(prevState => ({
-      ...prevState,
-      [e.target.name]: e.target.value.trim(),
-    }));
-  }, [setForm]);
+  const handleInputChange = useCallback(
+    (e) => {
+      e.persist();
+      setForm((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value.trim(),
+      }));
+    },
+    [setForm]
+  );
 
   const _validate = () => {
     let valid = {};
@@ -84,10 +89,10 @@ const LoginPanel = (props) => {
 
     setFormResponse({
       valid: valid,
-      message: message
+      message: message,
     });
 
-    return (!Object.values(valid).some(v => v === false));
+    return !Object.values(valid).some((v) => v === false);
   };
 
   const handleMagicLinkClick = useCallback(() => {
@@ -125,7 +130,7 @@ const LoginPanel = (props) => {
       userActions.checkCredentials(payload, (err, res) => {
         if (err) {
           dispatch(toggleLoading(false));
-          setFormResponse(prevState => ({
+          setFormResponse((prevState) => ({
             ...prevState,
             valid: {
               email: false,
@@ -155,9 +160,7 @@ const LoginPanel = (props) => {
             //openModalAction(cb);
           } else {
             const returnUrl =
-              typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
-                ? props.location.state.from.pathname + props.location.state.from.search
-                : "/chat";
+              typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
             userActions.login(res.data, returnUrl);
           }
         }
@@ -171,18 +174,20 @@ const LoginPanel = (props) => {
     }
   };
 
+  console.log($_GET("code"), $_GET("state"));
+  if (($_GET("code"), $_GET("state"))) {
+    return (
+      <Wrapper className="fadeIn">
+        <span>Logging in</span>
+      </Wrapper>
+    );
+  }
   return (
     <Wrapper className="fadeIn">
-      {
-        driffSettings.settings.password_login &&
+      {driffSettings.settings.password_login && (
         <>
-          <FormInput
-            onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-            feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email"
-            autoFocus/>
-          <PasswordInput
-            ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password}
-            feedback={formResponse.message.password} placeholder={dictionary.password}/>
+          <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
+          <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
           <div className="form-group d-flex justify-content-between">
             <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
               {dictionary.rememberMe}
@@ -193,43 +198,39 @@ const LoginPanel = (props) => {
             {dictionary.signIn}
           </button>
         </>
-      }
-      {
-        (driffSettings.settings.google_login || driffSettings.settings.magic_link) &&
+      )}
+      {(driffSettings.settings.google_login || driffSettings.settings.magic_link) && (
         <>
-          <hr/>
+          <hr />
           <p className="text-muted">{dictionary.loginSocialMedia}</p>
           <ul className="list-inline">
-            {
-              driffSettings.settings.magic_link &&
+            {driffSettings.settings.magic_link && (
               <li className="list-inline-item">
-          <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
-            <i className="fa fa-magic"/>
-          </span>
+                <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
+                  <i className="fa fa-magic" />
+                </span>
               </li>
-            }
-            {
-              driffSettings.settings.google_login &&
+            )}
+            {driffSettings.settings.google_login && (
               <li className="list-inline-item">
-          <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
-            <i className="fa fa-google"/>
-          </span>
+                <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
+                  <i className="fa fa-google" />
+                </span>
               </li>
-            }
+            )}
           </ul>
         </>
-      }
-      {
-        driffSettings.settings.sign_up &&
+      )}
+      {driffSettings.settings.sign_up && (
         <>
-          <hr/>
+          <hr />
           <p className="text-muted">{dictionary.noAccount}</p>
           <Link className={"btn btn-outline-light btn-sm"} to="/register">
             {dictionary.registerNow}
           </Link>
         </>
-      }
-      <hr/>
+      )}
+      <hr />
       <a className={"btn btn-outline-light btn-sm"} href={`${REACT_APP_apiProtocol}${REACT_APP_localDNSName}`}>
         {dictionary.logDifferent}
       </a>
