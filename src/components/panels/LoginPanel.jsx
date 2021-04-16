@@ -184,6 +184,14 @@ const LoginPanel = (props) => {
     }
   });
 
+  console.log($_GET("code"), $_GET("state"));
+  if (($_GET("code"), $_GET("state"))) {
+    return (
+      <Wrapper className="fadeIn">
+        <span>Logging in</span>
+      </Wrapper>
+    );
+  }
   return (
     <Wrapper className="fadeIn">
       {driffSettings.settings.password_login && (
