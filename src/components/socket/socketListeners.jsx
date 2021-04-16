@@ -931,6 +931,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".remove-file-notification", (e) => {
+        console.log(e, "remove file");
+      })
       .listen(".workspace-team-channel", (e) => {
         console.log(e);
         this.props.incomingTeamChannel(e);

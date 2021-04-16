@@ -78,6 +78,13 @@ export function uploadBulkDocument(payload) {
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
   }
+  if (payload.fileOption) {
+    if (payload.fileOption === "remove_on_download") {
+      url += "&remove_on_download=1";
+    } else {
+      url += "&remove_automatically=1";
+    }
+  }
   const payloadRequest = Object.assign(
     {
       method: "POST",

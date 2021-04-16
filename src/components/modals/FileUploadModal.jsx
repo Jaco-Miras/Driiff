@@ -6,12 +6,13 @@ import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
-import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
+import { uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload, addComment, setPostCommentType } from "../../redux/actions/postActions";
 import { osName } from "react-device-detect";
+import { FolderSelect } from "../forms";
 
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
@@ -217,6 +218,27 @@ const StyledModalFooter = styled(ModalFooter)`
   flex-wrap: nowrap;
 `;
 
+const SelectFileOptionContainer = styled.div`
+  .react-select-container {
+    max-width: 320px;
+  }
+`;
+
+const fileOptions = [
+  {
+    id: "remove_on_download",
+    value: "remove_on_download",
+    label: "Remove file after download",
+    icon: "eye-off",
+  },
+  {
+    id: "remove_automatically",
+    value: "remove_automatically",
+    label: "Remove file automatically in 5 days",
+    icon: "eye",
+  },
+];
+
 const FileUploadModal = (props) => {
   const { type, mode, droppedFiles, post = null, members = [], team_channel } = props.data;
 
@@ -243,6 +265,7 @@ const FileUploadModal = (props) => {
   const [textOnly, setTextOnly] = useState("");
   const [quillContents, setQuillContents] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [fileOption, setFileOption] = useState(null);
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -336,6 +359,7 @@ const FileUploadModal = (props) => {
         user_id: user.id,
         file_type: "private",
         folder_id: null,
+        fileOption: fileOption,
         options: {
           config: {
             onUploadProgress: handleOnUploadProgress,
@@ -590,6 +614,11 @@ const FileUploadModal = (props) => {
     }
   }, [init]);
 
+  const handleSelectFileUploadOption = (e) => {
+    console.log(e);
+    setFileOption(e);
+  };
+
   let hasExternal = false;
 
   if (post) {
@@ -619,6 +648,9 @@ const FileUploadModal = (props) => {
           {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
         </DescriptionInputWrapper>
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
+        <SelectFileOptionContainer className="mt-1">
+          <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
+        </SelectFileOptionContainer>
       </ModalBody>
       <StyledModalFooter>
         {((workspaces[selectedChannel.entity_id] && workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") ||
