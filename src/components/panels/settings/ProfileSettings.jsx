@@ -90,7 +90,7 @@ const ProfileSettings = (props) => {
 
   const {
     generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel },
-    chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
+    chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
@@ -436,6 +436,22 @@ const ProfileSettings = (props) => {
                       onChange={handleTogglePersist}
                       data-success-message={`You have turn ${persist ? "OFF" : "ON"} data persistence in chat!`}
                       label={<span>Persisted data</span>}
+                    />
+                  </div>
+                </div>
+              }
+              {
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <CustomInput
+                      className="cursor-pointer text-muted"
+                      checked={translate}
+                      type="switch"
+                      id="translate_chat"
+                      name="translate"
+                      onChange={handleChatSwitchToggle}
+                      data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
+                      label={<span>Talk in your own language (live translation)</span>}
                     />
                   </div>
                 </div>

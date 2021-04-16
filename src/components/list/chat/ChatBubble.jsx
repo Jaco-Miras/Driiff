@@ -10,6 +10,10 @@ import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
+import useChatTranslate from "../../hooks/useChatTranslate";
+import { lang } from "moment-timezone";
+
+
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -391,8 +395,8 @@ const ChatContent = styled.div`
         left: -15px;
         z-index: 1;
         ${(props) =>
-          props.isAuthor === true &&
-          `
+      props.isAuthor === true &&
+      `
             left: auto;
             right: -15px;
             border-left-color: red;
@@ -533,11 +537,13 @@ const ChatNameNotAuthor = styled.span`
 
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users, translate, language } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
-
+ 
+  reply.body = useChatTranslate(reply.body, isAuthor, reply.user,  translate, language,dictionary);
+  
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
     dictionary,
@@ -546,7 +552,10 @@ const ChatBubble = (props) => {
     recipients,
     selectedChannel,
     users,
+    translate,
+    language
   });
+
   const hasFiles = reply.files.length > 0;
 
   const refs = {
