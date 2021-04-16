@@ -7,6 +7,7 @@ import { useUserLogin } from "../components/hooks/useUserLogin";
 import { useSettings, useTranslation } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
+import { $_GET } from "../helpers/commonFunctions";
 
 const Wrapper = styled.div``;
 
@@ -106,7 +107,7 @@ const GuestLayout = (props) => {
         }
         break;
       default:
-        if (location.pathname.indexOf("/authenticate/") === 0) setTitle(dictionary.authentication);
+        if (location.pathname.indexOf("/authenticate/") === 0 || ($_GET("code"), $_GET("state"))) setTitle(dictionary.authentication);
         else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle(dictionary.updatePassword);
         else setTitle(dictionary.signIn);
     }
