@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
@@ -6,7 +6,7 @@ import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate, clearHasUnpib
 import { useToaster, useHuddleChatbot } from "./index";
 
 const useHuddle = (props) => {
-  //const [time, setCurrentTime] = useState(null);
+  const [toggleInterval, setToggleInterval] = useState(true);
   const actions = useHuddleChatbot();
   const toaster = useToaster();
   const history = useHistory();
@@ -21,8 +21,6 @@ const useHuddle = (props) => {
   const isOwner = loggedUser.role && loggedUser.role.name === "owner";
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
-
-  const huddleAnswered = localStorage.getItem("huddle");
   const huddleBots = useSelector((state) => state.chat.huddleBots);
   const weekDays = [
     { day: "M", value: 1 },
@@ -187,26 +185,20 @@ const useHuddle = (props) => {
     toast.dismiss();
   }
 
-  setInterval(() => {
-    const d = new Date();
-    // const currentDay = d.getDay();
-    // const huddleStorage = localStorage.getItem("huddle");
-    // //setCurrentTime(currentDate.getTime());
-    // if (huddleStorage) {
-    //   const { day } = JSON.parse(huddleStorage);
-    //   if (day !== currentDay || currentDay === 0 || currentDay === 6) {
-    //     localStorage.removeItem("huddle");
-    //     dispatch(clearHuddleAnswers());
-    //   }
-    // }
-
-    if (d.getDate() !== currentDate.getDate()) {
-      console.log(d.getDate(), currentDate.getDate());
-      dispatch(clearHuddleAnswers());
-      dispatch(adjustHuddleDate());
-      dispatch(clearHasUnpiblishedAnswers());
-    }
-  }, 60000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const d = new Date();
+      if (d.getDate() !== currentDate.getDate()) {
+        console.log(d.getDate(), currentDate.getDate());
+        dispatch(clearHuddleAnswers());
+        dispatch(adjustHuddleDate());
+        dispatch(clearHasUnpiblishedAnswers());
+        clearInterval(interval);
+        setToggleInterval((prevState) => !prevState);
+      }
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [toggleInterval]);
 };
 
 export default useHuddle;
