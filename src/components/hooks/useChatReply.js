@@ -1,9 +1,14 @@
 import React, { useCallback } from "react";
+
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif } from "../../helpers/stringFormatter";
+
+
+
 import styled from "styled-components";
+import { lang } from "moment-timezone";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
@@ -15,7 +20,8 @@ const StyledImageTextLink = styled(ImageTextLink)`
   }
 `;
 
-const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users }) => {
+const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language }) => {
+
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
@@ -424,7 +430,6 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern())) {
     isEmoticonOnly = true;
   }
-
   return {
     parseSystemMessage,
     quoteBody,
@@ -435,5 +440,4 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     isEmoticonOnly,
   };
 };
-
 export default useChatReply;

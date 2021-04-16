@@ -30,6 +30,10 @@ const ChatContentPanel = (props) => {
   const timeFormat = useTimeFormat();
 
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
+  const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
@@ -174,7 +178,7 @@ const ChatContentPanel = (props) => {
         virtualization ? (
           <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
         ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} translate={translate} language={language}/>
         )
       ) : (
         <ChatMessagesPlaceholder />
