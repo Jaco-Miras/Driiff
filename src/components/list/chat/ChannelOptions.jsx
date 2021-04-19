@@ -20,7 +20,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const ChannelOptions = (props) => {
-  const { selectedChannel, channel, moreButton = "more-horizontal" } = props;
+  const { selectedChannel, channel, moreButton = "more-horizontal", onSelectOptions = null } = props;
 
   const dispatch = useDispatch();
 
@@ -126,7 +126,7 @@ const ChannelOptions = (props) => {
 
   return (
     <>
-      <Wrapper channel={channel} scrollRef={scrollEl} moreButton={moreButton}>
+      <Wrapper channel={channel} scrollRef={scrollEl} moreButton={moreButton} onClick={onSelectOptions}>
         <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
         <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
         <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>

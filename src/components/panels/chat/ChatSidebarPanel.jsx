@@ -33,6 +33,24 @@ const Wrapper = styled.div`
       border: 0;
     }
   }
+  &:after {
+    content: "";
+    width: 1px;
+    height: calc(100% - 24px);
+    display: block;
+    background: #dee2e6;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 6;
+    background: rgb(222, 226, 230);
+    .dark & {
+      background: #333539;
+    }
+    @media (max-width: 991.99px) {
+      display: none;
+    }
+  }
 `;
 
 const Search = styled(SearchForm)`

@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { useTimeFormat } from "../../hooks";
 import ChannelOptions from "./ChannelOptions";
 
-const Wrapper = styled.div`  
+const Wrapper = styled.div`
   display: initial;
   .chat-timestamp_text {
     margin: 1px 0 3px 0;
@@ -45,16 +44,13 @@ const ChatDateIcons = (props) => {
   return (
     <Wrapper className="chat-timestamp">
       <div className="d-flex align-items-center flex-row-reverse">
-        <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
-        {
-          channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
-            <Badge
-              className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
-          )
-        }
+        <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel} />
+        {channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
+          <Badge className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
+        )}
         <ActionContainer>
-          {channel.is_pinned && <Icon icon="star"/>}
-          {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
+          {channel.is_pinned && <Icon icon="star" />}
+          {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
         </ActionContainer>
       </div>
     </Wrapper>
