@@ -236,7 +236,8 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
     });
   return {
-    sortedChannels: results,
+    sortedChannels: results.filter((c) => !c.is_pinned),
+    favoriteChannels: results.filter((c) => c.is_pinned),
     searchArchivedChannels,
   };
 };

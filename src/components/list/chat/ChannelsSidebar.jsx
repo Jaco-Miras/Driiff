@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useSortChannels, useChannelActions } from "../../hooks";
 import ChannelList from "./ChannelList";
 import { CustomInput } from "reactstrap";
+import FavoriteChannels from "./FavoriteChannels";
 
 const ChannelsSidebarContainer = styled.div``;
 const Channels = styled.ul`
@@ -40,7 +41,7 @@ const ChannelsSidebar = (props) => {
 
   const [fetchingChannels, setFetchingChannels] = useState(false);
   const actions = useChannelActions();
-  const { sortedChannels, searchArchivedChannels } = useSortChannels(channels, search, {}, workspace);
+  const { favoriteChannels, sortedChannels, searchArchivedChannels } = useSortChannels(channels, search, {}, workspace);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
   const handleLoadMore = () => {
@@ -56,6 +57,7 @@ const ChannelsSidebar = (props) => {
 
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
+      <FavoriteChannels channels={favoriteChannels} />
       <Channels className={"list-group list-group-flush"}>
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";

@@ -105,24 +105,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  let {
-    className = "",
-    imageLink,
-    id,
-    name = "",
-    children,
-    type = "USER",
-    userId,
-    onClick = null,
-    noDefaultClick = false,
-    isBot = false,
-    isHuddleBot = false,
-    forceThumbnail = true,
-    fromSlider = false,
-    showSlider = true,
-    scrollRef = null,
-    ...rest
-  } = props;
+  let { className = "", imageLink, id, name = "", children, type = "USER", userId, onClick = null, noDefaultClick = false, isBot = false, isHuddleBot = false, forceThumbnail = true, fromSlider = false, showSlider = true, ...rest } = props;
 
   const avatarRef = useRef(null);
 
