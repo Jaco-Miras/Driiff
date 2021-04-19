@@ -31,6 +31,7 @@ const ChatContentPanel = (props) => {
 
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const teamChannelId = useSelector((state) => state.workspaces.isOnClientChat);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
   //const [bottomRefVisible, setBottomRefVisible] = useState(false);
@@ -172,9 +173,9 @@ const ChatContentPanel = (props) => {
       {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
       {selectedChannel !== null ? (
         virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} />
         ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} />
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} />
         )
       ) : (
         <ChatMessagesPlaceholder />

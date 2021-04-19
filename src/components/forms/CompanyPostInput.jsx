@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-// import {localizeDate} from "../../helpers/momentFormatJS";
-//import { addQuote } from "../../redux/actions/chatActions";
-//import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useTranslation } from "../hooks";
 import QuillEditor from "./QuillEditor";
@@ -90,29 +87,6 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
-// const CloseButton = styled(SvgIconFeather)`
-//   position: absolute;
-//   top: 0;
-//   right: 0;
-//   margin: 0;
-//   margin: 4px;
-//   height: calc(100% - 8px);
-//   background: white;
-//   border: 1px solid white;
-//   border-radius: 4px;
-//   min-width: 40px;
-//   width: 40px;
-//   padding: 9px;
-//   cursor: pointer;
-//   right: 40px;
-//   z-index: 9;
-//   color: #cacaca;
-//   transition: color 0.15s ease-in-out;
-//   &:hover {
-//     color: #7a1b8b;
-//   }
-// `;
-
 const ToggleDisable = styled.div`
   padding: 5px;
   font-size: 0.8rem;
@@ -138,7 +112,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     userMention,
     handleClearUserMention,
     commentId,
-    //members,
     onActive,
     onClosePicker,
     prioMentionIds,
@@ -164,11 +137,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const users = useSelector((state) => state.users.users);
   const recipients = useSelector((state) => state.global.recipients);
-  //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
-  //const externalUsers = useSelector((state) => state.users.externalUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-
-  //const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -182,17 +151,23 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
-  // const [quote] = useCommentQuote(commentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
-  //const excludeExternals = post.recipients.filter((r) => r.type !== "TOPIC").length > 0;
 
   const handleSubmit = () => {
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
     let haveGif = false;
     let reference_id = require("shortid").generate();
-    let allIds = post.users_responsible.map((m) => m.id);
+    let allIds = post.recipients
+      .map((ad) => {
+        if (ad.type === "USER") {
+          return ad.type_id;
+        } else {
+          return ad.participant_ids;
+        }
+      })
+      .flat();
 
     if (quillContents.ops && quillContents.ops.length > 0) {
       let mentionIds = quillContents.ops
@@ -318,8 +293,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
 
-    if (mentionUsers.length) {
-      handleAddMentionedUsersToPost();
+    if (mentionUsersPayload.hasOwnProperty("post_id")) {
+      dispatch(
+        addPostRecipients(mentionUsersPayload, (err, res) => {
+          if (err) return;
+          dispatch(addUserToPostRecipients(mentionUsersPayload));
+        })
+      );
     }
 
     onClearApprovers();
@@ -481,14 +461,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     return () => document.removeEventListener("paste", handlePaste, false);
   }, []);
 
-  //to be converted into hooks
-  // useEffect(() => {
-  //     if (selectedChannel && selectedChannel.replies.length) {
-  //         document.addEventListener("keydown", handleEditOnArrowUp, false);
-  //     }
-  //     return () => document.removeEventListener("keydown", handleEditOnArrowUp, false);
-  // }, [selectedChannel]);
-
   useEffect(() => {
     const escapeHandler = (e) => {
       if (e.keyCode === 27) {
@@ -552,9 +524,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //         setText(draft.text);
   //     }
   // };
-  const handleAddMentionedUsersToPost = () => {
-    dispatch(addPostRecipients(mentionUsersPayload));
-  };
 
   const handleAddMentionedUsers = (users) => {
     //const userIds = users.map((u) => u.id);
@@ -573,7 +542,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     console.log(users, payload, ignoredMentionedUserIds);
     const postRecipientIds = post.recipients.map((pr) => pr.id);
     setMentionUsersPayload(payload);
-    dispatch(addUserToPostRecipients(payload));
 
     //const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
     //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id), ...ingoredExternalIds]);
@@ -597,7 +565,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-
+  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -605,7 +573,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: Object.values(users).filter((u) => {
-      if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || u.type === "internal") {
+      if (u.id === user.id) {
+        return false;
+      } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
         return true;
       } else {
         return false;
@@ -614,7 +584,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
-    prioMentionIds: [...new Set(prioMentionIds)],
+    prioMentionIds: Object.values(users)
+      .filter((u) => prioIds.some((id) => id === u.id))
+      .map((u) => u.id),
     post,
   });
 
@@ -627,7 +599,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
       )}
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} readOnly={readOnly} />
-      {/* {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />} */}
     </Wrapper>
   );
 });

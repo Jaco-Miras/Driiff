@@ -184,6 +184,7 @@ const useWorkspaceAndUserOptions = (props) => {
         value: u.id,
         label: u.name ? u.name : u.email,
         type: "USER",
+        user_type: u.type,
       };
     });
 
@@ -200,6 +201,7 @@ const useWorkspaceAndUserOptions = (props) => {
     getAddressTo,
     getDefaultAddressTo,
     getDefaultAddressToAsCompany,
+    actualUsers,
   };
 };
 

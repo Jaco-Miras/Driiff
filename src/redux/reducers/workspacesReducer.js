@@ -15,9 +15,10 @@ const INITIAL_STATE = {
   workspaceTimeline: {},
   workspace: {},
   folders: {},
-  activeChannelId: null,
+  activeChannel: null,
   workspaceToDelete: null,
   folderToDelete: null,
+  isOnClientChat: null,
   search: {
     results: [],
     searching: false,
@@ -162,6 +163,13 @@ export default (state = INITIAL_STATE, action) => {
         // workspacesLoaded: !state.workspacesLoaded && action.data.is_external === 0 ? true : state.workspacesLoaded,
         // externalWorkspacesLoaded: !state.externalWorkspacesLoaded && action.data.is_external === 1 ? true : state.externalWorkspacesLoaded,
         folders: updatedFolders,
+        isOnClientChat:
+          state.activeChannel &&
+          updatedWorkspaces[state.activeChannel.entity_id] &&
+          updatedWorkspaces[state.activeChannel.entity_id].team_channel.code &&
+          updatedWorkspaces[state.activeChannel.entity_id].channel.id === state.activeChannel.id
+            ? { code: updatedWorkspaces[state.activeChannel.entity_id].team_channel.code, id: updatedWorkspaces[state.activeChannel.entity_id].team_channel.id }
+            : null,
       };
     }
     case "GET_WORKSPACE_SUCCESS": {
@@ -444,6 +452,52 @@ export default (state = INITIAL_STATE, action) => {
     //     activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId,
     //   };
     // }
+    case "GET_LAST_CHANNEL_SUCCESS": {
+      if (action.data) {
+        return {
+          ...state,
+          activeChannel: {
+            id: action.data.id,
+            entity_id: action.data.entity_id,
+            type: action.data.type,
+          },
+          isOnClientChat:
+            action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+              ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
+              : null,
+        };
+      } else {
+        return state;
+      }
+    }
+    case "GET_SELECT_CHANNEL_SUCCESS": {
+      return {
+        ...state,
+        activeChannel: {
+          id: action.data.id,
+          entity_id: action.data.entity_id,
+          type: action.data.type,
+        },
+        isOnClientChat:
+          action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+            ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
+            : null,
+      };
+    }
+    case "SET_SELECTED_CHANNEL": {
+      return {
+        ...state,
+        activeChannel: {
+          id: action.data.id,
+          entity_id: action.data.entity_id,
+          type: action.data.type,
+        },
+        isOnClientChat:
+          action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+            ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
+            : null,
+      };
+    }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       action.data.forEach((c) => {

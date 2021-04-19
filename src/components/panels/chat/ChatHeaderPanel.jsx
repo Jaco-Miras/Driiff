@@ -276,7 +276,7 @@ const ChatHeaderPanel = (props) => {
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li className="mt-1">
-              <MemberLists members={channel.members} />
+              <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
             </li>
           )}
           {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
