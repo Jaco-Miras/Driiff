@@ -33,6 +33,24 @@ const Wrapper = styled.div`
       border: 0;
     }
   }
+  &:after {
+    content: "";
+    width: 1px;
+    height: calc(100% - 24px);
+    display: block;
+    background: #dee2e6;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 6;
+    background: rgb(222, 226, 230);
+    .dark & {
+      background: #333539;
+    }
+    @media (max-width: 991.99px) {
+      display: none;
+    }
+  }
 `;
 
 const Search = styled(SearchForm)`
@@ -108,8 +126,6 @@ const StyledMoreOptions = styled(MoreOptions)`
   }
 `;
 
-//let hiddenArchivedLoaded = false;
-
 const ChatSidebarPanel = (props) => {
   const { className = "" } = props;
 
@@ -122,22 +138,6 @@ const ChatSidebarPanel = (props) => {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [tabPill, setTabPill] = useState(chatSettings.chat_filter);
-  //const previousChannel = usePreviousValue(selectedChannel);
-
-  // let add = (total, num) => total + num;
-  // let unreadMessages = 0;
-  // let unreadWorkspaceMessages = 0;
-  // if (Object.keys(channels).length) {
-
-  //   if (Object.values(channels).filter((c) => { return c.type !== "TOPIC" && typeof c.id === "number" }).length) {
-  //     unreadMessages = Object.values(channels).filter((c) => {
-  //       return c.type !== "TOPIC" && typeof c.id === "number";
-  //     }).map((c) => c.total_unread).reduce(add);
-  //   }
-  //   if (Object.values(channels).filter((c) => c.type === "TOPIC").length) {
-  //     unreadWorkspaceMessages = Object.values(channels).filter((c) => c.type === "TOPIC").map((c) => c.total_unread).reduce(add);
-  //   }
-  // }
 
   const refs = {
     container: useRef(null),
@@ -246,28 +246,10 @@ const ChatSidebarPanel = (props) => {
     }
   }, [chatSidebarSearch]);
 
-  const onInputFocus = () => {
-    console.log("focus input");
-    // if (!hiddenArchivedLoaded) {
-    //   hiddenArchivedLoaded = true;
-    //   channelActions.fetchAll({
-    //     skip: 0,
-    //     limit: 20,
-    //     filter: "hidden",
-    //   });
-
-    //   channelActions.fetchAll({
-    //     skip: 0,
-    //     limit: 20,
-    //     filter: "archived",
-    //   });
-    // }
-  };
-
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start align-items-center">
-        <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} onFocus={onInputFocus} />
+        <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} />
         <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
           <StyledMoreOptions ref={refs.navTab} role="tabList">
             <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">

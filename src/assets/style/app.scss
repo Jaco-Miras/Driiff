@@ -15016,7 +15016,7 @@ body.form-membership .form-wrapper hr {
   -moz-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  overflow: visible;
+  //overflow: visible;
 }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active {
@@ -21877,19 +21877,19 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   transition: 0ms ease 0ms;
 }
 .chat-sidebar-header {
-  position: absolute;
-  top: 0;
+  //position: absolute;
+  //top: 0;
   width: 100%;
   background: #ffffff;
-  z-index: 1;
+  z-index: 2;
 }
 .tab-panel {
-  position: absolute;
+  //position: absolute;
   width: 100%;
-  top: 50px;
-  height: calc(100% - 50px);
-  overflow-y: scroll;
-  scrollbar-width: none;
+  // top: 50px;
+  // height: calc(100% - 50px);
+  // overflow-y: scroll;
+  // scrollbar-width: none;
 
   @media (max-width: 480px) {
     padding-top: 98px;

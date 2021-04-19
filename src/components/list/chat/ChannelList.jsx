@@ -1,13 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
-import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
 import ChatTitleDate from "./ChatTitleDate";
 import ChatIconReplyPreview from "./ChatIconReplyPreview";
 import { Badge } from "../../common";
-import { useSelector } from "react-redux";
 import { useInView } from "react-intersection-observer";
-import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.li`
   display: flex;
@@ -119,11 +116,7 @@ const Wrapper = styled.li`
 const ChannelTitlePreview = styled.div``;
 
 const ChannelList = (props) => {
-  const { className = "", channel, selectedChannel, channelDrafts, dictionary, addLoadRef, onLoadMore } = props;
-
-  const channelActions = useChannelActions();
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
-  const history = useHistory();
+  const { className = "", channel, selectedChannel, channelDrafts, dictionary, addLoadRef, onLoadMore, onSelectChannel } = props;
 
   const refs = {
     container: useRef(null),
@@ -140,17 +133,7 @@ const ChannelList = (props) => {
   }, [addLoadRef, loadInView]);
 
   const handleSelectChannel = () => {
-    document.body.classList.add("m-chat-channel-closed");
-
-    if (selectedChannel !== null && !virtualization) {
-      let scrollComponent = document.getElementById("component-chat-thread");
-      if (scrollComponent) {
-        console.log("set historical");
-        channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
-      }
-    }
-    channelActions.select({ ...channel, selected: true });
-    history.push(`/chat/${channel.code}`);
+    onSelectChannel(channel);
   };
 
   let timerStart = 0;

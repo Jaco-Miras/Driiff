@@ -86,7 +86,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));

@@ -4,8 +4,14 @@ import { useSelector } from "react-redux";
 import { useSortChannels, useChannelActions } from "../../hooks";
 import ChannelList from "./ChannelList";
 import { CustomInput } from "reactstrap";
+import FavoriteChannels from "./FavoriteChannels";
+import { useHistory } from "react-router-dom";
 
-const ChannelsSidebarContainer = styled.div``;
+const ChannelsSidebarContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-flow: column;
+`;
 const Channels = styled.ul`
   padding-left: 24px;
   padding-right: 24px;
@@ -20,6 +26,8 @@ const Channels = styled.ul`
     padding-left: 15px;
     padding-right: 15px;
   }
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
 
 const ChatHeaderContainer = styled.div`
@@ -40,7 +48,9 @@ const ChannelsSidebar = (props) => {
 
   const [fetchingChannels, setFetchingChannels] = useState(false);
   const actions = useChannelActions();
-  const { sortedChannels, searchArchivedChannels } = useSortChannels(channels, search, {}, workspace);
+  const { favoriteChannels, sortedChannels, searchArchivedChannels } = useSortChannels(channels, search, {}, workspace);
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const history = useHistory();
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
   const handleLoadMore = () => {
@@ -54,8 +64,23 @@ const ChannelsSidebar = (props) => {
     actions.searchArchivedChannels(!searchArchivedChannels);
   };
 
+  const onSelectChannel = (channel) => {
+    document.body.classList.add("m-chat-channel-closed");
+
+    if (selectedChannel !== null && !virtualization) {
+      let scrollComponent = document.getElementById("component-chat-thread");
+      if (scrollComponent) {
+        console.log("set historical");
+        actions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+      }
+    }
+    actions.select({ ...channel, selected: true });
+    history.push(`/chat/${channel.code}`);
+  };
+
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
+      <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />
       <Channels className={"list-group list-group-flush"}>
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
@@ -114,7 +139,16 @@ const ChannelsSidebar = (props) => {
                   )}
                 </ChatHeaderContainer>
               )}
-              <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} search={search} addLoadRef={search === "" && k > sortedChannels.length - 5} onLoadMore={handleLoadMore} />
+              <ChannelList
+                channel={channel}
+                selectedChannel={selectedChannel}
+                channelDrafts={channelDrafts}
+                dictionary={dictionary}
+                search={search}
+                addLoadRef={search === "" && k > sortedChannels.length - 5}
+                onLoadMore={handleLoadMore}
+                onSelectChannel={onSelectChannel}
+              />
             </React.Fragment>
           );
         })}

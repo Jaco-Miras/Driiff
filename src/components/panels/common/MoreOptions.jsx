@@ -73,7 +73,7 @@ const MoreTooltip = styled.div`
 `;
 
 const MoreOptions = forwardRef((props, ref) => {
-  const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, scrollRef = null, ...rest } = props;
+  const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, scrollRef = null, onClick, ...rest } = props;
 
   const refs = {
     options: useRef(),
@@ -90,6 +90,7 @@ const MoreOptions = forwardRef((props, ref) => {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (onClick) onClick(e);
     setShowMoreOptions(!showMoreOptions);
   };
 
