@@ -14,6 +14,11 @@ const Wrapper = styled.div`
     overflow-x: scroll;
     display: flex;
     border-bottom: 1px solid #dee2e6;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     .dark & {
       border-bottom-color: rgba(155, 155, 155, 0.2) !important;
     }
