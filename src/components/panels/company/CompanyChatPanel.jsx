@@ -9,11 +9,12 @@ const Wrapper = styled.div`
   .chat-content-panel {
     padding-right: 1.5rem;
     flex-grow: 1;
+    flex: 1 1 auto;
     @media (min-width: 1920px) {
       max-width: calc(100% - 540px);
     }
   }
-  @media (max-width: 1450px) {
+  @media (max-width: 1550px) {
     .chat-sidebar-panel {
       flex: 0 0 40%;
       max-width: 40%;
@@ -44,6 +45,9 @@ const Wrapper = styled.div`
       flex: auto;
       max-width: 100%;
     }
+  }
+  .row {
+    flex-wrap: unset;
   }
 `;
 
