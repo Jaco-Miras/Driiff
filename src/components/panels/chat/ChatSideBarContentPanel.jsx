@@ -55,7 +55,7 @@ const ChatSidebarContentPanel = (props) => {
 
   return (
     <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
-      <div className="tab-content pt-3" id="pills-tabContent">
+      <div className="tab-content pt-2" id="pills-tabContent">
         {pill === "pills-workspace" && (
           <div className="badge-filter badge badge badge-info text-white cursor-pointer mb-2" onClick={resetFilter}>
             <SvgIconFeather className="mr-1" icon="x" width={11} height={11} onClick={resetFilter} /> Workspace chats

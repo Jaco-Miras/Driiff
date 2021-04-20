@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   ul {
     margin: 0;
     padding-left: 0;
-    padding-bottom: 18px;
+    padding-bottom: 12px;
     overflow-y: hidden;
     overflow-x: scroll;
     display: flex;
@@ -62,17 +62,29 @@ const Wrapper = styled.div`
     top: -2px;
     right: 0px;
   }
+  .more-options {
+    display: none;
+  }
+  :hover {
+    .more-options {
+      display: block;
+    }
+  }
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
 `;
 
 const ChannelWrapper = styled.div`
   display: flex;
   flex-flow: column;
-  justify-content: center;
   align-items: center;
   margin-right: 0.5rem;
   .more-options {
     margin-top: 0.5rem;
     position: static;
+    opacity: 0;
     svg {
       position: relative;
     }
@@ -80,7 +92,17 @@ const ChannelWrapper = styled.div`
   .feather-more-horizontal {
     width: 20px;
     height: 18px;
+    vertical-align: initial;
   }
+  :hover {
+    .more-options {
+      opacity: 1;
+    }
+  }
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
 `;
 
 const Badge = styled.div`
