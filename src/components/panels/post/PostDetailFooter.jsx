@@ -777,7 +777,7 @@ const PostDetailFooter = (props) => {
                 elementCount: 65,
                 elementSize: 10,
                 spread: 140,
-                lifetime: 250,
+                lifetime: 360,
               }}
             >
               <button className="btn btn-primary" onClick={handleApprove}>

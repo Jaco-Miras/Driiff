@@ -323,7 +323,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -554,7 +554,7 @@ const Comment = (props) => {
                 elementCount: 65,
                 elementSize: 10,
                 spread: 140,
-                lifetime: 250,
+                lifetime: 360,
               }}
             >
               <PostChangeAccept
