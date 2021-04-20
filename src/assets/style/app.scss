@@ -90,6 +90,11 @@ body {
     padding-left: 0;
   }
 }
+::-webkit-scrollbar-track {
+  display: none;
+  border-color: transparent;
+  background-color:transparent;
+}
 
 ::-webkit-scrollbar:hover {
   width: 10px;
