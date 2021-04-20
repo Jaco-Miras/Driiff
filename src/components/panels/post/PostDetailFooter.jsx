@@ -489,6 +489,12 @@ const PostDetailFooter = (props) => {
           })
         );
       }
+      setDisableButtons(false);
+      if (!editPostComment.shared_with_client) {
+        setCommentType("internal");
+      } else {
+        setCommentType("external");
+      }
     }
   }, [editPostComment]);
 
@@ -640,7 +646,8 @@ const PostDetailFooter = (props) => {
   };
 
   const handleCommentType = (type) => {
-    setDisableButtons((prevState) => !prevState);
+    if (type) setDisableButtons(false);
+    else setDisableButtons(true);
     setCommentType(type);
   };
 

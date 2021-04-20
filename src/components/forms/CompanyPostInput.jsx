@@ -90,9 +90,11 @@ const StyledQuillEditor = styled(QuillEditor)`
 const ToggleDisable = styled.div`
   padding: 5px;
   font-size: 0.8rem;
-  color: mediumblue;
   > span {
     cursor: pointer;
+  }
+  span.active {
+    text-decoration: underline;
   }
 `;
 
@@ -513,7 +515,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       handleSubmit();
       handleClearSent();
     }
-  }, [sent]);
+  }, [sent, commentType]);
 
   // const loadDraftCallback = (draft) => {
   //     if (draft === null) {
@@ -590,11 +592,19 @@ const CompanyPostInput = forwardRef((props, ref) => {
     post,
   });
 
+  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {readOnly && (
+      {hasExternalWorkspace && post.shared_with_client && user.type === "internal" && (
         <ToggleDisable>
-          <span onClick={() => onToggleCommentType("internal")}>{dictionary.addInternalNote}</span> / <span onClick={() => onToggleCommentType("external")}>{dictionary.replyToCustomer}</span>
+          <span className={commentType && commentType === "internal" ? "active" : ""} onClick={() => onToggleCommentType("internal")}>
+            {dictionary.addInternalNote}
+          </span>{" "}
+          /{" "}
+          <span className={commentType && commentType === "external" ? "active" : ""} onClick={() => onToggleCommentType("external")}>
+            {dictionary.replyToCustomer}
+          </span>
         </ToggleDisable>
       )}
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
