@@ -80,7 +80,7 @@ const ChannelsSidebar = (props) => {
 
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
-      <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />
+      {favoriteChannels.length > 0 && <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />}
       <Channels className={"list-group list-group-flush"}>
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
