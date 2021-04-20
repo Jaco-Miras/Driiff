@@ -184,7 +184,7 @@ const LoginPanel = (props) => {
     }
   });
 
-  if (($_GET("code"), $_GET("state"))) {
+  if ($_GET("code") && $_GET("state")) {
     return <Wrapper className="fadeIn"></Wrapper>;
   }
   return (
