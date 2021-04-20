@@ -35,6 +35,7 @@ const Wrapper = styled.div`
   }
 
   .loading span {
+    font-size: 2.5rem;
     /**
    * Use the blink animation, which is defined above
    */
