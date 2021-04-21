@@ -19,3 +19,4 @@ export { default as TodoReminderModal } from "./TodoReminderModal";
 export { default as DriffUpdateModal } from "./DriffUpdateModal";
 export { default as ReleaseModal } from "./ReleaseModal";
 export { default as CreateEditPostListModal } from "./CreateEditPostListModal";
+export { default as PostModal } from "./PostModal";

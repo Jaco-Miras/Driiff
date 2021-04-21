@@ -23,6 +23,7 @@ import {
   TodoReminderModal,
   ReleaseModal,
   CreateEditPostListModal,
+  PostModal,
 } from "../modals";
 import { useHuddleNotification } from "../hooks";
 
@@ -89,7 +90,9 @@ const ModalPanel = () => {
             case "release":
               return <ReleaseModal key={modal.type} data={modal} />;
             case "post_list":
-              return <CreateEditPostListModal key={modal.type} data={modal} />
+              return <CreateEditPostListModal key={modal.type} data={modal} />;
+            case "post_modal":
+              return <PostModal key={modal.type} data={modal} />;
             default:
               return null;
           }
