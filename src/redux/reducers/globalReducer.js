@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   slugs: [],
   navMode: 2,
   dataFromInput: null,
+  isIdle: false,
   unreadCounter: {
     chat_message: 0,
     workspace_post: 0,
@@ -580,6 +581,12 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "SET_IDLE_STATUS": {
+      return {
+        ...state,
+        isIdle: action.data,
+      };
     }
     default:
       return state;

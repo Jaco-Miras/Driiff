@@ -9,6 +9,7 @@ import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
+import { useIdleTimer } from "react-idle-timer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -24,6 +25,8 @@ const ChatMessagesPlaceholder = styled.div`
 
 const ChatContentPanel = (props) => {
   const { className = "", isWorkspace = false } = props;
+
+  const { isIdle } = useIdleTimer({ timeout: 1000 * 60 });
 
   const dispatch = useDispatch();
   const chatMessageActions = useChatMessageActions();
@@ -171,12 +174,17 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
-      {selectedChannel !== null ? (
+      {/* {selectedChannel !== null ? (
         virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} />
+          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
         ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} />
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
         )
+      ) : (
+        <ChatMessagesPlaceholder />
+      )} */}
+      {selectedChannel !== null ? (
+        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
       ) : (
         <ChatMessagesPlaceholder />
       )}
