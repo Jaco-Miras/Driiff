@@ -11,9 +11,7 @@ import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
-import { lang } from "moment-timezone";
-
-
+//import { lang } from "moment-timezone";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -395,8 +393,8 @@ const ChatContent = styled.div`
         left: -15px;
         z-index: 1;
         ${(props) =>
-      props.isAuthor === true &&
-      `
+          props.isAuthor === true &&
+          `
             left: auto;
             right: -15px;
             border-left-color: red;
@@ -541,9 +539,9 @@ const ChatBubble = (props) => {
 
   const history = useHistory();
   const googleApis = useGoogleApis();
- 
-  reply.body = useChatTranslate(reply.body, isAuthor, reply.user,  translate, language,dictionary);
-  
+
+  useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
+
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
     dictionary,
@@ -553,7 +551,7 @@ const ChatBubble = (props) => {
     selectedChannel,
     users,
     translate,
-    language
+    language,
   });
 
   const hasFiles = reply.files.length > 0;

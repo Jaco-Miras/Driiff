@@ -6,7 +6,6 @@ import quillHelper from "../../../helpers/quillHelper";
 import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
-import useChatTranslatePreview from "../../hooks/useChatTranslatePreview";
 
 const Wrapper = styled.span`
   //display: flex;
@@ -15,7 +14,6 @@ const Wrapper = styled.span`
   width: 100%;
   font-weight: ${(props) => (props.hasUnRead ? "bold" : "normal")};
 `;
-
 const LastReplyContent = styled.span`
   display: flex;
 `;
@@ -61,16 +59,10 @@ const Badge = styled.span`
   }
 `;
 
-
 const ReplyPreview = (props) => {
   const { channel, drafts, dictionary, selectedChannel } = props;
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
-
-  const language = useSelector((state) => state.settings.user.GENERAL_SETTINGS.language);
-  const translate = useSelector((state) => state.settings.user.CHAT_SETTINGS.translate);
-
- 
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
   const [iconWidth, setIconWidth] = useState(0);
@@ -81,12 +73,9 @@ const ReplyPreview = (props) => {
   let showPreviewIcon = false;
   let previewText = "";
   let lastReplyBody = "";
-  let basicMessageFlag = 0;
-  let previewUser = false;
-
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
@@ -112,9 +101,7 @@ const ReplyPreview = (props) => {
       previewText = renderToString(<TextIcon icon={"image-video"} />) + previewText;
     }
 
-    
     if (channel.last_reply.user) {
-      previewUser = channel.last_reply.user;
       if (channel.last_reply.body.includes("POST_CREATE::")) {
         let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
         previewText = `${item.author.first_name} has created the post ${item.post.title}`;
@@ -123,14 +110,12 @@ const ReplyPreview = (props) => {
         previewText = "System message update...";
       }
       if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
-
         if (!noText && showPreviewIcon) {
           previewText = previewText + "Photo";
         }
         previewText = renderToString(<LastReplyName className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
-        basicMessageFlag = 1;
-        //previewText = renderToString(<LastReplyName className="last-reply-name">{channel.last_reply.user.first_name}:</LastReplyName>) + " " + previewText;
+        previewText = renderToString(<LastReplyName className="last-reply-name">{channel.last_reply.user.first_name}:</LastReplyName>) + " " + previewText;
       }
 
       previewText = previewText.replace("NEW_ACCOUNT_ACTIVATED", "New account activated");
@@ -153,9 +138,6 @@ const ReplyPreview = (props) => {
       }
     }
   }
-
-
- previewText = useChatTranslatePreview(previewText, previewUser, translate, language, basicMessageFlag );
 
   useEffect(() => {
     if (refs.icons.current) {

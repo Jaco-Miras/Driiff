@@ -17,6 +17,7 @@ import {
   setEditChatMessage,
   setLastChatVisibility,
   setEditHuddleAnswers,
+  setTranslatedBody,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -381,6 +382,17 @@ const useChatMessageActions = () => {
     },
     [dispatch]
   );
+  /**
+   * @param {object} payload
+   * @parm number payload.message_id chat.id
+   * @param {function} [callback]
+   */
+  const saveTranslationBody = useCallback(
+    (payload) => {
+      dispatch(setTranslatedBody(payload));
+    },
+    [dispatch]
+  );
 
   return {
     channelActions: useChannelActions(),
@@ -402,6 +414,7 @@ const useChatMessageActions = () => {
     setStar,
     setHuddleAnswers,
     addSkip,
+    saveTranslationBody,
   };
 };
 

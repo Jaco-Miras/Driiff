@@ -437,3 +437,7 @@ export function addHasUnpublishedAnswers(payload, callback) {
 export function setSearchArchivedChannels(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SEARCH_ARCHIVED_CHANNELS", payload, callback);
 }
+
+export function setTranslatedBody(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_TRANSLATED_BODY", payload, callback);
+}

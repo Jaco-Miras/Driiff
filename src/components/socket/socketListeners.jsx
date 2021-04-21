@@ -840,7 +840,7 @@ class SocketListeners extends Component {
                 message.is_read = true;
               }
             }
-            this.props.incomingChatMessage(message);
+            this.props.incomingChatMessage({ ...message, translated_body: null });
             delete e.SOCKET_TYPE;
             delete e.socket;
             if (e.user.id !== user.id) {
@@ -889,7 +889,7 @@ class SocketListeners extends Component {
             break;
           }
           case "CHAT_UPDATE": {
-            this.props.incomingUpdatedChatMessage(e);
+            this.props.incomingUpdatedChatMessage({ ...e, translated_body: null });
             break;
           }
           case "CHAT_DELETE": {
