@@ -32,7 +32,7 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -188,7 +188,17 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )} */}
       {selectedChannel !== null ? (
-        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
+        <ChatMessages
+          selectedChannel={selectedChannel}
+          chatMessageActions={chatMessageActions}
+          timeFormat={timeFormat}
+          dictionary={dictionary}
+          unreadCount={unreadCount}
+          teamChannelId={teamChannelId}
+          isIdle={isIdle}
+          translate={translate}
+          language={language}
+        />
       ) : (
         <ChatMessagesPlaceholder />
       )}

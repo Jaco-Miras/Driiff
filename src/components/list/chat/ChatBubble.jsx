@@ -11,7 +11,7 @@ import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
-import { lang } from "moment-timezone";
+//import { lang } from "moment-timezone";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -540,7 +540,7 @@ const ChatBubble = (props) => {
   const history = useHistory();
   const googleApis = useGoogleApis();
 
-  reply.body = useChatTranslate(reply.body, isAuthor, reply.user, translate, language, dictionary);
+  useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
