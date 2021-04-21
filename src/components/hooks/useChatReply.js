@@ -1,11 +1,10 @@
 import React, { useCallback } from "react";
-
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
-import { lang } from "moment-timezone";
+//import { lang } from "moment-timezone";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;

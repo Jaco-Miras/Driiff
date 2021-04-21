@@ -8,7 +8,7 @@ import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
-import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
+//import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
 
 const Wrapper = styled.div`
