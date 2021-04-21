@@ -45,8 +45,12 @@ const LinkNav = styled.ul`
   border-radius: 0 0 8px 8px;
 
   &.enter-active {
-    max-height: ${(props) => props.maxHeight}px !important;
+    max-height: 250px;
+    overflow: scroll;
   }
+  // &.enter-active {
+  //   max-height: ${(props) => props.maxHeight}px !important;
+  // }
   &.leave-active {
     max-height: 0;
   }
@@ -155,13 +159,13 @@ const QuickLinks = (props) => {
     });
   };
 
-  useEffect(() => {
-    if (ref.nav.current !== null) {
-      let maxHeight = window.innerHeight * 5;
-      maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
-      setMaxHeight(maxHeight);
-    }
-  }, [ref.nav, maxHeight]);
+  // useEffect(() => {
+  //   if (ref.nav.current !== null) {
+  //     let maxHeight = window.innerHeight * 5;
+  //     maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
+  //     setMaxHeight(maxHeight);
+  //   }
+  // }, [ref.nav, maxHeight]);
 
   return (
     <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
