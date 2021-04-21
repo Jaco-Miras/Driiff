@@ -184,3 +184,7 @@ export const replaceChar = (name, char = "-") => {
 export const capitalizeFirstLetter = (value) => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
+
+export const hasCurrencySymbol = (value) => {
+  return /[€£$]/g.test(value);
+};
