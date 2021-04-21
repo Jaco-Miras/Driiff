@@ -180,3 +180,7 @@ export const dataURLtoFile = (dataurl, filename) => {
 export const replaceChar = (name, char = "-") => {
   return name.toLowerCase().replace(/\s|\//g, char);
 };
+
+export const capitalizeFirstLetter = (value) => {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};
