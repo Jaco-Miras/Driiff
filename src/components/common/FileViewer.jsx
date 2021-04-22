@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
-import { setViewFiles } from "../../redux/actions/fileActions";
+import { setViewFiles, removeFileDownload } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
 import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
@@ -61,7 +61,7 @@ const FileNameContainer = styled.p`
   text-align: left;
   margin-bottom: 0;
 `;
-const FileName = styled.a`
+const FileName = styled.span`
   position: relative;
   z-index: 1;
   display: inline-block;
@@ -73,6 +73,7 @@ const FileName = styled.a`
   &:hover {
     text-decoration: none;
     color: #fff;
+    cursor: pointer;
   }
 `;
 const FileCreated = styled.p`
@@ -122,7 +123,7 @@ const PreviewContainer = styled.div`
   }
   .mfp-content {
     margin-top: -20px;
-    
+
     .mfp-close {
       position: relative;
       width: 22px;
@@ -132,7 +133,7 @@ const PreviewContainer = styled.div`
     &::after {
       top: 58px;
       bottom: 0;
-    }  
+    }
   }
   .mfp-bottom-bar {
     margin-top: 0;
@@ -180,45 +181,55 @@ const StyledFileRender = styled.div`
     opacity: 1;
     max-height: 80vh;
     max-width: 100%;
-    
+
     &:not([src]) {
       opacity: 0;
       max-height: 0;
     }
     &[src] {
-      ${props => props.isLoaded ? `
+      ${(props) =>
+        props.isLoaded
+          ? `
         opacity: 1;
         max-height: 80vh;      
-      ` : `
+      `
+          : `
         opacity: 0;
         max-height: 0;
-      `}    
+      `}
     }
-    
+
     &.file-pdf {
       &:not([data]) {
         opacity: 0;
         max-height: 0;
       }
       &[data] {
-        ${props => props.isLoaded ? `
+        ${(props) =>
+          props.isLoaded
+            ? `
           max-width: 1060px;
           max-height: 100%;
           opacity: 1;
-        ` : `
+        `
+            : `
           opacity: 0;
           max-height: 0;
-        `}    
+        `}
       }
     }
   }
 `;
 
 const FileRender = (props) => {
-  const { className = "", file, setFiles, files } = props;
+  const { className = "", file, setFiles, files, viewFiles } = props;
 
+  const dispatch = useDispatch();
   const winSize = useWindowSize();
-  const { fileBlobs, actions: { setFileSrc } } = useFiles();
+  const {
+    fileBlobs,
+    actions: { setFileSrc },
+  } = useFiles();
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -264,48 +275,61 @@ const FileRender = (props) => {
   };
 
   const handleDownloadFile = (e, file) => {
+    console.log(file);
+    if (viewFiles.topic_id) {
+      dispatch(removeFileDownload({ file_id: file.file_id, topic_id: viewFiles.topic_id }));
+    }
     e.preventDefault();
     let handle = window.open(file.download_link, "_self");
     handle.blur();
     window.focus();
   };
 
-
   useEffect(() => {
     if (!fileBlobs[file.id]) {
       setIsLoaded(false);
       fetch(file.view_link, {
-        method: "GET", keepalive: true, headers: {
+        method: "GET",
+        keepalive: true,
+        headers: {
           Authorization: `Bearer ${userAuth.access_token}`,
-          'Access-Control-Allow-Origin': "*",
+          "Access-Control-Allow-Origin": "*",
           Connection: "keep-alive",
           crossorigin: true,
-        }
+        },
       })
         .then(function (response) {
           return response.blob();
         })
-        .then(function (data) {
-          const imgObj = URL.createObjectURL(data);
-          setFiles(files.map((f) => {
-            if (f.id === file.id) {
-              return {
-                ...f,
-                imgSrc: imgObj
-              };
-            } else {
-              return f;
-            }
-          }));
-          setFileSrc({
-            id: file.id,
-            src: imgObj
-          }, () => {
-            setIsLoaded(true);
-          });
-        }, function (err) {
-          console.log(err, 'error');
-        });
+        .then(
+          function (data) {
+            const imgObj = URL.createObjectURL(data);
+            setFiles(
+              files.map((f) => {
+                if (f.id === file.id) {
+                  return {
+                    ...f,
+                    imgSrc: imgObj,
+                  };
+                } else {
+                  return f;
+                }
+              })
+            );
+            setFileSrc(
+              {
+                id: file.id,
+                src: imgObj,
+              },
+              () => {
+                setIsLoaded(true);
+              }
+            );
+          },
+          function (err) {
+            console.log(err, "error");
+          }
+        );
     } else {
       setIsLoaded(true);
     }
@@ -314,79 +338,82 @@ const FileRender = (props) => {
   const fileType = file.type.toLowerCase();
   if (fileType.includes("video")) {
     return (
-      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                        className={`file-item mfp-img ${className}`}>
-        {
-          isLoaded ? <>
-              <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
-                   alt={"File not found."}/>
-              <video
-                className={`file opacity-0`}
-                data-index={file.id}
-                data-attempt={0}
-                ref={(e) => (refFiles[file.id] = e)}
-                controls
-                playsInline
-                key={file.id}
-                autoPlay={false}
-                onLoadStart={handleVideoOnLoad}
-                onError={handleVideoOnError}
-                src={fileBlobs[file.id]}
-              />
-            </> :
-            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
-        }
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id} className={`file-item mfp-img ${className}`}>
+        {isLoaded ? (
+          <>
+            <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")} alt={"File not found."} />
+            <video
+              className={"file opacity-0"}
+              data-index={file.id}
+              data-attempt={0}
+              ref={(e) => (refFiles[file.id] = e)}
+              controls
+              playsInline
+              key={file.id}
+              autoPlay={false}
+              onLoadStart={handleVideoOnLoad}
+              onError={handleVideoOnError}
+              src={fileBlobs[file.id]}
+            />
+          </>
+        ) : (
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+        )}
       </StyledFileRender>
     );
   } else if (fileType === "image") {
     return (
-      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                        className={`file-item mfp-img ${className}`}>
-        {
-          isLoaded ? <>
-              <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
-                   onError={handleImageOnError}
-                   ref={(e) => (refFiles[file.id] = e)} key={file.id}
-                   src={fileBlobs[file.id]}
-                   alt={file.filename ? file.filename : file.search}/>
-            </> :
-            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
-        }
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id} className={`file-item mfp-img ${className}`}>
+        {isLoaded ? (
+          <>
+            <img
+              className={"file"}
+              data-index={file.id}
+              data-attempt={0}
+              onLoad={handleImageOnLoad}
+              onError={handleImageOnError}
+              ref={(e) => (refFiles[file.id] = e)}
+              key={file.id}
+              src={fileBlobs[file.id]}
+              alt={file.filename ? file.filename : file.search}
+            />
+          </>
+        ) : (
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+        )}
       </StyledFileRender>
     );
   } else if (fileType === "pdf") {
     return (
-      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                        className={`file-item mfp-img ${className}`}>
-        {
-          isLoaded ? <>
-              <object className={`file file-pdf`} data={fileBlobs[file.id]} width={winSize.width * 0.9}
-                      height={winSize.height - 122} onLoad={handlePdfOnLoad}>
-                <embed src={fileBlobs[file.id]} width="600" height="400"/>
-              </object>
-            </> :
-            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
-        }
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id} className={`file-item mfp-img ${className}`}>
+        {isLoaded ? (
+          <>
+            <object className={"file file-pdf"} data={fileBlobs[file.id]} width={winSize.width * 0.9} height={winSize.height - 122} onLoad={handlePdfOnLoad}>
+              <embed src={fileBlobs[file.id]} width="600" height="400" />
+            </object>
+          </>
+        ) : (
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+        )}
       </StyledFileRender>
     );
   } else {
     return (
-      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
-                        className={`file-item mfp-img cannot-preview ${className}`}>
-        <Eye icon={"eye-off"}/>
+      <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id} className={`file-item mfp-img cannot-preview ${className}`}>
+        <Eye icon={"eye-off"} />
         <p>
           {file.search ? file.search : file.filename}
-          We can't preview this file type. <br/>
+          We can't preview this file type. <br />
           Try downloading the file to view it.
         </p>
         {/* <FileIcon ref={e => refFiles[index] = e}
                             key={index} style={style} iconLeft={`documents`}
                             onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon> */}
-          <button className="btn btn-primary" onClick={(e) => handleDownloadFile(e, file)}>
-            Download {file.search}
-          </button>
-        </StyledFileRender>
-      );
+        <button className="btn btn-primary" onClick={(e) => handleDownloadFile(e, file)}>
+          Download {file.search}
+        </button>
+      </StyledFileRender>
+    );
   }
 };
 
@@ -427,6 +454,10 @@ const FileViewer = (props) => {
   };
 
   const handleDownloadFile = (e, file) => {
+    console.log(file);
+    if (viewFiles.topic_id) {
+      dispatch(removeFileDownload({ file_id: file.file_id, topic_id: viewFiles.topic_id }));
+    }
     e.preventDefault();
     let handle = window.open(file.download_link, "_self");
     handle.blur();
@@ -447,16 +478,16 @@ const FileViewer = (props) => {
         files = viewFiles.files;
       }
       setFiles(files);
-      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
+      setActiveIndex(files.findIndex((f) => f.id === viewFiles.file_id));
     } else {
       let files = Object.values(companyFiles);
-      if (!Object.keys(viewFiles).some(k => ["channel_id", "workspace_id"].includes(k))) {
+      if (!Object.keys(viewFiles).some((k) => ["channel_id", "workspace_id"].includes(k))) {
         if (files.length) {
           setFiles(files);
-          setActiveIndex(files.findIndex(f => f.file_id === viewFiles.file_id));
+          setActiveIndex(files.findIndex((f) => f.file_id === viewFiles.file_id));
         } else {
           setFiles(viewFiles.files);
-          setActiveIndex(viewFiles.files.findIndex(f => f.file_id === viewFiles.file_id));
+          setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
         }
       }
     }
@@ -478,6 +509,8 @@ const FileViewer = (props) => {
             showPreviousFile();
             break;
           }
+          default:
+            return null;
         }
       };
 
@@ -499,11 +532,12 @@ const FileViewer = (props) => {
               <div className="d-flex justify-content-between align-items-start">
                 <FileDetails>
                   <FileNameContainer>
-                    <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link}
-                              download={file.filename}
-                              target={"_blank"}>
-                      <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.search}
+                    <FileName onClick={(e) => handleDownloadFile(e, file)}>
+                      <DownloadIcon icon={"download"} /> {file.filename ? file.filename : file.search}
                     </FileName>
+                    {/* <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename} target={"_blank"}>
+                      <DownloadIcon icon={"download"} /> {file.filename ? file.filename : file.search}
+                    </FileName> */}
                   </FileNameContainer>
                   {file.created_at && file.created_at.timestamp && (
                     <FileCreated>
@@ -511,21 +545,16 @@ const FileViewer = (props) => {
                     </FileCreated>
                   )}
                 </FileDetails>
-                <CloseButton onClick={(e) => handleClose(e)} title="Close (Esc)" type="button"
-                             className="mfp-close">×</CloseButton>
+                <CloseButton onClick={(e) => handleClose(e)} title="Close (Esc)" type="button" className="mfp-close">
+                  ×
+                </CloseButton>
               </div>
               <div className="mfp-figure">
                 <FileWrapper>
-                  {
-                    <FileRender
-                      files={files}
-                      file={files[activeIndex]}
-                      setFiles={setFiles}
-                    />
-                  }
+                  {<FileRender files={files} file={files[activeIndex]} setFiles={setFiles} viewFiles={viewFiles} />}
                   <figcaption>
                     <div className="mfp-bottom-bar">
-                      <div className="mfp-title"/>
+                      <div className="mfp-title" />
                       <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
                     </div>
                   </figcaption>
@@ -533,10 +562,8 @@ const FileViewer = (props) => {
               </div>
             </div>
             <div className="mfp-preloader">Loading...</div>
-            <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile()} title="Previous (Left arrow key)"
-                         type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close"/>
-            <ArrowButton show={files.length > 1} onClick={(e) => showNextFile()} title="Next (Right arrow key)"
-                         type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close"/>
+            <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile()} title="Previous (Left arrow key)" type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close" />
+            <ArrowButton show={files.length > 1} onClick={(e) => showNextFile()} title="Next (Right arrow key)" type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close" />
           </div>
         </div>
       </PreviewContainer>

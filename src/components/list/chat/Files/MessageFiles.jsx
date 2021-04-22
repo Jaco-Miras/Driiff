@@ -43,7 +43,7 @@ const FileShowDiv = styled.a`
 `;
 
 const MessageFiles = forwardRef((props, ref) => {
-  const { className = "", files, reply, type = "chat", ...otherProps } = props;
+  const { className = "", files, reply, type = "chat", topic_id = null, ...otherProps } = props;
 
   const dispatch = useDispatch();
 
@@ -55,11 +55,12 @@ const MessageFiles = forwardRef((props, ref) => {
   const handlePreviewFile = (e, file) => {
     e.stopPropagation();
 
-    if (type === "chat") {
+    if (type === "chat" && file.file_type !== "trashed") {
       let payload = {
         channel_id: reply.channel_id,
         file_id: file.file_id,
-        files: [file]
+        files: [file],
+        topic_id: topic_id,
       };
       dispatch(setViewFiles(payload));
     }

@@ -347,7 +347,7 @@ export function deleteWorkspaceFiles(payload) {
 export function postGoogleAttachments(payload) {
   return apiCall({
     method: "POST",
-    url: `/v2/google-attachments`,
+    url: "/v2/google-attachments",
     data: payload,
   });
 }
@@ -371,7 +371,7 @@ export function getWorkspaceGoogleFolderAttachments(payload) {
 export function getCompanyGoogleAttachmentsFile(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/company/google-attachments?attachment_type=FILE`,
+    url: "/v2/company/google-attachments?attachment_type=FILE",
     data: payload,
   });
 }
@@ -379,7 +379,7 @@ export function getCompanyGoogleAttachmentsFile(payload) {
 export function getCompanyGoogleAttachmentsFolder(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/company/google-attachments?attachment_type=FOLDER`,
+    url: "/v2/company/google-attachments?attachment_type=FOLDER",
     data: payload,
   });
 }
@@ -438,14 +438,14 @@ export function getCompanyTrashedFiles(payload) {
 export function postCompanyUploadFiles(payload) {
   return apiCall({
     method: "POST",
-    url: `/v2/company/upload-files`,
+    url: "/v2/company/upload-files",
     data: payload,
-    hasFile: true
+    hasFile: true,
   });
 }
 
 export function postCompanyUploadBulkFiles(payload) {
-  let url = `/v2/company/upload-bulk-files`;
+  let url = "/v2/company/upload-bulk-files";
   if (payload.folder_id) {
     url += `?folder_id=${payload.folder_id}`;
   }
@@ -460,23 +460,23 @@ export function deleteCompanyFiles(payload) {
   return apiCall({
     method: "DELETE",
     url: `/v2/company/files/${payload.file_id}`,
-    data: payload
+    data: payload,
   });
 }
 
 export function putCompanyRestoreFile(payload) {
   return apiCall({
     method: "PUT",
-    url: `/v2/company/restore-file`,
-    data: payload
+    url: "/v2/company/restore-file",
+    data: payload,
   });
 }
 
 export function putCompanyRestoreFolder(payload) {
   return apiCall({
     method: "PUT",
-    url: `/v2/company/restore-folder`,
-    data: payload
+    url: "/v2/company/restore-folder",
+    data: payload,
   });
 }
 
@@ -484,7 +484,7 @@ export function putCompanyFiles(payload) {
   return apiCall({
     method: "PUT",
     url: `/v2/company/files/${payload.id}`,
-    data: payload
+    data: payload,
   });
 }
 
@@ -492,7 +492,7 @@ export function putCompanyFileMove(payload) {
   return apiCall({
     method: "PUT",
     url: `/v2/company/file-move/?${objToUrlParams(payload)}`,
-    data: payload
+    data: payload,
   });
 }
 
@@ -500,7 +500,7 @@ export function putCompanyFolders(payload) {
   return apiCall({
     method: "PUT",
     url: `/v2/company/folders/${payload.id}`,
-    data: payload
+    data: payload,
   });
 }
 
@@ -548,8 +548,8 @@ export function getCompanyFolders(payload) {
 export function postCompanyFolders(payload) {
   return apiCall({
     method: "POST",
-    url: `/v2/company/folders`,
-    data: payload
+    url: "/v2/company/folders",
+    data: payload,
   });
 }
 
@@ -557,6 +557,14 @@ export function deleteCompanyFolders(payload) {
   return apiCall({
     method: "DELETE",
     url: `/v2/company/folders/${payload.id}`,
-    data: payload
+    data: payload,
+  });
+}
+
+export function removeFileDownload(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v1/download-file/${payload.file_id}`,
+    data: payload,
   });
 }
