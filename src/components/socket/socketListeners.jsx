@@ -69,6 +69,8 @@ import {
   incomingRemovedFolder,
   incomingRestoreFile,
   incomingRestoreFolder,
+  incomingRemoveFileAfterDownload,
+  incomingRemoveFileAutomatically,
 } from "../../redux/actions/fileActions";
 import {
   addToModals,
@@ -904,6 +906,8 @@ class SocketListeners extends Component {
               this.props.incomingPostListDisconnect(post);
               break;
             }
+            default:
+              return null;
           }
         });
       });
@@ -911,6 +915,18 @@ class SocketListeners extends Component {
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
       .listen(".remove-file-notification", (e) => {
         console.log(e, "remove file");
+        switch (e.SOCKET_TYPE) {
+          case "REMOVE_FILE": {
+            this.props.incomingRemoveFileAutomatically(e);
+            break;
+          }
+          case "REMOVE_FILE_ON_DOWNLOAD": {
+            this.props.incomingRemoveFileAfterDownload(e.files);
+            break;
+          }
+          default:
+            return null;
+        }
       })
       .listen(".workspace-team-channel", (e) => {
         console.log(e);
@@ -1807,6 +1823,8 @@ function mapDispatchToProps(dispatch) {
     getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
     incomingPostRequired: bindActionCreators(incomingPostRequired, dispatch),
     incomingTeamChannel: bindActionCreators(incomingTeamChannel, dispatch),
+    incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),
+    incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
   };
 }
 

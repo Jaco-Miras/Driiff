@@ -115,6 +115,7 @@ const FilePill = forwardRef((props, ref) => {
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleViewFile = (e) => {
+    if (file.type === "trashed") return;
     cbFilePreview(e, file);
   };
 
@@ -206,9 +207,20 @@ const FilePill = forwardRef((props, ref) => {
     }
   }, []);
 
+  const isFileRemoved = file.file_type === "trashed";
+
   return (
     <FilePillContainer onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchMove={touchMove} onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
-      {file.type.toLowerCase() === "image" ? (
+      {isFileRemoved ? (
+        <DocFile>
+          <div className="card app-file-list">
+            <div className="app-file-icon">{fileHandler.getFileIcon("trashed")}</div>
+            <div className="p-2 small">
+              <div>File automatically removed by owner request</div>
+            </div>
+          </div>
+        </DocFile>
+      ) : file.type.toLowerCase() === "image" ? (
         <>
           <ImgLoader className={imgSrc ? "d-none" : ""}>
             <ImgLoaderDiv className={"img-loader"} />

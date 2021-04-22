@@ -52,6 +52,7 @@ import {
   putFolder as putFolderService,
   putWorkspaceRestoreFile as putWorkspaceRestoreFileService,
   putWorkspaceRestoreFolder as putWorkspaceRestoreFolderService,
+  removeFileDownload as removeFileDownloadService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
   uploadWorkspaceFiles as uploadWorkspaceFilesService,
@@ -262,7 +263,13 @@ export function getWorkspaceGoogleFileAttachments(payload, callback) {
 }
 
 export function getWorkspaceGoogleFolderAttachments(payload, callback) {
-  return dispatchActionToReducer(getWorkspaceGoogleFolderAttachmentsService(payload), "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_START", "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS", "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_FAIL", callback);
+  return dispatchActionToReducer(
+    getWorkspaceGoogleFolderAttachmentsService(payload),
+    "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_START",
+    "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS",
+    "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_FAIL",
+    callback
+  );
 }
 
 export function incomingGoogleFile(payload, callback) {
@@ -459,4 +466,16 @@ export function incomingFileData(payload, callback) {
 
 export function incomingFileThumbnailData(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FILE_THUMBNAIL_DATA", payload, callback);
+}
+
+export function removeFileDownload(payload, callback) {
+  return dispatchActionToReducer(removeFileDownloadService(payload), "REMOVE_FILE_DOWNLOAD_START", "REMOVE_FILE_DOWNLOAD_SUCCESS", "REMOVE_FILE_DOWNLOAD_FAIL", callback);
+}
+
+export function incomingRemoveFileAfterDownload(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_FILE_AFTER_DOWNLOAD", payload, callback);
+}
+
+export function incomingRemoveFileAutomatically(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_FILE_AUTOMATICALLY", payload, callback);
 }
