@@ -1226,6 +1226,24 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleExternalInputChange = (e) => {
     setExternalInput(e);
+    const isExistingOption = externalUserOptions.some((o) => o.email === e);
+    const isSelectedOption = form.selectedExternals.some((o) => o.email === e);
+    if (!isExistingOption && !isSelectedOption && e !== "") {
+      if (EmailRegex.test(e)) {
+        const userExists = allUsers.some((uo) => uo.email === e);
+        if (!userExists) {
+          validateExternalEmail(true);
+        } else {
+          validateExternalEmail(false, false);
+        }
+      } else {
+        //invalid email
+        validateExternalEmail(false, true);
+      }
+    } else {
+      //reset to default
+      validateExternalEmail(null);
+    }
   };
 
   const filterOptions = (candidate, input) => {
