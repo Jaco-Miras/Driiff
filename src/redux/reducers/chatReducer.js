@@ -547,8 +547,9 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "RESET_TRANSLATED_BODY": {
-      let channels =  { ...state.channels};
+      let channels = { ...state.channels };
       console.log(channels);
+      return state;
     }
 
     case "INCOMING_CHAT_MESSAGE": {
