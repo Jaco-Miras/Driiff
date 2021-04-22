@@ -52,6 +52,7 @@ import {
   putFolder as putFolderService,
   putWorkspaceRestoreFile as putWorkspaceRestoreFileService,
   putWorkspaceRestoreFolder as putWorkspaceRestoreFolderService,
+  removeFileDownload as removeFileDownloadService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
   uploadWorkspaceFiles as uploadWorkspaceFilesService,
@@ -481,4 +482,16 @@ export function getClientPostFiles(payload, callback) {
 
 export function getPrivatePostFiles(payload, callback) {
   return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_PRIVATE_POST_FILES_START", "GET_PRIVATE_POST_FILES_SUCCESS", "GET_PRIVATE_POST_FILES_FAIL", callback);
+}
+
+export function removeFileDownload(payload, callback) {
+  return dispatchActionToReducer(removeFileDownloadService(payload), "REMOVE_FILE_DOWNLOAD_START", "REMOVE_FILE_DOWNLOAD_SUCCESS", "REMOVE_FILE_DOWNLOAD_FAIL", callback);
+}
+
+export function incomingRemoveFileAfterDownload(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_FILE_AFTER_DOWNLOAD", payload, callback);
+}
+
+export function incomingRemoveFileAutomatically(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_FILE_AUTOMATICALLY", payload, callback);
 }

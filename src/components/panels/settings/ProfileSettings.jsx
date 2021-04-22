@@ -117,6 +117,7 @@ const ProfileSettings = (props) => {
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
+    liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
   };
 
   // const notificationSoundOptions = [
@@ -451,7 +452,7 @@ const ProfileSettings = (props) => {
                       name="translate"
                       onChange={handleChatSwitchToggle}
                       data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
-                      label={<span>Talk in your own language (live translation)</span>}
+                      label={<span>{dictionary.liveTranslation}</span>}
                     />
                   </div>
                 </div>

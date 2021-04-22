@@ -127,6 +127,7 @@ const ChatMessageOptions = (props) => {
   };
   /* dictionary initiated in ChatContentPanel.jsx */
   const isInternalUser = replyData.user && users[replyData.user.id] && users[replyData.user.id].type === "internal";
+  const hasDeletedFile = replyData.files.some((f) => f.file_type === "trashed");
 
   return (
     <MoreOptions width={width} className={className} scrollRef={scrollEl}>
@@ -135,7 +136,7 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleQuoteReply}>{dictionary.quote}</div>}
       {isAuthor && <div onClick={handleRemoveReply}>{dictionary.remove}</div>}
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>}
-      {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
+      {!replyData.hasOwnProperty("huddle_log") && !hasDeletedFile && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={() => chatMessageActions.markImportant(replyData)}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.code && replyData.user.code.includes("huddle_bot") && replyData.body.includes("<div><p>Your Unpublished") && <div onClick={handleEditHuddle}>Edit huddle</div>}
       {replyData.body.startsWith("HUDDLE_SKIP::") && <div onClick={handleUnskip}>Unskip</div>}

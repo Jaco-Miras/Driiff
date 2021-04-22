@@ -15008,7 +15008,7 @@ body.form-membership .form-wrapper hr {
   -moz-box-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  height: 100%;
+  height: calc(100% - 50px);
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;

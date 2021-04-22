@@ -78,7 +78,9 @@ const useFileActions = (params = null) => {
 
   const getFileIcon = (mimeType = "") => {
     if (mimeType) {
-      if (mimeType.includes("image")) {
+      if (mimeType === "trashed") {
+        return <i class="fa fa-exclamation-triangle text-danger"></i>;
+      } else if (mimeType.includes("image")) {
         return <i className="fa fa-file-image-o text-instagram" />;
       } else if (mimeType.includes("audio")) {
         return <i className="fa fa-file-audio-o text-dark" />;

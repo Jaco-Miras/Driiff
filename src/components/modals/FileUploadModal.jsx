@@ -354,6 +354,7 @@ const FileUploadModal = (props) => {
 
   async function uploadFiles() {
     if (files.filter((f) => typeof f.id === "string").length) {
+      // new endpint
       let formData = new FormData();
       let payload = {
         user_id: user.id,
@@ -383,15 +384,24 @@ const FileUploadModal = (props) => {
         .catch((error) => {
           handleNetWorkError(error);
         });
+
+      // old endpoint
       // await Promise.all(
-      //   uploadBulkDocument(payload)
+      //   files
+      //     .filter((f) => {
+      //       return typeof f.id === "string";
+      //     })
+      //     .map((file) =>
+      //       uploadDocument({
+      //         user_id: user.id,
+      //         file: file.bodyFormData,
+      //         file_type: "private",
+      //         folder_id: null,
+      //         fileOption: fileOption,
+      //       })
+      //     )
       // ).then((result) => {
-      //   console.log(result)
-      //   console.log( files)
       //   setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
-      // })
-      //   .catch((error) => {
-      //   console.log(error)
       // });
     } else {
       setUploadedFiles(files);

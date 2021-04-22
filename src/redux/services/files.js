@@ -560,3 +560,11 @@ export function deleteCompanyFolders(payload) {
     data: payload,
   });
 }
+
+export function removeFileDownload(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v1/download-file/${payload.file_id}`,
+    data: payload,
+  });
+}

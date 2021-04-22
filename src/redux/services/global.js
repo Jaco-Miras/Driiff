@@ -62,6 +62,13 @@ export function uploadDocument(payload) {
   if (payload.channel_id) {
     url += `&channel_id=${payload.channel_id}`;
   }
+  if (payload.fileOption) {
+    if (payload.fileOption.value === "remove_on_download") {
+      url += "&remove_on_download=1";
+    } else {
+      url += "&remove_automatically=1";
+    }
+  }
   const payloadRequest = Object.assign(
     {
       method: "POST",
@@ -79,7 +86,7 @@ export function uploadBulkDocument(payload) {
     url += `&folder_id=${payload.folder_id}`;
   }
   if (payload.fileOption) {
-    if (payload.fileOption === "remove_on_download") {
+    if (payload.fileOption.value === "remove_on_download") {
       url += "&remove_on_download=1";
     } else {
       url += "&remove_automatically=1";
