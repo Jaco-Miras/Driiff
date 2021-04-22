@@ -505,15 +505,28 @@ export default function (state = INITIAL_STATE, action) {
           ...channel,
           is_hidden: false,
           replies: haveReference
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  r.id = action.data.id;
-                  return r;
-                } else {
-                  r.is_read = true;
-                  return r;
-                }
-              })
+            ? channel.replies
+                .map((r) => {
+                  if (r.id === action.data.reference_id) {
+                    return {
+                      ...r,
+                      id: action.data.id,
+                      created_at: action.data.created_at,
+                    };
+                  } else {
+                    return {
+                      ...r,
+                      is_read: true,
+                    };
+                  }
+                })
+                .sort((a, b) => {
+                  if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                    return a.id - b.id;
+                  } else {
+                    return a.created_at.timestamp - b.created_at.timestamp;
+                  }
+                })
             : [...channel.replies, action.data].sort((a, b) => {
                 if (a.created_at.timestamp - b.created_at.timestamp === 0) {
                   return a.id - b.id;
