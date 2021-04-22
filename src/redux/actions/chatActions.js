@@ -441,3 +441,7 @@ export function setSearchArchivedChannels(payload, callback) {
 export function setTranslatedBody(payload, callback) {
   return SimpleDispatchActionToReducer("SET_TRANSLATED_BODY", payload, callback);
 }
+
+export function resetTranslatedBody(payload, callback) {
+  return SimpleDispatchActionToReducer("RESET_TRANSLATED_BODY", payload, callback);
+}
