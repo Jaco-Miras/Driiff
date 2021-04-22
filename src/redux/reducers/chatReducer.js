@@ -1411,6 +1411,7 @@ export default function (state = INITIAL_STATE, action) {
         ];
         channel = {
           ...action.data.channel_detail,
+          icon_link: channels[action.data.channel_detail.id].icon_link,
           replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1448,6 +1449,7 @@ export default function (state = INITIAL_STATE, action) {
       if (channels.hasOwnProperty(action.data.id)) {
         channels[action.data.id] = {
           ...action.data,
+          icon_link: channels[action.data.id].icon_link,
           replies: channels[action.data.id].replies,
           hasMore: channels[action.data.id].hasMore,
           skip: channels[action.data.id].skip,
