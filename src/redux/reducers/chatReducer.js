@@ -493,6 +493,11 @@ export default function (state = INITIAL_STATE, action) {
             : state.channels,
       };
     }
+    case "RESET_TRANSLATED_BODY": {
+      let channels =  { ...state.channels};
+      console.log(channels);
+    }
+
     case "INCOMING_CHAT_MESSAGE": {
       let haveReference = false;
       let channel = null;

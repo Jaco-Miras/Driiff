@@ -74,11 +74,24 @@ const ReplyPreview = (props) => {
   let previewText = "";
   let lastReplyBody = "";
   if (channel.last_reply && settings.preview_message) {
+
+
+
     if (channel.last_reply.is_deleted) {
       lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
+
+      let lastReplyBodyHtml = channel.last_reply.body;
+
+      var div = document.createElement('div');
+      div.innerHTML = lastReplyBodyHtml;
+      var elements = div.getElementsByClassName('OriginalHtml');
+      while (elements[0])
+        elements[0].parentNode.removeChild(elements[0])
+
+      lastReplyBody = div.innerHTML;
       //strip gif to prevent refetching of gif
-      lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
+      lastReplyBody = quillHelper.parseEmoji(stripImgTag(lastReplyBody));
       lastReplyBody = renderToString(<LastReplyContent className="last-reply-content" dangerouslySetInnerHTML={{ __html: lastReplyBody }} />);
 
       //strip html tags and replace it with space
@@ -95,6 +108,7 @@ const ReplyPreview = (props) => {
     }
 
     previewText += lastReplyBody;
+
     const noText = previewText.replace(/\s/g, "");
 
     if (showPreviewIcon) {
@@ -115,7 +129,7 @@ const ReplyPreview = (props) => {
         }
         previewText = renderToString(<LastReplyName className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
-        previewText = renderToString(<LastReplyName className="last-reply-name">{channel.last_reply.user.first_name}:</LastReplyName>) + " " + previewText;
+        previewText = renderToString(<LastReplyName className="last-reply-name">{(channel.last_reply.user.first_name)??channel.last_reply.user.name}:</LastReplyName>) + " " + previewText;
       }
 
       previewText = previewText.replace("NEW_ACCOUNT_ACTIVATED", "New account activated");
