@@ -490,18 +490,21 @@ const CreateEditWorkspaceModal = (props) => {
       if (EmailRegex.test(inputValue)) {
         const userExists = allUsers.some((uo) => uo.email === inputValue);
         if (!userExists) {
-          validateExternalEmail(true);
+          // validateExternalEmail(true);
           return true;
         } else {
-          validateExternalEmail(false, false);
+          //validateExternalEmail(false, false);
+          return false;
         }
       } else {
         //invalid email
-        validateExternalEmail(false, true);
+        //validateExternalEmail(false, true);
+        return false;
       }
     } else {
       //reset to default
-      validateExternalEmail(null);
+      //validateExternalEmail(null);
+      return false;
     }
   };
 
