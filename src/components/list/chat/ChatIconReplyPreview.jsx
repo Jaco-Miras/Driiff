@@ -78,7 +78,7 @@ const ReplyPreview = (props) => {
 
 
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
 
       let lastReplyBodyHtml = channel.last_reply.body;
@@ -117,8 +117,11 @@ const ReplyPreview = (props) => {
 
     if (channel.last_reply.user) {
       if (channel.last_reply.body.includes("POST_CREATE::")) {
-        let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
-        previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+        let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
+        if (parsedData.trim() !== "") {
+          let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+          previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+        }
       }
       if (channel.last_reply.body.includes("ZAP_SUBMIT::")) {
         previewText = "System message update...";
@@ -138,9 +141,14 @@ const ReplyPreview = (props) => {
       //system message
     } else {
       previewText = "System message update...";
+
       if (channel.last_reply.body.includes("POST_CREATE::")) {
-        let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
-        previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+        // console.log(channel.last_reply.body, channel.last_reply);
+        let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
+        if (parsedData.trim() !== "") {
+          let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+          previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+        }
       }
     }
 

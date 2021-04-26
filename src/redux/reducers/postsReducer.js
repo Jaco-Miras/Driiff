@@ -1064,6 +1064,25 @@ export default (state = INITIAL_STATE, action) => {
         commentType: action.data,
       };
     }
+    case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              if (post.files.some((f) => f.file_id === action.data.file_id)) {
+                res[post.id] = { ...state.companyPosts.posts[post.id], files: state.companyPosts.posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
+              } else {
+                res[post.id] = { ...state.companyPosts.posts[post.id] };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
     default:
       return state;
   }
