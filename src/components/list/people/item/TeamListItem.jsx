@@ -59,8 +59,52 @@ const ShowMoreBtn = styled.div`
   }
 `;
 
+const StyledBadge = styled(Badge)`
+  .badge {
+    background: ${(props) => {
+      switch (props.role) {
+        case "APPROVER": {
+          return "#00CDAC";
+        }
+        case "CLIENT": {
+          return "#4DD091";
+        }
+        case "COMMUNICATION_LEAD": {
+          return "#00B0BA";
+        }
+        case "DEVELOPER": {
+          return "#0065A2";
+        }
+        case "DESIGNER": {
+          return "#FF60A8";
+        }
+        case "FREELANCER": {
+          return "#C05780";
+        }
+        case "SUPERVISOR": {
+          return "#FC6238";
+        }
+        case "TEAM_LEAD": {
+          return "#CFF800";
+        }
+        case "TECHNICAL_ADVISOR": {
+          return "#FFA23A";
+        }
+        case "TECHNICAL_LEAD": {
+          return "#6C88C4";
+        }
+        case "WATCHER": {
+          return "#FFEC59";
+        }
+        default:
+          return "#fb3";
+      }
+    }};
+  }
+`;
+
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef } = props;
+  const { className = "", member, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef, onAddRole = null } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -70,15 +114,6 @@ const TeamListItem = (props) => {
     if (member.has_accepted) {
       history.push(`/profile/${member.id}/${replaceChar(member.name)}`);
     }
-  };
-
-  const handleAddRole = (role) => {
-    let payload = {
-      topic_id: workspace_id,
-      user_id: member.id,
-      role,
-    };
-    actions.addRole(payload);
   };
 
   const handleRemoveRole = () => {
@@ -117,6 +152,49 @@ const TeamListItem = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const roleDisplay = () => {
+    switch (member.workspace_role) {
+      case "ADVISOR": {
+        return dictionary.roleAdvisor;
+      }
+      case "APPROVER": {
+        return dictionary.roleApprover;
+      }
+      case "CLIENT": {
+        return dictionary.roleClient;
+      }
+      case "COMMUNICATION_LEAD": {
+        return dictionary.roleCommunicationLead;
+      }
+      case "DEVELOPER": {
+        return dictionary.roleDeveloper;
+      }
+      case "DESIGNER": {
+        return dictionary.roleDesigner;
+      }
+      case "FREELANCER": {
+        return dictionary.roleFreelancer;
+      }
+      case "SUPERVISOR": {
+        return dictionary.roleSupervisor;
+      }
+      case "TEAM_LEAD": {
+        return dictionary.roleTeamLead;
+      }
+      case "TECHNICAL_ADVISOR": {
+        return dictionary.roleTechnicalAdvisor;
+      }
+      case "TECHNICAL_LEAD": {
+        return dictionary.roleTechnicalLead;
+      }
+      case "WATCHER": {
+        return dictionary.roleWatcher;
+      }
+      default:
+        return "";
+    }
+  };
+
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
@@ -142,7 +220,7 @@ const TeamListItem = (props) => {
       </div>
       <div className="ml-auto">
         {member.workspace_role && member.workspace_role !== "" && (
-          <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
+          <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
         )}
         {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
         {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
@@ -167,12 +245,33 @@ const TeamListItem = (props) => {
         </ShowMoreBtn>
       )}
       {!hideOptions && (
-        <MoreOptions moreButton="more-horizontal" scrollRef={parentRef}>
-          {member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTeamLead}</div>}
-          {member.workspace_role !== "TEAM_LEAD" && <div onClick={() => handleAddRole("team_lead")}>{dictionary.assignAsTeamLead}</div>}
-          {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>{dictionary.assignAsApprover}</div>}
-          {member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
-          <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
+        <MoreOptions moreButton="more-horizontal" width={250}>
+          {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
+          {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}
+          {member.workspace_role !== "APPROVER" && <div onClick={() => onAddRole(member, "approver")}>{dictionary.assignAsApprover}</div>}
+          {member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsApprover}</div>}
+          {member.workspace_role !== "CLIENT" && <div onClick={() => onAddRole(member, "client")}>{dictionary.assignAsClient}</div>}
+          {member.workspace_role === "CLIENT" && <div onClick={handleRemoveRole}>{dictionary.revokeAsClient}</div>}
+          {member.workspace_role !== "COMMUNICATION_LEAD" && <div onClick={() => onAddRole(member, "communication_lead")}>{dictionary.assignAsCommunicationLead}</div>}
+          {member.workspace_role === "COMMUNICATION_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsCommunicationLead}</div>}
+          {member.workspace_role !== "DESIGNER" && <div onClick={() => onAddRole(member, "designer")}>{dictionary.assignAsDesigner}</div>}
+          {member.workspace_role === "DESIGNER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsDesigner}</div>}
+          {member.workspace_role !== "DEVELOPER" && <div onClick={() => onAddRole(member, "developer")}>{dictionary.assignAsDeveloper}</div>}
+          {member.workspace_role === "DEVELOPER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsDeveloper}</div>}
+          {member.workspace_role !== "FREELANCER" && <div onClick={() => onAddRole(member, "freelancer")}>{dictionary.assignAsFreelancer}</div>}
+          {member.workspace_role === "FREELANCER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsFreelancer}</div>}
+          {member.workspace_role !== "SUPERVISOR" && <div onClick={() => onAddRole(member, "supervisor")}>{dictionary.assignAsSupervisor}</div>}
+          {member.workspace_role === "SUPERVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsSupervisor}</div>}
+          {member.workspace_role !== "TEAM_LEAD" && <div onClick={() => onAddRole(member, "team_lead")}>{dictionary.assignAsTeamLead}</div>}
+          {member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTeamLead}</div>}
+          {member.workspace_role !== "TECHNICAL_ADVISOR" && <div onClick={() => onAddRole(member, "technical_advisor")}>{dictionary.assignAsTechnicalAdvisor}</div>}
+          {member.workspace_role === "TECHNICAL_ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTechnicalAdvisor}</div>}
+          {member.workspace_role !== "TECHNICAL_LEAD" && <div onClick={() => onAddRole(member, "technical_lead")}>{dictionary.assignAsTechnicalLead}</div>}
+          {member.workspace_role === "TECHNICAL_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTechnicalLead}</div>}
+          {member.workspace_role !== "WATCHER" && <div onClick={() => onAddRole(member, "watcher")}>{dictionary.assignAsWatcher}</div>}
+          {member.workspace_role === "WATCHER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsWatcher}</div>}
+          {member.id === loggedUser.id && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.leave}</div>}
+          {member.id !== loggedUser.id && loggedUser.type === "internal" && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>}
           {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
         </MoreOptions>
       )}

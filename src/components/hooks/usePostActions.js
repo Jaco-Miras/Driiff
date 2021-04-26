@@ -224,11 +224,12 @@ const usePostActions = () => {
     (post, path = null) => {
       if (post.type === "draft_post") {
         let payload = {
-          type: "workspace_post_create_edit",
+          type: "post_modal",
           mode: "create",
           item: {
             draft: post,
           },
+          params: params,
         };
 
         dispatch(addToModals(payload));
@@ -244,7 +245,7 @@ const usePostActions = () => {
         }
       }
     },
-    [dispatch, history, location]
+    [dispatch, history, location, params]
   );
 
   const archivePost = useCallback(
@@ -537,13 +538,13 @@ const usePostActions = () => {
   );
 
   const showModal = useCallback(
-    (mode = "create", post = null, comment = null) => {
+    (mode = "create", post = null, comment = null, rewardRef = null) => {
       let payload = {};
 
       switch (mode) {
         case "create_company": {
           payload = {
-            type: "company_post_create_edit",
+            type: "post_modal",
             mode: "create",
             item: {
               post: post,
@@ -556,7 +557,7 @@ const usePostActions = () => {
         }
         case "edit_company": {
           payload = {
-            type: "company_post_create_edit",
+            type: "post_modal",
             mode: "edit",
             item: {
               post: post,
@@ -569,7 +570,7 @@ const usePostActions = () => {
         }
         case "edit": {
           payload = {
-            type: "workspace_post_create_edit",
+            type: "post_modal",
             mode: mode,
             item: {
               post: post,
@@ -577,6 +578,7 @@ const usePostActions = () => {
             action: {
               update: update,
             },
+            params: params,
           };
           break;
         }
@@ -594,6 +596,9 @@ const usePostActions = () => {
             },
             actions: {
               onSubmit: () => {
+                if (rewardRef && rewardRef.current) {
+                  rewardRef.current.rewardMe();
+                }
                 if (comment) {
                   let cpayload = {
                     post_id: post.id,
@@ -654,36 +659,38 @@ const usePostActions = () => {
                 } else {
                   const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
                   const allUsersAgreed = post.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === post.users_approval.length - 1;
-                  approve({ post_id: post.id, approved: 1 }, (err, res) => {
-                    if (err) return;
-                    console.log(isLastUserToAnswer, allUsersAgreed, post);
-                    if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
-                      generateSystemMessage(
-                        post,
-                        post.users_approval.map((ua) => ua.id),
-                        []
-                      );
-                    }
-                    if (post.users_approval.length === 1) {
-                      let cpayload = {
-                        post_id: post.id,
-                        body: "<div></div>",
-                        mention_ids: [],
-                        file_ids: [],
-                        post_file_ids: [],
-                        personalized_for_id: null,
-                        parent_id: null,
-                        approval_user_ids: [],
-                        has_accepted: 1,
-                        code_data: {
-                          push_title: `${user.name} replied in ${post.title}`,
+                  setTimeout(() => {
+                    approve({ post_id: post.id, approved: 1 }, (err, res) => {
+                      if (err) return;
+                      console.log(isLastUserToAnswer, allUsersAgreed, post);
+                      if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
+                        generateSystemMessage(
+                          post,
+                          post.users_approval.map((ua) => ua.id),
+                          []
+                        );
+                      }
+                      if (post.users_approval.length === 1) {
+                        let cpayload = {
                           post_id: post.id,
-                          post_title: post.title,
-                        },
-                      };
-                      dispatch(postComment(cpayload));
-                    }
-                  });
+                          body: "<div></div>",
+                          mention_ids: [],
+                          file_ids: [],
+                          post_file_ids: [],
+                          personalized_for_id: null,
+                          parent_id: null,
+                          approval_user_ids: [],
+                          has_accepted: 1,
+                          code_data: {
+                            push_title: `${user.name} replied in ${post.title}`,
+                            post_id: post.id,
+                            post_title: post.title,
+                          },
+                        };
+                        dispatch(postComment(cpayload));
+                      }
+                    });
+                  }, 1000);
                 }
               },
             },
@@ -719,7 +726,7 @@ const usePostActions = () => {
         }
         default: {
           payload = {
-            type: "workspace_post_create_edit",
+            type: "post_modal",
             mode: mode,
             item: {
               post: post,
@@ -727,13 +734,14 @@ const usePostActions = () => {
             action: {
               create: create,
             },
+            params: params,
           };
         }
       }
 
       dispatch(addToModals(payload));
     },
-    [dispatch]
+    [dispatch, params]
   );
 
   const create = useCallback(

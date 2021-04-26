@@ -442,35 +442,37 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    // case "GET_DRAFTS_SUCCESS": {
-    //   let drafts = action.data.map((d) => {
-    //     if (d.data.type === "draft_post") {
-    //       return Object.assign({}, d, {
-    //         ...d.data,
-    //         post_id: d.data.id,
-    //         draft_id: d.id,
-    //         updated_at: d.data.created_at,
-    //       });
-    //     } else {
-    //       return d;
-    //     }
-    //   });
-    //   let postDrafts = [];
-    //   if (drafts.length) {
-    //     postDrafts = convertArrayToObject(drafts, "post_id");
-    //   }
-    //   return {
-    //     ...state,
-    //     drafts: drafts,
-    //     companyPosts: {
-    //       ...state.companyPosts,
-    //       posts: {
-    //         ...state.companyPosts.posts,
-    //         ...postDrafts,
-    //       },
-    //     },
-    //   };
-    // }
+    case "GET_DRAFTS_SUCCESS": {
+      let drafts = action.data
+        .filter((d) => d.data.type === "draft_post")
+        .map((d) => {
+          return Object.assign({}, d, {
+            ...d.data,
+            post_id: d.data.id,
+            draft_id: d.id,
+            updated_at: d.data.created_at,
+            is_unread: 0,
+            unread_count: 0,
+            is_close: false,
+            approval_label: null,
+          });
+        });
+      let postDrafts = [];
+      if (drafts.length) {
+        postDrafts = convertArrayToObject(drafts, "post_id");
+      }
+      return {
+        ...state,
+        drafts: drafts,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...postDrafts,
+          },
+        },
+      };
+    }
     case "DELETE_DRAFT": {
       if (action.data.draft_type === "draft_post") {
         const drafts = [...state.drafts.filter((d) => d.draft_id !== action.data.draft_id)];
@@ -485,48 +487,56 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    // case "SAVE_DRAFT_SUCCESS": {
-    //   if (action.data.data.draft_type === "draft_post") {
-    //     const draft = {
-    //       ...action.data,
-    //       ...action.data.data,
-    //       id: action.data.data.id,
-    //       post_id: action.data.data.id,
-    //       draft_id: action.data.id,
-    //     };
-    //     return {
-    //       ...state,
-    //       drafts: [...state.drafts, draft],
-    //       companyPosts: {
-    //         ...state.companyPosts,
-    //         posts: {
-    //           ...state.companyPosts.posts,
-    //           [draft.id]: draft,
-    //         },
-    //       },
-    //     };
-    //   } else {
-    //     return state;
-    //   }
-    // }
-    // case "UPDATE_DRAFT_SUCCESS": {
-    //   if (action.data.data.type === "draft_post") {
-    //     const companyPosts = { ...state.companyPosts };
-    //     companyPosts.posts[action.data.data.id] = {
-    //       ...companyPosts.posts[action.data.data.post_id],
-    //       ...action.data.data,
-    //       id: action.data.data.post_id,
-    //       post_id: action.data.data.post_id,
-    //       draft_id: action.data.id,
-    //     };
-    //     return {
-    //       ...state,
-    //       companyPosts: companyPosts,
-    //     };
-    //   } else {
-    //     return state;
-    //   }
-    // }
+    case "SAVE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "draft_post") {
+        const draft = {
+          ...action.data,
+          ...action.data.data,
+          id: action.data.data.id,
+          post_id: action.data.data.id,
+          draft_id: action.data.id,
+          is_unread: 0,
+          unread_count: 0,
+          is_close: false,
+          approval_label: null,
+        };
+        return {
+          ...state,
+          drafts: [...state.drafts, draft],
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [draft.id]: draft,
+            },
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "UPDATE_DRAFT_SUCCESS": {
+      if (action.data.data.type === "draft_post") {
+        const companyPosts = { ...state.companyPosts };
+        companyPosts.posts[action.data.data.id] = {
+          ...companyPosts.posts[action.data.data.post_id],
+          ...action.data.data,
+          id: action.data.data.post_id,
+          post_id: action.data.data.post_id,
+          draft_id: action.data.id,
+          is_unread: 0,
+          unread_count: 0,
+          is_close: false,
+          approval_label: null,
+        };
+        return {
+          ...state,
+          companyPosts: companyPosts,
+        };
+      } else {
+        return state;
+      }
+    }
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,

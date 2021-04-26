@@ -8,7 +8,8 @@ import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
-import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
+//import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
+import { useIdleTimer } from "react-idle-timer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -25,11 +26,17 @@ const ChatMessagesPlaceholder = styled.div`
 const ChatContentPanel = (props) => {
   const { className = "", isWorkspace = false } = props;
 
+  const { isIdle } = useIdleTimer({ timeout: 1000 * 60 });
+
   const dispatch = useDispatch();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
+  const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const teamChannelId = useSelector((state) => state.workspaces.isOnClientChat);
   //const bottomRef = useRef();
@@ -171,12 +178,27 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
-      {selectedChannel !== null ? (
+      {/* {selectedChannel !== null ? (
         virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} />
+          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
         ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} />
+          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} translate={translate} language={language}/>
         )
+      ) : (
+        <ChatMessagesPlaceholder />
+      )} */}
+      {selectedChannel !== null ? (
+        <ChatMessages
+          selectedChannel={selectedChannel}
+          chatMessageActions={chatMessageActions}
+          timeFormat={timeFormat}
+          dictionary={dictionary}
+          unreadCount={unreadCount}
+          teamChannelId={teamChannelId}
+          isIdle={isIdle}
+          translate={translate}
+          language={language}
+        />
       ) : (
         <ChatMessagesPlaceholder />
       )}

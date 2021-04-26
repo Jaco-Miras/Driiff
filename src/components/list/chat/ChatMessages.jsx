@@ -636,7 +636,7 @@ class ChatMessages extends React.PureComponent {
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
             }
           } else if (this.props.isLastChatVisible) {
-            if (this.props.isBrowserActive) {
+            if (!this.props.isIdle && this.props.isBrowserActive && document.hasFocus()) {
               if (selectedChannel.is_read) {
                 this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
               }
@@ -650,15 +650,10 @@ class ChatMessages extends React.PureComponent {
       }
     }
 
-    if (this.props.unreadCount > 0 && this.props.isLastChatVisible) {
+    if (this.props.unreadCount > 0 && this.props.isLastChatVisible && !this.props.isIdle && this.props.isBrowserActive && document.hasFocus()) {
       //need clarification if need to trigger if channel is unread
       this.handleReadChannel();
     }
-
-    // intersectionRatio not working propperly
-    // const observer = new IntersectionObserver(([e]) => e.target.toggleAttribute("stuck", e.intersectionRatio < 1), { threshold: [1], root: null, rootMargin: "20px" });
-
-    // document.querySelectorAll(".timestamp-container").forEach((element) => observer.observe(element));
   }
 
   handleResendMessage = (payload) => {
@@ -946,6 +941,8 @@ class ChatMessages extends React.PureComponent {
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
+                                      translate={this.props.translate} 
+                                      language={this.props.language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {/* <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
@@ -1085,7 +1082,7 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
   const {
-    global: { isBrowserActive, recipients },
+    global: { recipients, isIdle, isBrowserActive },
     session: { user },
     chat: { historicalPositions, isLastChatVisible },
     users: { users },
@@ -1094,11 +1091,12 @@ function mapStateToProps(state) {
   return {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
-    isBrowserActive,
     historicalPositions,
     recipients,
     isLastChatVisible,
     users,
+    isIdle,
+    isBrowserActive,
   };
 }
 

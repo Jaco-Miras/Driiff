@@ -503,13 +503,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //     }
   // };
 
-  const handleAddMentionedUsers = (users) => {
+  const handleAddMentionedUsers = (mentions) => {
     //const userIds = users.map((u) => u.id);
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
 
     const newRecipients = userRecipients.filter((r) => {
-      return users.some((data) => data.id === r.id);
+      return mentions.some((m) => m.id === r.id);
     });
     let payload = {
       post_id: post.id,
@@ -517,13 +517,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
       recipients: newRecipients,
     };
 
-    console.log(users, payload, ignoredMentionedUserIds);
+    console.log(mentions, payload, ignoredMentionedUserIds);
     const postRecipientIds = post.recipients.map((pr) => pr.id);
     setMentionUsersPayload(payload);
 
     //const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
     //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id), ...ingoredExternalIds]);
-    setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+    setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...mentions.map((u) => u.id)]);
 
     setMentionedUserIds([]);
   };

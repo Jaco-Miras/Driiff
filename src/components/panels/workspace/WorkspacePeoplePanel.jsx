@@ -104,6 +104,18 @@ const WorkspacePeoplePanel = (props) => {
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     peopleManage: _t("PEOPLE.MANAGE", "Manage People"),
+    roleAdvisor: _t("ROLE.ADVISOR", "Advisor"),
+    roleApprover: _t("ROLE.APPROVER", "Approver"),
+    roleClient: _t("ROLE.CLIENT", "Client"),
+    roleCommunicationLead: _t("ROLE.COMMUNICATION_LEAD", "Communication lead"),
+    roleDesigner: _t("ROLE.DESIGNER", "Designer"),
+    roleDeveloper: _t("ROLE.DEVELOPER", "Developer"),
+    roleFreelancer: _t("ROLE.FREELANCER", "Freelancer"),
+    roleSupervisor: _t("ROLE.SUPERVISOR", "Supervisor"),
+    roleTeamLead: _t("ROLE.TEAM_LEAD", "Team lead"),
+    roleTechnicalAdvisor: _t("ROLE.TECHNICAL_ADVISOR", "Technical advisor"),
+    roleTechnicalLead: _t("ROLE.TECHNICAL_LEAD", "Technical lead"),
+    roleWatcher: _t("ROLE.WATCHER", "Watcher"),
   };
 
   useFocusInput(refs.search.current);
@@ -124,7 +136,7 @@ const WorkspacePeoplePanel = (props) => {
           </div>
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} />;
+              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} showWorkspaceRole={true} />;
             })}
           </div>
         </div>

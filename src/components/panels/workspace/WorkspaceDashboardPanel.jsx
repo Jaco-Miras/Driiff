@@ -6,6 +6,7 @@ import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboar
 
 const Wrapper = styled.div`
   overflow: auto !important;
+  min-height: calc(100vh - 100px);
   &::-webkit-scrollbar {
     display: none;
   }
@@ -51,12 +52,8 @@ const WorkspaceDashboardPanel = (props) => {
     isRemoved: _t("TIMELINE.IS_REMOVED", "is removed"),
     createdThePost: _t("TIMELINE.CREATED_POST", "created the post"),
     updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
-    revokeAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Revoke as team lead"),
-    revokeAsApprover: _t("TEAM.REVOKE_APPROVER", "Revoke as approver"),
-    assignAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Assign as team lead"),
-    assignAsApprover: _t("TEAM.REVOKE_APPROVER", "Assign as approver"),
     remove: _t("TEAM.REMOVE", "Remove"),
-    leave: _t("TEAM.REMOVE", "Leave"),
+    leave: _t("TEAM.LEAVE", "Leave"),
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     archived: _t("TIMELINE.ARCHIVED", "archived"),
     unarchived: _t("TIMELINE.UNARCHIVED", "unarchived"),
@@ -67,6 +64,42 @@ const WorkspaceDashboardPanel = (props) => {
     resendInvite: _t("MODAL.RESEND_INVITE", "Resend invite"),
     resendInviteConfirmation: _t("MODAL.RESEND_INVITE_CONFIRMATION", "Are you sure you want to resend invite to this email:"),
     invitationSent: _t("TOASTER.INVITE_SENT", "Invitation sent"),
+    assignAsAdvisor: _t("TEAM.ASSIGN_ADVISOR", "Assign as advisor"),
+    assignAsApprover: _t("TEAM.ASSIGN_APPROVER", "Assign as approver"),
+    assignAsClient: _t("TEAM.ASSIGN_CLIENT", "Assign as client"),
+    assignAsCommunicationLead: _t("TEAM.ASSIGN_COMMUNICATION_LEAD", "Assign as communication lead"),
+    assignAsDesigner: _t("TEAM.ASSIGN_DESIGNER", "Assign as designer"),
+    assignAsDeveloper: _t("TEAM.ASSIGN_DEVELOPER", "Assign as developer"),
+    assignAsFreelancer: _t("TEAM.ASSIGN_FREELANCER", "Assign as freelancer"),
+    assignAsSupervisor: _t("TEAM.ASSIGN_SUPERVISOR", "Assign as supervisor"),
+    assignAsTeamLead: _t("TEAM.ASSIGN_TEAM_LEAD", "Assign as team lead"),
+    assignAsTechnicalAdvisor: _t("TEAM.ASSIGN_TECHNICAL_ADVISOR", "Assign as technical advisor"),
+    assignAsTechnicalLead: _t("TEAM.ASSIGN_TECHNICAL_LEAD", "Assign as technical lead"),
+    assignAsWatcher: _t("TEAM.ASSIGN_WATCHER", "Assign as watcher"),
+    revokeAsAdvisor: _t("TEAM.REVOKE_ADVISOR", "Revoke as advisor"),
+    revokeAsApprover: _t("TEAM.REVOKE_APPROVER", "Revoke as approver"),
+    revokeAsClient: _t("TEAM.REVOKE_CLIENT", "Revoke as client"),
+    revokeAsCommunicationLead: _t("TEAM.REVOKE_COMMUNICATION_LEAD", "Revoke as communication lead"),
+    revokeAsDesigner: _t("TEAM.REVOKE_DESIGNER", "Revoke as designer"),
+    revokeAsDeveloper: _t("TEAM.REVOKE_DEVELOPER", "Revoke as developer"),
+    revokeAsFreelancer: _t("TEAM.REVOKE_FREELANCER", "Revoke as freelancer"),
+    revokeAsSupervisor: _t("TEAM.REVOKE_SUPERVISOR", "Revoke as supervisor"),
+    revokeAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Revoke as team lead"),
+    revokeAsTechnicalAdvisor: _t("TEAM.REVOKE_TECHNICAL_ADVISOR", "Revoke as technical advisor"),
+    revokeAsTechnicalLead: _t("TEAM.REVOKE_TECHNICAL_LEAD", "Revoke as technical lead"),
+    revokeAsWatcher: _t("TEAM.REVOKE_WATCHER", "Revoke as watcher"),
+    roleAdvisor: _t("ROLE.ADVISOR", "Advisor"),
+    roleApprover: _t("ROLE.APPROVER", "Approver"),
+    roleClient: _t("ROLE.CLIENT", "Client"),
+    roleCommunicationLead: _t("ROLE.COMMUNICATION_LEAD", "Communication lead"),
+    roleDesigner: _t("ROLE.DESIGNER", "Designer"),
+    roleDeveloper: _t("ROLE.DEVELOPER", "Developer"),
+    roleFreelancer: _t("ROLE.FREELANCER", "Freelancer"),
+    roleSupervisor: _t("ROLE.SUPERVISOR", "Supervisor"),
+    roleTeamLead: _t("ROLE.TEAM_LEAD", "Team lead"),
+    roleTechnicalAdvisor: _t("ROLE.TECHNICAL_ADVISOR", "Technical advisor"),
+    roleTechnicalLead: _t("ROLE.TECHNICAL_LEAD", "Technical lead"),
+    roleWatcher: _t("ROLE.WATCHER", "Watcher"),
   };
 
   let disableOptions = false;

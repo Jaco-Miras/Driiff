@@ -403,3 +403,11 @@ export function addChannels(payload, callback) {
 export function searchChannels(payload, callback) {
   return dispatchActionToReducer(getChannelsService(payload), "SEARCH_CHANNELS_START", "SEARCH_CHANNELS_SUCCESS", "SEARCH_CHANNELS_FAIL", callback);
 }
+
+export function setSearchArchivedChannels(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SEARCH_ARCHIVED_CHANNELS", payload, callback);
+}
+
+export function setTranslatedBody(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_TRANSLATED_BODY", payload, callback);
+}

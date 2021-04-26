@@ -35,6 +35,7 @@ const INITIAL_STATE = {
     fetching: false,
     hasMore: false,
   },
+  searchArchivedChannels: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -367,6 +368,7 @@ export default function (state = INITIAL_STATE, action) {
             ...r,
             is_read: true,
             channel_id: action.data.channel_id,
+            translated_body: null,
             //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
           };
         }),
@@ -464,6 +466,33 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
+    case "SET_TRANSLATED_BODY": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          is_hidden: false,
+          last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? action.data : channel.last_reply,
+          replies: channel.replies.map((r) => {
+            if (r.id === action.data.id) {
+              return action.data;
+            } else return r;
+          }),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+      };
+    }
     case "INCOMING_CHAT_MESSAGE": {
       let haveReference = false;
       let channel = null;
@@ -476,15 +505,29 @@ export default function (state = INITIAL_STATE, action) {
           ...channel,
           is_hidden: false,
           replies: haveReference
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  r.id = action.data.id;
-                  return r;
-                } else {
-                  r.is_read = true;
-                  return r;
-                }
-              })
+            ? channel.replies
+                .map((r) => {
+                  if (r.id === action.data.reference_id) {
+                    return {
+                      ...r,
+                      id: action.data.id,
+                      created_at: action.data.created_at,
+                      updated_at: action.data.created_at,
+                    };
+                  } else {
+                    return {
+                      ...r,
+                      is_read: true,
+                    };
+                  }
+                })
+                .sort((a, b) => {
+                  if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                    return a.id - b.id;
+                  } else {
+                    return a.created_at.timestamp - b.created_at.timestamp;
+                  }
+                })
             : [...channel.replies, action.data].sort((a, b) => {
                 if (a.created_at.timestamp - b.created_at.timestamp === 0) {
                   return a.id - b.id;
@@ -1420,6 +1463,7 @@ export default function (state = INITIAL_STATE, action) {
         ];
         channel = {
           ...action.data.channel_detail,
+          icon_link: channels[action.data.channel_detail.id].icon_link,
           replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1457,6 +1501,7 @@ export default function (state = INITIAL_STATE, action) {
       if (channels.hasOwnProperty(action.data.id)) {
         channels[action.data.id] = {
           ...action.data,
+          icon_link: channels[action.data.id].icon_link,
           replies: channels[action.data.id].replies,
           hasMore: channels[action.data.id].hasMore,
           skip: channels[action.data.id].skip,
@@ -2057,6 +2102,12 @@ export default function (state = INITIAL_STATE, action) {
                 [action.data.channel_id]: channel,
               }
             : state.channels,
+      };
+    }
+    case "SET_SEARCH_ARCHIVED_CHANNELS": {
+      return {
+        ...state,
+        searchArchivedChannels: action.data,
       };
     }
     default:

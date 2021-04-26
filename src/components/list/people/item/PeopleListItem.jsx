@@ -38,8 +38,66 @@ const Wrapper = styled.div`
   }
 `;
 
+const StyledBadge = styled(Badge)`
+  .badge {
+    background: ${(props) => {
+      switch (props.role) {
+        case "APPROVER": {
+          return "#00CDAC";
+        }
+        case "CLIENT": {
+          return "#4DD091";
+        }
+        case "COMMUNICATION_LEAD": {
+          return "#00B0BA";
+        }
+        case "DEVELOPER": {
+          return "#0065A2";
+        }
+        case "DESIGNER": {
+          return "#FF60A8";
+        }
+        case "FREELANCER": {
+          return "#C05780";
+        }
+        case "SUPERVISOR": {
+          return "#FC6238";
+        }
+        case "TEAM_LEAD": {
+          return "#CFF800";
+        }
+        case "TECHNICAL_ADVISOR": {
+          return "#FFA23A";
+        }
+        case "TECHNICAL_LEAD": {
+          return "#6C88C4";
+        }
+        case "WATCHER": {
+          return "#FFEC59";
+        }
+        default:
+          return "#fb3";
+      }
+    }};
+  }
+`;
+
 const PeopleListItem = (props) => {
-  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary, showOptions = false, onUpdateRole = null, roles, onArchiveUser = null, onActivateUser = null, showInactive = false } = props;
+  const {
+    className = "",
+    loggedUser,
+    onNameClick = null,
+    onChatClick = null,
+    user,
+    dictionary,
+    showOptions = false,
+    onUpdateRole = null,
+    roles,
+    onArchiveUser = null,
+    onActivateUser = null,
+    showInactive = false,
+    showWorkspaceRole = false,
+  } = props;
 
   const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
 
@@ -100,6 +158,49 @@ const PeopleListItem = (props) => {
     onActivateUser(user);
   };
 
+  const roleDisplay = () => {
+    switch (user.workspace_role) {
+      case "ADVISOR": {
+        return dictionary.roleAdvisor;
+      }
+      case "APPROVER": {
+        return dictionary.roleApprover;
+      }
+      case "CLIENT": {
+        return dictionary.roleClient;
+      }
+      case "COMMUNICATION_LEAD": {
+        return dictionary.roleCommunicationLead;
+      }
+      case "DEVELOPER": {
+        return dictionary.roleDeveloper;
+      }
+      case "DESIGNER": {
+        return dictionary.roleDesigner;
+      }
+      case "FREELANCER": {
+        return dictionary.roleFreelancer;
+      }
+      case "SUPERVISOR": {
+        return dictionary.roleSupervisor;
+      }
+      case "TEAM_LEAD": {
+        return dictionary.roleTeamLead;
+      }
+      case "TECHNICAL_ADVISOR": {
+        return dictionary.roleTechnicalAdvisor;
+      }
+      case "TECHNICAL_LEAD": {
+        return dictionary.roleTechnicalLead;
+      }
+      case "WATCHER": {
+        return dictionary.roleWatcher;
+      }
+      default:
+        return "";
+    }
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
       <div className="col-12">
@@ -133,6 +234,9 @@ const PeopleListItem = (props) => {
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
+                        {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
+                          <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
+                        )}
                       </span>
                     </h6>
                   )}

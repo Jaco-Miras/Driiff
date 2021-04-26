@@ -637,70 +637,80 @@ export default (state = INITIAL_STATE, action) => {
         search: updatedSearch,
       };
     }
-    // case "GET_DRAFTS_SUCCESS": {
-    //   return {
-    //     ...state,
-    //     drafts: action.data.map((d) => {
-    //       if (d.data.type === "draft_post") {
-    //         return Object.assign({}, d, {
-    //           ...d.data,
-    //           draft_id: d.id,
-    //           post_id: d.data.id,
-    //           updated_at: d.data.created_at,
-    //         });
-    //       } else {
-    //         return d;
-    //       }
-    //     }),
-    //   };
-    // }
-    // case "SAVE_DRAFT_SUCCESS": {
-    //   if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined") {
-    //     const draft = {
-    //       ...action.data,
-    //       ...action.data.data,
-    //       id: action.data.data.id,
-    //       post_id: action.data.data.id,
-    //       draft_id: action.data.id,
-    //     };
-    //     return {
-    //       ...state,
-    //       drafts: [...state.drafts, draft],
-    //       workspacePosts: {
-    //         ...state.workspacePosts,
-    //         [action.data.data.topic_id]: {
-    //           ...state.workspacePosts[action.data.data.topic_id],
-    //           posts: {
-    //             ...state.workspacePosts[action.data.data.topic_id].posts,
-    //             [draft.id]: draft,
-    //           },
-    //         },
-    //       },
-    //     };
-    //   } else {
-    //     return state;
-    //   }
-    // }
-    // case "UPDATE_DRAFT_SUCCESS": {
-    //   if (action.data.data.draft_type === "draft_post" && typeof action.data.data.topic_id !== "undefined" && typeof state.workspacePosts[action.data.data.topic_id] !== "undefined") {
-    //     const workspacePosts = { ...state.workspacePosts };
-    //     workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
-    //       ...workspacePosts[action.data.data.topic_id].posts[action.data.data.post_id],
-    //       ...action.data.data,
-    //       id: action.data.data.post_id,
-    //       post_id: action.data.data.post_id,
-    //       draft_id: action.data.id,
-    //     };
-    //     return {
-    //       ...state,
-    //       workspacePosts: workspacePosts,
-    //     };
-    //   } else {
-    //     return state;
-    //   }
-    // }
+    case "GET_DRAFTS_SUCCESS": {
+      return {
+        ...state,
+        drafts: action.data
+          .filter((d) => d.data.type === "draft_post")
+          .map((d) => {
+            return Object.assign({}, d, {
+              ...d.data,
+              draft_id: d.id,
+              post_id: d.data.id,
+              updated_at: d.data.created_at,
+              is_unread: 0,
+              unread_count: 0,
+              is_close: false,
+              post_approval_label: null,
+            });
+          }),
+      };
+    }
+    case "SAVE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "draft_post" && action.data.data.topic_id) {
+        const draft = {
+          ...action.data,
+          ...action.data.data,
+          id: action.data.data.id,
+          post_id: action.data.data.id,
+          draft_id: action.data.id,
+          is_unread: 0,
+          unread_count: 0,
+          is_close: false,
+          post_approval_label: null,
+        };
+        return {
+          ...state,
+          drafts: [...state.drafts, draft],
+          workspacePosts: {
+            ...state.workspacePosts,
+            [action.data.data.topic_id]: {
+              ...state.workspacePosts[action.data.data.topic_id],
+              posts: {
+                ...state.workspacePosts[action.data.data.topic_id].posts,
+                [draft.id]: draft,
+              },
+            },
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "UPDATE_DRAFT_SUCCESS": {
+      if (action.data.data.draft_type === "draft_post" && action.data.data.topic_id && state.workspacePosts[action.data.data.topic_id]) {
+        const workspacePosts = { ...state.workspacePosts };
+        workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
+          ...workspacePosts[action.data.data.topic_id].posts[action.data.data.post_id],
+          ...action.data.data,
+          id: action.data.data.post_id,
+          post_id: action.data.data.post_id,
+          draft_id: action.data.id,
+          is_unread: 0,
+          unread_count: 0,
+          is_close: false,
+          post_approval_label: null,
+        };
+        return {
+          ...state,
+          workspacePosts: workspacePosts,
+        };
+      } else {
+        return state;
+      }
+    }
     case "DELETE_DRAFT": {
-      if (action.data.draft_type === "draft_post" && action.data.topic_id && typeof state.workspacePosts[action.data.topic_id] !== "undefined") {
+      if (action.data.draft_type === "draft_post" && action.data.topic_id && state.workspacePosts[action.data.topic_id]) {
         const drafts = [...state.drafts.filter((d) => d.draft_id !== action.data.draft_id)];
 
         let posts = { ...state.workspacePosts[action.data.topic_id].posts };
@@ -1623,7 +1633,6 @@ export default (state = INITIAL_STATE, action) => {
             .reduce((obj, workspace) => {
               return { ...obj, ...workspace };
             }, {}),
-          flipper: !state.workspacePosts.flipper,
         },
       };
     }
@@ -1775,7 +1784,8 @@ export default (state = INITIAL_STATE, action) => {
         },
         activeTopic: {
           ...state.activeTopic,
-          ...(state.workspacePosts.hasOwnProperty(state.activeTopic.id) &&
+          ...(state.activeTopic &&
+            state.workspacePosts.hasOwnProperty(state.activeTopic.id) &&
             state.workspacePosts[state.activeTopic.id].posts.hasOwnProperty(action.data.post_id) && {
               unread_count: state.activeTopic.unread_count + (action.data.unread ? 1 : -1),
               unread_posts: state.activeTopic.unread_posts + (action.data.unread ? 1 : -1),

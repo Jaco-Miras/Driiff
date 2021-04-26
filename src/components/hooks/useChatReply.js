@@ -2,8 +2,9 @@ import React, { useCallback } from "react";
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
-import { getEmojiRegexPattern, GifRegex, stripGif } from "../../helpers/stringFormatter";
+import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
+//import { lang } from "moment-timezone";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
@@ -15,7 +16,7 @@ const StyledImageTextLink = styled(ImageTextLink)`
   }
 `;
 
-const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users }) => {
+const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language }) => {
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
@@ -303,7 +304,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -421,10 +422,9 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
 
   let isEmoticonOnly = false;
   const emoji = replyBody.substring(5, replyBody.length - 6);
-  if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern())) {
+  if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
-
   return {
     parseSystemMessage,
     quoteBody,
@@ -435,5 +435,4 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     isEmoticonOnly,
   };
 };
-
 export default useChatReply;

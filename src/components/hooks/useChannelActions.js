@@ -31,6 +31,7 @@ import {
   setLastVisitedChannel,
   setSelectedChannel,
   setSidebarSearch as setSidebarSearchReducer,
+  setSearchArchivedChannels,
 } from "../../redux/actions/chatActions";
 import { useSettings, useToaster, useTranslation } from "./index";
 import { useHistory } from "react-router-dom";
@@ -805,6 +806,13 @@ const useChannelActions = () => {
     [dispatch]
   );
 
+  const searchArchivedChannels = useCallback(
+    (value) => {
+      dispatch(setSearchArchivedChannels(value));
+    },
+    [dispatch]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -844,6 +852,7 @@ const useChannelActions = () => {
     fetchChannelLastReply,
     loadMore,
     search,
+    searchArchivedChannels,
   };
 };
 

@@ -58,6 +58,7 @@ const INITIAL_STATE = {
         },
       },
       virtualization: false,
+      translate: false,
     },
     GENERAL_SETTINGS: {
       notification_sound: "appointed",

@@ -105,24 +105,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  let {
-    className = "",
-    imageLink,
-    id,
-    name = "",
-    children,
-    type = "USER",
-    userId,
-    onClick = null,
-    noDefaultClick = false,
-    isBot = false,
-    isHuddleBot = false,
-    forceThumbnail = true,
-    fromSlider = false,
-    showSlider = true,
-    scrollRef = null,
-    ...rest
-  } = props;
+  let { className = "", imageLink, id, name = "", children, type = "USER", userId, onClick = null, noDefaultClick = false, isBot = false, isHuddleBot = false, forceThumbnail = true, fromSlider = false, showSlider = true, ...rest } = props;
 
   const avatarRef = useRef(null);
 
@@ -246,7 +229,7 @@ const Avatar = (props) => {
   return (
     <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
-      <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={rest.title ? rest.title : name}>
+      <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
         {isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
