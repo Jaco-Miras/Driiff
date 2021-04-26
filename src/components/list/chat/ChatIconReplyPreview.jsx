@@ -75,7 +75,7 @@ const ReplyPreview = (props) => {
   let lastReplyBody = "";
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
@@ -124,10 +124,10 @@ const ReplyPreview = (props) => {
       //system message
     } else {
       previewText = "System message update...";
-      if (channel.last_reply.body.includes("POST_CREATE::")) {
-        let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
-        previewText = `${item.author.first_name} has created the post ${item.post.title}`;
-      }
+      // if (channel.last_reply.body.includes("POST_CREATE::")) {
+      //   let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+      //   previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+      // }
     }
 
     if (typeof drafts[channel.id] !== "undefined") {
