@@ -403,7 +403,7 @@ const ChatFooterPanel = (props) => {
           <div className="p-5">{editChatMessage.files.map((f) => f.filename).join(", ")}</div>
         </Dflex>
       )}
-      {isMember === false && selectedChannel !== null && (
+      {isMember === false && selectedChannel !== null && user.type === "internal" && (
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{selectedChannel.title}</div>
           <div className="channel-create">
