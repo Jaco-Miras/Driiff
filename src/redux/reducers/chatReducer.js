@@ -505,15 +505,29 @@ export default function (state = INITIAL_STATE, action) {
           ...channel,
           is_hidden: false,
           replies: haveReference
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  r.id = action.data.id;
-                  return r;
-                } else {
-                  r.is_read = true;
-                  return r;
-                }
-              })
+            ? channel.replies
+                .map((r) => {
+                  if (r.id === action.data.reference_id) {
+                    return {
+                      ...r,
+                      id: action.data.id,
+                      created_at: action.data.created_at,
+                      updated_at: action.data.created_at,
+                    };
+                  } else {
+                    return {
+                      ...r,
+                      is_read: true,
+                    };
+                  }
+                })
+                .sort((a, b) => {
+                  if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                    return a.id - b.id;
+                  } else {
+                    return a.created_at.timestamp - b.created_at.timestamp;
+                  }
+                })
             : [...channel.replies, action.data].sort((a, b) => {
                 if (a.created_at.timestamp - b.created_at.timestamp === 0) {
                   return a.id - b.id;
@@ -1411,6 +1425,7 @@ export default function (state = INITIAL_STATE, action) {
         ];
         channel = {
           ...action.data.channel_detail,
+          icon_link: channels[action.data.channel_detail.id].icon_link,
           replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1448,6 +1463,7 @@ export default function (state = INITIAL_STATE, action) {
       if (channels.hasOwnProperty(action.data.id)) {
         channels[action.data.id] = {
           ...action.data,
+          icon_link: channels[action.data.id].icon_link,
           replies: channels[action.data.id].replies,
           hasMore: channels[action.data.id].hasMore,
           skip: channels[action.data.id].skip,

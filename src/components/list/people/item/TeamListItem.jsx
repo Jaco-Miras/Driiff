@@ -270,7 +270,8 @@ const TeamListItem = (props) => {
           {member.workspace_role === "TECHNICAL_LEAD" && <div onClick={handleRemoveRole}>{dictionary.revokeAsTechnicalLead}</div>}
           {member.workspace_role !== "WATCHER" && <div onClick={() => onAddRole(member, "watcher")}>{dictionary.assignAsWatcher}</div>}
           {member.workspace_role === "WATCHER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsWatcher}</div>}
-          <div onClick={() => onLeaveWorkspace(workspace, member)}>{member.id === loggedUser.id ? dictionary.leave : dictionary.remove}</div>
+          {member.id === loggedUser.id && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.leave}</div>}
+          {member.id !== loggedUser.id && loggedUser.type === "internal" && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>}
           {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
         </MoreOptions>
       )}

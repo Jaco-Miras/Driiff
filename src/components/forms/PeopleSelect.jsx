@@ -67,7 +67,7 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
         ...c,
         props: {
           ...c.props,
-          children: props.data.first_name.trim() !== "" ? props.data.first_name : props.data.email,
+          children: props.data.first_name && props.data.first_name.trim() !== "" ? props.data.first_name : props.data.email,
         },
       };
     } else return c;
@@ -91,6 +91,7 @@ const PeopleSelect = forwardRef((props, ref) => {
         isClearable={isClearable}
         components={{ Option, MultiValueContainer }}
         {...otherProps}
+        onCreateOption={props.onCreateOption}
       />
     );
   } else {

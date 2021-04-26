@@ -1214,6 +1214,9 @@ class SocketListeners extends Component {
       })
       .listen(".new-workspace", (e) => {
         console.log(e, "new workspace");
+        if (!e.members.some((m) => m.id === this.props.user.id)) {
+          return;
+        }
         if (e.topic !== undefined) {
           if (e.workspace !== null) {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
@@ -1327,7 +1330,9 @@ class SocketListeners extends Component {
       })
       .listen(".new-lock-workspace", (e) => {
         console.log(e, "new workspace lock");
-
+        if (!e.members.some((m) => m.id === this.props.user.id)) {
+          return;
+        }
         if (e.topic !== undefined) {
           if (e.workspace !== null) {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {

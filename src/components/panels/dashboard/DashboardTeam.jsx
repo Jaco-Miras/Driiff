@@ -74,7 +74,7 @@ const DashboardTeam = (props) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const hideOptions = (isMember && isExternal) || workspace.active === 0;
+  const hideOptions = !isMember || workspace.active === 0;
   const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
 
   const handleToggleShow = () => {
