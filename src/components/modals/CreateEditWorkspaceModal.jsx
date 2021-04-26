@@ -411,11 +411,27 @@ const CreateEditWorkspaceModal = (props) => {
       }));
       setInvitedEmails([]);
     } else {
+      const externals = e.map((e) => {
+        if (e.id) {
+          return e;
+        } else {
+          return {
+            ...e,
+            id: require("shortid").generate(),
+            label: e.value,
+            value: e.value,
+            name: e.value,
+            first_name: e.value,
+            email: e.value,
+            has_accepted: false,
+          };
+        }
+      });
       setForm((prevState) => ({
         ...prevState,
-        selectedExternals: e,
+        selectedExternals: externals,
       }));
-      setInvitedEmails(invitedEmails.filter((email) => e.some((ex) => ex.email === email)));
+      setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
     }
   };
 
@@ -1353,7 +1369,7 @@ const CreateEditWorkspaceModal = (props) => {
             <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
             <SelectPeople
               creatable={true}
-              valid={valid.team}
+              //valid={valid.team}
               options={externalUserOptions}
               value={form.selectedExternals}
               inputValue={externalInput}

@@ -571,6 +571,7 @@ export default function (state = INITIAL_STATE, action) {
                       ...r,
                       id: action.data.id,
                       created_at: action.data.created_at,
+                      updated_at: action.data.created_at,
                     };
                   } else {
                     return {

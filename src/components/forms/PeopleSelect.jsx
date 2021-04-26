@@ -91,6 +91,7 @@ const PeopleSelect = forwardRef((props, ref) => {
         isClearable={isClearable}
         components={{ Option, MultiValueContainer }}
         {...otherProps}
+        onCreateOption={props.onCreateOption}
       />
     );
   } else {

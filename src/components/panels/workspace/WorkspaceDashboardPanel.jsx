@@ -53,7 +53,7 @@ const WorkspaceDashboardPanel = (props) => {
     createdThePost: _t("TIMELINE.CREATED_POST", "created the post"),
     updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
     remove: _t("TEAM.REMOVE", "Remove"),
-    leave: _t("TEAM.REMOVE", "Leave"),
+    leave: _t("TEAM.LEAVE", "Leave"),
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     archived: _t("TIMELINE.ARCHIVED", "archived"),
     unarchived: _t("TIMELINE.UNARCHIVED", "unarchived"),
