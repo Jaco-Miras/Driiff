@@ -276,7 +276,7 @@ const FileRender = (props) => {
 
   const handleDownloadFile = (e, file) => {
     console.log(file);
-    if (viewFiles.topic_id) {
+    if (viewFiles.topic_id && file.remove_on_download) {
       dispatch(removeFileDownload({ file_id: file.file_id, topic_id: viewFiles.topic_id }));
     }
     e.preventDefault();
@@ -455,7 +455,7 @@ const FileViewer = (props) => {
 
   const handleDownloadFile = (e, file) => {
     console.log(file);
-    if (viewFiles.topic_id) {
+    if (viewFiles.topic_id && file.remove_on_download) {
       dispatch(removeFileDownload({ file_id: file.file_id, topic_id: viewFiles.topic_id }));
     }
     e.preventDefault();

@@ -86,15 +86,24 @@ const WrapperDiv = styled(InputGroup)`
     margin-top: 0;
     margin-bottom: 20px;
   }
+  &.file-attachment-wrapper > div {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    .react-select-container {
+      max-width: 300px;
+    }
+  }
   .file-attachments {
     position: relative;
     max-width: 100%;
-    margin-left: 128px;
+    // margin-left: 3rem;
+    // margin-right: 2rem;
     @media all and (max-width: 480px) {
       margin-left: 0;
     }
     ul {
-      margin-right: 128px;
+      //margin-right: 128px;
       margin-bottom: 0;
       @media all and (max-width: 480px) {
         padding-right: 40px;
@@ -237,6 +246,21 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 
 const initTimestamp = Math.floor(Date.now() / 1000);
 
+const fileOptions = [
+  {
+    id: "remove_on_download",
+    value: "remove_on_download",
+    label: "Remove file after download",
+    icon: "eye-off",
+  },
+  {
+    id: "remove_automatically",
+    value: "remove_automatically",
+    label: "Remove file automatically in 5 days",
+    icon: "eye",
+  },
+];
+
 const PostModal = (props) => {
   const { type, mode, item = {}, params = null } = props.data;
 
@@ -266,6 +290,7 @@ const PostModal = (props) => {
   const [imageLoading, setImageLoading] = useState(null);
   //const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
+  const [fileOption, setFileOption] = useState(null);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -695,6 +720,7 @@ const PostModal = (props) => {
       user_id: user.id,
       file_type: "private",
       folder_id: null,
+      fileOption: fileOption,
       options: {
         config: {
           onUploadProgress: handleOnUploadProgress,
@@ -902,6 +928,11 @@ const PostModal = (props) => {
     }
   }, [form.shared_with_client]);
 
+  const handleSelectFileUploadOption = (e) => {
+    console.log(e);
+    setFileOption(e);
+  };
+
   const hasExternalWs = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
@@ -982,8 +1013,18 @@ const PostModal = (props) => {
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-            {hasExternalWs && !isExternalUser && <span className="file-label">{dictionary.fileUploadLabel}</span>}
+            <div className={"mb-2"}>
+              <Label className={"modal-label"} for="workspace">
+                {dictionary.fileAttachments}
+              </Label>
+            </div>
+            <div className={"mb-2"}>
+              <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
+              {hasExternalWs && !isExternalUser && <span className="file-label ml-2">{dictionary.fileUploadLabel}</span>}
+            </div>
+            <div>
+              <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            </div>
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option mb-0">

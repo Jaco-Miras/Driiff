@@ -2786,6 +2786,31 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
+    case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts).reduce((ws, id) => {
+            ws[id] = {
+              ...state.workspacePosts[id],
+              posts: {
+                ...state.workspacePosts[id].posts,
+                ...Object.values(state.workspacePosts[id].posts).reduce((res, post) => {
+                  if (post.files.some((f) => f.file_id === action.data.file_id)) {
+                    res[post.id] = { ...state.workspacePosts[id].posts[post.id], files: state.workspacePosts[id].posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
+                  } else {
+                    res[post.id] = { ...state.workspacePosts[id].posts[post.id] };
+                  }
+                  return res;
+                }, {}),
+              },
+            };
+            return ws;
+          }, {}),
+        },
+      };
+    }
     default:
       return state;
   }
