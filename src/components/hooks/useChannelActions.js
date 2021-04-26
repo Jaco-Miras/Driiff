@@ -719,8 +719,10 @@ const useChannelActions = () => {
           if (err) {
             fetchLastChannel();
           }
-          history.push(`/chat/${res.data.code}`);
-          if (callback) callback();
+          if (res.data) {
+            history.push(`/chat/${res.data.code}`);
+            if (callback) callback();
+          }
         })
       );
     },
