@@ -4,7 +4,7 @@ import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader, SvgEmptyState, SvgIconFeather } from "../../common";
+import { Avatar, Loader, SvgEmptyState } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -941,27 +941,10 @@ class ChatMessages extends React.PureComponent {
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
-                                      translate={this.props.translate} 
+                                      translate={this.props.translate}
                                       language={this.props.language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {/* <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
-                                          <SvgIconFeather icon="star" />
-                                          {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-                                          {reply.star_users && reply.star_users.length > 0 && (
-                                            <div className="star-user-popup">
-                                              {reply.star_users.map((u) => {
-                                                const user = this.props.recipients.find((r) => r.type === "USER" && r.type_id === u.id);
-                                                return (
-                                                  <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
-                                                    <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
-                                                    <span className="name">{u.name}</span>
-                                                  </div>
-                                                );
-                                              })}
-                                            </div>
-                                          )}
-                                        </span> */}
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions
@@ -1025,23 +1008,6 @@ class ChatMessages extends React.PureComponent {
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {/* <span className="star-wrap mr-2" onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred}>
-                                          <SvgIconFeather icon="star" />
-                                          {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-                                          {reply.star_users && reply.star_users.length > 0 && (
-                                            <div className="star-user-popup">
-                                              {reply.star_users.map((u) => {
-                                                const user = this.props.recipients.find((r) => r.type === "USER" && r.type_id === u.id);
-                                                return (
-                                                  <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
-                                                    <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
-                                                    <span className="name">{u.name}</span>
-                                                  </div>
-                                                );
-                                              })}
-                                            </div>
-                                          )}
-                                        </span> */}
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions

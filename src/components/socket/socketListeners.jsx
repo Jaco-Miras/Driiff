@@ -988,6 +988,8 @@ class SocketListeners extends Component {
             this.props.incomingInternalUser(e);
             break;
           }
+          default:
+            return null;
         }
       })
       .listen(".company-notification", (e) => {
@@ -997,6 +999,8 @@ class SocketListeners extends Component {
             this.props.incomingUpdateCompanyName(e);
             break;
           }
+          default:
+            return null;
         }
       })
       .listen(".company-file-notification", (e) => {
