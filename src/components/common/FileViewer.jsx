@@ -425,7 +425,7 @@ const FileViewer = (props) => {
   const channelFiles = useSelector((state) => state.files.channelFiles);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
-  const companyFiles = useSelector((state) => state.files.companyFiles.items);
+  //const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const { localizeDate } = useTimeFormat();
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -480,16 +480,22 @@ const FileViewer = (props) => {
       setFiles(files);
       setActiveIndex(files.findIndex((f) => f.id === viewFiles.file_id));
     } else {
-      let files = Object.values(companyFiles);
-      if (!Object.keys(viewFiles).some((k) => ["channel_id", "workspace_id"].includes(k))) {
-        if (files.length) {
-          setFiles(files);
-          setActiveIndex(files.findIndex((f) => f.file_id === viewFiles.file_id));
-        } else {
-          setFiles(viewFiles.files);
-          setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
-        }
+      if (viewFiles.files && viewFiles.files.length) {
+        setFiles(viewFiles.files);
+        setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
       }
+
+      // let files = Object.values(companyFiles);
+      // if (!Object.keys(viewFiles).some((k) => ["channel_id", "workspace_id"].includes(k))) {
+      //   //console.log("default", viewFiles);
+      //   if (files.length) {
+      //     setFiles(files);
+      //     setActiveIndex(files.findIndex((f) => f.file_id === viewFiles.file_id));
+      //   } else {
+      //     setFiles(viewFiles.files);
+      //     setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
+      //   }
+      // }
     }
   }, []);
 
@@ -521,7 +527,8 @@ const FileViewer = (props) => {
   useOutsideClick(fileRef, handleCloseFileViewer, true);
 
   let file = files[activeIndex];
-  if (files.length === 0 || activeIndex === null) return;
+  console.log(file);
+  if (files.length === 0 || activeIndex === null || typeof file === "undefined") return;
 
   return (
     <FileViewerContainer className={`fileviewer-container ${className}`} data-file-index={activeIndex}>

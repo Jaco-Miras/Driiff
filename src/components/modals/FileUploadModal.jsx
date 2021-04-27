@@ -258,8 +258,8 @@ const FileUploadModal = (props) => {
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState(droppedFiles);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [sending, setSending] = useState(false);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);
+  //const [sending, setSending] = useState(false);
   const [comment, setComment] = useState("");
   const [textOnly, setTextOnly] = useState("");
   const [quillContents, setQuillContents] = useState([]);
@@ -378,13 +378,13 @@ const FileUploadModal = (props) => {
         resolve(uploadBulkDocument(payload));
       })
         .then((result) => {
-          setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
+          const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+          handleSubmit(resFiles);
+          //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
         })
         .catch((error) => {
           handleNetWorkError(error);
         });
-    } else {
-      setUploadedFiles(files);
     }
   }
 
@@ -407,18 +407,46 @@ const FileUploadModal = (props) => {
   };
 
   const handleUpload = () => {
-    if (!loading && !sending) {
+    if (!loading) {
       setLoading(true);
       uploadFiles();
+      dispatch(clearModal({ type: type }));
     }
   };
 
-  const handleSubmit = (body, mention_ids) => {
+  const handleSubmit = (uFiles) => {
+    let mention_ids = [];
+    let body = comment;
+    let haveGif = false;
+    if (quillContents.ops && quillContents.ops.length > 0) {
+      let mentionIds = quillContents.ops
+        .filter((id) => {
+          return id.insert.mention ? id : null;
+        })
+        .map((mid) => Number(mid.insert.mention.id));
+      mention_ids = [...new Set(mentionIds)];
+      if (mention_ids.includes(NaN)) {
+        mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
+      } else {
+        //remove the nan in mention ids
+        mention_ids = mention_ids.filter((id) => !isNaN(id));
+      }
+
+      quillContents.ops.forEach((op) => {
+        if (op.insert.image) {
+          haveGif = true;
+        }
+      });
+    }
+
+    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
+      body = "<span></span>";
+    }
     if (mode === "chat") {
       dispatch(setSidebarSearch({ value: "" }));
-      uploadedFiles.forEach((file, k) => {
+      uFiles.forEach((file, k) => {
         let payload = {};
-        if (k === uploadedFiles.length - 1) {
+        if (k === uFiles.length - 1) {
           payload = {
             channel_id: selectedChannel.id,
             body: body,
@@ -432,10 +460,8 @@ const FileUploadModal = (props) => {
             dispatch(postChatMessage(payload));
           }, 300);
 
-          setUploadedFiles([]);
+          //setUploadedFiles([]);
           dispatch(saveInputData({ sent: true }));
-          dispatch(clearModal({ type: type }));
-          //toggle();
         } else {
           payload = {
             channel_id: selectedChannel.id,
@@ -455,20 +481,20 @@ const FileUploadModal = (props) => {
         post_id: post.id,
         body: body,
         mention_ids: mention_ids,
-        file_ids: uploadedFiles.map((f) => f.id),
+        file_ids: uFiles.map((f) => f.id),
         reference_id: reference_id,
         personalized_for_id: null,
         parent_id: parentId,
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
       };
-      setUploadedFiles([]);
+      //setUploadedFiles([]);
       dispatch(setParentIdForUpload(null));
       dispatch(saveInputData({ sent: true }));
       if (editPostComment) {
         payload = {
           ...payload,
           id: editPostComment.id,
-          file_ids: [...uploadedFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string")],
+          file_ids: [...uFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string")],
           parent_id: editPostComment.parent_id,
           reference_id: null,
         };
@@ -510,55 +536,54 @@ const FileUploadModal = (props) => {
         dispatch(addComment(commentObj));
         dispatch(postComment(payload));
       }
-      dispatch(clearModal({ type: type }));
     }
   };
 
-  useEffect(() => {
-    if (uploadedFiles.length) {
-      if (uploadedFiles.length === files.length) {
-        let mention_ids = [];
-        let body = comment;
-        let haveGif = false;
-        if (quillContents.ops && quillContents.ops.length > 0) {
-          let mentionIds = quillContents.ops
-            .filter((id) => {
-              return id.insert.mention ? id : null;
-            })
-            .map((mid) => Number(mid.insert.mention.id));
-          mention_ids = [...new Set(mentionIds)];
-          if (mention_ids.includes(NaN)) {
-            mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
-          } else {
-            //remove the nan in mention ids
-            mention_ids = mention_ids.filter((id) => !isNaN(id));
-          }
+  // useEffect(() => {
+  //   if (uploadedFiles.length) {
+  //     if (uploadedFiles.length === files.length) {
+  //       let mention_ids = [];
+  //       let body = comment;
+  //       let haveGif = false;
+  //       if (quillContents.ops && quillContents.ops.length > 0) {
+  //         let mentionIds = quillContents.ops
+  //           .filter((id) => {
+  //             return id.insert.mention ? id : null;
+  //           })
+  //           .map((mid) => Number(mid.insert.mention.id));
+  //         mention_ids = [...new Set(mentionIds)];
+  //         if (mention_ids.includes(NaN)) {
+  //           mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
+  //         } else {
+  //           //remove the nan in mention ids
+  //           mention_ids = mention_ids.filter((id) => !isNaN(id));
+  //         }
 
-          quillContents.ops.forEach((op) => {
-            if (op.insert.image) {
-              haveGif = true;
-            }
-          });
-        }
+  //         quillContents.ops.forEach((op) => {
+  //           if (op.insert.image) {
+  //             haveGif = true;
+  //           }
+  //         });
+  //       }
 
-        if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
-          body = "<span></span>";
-        }
+  //       if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
+  //         body = "<span></span>";
+  //       }
 
-        if (uploadedFiles.filter((f) => isNaN(f.id)).length) {
-        } else {
-          if (!sending) {
-            handleSubmit(body, mention_ids);
-            setSending(true);
-          }
-          // if (modalData.quote) {
-          //     modalData.onClearQuote();
-          // }
-          // modalData.onClearContent();
-        }
-      }
-    }
-  });
+  //       if (uploadedFiles.filter((f) => isNaN(f.id)).length) {
+  //       } else {
+  //         if (!sending) {
+  //           handleSubmit(body, mention_ids);
+  //           setSending(true);
+  //         }
+  //         // if (modalData.quote) {
+  //         //     modalData.onClearQuote();
+  //         // }
+  //         // modalData.onClearContent();
+  //       }
+  //     }
+  //   }
+  // });
 
   const handleQuillChange = (content, delta, source, editor) => {
     setComment(content);
@@ -620,7 +645,12 @@ const FileUploadModal = (props) => {
         </SelectFileOptionContainer>
       </ModalBody>
       <StyledModalFooter>
-        {((workspaces[selectedChannel.entity_id] && workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") ||
+        {((selectedChannel &&
+          selectedChannel.entity_id &&
+          workspaces[selectedChannel.entity_id] &&
+          workspaces[selectedChannel.entity_id].is_shared &&
+          workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id &&
+          user.type === "internal") ||
           (hasExternal && user.type === "internal")) && <ExternalLabel>{dictionary.fileUploadLabel}</ExternalLabel>}
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}

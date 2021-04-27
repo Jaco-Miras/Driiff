@@ -323,7 +323,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -569,7 +569,7 @@ const Comment = (props) => {
             <>
               <hr />
               <h6>{dictionary.files}</h6>
-              <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment} />
+              <FileAttachments attachedFiles={comment.files} type="comment" comment={comment} />
             </>
           )}
           <CommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} likers={likers} post={post} handleReaction={handleReaction} handleShowInput={handleShowInput} />

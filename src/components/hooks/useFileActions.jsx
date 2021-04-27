@@ -734,7 +734,7 @@ const useFileActions = (params = null) => {
   );
 
   const viewCompanyFiles = useCallback(
-    (file, callback) => {
+    (file, files = [], callback) => {
       if (file.hasOwnProperty("payload_id")) {
         let a = document.createElement("a");
         a.href = file.download_link.replace("/preview", "/view");
@@ -743,6 +743,7 @@ const useFileActions = (params = null) => {
       } else {
         let payload = {
           file_id: file.id,
+          files: Object.values(files),
         };
         dispatch(setViewFiles(payload, callback));
       }

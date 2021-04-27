@@ -14,7 +14,7 @@ const Description = styled.span`
 `;
 
 const TodosList = (props) => {
-  const { className = "", chatHeader, todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
+  const { chatHeader, todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
 
   const dispatch = useDispatch();
 
@@ -56,6 +56,8 @@ const TodosList = (props) => {
         return dictionary.typeChat;
       case "POST_COMMENT":
         return dictionary.typePostComment;
+      default:
+        return null;
     }
   };
 
