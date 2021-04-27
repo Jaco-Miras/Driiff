@@ -11,7 +11,6 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
     let parsedData = reply.body.replace("POST_CREATE::", "");
     if (parsedData.trim() !== "") {
       let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
-      console.log(item);
       let link = "";
       if (params && params.workspaceId) {
         if (params.folderId) {
