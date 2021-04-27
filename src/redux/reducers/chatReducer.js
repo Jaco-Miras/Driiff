@@ -493,9 +493,33 @@ export default function (state = INITIAL_STATE, action) {
             : state.channels,
       };
     }
+    case "SET_CHANNEL_TRANSLATE_STATE": {
+      let channel = null;
+   
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.id)) {
+        channel = { ...state.channels[action.data.id] };
+        channel = {
+          ...channel,
+          is_translate: action.data.is_translate 
+        };
+      }
+
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.id]: channel,
+              }
+            : state.channels,
+      };
+    }
+
     case "RESET_TRANSLATED_BODY": {
-      let channels =  { ...state.channels};
-      console.log(channels);
+      let  channel = { ...state.channels[action.data.channel_id] };
+      console.log(channel);
     }
 
     case "INCOMING_CHAT_MESSAGE": {

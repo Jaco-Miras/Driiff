@@ -7,7 +7,8 @@ import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation } f
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
-import { ChatFooterPanel, ChatHeaderPanel } from "./index";
+import { ChatFooterPanel, ChatHeaderPanel, ChatTranslateActions } from "./index";
+
 //import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
 
@@ -38,6 +39,7 @@ const ChatContentPanel = (props) => {
   const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+
   const teamChannelId = useSelector((state) => state.workspaces.isOnClientChat);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
@@ -202,7 +204,8 @@ const ChatContentPanel = (props) => {
       ) : (
         <ChatMessagesPlaceholder />
       )}
-      <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+    <ChatTranslateActions selectedChannel={selectedChannel}  chatMessageActions={chatMessageActions}  />
+    <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
     </Wrapper>
   );
 };

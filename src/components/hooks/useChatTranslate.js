@@ -28,7 +28,7 @@ const TranslatedHtml = styled.div``;
 
 const useChatTranslate = (props) => {
   const { message, isAuthor, translate, language, actions } = props;
-
+  
   //const [trans, transSet] = useState("");
   useEffect(() => {
     const fetchTrans = (message) => {

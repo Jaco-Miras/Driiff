@@ -2786,6 +2786,14 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
+
+    case "UPDATE_CHANNEL_IS_TRANSLATE": {
+      return {
+        ...state,
+          is_translate:action.data
+      };
+    }
+
     default:
       return state;
   }
