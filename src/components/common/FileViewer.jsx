@@ -276,8 +276,17 @@ const FileRender = (props) => {
 
   const handleDownloadFile = (e, file) => {
     console.log(file);
-    if (viewFiles.topic_id && file.remove_on_download) {
-      dispatch(removeFileDownload({ file_id: file.file_id, topic_id: viewFiles.topic_id }));
+    if (file.remove_on_download) {
+      let payload = {
+        file_id: file.file_id,
+      };
+      if (viewFiles.topic_id) {
+        payload = {
+          ...payload,
+          topic_id: viewFiles.topic_id,
+        };
+      }
+      dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
     let handle = window.open(file.download_link, "_self");
@@ -455,8 +464,17 @@ const FileViewer = (props) => {
 
   const handleDownloadFile = (e, file) => {
     console.log(file);
-    if (viewFiles.topic_id && file.remove_on_download) {
-      dispatch(removeFileDownload({ file_id: file.file_id, topic_id: viewFiles.topic_id }));
+    if (file.remove_on_download) {
+      let payload = {
+        file_id: file.file_id,
+      };
+      if (viewFiles.topic_id) {
+        payload = {
+          ...payload,
+          topic_id: viewFiles.topic_id,
+        };
+      }
+      dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
     let handle = window.open(file.download_link, "_self");
