@@ -15,7 +15,7 @@ const StyledImageTextLink = styled(ImageTextLink)`
     stroke: ${(props) => (props.isAuthor ? "#ffffffe6" : "#8C3B9B")};
   }
 `;
-
+/*
 const TranslationHtmlContainer = styled.div`
   cursor: pointer;
   &:hover > div {
@@ -34,7 +34,7 @@ const OriginalHtml = styled.div`
   height: 0;
   overflow: hidden;
 `;
-
+*/
 const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language }) => {
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
@@ -444,6 +444,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
+  /*
   if (selectedChannel.is_translate && reply.translated_body) {
     // check if the channel is_translate is on and reply is already translated
     let OriginalHtmlRow = (
@@ -454,6 +455,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     );
     replyBody = renderToString(OriginalHtmlRow);
   }
+  */
   return {
     parseSystemMessage,
     quoteBody,

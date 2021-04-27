@@ -43,7 +43,10 @@ const useChatTranslate = (props) => {
           //transSet(renderToString(OriginalHtmlRow));
           // update the body in the reducer, no need to return the translated body or set the translated body to state
           // will also update the last reply body so useChatTranslatePreview is not need
-          actions.saveTranslationBody({ ...message, translated_body: data.translations[0].text, original_body: message.body, is_translated: translate });
+          actions.saveTranslationBody({ ...message, translated_body: data.translations[0].text, 
+            body: renderToString(OriginalHtmlRow),
+            original_body: message.body, 
+            is_translated: translate });
         })
         .catch(console.log);
     };
@@ -52,7 +55,8 @@ const useChatTranslate = (props) => {
     if (!isAuthor && message.user && message.user.language !== language && translate && !message.translated_body) fetchTrans(message);
     //else clause possible not needed anymore
     else {
-      if (message.original_body && !translate) actions.saveTranslationBody({ ...message, is_translated: translate });
+      if (message.original_body && !translate) 
+      actions.saveTranslationBody({ ...message, body:message.original_body, is_translated:translate});   
       else if (message.original_body) {
         let OriginalHtmlRow = (
           <TranslationHtmlContainer
@@ -60,7 +64,8 @@ const useChatTranslate = (props) => {
             dangerouslySetInnerHTML={{ __html: message.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: message.original_body }}></OriginalHtml>) }}
           ></TranslationHtmlContainer>
         );
-        actions.saveTranslationBody({ ...message, is_translated: translate });
+        actions.saveTranslationBody({ ...message, body: renderToString(OriginalHtmlRow), is_translated:translate});   
+      
       }
       //transSet(message);
       //return message.body;

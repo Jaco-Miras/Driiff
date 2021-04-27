@@ -87,16 +87,20 @@ const ChatTranslateActions = (props) => {
   const handleTranslateSwitchToggle = useCallback(
     (e) => {
       e.persist();
-    
       const { name, checked, dataset } = e.target;
-      chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked });
-      setChannelTrans({
-        ...selectedChannel,
-        [name]: checked,
-      });
       toaster.success(<span>{dataset.successMessage}</span>);
+      chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked });
+      setTimeout(
+        function() {
+          setChannelTrans({
+            ...selectedChannel,
+            [name]: checked,
+          });
+        }
+        .bind(this),
+        3000
+    );
     },
-
   );
 
   const setChannelTrans = useCallback(
@@ -108,7 +112,6 @@ const ChatTranslateActions = (props) => {
         })
       );
     },
-    [dispatch, history]
   );
 
   let is_translate = (selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
