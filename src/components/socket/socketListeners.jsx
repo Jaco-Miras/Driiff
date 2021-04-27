@@ -1195,7 +1195,7 @@ class SocketListeners extends Component {
       })
       .listen(".new-workspace", (e) => {
         console.log(e, "new workspace");
-        if (!e.members.some((m) => m.id === this.props.user.id)) {
+        if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.props.user.id)) {
           return;
         }
         if (e.topic !== undefined) {
@@ -1309,9 +1309,48 @@ class SocketListeners extends Component {
         console.log(e, ".post-read-require");
         this.props.incomingMarkAsRead(e);
       })
+      .listen(".new-workspace", (e) => {
+        console.log(e, "new workspace broadcast");
+        if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.props.user.id)) {
+          return;
+        }
+        if (e.topic !== undefined) {
+          if (e.workspace !== null) {
+            if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
+              this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
+                if (err) return;
+                this.props.incomingWorkspace(e);
+              });
+            } else {
+              this.props.incomingWorkspace(e);
+            }
+          } else {
+            this.props.incomingWorkspace(e);
+          }
+
+          this.props.getChannel({ code: e.channel.code }, (err, res) => {
+            if (err) return;
+            let channel = {
+              ...res.data,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              selected: true,
+              isFetching: false,
+            };
+            this.props.addToChannels(channel);
+          });
+        } else {
+          this.props.incomingWorkspaceFolder({
+            ...e.workspace,
+            key_id: e.key_id,
+            type: e.type,
+          });
+        }
+      })
       .listen(".new-lock-workspace", (e) => {
         console.log(e, "new workspace lock");
-        if (!e.members.some((m) => m.id === this.props.user.id)) {
+        if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.props.user.id)) {
           return;
         }
         if (e.topic !== undefined) {
