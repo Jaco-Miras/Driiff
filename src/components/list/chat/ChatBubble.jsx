@@ -79,7 +79,7 @@ const ChatBubbleContainer = styled.div`
     ${(props) => (props.isAuthor ? "right: 100%" : "left: 100%")};
     display: flex;
     height: 100%;
-    align-items: center;
+    text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
 
     .star-wrap {
@@ -420,7 +420,6 @@ const ChatTimeStamp = styled.div`
   .reply-date {
     margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 10px")};
     flex-flow: column;
-    align-items: center;
     justify-content: center;
   }
   .reply-date.updated {
@@ -587,8 +586,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteClick = useCallback(
     (e) => {
-      if (reply.quote.channel_id) {
-      } else {
+      if (reply.quote) {
         let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
         if (el) {
           el.scrollIntoView({
@@ -601,8 +599,6 @@ const ChatBubble = (props) => {
     },
     [reply]
   );
-
-  console.log(reply);
 
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
 

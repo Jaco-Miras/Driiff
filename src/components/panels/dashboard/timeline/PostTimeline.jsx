@@ -80,7 +80,7 @@ const PostTimeline = (props) => {
         {data.files && data.files.length >= 1 && (
           <>
             {dictionary.fileAttachments}:
-            <FileAttachments attachedFiles={data.files} />
+            <FileAttachments attachedFiles={data.files} type={"timeline"} />
           </>
         )}
       </div>

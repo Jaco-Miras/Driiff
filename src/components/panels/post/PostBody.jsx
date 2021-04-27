@@ -295,7 +295,7 @@ const PostBody = (props) => {
       let payload = {
         file_id: file.id,
         files: post.files,
-        workspace_id: workspaceId,
+        //workspace_id: workspaceId,
       };
       dispatch(setViewFiles(payload));
     }
@@ -318,7 +318,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -458,7 +458,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });

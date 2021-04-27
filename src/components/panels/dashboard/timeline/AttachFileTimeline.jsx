@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import { Avatar } from "../../../common";
 import { useTimeFormat } from "../../../hooks";
-import useFileActions from "../../../hooks/useFileActions";
+//import useFileActions from "../../../hooks/useFileActions";
 
 const Wrapper = styled.div`
   .timeline-file-icon {
@@ -33,15 +33,15 @@ const AttachFileTimeline = (props) => {
   const { params } = useRouteMatch();
 
   const dispatch = useDispatch();
-  const fileHandler = useFileActions();
+  //const fileHandler = useFileActions();
   const { fromNow } = useTimeFormat();
 
   const handleFilePreview = () => {
-    console.log(data, params);
     dispatch(
       setViewFiles({
         workspace_id: params.workspaceId,
         file_id: data.id,
+        files: [{ ...data, filename: data.name, file_id: data.id }],
       })
     );
   };

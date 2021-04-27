@@ -71,7 +71,6 @@ const CompanyMemberTimeline = (props) => {
           );
         }
       } else {
-        console.log(data);
         return data.body;
       }
     }

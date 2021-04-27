@@ -57,7 +57,7 @@ const MessageFiles = forwardRef((props, ref) => {
 
     if (type === "chat" && file.file_type !== "trashed") {
       let payload = {
-        channel_id: reply.channel_id,
+        //channel_id: reply.channel_id,
         file_id: file.file_id,
         files: [file],
         topic_id: topic_id,

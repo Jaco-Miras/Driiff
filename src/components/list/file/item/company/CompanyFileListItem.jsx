@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather, ToolTip} from "../../../../common";
-import {ProgressBar} from "../../../../panels/common";
-import {CompanyFileOptions} from "../../../../panels/files/company";
+import { SvgIconFeather, ToolTip } from "../../../../common";
+import { ProgressBar } from "../../../../panels/common";
+import { CompanyFileOptions } from "../../../../panels/files/company";
 
 const Wrapper = styled.div`
   .card {
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 
       &.uploading {
         background: #afb8bd;
-        opacity: .8;
+        opacity: 0.8;
       }
       .progress {
         bottom: 10px;
@@ -48,18 +48,18 @@ const Star = styled(SvgIconFeather)`
 `;
 
 const CompanyFileListItem = (props) => {
-  const {className = "", folders, file, actions, forceDelete = false, disableOptions} = props;
+  const { className = "", folders, file, files, actions, forceDelete = false, disableOptions } = props;
 
   const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
   const [fileName, setFileName] = useState(typeof file.name === "undefined" ? file.search : file.name);
 
   const handleFileView = useCallback(() => {
-    actions.viewCompanyFiles(file);
+    actions.viewCompanyFiles(file, files);
   }, [file]);
 
   const handleFavorite = useCallback(() => {
-    setIsFavorite(prevState => !prevState);
+    setIsFavorite((prevState) => !prevState);
     actions.favorite(file);
   }, [file, setIsFavorite]);
 
@@ -71,26 +71,17 @@ const CompanyFileListItem = (props) => {
     <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleFileView}>
       <div className="card  app-file-list">
         <div className={typeof file.id === "string" ? "app-file-icon uploading" : "app-file-icon uploaded"}>
-          {isFavorite === true && <Star icon="star"/>}
+          {isFavorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
-          {typeof file.id === "number" &&
-          <CompanyFileOptions
-            file={file} folders={folders}
-            actions={{...actions, favorite: handleFavorite}} forceDelete={forceDelete}
-            disableOptions={disableOptions}/>}
-          {typeof file.id === "string" &&
-          <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"}/>}
+          {typeof file.id === "number" && <CompanyFileOptions file={file} files={files} folders={folders} actions={{ ...actions, favorite: handleFavorite }} forceDelete={forceDelete} disableOptions={disableOptions} />}
+          {typeof file.id === "string" && <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"} />}
         </div>
         <div className="p-2 small">
           <ToolTip content={fileName}>
             <div className="file-name">
-              {
-                file.hasOwnProperty("payload_id") &&
-                <SvgIconFeather
-                  className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20"
-                  width="15" opacity=".8"/>
-              }
-              {fileName}</div>
+              {file.hasOwnProperty("payload_id") && <SvgIconFeather className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20" width="15" opacity=".8" />}
+              {fileName}
+            </div>
           </ToolTip>
           <div className="text-muted">
             {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
