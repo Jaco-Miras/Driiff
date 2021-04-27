@@ -2078,7 +2078,6 @@ export default function (state = INITIAL_STATE, action) {
         channels: {
           ...state.channels,
           ...action.data.files.reduce((res, obj) => {
-            console.log(res, obj);
             if (state.channels[obj.channel_id]) {
               res[obj.channel_id] = {
                 ...state.channels[obj.channel_id],

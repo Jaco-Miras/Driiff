@@ -427,21 +427,22 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "ADD_TO_WORKSPACE_POSTS": {
-      let convertedPosts = convertArrayToObject(action.data.posts, "id");
-      let postDrafts = [];
-      if (state.drafts.length) {
-        postDrafts = convertArrayToObject(postDrafts, "post_id");
-      }
-      return {
-        ...state,
-        posts: {
-          ...state.posts,
-          ...convertedPosts,
-          ...postDrafts,
-        },
-      };
-    }
+    // need to review
+    // case "ADD_TO_WORKSPACE_POSTS": {
+    //   let convertedPosts = convertArrayToObject(action.data.posts, "id");
+    //   let postDrafts = [];
+    //   if (state.drafts.length) {
+    //     postDrafts = convertArrayToObject(postDrafts, "post_id");
+    //   }
+    //   return {
+    //     ...state,
+    //     posts: {
+    //       ...state.posts,
+    //       ...convertedPosts,
+    //       ...postDrafts,
+    //     },
+    //   };
+    // }
     case "GET_DRAFTS_SUCCESS": {
       let drafts = action.data
         .filter((d) => d.data.type === "draft_post")
@@ -557,6 +558,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "ARCHIVE_POST_REDUCER": {
       if (!isNaN(action.data.topic_id)) {
+        // need review
         let updatedPosts = { ...state.posts };
         updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
         return {
@@ -1053,6 +1055,23 @@ export default (state = INITIAL_STATE, action) => {
                 user_reads: action.data.user_reads,
               },
             }),
+          },
+        },
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.files.reduce((res, obj) => {
+              if (obj.post_id && state.companyPosts.posts[obj.post_id]) {
+                res[obj.post_id] = { ...state.companyPosts.posts[obj.post_id], files: state.companyPosts.posts[obj.post_id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)) };
+              }
+              return res;
+            }, {}),
           },
         },
       };

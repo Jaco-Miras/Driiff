@@ -383,25 +383,6 @@ const FileUploadModal = (props) => {
         .catch((error) => {
           handleNetWorkError(error);
         });
-
-      // old endpoint
-      // await Promise.all(
-      //   files
-      //     .filter((f) => {
-      //       return typeof f.id === "string";
-      //     })
-      //     .map((file) =>
-      //       uploadDocument({
-      //         user_id: user.id,
-      //         file: file.bodyFormData,
-      //         file_type: "private",
-      //         folder_id: null,
-      //         fileOption: fileOption,
-      //       })
-      //     )
-      // ).then((result) => {
-      //   setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
-      // });
     } else {
       setUploadedFiles(files);
     }
@@ -416,27 +397,6 @@ const FileUploadModal = (props) => {
     }
   };
 
-  // let totalProgress = useRef(null);
-
-  // const handleOnUploadProgress = (file) => (progressEvent) => {
-  //   let {loaded, total} = progressEvent;
-  //   const totalFiles = files.filter((f) => typeof f.id === "string").length;
-  //   const progress = loaded / total;
-  //   totalProgress.current = {
-  //     ...totalProgress.current,
-  //     [file.id]: progress,
-  //   }
-  //   let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
-  //   progressBar.current = totalPercent / totalFiles;
-
-  //   if (toasterRef.current === null) {
-  //     toasterRef.current = toaster.info(
-  //       <div>{dictionary.uploading}.</div>,
-  //       {progress: progressBar.current, autoClose: true});
-  //   } else {
-  //     toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
-  //   }
-  // }
   const handleOnUploadProgress = (progressEvent) => {
     const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
