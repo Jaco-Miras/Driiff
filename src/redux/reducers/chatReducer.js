@@ -2471,67 +2471,58 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: {
-          ...Object.values(state.channels)
-            .map((channel) => {
-              if (channel.type === "TOPIC" && action.data.topic_id === channel.entity_id) {
-                return {
-                  ...channel,
-                  replies: channel.replies.map((r) => {
-                    if (r.files.some((f) => f.file_id === action.data.file_id)) {
-                      return {
-                        ...r,
-                        files: r.files.map((file) => {
-                          if (file.file_id === action.data.file_id) {
-                            return {
-                              ...file,
-                              deleted_at: { timestamp: getCurrentTimestamp() },
-                              file_type: "trashed",
-                            };
-                          } else {
-                            return file;
-                          }
-                        }),
-                      };
-                    } else {
-                      return r;
-                    }
-                  }),
-                };
-              } else {
-                return channel;
-              }
-            })
-            .reduce((channels, channel) => {
-              channels[channel.id] = channel;
-              return channels;
-            }, {}),
+          ...Object.values(state.channels).reduce((res, channel) => {
+            res[channel.id] = {
+              ...channel,
+              replies: channel.replies.map((r) => {
+                if (r.files.some((f) => f.file_id === action.data.file_id)) {
+                  return {
+                    ...r,
+                    files: r.files.map((file) => {
+                      if (file.file_id === action.data.file_id) {
+                        return {
+                          ...file,
+                          deleted_at: { timestamp: getCurrentTimestamp() },
+                          file_type: "trashed",
+                        };
+                      } else {
+                        return file;
+                      }
+                    }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            };
+            return res;
+          }, {}),
         },
-        selectedChannel:
-          state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.topic_id
-            ? {
-                ...state.selectedChannel,
-                replies: state.selectedChannel.replies.map((r) => {
-                  if (r.files.some((f) => f.file_id === action.data.file_id)) {
-                    return {
-                      ...r,
-                      files: r.files.map((file) => {
-                        if (file.file_id === action.data.file_id) {
-                          return {
-                            ...file,
-                            deleted_at: { timestamp: getCurrentTimestamp() },
-                            file_type: "trashed",
-                          };
-                        } else {
-                          return file;
-                        }
-                      }),
-                    };
-                  } else {
-                    return r;
-                  }
-                }),
-              }
-            : state.selectedChannel,
+        selectedChannel: state.selectedChannel
+          ? {
+              ...state.selectedChannel,
+              replies: state.selectedChannel.replies.map((r) => {
+                if (r.files.some((f) => f.file_id === action.data.file_id)) {
+                  return {
+                    ...r,
+                    files: r.files.map((file) => {
+                      if (file.file_id === action.data.file_id) {
+                        return {
+                          ...file,
+                          deleted_at: { timestamp: getCurrentTimestamp() },
+                          file_type: "trashed",
+                        };
+                      } else {
+                        return file;
+                      }
+                    }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            }
+          : state.selectedChannel,
       };
     }
     default:
