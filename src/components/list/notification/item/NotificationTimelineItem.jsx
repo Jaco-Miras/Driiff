@@ -56,6 +56,14 @@ export const NotificationTimelineItem = (props) => {
     }
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
+    } else if (notification.type === "WORKSPACE_ADD_MEMBER") {
+      let payload = {
+        id: notification.data.id,
+        name: notification.data.title,
+        folder_id: notification.data.workspace_folder_id !== 0 ? notification.data.workspace_folder_id : null,
+        folder_name: notification.data.workspace_folder_name !== "" ? notification.data.workspace_folder_name : null,
+      };
+      redirect.toWorkspace(payload);
     } else {
       let post = { id: notification.data.post_id, title: notification.data.title };
       let workspace = null;
@@ -113,6 +121,7 @@ export const NotificationTimelineItem = (props) => {
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
     sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
     notificationClosedPost: _t("NOTIFICATION.CLOSED_POST", `closed the <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
+    addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
   };
 
   const renderTitle = useCallback(() => {
@@ -195,6 +204,16 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+      case "WORKSPACE_ADD_MEMBER": {
+        return (
+          <>
+            <span onClick={handleAuthorNameClick} className="author-name text-link">
+              {notification.author.name}{" "}
+            </span>
+            <span>{dictionary.addedYouInWorkspace}</span>
+          </>
+        );
+      }
       default:
         return null;
     }
@@ -229,7 +248,8 @@ export const NotificationTimelineItem = (props) => {
                   notification.type === "POST_REQST_APPROVAL" ||
                   notification.type === "POST_ACCEPT_APPROVAL" ||
                   notification.type === "POST_REJECT_APPROVAL" ||
-                  notification.type === "CLOSED_POST" ? (
+                  notification.type === "CLOSED_POST" ||
+                  notification.type === "WORKSPACE_ADD_MEMBER" ? (
                   <>{notification.data && notification.data.title}</>
                 ) : (
                   <>{stripHtml(notification.data.comment_body)}</>
