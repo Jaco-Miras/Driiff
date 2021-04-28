@@ -558,29 +558,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ARCHIVE_POST_REDUCER": {
-      if (!isNaN(action.data.topic_id)) {
-        // need review
-        let updatedPosts = { ...state.posts };
-        updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
-        return {
-          ...state,
-          posts: updatedPosts,
-        };
-      } else {
-        return {
-          ...state,
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                is_archived: action.data.is_archived,
-              },
-            },
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(Object.values(state.companyPosts.posts).length > 0 && {
+              ...Object.values(state.companyPosts.posts).reduce((pos, p) => {
+                pos[p.id] = {
+                  ...p,
+                  is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                };
+                return pos;
+              }, {}),
+            }),
           },
-        };
-      }
+        },
+      };
     }
     case "INCOMING_POST_TOGGLE_FOLLOW": {
       return {
