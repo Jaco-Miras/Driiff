@@ -132,7 +132,7 @@ const ChatTranslateActions = (props) => {
         name="is_translate"
         onChange={handleTranslateSwitchToggle}
         data-success-message={`You have turn ${is_translate ? "OFF" : "ON"} translate chat messages!`}
-        label={<span>{dictionary.chatTranslateTitle + is_translate}</span>}
+        label={<span>{dictionary.chatTranslateTitle}</span>}
       />
 
     </Wrapper>

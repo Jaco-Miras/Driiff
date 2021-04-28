@@ -166,7 +166,6 @@ const ChatContentPanel = (props) => {
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
-  if(selectedChannel !== null) console.log({"selectedChannel" : selectedChannel});
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -190,21 +189,23 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )} */}
       {selectedChannel !== null ? (
-        <ChatMessages
-          selectedChannel={selectedChannel}
-          chatMessageActions={chatMessageActions}
-          timeFormat={timeFormat}
-          dictionary={dictionary}
-          unreadCount={unreadCount}
-          teamChannelId={teamChannelId}
-          isIdle={isIdle}
-          translate={translate}
-          language={language}
-        />
+        <>
+          <ChatMessages
+            selectedChannel={selectedChannel}
+            chatMessageActions={chatMessageActions}
+            timeFormat={timeFormat}
+            dictionary={dictionary}
+            unreadCount={unreadCount}
+            teamChannelId={teamChannelId}
+            isIdle={isIdle}
+            translate={translate}
+            language={language}
+          />
+          <ChatTranslateActions selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} />
+        </>
       ) : (
         <ChatMessagesPlaceholder />
       )}
-      { selectedChannel !== null ? ( <ChatTranslateActions selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} />): '' }
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
     </Wrapper>
   );
