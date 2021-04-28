@@ -89,7 +89,13 @@ const ChatTranslateActions = (props) => {
       e.persist();
       const { name, checked, dataset } = e.target;
       toaster.success(<span>{dataset.successMessage}</span>);
-      chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked });
+      chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked, hash: Math.random() });
+
+      setChannelTrans({
+        ...selectedChannel,
+        [name]: checked,
+      });
+     /*
       setTimeout(
         function() {
           setChannelTrans({
@@ -99,7 +105,7 @@ const ChatTranslateActions = (props) => {
         }
         .bind(this),
         3000
-    );
+    );*/
     },
   );
 
@@ -126,7 +132,7 @@ const ChatTranslateActions = (props) => {
         name="is_translate"
         onChange={handleTranslateSwitchToggle}
         data-success-message={`You have turn ${is_translate ? "OFF" : "ON"} translate chat messages!`}
-        label={<span>{dictionary.chatTranslateTitle}</span>}
+        label={<span>{dictionary.chatTranslateTitle + is_translate}</span>}
       />
 
     </Wrapper>
