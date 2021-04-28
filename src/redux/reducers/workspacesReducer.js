@@ -1637,13 +1637,31 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ARCHIVE_POST_REDUCER": {
-      if (isNaN(action.data.topic_id)) return state;
-
-      let newWorkspacePosts = { ...state.workspacePosts };
-      newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_archived = action.data.is_archived;
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(Object.keys(state.workspacePosts).length > 0 && {
+            ...Object.keys(state.workspacePosts).reduce((res, id) => {
+              res[id] = {
+                ...state.workspacePosts[id],
+                posts: {
+                  ...state.workspacePosts[id].posts,
+                  ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
+                    ...Object.values(state.workspacePosts[id].posts).reduce((pos, p) => {
+                      pos[p.id] = {
+                        ...p,
+                        is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                      };
+                      return pos;
+                    }, {}),
+                  }),
+                },
+              };
+              return res;
+            }, {}),
+          }),
+        },
       };
     }
     case "ARCHIVE_REDUCER": {
