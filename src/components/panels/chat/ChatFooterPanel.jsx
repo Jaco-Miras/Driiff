@@ -17,6 +17,7 @@ import { ChatInputButtons } from "./index";
 const Wrapper = styled.div`
   position: relative;
   z-index: 3;
+  padding-top: 0 !important; 
   .feather-send {
     border: 1px solid #e1e1e1;
     height: 100%;

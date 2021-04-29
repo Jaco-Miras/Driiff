@@ -119,6 +119,7 @@ const ProfileSettings = (props) => {
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
     dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
+    chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
   };
 
   // const notificationSoundOptions = [
@@ -453,7 +454,7 @@ const ProfileSettings = (props) => {
                       name="translate"
                       onChange={handleChatSwitchToggle}
                       data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
-                      label={<span>{dictionary.liveTranslation}</span>}
+                      label={<span>{dictionary.chatTranslateTitle}</span>}
                     />
                   </div>
                 </div>

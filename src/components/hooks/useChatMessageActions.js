@@ -18,6 +18,7 @@ import {
   setLastChatVisibility,
   setEditHuddleAnswers,
   setTranslatedBody,
+  setChannelTranslateState,
   resetTranslatedBody,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions } from "./index";
@@ -388,6 +389,18 @@ const useChatMessageActions = () => {
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
+  const saveChannelTranslateState = useCallback(
+    (payload) => {
+      dispatch(setChannelTranslateState(payload));
+    },
+    [dispatch]
+  );
+
+  /**
+   * @param {object} payload
+   * @parm number payload.message_id chat.id
+   * @param {function} [callback]
+   */
   const saveTranslationBody = useCallback(
     (payload) => {
       dispatch(setTranslatedBody(payload));
@@ -395,18 +408,17 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
-   /**
+  /**
    * @param {object} payload
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-    const resetTranslationBody = useCallback(
-      (payload) => {
-        dispatch(resetTranslatedBody(payload));
-      },
-      [dispatch]
-    );
-  
+  const resetTranslationBody = useCallback(
+    (payload) => {
+      dispatch(resetTranslatedBody(payload));
+    },
+    [dispatch]
+  );
 
   return {
     channelActions: useChannelActions(),
@@ -429,7 +441,8 @@ const useChatMessageActions = () => {
     setHuddleAnswers,
     addSkip,
     saveTranslationBody,
-    resetTranslationBody
+    resetTranslationBody,
+    saveChannelTranslateState,
   };
 };
 

@@ -81,7 +81,7 @@ const ReplyPreview = (props) => {
       lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
 
-      let lastReplyBodyHtml = channel.last_reply.body;
+      let lastReplyBodyHtml = (channel.is_translate)?channel.last_reply.translated_body:channel.last_reply.body;
 
       var div = document.createElement('div');
       div.innerHTML = lastReplyBodyHtml;

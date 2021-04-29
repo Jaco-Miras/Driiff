@@ -15,6 +15,25 @@ const StyledImageTextLink = styled(ImageTextLink)`
   }
 `;
 
+const TranslationHtmlContainer = styled.div`
+  cursor: pointer;
+  &:hover > div {
+    transition: opacity 2s ease-out;
+    opacity: 1;
+    height: auto;
+  }
+`;
+
+const OriginalHtml = styled.div`
+  font-size: small;
+  padding-left: 0.5em;
+  border-left: gray 2px solid;
+  transition: opacity 2s ease-in;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+`;
+
 const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language }) => {
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
@@ -426,6 +445,18 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
+  
+  if (selectedChannel.is_translate && reply.is_translated) {
+    // check if the channel is_translate is on and reply is already translated
+    let OriginalHtmlRow = (
+      <TranslationHtmlContainer
+        className="TranslationHtmlContainer"
+        dangerouslySetInnerHTML={{ __html: reply.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: reply.original_body }}></OriginalHtml>) }}
+      ></TranslationHtmlContainer>
+    );
+    replyBody = renderToString(OriginalHtmlRow);
+  }
+  
   return {
     parseSystemMessage,
     quoteBody,
