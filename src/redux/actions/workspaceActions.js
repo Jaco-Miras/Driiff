@@ -6,6 +6,7 @@ import {
   deleteWorkspaceFolder as deleteWorkspaceFolderService,
   deleteWorkspaceRole as deleteWorkspaceRoleService,
   getUnreadWorkspacePostEntries as getUnreadWorkspacePostEntriesService,
+  favouriteWorkspace as favouriteWorkspaceService,
   fetchDetail as fetchDetailService,
   fetchMembers as fetchMembersService,
   fetchPrimaryFiles as fetchPrimaryFilesService,
@@ -204,6 +205,15 @@ export function postResendInvite(payload, callback) {
 export function createTeamChannel(payload, callback) {
   return dispatchActionToReducer(createTeamChannelService(payload), "CREATE_TEAM_CHANNEL_START", "CREATE_TEAM_CHANNEL_SUCCESS", "CREATE_TEAM_CHANNEL_FAIL", callback);
 }
+
 export function incomingTeamChannel(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_TEAM_CHANNEL", payload, callback);
+}
+
+export function favouriteWorkspace(payload, callback) {
+  return dispatchActionToReducer(favouriteWorkspaceService(payload), "FAVOURITE_WORKSPACE_START", "FAVOURITE_WORKSPACE_SUCCESS", "FAVOURITE_WORKSPACE_FAIL", callback);
+}
+
+export function incomingFavouriteWorkspace(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_FAVOURITE_WORKSPACE", payload, callback);
 }
