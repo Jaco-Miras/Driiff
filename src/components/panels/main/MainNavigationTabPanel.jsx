@@ -176,7 +176,7 @@ const NavIconContainer = styled(NavLink)`
   height: 40px;
   justify-content: flex-start;
   align-items: center;
-  margin: 0 15px 10px 15px;
+  margin: 0 15px;
   border-radius: 8px;
   &.active {
     background: #ffffff14;
@@ -484,7 +484,7 @@ const MainNavigationTabPanel = (props) => {
           )}
           <li>
             <NavIconContainer to={"/todos"} active={["/todos"].includes(props.location.pathname)}>
-              <NavIcon icon={"check"} />
+              <NavIcon icon={"calendar"} />
               <div>{dictionary.todoLinks}</div>
               <div>{count.overdue !== 0 && <Badge>&nbsp;</Badge>}</div>
             </NavIconContainer>

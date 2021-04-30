@@ -8,6 +8,7 @@ const Wrapper = styled.li`
   position: relative;
   display: flex;
   align-items: center;
+  list-style: none;
   :hover {
     button {
       display: inline-flex;
