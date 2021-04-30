@@ -142,6 +142,7 @@ import {
   getWorkspaceFolder,
   incomingArchivedWorkspaceChannel,
   incomingDeletedWorkspaceFolder,
+  incomingFavouriteWorkspace,
   incomingMovedTopic,
   incomingTeamChannel,
   incomingTimeline,
@@ -1291,6 +1292,22 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".favourite-workspace-notification", (e) => {
+        console.log(e);
+        this.props.incomingFavouriteWorkspace(e);
+        // switch (e.SOCKET_TYPE) {
+        //   case "WORKSPACE_FAVOURITE": {
+        //     this.props.incomingFavouriteWorkspace(e);
+        //     break;
+        //   }
+        //   case "WORKSPACE_REMOVE_FAVOURITE": {
+        //     this.props.incomingFavouriteWorkspace(e);
+        //     break;
+        //   }
+        //   default:
+        //     return null;
+        // }
+      })
       .listen(".post-require-author-notify", (e) => {
         console.log(e, ".post-read-require");
       })
@@ -1840,6 +1857,7 @@ function mapDispatchToProps(dispatch) {
     incomingTeamChannel: bindActionCreators(incomingTeamChannel, dispatch),
     incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),
     incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
+    incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
   };
 }
 

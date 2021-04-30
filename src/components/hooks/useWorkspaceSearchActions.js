@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
-import { getAllWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
+import { getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTranslation } from "./index";
 
@@ -229,8 +229,19 @@ const useWorkspaceSearchActions = () => {
     );
   }, []);
 
+  const favourite = useCallback((item) => {
+    let payload = {
+      id: item.topic.id,
+      workspace_id: item.workspace ? item.workspace.id : 0,
+      is_pinned: item.topic.is_favourite ? 0 : 1,
+    };
+
+    dispatch(favouriteWorkspace(payload));
+  }, []);
+
   return {
     edit,
+    favourite,
     leave,
     join,
     search,

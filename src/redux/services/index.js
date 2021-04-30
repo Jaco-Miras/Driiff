@@ -225,6 +225,7 @@ export {
   deleteWorkspace,
   deleteWorkspaceRole,
   deleteWorkspaceFolder,
+  favouriteWorkspace,
   fetchDetail,
   fetchPrimaryFiles,
   fetchMembers,

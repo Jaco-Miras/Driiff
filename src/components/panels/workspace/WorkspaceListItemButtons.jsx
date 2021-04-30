@@ -10,9 +10,17 @@ const Icon = styled(SvgIconFeather)`
   width: 1rem;
   height: 1rem;
   margin-right: 10px;
+  &.favorite {
+    color: rgb(255, 193, 7);
+    fill: rgb(255, 193, 7);
+  }
   :hover {
     color: #7a1b8b;
     cursor: pointer;
+    &.favorite {
+      color: rgb(255, 193, 7);
+      fill: rgb(255, 193, 7);
+    }
   }
 `;
 
@@ -32,12 +40,12 @@ const WorkspaceListItemButtons = (props) => {
     }
   };
   const handleEdit = () => actions.edit(item);
-  const handleFavorite = () => {};
+  const handleFavorite = () => actions.favourite(item);
   const handleArchive = () => actions.showArchiveConfirmation(item);
   return (
     <Wrapper className="workspace-list-buttons">
       {isMember && !isExternal && <Icon icon="pencil" onClick={handleEdit} />}
-      {isMember && <Icon icon="star" onClick={handleFavorite} />}
+      {isMember && <Icon icon="star" className={`${item.topic.is_favourite && "favorite"}`} onClick={handleFavorite} />}
       {isMember && !isExternal && <Icon icon="trash" onClick={handleArchive} />}
       <StyledButton className={`btn ${isMember ? "btn-danger" : "btn-primary"}`} onClick={handleButtonClick}>
         {isMember ? dictionary.buttonLeave : dictionary.buttonJoin}

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar } from "../../common";
+import { Avatar, SvgIconFeather } from "../../common";
 import { useIsMember } from "../../hooks";
 import { useSelector } from "react-redux";
 import WorkspaceListItemDetails from "./WorkspaceListItemDetails";
@@ -14,6 +14,9 @@ const Wrapper = styled.li`
   border-right: none;
   border-left: none;
 
+  .workspace-icon {
+    position: relative;
+  }
   .workspace-list-buttons {
     display: none;
   }
@@ -49,6 +52,17 @@ const Wrapper = styled.li`
   }
 `;
 
+const StarIcon = styled(SvgIconFeather)`
+  position: absolute;
+  z-index: 2;
+  width: 1rem;
+  height: 1rem;
+  top: 0;
+  right: 0;
+  color: rgb(255, 193, 7);
+  fill: rgb(255, 193, 7);
+`;
+
 const WorkspaceListItem = (props) => {
   const { actions, dictionary, item } = props;
   const isMember = useIsMember(item.members.map((m) => m.id));
@@ -57,7 +71,8 @@ const WorkspaceListItem = (props) => {
   return (
     <Wrapper className="list-group-item">
       <div className="workspace-icon mr-3">
-        <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={null} id={item.topic.id} name={item.topic.name} noDefaultClick={true} showSlider={false} />
+        {item.topic.is_favourite && <StarIcon icon="star" />}
+        <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={item.topic.icon_link} id={item.topic.id} name={item.topic.name} noDefaultClick={true} showSlider={false} />
       </div>
       <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
       <WorkspaceListItemButtons actions={actions} dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />

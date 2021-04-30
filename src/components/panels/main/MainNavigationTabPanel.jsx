@@ -435,6 +435,8 @@ const MainNavigationTabPanel = (props) => {
     });
   }, [sortedWorkspaces]);
 
+  const favoriteWorkspaces = sortWorkspace().filter((ws) => ws.is_favourite);
+  console.log(favoriteWorkspaces);
   const hasUnreadCounter =
     Object.keys(unreadCounter)
       .filter((k) => k !== "chat_reminder_message")

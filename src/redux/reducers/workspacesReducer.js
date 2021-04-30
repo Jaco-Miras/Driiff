@@ -126,6 +126,7 @@ export default (state = INITIAL_STATE, action) => {
               folder_id: ws.id,
               folder_name: ws.name,
               team_channel: t.team_channel,
+              is_favourite: t.is_favourite,
               type: "WORKSPACE",
             };
           });
@@ -133,6 +134,7 @@ export default (state = INITIAL_STATE, action) => {
         } else if (ws.type === "WORKSPACE") {
           updatedWorkspaces[ws.id] = {
             ...ws,
+            is_favourite: ws.topic_detail.is_favourite,
             is_shared: ws.topic_detail.is_shared,
             active: ws.topic_detail.active,
             channel: { ...ws.topic_detail.channel, loaded: false },
@@ -2927,6 +2929,36 @@ export default (state = INITIAL_STATE, action) => {
               },
             };
             return ws;
+          }, {}),
+        },
+      };
+    }
+    case "INCOMING_FAVOURITE_WORKSPACE": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          results: state.search.results.map((r) => {
+            if (r.topic.id === action.data.topic_id.id) {
+              return {
+                ...r,
+                topic: {
+                  ...r.topic,
+                  is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false,
+                },
+              };
+            } else {
+              return r;
+            }
+          }),
+        },
+        workspaces: {
+          ...Object.values(state.workspaces).reduce((res, ws) => {
+            res[ws.id] = {
+              ...ws,
+              is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
+            };
+            return res;
           }, {}),
         },
       };
