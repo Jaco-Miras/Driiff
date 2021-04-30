@@ -46,7 +46,7 @@ const Lists = styled.ul`
   }
 `;
 const AllWorkspaceBody = (props) => {
-  const { dictionary, results } = props;
+  const { actions, dictionary, results } = props;
   const [showWorkspaces, setShowWorkspaces] = useState({ showActive: true, showArchived: true });
 
   const handleShowWorkspaces = (type) => {
@@ -55,6 +55,7 @@ const AllWorkspaceBody = (props) => {
       [type]: !showWorkspaces[type],
     });
   };
+
   return (
     <Wrapper className={"card"}>
       <Lists className="active-workspaces">
@@ -68,7 +69,7 @@ const AllWorkspaceBody = (props) => {
           results
             .filter((r) => !r.topic.is_archive)
             .map((result) => {
-              return <WorkspaceListItem key={result.topic.id} dictionary={dictionary} item={result} />;
+              return <WorkspaceListItem actions={actions} key={result.topic.id} dictionary={dictionary} item={result} />;
             })}
       </Lists>
       <Lists className="archived-workspaces">
@@ -82,7 +83,7 @@ const AllWorkspaceBody = (props) => {
           results
             .filter((r) => r.topic.is_archive)
             .map((result) => {
-              return <WorkspaceListItem key={result.topic.id} dictionary={dictionary} item={result} />;
+              return <WorkspaceListItem actions={actions} key={result.topic.id} dictionary={dictionary} item={result} />;
             })}
       </Lists>
     </Wrapper>

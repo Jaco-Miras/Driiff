@@ -82,7 +82,7 @@ const AllWorkspace = (props) => {
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <AllWorkspaceSearch actions={actions} dictionary={dictionary} search={search} />
-          <AllWorkspaceBody dictionary={dictionary} results={results} />
+          <AllWorkspaceBody actions={actions} dictionary={dictionary} results={results} />
         </div>
       </div>
     </Wrapper>

@@ -23,13 +23,25 @@ const StyledButton = styled.button`
 `;
 
 const WorkspaceListItemButtons = (props) => {
-  const { dictionary, isExternal, isMember, item } = props;
+  const { actions, dictionary, isExternal, isMember, item } = props;
+  const handleButtonClick = () => {
+    if (isMember) {
+      actions.leave(item);
+    } else {
+      actions.join(item);
+    }
+  };
+  const handleEdit = () => actions.edit(item);
+  const handleFavorite = () => {};
+  const handleArchive = () => actions.showArchiveConfirmation(item);
   return (
     <Wrapper className="workspace-list-buttons">
-      {isMember && !isExternal && <Icon icon="pencil" />}
-      {isMember && !isExternal && <Icon icon="star" />}
-      {isMember && !isExternal && <Icon icon="trash" />}
-      <StyledButton className={`btn ${isMember ? "btn-danger" : "btn-primary"}`}>{isMember ? dictionary.buttonLeave : dictionary.buttonJoin}</StyledButton>
+      {isMember && !isExternal && <Icon icon="pencil" onClick={handleEdit} />}
+      {isMember && <Icon icon="star" onClick={handleFavorite} />}
+      {isMember && !isExternal && <Icon icon="trash" onClick={handleArchive} />}
+      <StyledButton className={`btn ${isMember ? "btn-danger" : "btn-primary"}`} onClick={handleButtonClick}>
+        {isMember ? dictionary.buttonLeave : dictionary.buttonJoin}
+      </StyledButton>
     </Wrapper>
   );
 };
