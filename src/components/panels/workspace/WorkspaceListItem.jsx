@@ -50,7 +50,7 @@ const Wrapper = styled.li`
 `;
 
 const WorkspaceListItem = (props) => {
-  const { dictionary, item } = props;
+  const { actions, dictionary, item } = props;
   const isMember = useIsMember(item.members.map((m) => m.id));
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
@@ -60,7 +60,7 @@ const WorkspaceListItem = (props) => {
         <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={null} id={item.topic.id} name={item.topic.name} noDefaultClick={true} showSlider={false} />
       </div>
       <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
-      <WorkspaceListItemButtons dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
+      <WorkspaceListItemButtons actions={actions} dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
     </Wrapper>
   );
 };

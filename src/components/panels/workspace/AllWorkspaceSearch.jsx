@@ -92,7 +92,6 @@ const AllWorkspaceSearch = (props) => {
 
   const handleClearSearch = () => {
     actions.updateSearch({
-      ...search,
       results: [],
       searching: true,
       value: "",
@@ -111,14 +110,12 @@ const AllWorkspaceSearch = (props) => {
       (err, res) => {
         if (err) {
           actions.updateSearch({
-            ...search,
             searching: false,
             value: "",
             filterBy: null,
           });
         } else {
           actions.updateSearch({
-            ...search,
             value: "",
             filterBy: null,
             searching: false,

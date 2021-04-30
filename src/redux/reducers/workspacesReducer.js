@@ -1675,7 +1675,10 @@ export default (state = INITIAL_STATE, action) => {
           if (item.topic.id === action.data.topic_detail.id) {
             return {
               ...item,
-              is_archive: true,
+              topic: {
+                ...item.topic,
+                is_archive: true,
+              },
             };
           } else {
             return item;
@@ -1708,7 +1711,10 @@ export default (state = INITIAL_STATE, action) => {
           if (item.topic.id === action.data.topic_detail.id) {
             return {
               ...item,
-              is_archive: false,
+              topic: {
+                ...item.topic,
+                is_archive: false,
+              },
             };
           } else {
             return item;
@@ -1717,6 +1723,7 @@ export default (state = INITIAL_STATE, action) => {
       }
       return {
         ...state,
+        search: updatedSearch,
         workspaces: workspaces,
         activeTopic:
           state.activeTopic && state.activeTopic.id === action.data.topic_detail.id
