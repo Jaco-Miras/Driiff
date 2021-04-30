@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     cursor: pointer;
   }
   .list-group-item:last-child {
-    border-bottom-width: thin!important;
+    border-bottom-width: thin !important;
   }
 `;
 

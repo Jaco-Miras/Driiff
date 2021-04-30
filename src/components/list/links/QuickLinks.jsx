@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { LinkItem } from "./index";
@@ -113,6 +113,8 @@ const LinkNav = styled.ul`
 const NavIcon = styled(SvgIconFeather)`
   cursor: pointer;
   margin: 0 8px 0 15px;
+  width: 1rem !important;
+  height: 1rem !important;
 `;
 
 const EditIcon = styled(SvgIconFeather)`

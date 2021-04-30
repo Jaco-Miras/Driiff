@@ -59,22 +59,13 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    // case "GET_ALL_WORKSPACE_SUCCESS": {
-    //   return {
-    //     ...state,
-    //     search: {
-    //       ...state.search,
-    //       count: action.data.total_count,
-    //       searching: false,
-    //       results: [...new Set([...action.data.workspaces, ...state.search.results])],
-    //       maxPage: Math.ceil(action.data.total_count / 25)
-    //     }
-    //   }
-    // }
     case "UPDATE_WORKSPACE_SEARCH": {
       return {
         ...state,
-        search: action.data,
+        search: {
+          ...state.search,
+          ...action.data,
+        },
       };
     }
     case "ADD_USER_TO_REDUCERS": {
