@@ -444,7 +444,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
-  
+
   if (selectedChannel.is_translate && reply.is_translated) {
     // check if the channel is_translate is on and reply is already translated
     let OriginalHtmlRow = (
@@ -455,7 +455,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     );
     replyBody = renderToString(OriginalHtmlRow);
   }
-  
+
   return {
     parseSystemMessage,
     quoteBody,

@@ -541,7 +541,6 @@ const ChatBubble = (props) => {
   const googleApis = useGoogleApis();
 
   useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, language, actions: chatMessageActions,});
-
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
     dictionary,
