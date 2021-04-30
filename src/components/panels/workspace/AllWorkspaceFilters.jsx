@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.ul`
   .list-group-item:last-child {
@@ -12,6 +13,9 @@ const Wrapper = styled.ul`
 
 const AllWorkspaceFilters = (props) => {
   const { actions, count, onGoBack, dictionary, filterBy } = props;
+
+  const user = useSelector((state) => state.session.user);
+  const isExternal = user.type === "external";
 
   const handleClickFilter = (e) => {
     e.persist();
@@ -37,16 +41,20 @@ const AllWorkspaceFilters = (props) => {
         {dictionary.new}
         <span className="small ml-auto">{count && count.new > 0 && count.new}</span>
       </li>
-      <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "nonMember" ? "active" : ""}`} data-value="nonMember" onClick={handleClickFilter}>
-        <span className="text-danger fa fa-circle mr-2" />
-        {dictionary.notJoined}
-        <span className="small ml-auto">{count && count.not_joined > 0 && count.not_joined}</span>
-      </li>
-      <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "external" ? "active" : ""}`} data-value="external" onClick={handleClickFilter}>
-        <span className="text-warning fa fa-circle mr-2" />
-        {dictionary.withClient}
-        <span className="small ml-auto">{count && count.with_client > 0 && count.with_client}</span>
-      </li>
+      {!isExternal && (
+        <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "nonMember" ? "active" : ""}`} data-value="nonMember" onClick={handleClickFilter}>
+          <span className="text-danger fa fa-circle mr-2" />
+          {dictionary.notJoined}
+          <span className="small ml-auto">{count && count.not_joined > 0 && count.not_joined}</span>
+        </li>
+      )}
+      {!isExternal && (
+        <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "external" ? "active" : ""}`} data-value="external" onClick={handleClickFilter}>
+          <span className="text-warning fa fa-circle mr-2" />
+          {dictionary.withClient}
+          <span className="small ml-auto">{count && count.with_client > 0 && count.with_client}</span>
+        </li>
+      )}
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "private" ? "active" : ""}`} data-value="private" onClick={handleClickFilter}>
         <span className="text-info fa fa-circle mr-2" />
         {dictionary.private}

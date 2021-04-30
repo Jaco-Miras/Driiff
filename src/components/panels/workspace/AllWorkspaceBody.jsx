@@ -25,8 +25,24 @@ const Lists = styled.ul`
   &.active-workspaces {
     border-radius 6px 6px 0 0;
   }
+  &.archived-workspaces {
+    .dark & {
+      border: 1px solid;
+      border-top: 0;
+      border-color: hsla(0,0%,60.8%,.1);
+      border-radius: 0 0 6px 6px;
+      background: #252a2d;
+    }
+  }
+  &.archived-workspaces li {
+    background-color: #fafafa;
+    .dark & {
+      background-color: #252a2d;
+    }
+  }
   &.archived-workspaces li:last-child {
     border-radius 0 0 6px 6px;
+    border-bottom: none;
   }
 `;
 const AllWorkspaceBody = (props) => {

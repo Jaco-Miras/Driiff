@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { SvgIconFeather, Avatar } from "../../common";
+import { Avatar } from "../../common";
 import { useIsMember } from "../../hooks";
+import { useSelector } from "react-redux";
+import WorkspaceListItemDetails from "./WorkspaceListItemDetails";
+import WorkspaceListItemButtons from "./WorkspaceListItemButtons";
 
 const Wrapper = styled.li`
   position: relative;
@@ -10,10 +13,9 @@ const Wrapper = styled.li`
   list-style: none;
   border-right: none;
   border-left: none;
-  :hover {
-    button {
-      display: inline-flex;
-    }
+
+  .workspace-list-buttons {
+    display: none;
   }
   .workspace-title {
     font-size: 1rem;
@@ -37,52 +39,28 @@ const Wrapper = styled.li`
     align-items: center;
     margin-right: 10px;
   }
-`;
-
-const Icon = styled(SvgIconFeather)`
-  width: 1rem;
-  height: 1rem;
-  margin-right: 3px;
+  :hover {
+    button {
+      display: inline-flex;
+    }
+    .workspace-list-buttons {
+      display: block;
+    }
+  }
 `;
 
 const WorkspaceListItem = (props) => {
   const { dictionary, item } = props;
-  const { topic, workspace } = item;
   const isMember = useIsMember(item.members.map((m) => m.id));
-
+  const user = useSelector((state) => state.session.user);
+  const isExternal = user.type === "external";
   return (
     <Wrapper className="list-group-item">
       <div className="workspace-icon mr-3">
-        <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={null} id={topic.id} name={topic.name} noDefaultClick={true} showSlider={false} />
+        <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={null} id={item.topic.id} name={item.topic.name} noDefaultClick={true} showSlider={false} />
       </div>
-      <div className="workspace-details">
-        <div className="title-labels">
-          <span className="workspace-title">{topic.name}</span>
-          {topic.is_locked && <Icon icon="lock" />}
-          {topic.is_shared && (
-            <span className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
-              <Icon icon="eye" /> {dictionary.withClient}
-            </span>
-          )}
-        </div>
-        <div className="labels">
-          {isMember && (
-            <span className="text-success">
-              <Icon icon="check" />
-              {dictionary.labelJoined}
-            </span>
-          )}
-          <span>
-            <Icon icon="user" />
-            {item.members.length}
-          </span>
-          <span>
-            <Icon icon="folder" />
-            {workspace ? workspace.name : "Workspaces"}
-          </span>
-        </div>
-      </div>
-      <div className="workspace-buttons"></div>
+      <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
+      <WorkspaceListItemButtons dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
     </Wrapper>
   );
 };
