@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import { addToModals, setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import { useSettings, useTodos, useTranslation } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks } from "./index";
+import NewModalButtons from "./NewModalButtons";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -207,9 +208,11 @@ const MainNavigationTabPanel = (props) => {
   const { count } = useTodos();
   const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
   const user = useSelector((state) => state.session.user);
-  const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const folders = useSelector((state) => state.workspaces.folders);
+  // const workspaces = useSelector((state) => state.workspaces.workspaces);
+  // const folders = useSelector((state) => state.workspaces.folders);
   const { _t } = useTranslation();
+
+  const [showButtons, setShowbuttons] = useState(false);
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse workspaces"),
@@ -234,6 +237,12 @@ const MainNavigationTabPanel = (props) => {
     bots: _t("SIDEBAR.BOTS", "Bots"),
     favoriteWorkspaces: _t("SIDEBAR.FAVORITE_WORKSPACES", "Favorite workspaces"),
     browseAll: _t("SIDEBAR.BROWSE_ALL", "Browse all..."),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    chat: _t("SIDEBAR.CHAT", "Chat"),
+    post: _t("SIDEBAR.POST", "Post"),
+    reminder: _t("SIDEBAR.REMINDER", "Reminder"),
+    addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
   };
 
   const handleIconClick = (e) => {
@@ -246,17 +255,12 @@ const MainNavigationTabPanel = (props) => {
     history.push(e.target.dataset.link);
   };
 
-  const handleShowWorkspaceModal = () => {
-    let payload = {
-      type: "workspace_create_edit",
-      mode: "create",
-    };
-
-    dispatch(addToModals(payload));
-  };
-
   const handleGiftClick = () => {
     history.push("/releases");
+  };
+
+  const handleShowModalButtons = () => {
+    setShowbuttons((prevState) => !prevState);
   };
 
   return (
@@ -272,17 +276,16 @@ const MainNavigationTabPanel = (props) => {
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
 
       <FavoriteWorkspacesPanel dictionary={dictionary} generalSettings={generalSettings} isExternal={isExternal} user={user} />
+      <NewModalButtons dictionary={dictionary} isExternal={isExternal} showButtons={showButtons} />
 
-      {user.type !== "external" && !(Object.values(folders).length === 0 && Object.values(workspaces).length === 0) && (
-        <div>
-          <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
-            <div>
-              <CirclePlus icon="circle-plus" />
-              {dictionary.addNewWorkspace}
-            </div>
-          </NavNewWorkspace>
-        </div>
-      )}
+      <div>
+        <NavNewWorkspace onClick={handleShowModalButtons} className="btn btn-outline-light" type="button">
+          <div>
+            <CirclePlus icon="circle-plus" />
+            {dictionary.addNew}
+          </div>
+        </NavNewWorkspace>
+      </div>
     </Wrapper>
   );
 };
