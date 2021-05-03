@@ -45,7 +45,7 @@ const AllWorkspaceSearch = (props) => {
   const { actions, dictionary, search } = props;
 
   const { value, searching, filterBy } = search;
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState("");
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !searching) {

@@ -27,6 +27,13 @@ const INITIAL_STATE = {
     page: 1,
     maxPage: 1,
     count: 0,
+    counters: {
+      new: 0,
+      nonMember: 0,
+      external: 0,
+      private: 0,
+      archived: 0,
+    },
     filters: {
       private: {
         checked: false,
@@ -2811,6 +2818,22 @@ export default (state = INITIAL_STATE, action) => {
               ...ws,
               is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
             };
+            return res;
+          }, {}),
+        },
+      };
+    }
+    case "GET_WORKSPACE_FILTER_COUNT_SUCCESS": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          counters: action.data.reduce((res, obj) => {
+            if (obj.entity_type === "NON_MEMBER") {
+              res["nonMember"] = obj.count;
+            } else {
+              res[obj.entity_type.toLowerCase()] = obj.count;
+            }
             return res;
           }, {}),
         },

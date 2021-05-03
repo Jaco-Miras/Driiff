@@ -176,9 +176,9 @@ const Avatar = (props) => {
   };
 
   const handleOnClick = (e) => {
+    if (noDefaultClick) return;
     e.stopPropagation();
     e.preventDefault();
-    if (noDefaultClick) return;
     if (onClick) {
       onClick(e);
       return;

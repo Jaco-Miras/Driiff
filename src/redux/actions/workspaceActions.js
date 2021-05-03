@@ -14,6 +14,7 @@ import {
   getAllWorkspace as getAllWorkspaceService,
   getPostStatusCount as getPostStatusCountService,
   getWorkspace as getWorkspaceService,
+  getWorkspaceFilterCount as getWorkspaceFilterCountService,
   getWorkspaceFolder as getWorkspaceFolderService,
   getWorkspacePostDetail as getWorkspacePostDetailService,
   getWorkspaces as getWorkspacesService,
@@ -216,4 +217,8 @@ export function favouriteWorkspace(payload, callback) {
 
 export function incomingFavouriteWorkspace(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FAVOURITE_WORKSPACE", payload, callback);
+}
+
+export function getWorkspaceFitlerCount(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilterCountService(payload), "GET_WORKSPACE_FILTER_COUNT_START", "GET_WORKSPACE_FILTER_COUNT_SUCCESS", "GET_WORKSPACE_FILTER_COUNT_FAIL", callback);
 }

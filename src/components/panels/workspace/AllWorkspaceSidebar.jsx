@@ -42,7 +42,7 @@ const Icon = styled(SvgIconFeather)`
 const MobileOverlayFilter = styled.div``;
 
 const AllWorkspaceSidebar = (props) => {
-  const { actions, dictionary, filterBy } = props;
+  const { actions, counters, dictionary, filterBy } = props;
 
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
@@ -55,7 +55,8 @@ const AllWorkspaceSidebar = (props) => {
         <div className="app-sidebar-menu" tabIndex="2">
           <div className="card-body create-new-post-wrapper">
             <NewWsButton className="btn btn-primary btn-block" onClick={actions.showWorkspaceModal}>
-              <Icon icon="circle-plus"/>{dictionary.addNewWorkspace}
+              <Icon icon="circle-plus" />
+              {dictionary.addNewWorkspace}
             </NewWsButton>
           </div>
           <div className="post-filter-item list-group list-group-flush">
@@ -63,7 +64,7 @@ const AllWorkspaceSidebar = (props) => {
               {dictionary.filters}
             </span>
           </div>
-          <AllWorkspaceFilters actions={actions} dictionary={dictionary} filterBy={filterBy} />
+          <AllWorkspaceFilters actions={actions} counters={counters} dictionary={dictionary} filterBy={filterBy} />
         </div>
       </div>
     </Wrapper>

@@ -12,7 +12,7 @@ const Wrapper = styled.ul`
 `;
 
 const AllWorkspaceFilters = (props) => {
-  const { actions, count, onGoBack, dictionary, filterBy } = props;
+  const { actions, counters, dictionary, filterBy } = props;
 
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
@@ -39,31 +39,31 @@ const AllWorkspaceFilters = (props) => {
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "new" ? "active" : ""}`} data-value="new" onClick={handleClickFilter}>
         <span className="text-success fa fa-circle mr-2" />
         {dictionary.new}
-        <span className="small ml-auto">{count && count.new > 0 && count.new}</span>
+        <span className="small ml-auto">{counters.new > 0 && counters.new}</span>
       </li>
       {!isExternal && (
         <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "nonMember" ? "active" : ""}`} data-value="nonMember" onClick={handleClickFilter}>
           <span className="text-danger fa fa-circle mr-2" />
           {dictionary.notJoined}
-          <span className="small ml-auto">{count && count.not_joined > 0 && count.not_joined}</span>
+          <span className="small ml-auto">{counters.nonMember > 0 && counters.nonMember}</span>
         </li>
       )}
       {!isExternal && (
         <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "external" ? "active" : ""}`} data-value="external" onClick={handleClickFilter}>
           <span className="text-warning fa fa-circle mr-2" />
           {dictionary.withClient}
-          <span className="small ml-auto">{count && count.with_client > 0 && count.with_client}</span>
+          <span className="small ml-auto">{counters.external > 0 && counters.external}</span>
         </li>
       )}
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "private" ? "active" : ""}`} data-value="private" onClick={handleClickFilter}>
         <span className="text-info fa fa-circle mr-2" />
         {dictionary.private}
-        <span className="small ml-auto">{count && count.private > 0 && count.private}</span>
+        <span className="small ml-auto">{counters.private > 0 && counters.private}</span>
       </li>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "archived" ? "active" : ""}`} data-value="archived" onClick={handleClickFilter}>
         <span className="text-light fa fa-circle mr-2" />
         {dictionary.archived}
-        <span className="small ml-auto">{count && count.archived > 0 && count.archived}</span>
+        <span className="small ml-auto">{counters.archived > 0 && counters.archived}</span>
       </li>
     </Wrapper>
   );

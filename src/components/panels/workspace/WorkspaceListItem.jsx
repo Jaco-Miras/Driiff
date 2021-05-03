@@ -68,13 +68,22 @@ const WorkspaceListItem = (props) => {
   const isMember = useIsMember(item.members.map((m) => m.id));
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
+  const handleRedirect = (e, item) => {
+    let payload = {
+      id: item.topic.id,
+      name: item.topic.name,
+      folder_id: item.workspace ? item.workspace.id : null,
+      folder_name: item.workspace ? item.workspace.name : null,
+    };
+    actions.toWorkspace(payload);
+  };
   return (
     <Wrapper className="list-group-item">
       <div className="workspace-icon mr-3">
         {item.topic.is_favourite && <StarIcon icon="star" />}
-        <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={item.topic.icon_link} id={item.topic.id} name={item.topic.name} noDefaultClick={true} showSlider={false} />
+        <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={item.topic.icon_link} id={item.topic.id} name={item.topic.name} onClick={(e) => handleRedirect(e, item)} showSlider={false} />
       </div>
-      <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
+      <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} onRedirect={handleRedirect} />
       <WorkspaceListItemButtons actions={actions} dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
     </Wrapper>
   );

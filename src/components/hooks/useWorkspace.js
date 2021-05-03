@@ -213,12 +213,14 @@ const useWorkspace = () => {
 
   return {
     folders,
-    sortedWorkspaces: Object.values(workspaces).sort((a, b) => a.name.localeCompare(b.name)),
+    //sortedWorkspaces: Object.values(workspaces).sort((a, b) => a.name.localeCompare(b.name)),
     workspaces,
     workspace: activeTopic,
     actions: actions,
     workspacesLoaded,
     timeline,
+    orderChannel: orderChannel,
+    history,
   };
 };
 
