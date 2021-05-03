@@ -26,6 +26,7 @@ const FolderPlus = styled(SvgIconFeather)`
   height: 14px;
   width: 14px;
   cursor: pointer;
+  margin-left: 5px;
 `;
 
 const EmptyState = styled.div`
@@ -55,6 +56,9 @@ const FavWorkspacesLabel = styled.div`
   color: rgba(255, 255, 255, 0.6);
   border-top: 2px solid;
   padding: 15px 0;
+  > span {
+    margin-left: 10px;
+  }
 `;
 
 const BrowseAll = styled.span`
@@ -176,7 +180,7 @@ const FavoriteWorkspacesPanel = (props) => {
   return (
     <Wrapper>
       <FavWorkspacesLabel>
-        {dictionary.favoriteWorkspaces}
+        <span>{dictionary.favoriteWorkspaces}</span>
         {!isExternal && (
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
             <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
@@ -191,7 +195,7 @@ const FavoriteWorkspacesPanel = (props) => {
               <ul>
                 {favoriteWorkspaces.length > 0 &&
                   favoriteWorkspaces.map((ws) => {
-                    return <FavWorkspaceList isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} />;
+                    return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} />;
                   })}
               </ul>
               <BrowseAll onClick={handleBrowseAll}>{dictionary.browseAll}</BrowseAll>

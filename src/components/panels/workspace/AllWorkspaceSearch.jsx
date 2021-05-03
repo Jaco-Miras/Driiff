@@ -141,7 +141,8 @@ const AllWorkspaceSearch = (props) => {
     let timeoutValue = setTimeout(() => {
       actions.updateSearch({
         value: inputValue,
-        results: [],
+        //results: [],
+        hasMore: true,
       });
     }, 500);
     return () => clearTimeout(timeoutValue);
