@@ -5,9 +5,9 @@ import SearchForm from "../../forms/SearchForm";
 import { useFocusInput, useTranslation, useUserChannels } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
-import { SvgIconFeather } from "../../common";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { useDispatch, useSelector } from "react-redux";
+// import { SvgIconFeather } from "../../common";
+// import { addToModals } from "../../../redux/actions/globalActions";
+// import { useDispatch, useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -36,11 +36,11 @@ const Search = styled(SearchForm)`
 `;
 
 const WorkspacePeoplePanel = (props) => {
-  const { className = "", workspace, isExternal } = props;
+  const { className = "", workspace } = props;
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const { selectUserChannel, loggedUser } = useUserChannels();
-  const { activeTopic } = useSelector((state) => state.workspaces);
+  //const { activeTopic } = useSelector((state) => state.workspaces);
 
   const history = useHistory();
 
@@ -87,15 +87,15 @@ const WorkspacePeoplePanel = (props) => {
       return a.name.localeCompare(b.name);
     });
 
-  const handleEditWorkspace = () => {
-    let payload = {
-      type: "workspace_create_edit",
-      mode: "edit",
-      item: activeTopic,
-    };
+  // const handleEditWorkspace = () => {
+  //   let payload = {
+  //     type: "workspace_create_edit",
+  //     mode: "edit",
+  //     item: activeTopic,
+  //   };
 
-    dispatch(addToModals(payload));
-  };
+  //   dispatch(addToModals(payload));
+  // };
 
   const { _t } = useTranslation();
 
@@ -126,13 +126,13 @@ const WorkspacePeoplePanel = (props) => {
         <div className="card-body">
           <div className="people-header">
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
-            {!isExternal && (
+            {/* {!isExternal && (
               <div>
                 <button className="btn btn-primary" onClick={handleEditWorkspace}>
                   <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.peopleManage}
                 </button>
               </div>
-            )}
+            )} */}
           </div>
           <div className="row">
             {userSort.map((user) => {
