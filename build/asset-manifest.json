@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.2913ba6a.chunk.css",
-    "main.js": "/static/js/main.a863dc68.chunk.js",
+    "main.js": "/static/js/main.39100ff8.chunk.js",
     "runtime-main.js": "/static/js/runtime-main.afffcc37.js",
     "static/css/2.1b608f1d.chunk.css": "/static/css/2.1b608f1d.chunk.css",
-    "static/js/2.9f28978b.chunk.js": "/static/js/2.9f28978b.chunk.js",
+    "static/js/2.32ea0a08.chunk.js": "/static/js/2.32ea0a08.chunk.js",
     "index.html": "/index.html",
-    "precache-manifest.de971a6315ef3799dd899be7225abb3d.js": "/precache-manifest.de971a6315ef3799dd899be7225abb3d.js",
+    "precache-manifest.d3e0bf1138afc83d00e3391a36bcce8f.js": "/precache-manifest.d3e0bf1138afc83d00e3391a36bcce8f.js",
     "service-worker.js": "/service-worker.js",
-    "static/js/2.9f28978b.chunk.js.LICENSE.txt": "/static/js/2.9f28978b.chunk.js.LICENSE.txt",
+    "static/js/2.32ea0a08.chunk.js.LICENSE.txt": "/static/js/2.32ea0a08.chunk.js.LICENSE.txt",
     "static/media/app.scss": "/static/media/themify.e23a7dca.ttf",
     "static/media/active.svg": "/static/media/active.ee83a5a4.svg",
     "static/media/appointed.ogg": "/static/media/appointed.4a7182ca.ogg",
@@ -45,8 +45,8 @@
   "entrypoints": [
     "static/js/runtime-main.afffcc37.js",
     "static/css/2.1b608f1d.chunk.css",
-    "static/js/2.9f28978b.chunk.js",
+    "static/js/2.32ea0a08.chunk.js",
     "static/css/main.2913ba6a.chunk.css",
-    "static/js/main.a863dc68.chunk.js"
+    "static/js/main.39100ff8.chunk.js"
   ]
 }
