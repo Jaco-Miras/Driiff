@@ -18,13 +18,13 @@ const Wrapper = styled.div`
 
 const AllWorkspace = (props) => {
   const search = useSelector((state) => state.workspaces.search);
-  const user = useSelector((state) => state.session.user);
   const { results, filterBy, value } = search;
   const { _t } = useTranslation();
   const actions = useWorkspaceSearchActions();
 
   useEffect(() => {
     document.body.classList.add("stretch-layout");
+    actions.getFilterCount();
     // document.getElementById("main").setAttribute("style", "overflow: auto");
     // return () => document.getElementById("main").removeAttribute("style");
   }, []);
@@ -78,7 +78,7 @@ const AllWorkspace = (props) => {
   return (
     <Wrapper className={"container-fluid h-100 fadeIn"}>
       <div className="row app-block">
-        <AllWorkspaceSidebar actions={actions} dictionary={dictionary} filterBy={filterBy} />
+        <AllWorkspaceSidebar actions={actions} dictionary={dictionary} filterBy={filterBy} counters={search.counters} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <AllWorkspaceSearch actions={actions} dictionary={dictionary} search={search} />

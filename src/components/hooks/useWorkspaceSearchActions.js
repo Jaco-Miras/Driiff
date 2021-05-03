@@ -1,9 +1,9 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
-import { getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
+import { getWorkspaceFitlerCount, getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTranslation } from "./index";
 
@@ -26,19 +26,13 @@ const useWorkspaceSearchActions = () => {
     joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
   };
 
-  const search = useCallback(
-    (payload, callback) => {
-      dispatch(getAllWorkspace(payload, callback));
-    },
-    [dispatch]
-  );
+  const search = (payload, callback) => {
+    dispatch(getAllWorkspace(payload, callback));
+  };
 
-  const updateSearch = useCallback(
-    (payload, callback) => {
-      dispatch(updateWorkspaceSearch(payload, callback));
-    },
-    [dispatch]
-  );
+  const updateSearch = (payload, callback) => {
+    dispatch(updateWorkspaceSearch(payload, callback));
+  };
 
   const showWorkspaceModal = () => {
     let payload = {
@@ -49,7 +43,7 @@ const useWorkspaceSearchActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const archive = useCallback((item) => {
+  const archive = (item) => {
     let payload = {
       id: item.channel.id,
       is_archived: !item.topic.is_archive,
@@ -68,9 +62,9 @@ const useWorkspaceSearchActions = () => {
         {item.topic.is_archive ? "Unarchived " : "Archived "} <b>{item.topic.name}</b>
       </span>
     );
-  }, []);
+  };
 
-  const showArchiveConfirmation = useCallback((item) => {
+  const showArchiveConfirmation = (item) => {
     let payload = {
       type: "confirmation",
       headerText: dictionary.archiveWorkspace,
@@ -92,117 +86,105 @@ const useWorkspaceSearchActions = () => {
     }
 
     dispatch(addToModals(payload));
-  }, []);
+  };
 
-  const edit = useCallback(
-    (item) => {
-      if (workspaces[item.topic.id]) {
-        let payload = {
-          type: "workspace_create_edit",
-          mode: "edit",
-          item: workspaces[item.topic.id],
-        };
-
-        dispatch(addToModals(payload));
-      }
-    },
-    [dispatch, workspaces]
-  );
-
-  const join = useCallback(
-    (item) => {
+  const edit = (item) => {
+    if (workspaces[item.topic.id]) {
       let payload = {
-        channel_id: item.channel.id,
-        recipient_ids: [user.id],
+        type: "workspace_create_edit",
+        mode: "edit",
+        item: workspaces[item.topic.id],
       };
+
+      dispatch(addToModals(payload));
+    }
+  };
+
+  const join = (item) => {
+    let payload = {
+      channel_id: item.channel.id,
+      recipient_ids: [user.id],
+    };
+    let callback = (err, res) => {
+      if (err) return;
+      //handleRedirect(item);
+      toWorkspace({
+        id: item.topic.id,
+        name: item.topic.name,
+        folder_id: item.workspace ? item.workspace.id : null,
+        folder_name: item.workspace ? item.workspace.name : null,
+      });
+      toaster.success(
+        <>
+          {dictionary.joinWorkspace}
+          <b>{item.topic.name}</b>
+        </>
+      );
+    };
+    dispatch(joinWorkspace(payload, callback));
+  };
+
+  const leave = (item) => {
+    if (item.members.length === 1 && item.topic.is_locked) {
+      let archivePayload = {
+        id: item.channel.id,
+        is_archived: true,
+        is_muted: false,
+        is_pinned: false,
+      };
+      dispatch(putChannel(archivePayload));
+    } else {
+      let payload = {
+        name: item.topic.name,
+        description: item.topic.description,
+        topic_id: item.topic.id,
+        is_external: item.topic.is_shared ? 1 : 0,
+        member_ids: item.members.map((m) => m.id),
+        is_lock: item.topic.is_locked ? 1 : 0,
+        workspace_id: item.workspace ? item.workspace.id : 0,
+        new_member_ids: [],
+        remove_member_ids: [user.id],
+      };
+      payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
+        author: {
+          id: user.id,
+          name: user.name,
+          first_name: user.first_name,
+          partial_name: user.partial_name,
+          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+        },
+        title: "",
+        added_members: [],
+        removed_members: [user.id],
+      })}`;
       let callback = (err, res) => {
         if (err) return;
-        //handleRedirect(item);
-        toWorkspace({
-          id: item.topic.id,
-          name: item.topic.name,
-          folder_id: item.workspace ? item.workspace.id : null,
-          folder_name: item.workspace ? item.workspace.name : null,
-        });
         toaster.success(
           <>
-            {dictionary.joinWorkspace}
+            {dictionary.leaveWorkspace}
             <b>{item.topic.name}</b>
           </>
         );
       };
-      dispatch(joinWorkspace(payload, callback));
-    },
-    [dispatch, workspaces]
-  );
+      dispatch(leaveWorkspace({ workspace_id: item.topic.id, channel_id: item.channel.id }, callback));
+      dispatch(updateWorkspace(payload));
+    }
+  };
 
-  const leave = useCallback(
-    (item) => {
-      if (item.members.length === 1 && item.topic.is_locked) {
-        let archivePayload = {
-          id: item.channel.id,
-          is_archived: true,
-          is_muted: false,
-          is_pinned: false,
-        };
-        dispatch(putChannel(archivePayload));
+  const toWorkspace = (workspace) => {
+    if (workspaces[workspace.id]) {
+      dispatch(setActiveTopic(workspace));
+      if (workspace.folder_id) {
+        history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        let payload = {
-          name: item.topic.name,
-          description: item.topic.description,
-          topic_id: item.topic.id,
-          is_external: item.topic.is_shared ? 1 : 0,
-          member_ids: item.members.map((m) => m.id),
-          is_lock: item.topic.is_locked ? 1 : 0,
-          workspace_id: item.workspace ? item.workspace.id : 0,
-          new_member_ids: [],
-          remove_member_ids: [user.id],
-        };
-        payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
-          author: {
-            id: user.id,
-            name: user.name,
-            first_name: user.first_name,
-            partial_name: user.partial_name,
-            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-          },
-          title: "",
-          added_members: [],
-          removed_members: [user.id],
-        })}`;
-        let callback = (err, res) => {
-          if (err) return;
-          toaster.success(
-            <>
-              {dictionary.leaveWorkspace}
-              <b>{item.topic.name}</b>
-            </>
-          );
-        };
-        dispatch(leaveWorkspace({ workspace_id: item.topic.id, channel_id: item.channel.id }, callback));
-        dispatch(updateWorkspace(payload));
+        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
       }
-    },
-    [dispatch]
-  );
+    } else {
+      fetchWorkspaceAndRedirect(workspace);
+    }
+  };
 
-  const toWorkspace = useCallback(
-    (workspace) => {
-      if (workspaces[workspace.id]) {
-        dispatch(setActiveTopic(workspace));
-        if (workspace.folder_id) {
-          history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-        } else {
-          history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-        }
-      } else {
-        fetchWorkspaceAndRedirect(workspace);
-      }
-    },
-    [workspaces]
-  );
-
-  const fetchWorkspaceAndRedirect = useCallback((workspace, post = null) => {
+  const fetchWorkspaceAndRedirect = (workspace, post = null) => {
     dispatch(
       getWorkspace({ topic_id: workspace.id }, (err, res) => {
         console.log(res, err);
@@ -227,9 +209,9 @@ const useWorkspaceSearchActions = () => {
         }
       })
     );
-  }, []);
+  };
 
-  const favourite = useCallback((item) => {
+  const favourite = (item) => {
     let payload = {
       id: item.topic.id,
       workspace_id: item.workspace ? item.workspace.id : 0,
@@ -237,11 +219,16 @@ const useWorkspaceSearchActions = () => {
     };
 
     dispatch(favouriteWorkspace(payload));
-  }, []);
+  };
+
+  const getFilterCount = () => {
+    dispatch(getWorkspaceFitlerCount());
+  };
 
   return {
     edit,
     favourite,
+    getFilterCount,
     leave,
     join,
     search,

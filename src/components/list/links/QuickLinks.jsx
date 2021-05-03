@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { LinkItem } from "./index";
 import { useSettings } from "../../hooks";
@@ -126,9 +127,10 @@ const EditIcon = styled(SvgIconFeather)`
 `;
 
 const QuickLinks = (props) => {
-  const { className = "", links, user, dictionary } = props;
+  const { className = "", user, dictionary } = props;
 
   const { generalSettings, showModal } = useSettings();
+  const links = useSelector((state) => state.global.links);
 
   const httpsPattern = new RegExp("^(http|https)://");
   const ref = {
@@ -138,7 +140,7 @@ const QuickLinks = (props) => {
   };
 
   const [showLinks, setShowLinks] = useState(false);
-  const [maxHeight, setMaxHeight] = useState(0);
+  //const [maxHeight, setMaxHeight] = useState(0);
 
   const handleShowLinks = (e) => {
     e.preventDefault();
@@ -178,7 +180,7 @@ const QuickLinks = (props) => {
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
 
-      <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
+      <LinkNav ref={ref.nav} className={showLinks ? "enter-active" : "leave-active"}>
         <li className="personal-link shorcut-title-link">
           <div className="shorcut-title">{dictionary.personalLinks}</div>
         </li>

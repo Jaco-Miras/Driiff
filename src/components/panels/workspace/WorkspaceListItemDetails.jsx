@@ -2,6 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 
+const Wrapper = styled.div`
+  .workspace-title {
+    cursor: pointer;
+  }
+`;
+
 const Icon = styled(SvgIconFeather)`
   width: 1rem;
   height: 1rem;
@@ -9,11 +15,13 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const WorkspaceListItemDetails = (props) => {
-  const { dictionary, isExternal, isMember, item } = props;
+  const { dictionary, isExternal, isMember, item, onRedirect } = props;
   return (
-    <div className="workspace-details">
+    <Wrapper className="workspace-details">
       <div className="title-labels">
-        <span className="workspace-title">{item.topic.name}</span>
+        <span className="workspace-title" onClick={(e) => onRedirect(e, item)}>
+          {item.topic.name}
+        </span>
         {item.topic.is_locked && <Icon icon="lock" />}
         {item.topic.is_shared && !isExternal && (
           <span className={"badge badge-external ml-1 d-flex align-items-center"}>
@@ -37,7 +45,7 @@ const WorkspaceListItemDetails = (props) => {
           {item.workspace ? item.workspace.name : "Workspaces"}
         </span>
       </div>
-    </div>
+    </Wrapper>
   );
 };
 

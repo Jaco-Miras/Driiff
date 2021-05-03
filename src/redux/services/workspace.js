@@ -370,3 +370,16 @@ export function favouriteWorkspace(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function getWorkspaceFilterCount(payload) {
+  let url = "/v2/workspace-counter-entries";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
