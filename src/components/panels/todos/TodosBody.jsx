@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   }
 
   li.link-title {
-    border-radius: 6px;
+  
     font-weight: 500;
     font-size: 11px;
     text-transform: uppercase;
@@ -151,7 +151,7 @@ const TodosBody = (props) => {
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
-      <div className="card-body app-lists" data-loaded={0}>
+      <div className="card-body app-lists" data-loaded={0} style={{'padding': '15px 0px'}}>
         {recent.length > 0 && filter === "" && (
           <ul className="list-group list-group-flush ui-sortable fadeIn">
             {recent.slice(0, 5).map((rec, i) => {

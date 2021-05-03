@@ -8,6 +8,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     outline: currentcolor none medium;
   }
+
 `;
 
 const TodosPanel = (props) => {
@@ -18,11 +19,13 @@ const TodosPanel = (props) => {
 
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
-    createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New reminder"),
+    createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "Add new"),
     typePost: _t("REMINDER.TYPE_POST", "Post"),
     typeChat: _t("REMINDER.TYPE_CHAT", "Chat"),
     typePostComment: _t("REMINDER.TYPE_POST_COMMENT", "Post comment"),
     statusToday: _t("REMINDER.STATUS_TODAY", "Today"),
+    statusExpired: _t("REMINDER.STATUS_EXPIRED", "Expired"),
+    statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Today"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcomingToday: _t("REMINDER.STATUS_UPCOMING", "Upcoming Today"),
@@ -36,6 +39,7 @@ const TodosPanel = (props) => {
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
     actionMarkAsUndone: _t("REMINDER.ACTION_MARK_AS_UNDONE", "Mark as not done"),
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
+    actionFilter: _t("REMINDER.ACTION_FILTER", "Filter"),
   };
 
   const [filter, setFilter] = useState("");
@@ -53,7 +57,7 @@ const TodosPanel = (props) => {
   const clearSearch = () => {
     setSearch("");
   };
-
+  console.log(count);
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
