@@ -6,12 +6,45 @@ import quillHelper from "../../../helpers/quillHelper";
 import { MoreOptions } from "../common";
 import { setViewFiles } from "../../../redux/actions/fileActions";
 import { useDispatch } from "react-redux";
+import { SvgIconFeather } from "../../common";
 
 const Description = styled.span`
   * {
     display: inline-block;
   }
 `;
+
+const Icon = styled(SvgIconFeather)`
+  width: 16px;
+`;
+
+const HoverButtons = styled.div`
+  display: inline-block;
+  > svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .feather-pencil {
+    margin-right: 5px;
+  }
+`;
+
+const ItemList = styled.li`
+font-size:13px;
+.hover-btns {
+  display: none;
+  margin-right: 0.5rem;
+}
+
+&:hover {
+  .more-options,
+  .hover-btns {
+    display: inline-block;
+  }
+}
+`;
+
+
 
 const TodosList = (props) => {
   const { className = "", chatHeader, todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
@@ -38,13 +71,21 @@ const TodosList = (props) => {
 
   const getBadgeClass = (todo) => {
     if (todo.status === "OVERDUE") {
-      return "badge-warning";
+      return "text-danger";
+    }
+
+    if (todo.status === "NEW") {
+      return "text-default";
+    }
+
+    if (todo.status === "TODAY" || todo.status === "DONE") {
+      return "text-success";
     }
 
     if (dark_mode === "1") {
-      return "badge-dark";
+      return "text-dark";
     } else {
-      return "badge-light";
+      return "text-light";
     }
   };
 
@@ -70,13 +111,18 @@ const TodosList = (props) => {
   return (
     <>
       {chatHeader !== "" && (
-        <li className="list-group-item link-title">
+        <li className="list-group-item link-title" style={{ 'padding-left': '20px', 'padding-right': '20px', 'padding-top': '0px', 'margin-top': '0px','font-weight':'700' }}>
           <div>
-            <h6 className="mt-3 mb-0 font-size-11 text-uppercase">{chatHeader}</h6>
+            <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+              <span className={`badge`} style={{ 'font-weight':'700' }}>
+                <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
+                {chatHeader}
+              </span>
+            </h6>
           </div>
         </li>
       )}
-      <li className="pl-0 list-group-item">
+      <ItemList className="pl-0 list-group-item" style={{ 'padding-left': '20px', 'padding-right': '20px', 'padding-top': '0px', 'margin-top': '0px' }}>
         <a
           className={todo.status === "DONE" ? "text-success" : ""}
           href={todo.link}
@@ -106,27 +152,30 @@ const TodosList = (props) => {
                   );
                 })}
               </span>
+              <HoverButtons className="hover-btns ml-1">
+                <Icon icon="pencil" onClick={() => todoActions.updateFromModal(todo)} />
+                <Icon icon="trash" onClick={() => todoActions.removeConfirmation(todo)} />
+              </HoverButtons>
             </span>
             <span className="action d-inline-flex justify-content-center align-items-center">
               <span className="mr-3 align-items-center d-flex">
-                {todo.link_type !== null && <span className={"badge badge-white badge-todo-type text-black mr-3"}>{getTodoType(todo)}</span>}
                 {todo.remind_at && (
-                  <ToolTip content={todoFormat(todo.remind_at.timestamp)}>
-                    <span className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{todoFormatShortCode(todo.remind_at.timestamp)}</span>
-                  </ToolTip>
+                  <>
+                    <Icon icon="calendar" />
+                    <ToolTip content={todoFormat(todo.remind_at.timestamp)}>
+                      <span className={`badge ${getBadgeClass(todo)} mr-3`}>{todoFormatShortCode(todo.remind_at.timestamp)}</span>
+                    </ToolTip>
+                  </>
                 )}
+                {todo.link_type !== null && <span className={"badge badge-white badge-todo-type text-black mr-3"}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
                 )}
               </span>
-              <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
-                <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
-                <div onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>
-              </MoreOptions>
             </span>
           </span>
         </a>
-      </li>
+      </ItemList>
     </>
   );
 };
