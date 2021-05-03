@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import AllWorkspaceSidebar from "./AllWorkspaceSidebar";
 import AllWorkspaceSearch from "./AllWorkspaceSearch";
 import AllWorkspaceBody from "./AllWorkspaceBody";
 import { useTranslation, useWorkspaceSearchActions } from "../../hooks";
+import { throttle } from "lodash";
 
 const Wrapper = styled.div`
   overflow: hidden auto;
@@ -18,9 +19,12 @@ const Wrapper = styled.div`
 
 const AllWorkspace = (props) => {
   const search = useSelector((state) => state.workspaces.search);
-  const { results, filterBy, value } = search;
+  const { hasMore, results, filterBy, value } = search;
   const { _t } = useTranslation();
   const actions = useWorkspaceSearchActions();
+
+  const [loadMore, setLoadMore] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.body.classList.add("stretch-layout");
@@ -34,6 +38,7 @@ const AllWorkspace = (props) => {
       searching: true,
       results: [],
     });
+    setLoading(true);
     actions.search(
       {
         search: value,
@@ -42,6 +47,7 @@ const AllWorkspace = (props) => {
         filter_by: filterBy,
       },
       (err, res) => {
+        setLoading(false);
         if (err) {
           actions.updateSearch({
             searching: false,
@@ -51,6 +57,7 @@ const AllWorkspace = (props) => {
             filterBy: filterBy,
             searching: false,
             count: res.data.total_count,
+            hasMore: res.data.has_more,
             results: res.data.workspaces,
             maxPage: Math.ceil(res.data.total_count / 25),
           });
@@ -75,8 +82,59 @@ const AllWorkspace = (props) => {
     externalAccess: _t("WORKSPACE_SEARCH.EXTERNAL_ACCESS", "External access"),
     addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
   };
+
+  const handleLoadMore = () => {
+    console.log("load more");
+    if (!loading && hasMore) {
+      actions.search(
+        {
+          search: value,
+          skip: results.length,
+          limit: 25,
+          filter_by: filterBy,
+        },
+        (err, res) => {
+          setLoading(false);
+          setLoadMore(false);
+          if (err) {
+            actions.updateSearch({
+              searching: false,
+            });
+          } else {
+            actions.updateSearch({
+              filterBy: filterBy,
+              searching: false,
+              hasMore: res.data.has_more,
+              count: res.data.total_count,
+              results: [...results, ...res.data.workspaces],
+              maxPage: Math.ceil(res.data.total_count / 25),
+            });
+          }
+        }
+      );
+    }
+  };
+
+  const handleScroll = useMemo(() => {
+    const throttled = throttle((e) => {
+      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+        setLoadMore(true);
+      }
+    }, 300);
+    return (e) => {
+      e.persist();
+      return throttled(e);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (loadMore) {
+      handleLoadMore();
+    }
+  }, [loadMore]);
+
   return (
-    <Wrapper className={"container-fluid h-100 fadeIn"}>
+    <Wrapper className={"container-fluid h-100 fadeIn"} onScroll={handleScroll}>
       <div className="row app-block">
         <AllWorkspaceSidebar actions={actions} dictionary={dictionary} filterBy={filterBy} counters={search.counters} />
         <div className="col-lg-9 app-content mb-4">

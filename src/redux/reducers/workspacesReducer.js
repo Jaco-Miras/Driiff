@@ -27,6 +27,7 @@ const INITIAL_STATE = {
     page: 1,
     maxPage: 1,
     count: 0,
+    hasMore: false,
     counters: {
       new: 0,
       nonMember: 0,
