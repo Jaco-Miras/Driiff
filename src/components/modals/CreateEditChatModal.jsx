@@ -8,14 +8,7 @@ import { addToChannels, setSelectedChannel } from "../../redux/actions/chatActio
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { FormInput, PeopleSelect } from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {
-  useChannelActions,
-  useFileActions,
-  useQuillModules,
-  useTimeFormat,
-  useToaster,
-  useTranslation
-} from "../hooks";
+import { useChannelActions, useFileActions, useQuillModules, useTimeFormat, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { DropDocument } from "../dropzone/DropDocument";
 import { Avatar, SvgIconFeather } from "../common";
@@ -30,18 +23,18 @@ const WrapperDiv = styled(InputGroup)`
     justify-content: center;
     align-items: center;
     display: grid;
-    
+
     .btn {
       background: #fff;
       position: absolute;
       right: 5px;
       bottom: -5px;
       padding: 3px;
-      
+
       &:hover {
-        background: #fff !important;      
+        background: #fff !important;
       }
-    } 
+    }
   }
   .name-wrapper {
     width: calc(100% - 40px);
@@ -122,7 +115,7 @@ const CreateEditChatModal = (props) => {
   /**
    * @todo refactor
    */
-  const {type, mode} = props.data;
+  const { type, mode } = props.data;
 
   const inputRef = useRef();
   const reactQuillRef = useRef();
@@ -131,7 +124,7 @@ const CreateEditChatModal = (props) => {
   const { _t } = useTranslation();
   const toaster = useToaster();
   const { searchExisting, create: createChannel, update: updateChannel } = useChannelActions();
-  const {localizeDate} = useTimeFormat();
+  const { localizeDate } = useTimeFormat();
 
   const users = useSelector((state) => state.users.mentions);
   const channel = useSelector((state) => state.chat.selectedChannel);
@@ -149,7 +142,7 @@ const CreateEditChatModal = (props) => {
 
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({type: type}));
+    dispatch(clearModal({ type: type }));
   };
 
   const dictionary = {
@@ -166,62 +159,67 @@ const CreateEditChatModal = (props) => {
     feedbackChatMemberIsRequired: _t("FEEDBACK.CHAT_MEMBER_IS_REQUIRED", "You must assign atleast a member on this chat."),
   };
 
-  const options = Object.values(users).filter((u) => u.type === "internal").map((u) => {
-    return {
-      ...u,
-      value: u.id,
-      label: u.name,
-    };
-  });
+  const options = Object.values(users)
+    .filter((u) => u.type === "internal")
+    .map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: u.name,
+      };
+    });
 
-  const defaultUser = options.filter(o => o.value === user.id);
+  const defaultUser = options.filter((o) => o.value === user.id);
 
   const [form, setForm] = useState({
     icon: {
       file: null,
       file_id: null,
-      value: channel.icon_link,
+      value: mode === "edit" ? channel.icon_link : null,
     },
     title: {
-      value: mode === "edit" ? channel.title : ""
+      value: mode === "edit" ? channel.title : "",
     },
     selectedUsers: {
-      value: mode === "edit" ? channel.members.map((m) => {
-        return {
-          ...m,
-          value: m.id,
-          label: m.first_name,
-        };
-      }) : defaultUser
-    }
+      value:
+        mode === "edit"
+          ? channel.members.map((m) => {
+              return {
+                ...m,
+                value: m.id,
+                label: m.first_name,
+              };
+            })
+          : defaultUser,
+    },
   });
 
   const handleSelect = (e) => {
     if (e === null) {
-      setForm(prevState => ({
+      setForm((prevState) => ({
         ...prevState,
         selectedUsers: {
-          value: defaultUser
-        }
-      }))
+          value: defaultUser,
+        },
+      }));
     } else {
-      setForm(prevState => ({
+      setForm((prevState) => ({
         ...prevState,
         selectedUsers: {
-          value: e
-        }
-      }))
+          value: e,
+        },
+      }));
     }
   };
 
   const handleInputChange = (e) => {
-    const {name, value} = e.target;
-    setForm(prevState => ({
+    const { name, value } = e.target;
+    setForm((prevState) => ({
       ...prevState,
       [name]: {
-        value: value
-      }
-    }))
+        value: value,
+      },
+    }));
   };
 
   const handleConfirm = () => {
@@ -230,8 +228,7 @@ const CreateEditChatModal = (props) => {
       return;
     }
 
-    if (loading)
-      return;
+    if (loading) return;
 
     setLoading(true);
 
@@ -382,18 +379,18 @@ const CreateEditChatModal = (props) => {
           replies:
             textOnly.trim().length !== 0
               ? [
-                {
-                  ...message,
-                  id: res.data.last_reply.id,
-                  channel_id: res.data.channel.id,
-                  created_at: {
-                    timestamp: message.created_at.timestamp,
+                  {
+                    ...message,
+                    id: res.data.last_reply.id,
+                    channel_id: res.data.channel.id,
+                    created_at: {
+                      timestamp: message.created_at.timestamp,
+                    },
+                    updated_at: {
+                      timestamp: message.created_at.timestamp,
+                    },
                   },
-                  updated_at: {
-                    timestamp: message.created_at.timestamp,
-                  },
-                },
-              ]
+                ]
               : [],
           selected: true,
           search: res.data.search,
@@ -428,36 +425,16 @@ const CreateEditChatModal = (props) => {
         return userFound;
       })
       .map((r) => r.id);
-    
-      if(mode === "edit") {
-        if (form.title.value === channel.title && 
-          JSON.stringify(channel.members.map(m => m.id).sort()) === JSON.stringify(form.selectedUsers.value.map(v => v.id).sort())
-        ) {
-          //no changes in title and members
-          let newForm = {...form};
-          newForm.selectedUsers.valid = true;
-          newForm.selectedUsers.feedback = null;
-          setChatExists(false);
-          setForm(newForm);
-          setNoChanges(true);
-        } else {
-          if (recipient_ids.length) {
-            setSearching(true);
-            const callback = (err, res) => {
-              setSearching(false);
-              if (err) {
-                return;
-              }
-              if (res.data.channel_id) {
-                setChatExists(true);
-              } else {
-                setChatExists(false);
-              }
-            };
-            searchExisting(form.title.value, recipient_ids, callback);
-            setNoChanges(false);
-          }
-        }
+
+    if (mode === "edit") {
+      if (form.title.value === channel.title && JSON.stringify(channel.members.map((m) => m.id).sort()) === JSON.stringify(form.selectedUsers.value.map((v) => v.id).sort())) {
+        //no changes in title and members
+        let newForm = { ...form };
+        newForm.selectedUsers.valid = true;
+        newForm.selectedUsers.feedback = null;
+        setChatExists(false);
+        setForm(newForm);
+        setNoChanges(true);
       } else {
         if (recipient_ids.length) {
           setSearching(true);
@@ -473,11 +450,29 @@ const CreateEditChatModal = (props) => {
             }
           };
           searchExisting(form.title.value, recipient_ids, callback);
+          setNoChanges(false);
         }
       }
+    } else {
+      if (recipient_ids.length) {
+        setSearching(true);
+        const callback = (err, res) => {
+          setSearching(false);
+          if (err) {
+            return;
+          }
+          if (res.data.channel_id) {
+            setChatExists(true);
+          } else {
+            setChatExists(false);
+          }
+        };
+        searchExisting(form.title.value, recipient_ids, callback);
+      }
+    }
   }, 300);
 
-  const {modules} = useQuillModules({mode: "group_chat"});
+  const { modules } = useQuillModules({ mode: "group_chat" });
 
   // useEffect(() => {
   //   if (mode === "edit") {
@@ -510,9 +505,9 @@ const CreateEditChatModal = (props) => {
 
   useEffect(() => {
     if (!searching) {
-      let newForm = {...form};
+      let newForm = { ...form };
       if (newForm.title.value === "") {
-        newForm.title.valid = false
+        newForm.title.valid = false;
         newForm.title.feedback = dictionary.feedbackChatTitleIsRequired;
       } else if (chatExists === true) {
         newForm.title.valid = false;
@@ -586,17 +581,20 @@ const CreateEditChatModal = (props) => {
   const { uploadCompanyFiles } = useFileActions();
 
   const handleUpdateGroupIcon = (file) => {
-    uploadCompanyFiles({
-      file: file,
-    }, (err, res) => {
-      setForm((prevState) => ({
-        ...prevState,
-        icon: {
-          ...prevState.icon,
-          file_id: res.data.id,
-        },
-      }));
-    });
+    uploadCompanyFiles(
+      {
+        file: file,
+      },
+      (err, res) => {
+        setForm((prevState) => ({
+          ...prevState,
+          icon: {
+            ...prevState.icon,
+            file_id: res.data.id,
+          },
+        }));
+      }
+    );
   };
 
   const handleGroupIconClick = () => {
@@ -617,13 +615,11 @@ const CreateEditChatModal = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
-      <ModalHeaderSection
-        toggle={toggle}>{mode === "edit" ? dictionary.editChat : dictionary.newGroupChat}</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editChat : dictionary.newGroupChat}</ModalHeaderSection>
       <ModalBody>
         <WrapperDiv>
           <div>
-            <Label
-              className={"modal-info mb-3"}>{mode === "edit" ? dictionary.chatInfoEdit : dictionary.chatInfo}</Label>
+            <Label className={"modal-info mb-3"}>{mode === "edit" ? dictionary.chatInfoEdit : dictionary.chatInfo}</Label>
             <div className="d-flex justify-content-start align-items-center">
               <div className="icon-wrapper" onClick={handleGroupIconClick}>
                 <DropDocument
@@ -636,44 +632,51 @@ const CreateEditChatModal = (props) => {
                   }}
                   onCancel={handleHideIconDropzone}
                 />
-                {<Avatar imageLink={form.icon.value} name={form.title.value} noDefaultClick={true}
-                         forceThumbnail={false}/>}
+                {<Avatar imageLink={form.icon.value} name={form.title.value} noDefaultClick={true} forceThumbnail={false} />}
                 <span className="btn btn-outline-light btn-sm">
-                <SvgIconFeather icon="pencil"/>
-              </span>
+                  <SvgIconFeather icon="pencil" />
+                </span>
               </div>
               <div className="name-wrapper">
-                <Label className={"modal-label"} for="chat">{dictionary.chatTitle}</Label>
-                <FormInput
-                  name="title"
-                  style={{ borderRadius: "5px" }} defaultValue={form.title.value}
-                  onChange={handleInputChange} innerRef={inputRef}
-                  isValid={form.title.valid} feedback={form.title.feedback}/>
+                <Label className={"modal-label"} for="chat">
+                  {dictionary.chatTitle}
+                </Label>
+                <FormInput name="title" style={{ borderRadius: "5px" }} defaultValue={form.title.value} onChange={handleInputChange} innerRef={inputRef} isValid={form.title.valid} feedback={form.title.feedback} />
               </div>
             </div>
           </div>
         </WrapperDiv>
         <WrapperDiv>
           <div>
-            <Label className={"modal-label"} for="people">{dictionary.people}</Label>
-            <SelectPeople options={options} value={form.selectedUsers.value} onChange={handleSelect}/>
+            <Label className={"modal-label"} for="people">
+              {dictionary.people}
+            </Label>
+            <SelectPeople options={options} value={form.selectedUsers.value} onChange={handleSelect} />
           </div>
         </WrapperDiv>
         {mode === "new" && (
           <WrapperDiv>
             <div>
-              <Label className={"modal-label"} for="firstMessage">{dictionary.firstMessage}</Label>
-              <StyledQuillEditor
-                className="group-chat-input" modules={modules} ref={reactQuillRef}
-                onChange={handleQuillChange}/>
+              <Label className={"modal-label"} for="firstMessage">
+                {dictionary.firstMessage}
+              </Label>
+              <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef} onChange={handleQuillChange} />
             </div>
           </WrapperDiv>
         )}
         <WrapperDiv>
-          <button className="btn btn-primary"
-                  disabled={searching || Object.keys(form).map(k => form[k].valid).some(v => v === false) || (mode === "edit" && noChanges)}
-                  onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+          <button
+            className="btn btn-primary"
+            disabled={
+              searching ||
+              Object.keys(form)
+                .map((k) => form[k].valid)
+                .some((v) => v === false) ||
+              (mode === "edit" && noChanges)
+            }
+            onClick={handleConfirm}
+          >
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.editChat : dictionary.createChat}
           </button>
         </WrapperDiv>
