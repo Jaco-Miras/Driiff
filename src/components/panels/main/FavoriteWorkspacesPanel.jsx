@@ -70,7 +70,17 @@ const BrowseAll = styled.span`
 `;
 
 const WorkspaceListContainer = styled.div`
-  margin: 0 30px;
+  padding: 0 30px;
+  overflow: auto;
+`;
+
+const FavEmptyState = styled.div`
+  display: flex;
+  flex-flow: column;
+  margin-top: 1rem;
+  span:last-child {
+    margin-top: 1rem;
+  }
 `;
 
 const FavoriteWorkspacesPanel = (props) => {
@@ -193,6 +203,18 @@ const FavoriteWorkspacesPanel = (props) => {
       </FavWorkspacesLabel>
       <WorkspaceListContainer>
         <div id="elements" className="open">
+          {workspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length === 0 && (
+            <FavEmptyState>
+              <span role="img" aria-label="star">
+                ✨
+              </span>
+              <span>
+                {dictionary.addYourFavWs}, {user.first_name}
+              </span>
+              <BrowseAll onClick={handleBrowseAll}>{dictionary.startBrowsing}</BrowseAll>
+            </FavEmptyState>
+          )}
+
           {workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 && <EmptyWorkspaces />}
           {workspacesLoaded && Object.values(workspaces).length > 0 && (
             <>

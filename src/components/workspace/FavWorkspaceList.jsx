@@ -4,9 +4,8 @@ import { WorkspaceIcon } from "./index";
 import { SvgIconFeather } from "../common";
 
 const Wrapper = styled.div`
-  padding: 5px;
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   cursor: pointer;
   .feather-star {
     top: -2px;
