@@ -49,7 +49,7 @@ const Lists = styled.ul`
   }
 `;
 const AllWorkspaceBody = (props) => {
-  const { actions, dictionary, results } = props;
+  const { actions, dictionary, filterBy, results } = props;
   const [showWorkspaces, setShowWorkspaces] = useState({ showActive: true, showArchived: true });
 
   const handleShowWorkspaces = (type) => {
@@ -70,7 +70,13 @@ const AllWorkspaceBody = (props) => {
         </ListsHeader>
         {showWorkspaces.showActive &&
           results
-            .filter((r) => !r.topic.is_archive)
+            .filter((r) => {
+              if (filterBy === "favourites") {
+                return !r.topic.is_archive && r.topic.is_favourite;
+              } else {
+                return !r.topic.is_archive;
+              }
+            })
             .map((result) => {
               return <WorkspaceListItem actions={actions} key={result.topic.id} dictionary={dictionary} item={result} />;
             })}
@@ -84,7 +90,13 @@ const AllWorkspaceBody = (props) => {
         </ListsHeader>
         {showWorkspaces.showArchived &&
           results
-            .filter((r) => r.topic.is_archive)
+            .filter((r) => {
+              if (filterBy === "favourites") {
+                return r.topic.is_archive && r.topic.is_favourite;
+              } else {
+                return r.topic.is_archive;
+              }
+            })
             .map((result) => {
               return <WorkspaceListItem actions={actions} key={result.topic.id} dictionary={dictionary} item={result} />;
             })}
