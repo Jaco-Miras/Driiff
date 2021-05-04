@@ -22265,24 +22265,29 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 // animation for sidebar modal buttons
 .bslide-enter,
 .bslide-appear {
-  transform: translateX(-100%);
-  -webkit-transform: translateX(-100%);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: opacity 300ms linear 100ms, transform 300ms ease-out;
 }
 
 .bslide-enter.bslide-enter-active,
 .bslide-appear.bslide-appear-active {
-  transform: translateX(0%);
-  transition: transform 300ms ease-in-out;
+  transform: translateY(0);
+  opacity: 1;
+  transition: opacity 300ms linear 100ms, transform 300ms ease-out;
 }
 
 /* slide exit */
 .bslide-exit {
-  transform: translateX(0%);
+  transform: translateY(0);
+  opacity: 1;
 }
 .bslide-exit.bslide-exit-active {
-  transform: translateX(-100%);
-  transition: transform 300ms ease-out;
+  transform: translateY(50%);
+  opacity: 0;
+  transition: opacity 200ms linear 100ms, transform 250ms ease-in;
 }
 .bslide-exit-done {
-  transform: translateX(-100%);
+  transform: translateY(50%);
+  opacity: 0;
 }

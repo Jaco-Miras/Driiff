@@ -64,10 +64,12 @@ const FavWorkspaceList = (props) => {
           {workspace.is_lock === 1 && <Icon icon="lock" />}
           {workspace.is_shared && !isExternal && <Icon icon="eye" />}
         </WorkspaceTitle>
-        <WorkspaceFolder className="workspace-folder-name">
-          <Icon icon="folder" />
-          <span className="text-truncate">{workspace.folder_name ? workspace.folder_name : "Workspaces"}</span>
-        </WorkspaceFolder>
+        {workspace.folder_name && (
+          <WorkspaceFolder className="workspace-folder-name">
+            <Icon icon="folder" />
+            <span className="text-truncate">{workspace.folder_name}</span>
+          </WorkspaceFolder>
+        )}
       </WorkspaceTitleFolder>
     </Wrapper>
   );

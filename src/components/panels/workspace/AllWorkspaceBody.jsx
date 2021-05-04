@@ -10,6 +10,9 @@ const Wrapper = styled.div`
 const ListsHeader = styled.li`
   border: none;
   cursor: pointer;
+  .badge.badge-light {
+    background: #f1f2f7;
+  }
 `;
 
 const Lists = styled.ul`

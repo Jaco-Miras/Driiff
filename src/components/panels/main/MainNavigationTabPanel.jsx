@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { addToModals, setNavMode } from "../../../redux/actions/globalActions";
+import { setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import { useSettings, useTodos, useTranslation } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks } from "./index";
@@ -167,7 +167,6 @@ const NavNewWorkspace = styled.button`
   border: 0 !important;
   margin: 15px;
   height: 40px;
-  width: calc(100% - 30px);
   justify-content: center;
   align-items: center;
   color: #ffffff !important;

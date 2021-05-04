@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
-  margin-left: auto;
+  margin-left: 10px;
 `;
 
 const Icon = styled(SvgIconFeather)`
