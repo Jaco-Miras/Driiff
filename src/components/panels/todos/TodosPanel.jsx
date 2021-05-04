@@ -33,7 +33,8 @@ const TodosPanel = (props) => {
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
-    noItemsFound: _t("REMINDER.NO_ITEMS_FOUND", "No items found."),
+    noItemsFoundHeader: _t("REMINDER.NO_ITEMS_FOUND_HEADER", "WOO!"),
+    noItemsFoundText: _t("REMINDER.NO_ITEMS_FOUND_TEXT", "Nothing here but me..."),
     actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
     actionEdit: _t("REMINDER.ACTION_EDIT", "Edit"),
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
@@ -57,7 +58,23 @@ const TodosPanel = (props) => {
   const clearSearch = () => {
     setSearch("");
   };
-  console.log(count);
+
+  const items = getSortedItems({ filter: { status: filter, search: search } });
+
+  function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+      const key = keyGetter(item);
+      const collection = map.get(key);
+      if (!collection) {
+        map.set(key, [item]);
+      } else {
+        collection.push(item);
+      }
+    });
+    return map;
+  }
+  
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
@@ -65,7 +82,7 @@ const TodosPanel = (props) => {
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded} todoItems={getSortedItems({ filter: { status: filter, search: search } })} recent={doneRecently} dictionary={dictionary} todoActions={todoActions} filter={filter} />
+          <TodosBody complete={false} isLoaded={isLoaded}  groupedTodoItems={groupBy(items, item => item.status)} todoItems={items} recent={doneRecently} dictionary={dictionary} todoActions={todoActions} filter={filter} />
         </div>
       </div>
     </Wrapper>
