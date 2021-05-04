@@ -30,18 +30,20 @@ const HoverButtons = styled.div`
 `;
 
 const ItemList = styled.li`
+background: transparent;
 font-size:13px;
+padding:0;
 .hover-btns {
   display: none;
   margin-right: 0.5rem;
 }
-
 &:hover {
   .more-options,
   .hover-btns {
     display: inline-block;
   }
 }
+:
 `;
 
 
@@ -108,21 +110,16 @@ const TodosList = (props) => {
     }
   }, [isDone]);
 
+  const handleRemoveClick = (e) => {
+    setIsDone(!isDone);
+  };
+
+  const handleEditClick = (e) => {
+    setIsDone(!isDone);
+  };
   return (
     <>
-      {chatHeader !== "" && (
-        <li className="list-group-item link-title" style={{ 'padding-left': '20px', 'padding-right': '20px', 'padding-top': '0px', 'margin-top': '0px','font-weight':'700' }}>
-          <div>
-            <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-              <span className={`badge`} style={{ 'font-weight':'700' }}>
-                <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
-                {chatHeader}
-              </span>
-            </h6>
-          </div>
-        </li>
-      )}
-      <ItemList className="pl-0 list-group-item" style={{ 'padding-left': '20px', 'padding-right': '20px', 'padding-top': '0px', 'margin-top': '0px' }}>
+      <ItemList className="pl-0 list-group-item" style={{ 'padding': '5px 20px','margin-top': '0px','border-radius':'0px','border-left':'none','border-right':'none','border-top':'none' }}>
         <a
           className={todo.status === "DONE" ? "text-success" : ""}
           href={todo.link}

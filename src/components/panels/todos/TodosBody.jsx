@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
 //import { useHistory } from "react-router-dom";
@@ -6,11 +6,12 @@ import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../h
 // import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
 // import { useDispatch, useSelector } from "react-redux";
 import { TodosList } from "./index";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   .list-group {
     .list-group-item {
-      padding: 0.75rem 1.5rem 0 0.75rem;
+      padding: 0rem 1.5rem 0 0.75rem;
 
       > a {
         display: block;
@@ -35,18 +36,7 @@ const Wrapper = styled.div`
     }
   }
 
-  li.link-title {
-  
-    font-weight: 500;
-    font-size: 11px;
-    text-transform: uppercase;
-    line-height: 1.2;
-
-    &:not(:nth-child(1)) {
-      margin-top: 2rem;
-    }
-  }
-
+ 
   .text-success {
     text-decoration: line-through;
   }
@@ -64,6 +54,14 @@ const Wrapper = styled.div`
   }
 `;
 
+const ListGroup = styled.ul`
+background:transparent;
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+`;
+
 const EmptyState = styled.div`
   padding: 5rem 0;
   max-width: 750px;
@@ -75,9 +73,13 @@ const EmptyState = styled.div`
     margin: 0 auto;
   }
 
+  h3 {
+    font-size: 16px;
+  }
   h5 {
     margin-top: 2rem;
     margin-bottom: 0;
+    font-size: 14px;
   }
 
   button {
@@ -86,8 +88,30 @@ const EmptyState = styled.div`
   }
 `;
 
+
+const Icon = styled(SvgIconFeather)`
+  width: 16px;
+`;
+
+const DivContainer = styled.div`
+padding-top:15px;
+padding-bottom:15px;
+:first-of-type {padding-top:10px;padding-bottom:10px;}
+:nth-child(even) {background: #F8F9FA}
+:nth-child(odd) {background: transparent}
+border-bottom: 1px solid #ebebeb;
+:last-of-type { border: none;}
+
+`;
+
+/*
+:last-of-type .list-group .list-group-item:last-child{
+  border-bottom-width: 0px !important;
+}*/
+
+
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, recent } = props;
+  const { className = "", dictionary, filter, isLoaded, loadMore, groupedTodoItems, todoActions, todoItems, recent } = props;
 
   const config = {
     angle: 90,
@@ -145,86 +169,43 @@ const TodosBody = (props) => {
       refs.files.current.addEventListener("scroll", handleScroll, false);
     }
   }, [refs.files.current]);
-  console.log(filter);
-  return (
-    <Wrapper className={`todos-body card app-content-body ${className}`}>
-      <span className="d-none" ref={refs.btnLoadMore}>
-        Load more
-      </span>
-      <div className="card-body app-lists" data-loaded={0} style={{'padding': '15px 0px'}}>
-        {recent.length > 0 && filter === "" && (
-          <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {recent.slice(0, 5).map((rec, i) => {
-              return (
-                <TodosList
-                  key={rec.id}
-                  chatHeader={i === 0 ? "Recently done" : ""}
-                  todo={rec}
-                  todoActions={todoActions}
-                  dictionary={dictionary}
-                  handleLinkClick={handleLinkClick}
-                  dark_mode={dark_mode}
-                  todoFormat={todoFormat}
-                  todoFormatShortCode={todoFormatShortCode}
-                  getFileIcon={getFileIcon}
-                />
-              );
-            })}
-          </ul>
-        )}
-        {!isLoaded ? (
-          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
-        ) : todoItems.length !== 0 ? (
-          <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {todoItems.map((todo, index) => {
-              let chatHeader = "";
-              if (index === 0) {
-                switch (todo.status) {
-                  case "OVERDUE": {
-                    chatHeader = dictionary.statusOverdue;
-                    break;
-                  }
-                  case "TODAY": {
-                    chatHeader = dictionary.statusUpcomingToday;
-                    break;
-                  }
-                  case "NEW": {
-                    chatHeader = dictionary.statusUpcoming;
-                    break;
-                  }
-                  case "DONE": {
-                    chatHeader = dictionary.statusDone;
-                    break;
-                  }
-                  default:
-                    return "";
-                }
-              } else {
-                let prevTodo = todoItems[index - 1];
-                if (prevTodo.status !== todo.status) {
-                  switch (todo.status) {
-                    case "TODAY": {
-                      chatHeader = dictionary.statusToday;
-                      break;
-                    }
-                    case "OVERDUE": {
-                      chatHeader = dictionary.statusOverdue;
-                      break;
-                    }
-                    case "NEW": {
-                      chatHeader = dictionary.statusUpcoming;
-                      break;
-                    }
-                    case "DONE": {
-                      chatHeader = dictionary.statusDone;
-                      break;
-                    }
-                    default:
-                      return "";
-                  }
-                }
-              }
 
+  const getTodoStatus = (todo) => {
+    switch (todo.status) {
+      case "OVERDUE":
+        return dictionary.statusOverdue;
+      case "TODAY":
+        return dictionary.statusUpcomingToday;
+      case "NEW":
+        return dictionary.statusUpcoming;
+      case "DONE":
+        return dictionary.statusDone;
+      default:
+        return "";
+    }
+  };
+
+  const Stats = ["REC", "OVERDUE", "TODAY", "NEW", "DONE"];
+
+  const [activeTitles, setActiveTitles] = useState({});
+
+  const handleTitleClick = (e) => {
+    setActiveTitles({
+      ...activeTitles,
+      [e.target.id]: !activeTitles[e.target.id]
+    });
+  };
+  // const Stats = ["OVERDUE", "TODAY", "NEW", "DONE"];
+
+  const setTodo = () => {
+    return (
+      <>
+        {Stats.map((item, it) => {
+          let chatHeader = "";
+          let items = groupedTodoItems.get(item);
+          let x = (typeof items !== 'undefined') ?
+            items.map((todo, index) => {
+              let chatHeader = "";
               return (
                 <TodosList
                   key={todo.id}
@@ -239,8 +220,64 @@ const TodosBody = (props) => {
                   getFileIcon={getFileIcon}
                 />
               );
-            })}
-          </ul>
+            }) : [];
+          return ((typeof items !== 'undefined') ? (
+            <DivContainer>
+              <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
+                <h6 className=" mb-0 font-size-11 text-uppercase">
+                  <spanTitle className={`badge badge-light`} style={{ 'font-weight': '700', 'cursor': 'pointer','background': '#F8F9FA' }} onClick={handleTitleClick} id={'t_' + item}>
+                    <SvgIconFeather icon={activeTitles['t_' + item] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
+                    {item}
+                  </spanTitle>
+                </h6>
+              </div><ListGroup className="list-group list-group-flush ui-sortable fadeIn" style={activeTitles['t_' + item] ? { 'display': 'none' } : { 'display': 'block' }} >{x}</ListGroup></DivContainer>) : <></>)
+        })}
+      </>
+    )
+  };
+
+  return (
+    <Wrapper className={`todos-body card app-content-body ${className}`}>
+      <span className="d-none" ref={refs.btnLoadMore}>
+        Load more
+      </span>
+      <div className="card-body app-lists" data-loaded={0} style={{ 'padding': '0px' }}>
+        {recent.length > 0 && filter === "" && (
+          <DivContainer >
+            <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
+              <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+                <spanTitle className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer','background': '#F8F9FA' }} onClick={handleTitleClick} id={'t_REC'}>
+                  <SvgIconFeather icon={activeTitles['t_REC'] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
+                  Recently done
+                </spanTitle>
+              </h6>
+            </div>
+            <ListGroup
+              className="list-group  ui-sortable fadeIn" style={activeTitles['t_REC'] ? { 'display': 'none' } : { 'display': 'block' }}>
+              {recent.slice(0, 5).map((rec, i) => {
+                return (
+                  <TodosList
+                    key={rec.id}
+                    chatHeader={""}
+                    todo={rec}
+                    todoActions={todoActions}
+                    dictionary={dictionary}
+                    handleLinkClick={handleLinkClick}
+                    dark_mode={dark_mode}
+                    todoFormat={todoFormat}
+                    todoFormatShortCode={todoFormatShortCode}
+                    getFileIcon={getFileIcon}
+
+                  />
+                );
+              })}
+            </ListGroup>
+          </DivContainer >
+        )}
+        {!isLoaded ? (
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
+        ) : todoItems.length ? (
+          setTodo()
         ) : (
           <>
             {filter === "" ? (
@@ -253,8 +290,8 @@ const TodosBody = (props) => {
               </EmptyState>
             ) : (
               <EmptyState>
-                <SvgEmptyState icon={1} height={282} />
-                <h5>{dictionary.noItemsFound}</h5>
+                <h3>{dictionary.noItemsFoundHeader}</h3>
+                <h5>{dictionary.noItemsFoundText}  <Icon icon="ghost" /></h5>
               </EmptyState>
             )}
           </>
@@ -263,5 +300,4 @@ const TodosBody = (props) => {
     </Wrapper>
   );
 };
-
 export default React.memo(TodosBody);
