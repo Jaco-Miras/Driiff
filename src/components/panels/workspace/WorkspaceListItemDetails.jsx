@@ -10,6 +10,17 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
   }
+  .mobile-icon {
+    display: none;
+  }
+  @media (max-width: 414px) {
+    .badge {
+      display: none;
+    }
+    .mobile-icon {
+      display: block;
+    }
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -47,9 +58,12 @@ const WorkspaceListItemDetails = (props) => {
         </span>
         {item.topic.is_locked && <Icon icon="lock" />}
         {item.topic.is_shared && !isExternal && (
-          <span className={"badge badge-external ml-1 d-flex align-items-center"}>
-            <Icon icon="eye" /> {dictionary.withClient}
-          </span>
+          <>
+            <span className={"badge badge-external ml-1 align-items-center"}>
+              <Icon icon="eye" /> {dictionary.withClient}
+            </span>
+            <Icon icon="eye" className="mobile-icon" />
+          </>
         )}
       </div>
       <div className="labels">
@@ -65,10 +79,12 @@ const WorkspaceListItemDetails = (props) => {
           <Icon icon="user" />
           {item.members.length}
         </span>
-        <span className="mr-2">
-          <Icon icon="folder" />
-          {item.workspace ? item.workspace.name : "Workspaces"}
-        </span>
+        {item.workspace && (
+          <span className="mr-2">
+            <Icon icon="folder" />
+            {item.workspace.name}
+          </span>
+        )}
       </div>
     </Wrapper>
   );
