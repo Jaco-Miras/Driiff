@@ -37,11 +37,6 @@ const Wrapper = styled.li`
       height: 0.8rem;
     }
   }
-  .labels span {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-  }
   :hover {
     button {
       display: inline-flex;
