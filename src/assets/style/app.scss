@@ -22287,11 +22287,11 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   opacity: 1;
 }
 .bslide-exit.bslide-exit-active {
-  transform: translateY(50%);
+  transform: translateY(20%);
   opacity: 0;
   transition: opacity 200ms linear 100ms, transform 250ms ease-in;
 }
 .bslide-exit-done {
-  transform: translateY(50%);
+  transform: translateY(20%);
   opacity: 0;
 }
