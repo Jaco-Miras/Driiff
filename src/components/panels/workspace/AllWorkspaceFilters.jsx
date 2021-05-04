@@ -9,6 +9,13 @@ const Wrapper = styled.ul`
   li {
     cursor: pointer;
   }
+  &.list-group .list-group-item.active {
+    border-color: #eeebee;
+    background-color: #fafafa !important;
+    .dark & {
+      background-color: #111417 !important;
+    }
+  }
 `;
 
 const AllWorkspaceFilters = (props) => {
