@@ -985,7 +985,7 @@ class SocketListeners extends Component {
         const socketVersion = parseFloat(version.substr(2));
         const latestVersion = parseFloat(driffData.version.substr(2));
 
-        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && socketVersion < latestVersion) {
+        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && socketVersion > latestVersion) {
           const handleReminder = () => {
             // setTimeout(() => {
             //   this.props.addToModals({

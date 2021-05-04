@@ -2822,6 +2822,7 @@ export default (state = INITIAL_STATE, action) => {
             return res;
           }, {}),
         },
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id.id ? { ...state.activeTopic, is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false } : state.activeTopic,
       };
     }
     case "GET_WORKSPACE_FILTER_COUNT_SUCCESS": {

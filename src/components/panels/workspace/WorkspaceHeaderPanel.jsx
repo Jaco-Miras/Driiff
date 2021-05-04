@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, useHistory, useRouteMatch } from "react-router-dom";
+import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslation, useWorkspace, useWorkspaceSearchActions } from "../../hooks";
+import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
+import { useToaster, useTranslation } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
@@ -28,6 +28,9 @@ const NavBarLeft = styled.div`
       width: 16px;
       height: 16px;
     }
+  }
+  .nav-item {
+    display: flex;
   }
   @media (max-width: 991.99px) {
     margin-right: 5px;
@@ -245,6 +248,21 @@ const Icon = styled(SvgIconFeather)`
   margin-left: 5px;
 `;
 
+const StarIcon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  margin-left: 5px;
+  cursor: pointer;
+  ${(props) =>
+    props.isFav &&
+    `
+    color: rgb(255, 193, 7)!important;
+    fill: rgb(255, 193, 7);
+    :hover {
+      color: rgb(255, 193, 7);
+    }`}
+`;
+
 const WorspaceHeaderPanel = (props) => {
   const { isExternal } = props;
   const toaster = useToaster();
@@ -291,13 +309,13 @@ const WorspaceHeaderPanel = (props) => {
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
   };
 
-  const actions = useWorkspaceSearchActions();
+  //const actions = useWorkspaceSearchActions();
 
-  const search = useSelector((state) => state.workspaces.search);
+  //const search = useSelector((state) => state.workspaces.search);
 
-  const { value, searching } = search;
-  const [inputValue, setInputValue] = useState(value);
-  const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
+  //const { value, searching } = search;
+  // const [inputValue, setInputValue] = useState(value);
+  // const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -389,6 +407,18 @@ const WorspaceHeaderPanel = (props) => {
   //   }
   // }, [activeTopic]);
 
+  const handleFavoriteWorkspace = () => {
+    let payload = {
+      id: activeTopic.id,
+      workspace_id: activeTopic.folder_id ? activeTopic.folder_id : 0,
+      is_pinned: activeTopic.is_favourite ? 0 : 1,
+    };
+
+    dispatch(favouriteWorkspace(payload));
+  };
+
+  const isMember = activeTopic && user && activeTopic.members.some((m) => m.id === user.id);
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -449,6 +479,11 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
+                      {isMember && (
+                        <li className="nav-item">
+                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                        </li>
+                      )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -489,6 +524,11 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
                             <Icon icon="eye" /> {dictionary.withClient}
                           </div>
+                        </li>
+                      )}
+                      {isMember && (
+                        <li className="nav-item">
+                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
                         </li>
                       )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>

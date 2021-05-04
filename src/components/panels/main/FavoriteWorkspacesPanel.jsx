@@ -57,7 +57,7 @@ const FavWorkspacesLabel = styled.div`
   border-top: 2px solid;
   padding: 15px 0;
   > span {
-    margin-left: 10px;
+    margin-left: 15px;
   }
 `;
 
@@ -67,6 +67,10 @@ const BrowseAll = styled.span`
     text-decoration: underline;
     cursor: pointer;
   }
+`;
+
+const WorkspaceListContainer = styled.div`
+  margin: 0 30px;
 `;
 
 const FavoriteWorkspacesPanel = (props) => {
@@ -187,7 +191,7 @@ const FavoriteWorkspacesPanel = (props) => {
           </StyledTooltip>
         )}
       </FavWorkspacesLabel>
-      <div className="navigation-menu-group">
+      <WorkspaceListContainer>
         <div id="elements" className="open">
           {workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 && <EmptyWorkspaces />}
           {workspacesLoaded && Object.values(workspaces).length > 0 && (
@@ -202,7 +206,7 @@ const FavoriteWorkspacesPanel = (props) => {
             </>
           )}
         </div>
-      </div>
+      </WorkspaceListContainer>
     </Wrapper>
   );
 };
