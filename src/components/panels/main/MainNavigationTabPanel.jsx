@@ -242,6 +242,8 @@ const MainNavigationTabPanel = (props) => {
     post: _t("SIDEBAR.POST", "Post"),
     reminder: _t("SIDEBAR.REMINDER", "Reminder"),
     addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
+    startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
+    addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite workspaces here"),
   };
 
   const handleIconClick = (e) => {
