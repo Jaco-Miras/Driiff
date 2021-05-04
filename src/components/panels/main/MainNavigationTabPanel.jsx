@@ -165,7 +165,7 @@ const CirclePlus = styled(SvgIconFeather)`
 const NavNewWorkspace = styled.button`
   background: #fff3 !important;
   border: 0 !important;
-  margin: 15px;
+  margin: 15px 30px;
   height: 40px;
   justify-content: center;
   align-items: center;

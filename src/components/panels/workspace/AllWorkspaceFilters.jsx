@@ -36,6 +36,16 @@ const AllWorkspaceFilters = (props) => {
 
   return (
     <Wrapper className={"list-group list-group-flush"}>
+      <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "member" ? "active" : ""}`} data-value="member" onClick={handleClickFilter}>
+        <span className="text-primary fa fa-circle mr-2" />
+        {dictionary.labelJoined}
+        <span className="small ml-auto">{counters.member > 0 && counters.member}</span>
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "favourites" ? "active" : ""}`} data-value="favourites" onClick={handleClickFilter}>
+        <span className="text-warning fa fa-circle mr-2" />
+        {dictionary.favourites}
+        <span className="small ml-auto">{counters.favourites > 0 && counters.favourites}</span>
+      </li>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "new" ? "active" : ""}`} data-value="new" onClick={handleClickFilter}>
         <span className="text-success fa fa-circle mr-2" />
         {dictionary.new}
@@ -50,7 +60,7 @@ const AllWorkspaceFilters = (props) => {
       )}
       {!isExternal && (
         <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "external" ? "active" : ""}`} data-value="external" onClick={handleClickFilter}>
-          <span className="text-warning fa fa-circle mr-2" />
+          <span className="text-external fa fa-circle mr-2" />
           {dictionary.withClient}
           <span className="small ml-auto">{counters.external > 0 && counters.external}</span>
         </li>

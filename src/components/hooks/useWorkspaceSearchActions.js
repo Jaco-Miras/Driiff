@@ -56,11 +56,16 @@ const useWorkspaceSearchActions = () => {
       payload.push_unarchived = 1;
     }
 
-    dispatch(putChannel(payload));
-    toaster.success(
-      <span>
-        {item.topic.is_archive ? "Unarchived " : "Archived "} <b>{item.topic.name}</b>
-      </span>
+    dispatch(
+      putChannel(payload, (err, res) => {
+        if (err) return;
+        getFilterCount();
+        toaster.success(
+          <span>
+            {item.topic.is_archive ? "Unarchived " : "Archived "} <b>{item.topic.name}</b>
+          </span>
+        );
+      })
     );
   };
 
@@ -108,6 +113,7 @@ const useWorkspaceSearchActions = () => {
     let callback = (err, res) => {
       if (err) return;
       //handleRedirect(item);
+      getFilterCount();
       toWorkspace({
         id: item.topic.id,
         name: item.topic.name,
@@ -159,6 +165,7 @@ const useWorkspaceSearchActions = () => {
       })}`;
       let callback = (err, res) => {
         if (err) return;
+        getFilterCount();
         toaster.success(
           <>
             {dictionary.leaveWorkspace}
@@ -218,7 +225,12 @@ const useWorkspaceSearchActions = () => {
       is_pinned: item.topic.is_favourite ? 0 : 1,
     };
 
-    dispatch(favouriteWorkspace(payload));
+    dispatch(
+      favouriteWorkspace(payload, (err, res) => {
+        if (err) return;
+        getFilterCount();
+      })
+    );
   };
 
   const getFilterCount = () => {

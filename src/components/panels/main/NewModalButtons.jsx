@@ -7,7 +7,7 @@ import { addToModals, postToDo } from "../../../redux/actions/globalActions";
 import { useToaster } from "../../hooks";
 
 const Wrapper = styled.div`
-  margin: 15px 15px 0 15px;
+  margin: 15px 30px 0 30px;
   color: #cbd4db;
   > div {
     margin-bottom: 10px;

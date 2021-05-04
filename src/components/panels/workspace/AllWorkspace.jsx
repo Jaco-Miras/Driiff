@@ -29,8 +29,6 @@ const AllWorkspace = (props) => {
   useEffect(() => {
     document.body.classList.add("stretch-layout");
     actions.getFilterCount();
-    // document.getElementById("main").setAttribute("style", "overflow: auto");
-    // return () => document.getElementById("main").removeAttribute("style");
   }, []);
 
   useEffect(() => {
@@ -81,6 +79,7 @@ const AllWorkspace = (props) => {
     buttonLeave: _t("BUTTON.LEAVE", "Leave"),
     externalAccess: _t("WORKSPACE_SEARCH.EXTERNAL_ACCESS", "External access"),
     addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
+    favourites: _t("WORKSPACE.FAVOURITES", "Favourites"),
   };
 
   const handleLoadMore = () => {
