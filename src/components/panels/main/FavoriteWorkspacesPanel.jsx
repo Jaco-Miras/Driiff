@@ -78,6 +78,7 @@ const FavEmptyState = styled.div`
   display: flex;
   flex-flow: column;
   margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.6);
   span:last-child {
     margin-top: 1rem;
   }

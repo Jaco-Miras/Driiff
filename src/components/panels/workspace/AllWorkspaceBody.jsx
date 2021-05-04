@@ -39,6 +39,7 @@ const Lists = styled.ul`
   }
   &.archived-workspaces li {
     background-color: #fafafa;
+    opacity: .7;
     .dark & {
       background-color: #252a2d;
     }

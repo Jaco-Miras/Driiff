@@ -37,7 +37,7 @@ const AllWorkspaceFilters = (props) => {
   return (
     <Wrapper className={"list-group list-group-flush"}>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "member" ? "active" : ""}`} data-value="member" onClick={handleClickFilter}>
-        <span className="text-primary fa fa-circle mr-2" />
+        <span className="text-success fa fa-circle mr-2" />
         {dictionary.labelJoined}
         <span className="small ml-auto">{counters.member > 0 && counters.member}</span>
       </li>
@@ -47,7 +47,7 @@ const AllWorkspaceFilters = (props) => {
         <span className="small ml-auto">{counters.favourites > 0 && counters.favourites}</span>
       </li>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "new" ? "active" : ""}`} data-value="new" onClick={handleClickFilter}>
-        <span className="text-success fa fa-circle mr-2" />
+        <span className="text-primary fa fa-circle mr-2" />
         {dictionary.new}
         <span className="small ml-auto">{counters.new > 0 && counters.new}</span>
       </li>
