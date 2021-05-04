@@ -22,7 +22,7 @@ const INITIAL_STATE = {
   search: {
     results: [],
     searching: false,
-    filterBy: "",
+    filterBy: "member",
     value: "",
     page: 1,
     maxPage: 1,
@@ -34,6 +34,8 @@ const INITIAL_STATE = {
       external: 0,
       private: 0,
       archived: 0,
+      member: 0,
+      favourites: 0,
     },
     filters: {
       private: {
