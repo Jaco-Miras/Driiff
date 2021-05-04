@@ -216,13 +216,12 @@ const FavoriteWorkspacesPanel = (props) => {
           )}
 
           {workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 && <EmptyWorkspaces />}
-          {workspacesLoaded && Object.values(workspaces).length > 0 && (
+          {workspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length > 0 && (
             <>
               <ul>
-                {favoriteWorkspaces.length > 0 &&
-                  favoriteWorkspaces.map((ws) => {
-                    return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} />;
-                  })}
+                {favoriteWorkspaces.map((ws) => {
+                  return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} />;
+                })}
               </ul>
               <BrowseAll onClick={handleBrowseAll}>{dictionary.browseAll}</BrowseAll>
             </>
