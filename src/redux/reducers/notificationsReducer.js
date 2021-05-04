@@ -1,4 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   user: null,
@@ -241,6 +242,58 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
+      if (action.data.type === "WORKSPACE" && state.user && state.user.id !== action.data.user_id && action.data.new_member_ids.some((id) => id === state.user.id)) {
+        let author = action.data.members.find((m) => m.id === action.data.user_id);
+        return {
+          ...state,
+          notifications: {
+            ...state.notifications,
+            [action.data.notification_id[0]]: {
+              author: author,
+              created_at: { timestamp: getCurrentTimestamp() },
+              data: {
+                description: action.data.description,
+                id: action.data.id,
+                title: action.data.name,
+                workspace_folder_id: action.data.workspace_id,
+                workspace_folder_name: action.data.current_workspace_folder_name,
+              },
+              id: action.data.notification_id[0],
+              is_read: 0,
+              type: "WORKSPACE_ADD_MEMBER",
+            },
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "INCOMING_WORKSPACE": {
+      if (state.user && state.user.id === action.data.channel.user_id) return state;
+      let author = action.data.members.find((m) => m.id === action.data.channel.user_id);
+
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          [action.data.notification_id[0]]: {
+            author: author,
+            created_at: { timestamp: getCurrentTimestamp() },
+            data: {
+              description: action.data.topic.description,
+              id: action.data.topic.id,
+              title: action.data.topic.name,
+              workspace_folder_id: action.data.workspace ? action.data.workspace.id : 0,
+              workspace_folder_name: action.data.workspace ? action.data.workspace.name : "",
+            },
+            id: action.data.notification_id[0],
+            is_read: 0,
+            type: "WORKSPACE_ADD_MEMBER",
+          },
+        },
+      };
     }
     default:
       return state;
