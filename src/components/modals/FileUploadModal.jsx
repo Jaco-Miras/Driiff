@@ -225,17 +225,17 @@ const SelectFileOptionContainer = styled.div`
 `;
 
 const fileOptions = [
-  {
-    id: "remove_on_download",
-    value: "remove_on_download",
-    label: "Remove file after download",
-    icon: "eye-off",
-  },
+  // {
+  //   id: "remove_on_download",
+  //   value: "remove_on_download",
+  //   label: "Remove file after download",
+  //   icon: "eye-off",
+  // },
   {
     id: "remove_automatically",
     value: "remove_automatically",
     label: "Remove file automatically in 5 days",
-    icon: "eye",
+    icon: "file-minus",
   },
 ];
 
