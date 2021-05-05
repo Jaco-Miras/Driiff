@@ -280,7 +280,8 @@ const ChatHeaderPanel = (props) => {
             <Icon className={"ml-1"} icon={"eye"} strokeWidth="3" width={12} />
           ) : (
             <StyledBadge className={"badge badge-external ml-1"}>
-              <EyeIcon icon="eye" /> {dictionary.withClient}
+              <EyeIcon icon="eye" className={"mr-1"} />
+              {dictionary.withClient}
             </StyledBadge>
           ))}
       </ChatHeaderBadgeContainer>
