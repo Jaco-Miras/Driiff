@@ -54,13 +54,13 @@ const AllWorkspaceFilters = (props) => {
         <span className="small ml-auto">{counters.favourites > 0 && counters.favourites}</span>
       </li>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "new" ? "active" : ""}`} data-value="new" onClick={handleClickFilter}>
-        <span className="text-primary fa fa-circle mr-2" />
+        <span className="text-info fa fa-circle mr-2" />
         {dictionary.new}
         <span className="small ml-auto">{counters.new > 0 && counters.new}</span>
       </li>
       {!isExternal && (
         <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "nonMember" ? "active" : ""}`} data-value="nonMember" onClick={handleClickFilter}>
-          <span className="text-danger fa fa-circle mr-2" />
+          <span className="text-primary fa fa-circle mr-2" />
           {dictionary.notJoined}
           <span className="small ml-auto">{counters.nonMember > 0 && counters.nonMember}</span>
         </li>
@@ -73,7 +73,7 @@ const AllWorkspaceFilters = (props) => {
         </li>
       )}
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "private" ? "active" : ""}`} data-value="private" onClick={handleClickFilter}>
-        <span className="text-info fa fa-circle mr-2" />
+        <span className="text-danger fa fa-circle mr-2" />
         {dictionary.private}
         <span className="small ml-auto">{counters.private > 0 && counters.private}</span>
       </li>

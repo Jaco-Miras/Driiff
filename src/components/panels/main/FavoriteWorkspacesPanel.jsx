@@ -63,8 +63,8 @@ const FavWorkspacesLabel = styled.div`
 
 const BrowseAll = styled.span`
   color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
   :hover {
-    text-decoration: underline;
     cursor: pointer;
   }
 `;
@@ -78,7 +78,7 @@ const FavEmptyState = styled.div`
   display: flex;
   flex-flow: column;
   margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #cbd4db;
   span:last-child {
     margin-top: 1rem;
   }
@@ -209,9 +209,7 @@ const FavoriteWorkspacesPanel = (props) => {
               <span role="img" aria-label="star">
                 ✨
               </span>
-              <span>
-                {dictionary.addYourFavWs}, {user.first_name}
-              </span>
+              <span dangerouslySetInnerHTML={{ __html: dictionary.addYourFavWs }} />, {user.first_name}
               <BrowseAll onClick={handleBrowseAll}>{dictionary.startBrowsing}</BrowseAll>
             </FavEmptyState>
           )}

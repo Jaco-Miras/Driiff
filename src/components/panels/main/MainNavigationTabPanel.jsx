@@ -243,7 +243,7 @@ const MainNavigationTabPanel = (props) => {
     reminder: _t("SIDEBAR.REMINDER", "Reminder"),
     addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
-    addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite workspaces here"),
+    addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here"),
   };
 
   const handleIconClick = (e) => {
@@ -277,7 +277,7 @@ const MainNavigationTabPanel = (props) => {
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
 
       <FavoriteWorkspacesPanel dictionary={dictionary} generalSettings={generalSettings} isExternal={isExternal} user={user} />
-      <NewModalButtons dictionary={dictionary} isExternal={isExternal} showButtons={showButtons} />
+      <NewModalButtons dictionary={dictionary} isExternal={isExternal} onShowModalButtons={handleShowModalButtons} showButtons={showButtons} />
 
       <div>
         <NavNewWorkspace onClick={handleShowModalButtons} className="btn btn-outline-light" type="button">
