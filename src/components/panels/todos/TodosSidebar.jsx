@@ -70,7 +70,7 @@ const TodosSidebar = (props) => {
         </div>
         <div className="app-sidebar-menu" tabIndex="1">
           <div className="list-group list-group-flush">
-          <Filter onClick={setFilter} data-filter="" active={filter === ""} className={`list-group-item d-flex justify-content-between align-items-center`}>
+            <Filter onClick={setFilter} data-filter="" active={filter === ""} className={`list-group-item d-flex justify-content-between align-items-center`}>
               <span className="text-secondary fa fa-circle mr-2" />
               {dictionary.statusAll}
               <span className="small ml-auto">{count.all}</span>
@@ -85,11 +85,11 @@ const TodosSidebar = (props) => {
                 <span className="text-success fa fa-circle mr-2" />
                 {dictionary.statusToday}
               </span>
-              <span className="small ml-auto">{count.today}</span>
+              <span className="small ml-auto"></span>
             </Filter>
             <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={`list-group-item d-flex justify-content-between align-items-center`}>
               <span data-filter="NEW">
-                <span className="text-default fa fa-circle mr-2"/>
+                <span className="text-default fa fa-circle mr-2" />
                 {dictionary.statusUpcoming}
               </span>
               <span className="small ml-auto">{count.new}</span>

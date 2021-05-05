@@ -110,7 +110,7 @@ border-bottom: 1px solid #ebebeb;
 
 `;
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, recent } = props;
+  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
 
   const config = {
     angle: 90,
@@ -268,7 +268,7 @@ const TodosBody = (props) => {
           </DivContainer >
 
         )}
-        {recent.length > 0 && filter === "" && (
+        {getDone.length > 0 && (
           <DivContainer >
             <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
               <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
@@ -280,7 +280,7 @@ const TodosBody = (props) => {
             </div>
             <ListGroup
               className="list-group  ui-sortable fadeIn" style={activeTitles['tdone'] ? { 'display': 'none' } : { 'display': 'block' }}>
-              {recent.map((rec, i) => {
+              {getDone.map((rec, i) => {
                 return (
                   <TodosList
                     key={rec.id}
