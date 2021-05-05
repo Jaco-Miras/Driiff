@@ -1,5 +1,4 @@
 import momentTZ from "moment-timezone";
-import React from "react";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {

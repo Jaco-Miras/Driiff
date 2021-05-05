@@ -226,7 +226,7 @@ const ProfileSettings = (props) => {
 
       setGeneralSetting(
         {
-          [name]: checked ? "1" : "0",
+          [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
         },
         () => {
           if (["log_rocket", "sentry"].includes(name)) {
@@ -504,7 +504,7 @@ const ProfileSettings = (props) => {
                     id="daily_digest"
                     name="daily_digest"
                     data-success-message={`${!daily_digest ? "Daily digest enabled" : "Daily digest disabled"}`}
-                    onChange={handleNotificationsSwitchToggle}
+                    onChange={handleGeneralSwitchToggle}
                     label={<span>{dictionary.dailyDigest}</span>}
                   />
                 </div>
