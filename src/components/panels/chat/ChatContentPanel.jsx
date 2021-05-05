@@ -165,6 +165,7 @@ const ChatContentPanel = (props) => {
     teamFeedback: _t("HUDDLE.HUDDLE_TEAM_FEEDBACK", "Huddle team feedback"),
     replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
     removeOnDownload: _t("CHAT.REMOVE_ON_DOWNLOAD", "Remove on download"),
+    withClient: _t("PAGE.WITH_CLIENT", "With client"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
