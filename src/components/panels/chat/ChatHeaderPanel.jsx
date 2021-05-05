@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   position: relative;
   z-index: 3;
   display: flex;
+  align-items: center;
 
   .chat-header-left {
     display: flex;
@@ -23,13 +24,11 @@ const Wrapper = styled.div`
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
-    margin-top: 10px;
     text-align: center;
-    display: inline-block;
+    display: flex;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: calc(100% - 265px);
 
     a {
       color: #000 !important;
@@ -63,6 +62,11 @@ const Wrapper = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)``;
+
+const EyeIcon = styled(SvgIconFeather)`
+  width: 0.9rem;
+  height: 0.9rem;
+`;
 
 const BackButton = styled.div`
   @media (min-width: 992px) {
@@ -123,21 +127,28 @@ const StyledMoreOptions = styled(MoreOptions)`
   }
 `;
 
+const StyledBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+`;
+
+const ChatHeaderBadgeContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
   const { className = "", channel, dictionary } = props;
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const dispatch = useDispatch();
-  const routeMatch = useRouteMatch();
   const history = useHistory();
   const channelActions = useChannelActions();
-
-  const [page, setPage] = useState("chat");
   const chatChannel = useSelector((state) => state.chat.selectedChannel);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -210,7 +221,7 @@ const ChatHeaderPanel = (props) => {
         if (chatChannel.workspace_folder) {
           return (
             <>
-              {chatChannel.workspace_folder.name}&nbsp;>&nbsp;
+              {chatChannel.workspace_folder.name}&nbsp;{">"}&nbsp;
               <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
                 {chatChannel.title}
               </a>
@@ -219,7 +230,9 @@ const ChatHeaderPanel = (props) => {
         } else {
           return (
             <>
-              <span className="dictionary-label">{dictionary.workspace}&nbsp;>&nbsp;</span>
+              <span className="dictionary-label">
+                {dictionary.workspace}&nbsp;{">"}&nbsp;
+              </span>
               <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
                 {chatChannel.title}
               </a>
@@ -242,17 +255,7 @@ const ChatHeaderPanel = (props) => {
     }
   };
 
-  useEffect(() => {
-    setPage(
-      routeMatch.path.split("/").filter((p) => {
-        return p.length !== 0;
-      })[0]
-    );
-  }, [routeMatch.path, setPage]);
-
   if (channel === null) return null;
-
-  //const totalChatMessageCounter = unreadCounter.chat_message + unreadCounter.workspace_chat_message;
 
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
@@ -263,19 +266,28 @@ const ChatHeaderPanel = (props) => {
         </BackButton>
         <ChannelIcon className="chat-header-icon" channel={channel} />
       </div>
-      <h2 className="chat-header-title">
-        {getChannelTitle()}
+      <div className="chat-header-title">{getChannelTitle()}</div>
+      <ChatHeaderBadgeContainer className="chat-header-badge">
         {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
           <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
         )}
-        {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
-          <Icon className={"ml-1"} icon={"eye"} strokeWidth="3" width={12} />
-        )}
-      </h2>
+        {channel.type === "TOPIC" &&
+          !channel.is_archived &&
+          workspaces.hasOwnProperty(channel.entity_id) &&
+          workspaces[channel.entity_id].is_shared &&
+          workspaces[channel.entity_id].active === 1 &&
+          (channel.team ? (
+            <Icon className={"ml-1"} icon={"eye"} strokeWidth="3" width={12} />
+          ) : (
+            <StyledBadge className={"badge badge-external ml-1"}>
+              <EyeIcon icon="eye" /> {dictionary.withClient}
+            </StyledBadge>
+          ))}
+      </ChatHeaderBadgeContainer>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
-            <li className="mt-1">
+            <li>
               <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
             </li>
           )}
@@ -303,4 +315,4 @@ const ChatHeaderPanel = (props) => {
   );
 };
 
-export default React.memo(ChatHeaderPanel);
+export default ChatHeaderPanel;
