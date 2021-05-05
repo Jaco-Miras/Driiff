@@ -328,7 +328,7 @@ const usePostActions = () => {
                   dispatch(
                     archiveReducer({
                       post_id: post.id,
-                      topic_id: parseInt(params.workspaceId),
+                      //topic_id: parseInt(params.workspaceId),
                       is_archived: post.is_archived === 1 ? 0 : 1,
                     })
                   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
 
@@ -17,7 +17,7 @@ const IconWrapper = styled.div`
   }
 `;
 const Wrapper = styled.div`
-  min-width: ${(props) => (props.editMode ? "160px" : "120px")};
+  min-width: ${(props) => (props.editMode && !props.clientChat ? "160px" : props.editMode && props.clientChat ? "120px" : !props.editMode && props.clientChat ? "80px" : "120px")};
   display: flex;
   .feather {
     width: 18px;
@@ -27,7 +27,18 @@ const Wrapper = styled.div`
     display: none;
   }
   @media (max-width: 414px) {
-    min-width: ${(props) => (props.showButtons && props.editMode ? "150px" : props.showButtons ? "120px" : props.editMode ? "60px" : "30px")};
+    min-width: ${(props) =>
+      props.clientChat && props.showButtons && props.editMode
+        ? "120px"
+        : props.clientChat && props.showButtons && !props.editMode
+        ? "90px"
+        : props.showButtons && props.editMode
+        ? "150px"
+        : props.showButtons
+        ? "120px"
+        : props.editMode
+        ? "60px"
+        : "30px"};
     .btn-meet,
     .btn-smile,
     .btn-paperclip {
@@ -40,8 +51,9 @@ const Wrapper = styled.div`
 `;
 
 const ChatInputButtons = (props) => {
-  const { showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote } = props;
   const dispatch = useDispatch();
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
@@ -59,8 +71,10 @@ const ChatInputButtons = (props) => {
     });
   };
 
+  const isClientChat = channel && workspaces[channel.entity_id] && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id;
+
   return (
-    <Wrapper editMode={editChatMessage !== null} showButtons={showButtons}>
+    <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat}>
       {editChatMessage && (
         <IconWrapper>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
@@ -73,11 +87,13 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
       </IconWrapper>
-      <IconWrapper className="btn-meet">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
-          <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
-        </Tooltip>
-      </IconWrapper>
+      {!isClientChat && (
+        <IconWrapper className="btn-meet">
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
+            <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
+          </Tooltip>
+        </IconWrapper>
+      )}
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />

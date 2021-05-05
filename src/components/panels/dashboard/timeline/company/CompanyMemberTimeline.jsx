@@ -52,21 +52,24 @@ const CompanyMemberTimeline = (props) => {
       if (message.title && message.title !== "") {
         return `${dictionary.updatedWorkspaceTo} ${message.title}`;
       }
-      if (message.added_members.length !== 0 || message.removed_members.length) {
-      }
+      // if (message.added_members.length !== 0 || message.removed_members.length) {
+      // }
     } else {
       if (data.body.includes("NEW_ACCOUNT_ACTIVATED")) {
         return `${data.body.replace("NEW_ACCOUNT_ACTIVATED ", "")} ${dictionary.isAddedToCompany}`;
       } else if (data.body.includes("POST_CREATE")) {
-        let item = JSON.parse(data.body.replace("POST_CREATE::", ""));
-        return (
-          <>
-            {item.author.name}{" "}
-            <b>
-              {dictionary.createdThePost} {item.post.title}
-            </b>
-          </>
-        );
+        let parsedData = data.body.replace("POST_CREATE::", "");
+        if (parsedData.trim() !== "") {
+          let item = JSON.parse(data.body.replace("POST_CREATE::", ""));
+          return (
+            <>
+              {item.author.name}{" "}
+              <b>
+                {dictionary.createdThePost} {item.post.title}
+              </b>
+            </>
+          );
+        }
       } else {
         console.log(data);
         return data.body;

@@ -253,6 +253,8 @@ const ChatFooterPanel = (props) => {
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
     chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
+    youAreViewing: _t("CHAT.LABEL", "You are viewing"),
+    joinWorkspaceChat: _t("CHAT.JOIN_WORKSPACE_CHAT", "Join workspace chat"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -386,7 +388,15 @@ const ChatFooterPanel = (props) => {
                 )}
                 <Dflex className="d-flex flex-grow-1">
                   <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
-                  <ChatInputButtons showEmojiPicker={showEmojiPicker} handleShowEmojiPicker={handleShowEmojiPicker} handleGoogleMeet={handleGoogleMeet} onShowFileDialog={onShowFileDialog} editChatMessage={editChatMessage} quote={quote} />
+                  <ChatInputButtons
+                    channel={selectedChannel}
+                    showEmojiPicker={showEmojiPicker}
+                    handleShowEmojiPicker={handleShowEmojiPicker}
+                    handleGoogleMeet={handleGoogleMeet}
+                    onShowFileDialog={onShowFileDialog}
+                    editChatMessage={editChatMessage}
+                    quote={quote}
+                  />
                 </Dflex>
               </ChatInputContainer>
 
@@ -403,14 +413,16 @@ const ChatFooterPanel = (props) => {
           <div className="p-5">{editChatMessage.files.map((f) => f.filename).join(", ")}</div>
         </Dflex>
       )}
-      {isMember === false && selectedChannel !== null && (
+      {isMember === false && selectedChannel !== null && user.type === "internal" && (
         <Dflex className="channel-viewing">
-          <div className="channel-name">You are viewing #{selectedChannel.title}</div>
+          <div className="channel-name">
+            {dictionary.youAreViewing} #{selectedChannel.title}
+          </div>
           <div className="channel-create">
             Created by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
-            <button onClick={handleJoinWorkspace}>Join workspace chat</button>
+            <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspaceChat}</button>
           </div>
         </Dflex>
       )}

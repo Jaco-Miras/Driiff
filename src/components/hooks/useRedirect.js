@@ -106,14 +106,21 @@ const useRedirect = () => {
     [workspaces]
   );
 
-  const toWorkspace = useCallback((workspace) => {
-    dispatch(setActiveTopic(workspace));
-    if (workspace.folder_id) {
-      history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-    } else {
-      history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-    }
-  }, []);
+  const toWorkspace = useCallback(
+    (workspace) => {
+      if (workspaces[workspace.id]) {
+        dispatch(setActiveTopic(workspace));
+        if (workspace.folder_id) {
+          history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        } else {
+          history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+        }
+      } else {
+        fetchWorkspaceAndRedirect(workspace);
+      }
+    },
+    [workspaces]
+  );
 
   const fetchWorkspaceAndRedirect = useCallback((workspace, post = null) => {
     dispatch(

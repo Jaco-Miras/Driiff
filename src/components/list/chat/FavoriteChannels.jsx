@@ -142,7 +142,7 @@ const FavoriteChannels = (props) => {
       <ul>
         {channels.map((c) => {
           return (
-            <ChannelWrapper>
+            <ChannelWrapper key={c.id}>
               <ChannelIcon channel={c} className="fav-channel" onSelectChannel={() => handleSelectChannel(c)} showSlider={false}>
                 <SvgIconFeather icon="star" />
                 {c.is_muted && <SvgIconFeather icon="volume-x" />}

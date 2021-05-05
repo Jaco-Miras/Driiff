@@ -36,7 +36,7 @@ const Search = styled(SearchForm)`
 `;
 
 const WorkspacePeoplePanel = (props) => {
-  const { className = "", workspace, isExternal } = props;
+  const { className = "", isExternal, isMember, workspace } = props;
 
   const dispatch = useDispatch();
   const { selectUserChannel, loggedUser } = useUserChannels();
@@ -126,7 +126,7 @@ const WorkspacePeoplePanel = (props) => {
         <div className="card-body">
           <div className="people-header">
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
-            {!isExternal && (
+            {!isExternal && isMember && (
               <div>
                 <button className="btn btn-primary" onClick={handleEditWorkspace}>
                   <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.peopleManage}
