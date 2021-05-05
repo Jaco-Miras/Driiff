@@ -9,6 +9,14 @@ import { TodosList } from "./index";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
+flex: unset !important;
+height: auto !important;
+${(props) =>
+    props.active &&
+    `
+  height: 100% !important;
+  `}
+
   .list-group {
     .list-group-item {
       padding: 0rem 1.5rem 0 0.75rem;
@@ -36,11 +44,6 @@ const Wrapper = styled.div`
     }
   }
 
- 
-  .text-success {
-    text-decoration: line-through;
-  }
-
   .todo-title {
     color: #343a40;
 
@@ -56,15 +59,19 @@ const Wrapper = styled.div`
 
 const ListGroup = styled.ul`
 background:transparent;
-
 .list-group-item:last-child {
   border-bottom: none;
 }
 `;
 
 const EmptyState = styled.div`
-  padding: 5rem 0;
-  max-width: 750px;
+margin: 0;
+position: absolute;
+top: 50%;
+width: 100%;
+text-align:center;
+-ms-transform: translateY(-50%);
+transform: translateY(-50%);
   margin: auto;
   text-align: center;
 
@@ -76,8 +83,7 @@ const EmptyState = styled.div`
   h3 {
     font-size: 16px;
   }
-  h5 {
-    margin-top: 2rem;
+  h5 {  
     margin-bottom: 0;
     font-size: 14px;
   }
@@ -96,22 +102,15 @@ const Icon = styled(SvgIconFeather)`
 const DivContainer = styled.div`
 padding-top:15px;
 padding-bottom:15px;
-:first-of-type {padding-top:10px;padding-bottom:10px;}
+:first-of-type {padding-bottom:10px;}
 :nth-child(even) {background: #F8F9FA}
 :nth-child(odd) {background: transparent}
 border-bottom: 1px solid #ebebeb;
 :last-of-type { border: none;}
 
 `;
-
-/*
-:last-of-type .list-group .list-group-item:last-child{
-  border-bottom-width: 0px !important;
-}*/
-
-
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, groupedTodoItems, todoActions, todoItems, recent } = props;
+  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, recent } = props;
 
   const config = {
     angle: 90,
@@ -185,8 +184,6 @@ const TodosBody = (props) => {
     }
   };
 
-  const Stats = ["REC", "OVERDUE", "TODAY", "NEW", "DONE"];
-
   const [activeTitles, setActiveTitles] = useState({});
 
   const handleTitleClick = (e) => {
@@ -195,70 +192,31 @@ const TodosBody = (props) => {
       [e.target.id]: !activeTitles[e.target.id]
     });
   };
-  // const Stats = ["OVERDUE", "TODAY", "NEW", "DONE"];
-
-  const setTodo = () => {
-    return (
-      <>
-        {Stats.map((item, it) => {
-          let chatHeader = "";
-          let items = groupedTodoItems.get(item);
-          let x = (typeof items !== 'undefined') ?
-            items.map((todo, index) => {
-              let chatHeader = "";
-              return (
-                <TodosList
-                  key={todo.id}
-                  chatHeader={chatHeader}
-                  todo={todo}
-                  todoActions={todoActions}
-                  dictionary={dictionary}
-                  handleLinkClick={handleLinkClick}
-                  dark_mode={dark_mode}
-                  todoFormat={todoFormat}
-                  todoFormatShortCode={todoFormatShortCode}
-                  getFileIcon={getFileIcon}
-                />
-              );
-            }) : [];
-          return ((typeof items !== 'undefined') ? (
-            <DivContainer>
-              <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
-                <h6 className=" mb-0 font-size-11 text-uppercase">
-                  <spanTitle className={`badge badge-light`} style={{ 'font-weight': '700', 'cursor': 'pointer','background': '#F8F9FA' }} onClick={handleTitleClick} id={'t_' + item}>
-                    <SvgIconFeather icon={activeTitles['t_' + item] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-                    {item}
-                  </spanTitle>
-                </h6>
-              </div><ListGroup className="list-group list-group-flush ui-sortable fadeIn" style={activeTitles['t_' + item] ? { 'display': 'none' } : { 'display': 'block' }} >{x}</ListGroup></DivContainer>) : <></>)
-        })}
-      </>
-    )
-  };
 
   return (
-    <Wrapper className={`todos-body card app-content-body ${className}`}>
+    <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
       <div className="card-body app-lists" data-loaded={0} style={{ 'padding': '0px' }}>
-        {recent.length > 0 && filter === "" && (
+        {!isLoaded ? (
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
+        ) : todoItems.length ? (
           <DivContainer >
             <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
               <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                <spanTitle className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer','background': '#F8F9FA' }} onClick={handleTitleClick} id={'t_REC'}>
-                  <SvgIconFeather icon={activeTitles['t_REC'] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-                  Recently done
-                </spanTitle>
+                <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }} onClick={handleTitleClick} onClick={handleTitleClick} id={'ttodo'}>
+                  <SvgIconFeather icon={activeTitles['ttodo'] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
+                To do
+              </span>
               </h6>
             </div>
             <ListGroup
-              className="list-group  ui-sortable fadeIn" style={activeTitles['t_REC'] ? { 'display': 'none' } : { 'display': 'block' }}>
-              {recent.slice(0, 5).map((rec, i) => {
+              className="list-group  ui-sortable fadeIn" style={activeTitles['ttodo'] ? { 'display': 'none' } : { 'display': 'block' }}>
+              {todoItems.map((rec, i) => {
                 return (
                   <TodosList
                     key={rec.id}
-                    chatHeader={""}
                     todo={rec}
                     todoActions={todoActions}
                     dictionary={dictionary}
@@ -267,34 +225,78 @@ const TodosBody = (props) => {
                     todoFormat={todoFormat}
                     todoFormatShortCode={todoFormatShortCode}
                     getFileIcon={getFileIcon}
-
                   />
                 );
               })}
             </ListGroup>
           </DivContainer >
-        )}
-        {!isLoaded ? (
-          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
-        ) : todoItems.length ? (
-          setTodo()
         ) : (
-          <>
+          <DivContainer >
+
             {filter === "" ? (
-              <EmptyState>
-                <SvgEmptyState icon={1} height={282} />
-                <h5>{dictionary.emptyText}</h5>
-                <button onClick={() => todoActions.createFromModal()} className="btn btn-primary">
-                  {dictionary.emptyButtonText}
-                </button>
-              </EmptyState>
+              <>
+                <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} W>
+                  <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+                    <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }}>
+                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />To do
+                    </span>
+                  </h6>
+                </div>
+                <EmptyState>
+                  <SvgEmptyState icon={1} height={282} />
+                  <h5>{dictionary.emptyText}</h5>
+                  <button onClick={() => todoActions.createFromModal()} className="btn btn-primary">
+                    {dictionary.emptyButtonText}
+                  </button>
+                </EmptyState>
+              </>
             ) : (
-              <EmptyState>
-                <h3>{dictionary.noItemsFoundHeader}</h3>
-                <h5>{dictionary.noItemsFoundText}  <Icon icon="ghost" /></h5>
-              </EmptyState>
+              <>
+                <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} W>
+                  <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+                    <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }}>
+                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />To do
+                    </span>
+                  </h6>
+                </div>
+                <EmptyState>
+                  <h3>{dictionary.noItemsFoundHeader}</h3>
+                  <h5>{dictionary.noItemsFoundText} </h5>
+                </EmptyState>
+              </>
             )}
-          </>
+          </DivContainer >
+
+        )}
+        {recent.length > 0 && filter === "" && (
+          <DivContainer >
+            <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
+              <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+                <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }} onClick={handleTitleClick} id={'tdone'}>
+                  <SvgIconFeather icon={activeTitles['tdone'] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
+                  Done
+                </span>
+              </h6>
+            </div>
+            <ListGroup
+              className="list-group  ui-sortable fadeIn" style={activeTitles['tdone'] ? { 'display': 'none' } : { 'display': 'block' }}>
+              {recent.map((rec, i) => {
+                return (
+                  <TodosList
+                    key={rec.id}
+                    todo={rec}
+                    todoActions={todoActions}
+                    dictionary={dictionary}
+                    handleLinkClick={handleLinkClick}
+                    dark_mode={dark_mode}
+                    todoFormat={todoFormat}
+                    todoFormatShortCode={todoFormatShortCode}
+                    getFileIcon={getFileIcon}
+                  />
+                );
+              })}
+            </ListGroup>
+          </DivContainer >
         )}
       </div>
     </Wrapper>
