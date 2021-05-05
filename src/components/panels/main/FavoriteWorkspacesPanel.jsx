@@ -209,7 +209,7 @@ const FavoriteWorkspacesPanel = (props) => {
               <span role="img" aria-label="star">
                 ✨
               </span>
-              <span dangerouslySetInnerHTML={{ __html: dictionary.addYourFavWs }} />, {user.first_name}
+              <span dangerouslySetInnerHTML={{ __html: dictionary.addYourFavWs }} />
               <BrowseAll onClick={handleBrowseAll}>{dictionary.startBrowsing}</BrowseAll>
             </FavEmptyState>
           )}
