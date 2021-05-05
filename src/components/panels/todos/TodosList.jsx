@@ -115,11 +115,25 @@ const TodosList = (props) => {
   const handleEditClick = (e) => {
     setIsDone(!isDone);
   };
+
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    todoActions.updateFromModal(todo)
+  };
+
+  const handleRemove = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    todoActions.removeConfirmation(todo)
+  };
+
   return (
     <>
-      <ItemList className="pl-0 list-group-item" style={{ 'padding': '5px 20px','margin-top': '0px','border-radius':'0px','border-left':'none','border-right':'none','border-top':'none' }}>
+      <ItemList className="pl-0 list-group-item" style={{ 'padding': '5px 20px', 'margin-top': '0px', 'border-radius': '0px', 'border-left': 'none', 'border-right': 'none', 'border-top': 'none' }}>
         <a
-          href={todo.link}
+          // href={todo.link}
+          href="#"
           target="_blank"
           data-link={todo.link}
           onClick={(e) => {
@@ -130,14 +144,14 @@ const TodosList = (props) => {
         >
           <span className="d-flex justify-content-between w-100 align-items-center">
             <span className="d-inline-flex overflow-hidden w-100 mr-3">
-              <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
+              <span className="custom-control custom-checkbox custom-checkbox-warning mr-2">
                 <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
                   <TodoCheckBox name="test" checked={isDone} onClick={handleDoneClick} />
                 </ToolTip>
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
                 <span className="todo-title mr-2" style={isDone ? { 'text-decoration': 'line-through' } : { 'text-decoration': 'none' }}>{todo.title}</span>
-               
+
                 {todo.files.map((file) => {
                   return (
                     <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
@@ -147,21 +161,19 @@ const TodosList = (props) => {
                 })}
               </span>
               <HoverButtons className="hover-btns ml-1">
-                <Icon icon="pencil" onClick={() => todoActions.updateFromModal(todo)} />
-                <Icon icon="trash" onClick={() => todoActions.removeConfirmation(todo)} />
+                <Icon icon="pencil" onClick={handleEdit} />
+                <Icon icon="trash" onClick={handleRemove} />
               </HoverButtons>
             </span>
             <span className="action d-inline-flex justify-content-center align-items-center">
               <span className="mr-3 align-items-center d-flex">
-                {todo.remind_at && (
-                  <>
-                    <Icon icon="calendar" />
-                    <ToolTip content={todoFormat(todo.remind_at.timestamp)}>
-                      <span className={`badge ${getBadgeClass(todo)} mr-3`}>{todoFormatShortCode(todo.remind_at.timestamp)}</span>
-                    </ToolTip>
-                  </>
-                )}
-                {todo.link_type !== null && <span className={"badge mr-3"} style={{ 'background': 'rgb(248, 249, 250)'}}>{getTodoType(todo)}</span>}
+
+                <Icon icon="calendar" />
+                <ToolTip content={ todo.remind_at ? todoFormat(todo.remind_at.timestamp) : 'Add Date'}>
+                  <span className={`badge ${getBadgeClass(todo)} mr-3`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp) : 'Add Date'}</span>
+                </ToolTip>
+
+                {todo.link_type !== null && <span className={"badge mr-3"} style={{ 'background': 'rgb(248, 249, 250)' }}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
                 )}
@@ -173,5 +185,4 @@ const TodosList = (props) => {
     </>
   );
 };
-
 export default TodosList;
