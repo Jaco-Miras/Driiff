@@ -243,7 +243,7 @@ const MainNavigationTabPanel = (props) => {
     reminder: _t("SIDEBAR.REMINDER", "Reminder"),
     addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
-    addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here"),
+    addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::", { name: user.first_name }),
   };
 
   const handleIconClick = (e) => {
