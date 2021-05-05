@@ -169,7 +169,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       //pinned
-      compare = b.is_pinned - a.is_pinned;
+      //compare = b.is_pinned - a.is_pinned;
       if (compare !== 0) return compare;
 
       // //sort by last reply
@@ -236,7 +236,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
     });
   return {
-    sortedChannels: results.filter((c) => !c.is_pinned),
+    sortedChannels: results,
     favoriteChannels: results.filter((c) => c.is_pinned),
     searchArchivedChannels,
   };

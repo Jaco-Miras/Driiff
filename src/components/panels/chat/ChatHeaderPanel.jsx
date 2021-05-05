@@ -137,6 +137,21 @@ const ChatHeaderBadgeContainer = styled.div`
   align-items: center;
 `;
 
+const StarIcon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  margin-left: 5px;
+  cursor: pointer;
+  ${(props) =>
+    props.isFav &&
+    `
+    color: rgb(255, 193, 7)!important;
+    fill: rgb(255, 193, 7);
+    :hover {
+      color: rgb(255, 193, 7);
+    }`}
+`;
+
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
@@ -255,6 +270,11 @@ const ChatHeaderPanel = (props) => {
     }
   };
 
+  const handleFavoriteChannel = () => {
+    if (channel.is_pinned) channelActions.unPin(channel);
+    else channelActions.pin(channel);
+  };
+
   if (channel === null) return null;
 
   return (
@@ -267,6 +287,7 @@ const ChatHeaderPanel = (props) => {
         <ChannelIcon className="chat-header-icon" channel={channel} />
       </div>
       <div className="chat-header-title">{getChannelTitle()}</div>
+      <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
       <ChatHeaderBadgeContainer className="chat-header-badge">
         {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
           <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
