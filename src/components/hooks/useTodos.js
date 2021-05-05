@@ -6,6 +6,7 @@ import { useTimeFormat, useTodoActions } from "./index";
 let init = false;
 const useTodos = (fetchTodosOnMount = false) => {
   const { isLoaded, skip, limit, hasMore, items, count, doneRecently } = useSelector((state) => state.global.todos);
+  console.log({'seTodos':count });
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const todoActions = useTodoActions();

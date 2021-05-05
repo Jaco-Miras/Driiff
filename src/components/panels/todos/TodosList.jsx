@@ -46,8 +46,6 @@ padding:0;
 :
 `;
 
-
-
 const TodosList = (props) => {
   const { className = "", chatHeader, todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
 
@@ -81,7 +79,7 @@ const TodosList = (props) => {
     }
 
     if (todo.status === "TODAY" || todo.status === "DONE") {
-      return "text-success";
+      return "text-default";
     }
 
     if (dark_mode === "1") {
@@ -121,7 +119,6 @@ const TodosList = (props) => {
     <>
       <ItemList className="pl-0 list-group-item" style={{ 'padding': '5px 20px','margin-top': '0px','border-radius':'0px','border-left':'none','border-right':'none','border-top':'none' }}>
         <a
-          className={todo.status === "DONE" ? "text-success" : ""}
           href={todo.link}
           target="_blank"
           data-link={todo.link}
@@ -139,8 +136,8 @@ const TodosList = (props) => {
                 </ToolTip>
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
-                <span className="todo-title mr-2">{todo.title}</span>
-                {bodyDescription !== "" && bodyDescription !== "<span></span>" && <Description className="todo-title mr-2 description" dangerouslySetInnerHTML={{ __html: bodyDescription }} />}
+                <span className="todo-title mr-2" style={isDone ? { 'text-decoration': 'line-through' } : { 'text-decoration': 'none' }}>{todo.title}</span>
+               
                 {todo.files.map((file) => {
                   return (
                     <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
@@ -164,7 +161,7 @@ const TodosList = (props) => {
                     </ToolTip>
                   </>
                 )}
-                {todo.link_type !== null && <span className={"badge badge-white badge-todo-type text-black mr-3"}>{getTodoType(todo)}</span>}
+                {todo.link_type !== null && <span className={"badge mr-3"} style={{ 'background': 'rgb(248, 249, 250)'}}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
                 )}

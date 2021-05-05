@@ -68,43 +68,37 @@ const TodosSidebar = (props) => {
             {dictionary.createNewTodoItem}
           </button>
         </div>
-
-        <div>
-        <div className="post-filter-item list-group list-group-flush">
-            <span className={`list-group-item d-flex align-items-center pr-3`} data-value="inbox">
-              {dictionary.actionFilter}
-              <span className="ml-auto" onClick="" disabled="">
-                <StyledIcon className="mr-0" icon="plus" />
+        <div className="app-sidebar-menu" tabIndex="1">
+          <div className="list-group list-group-flush">
+          <Filter onClick={setFilter} data-filter="" active={filter === ""} className={`list-group-item d-flex justify-content-between align-items-center`}>
+              <span className="text-secondary fa fa-circle mr-2" />
+              {dictionary.statusAll}
+              <span className="small ml-auto">{count.all}</span>
+            </Filter>
+            <Filter onClick={setFilter} data-filter="OVERDUE" active={filter === "OVERDUE"} className={`list-group-item d-flex justify-content-between align-items-center`}>
+              <span className="text-danger fa fa-circle mr-2" />
+              {dictionary.statusExpired}
+              <span className="small ml-auto">{count.overdue}</span>
+            </Filter>
+            <Filter onClick={setFilter} data-filter="TODAY" active={filter === "TODAY"} className={`list-group-item d-flex justify-content-between align-items-center`}>
+              <span data-filter="TODAY">
+                <span className="text-success fa fa-circle mr-2" />
+                {dictionary.statusToday}
               </span>
-            </span>
-          </div>
-          <div className="app-sidebar-menu" tabIndex="1">
-            <div className="list-group list-group-flush">
-              <Filter onClick={setFilter} data-filter="OVERDUE" active={filter === "OVERDUE"} className={`list-group-item d-flex justify-content-between align-items-center`}>
-                <span className="text-danger fa fa-circle mr-2" />
-                {dictionary.statusExpired}
-                <span className="small ml-auto">{count.overdue}</span>
-              </Filter>
-              <Filter onClick={setFilter} data-filter="TODAY" active={filter === "TODAY"} className={`list-group-item d-flex justify-content-between align-items-center`}>
-                <span data-filter="TODAY">
-                  <span className="text-success fa fa-circle mr-2" />
-                  {dictionary.statusToday}
-                </span>
-                <span className="small ml-auto">{count.today}</span>
-              </Filter>
-              <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={`list-group-item d-flex justify-content-between align-items-center`}>
-                <span data-filter="NEW">
-                  <span className="text-default fa fa-circle mr-2" />
-                  {dictionary.statusUpcoming}
-                </span>
-                <span className="small ml-auto">{count.NEW}</span>
-              </Filter>
-            </div>
+              <span className="small ml-auto">{count.today}</span>
+            </Filter>
+            <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={`list-group-item d-flex justify-content-between align-items-center`}>
+              <span data-filter="NEW">
+                <span className="text-default fa fa-circle mr-2"/>
+                {dictionary.statusUpcoming}
+              </span>
+              <span className="small ml-auto">{count.new}</span>
+            </Filter>
           </div>
         </div>
       </div>
+
     </Wrapper>
   );
 };
-
 export default React.memo(TodosSidebar);

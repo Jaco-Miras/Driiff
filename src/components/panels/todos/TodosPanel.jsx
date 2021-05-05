@@ -15,6 +15,8 @@ const TodosPanel = (props) => {
   const { className = "" } = props;
 
   const { getSortedItems, action: todoActions, isLoaded, count, doneRecently } = useTodos(true); //pass true to fetch to do list on mount - default to false
+
+  console.log({'count' : count});
   const { _t } = useTranslation();
 
   const dictionary = {
@@ -24,6 +26,7 @@ const TodosPanel = (props) => {
     typeChat: _t("REMINDER.TYPE_CHAT", "Chat"),
     typePostComment: _t("REMINDER.TYPE_POST_COMMENT", "Post comment"),
     statusToday: _t("REMINDER.STATUS_TODAY", "Today"),
+    statusAll: _t("REMINDER.STATUS_ALL", "ALL"),
     statusExpired: _t("REMINDER.STATUS_EXPIRED", "Expired"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Today"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
@@ -33,8 +36,8 @@ const TodosPanel = (props) => {
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
-    noItemsFoundHeader: _t("REMINDER.NO_ITEMS_FOUND_HEADER", "WOO!"),
-    noItemsFoundText: _t("REMINDER.NO_ITEMS_FOUND_TEXT", "Nothing here but me..."),
+    noItemsFoundHeader: _t("REMINDER.NO_ITEMS_FOUND_HEADER", "Some random Header"),
+    noItemsFoundText: _t("REMINDER.NO_ITEMS_FOUND_TEXT", "Some random text here..."),
     actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
     actionEdit: _t("REMINDER.ACTION_EDIT", "Edit"),
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
@@ -61,19 +64,7 @@ const TodosPanel = (props) => {
 
   const items = getSortedItems({ filter: { status: filter, search: search } });
 
-  function groupBy(list, keyGetter) {
-    const map = new Map();
-    list.forEach((item) => {
-      const key = keyGetter(item);
-      const collection = map.get(key);
-      if (!collection) {
-        map.set(key, [item]);
-      } else {
-        collection.push(item);
-      }
-    });
-    return map;
-  }
+
   
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
@@ -82,7 +73,7 @@ const TodosPanel = (props) => {
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded}  groupedTodoItems={groupBy(items, item => item.status)} todoItems={items} recent={doneRecently} dictionary={dictionary} todoActions={todoActions} filter={filter} />
+          <TodosBody complete={false} isLoaded={isLoaded} todoItems={items} recent={doneRecently} dictionary={dictionary} todoActions={todoActions} filter={filter} />
         </div>
       </div>
     </Wrapper>
