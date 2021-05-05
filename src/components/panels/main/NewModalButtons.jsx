@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import { SvgIconFeather } from "../../common";
 import { addToModals, postToDo } from "../../../redux/actions/globalActions";
-import { useToaster } from "../../hooks";
+import { useToaster, useOutsideClick } from "../../hooks";
 
 const Wrapper = styled.div`
   padding: 15px 30px 0 30px;
@@ -28,8 +28,9 @@ const Wrapper = styled.div`
 const Icon = styled(SvgIconFeather)``;
 
 const NewModalButtons = (props) => {
-  const { dictionary, showButtons } = props;
+  const { dictionary, onShowModalButtons, showButtons } = props;
 
+  const modRef = useRef(null);
   const dispatch = useDispatch();
   const toaster = useToaster;
 
@@ -38,7 +39,7 @@ const NewModalButtons = (props) => {
       type: "workspace_create_edit",
       mode: "create",
     };
-
+    onShowModalButtons();
     dispatch(addToModals(payload));
   };
 
@@ -50,6 +51,7 @@ const NewModalButtons = (props) => {
         post: null,
       },
     };
+    onShowModalButtons();
     dispatch(addToModals(payload));
   };
 
@@ -72,6 +74,7 @@ const NewModalButtons = (props) => {
         onSubmit: onConfirm,
       },
     };
+    onShowModalButtons();
     dispatch(addToModals(payload));
   };
 
@@ -80,13 +83,15 @@ const NewModalButtons = (props) => {
       type: "chat_create_edit",
       mode: "new",
     };
-
+    onShowModalButtons();
     dispatch(addToModals(payload));
   };
 
+  useOutsideClick(modRef, onShowModalButtons, showButtons);
+
   return (
     <CSSTransition appear={true} in={showButtons} timeout={300} unmountOnExit classNames="bslide">
-      <Wrapper>
+      <Wrapper ref={modRef}>
         <div onClick={handleShowChatModal}>
           <Icon icon="message-circle" />
           {dictionary.chat}

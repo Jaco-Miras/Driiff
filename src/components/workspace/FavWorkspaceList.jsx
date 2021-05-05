@@ -25,6 +25,7 @@ const WorkspaceTitleFolder = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  align-self: center;
 `;
 
 const Icon = styled(SvgIconFeather)`
