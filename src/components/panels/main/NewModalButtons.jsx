@@ -13,9 +13,11 @@ const Wrapper = styled.div`
     margin-bottom: 10px;
     display: flex;
     align-items: center;
-    :hover {
-      cursor: pointer;
-      color: #fff;
+    span {
+      :hover {
+        cursor: pointer;
+        color: #fff;
+      }
     }
   }
   .feather {
@@ -30,7 +32,12 @@ const Icon = styled(SvgIconFeather)``;
 const NewModalButtons = (props) => {
   const { dictionary, onShowModalButtons, showButtons } = props;
 
-  const modRef = useRef(null);
+  const refs = {
+    btn1Ref: useRef(null),
+    btn2Ref: useRef(null),
+    btn2Ref: useRef(null),
+    btn2Ref: useRef(null),
+  };
   const dispatch = useDispatch();
   const toaster = useToaster;
 
@@ -87,26 +94,37 @@ const NewModalButtons = (props) => {
     dispatch(addToModals(payload));
   };
 
-  useOutsideClick(modRef, onShowModalButtons, showButtons);
+  useOutsideClick(refs.btn1Ref, onShowModalButtons, showButtons);
+  useOutsideClick(refs.btn2Ref, onShowModalButtons, showButtons);
+  useOutsideClick(refs.btn3Ref, onShowModalButtons, showButtons);
+  useOutsideClick(refs.btn4Ref, onShowModalButtons, showButtons);
 
   return (
     <CSSTransition appear={true} in={showButtons} timeout={300} unmountOnExit classNames="bslide">
-      <Wrapper ref={modRef}>
-        <div onClick={handleShowChatModal}>
-          <Icon icon="message-circle" />
-          {dictionary.chat}
+      <Wrapper>
+        <div>
+          <span onClick={handleShowChatModal} ref={refs.btn1Ref}>
+            <Icon icon="message-circle" />
+            {dictionary.chat}
+          </span>
         </div>
-        <div onClick={handleShowPostModal}>
-          <Icon icon="file-text" />
-          {dictionary.post}
+        <div>
+          <span onClick={handleShowPostModal} ref={refs.btn2Ref}>
+            <Icon icon="file-text" />
+            {dictionary.post}
+          </span>
         </div>
-        <div onClick={handleShowReminderModal}>
-          <Icon icon="calendar" />
-          {dictionary.reminder}
+        <div>
+          <span onClick={handleShowReminderModal} ref={refs.btn3Ref}>
+            <Icon icon="calendar" />
+            {dictionary.reminder}
+          </span>
         </div>
-        <div onClick={handleShowWorkspaceModal}>
-          <Icon icon="compass" />
-          {dictionary.workspace}
+        <div>
+          <span onClick={handleShowWorkspaceModal} ref={refs.btn4Ref}>
+            <Icon icon="compass" />
+            {dictionary.workspace}
+          </span>
         </div>
       </Wrapper>
     </CSSTransition>
