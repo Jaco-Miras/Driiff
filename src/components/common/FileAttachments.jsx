@@ -17,40 +17,6 @@ const Wrapper = styled.div`
     li {
       list-style: none;
       position: relative;
-      cursor: pointer;
-      cursor: hand;
-    }
-
-    &.files {
-      li {
-        padding-right: 16px;
-        &:hover {
-          color: #972c86;
-
-          svg.feather-trash-2 {
-            color: #505050;
-          }
-        }
-        @media all and (max-width: 460px) {
-          width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        svg {
-          &.feather-trash-2 {
-            position: absolute;
-            margin-left: 5px;
-            width: 11px;
-            top: -1px;
-            right: 0;
-
-            &:hover {
-              color: #972c86;
-            }
-          }
-        }
-      }
     }
   }
 `;
@@ -120,7 +86,35 @@ const AttachmentIcon = styled(SvgIconFeather)`
 `;
 
 const FileList = styled.li`
+  padding-right: 16px;
   ${(props) => props.isDeleted && "text-decoration: line-through;"}
+  &:hover {
+    cursor: ${(props) => (props.isDeleted ? "inherit" : "pointer")};
+    color: ${(props) => (props.isDeleted ? "inherit" : "#972c86")};
+
+    svg.feather-trash-2 {
+      color: #505050;
+    }
+  }
+  @media all and (max-width: 460px) {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  svg {
+    &.feather-trash-2 {
+      position: absolute;
+      margin-left: 5px;
+      width: 11px;
+      top: -1px;
+      right: 0;
+
+      &:hover {
+        color: ${(props) => (props.isDeleted ? "inherit" : "#972c86")};
+      }
+    }
+  }
 `;
 
 const FileAttachments = (props) => {
