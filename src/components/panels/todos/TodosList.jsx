@@ -70,15 +70,19 @@ const TodosList = (props) => {
   };
 
   const getBadgeClass = (todo) => {
+
     if (todo.status === "OVERDUE") {
+      if (todoFormatShortCode(todo.remind_at.timestamp) === 'Yesterday')
+        return "text-warning";
       return "text-danger";
     }
 
-    if (todo.status === "NEW") {
-      return "text-default";
+    if (todo.status === "TODAY") {
+      if (todo.remind_at === null)
+        return "text-default";
+      return "text-success";
     }
-
-    if (todo.status === "TODAY" || todo.status === "DONE") {
+    if (todo.status === "NEW") {
       return "text-default";
     }
 
@@ -151,7 +155,6 @@ const TodosList = (props) => {
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
                 <span className="todo-title mr-2" style={isDone ? { 'text-decoration': 'line-through' } : { 'text-decoration': 'none' }}>{todo.title}</span>
-
                 {todo.files.map((file) => {
                   return (
                     <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
@@ -167,12 +170,10 @@ const TodosList = (props) => {
             </span>
             <span className="action d-inline-flex justify-content-center align-items-center">
               <span className="mr-3 align-items-center d-flex">
-
                 <Icon icon="calendar" />
-                <ToolTip content={ todo.remind_at ? todoFormat(todo.remind_at.timestamp) : 'Add Date'}>
-                  <span className={`badge ${getBadgeClass(todo)} mr-3`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp) : 'Add Date'}</span>
+                <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : 'Add Date'}>
+                  <span className={`badge ${getBadgeClass(todo)} mr-3`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp,'MM/DD/YYYY') : 'Add Date'}</span>
                 </ToolTip>
-
                 {todo.link_type !== null && <span className={"badge mr-3"} style={{ 'background': 'rgb(248, 249, 250)' }}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />

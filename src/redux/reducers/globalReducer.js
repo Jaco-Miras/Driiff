@@ -36,6 +36,8 @@ const INITIAL_STATE = {
     limit: 50,
     count: {
       new: 0,
+      today: 0,
+      all:0,
       overdue: 0,
       done: 0,
     },
