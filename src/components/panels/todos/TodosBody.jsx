@@ -109,6 +109,12 @@ border-bottom: 1px solid #ebebeb;
 :last-of-type { border: none;}
 
 `;
+const SpanTitle = styled.span`font-weight: 700; cursor: pointer; background: #F8F9FA !important;border:1px solid #F8F9FA;
+ ${(props) =>
+  props.todo &&
+  `border:1px solid rgba(0, 0, 0, 0.125);`}
+`;
+
 const TodosBody = (props) => {
   const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
 
@@ -193,6 +199,45 @@ const TodosBody = (props) => {
     });
   };
 
+  const setTodoList = () => {
+    return (filter === "") ? ['To do', 'Done'] : ['To do'];
+  }
+
+  const getTodoList = () => {
+    return (
+      <>
+        {setTodoList().map((items, index) => {
+          let x = (items === 'To do') ? todoItems : getDone;
+          let reminder = x.map((todo, indexx) => {
+            return (
+              <TodosList key={todo.id} todo={todo} todoActions={todoActions} dictionary={dictionary} handleLinkClick={handleLinkClick}
+                dark_mode={dark_mode} todoFormat={todoFormat} todoFormatShortCode={todoFormatShortCode} getFileIcon={getFileIcon}
+              />
+            );
+          });
+          return (
+            <DivContainer>
+              <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
+                <h6 className=" mb-0 font-size-11 text-uppercase">
+                  <SpanTitle className={`badge badge-light`} todo={(items === 'To do') ? false : true}
+                    onClick={handleTitleClick} id={'t_' + items}>
+                    <SvgIconFeather icon={activeTitles['t_' + items] ? "arrow-down" : "arrow-up"}
+                      width={16} height={16} className="mr-1" />
+                    {items}
+                  </SpanTitle>
+                </h6>
+              </div>
+              <ListGroup
+                className="list-group list-group-flush ui-sortable fadeIn"
+                style={activeTitles['t_' + items] ? { 'display': 'none' } : { 'display': 'block' }} >
+                {reminder}
+              </ListGroup>
+            </DivContainer>)
+        })}
+      </>
+    )
+  };
+
   return (
     <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
       <span className="d-none" ref={refs.btnLoadMore}>
@@ -201,45 +246,17 @@ const TodosBody = (props) => {
       <div className="card-body app-lists" data-loaded={0} style={{ 'padding': '0px' }}>
         {!isLoaded ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
-        ) : todoItems.length ? (
-          <DivContainer >
-            <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
-              <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }} onClick={handleTitleClick} onClick={handleTitleClick} id={'ttodo'}>
-                  <SvgIconFeather icon={activeTitles['ttodo'] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-                To do
-              </span>
-              </h6>
-            </div>
-            <ListGroup
-              className="list-group  ui-sortable fadeIn" style={activeTitles['ttodo'] ? { 'display': 'none' } : { 'display': 'block' }}>
-              {todoItems.map((rec, i) => {
-                return (
-                  <TodosList
-                    key={rec.id}
-                    todo={rec}
-                    todoActions={todoActions}
-                    dictionary={dictionary}
-                    handleLinkClick={handleLinkClick}
-                    dark_mode={dark_mode}
-                    todoFormat={todoFormat}
-                    todoFormatShortCode={todoFormatShortCode}
-                    getFileIcon={getFileIcon}
-                  />
-                );
-              })}
-            </ListGroup>
-          </DivContainer >
+        ) : todoItems.length || getDone.length ? (
+          getTodoList()
         ) : (
           <DivContainer >
-
             {filter === "" ? (
               <>
                 <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} W>
                   <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                    <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }}>
+                    <SpanTitle className={`badge`}>
                       <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />To do
-                    </span>
+                    </SpanTitle>
                   </h6>
                 </div>
                 <EmptyState>
@@ -254,9 +271,9 @@ const TodosBody = (props) => {
               <>
                 <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} W>
                   <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                    <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }}>
+                    <SpanTitle className={`badge`}>
                       <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />To do
-                    </span>
+                    </SpanTitle>
                   </h6>
                 </div>
                 <EmptyState>
@@ -267,36 +284,6 @@ const TodosBody = (props) => {
             )}
           </DivContainer >
 
-        )}
-        {getDone.length > 0 && (
-          <DivContainer >
-            <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
-              <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                <span className={`badge`} style={{ 'font-weight': '700', 'cursor': 'pointer', 'background': '#F8F9FA' }} onClick={handleTitleClick} id={'tdone'}>
-                  <SvgIconFeather icon={activeTitles['tdone'] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-                  Done
-                </span>
-              </h6>
-            </div>
-            <ListGroup
-              className="list-group  ui-sortable fadeIn" style={activeTitles['tdone'] ? { 'display': 'none' } : { 'display': 'block' }}>
-              {getDone.map((rec, i) => {
-                return (
-                  <TodosList
-                    key={rec.id}
-                    todo={rec}
-                    todoActions={todoActions}
-                    dictionary={dictionary}
-                    handleLinkClick={handleLinkClick}
-                    dark_mode={dark_mode}
-                    todoFormat={todoFormat}
-                    todoFormatShortCode={todoFormatShortCode}
-                    getFileIcon={getFileIcon}
-                  />
-                );
-              })}
-            </ListGroup>
-          </DivContainer >
         )}
       </div>
     </Wrapper>

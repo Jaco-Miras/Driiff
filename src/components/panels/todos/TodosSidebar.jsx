@@ -85,7 +85,7 @@ const TodosSidebar = (props) => {
                 <span className="text-success fa fa-circle mr-2" />
                 {dictionary.statusToday}
               </span>
-              <span className="small ml-auto"></span>
+              <span className="small ml-auto">{count.today}</span>
             </Filter>
             <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={`list-group-item d-flex justify-content-between align-items-center`}>
               <span data-filter="NEW">
