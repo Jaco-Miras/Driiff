@@ -35,8 +35,8 @@ const NewModalButtons = (props) => {
   const refs = {
     btn1Ref: useRef(null),
     btn2Ref: useRef(null),
-    btn2Ref: useRef(null),
-    btn2Ref: useRef(null),
+    btn3Ref: useRef(null),
+    btn4Ref: useRef(null),
   };
   const dispatch = useDispatch();
   const toaster = useToaster;
