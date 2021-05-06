@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { deletePostFile, setViewFiles } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useOutsideClick, useTooltipOrientation, useTranslation } from "../hooks";
+import { useOutsideClick, useTooltipOrientation } from "../hooks";
 import { SvgIconFeather } from "./index";
 
 const Wrapper = styled.div`
@@ -129,12 +129,6 @@ const FileAttachments = (props) => {
   const params = useParams();
   const [filePreview, setFilePreview] = useState(null);
   const { user: loggedUser } = useSelector((state) => state.session);
-
-  const { _t } = useTranslation();
-
-  const dictionary = {
-    fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
-  };
 
   const refs = {
     main: useRef(null),
@@ -290,7 +284,7 @@ const FileAttachments = (props) => {
           return (
             <FileList data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name} isDeleted={f.deleted_at}>
               <AttachmentIcon icon="paperclip" />
-              {f.deleted_at ? dictionary.fileAutomaticallyRemoved : f.search ? f.search : f.name}
+              {f.search ? f.search : f.name}
               {!f.deleted_at && showDelete && (type === "modal" || loggedUser.id === f.uploader.id) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
             </FileList>
           );
