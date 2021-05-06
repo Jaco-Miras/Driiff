@@ -572,6 +572,11 @@ const Comment = (props) => {
               <FileAttachments attachedFiles={comment.files} type="comment" comment={comment} />
             </>
           )}
+          {comment.files_trashed.length >= 1 && (
+            <>
+              <FileAttachments attachedFiles={comment.files_trashed} type="comment" comment={comment} />
+            </>
+          )}
           <CommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} likers={likers} post={post} handleReaction={handleReaction} handleShowInput={handleShowInput} />
         </CommentWrapper>
       </Wrapper>

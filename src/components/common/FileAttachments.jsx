@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { deletePostFile, setViewFiles } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useOutsideClick, useTooltipOrientation } from "../hooks";
+import { useOutsideClick, useTooltipOrientation, useTranslation } from "../hooks";
 import { SvgIconFeather } from "./index";
 
 const Wrapper = styled.div`
@@ -119,12 +119,22 @@ const AttachmentIcon = styled(SvgIconFeather)`
   margin-right: 10px;
 `;
 
+const FileList = styled.li`
+  ${(props) => props.isDeleted && "text-decoration: line-through;"}
+`;
+
 const FileAttachments = (props) => {
   const { className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", comment = null, showDelete = true } = props;
   const dispatch = useDispatch();
   const params = useParams();
   const [filePreview, setFilePreview] = useState(null);
   const { user: loggedUser } = useSelector((state) => state.session);
+
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+  };
 
   const refs = {
     main: useRef(null),
@@ -178,7 +188,7 @@ const FileAttachments = (props) => {
 
   const handleClick = (e) => {
     const index = e.currentTarget.dataset.targetIndex;
-
+    if (attachedFiles[index].deleted_at) return;
     if (type === "modal") {
       if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
         closePreview(e);
@@ -278,11 +288,11 @@ const FileAttachments = (props) => {
       <ul className="files">
         {attachedFiles.map((f, i) => {
           return (
-            <li data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name}>
+            <FileList data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name} isDeleted={f.deleted_at}>
               <AttachmentIcon icon="paperclip" />
-              {f.search ? f.search : f.name}
-              {showDelete && (type === "modal" || loggedUser.id === f.uploader.id) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
-            </li>
+              {f.deleted_at ? dictionary.fileAutomaticallyRemoved : f.search ? f.search : f.name}
+              {!f.deleted_at && showDelete && (type === "modal" || loggedUser.id === f.uploader.id) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
+            </FileList>
           );
         })}
       </ul>

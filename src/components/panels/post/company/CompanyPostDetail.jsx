@@ -477,6 +477,15 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
+        {post.files_trashed.length > 0 && (
+          <>
+            <div className="card-body">
+              <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
+              <PostFiles attachedFiles={post.files_trashed} type="post" post={post} />
+            </div>
+            <hr className="m-0" />
+          </>
+        )}
         {comments && Object.keys(comments).length > 0 && (
           <>
             <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} postActions={postActions} />
