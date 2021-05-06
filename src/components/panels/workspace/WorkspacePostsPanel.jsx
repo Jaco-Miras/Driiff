@@ -291,6 +291,8 @@ const WorkspacePostsPanel = (props) => {
     allOthers: _t("POST.ALL_OTHERS", "All others"),
     sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
+    fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+    filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
   };
 
   const handleLoadMore = () => {
