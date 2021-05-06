@@ -1,4 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   user: {},
@@ -1070,7 +1071,19 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             ...action.data.files.reduce((res, obj) => {
               if (obj.post_id && state.companyPosts.posts[obj.post_id]) {
-                res[obj.post_id] = { ...state.companyPosts.posts[obj.post_id], files: state.companyPosts.posts[obj.post_id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)) };
+                const files_trashed =
+                  state.companyPosts.posts[obj.post_id].files.length === 0
+                    ? []
+                    : state.companyPosts.posts[obj.post_id].files
+                        .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                        .map((f) => {
+                          return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                        });
+                res[obj.post_id] = {
+                  ...state.companyPosts.posts[obj.post_id],
+                  files: state.companyPosts.posts[obj.post_id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                  files_trashed: files_trashed,
+                };
               }
               return res;
             }, {}),

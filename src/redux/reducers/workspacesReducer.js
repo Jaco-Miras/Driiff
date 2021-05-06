@@ -1,5 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   flipper: true,
@@ -2827,9 +2828,18 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[obj.topic_id].posts,
                   ...action.data.files.reduce((pos, p) => {
                     if (p.post_id && state.workspacePosts[obj.topic_id].posts[p.post_id]) {
+                      const files_trashed =
+                        state.workspacePosts[obj.topic_id].posts[p.post_id].files.length === 0
+                          ? []
+                          : state.workspacePosts[obj.topic_id].posts[p.post_id].files
+                              .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                              .map((f) => {
+                                return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                              });
                       pos[p.post_id] = {
                         ...state.workspacePosts[obj.topic_id].posts[p.post_id],
                         files: state.workspacePosts[obj.topic_id].posts[p.post_id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                        files_trashed: files_trashed,
                       };
                     }
                     return pos;
@@ -2849,7 +2859,19 @@ export default (state = INITIAL_STATE, action) => {
                 ...state.postComments[id].comments,
                 ...Object.values(state.postComments[id].comments).reduce((res, com) => {
                   if (com.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
-                    res[com.id] = { ...state.postComments[id].comments[com.id], files: state.postComments[id].comments[com.id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)) };
+                    const files_trashed =
+                      state.postComments[id].comments[com.id].files.length === 0
+                        ? []
+                        : state.postComments[id].comments[com.id].files
+                            .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                            .map((f) => {
+                              return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                            });
+                    res[com.id] = {
+                      ...state.postComments[id].comments[com.id],
+                      files: state.postComments[id].comments[com.id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                      files_trashed: files_trashed,
+                    };
                   } else {
                     res[com.id] = {
                       ...state.postComments[id].comments[com.id],
@@ -2857,9 +2879,18 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[id].comments[com.id].replies,
                         ...Object.values(state.postComments[id].comments[com.id].replies).reduce((sres, scom) => {
                           if (scom.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
+                            const files_trashed =
+                              state.postComments[id].comments[com.id].replies[scom.id].files.length === 0
+                                ? []
+                                : state.postComments[id].comments[com.id].replies[scom.id].files
+                                    .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                                    .map((f) => {
+                                      return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                                    });
                             sres[scom.id] = {
                               ...state.postComments[id].comments[com.id].replies[scom.id],
                               files: state.postComments[id].comments[com.id].replies[scom.id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                              files_trashed: files_trashed,
                             };
                           } else {
                             sres[scom.id] = { ...state.postComments[id].comments[com.id].replies[scom.id] };
