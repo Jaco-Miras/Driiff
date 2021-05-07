@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { sessionService } from "redux-react-session";
 import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
@@ -14,6 +14,7 @@ export const useUserLogin = (props) => {
   const magicLinkMatch = useRouteMatch("/magic-link/:token");
 
   const userActions = useUserActions();
+  const loggedUser = useSelector((state) => state.session.user);
 
   useEffect(() => {
     if (history.location.pathname === "/logged-out") {
@@ -56,12 +57,12 @@ export const useUserLogin = (props) => {
                 let link = `/chat/${res.data.additional_data.data.code}`;
                 userActions.login(res.data, link);
               } else {
-                userActions.login(res.data, "/workspace/chat");
+                userActions.login(res.data, "/chat");
               }
             }
           } else {
-            console.log("default to workspace chat", res.data);
-            userActions.login(res.data, "/workspace/chat");
+            console.log("default to workspace chat", res.data, loggedUser);
+            userActions.login(res.data, "/chat");
           }
         }
       });
@@ -124,10 +125,10 @@ export const useUserLogin = (props) => {
       const payload = getUrlParams(window.location.href);
       dispatch(
         authenticateGoogleLogin(payload, (err, res) => {
-          console.log(err, res.data, "auth google");
+          console.log(err, res.data, "auth google", loggedUser);
 
           if (res) {
-            userActions.login(res.data, "/workspace/chat");
+            userActions.login(res.data, "/chat");
           }
         })
       );
