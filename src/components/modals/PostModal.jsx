@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { postCreate, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
@@ -281,14 +281,14 @@ const PostModal = (props) => {
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [nestedModal, setNestedModal] = useState(false);
-  const [closeAll, setCloseAll] = useState(false);
+  // const [nestedModal, setNestedModal] = useState(false);
+  // const [closeAll, setCloseAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
-  //const [savingDraft, setSavingDraft] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
   const [fileOption, setFileOption] = useState(null);
 
@@ -325,7 +325,22 @@ const PostModal = (props) => {
     addressTo: form.selectedAddressTo,
   });
 
-  const { handleDeleteDraft, handleSaveDraft } = usePostDraft({ draftId, initTimestamp, isExternalUser, item, form, is_personal, params, responsible_ids, user, topicId: params ? activeTopic.id : null, toaster });
+  const { draftSaved, handleDeleteDraft } = usePostDraft({
+    draftId,
+    initTimestamp,
+    isExternalUser,
+    item,
+    form,
+    is_personal,
+    params,
+    responsible_ids,
+    user,
+    topicId: params ? activeTopic.id : null,
+    toaster,
+    setDraftId: setDraftId,
+    savingDraft: savingDraft,
+    setSavingDraft: setSavingDraft,
+  });
 
   const { dictionary } = usePostModalDictionary({
     workspace_ids,
@@ -339,114 +354,116 @@ const PostModal = (props) => {
     icon: null,
   });
 
-  const toggleNested = () => {
-    setNestedModal(!nestedModal);
-    setCloseAll(false);
-  };
+  // const toggleNested = () => {
+  //   // setNestedModal(!nestedModal);
+  //   // setCloseAll(false);
+  //   setCloseAll(true);
+  // };
 
   const toggleAll = (saveDraft = false, showDeleteToaster = false) => {
-    setNestedModal(!nestedModal);
-    setCloseAll(true);
-    if (saveDraft) {
-      handleSaveDraft();
-    } else if (draftId) {
-      handleDeleteDraft(showDeleteToaster);
-    }
+    // setNestedModal(!nestedModal);
+    // setCloseAll(true);
+    // if (saveDraft) {
+    //   handleSaveDraft();
+    // } else if (draftId) {
+    //   handleDeleteDraft(showDeleteToaster);
+    // }
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
 
   const toggle = () => {
-    if (mode === "edit") {
-      const post = item.post;
+    toggleAll();
+    // if (mode === "edit") {
+    //   const post = item.post;
 
-      if (form.title !== post.title) {
-        toggleNested();
-        return;
-      }
+    //   if (form.title !== post.title) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.body !== post.body) {
-        toggleNested();
-        return;
-      }
+    //   if (form.body !== post.body) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.end_at !== post.end_at) {
-        toggleNested();
-        return;
-      }
+    //   if (form.end_at !== post.end_at) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.is_private !== post.is_personal) {
-        toggleNested();
-        return;
-      }
+    //   if (form.is_private !== post.is_personal) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.must_read !== post.is_must_read) {
-        toggleNested();
-        return;
-      }
+    //   if (form.must_read !== post.is_must_read) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.no_reply !== post.is_must_reply) {
-        toggleNested();
-        return;
-      }
+    //   if (form.no_reply !== post.is_must_reply) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.reply_required !== post.is_must_reply) {
-        toggleNested();
-        return;
-      }
+    //   if (form.reply_required !== post.is_must_reply) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.show_at !== post.show_at) {
-        toggleNested();
-        return;
-      }
-    } else {
-      if (form.title !== "") {
-        toggleNested();
-        return;
-      }
+    //   if (form.show_at !== post.show_at) {
+    //     toggleNested();
+    //     return;
+    //   }
+    // } else {
+    //   if (form.title !== "") {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.body !== "<div><br></div>") {
-        toggleNested();
-        return;
-      }
+    //   if (form.body !== "<div><br></div>") {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.end_at !== null) {
-        toggleNested();
-        return;
-      }
+    //   if (form.end_at !== null) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.has_folder !== false) {
-        toggleNested();
-        return;
-      }
+    //   if (form.has_folder !== false) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.is_private !== false) {
-        toggleNested();
-        return;
-      }
+    //   if (form.is_private !== false) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.must_read !== false) {
-        toggleNested();
-        return;
-      }
+    //   if (form.must_read !== false) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.no_reply !== false) {
-        toggleNested();
-        return;
-      }
+    //   if (form.no_reply !== false) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.reply_required !== false) {
-        toggleNested();
-        return;
-      }
+    //   if (form.reply_required !== false) {
+    //     toggleNested();
+    //     return;
+    //   }
 
-      if (form.show_at !== null) {
-        toggleNested();
-        return;
-      }
-    }
+    //   if (form.show_at !== null) {
+    //     toggleNested();
+    //     return;
+    //   }
+    // }
 
-    toggleAll(false);
+    // toggleAll(false);
   };
 
   const handleSelectAddressTo = (e) => {
@@ -904,6 +921,7 @@ const PostModal = (props) => {
         })
       );
     }
+    console.log(mode, params);
   }, []);
 
   const onDragEnter = () => {
@@ -939,9 +957,9 @@ const PostModal = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
-      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody onDragOver={onDragEnter}>
-        <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
+        {/* <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
           <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
           <ModalBody>{dictionary.draftBody}</ModalBody>
           <ModalFooter>
@@ -952,7 +970,7 @@ const PostModal = (props) => {
               {dictionary.save}
             </Button>
           </ModalFooter>
-        </Modal>
+        </Modal> */}
         <DropDocument
           hide={!showDropzone}
           ref={formRef.dropzone}
