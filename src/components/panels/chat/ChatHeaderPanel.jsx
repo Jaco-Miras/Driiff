@@ -140,6 +140,7 @@ const ChatHeaderBadgeContainer = styled.div`
 const StarIcon = styled(SvgIconFeather)`
   height: 14px !important;
   width: 14px !important;
+  min-width: 14px;
   margin-left: 5px;
   cursor: pointer;
   ${(props) =>
