@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { sessionService } from "redux-react-session";
 import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
@@ -14,7 +14,6 @@ export const useUserLogin = (props) => {
   const magicLinkMatch = useRouteMatch("/magic-link/:token");
 
   const userActions = useUserActions();
-  const loggedUser = useSelector((state) => state.session.user);
 
   useEffect(() => {
     if (history.location.pathname === "/logged-out") {
@@ -26,7 +25,6 @@ export const useUserLogin = (props) => {
     if (magicLinkMatch !== null) {
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
         if (res) {
-          console.log(res.data);
           if (res.data.additional_data) {
             if (res.data.additional_data.type === "POST") {
               if (res.data.additional_data.data.workspace) {
@@ -42,7 +40,6 @@ export const useUserLogin = (props) => {
                 }
               }
             } else if (res.data.additional_data.type === "CHANNEL") {
-              console.log("redirect to chat");
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
@@ -61,7 +58,6 @@ export const useUserLogin = (props) => {
               }
             }
           } else {
-            console.log("default to workspace chat", res.data, loggedUser);
             userActions.login(res.data, "/chat");
           }
         }
@@ -125,8 +121,6 @@ export const useUserLogin = (props) => {
       const payload = getUrlParams(window.location.href);
       dispatch(
         authenticateGoogleLogin(payload, (err, res) => {
-          console.log(err, res.data, "auth google", loggedUser);
-
           if (res) {
             userActions.login(res.data, "/chat");
           }
