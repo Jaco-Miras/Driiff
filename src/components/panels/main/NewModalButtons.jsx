@@ -30,7 +30,7 @@ const Wrapper = styled.div`
 const Icon = styled(SvgIconFeather)``;
 
 const NewModalButtons = (props) => {
-  const { dictionary, onShowModalButtons, showButtons } = props;
+  const { dictionary, isExternal, onShowModalButtons, showButtons } = props;
 
   const refs = {
     btn1Ref: useRef(null),
@@ -120,12 +120,14 @@ const NewModalButtons = (props) => {
             {dictionary.reminder}
           </span>
         </div>
-        <div>
-          <span onClick={handleShowWorkspaceModal} ref={refs.btn4Ref}>
-            <Icon icon="compass" />
-            {dictionary.workspace}
-          </span>
-        </div>
+        {!isExternal && (
+          <div>
+            <span onClick={handleShowWorkspaceModal} ref={refs.btn4Ref}>
+              <Icon icon="compass" />
+              {dictionary.workspace}
+            </span>
+          </div>
+        )}
       </Wrapper>
     </CSSTransition>
   );
