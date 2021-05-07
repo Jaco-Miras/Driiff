@@ -87,6 +87,7 @@ const Wrapper = styled.div`
 
 const Image = styled.img`
   display: ${(props) => (props.show ? "inherit" : "none")};
+  object-fit: cover;
 `;
 
 const Initials = styled.span`
