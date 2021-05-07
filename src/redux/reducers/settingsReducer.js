@@ -1,5 +1,4 @@
 import momentTZ from "moment-timezone";
-import React from "react";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
@@ -61,6 +60,7 @@ const INITIAL_STATE = {
       translate: false,
     },
     GENERAL_SETTINGS: {
+      daily_digest: true,
       notification_sound: "appointed",
       is_new: true,
       timezone: momentTZ.tz.guess(),
