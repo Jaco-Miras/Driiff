@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import AllWorkspaceFilters from "./AllWorkspaceFilters";
 import { SvgIconFeather } from "../../common";
 
@@ -44,6 +45,8 @@ const MobileOverlayFilter = styled.div``;
 const AllWorkspaceSidebar = (props) => {
   const { actions, counters, dictionary, filterBy } = props;
 
+  const user = useSelector((state) => state.session.user);
+
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
   };
@@ -53,12 +56,14 @@ const AllWorkspaceSidebar = (props) => {
       <MobileOverlayFilter className="mobile-overlay" onClick={closeMobileModal} />
       <div className="bottom-modal-mobile_inner">
         <div className="app-sidebar-menu" tabIndex="2">
-          <div className="card-body create-new-post-wrapper">
-            <NewWsButton className="btn btn-primary btn-block" onClick={actions.showWorkspaceModal}>
-              <Icon icon="circle-plus" />
-              {dictionary.addNewWorkspace}
-            </NewWsButton>
-          </div>
+          {user.type === "internal" && (
+            <div className="card-body create-new-post-wrapper">
+              <NewWsButton className="btn btn-primary btn-block" onClick={actions.showWorkspaceModal}>
+                <Icon icon="circle-plus" />
+                {dictionary.addNewWorkspace}
+              </NewWsButton>
+            </div>
+          )}
           <div className="post-filter-item list-group list-group-flush">
             <span className={"list-group-item d-flex align-items-center pr-3"} data-value="inbox">
               {dictionary.filters}
