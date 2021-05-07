@@ -598,13 +598,15 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          [action.data.topic_id]: {
-            ...state.workspacePosts[action.data.topic_id],
-            filter: action.data.filter,
-            sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
-            tag: action.data.tag,
-            postListTag: action.data.postListTag,
-          },
+          ...(state.workspacePosts[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              filter: action.data.filter,
+              //sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
+              tag: action.data.tag,
+              postListTag: action.data.postListTag,
+            },
+          }),
         },
       };
     }
@@ -2857,6 +2859,30 @@ export default (state = INITIAL_STATE, action) => {
               res[obj.entity_type.toLowerCase()] = obj.count;
             }
             return res;
+          }, {}),
+        },
+      };
+    }
+    case "REMOVE_DRAFT_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts).reduce((ws, id) => {
+            if (state.workspacePosts[id]) {
+              ws[id] = {
+                ...state.workspacePosts[id],
+                posts: {
+                  ...Object.values(state.workspacePosts[id].posts).reduce((res, post) => {
+                    if (post.id !== action.data.post_id) {
+                      res[post.id] = { ...state.workspacePosts[id].posts[post.id] };
+                    }
+                    return res;
+                  }, {}),
+                },
+              };
+            }
+            return ws;
           }, {}),
         },
       };

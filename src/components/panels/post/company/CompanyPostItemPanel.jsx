@@ -244,7 +244,7 @@ const CompanyPostItemPanel = (props) => {
               </span>
               <HoverButtons className="hover-btns ml-1">
                 {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}
-                {post.type !== "draft_post" && !disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
+                {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
               </HoverButtons>
             </div>
             <PostReplyCounter>

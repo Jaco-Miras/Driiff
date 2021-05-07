@@ -1,14 +1,21 @@
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { saveDraft, updateDraft, deleteDraftReducer, deleteDraft } from "../../redux/actions/globalActions";
 
 const usePostDraft = (props) => {
-  const { draftId, initTimestamp, isExternalUser, item, form, is_personal, params, responsible_ids, user, topicId, toaster } = props;
+  const { draftId, initTimestamp, isExternalUser, item, form, is_personal, params, responsible_ids, user, topicId, toaster, setDraftId, savingDraft, setSavingDraft } = props;
+
+  const updateCountRef = useRef(0);
+  const [triggerUpdate, setTriggerUpdate] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
   const dispatch = useDispatch();
   const hasExternal = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
-  const handleSaveDraft = () => {
-    if (!(form.title === "" && form.body === "" && !form.selectedUsers.length)) {
+
+  const handleSaveDraft = (noToaster = false) => {
+    if (savingDraft) return;
+    if (!(form.title === "" && (form.body === "" || form.body === "<div><br></div>") && !form.selectedAddressTo.length)) {
       let timestamp = Math.floor(Date.now() / 1000);
       let payload = {
         type: "draft_post",
@@ -39,6 +46,7 @@ const usePostDraft = (props) => {
         required_users: [],
         topic_id: topicId,
       };
+      setSavingDraft(true);
       if (draftId) {
         payload = {
           ...payload,
@@ -48,15 +56,26 @@ const usePostDraft = (props) => {
         };
         dispatch(
           updateDraft(payload, (err, res) => {
+            setSavingDraft(false);
             if (err) return;
-            toaster.success("Your post is still available as a draft");
+            setDraftSaved(true);
+            setTimeout(() => {
+              setDraftSaved(false);
+            }, 2000);
+            if (!noToaster) toaster.success("Your post is still available as a draft");
           })
         );
       } else {
         dispatch(
           saveDraft(payload, (err, res) => {
+            setSavingDraft(false);
             if (err) return;
-            toaster.success("Your post is still available as a draft");
+            setDraftId(res.data.id);
+            setDraftSaved(true);
+            setTimeout(() => {
+              setDraftSaved(false);
+            }, 2000);
+            if (!noToaster) toaster.success("Your post is still available as a draft");
           })
         );
       }
@@ -108,9 +127,26 @@ const usePostDraft = (props) => {
     }
   };
 
+  // useEffect(() => {
+  //   return () => handleSaveDraft();
+  // }, []);
+
+  useEffect(() => {
+    let timeoutValue = setTimeout(() => {
+      setTriggerUpdate((prevState) => !prevState);
+      updateCountRef.current = updateCountRef.current + 1;
+    }, 1000);
+    return () => clearTimeout(timeoutValue);
+  }, [form]);
+
+  useEffect(() => {
+    if (updateCountRef.current > 1) handleSaveDraft(true);
+  }, [triggerUpdate]);
+
   return {
     handleSaveDraft,
     handleDeleteDraft,
+    draftSaved,
   };
 };
 

@@ -310,7 +310,7 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: {
           ...state.companyPosts,
           filter: action.data.filter,
-          sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
+          //sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
           tag: action.data.tag,
           postListTag: action.data.postListTag,
         },
@@ -1049,6 +1049,22 @@ export default (state = INITIAL_STATE, action) => {
                 user_reads: action.data.user_reads,
               },
             }),
+          },
+        },
+      };
+    }
+    case "REMOVE_DRAFT_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              if (post.id !== action.data.post_id) {
+                res[post.id] = { ...state.companyPosts.posts[post.id] };
+              }
+              return res;
+            }, {}),
           },
         },
       };
