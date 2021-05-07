@@ -229,12 +229,15 @@ const TodoReminderModal = (props) => {
         payload[k] = form[k].value;
       }
     });
+    console.log(payload);
     actions.onSubmit(payload, (err, res) => {
-      if (err) return;
-      console.log(payload, err, res);
+      // if (res) {
+      //   toggle();
+      // }
+      // setLoading(false);
     });
-    toggle();
     setLoading(false);
+    toggle();
   };
 
   const handleTitleRef = (e) => {
