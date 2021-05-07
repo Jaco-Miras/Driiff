@@ -14,9 +14,9 @@ import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
 
 const Wrapper = styled(Modal)`
-.invalid-feedback {
-  display: block;
-}
+  .invalid-feedback {
+    display: block;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -65,13 +65,13 @@ const TodoReminderModal = (props) => {
   /**
    * @todo refactor
    */
-  const {type, item, parentItem = null, itemType = null, actions} = props.data;
+  const { type, item, parentItem = null, itemType = null, actions } = props.data;
 
   const {
-    generalSettings: {date_picker_format: date_format, time_picker_format: time_format, language},
+    generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
   } = useSettings();
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.session.user);
@@ -79,26 +79,26 @@ const TodoReminderModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     title: {
-      value: itemType === "POST" ? item.title : parentItem ? parentItem.title : ""
+      value: itemType === "POST" ? item.title : parentItem ? parentItem.title : "",
     },
     description: {
       value: item && item.body ? item.body : "",
     },
     set_time: {
-      value: "1h"
-    }
-  })
+      value: "1h",
+    },
+  });
 
-  const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, 'm').toDate();
+  const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
-  const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, 'm').toDate());
+  const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, "m").toDate());
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
   const [initFocused, setInitFocused] = useState(false);
 
   const refs = {
-    title: useRef(null)
-  }
+    title: useRef(null),
+  };
 
   let dictionary = {
     author: _t("REMINDER.AUTHOR", "Author"),
@@ -114,42 +114,42 @@ const TodoReminderModal = (props) => {
     cancel: _t("REMINDER.CANCEL", "Cancel"),
     feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
     feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
-    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day.")
+    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
   };
 
   if (itemType === null) {
     dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER", "New reminder");
   } else {
     dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER_FOR_THIS_TYPE", "Set a reminder for this ::type::", {
-      type: itemType.toLowerCase().replace("_", " ")
+      type: itemType.toLowerCase().replace("_", " "),
     });
   }
 
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({type: type}));
+    dispatch(clearModal({ type: type }));
   };
 
   const handleInputChange = (e) => {
-    const {name, value} = e.currentTarget;
-    setForm(prevState => ({
+    const { name, value } = e.currentTarget;
+    setForm((prevState) => ({
       ...prevState,
       [name]: {
         ...prevState[name],
-        value: value
-      }
+        value: value,
+      },
     }));
-  }
+  };
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
     if (textOnly.trim() !== "") {
-      setForm(prevState => ({
+      setForm((prevState) => ({
         ...prevState,
         description: {
           ...prevState.description,
-          value: content
-        }
+          value: content,
+        },
       }));
     }
   };
@@ -173,11 +173,11 @@ const TodoReminderModal = (props) => {
   };
 
   const isFormValid = () => {
-    let newForm = {...form};
+    let newForm = { ...form };
 
     if (form.title.value.trim() === "") {
       newForm.title.valid = false;
-      newForm.title.feedback = `Title is required.`;
+      newForm.title.feedback = "Title is required.";
     } else {
       newForm.title.value = form.title.value.trim();
       newForm.title.valid = true;
@@ -191,12 +191,12 @@ const TodoReminderModal = (props) => {
       const currentDate = new Date();
       const reminderDate = new Date(customTimeValue);
       if (reminderDate > currentDate) {
-        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss")
+        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
         newForm.set_time.value = convertedTime.slice(0, -2) + "00";
         newForm.set_time.valid = true;
         newForm.set_time.feedback = null;
       } else if (customTimeValue.getTime() === reminderDate.getTime()) {
-        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss")
+        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
         newForm.set_time.value = convertedTime.slice(0, -2) + "00";
         newForm.set_time.valid = true;
         newForm.set_time.feedback = dictionary.feedbackReminderDateOverdue;
@@ -210,32 +210,31 @@ const TodoReminderModal = (props) => {
     }
 
     setForm(newForm);
-    setComponentUpdate(prevState => prevState ? 0 : 1);
-    return !Object.keys(newForm).map(k => newForm[k].valid).some(f => f === false);
-  }
+    setComponentUpdate((prevState) => (prevState ? 0 : 1));
+    return !Object.keys(newForm)
+      .map((k) => newForm[k].valid)
+      .some((f) => f === false);
+  };
 
   const handleSnooze = () => {
-    if (loading || !isFormValid())
-      return;
+    if (loading || !isFormValid()) return;
 
     setLoading(true);
 
     let payload = {};
-    Object.keys(form).forEach(k => {
+    Object.keys(form).forEach((k) => {
       if (k === "set_time") {
-        if (form[k].value !== "")
-          payload[k] = form[k].value;
+        if (form[k].value !== "") payload[k] = form[k].value;
       } else {
         payload[k] = form[k].value;
       }
     });
-    console.log(payload)
     actions.onSubmit(payload, (err, res) => {
-      if (res) {
-        toggle();
-      }
-      setLoading(false);
+      if (err) return;
+      console.log(payload, err, res);
     });
+    toggle();
+    setLoading(false);
   };
 
   const handleTitleRef = (e) => {
@@ -244,43 +243,30 @@ const TodoReminderModal = (props) => {
       setTimeout(() => {
         refs.title.current.focus();
         setInitFocused(true);
-      }, 500)
+      }, 500);
     }
-  }
+  };
 
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
       <ModalBody data-set-update={componentUpdate}>
-        {
-          itemType === null &&
+        {itemType === null && (
           <>
             <div className="column">
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12">
-                <FormInput
-                  innerRef={handleTitleRef}
-                  name="title"
-                  defaultValue={form.title.value}
-                  placeholder={dictionary.title}
-                  onChange={handleInputChange}
-                  isValid={form.title.valid}
-                  feedback={form.title.feedback}
-                  autoFocus/>
+                <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
               </div>
               <div className="col-12 modal-label">{dictionary.description}</div>
               <div className="col-12">
-                <StyledQuillEditor
-                  defaultValue={form.description.value}
-                  onChange={handleQuillChange}
-                  name="description"/>
+                <StyledQuillEditor defaultValue={form.description.value} onChange={handleQuillChange} name="description" />
               </div>
             </div>
           </>
-        }
-        {
-          itemType === "POST" &&
+        )}
+        {itemType === "POST" && (
           <>
             <div className="column">
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
@@ -290,14 +276,13 @@ const TodoReminderModal = (props) => {
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.description}</div>
               <div className="col-12 mb-3">
-                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }}/>
-                <FileAttachments attachedFiles={item.files} showDelete={false}/>
+                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
+                <FileAttachments attachedFiles={item.files} showDelete={false} />
               </div>
             </div>
           </>
-        }
-        {
-          itemType === "CHAT" &&
+        )}
+        {itemType === "CHAT" && (
           <>
             <div className="column">
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
@@ -307,14 +292,13 @@ const TodoReminderModal = (props) => {
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.message}</div>
               <div className="col-12 mb-3">
-                <MessageFiles isAuthor={item.user.id === user.id} files={item.files} reply={item} type="chat"/>
-                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }}/>
+                <MessageFiles isAuthor={item.user.id === user.id} files={item.files} reply={item} type="chat" />
+                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
               </div>
             </div>
           </>
-        }
-        {
-          itemType === "POST_COMMENT" &&
+        )}
+        {itemType === "POST_COMMENT" && (
           <>
             <div className="column">
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
@@ -324,12 +308,12 @@ const TodoReminderModal = (props) => {
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.message}</div>
               <div className="col-12 mb-3">
-                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }}/>
-                <FileAttachments attachedFiles={item.files} showDelete={false}/>
+                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
+                <FileAttachments attachedFiles={item.files} showDelete={false} />
               </div>
             </div>
           </>
-        }
+        )}
         <div className="column mt-3">
           <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
           <div className="col-12 mb-3">
@@ -367,28 +351,25 @@ const TodoReminderModal = (props) => {
               >
                 {dictionary.tomorrow}
               </RadioInput>
-              <RadioInput readOnly onClick={handleSelectPickDateTime} checked={timeValue === "pick_data"}
-                          value={"pick_data"} name={"role"}>
+              <RadioInput readOnly onClick={handleSelectPickDateTime} checked={timeValue === "pick_data"} value={"pick_data"} name={"role"}>
                 {dictionary.pickDateTime}
               </RadioInput>
-              {showDateTimePicker &&
-              <InputGroup>
-                <DateTimePicker
-                  minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language}
-                  format={`${date_format} ${time_format}`}
-                  disableClock={true}/>
-                <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
-              </InputGroup>}
+              {showDateTimePicker && (
+                <InputGroup>
+                  <DateTimePicker minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language} format={`${date_format} ${time_format}`} disableClock={true} />
+                  <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
+                </InputGroup>
+              )}
             </InputContainer>
           </div>
         </div>
       </ModalBody>
       <ModalFooter>
-      <Button outline color="secondary" onClick={toggle}>
+        <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
         <Button color="primary" onClick={handleSnooze}>
-          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.snooze}
         </Button>{" "}
       </ModalFooter>
