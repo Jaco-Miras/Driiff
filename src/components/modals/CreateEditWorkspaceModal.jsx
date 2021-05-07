@@ -1073,7 +1073,7 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     if (!payload.is_archived) {
-      payload.push_unArchived = 1;
+      payload.push_unarchived = 1;
     }
 
     dispatch(putChannel(payload));

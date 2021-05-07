@@ -1,6 +1,16 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getDriffCompSettings, getDriffSettings, getUserSettings, putCompanyUpdateName, setUserChatSetting, setUserGeneralSetting, updateUserSettings, updateReadAnnouncement, setUserWorkspaceSetting } from "../../redux/actions/settingsActions";
+import {
+  getDriffCompSettings,
+  getDriffSettings,
+  getUserSettings,
+  putCompanyUpdateName,
+  setUserChatSetting,
+  setUserGeneralSetting,
+  updateUserSettings,
+  updateReadAnnouncement,
+  setUserWorkspaceSetting,
+} from "../../redux/actions/settingsActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { setPushNotification } from "../../redux/actions/notificationActions";
 import { useToaster } from "./index";
@@ -37,24 +47,24 @@ const useSettings = () => {
   );
 
   const setWorkspaceSetting = useCallback(
-    (e) =>{
+    (e) => {
       dispatch(
         setUserWorkspaceSetting(e, () => {
           let payload = {
             ...userSettings,
             general_settings: {
               ...userSettings.GENERAL_SETTINGS,
-              ...e
+              ...e,
             },
             order_channel: {
-              ...e.order_channel
-            }
+              ...e.order_channel,
+            },
           };
           dispatch(updateUserSettings(payload));
         })
-
       );
-    },[dispatch, userSettings]
+    },
+    [dispatch, userSettings]
   );
 
   const setGeneralSetting = useCallback(
@@ -273,7 +283,7 @@ const useSettings = () => {
     setReadAnnouncement,
     showModal,
     loggedUser,
-    setWorkspaceSetting
+    setWorkspaceSetting,
   };
 };
 

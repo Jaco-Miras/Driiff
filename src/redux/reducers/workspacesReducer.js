@@ -22,11 +22,21 @@ const INITIAL_STATE = {
   search: {
     results: [],
     searching: false,
-    filterBy: "",
+    filterBy: "member",
     value: "",
     page: 1,
     maxPage: 1,
     count: 0,
+    hasMore: false,
+    counters: {
+      new: 0,
+      nonMember: 0,
+      external: 0,
+      private: 0,
+      archived: 0,
+      member: 0,
+      favourites: 0,
+    },
     filters: {
       private: {
         checked: false,
@@ -59,22 +69,13 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    // case "GET_ALL_WORKSPACE_SUCCESS": {
-    //   return {
-    //     ...state,
-    //     search: {
-    //       ...state.search,
-    //       count: action.data.total_count,
-    //       searching: false,
-    //       results: [...new Set([...action.data.workspaces, ...state.search.results])],
-    //       maxPage: Math.ceil(action.data.total_count / 25)
-    //     }
-    //   }
-    // }
     case "UPDATE_WORKSPACE_SEARCH": {
       return {
         ...state,
-        search: action.data,
+        search: {
+          ...state.search,
+          ...action.data,
+        },
       };
     }
     case "ADD_USER_TO_REDUCERS": {
@@ -135,6 +136,7 @@ export default (state = INITIAL_STATE, action) => {
               folder_id: ws.id,
               folder_name: ws.name,
               team_channel: t.team_channel,
+              is_favourite: t.is_favourite,
               type: "WORKSPACE",
             };
           });
@@ -142,6 +144,7 @@ export default (state = INITIAL_STATE, action) => {
         } else if (ws.type === "WORKSPACE") {
           updatedWorkspaces[ws.id] = {
             ...ws,
+            is_favourite: ws.topic_detail.is_favourite,
             is_shared: ws.topic_detail.is_shared,
             active: ws.topic_detail.active,
             channel: { ...ws.topic_detail.channel, loaded: false },
@@ -1684,7 +1687,10 @@ export default (state = INITIAL_STATE, action) => {
           if (item.topic.id === action.data.topic_detail.id) {
             return {
               ...item,
-              is_archive: true,
+              topic: {
+                ...item.topic,
+                is_archive: true,
+              },
             };
           } else {
             return item;
@@ -1717,7 +1723,10 @@ export default (state = INITIAL_STATE, action) => {
           if (item.topic.id === action.data.topic_detail.id) {
             return {
               ...item,
-              is_archive: false,
+              topic: {
+                ...item.topic,
+                is_archive: false,
+              },
             };
           } else {
             return item;
@@ -1726,6 +1735,7 @@ export default (state = INITIAL_STATE, action) => {
       }
       return {
         ...state,
+        search: updatedSearch,
         workspaces: workspaces,
         activeTopic:
           state.activeTopic && state.activeTopic.id === action.data.topic_detail.id
@@ -2802,6 +2812,53 @@ export default (state = INITIAL_STATE, action) => {
                 },
               }
             : state.activeTopic,
+      };
+    }
+    case "INCOMING_FAVOURITE_WORKSPACE": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          results: state.search.results.map((r) => {
+            if (r.topic.id === action.data.topic_id.id) {
+              return {
+                ...r,
+                topic: {
+                  ...r.topic,
+                  is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false,
+                },
+              };
+            } else {
+              return r;
+            }
+          }),
+        },
+        workspaces: {
+          ...Object.values(state.workspaces).reduce((res, ws) => {
+            res[ws.id] = {
+              ...ws,
+              is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
+            };
+            return res;
+          }, {}),
+        },
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id.id ? { ...state.activeTopic, is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false } : state.activeTopic,
+      };
+    }
+    case "GET_WORKSPACE_FILTER_COUNT_SUCCESS": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          counters: action.data.reduce((res, obj) => {
+            if (obj.entity_type === "NON_MEMBER") {
+              res["nonMember"] = obj.count;
+            } else {
+              res[obj.entity_type.toLowerCase()] = obj.count;
+            }
+            return res;
+          }, {}),
+        },
       };
     }
     default:

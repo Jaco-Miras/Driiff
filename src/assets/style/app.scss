@@ -11078,6 +11078,10 @@ textarea {
   color: #505050;
 }
 
+.text-external {
+  color: #FFDB92;
+}
+
 .colorpicker.dropdown-menu {
   visibility: visible;
   opacity: 1;
@@ -13649,6 +13653,10 @@ table .dropdown {
   background: rgba(255, 187, 51, 0.3);
 }
 
+.badge.badge-external {
+  background: #FFDB92;
+  color: #212529;
+}
 
 .btn {
   position: relative;
@@ -22257,4 +22265,33 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
       }
     }
   }
+}
+// animation for sidebar modal buttons
+.bslide-enter,
+.bslide-appear {
+  transform: translateY(50%);
+  opacity: 0;
+  transition: opacity 300ms linear 100ms, transform 300ms ease-out;
+}
+
+.bslide-enter.bslide-enter-active,
+.bslide-appear.bslide-appear-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: opacity 300ms linear 100ms, transform 300ms ease-out;
+}
+
+/* slide exit */
+.bslide-exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+.bslide-exit.bslide-exit-active {
+  transform: translateY(18%);
+  opacity: 0;
+  transition: opacity 200ms linear 100ms, transform 250ms ease-in;
+}
+.bslide-exit-done {
+  transform: translateY(18%);
+  opacity: 0;
 }
