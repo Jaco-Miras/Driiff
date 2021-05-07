@@ -39,7 +39,7 @@ const NewModalButtons = (props) => {
     btn4Ref: useRef(null),
   };
   const dispatch = useDispatch();
-  const toaster = useToaster;
+  const toaster = useToaster();
 
   const handleShowWorkspaceModal = () => {
     let payload = {
