@@ -60,7 +60,7 @@ export const useUserLogin = (props) => {
               }
             }
           } else {
-            console.log("default to workspace chat");
+            console.log("default to workspace chat", res.data);
             userActions.login(res.data, "/workspace/chat");
           }
         }
@@ -124,7 +124,7 @@ export const useUserLogin = (props) => {
       const payload = getUrlParams(window.location.href);
       dispatch(
         authenticateGoogleLogin(payload, (err, res) => {
-          console.log(err);
+          console.log(err, res.data, "auth google");
 
           if (res) {
             userActions.login(res.data, "/workspace/chat");
