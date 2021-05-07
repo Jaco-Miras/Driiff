@@ -16,7 +16,6 @@ const usePostDraft = (props) => {
   const handleSaveDraft = (noToaster = false) => {
     if (savingDraft) return;
     if (!(form.title === "" && (form.body === "" || form.body === "<div><br></div>") && !form.selectedAddressTo.length)) {
-      let timestamp = Math.floor(Date.now() / 1000);
       let payload = {
         type: "draft_post",
         form: {
@@ -24,10 +23,10 @@ const usePostDraft = (props) => {
           personal: is_personal,
           users_responsible: responsible_ids,
         },
-        timestamp: timestamp,
-        id: timestamp,
-        created_at: { timestamp: timestamp },
-        updated_at: { timestamp: timestamp },
+        timestamp: initTimestamp,
+        id: initTimestamp,
+        created_at: { timestamp: initTimestamp },
+        updated_at: { timestamp: initTimestamp },
         title: form.title,
         partial_body: form.body,
         clap_user_ids: [],
@@ -47,6 +46,7 @@ const usePostDraft = (props) => {
         topic_id: topicId,
       };
       setSavingDraft(true);
+
       if (draftId) {
         payload = {
           ...payload,
