@@ -165,7 +165,7 @@ const MainSidebarLinks = (props) => {
         <QuickLinks user={user} dictionary={dictionary} />
         {user.role && ["owner"].includes(user.role.name) && (
           <li>
-            <NavIconContainer to={"/bot"} active={["/bot"].includes(props.location.pathname)}>
+            <NavIconContainer to={"/bot"} active={["/bot"].includes(location.pathname)}>
               <NavIcon icon={"cpu"} />
               <div>{dictionary.bots}</div>
             </NavIconContainer>
