@@ -69,7 +69,7 @@ const useWorkspaceAndUserOptions = (props) => {
   };
 
   useEffect(() => {
-    if (!progress && company && Object.values(actualUsers).length > 1) {
+    if (!progress && Object.values(actualUsers).length > 1) {
       setProgress(true);
 
       let workspaceOptions = [];
@@ -99,36 +99,23 @@ const useWorkspaceAndUserOptions = (props) => {
         }
       });
 
-      setOptions([
-        ...(company && [
-          {
-            ...company,
-            participant_ids: internalUsers.map((u) => u.id),
-            member_ids: internalUsers.map((u) => u.id),
-            members: internalUsers.map((u) => u),
-            icon: "home",
-            value: company.id,
-            label: company.name,
-          },
-        ]),
-        ...workspaceOptions,
-        ...userOptions,
-      ]);
+      const options = [...workspaceOptions, ...userOptions];
+      const companyOption = company
+        ? [
+            {
+              ...company,
+              participant_ids: internalUsers.map((u) => u.id),
+              member_ids: internalUsers.map((u) => u.id),
+              members: internalUsers.map((u) => u),
+              icon: "home",
+              value: company.id,
+              label: company.name,
+            },
+          ]
+        : [];
+
+      setOptions([...companyOption, ...options]);
     }
-    // else if (!progress && recipients.filter((r) => r.main_department).length === 0) {
-    //   setProgress(true);
-    //   setOptions(
-    //     recipients.map((r) => {
-    //       return {
-    //         ...r,
-    //         icon: "compass",
-    //         value: r.id,
-    //         label: r.name,
-    //         member_ids: r.participant_ids,
-    //       };
-    //     })
-    //   );
-    // }
   }, [options, recipients, actualUsers, actualWorkspaces, setOptions]);
 
   let responsible_ids = [];

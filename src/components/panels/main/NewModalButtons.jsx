@@ -102,12 +102,14 @@ const NewModalButtons = (props) => {
   return (
     <CSSTransition appear={true} in={showButtons} timeout={300} unmountOnExit classNames="bslide">
       <Wrapper>
-        <div>
-          <span onClick={handleShowChatModal} ref={refs.btn1Ref}>
-            <Icon icon="message-circle" />
-            {dictionary.chat}
-          </span>
-        </div>
+        {!isExternal && (
+          <div>
+            <span onClick={handleShowChatModal} ref={refs.btn1Ref}>
+              <Icon icon="message-circle" />
+              {dictionary.chat}
+            </span>
+          </div>
+        )}
         <div>
           <span onClick={handleShowPostModal} ref={refs.btn2Ref}>
             <Icon icon="file-text" />
