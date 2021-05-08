@@ -98,7 +98,7 @@ const CompanyPostFilterItem = (props) => {
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "draft" ? "active" : ""}`} data-value="draft" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="edit-3" />
         {dictionary.drafts}
-        {/* <span className="small ml-auto">{counters.drafts > 0 && counters.drafts}</span> */}
+        <span className="small ml-auto">{counters.drafts > 0 && counters.drafts}</span>
       </span>
     </Wrapper>
   );
