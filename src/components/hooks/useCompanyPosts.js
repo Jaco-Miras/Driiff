@@ -13,6 +13,7 @@ const useCompanyPosts = () => {
   const { postsLists } = useSelector((state) => state.posts);
 
   const archived = useSelector((state) => state.posts.archived);
+  const favourites = useSelector((state) => state.posts.favourites);
   const fetchMore = (callback) => {
     if (filter === "archive") {
       let payload = {
@@ -60,6 +61,16 @@ const useCompanyPosts = () => {
       });
     }
   }, [filter, archived]);
+
+  useEffect(() => {
+    if (favourites.skip === 0 && filter === "star") {
+      actions.fetchCompanyPosts({
+        skip: 0,
+        limit: 25,
+        filters: ["post", "favourites"],
+      });
+    }
+  }, [filter, favourites]);
 
   let filteredPosts = Object.values(posts);
 
