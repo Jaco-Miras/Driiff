@@ -42,11 +42,7 @@ const useCompanyPosts = () => {
       }
       fetchMore();
       actions.fetchPostList();
-      // actions.fetchCompanyPosts({
-      //   skip: 0,
-      //   limit: 25,
-      //   filters: ["post", "archived"],
-      // });
+
       actions.fetchUnreadCompanyPosts({
         skip: 0,
         limit: 100,
@@ -54,6 +50,16 @@ const useCompanyPosts = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (archived.skip === 0 && filter === "all") {
+      actions.fetchCompanyPosts({
+        skip: 0,
+        limit: 25,
+        filters: ["post", "archived"],
+      });
+    }
+  }, [filter, archived]);
 
   let filteredPosts = Object.values(posts);
 

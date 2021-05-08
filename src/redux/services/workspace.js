@@ -355,3 +355,31 @@ export function createTeamChannel(payload) {
     //data: payload,
   });
 }
+/**
+ * @param {Object} payload
+ * @param {number} payload.id
+ * @param {number} payload.workspace_id
+ * @param {number} payload.is_pinned
+ * @returns {Promise<*>}
+ */
+export function favouriteWorkspace(payload) {
+  let url = `/v2/workspace/${payload.id}/favourite`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function getWorkspaceFilterCount(payload) {
+  let url = "/v2/workspace-counter-entries";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

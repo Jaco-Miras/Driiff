@@ -311,7 +311,7 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: {
           ...state.companyPosts,
           filter: action.data.filter,
-          sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
+          //sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
           tag: action.data.tag,
           postListTag: action.data.postListTag,
         },
@@ -558,29 +558,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ARCHIVE_POST_REDUCER": {
-      if (!isNaN(action.data.topic_id)) {
-        // need review
-        let updatedPosts = { ...state.posts };
-        updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
-        return {
-          ...state,
-          posts: updatedPosts,
-        };
-      } else {
-        return {
-          ...state,
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                is_archived: action.data.is_archived,
-              },
-            },
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...(Object.values(state.companyPosts.posts).length > 0 && {
+              ...Object.values(state.companyPosts.posts).reduce((pos, p) => {
+                pos[p.id] = {
+                  ...p,
+                  is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                };
+                return pos;
+              }, {}),
+            }),
           },
-        };
-      }
+        },
+      };
     }
     case "INCOMING_POST_TOGGLE_FOLLOW": {
       return {
@@ -1060,6 +1055,12 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "SET_POST_COMMENT_TYPE": {
+      return {
+        ...state,
+        commentType: action.data,
+      };
+    }
     case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
       return {
         ...state,
@@ -1100,6 +1101,22 @@ export default (state = INITIAL_STATE, action) => {
               if (post.files.some((f) => f.file_id === action.data.file_id)) {
                 res[post.id] = { ...state.companyPosts.posts[post.id], files: state.companyPosts.posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
               } else {
+                res[post.id] = { ...state.companyPosts.posts[post.id] };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "REMOVE_DRAFT_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              if (post.id !== action.data.post_id) {
                 res[post.id] = { ...state.companyPosts.posts[post.id] };
               }
               return res;

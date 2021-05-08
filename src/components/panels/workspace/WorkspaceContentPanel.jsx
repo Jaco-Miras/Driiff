@@ -6,6 +6,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
 import { useIsMember, useTranslation, useUsers, useWorkspaceActions } from "../../hooks";
 import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSearchPanel, WorkspaceSettingsPanel } from "../workspace";
+import AllWorkspace from "./AllWorkspace";
 
 const Wrapper = styled.div`
   position: relative;
@@ -85,7 +86,8 @@ const WorkspaceContentPanel = (props) => {
           {Object.keys(workspaces).length >= 1 ? (
             <>
               <Switch>
-                <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} />
+                <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/workspace/search"]} />
+                {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} /> */}
                 <Route
                   render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline} />}
                   path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}

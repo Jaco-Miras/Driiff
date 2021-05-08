@@ -87,6 +87,7 @@ const Wrapper = styled.div`
 
 const Image = styled.img`
   display: ${(props) => (props.show ? "inherit" : "none")};
+  object-fit: cover;
 `;
 
 const Initials = styled.span`
@@ -175,9 +176,9 @@ const Avatar = (props) => {
   };
 
   const handleOnClick = (e) => {
+    if (noDefaultClick) return;
     e.stopPropagation();
     e.preventDefault();
-    if (noDefaultClick) return;
     if (onClick) {
       onClick(e);
       return;

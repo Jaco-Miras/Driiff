@@ -47,6 +47,14 @@ export const NotificationListItem = (props) => {
     }
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
+    } else if (notification.type === "WORKSPACE_ADD_MEMBER") {
+      let payload = {
+        id: notification.data.id,
+        name: notification.data.title,
+        folder_id: notification.data.workspace_folder_id !== 0 ? notification.data.workspace_folder_id : null,
+        folder_name: notification.data.workspace_folder_name !== "" ? notification.data.workspace_folder_name : null,
+      };
+      redirect.toWorkspace(payload);
     } else {
       let post = { id: notification.data.post_id, title: notification.data.title };
       let workspace = null;
@@ -96,6 +104,7 @@ export const NotificationListItem = (props) => {
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
     sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
     closedThePost: _t("NOTIFICATION.CLOSED_THE_POST", "closed the post"),
+    addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
   };
 
   const notifDisplay = () => {
@@ -175,6 +184,16 @@ export const NotificationListItem = (props) => {
           <div className="notification-container flex-grow-1" onClick={handleRedirect}>
             <span>{notification.author.name}</span>
             <p className="notification-title text-link">{dictionary.closedThePost}</p>
+            <p className="notification-title text-link">{notification.data.title}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
+        );
+      }
+      case "WORKSPACE_ADD_MEMBER": {
+        return (
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{notification.author.name}</span>
+            <p className="notification-title text-link">{dictionary.addedYouInWorkspace}</p>
             <p className="notification-title text-link">{notification.data.title}</p>
             <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
           </div>

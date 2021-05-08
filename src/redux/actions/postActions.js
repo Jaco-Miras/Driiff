@@ -431,3 +431,7 @@ export function postRequired(payload, callback) {
 export function incomingPostRequired(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_REQUIRED", payload, callback);
 }
+
+export function removeDraftPost(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_DRAFT_POST", payload, callback);
+}

@@ -1,17 +1,17 @@
-import React, {useCallback, useRef, useState} from "react";
+import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
-import {useDispatch, useSelector} from "react-redux";
-import {useIsMember, useOutsideClick, useTranslation, useToaster} from "../hooks";
-import {SvgIconFeather} from "../common";
-import {addToModals} from "../../redux/actions/globalActions";
+import { useDispatch, useSelector } from "react-redux";
+import { useIsMember, useOutsideClick, useTranslation, useToaster } from "../hooks";
+import { SvgIconFeather } from "../common";
+import { addToModals } from "../../redux/actions/globalActions";
 import Tooltip from "react-tooltip-lite";
-import {putChannel} from "../../redux/actions/chatActions";
+import { putChannel } from "../../redux/actions/chatActions";
 
 const SettingsLinkList = styled.div`
   position: relative;
-  display: inline-block;
+  display: flex;
   margin-left: 6px;
-  margin-right: 30px;
+  align-items: center;
   > a:after {
     display: none;
   }
@@ -41,6 +41,10 @@ const SettingsLinkList = styled.div`
   @media all and (max-width: 400px) {
     margin-right: 0;
   }
+  .feather.feather-pencil {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const StyledTooltip = styled(Tooltip)`
@@ -50,11 +54,10 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const SettingsLink = (props) => {
-
-  const {className = ""} = props;
+  const { className = "" } = props;
 
   const toaster = useToaster();
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
@@ -104,7 +107,7 @@ const SettingsLink = (props) => {
       payload = {
         ...payload,
         type: "workspace_folder",
-        item: folders[topic.folder_id]
+        item: folders[topic.folder_id],
       };
     } else {
       payload = {
@@ -118,36 +121,36 @@ const SettingsLink = (props) => {
 
   const handleUnarchive = () => {
     let payload = {
-        id: topic.channel.id,
-        is_archived: false,
-        is_muted: false,
-        is_pinned: false,
-        is_shared: topic.is_external,
-        push_unarchived: 1
+      id: topic.channel.id,
+      is_archived: false,
+      is_muted: false,
+      is_pinned: false,
+      is_shared: topic.is_external,
+      push_unarchived: 1,
     };
 
     dispatch(putChannel(payload));
     toaster.success(
-        <span>
-          <b>{topic.name} workspace is un-archived.</b>
-        </span>
+      <span>
+        <b>{topic.name} workspace is un-archived.</b>
+      </span>
     );
   };
 
   const handleShowArchiveConfirmation = () => {
     let payload = {
-        type: "confirmation",
-        cancelText: dictionary.cancel,
-        headerText: dictionary.unarchiveWorkspace,
-        submitText: dictionary.unarchiveWorkspace,
-        bodyText: dictionary.unarchiveBodyText,
-        actions: {
-            onSubmit: handleUnarchive,
-        },
+      type: "confirmation",
+      cancelText: dictionary.cancel,
+      headerText: dictionary.unarchiveWorkspace,
+      submitText: dictionary.unarchiveWorkspace,
+      bodyText: dictionary.unarchiveBodyText,
+      actions: {
+        onSubmit: handleUnarchive,
+      },
     };
 
     dispatch(addToModals(payload));
-};
+  };
 
   useOutsideClick(wrapperRef, toggle, show);
 
@@ -156,30 +159,29 @@ const SettingsLink = (props) => {
   if (!isMember) return null;
 
   return (
-      <SettingsLinkList className={`nav-item ${className}`} ref={wrapperRef}>
-        <div>
+    <SettingsLinkList className={`nav-item ${className}`} ref={wrapperRef}>
+      <div>
         <span className={`dropdown-toggle ${show ? "show" : ""}`} data-toggle="dropdown" onClick={handleToggle}>
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Workspace settings">
-            <SvgIconFeather icon="pencil"/>
+            <SvgIconFeather icon="pencil" />
           </StyledTooltip>
         </span>
-          <div className={`dropdown-menu ${show ? "show" : ""}`}>
-            {
-              topic.active === 1 ? 
-              <>
-                <span className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
-                  Folder settings
-                </span>
-                  <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
-                  Workspace settings
-                </span>
-              </>
-              : 
-              <span className="dropdown-item" data-name="unarchive" onClick={handleShowArchiveConfirmation}>
-                Un-archive workspace
+        <div className={`dropdown-menu ${show ? "show" : ""}`}>
+          {topic.active === 1 ? (
+            <>
+              <span className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
+                Folder settings
               </span>
-            }
-          </div>
+              <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
+                Workspace settings
+              </span>
+            </>
+          ) : (
+            <span className="dropdown-item" data-name="unarchive" onClick={handleShowArchiveConfirmation}>
+              Un-archive workspace
+            </span>
+          )}
+        </div>
       </div>
     </SettingsLinkList>
   );

@@ -388,7 +388,15 @@ const ChatFooterPanel = (props) => {
                 )}
                 <Dflex className="d-flex flex-grow-1">
                   <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
-                  <ChatInputButtons showEmojiPicker={showEmojiPicker} handleShowEmojiPicker={handleShowEmojiPicker} handleGoogleMeet={handleGoogleMeet} onShowFileDialog={onShowFileDialog} editChatMessage={editChatMessage} quote={quote} />
+                  <ChatInputButtons
+                    channel={selectedChannel}
+                    showEmojiPicker={showEmojiPicker}
+                    handleShowEmojiPicker={handleShowEmojiPicker}
+                    handleGoogleMeet={handleGoogleMeet}
+                    onShowFileDialog={onShowFileDialog}
+                    editChatMessage={editChatMessage}
+                    quote={quote}
+                  />
                 </Dflex>
               </ChatInputContainer>
 

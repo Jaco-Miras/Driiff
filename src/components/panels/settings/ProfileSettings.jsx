@@ -85,7 +85,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -114,6 +114,7 @@ const ProfileSettings = (props) => {
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
   };
 
   // const notificationSoundOptions = [
@@ -225,7 +226,7 @@ const ProfileSettings = (props) => {
 
       setGeneralSetting(
         {
-          [name]: checked ? "1" : "0",
+          [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
         },
         () => {
           if (["log_rocket", "sentry"].includes(name)) {
@@ -491,6 +492,20 @@ const ProfileSettings = (props) => {
                     data-success-message={`${!notifications_on ? "Notifications enabled" : "Notifications disabled"}`}
                     onChange={handleNotificationsSwitchToggle}
                     label={<span>{dictionary.allowNotifications}</span>}
+                  />
+                </div>
+              </div>
+              <div className="row mb-2">
+                <div className="col-12 text-muted">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={daily_digest}
+                    type="switch"
+                    id="daily_digest"
+                    name="daily_digest"
+                    data-success-message={`${!daily_digest ? "Daily digest enabled" : "Daily digest disabled"}`}
+                    onChange={handleGeneralSwitchToggle}
+                    label={<span>{dictionary.dailyDigest}</span>}
                   />
                 </div>
               </div>

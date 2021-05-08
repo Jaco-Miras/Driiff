@@ -41,6 +41,7 @@ import {
   putCompanyPosts,
   putPost,
   //readAllCallback,
+  removeDraftPost,
   removePost,
   removePostReact,
   setPostToggleFollow,
@@ -259,10 +260,9 @@ const usePostActions = () => {
             })
           );
           dispatch(
-            removePost(
+            removeDraftPost(
               {
                 post_id: post.id,
-                topic_id: parseInt(params.workspaceId),
               },
               (err, res) => {
                 if (err) {
@@ -328,7 +328,7 @@ const usePostActions = () => {
                   dispatch(
                     archiveReducer({
                       post_id: post.id,
-                      topic_id: parseInt(params.workspaceId),
+                      //topic_id: parseInt(params.workspaceId),
                       is_archived: post.is_archived === 1 ? 0 : 1,
                     })
                   );
