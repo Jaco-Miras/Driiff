@@ -2817,6 +2817,77 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
+    case "INCOMING_FAVOURITE_WORKSPACE": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          results: state.search.results.map((r) => {
+            if (r.topic.id === action.data.topic_id.id) {
+              return {
+                ...r,
+                topic: {
+                  ...r.topic,
+                  is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false,
+                },
+              };
+            } else {
+              return r;
+            }
+          }),
+        },
+        workspaces: {
+          ...Object.values(state.workspaces).reduce((res, ws) => {
+            res[ws.id] = {
+              ...ws,
+              is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
+            };
+            return res;
+          }, {}),
+        },
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id.id ? { ...state.activeTopic, is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false } : state.activeTopic,
+      };
+    }
+    case "GET_WORKSPACE_FILTER_COUNT_SUCCESS": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          counters: action.data.reduce((res, obj) => {
+            if (obj.entity_type === "NON_MEMBER") {
+              res["nonMember"] = obj.count;
+            } else {
+              res[obj.entity_type.toLowerCase()] = obj.count;
+            }
+            return res;
+          }, {}),
+        },
+      };
+    }
+    case "REMOVE_DRAFT_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts).reduce((ws, id) => {
+            if (state.workspacePosts[id]) {
+              ws[id] = {
+                ...state.workspacePosts[id],
+                posts: {
+                  ...Object.values(state.workspacePosts[id].posts).reduce((res, post) => {
+                    if (post.id !== action.data.post_id) {
+                      res[post.id] = { ...state.workspacePosts[id].posts[post.id] };
+                    }
+                    return res;
+                  }, {}),
+                },
+              };
+            }
+            return ws;
+          }, {}),
+        },
+      };
+    }
     case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
       return {
         ...state,
@@ -2971,85 +3042,6 @@ export default (state = INITIAL_STATE, action) => {
                 }, {}),
               },
             };
-            return ws;
-          }, {}),
-        },
-      };
-    }
-    case "INCOMING_FAVOURITE_WORKSPACE": {
-      return {
-        ...state,
-        search: {
-          ...state.search,
-          results: state.search.results.map((r) => {
-            if (r.topic.id === action.data.topic_id.id) {
-              return {
-                ...r,
-                topic: {
-                  ...r.topic,
-                  is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false,
-                },
-              };
-            } else {
-              return r;
-            }
-          }),
-        },
-        workspaces: {
-          ...Object.values(state.workspaces).reduce((res, ws) => {
-            res[ws.id] = {
-              ...ws,
-              is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
-            };
-            return res;
-          }, {}),
-        },
-        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id.id ? { ...state.activeTopic, is_favourite: action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false } : state.activeTopic,
-      };
-    }
-
-    case "UPDATE_CHANNEL_IS_TRANSLATE": {
-      return {
-        ...state,
-        is_translate: action.data,
-      };
-    }
-
-    case "GET_WORKSPACE_FILTER_COUNT_SUCCESS": {
-      return {
-        ...state,
-        search: {
-          ...state.search,
-          counters: action.data.reduce((res, obj) => {
-            if (obj.entity_type === "NON_MEMBER") {
-              res["nonMember"] = obj.count;
-            } else {
-              res[obj.entity_type.toLowerCase()] = obj.count;
-            }
-            return res;
-          }, {}),
-        },
-      };
-    }
-    case "REMOVE_DRAFT_POST": {
-      return {
-        ...state,
-        workspacePosts: {
-          ...state.workspacePosts,
-          ...Object.keys(state.workspacePosts).reduce((ws, id) => {
-            if (state.workspacePosts[id]) {
-              ws[id] = {
-                ...state.workspacePosts[id],
-                posts: {
-                  ...Object.values(state.workspacePosts[id].posts).reduce((res, post) => {
-                    if (post.id !== action.data.post_id) {
-                      res[post.id] = { ...state.workspacePosts[id].posts[post.id] };
-                    }
-                    return res;
-                  }, {}),
-                },
-              };
-            }
             return ws;
           }, {}),
         },
