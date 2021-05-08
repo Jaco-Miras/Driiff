@@ -51,6 +51,7 @@ const usePosts = () => {
         };
         actions.getPosts(payload, cb);
         actions.fetchPostList();
+
         let filterCb = (err, res) => {
           setFetchingPost(false);
           if (err) return;
@@ -68,7 +69,7 @@ const usePosts = () => {
                 archived: {
                   active: false,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === res.data.posts.length,
+                  hasMore: res.data.total_take === 25,
                 },
               },
             })
