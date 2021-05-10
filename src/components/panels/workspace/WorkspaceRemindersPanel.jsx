@@ -69,7 +69,7 @@ const WorkspaceRemindersPanel = (props) => {
   };
 
   const workspaceReminders = items.filter((item) => item.workspace && activeTopic && item.workspace.id === activeTopic.id);
-
+  console.log(workspaceReminders, items);
   return (
     <Wrapper className={"container-fluid h-100 fadeIn"}>
       <div className="row app-block" style={{ oveflow: "inherit", height: workspaceReminders.length ? "auto" : "100%" }}>
