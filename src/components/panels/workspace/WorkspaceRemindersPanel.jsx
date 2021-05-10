@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { useTodos, useTranslation } from "../../hooks";
-import { TodosBody, TodosHeader, TodosSidebar } from "./index";
+import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -13,12 +14,12 @@ const Wrapper = styled.div`
   }
 `;
 
-const TodosPanel = (props) => {
-  const { className = "" } = props;
-
+const WorkspaceRemindersPanel = (props) => {
   const { getSortedItems, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
 
   const { _t } = useTranslation();
+
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
@@ -30,10 +31,8 @@ const TodosPanel = (props) => {
     statusAll: _t("REMINDER.STATUS_ALL", "ALL"),
     statusExpired: _t("REMINDER.STATUS_EXPIRED", "Expired"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Today"),
-    statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcomingToday: _t("REMINDER.STATUS_UPCOMING", "Upcoming Today"),
-    statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
@@ -66,19 +65,23 @@ const TodosPanel = (props) => {
   const items = getSortedItems({ filter: { status: filter, search: search } });
 
   const getDone = (filter, search) => {
-    return filter === "" ? getSortedItems({ filter: { status: "DONE", search: search } }) : [];
+    return filter === "" ? getSortedItems({ filter: { status: "DONE", search: search } }).filter((item) => item.workspace && activeTopic && item.workspace.id === activeTopic.id) : [];
   };
+
+  const workspaceReminders = items.filter((item) => item.workspace && activeTopic && item.workspace.id === activeTopic.id);
+
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
-      <div className="row app-block" style={{ oveflow: "inherit", height: items.length ? "auto" : "100%" }}>
+    <Wrapper className={"container-fluid h-100 fadeIn"}>
+      <div className="row app-block" style={{ oveflow: "inherit", height: workspaceReminders.length ? "auto" : "100%" }}>
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded} todoItems={items} dictionary={dictionary} todoActions={todoActions} filter={filter} getDone={getDone(filter, search)} />
+          <TodosBody complete={false} isLoaded={isLoaded} todoItems={workspaceReminders} dictionary={dictionary} todoActions={todoActions} filter={filter} getDone={getDone(filter, search)} />
         </div>
       </div>
     </Wrapper>
   );
 };
-export default React.memo(TodosPanel);
+
+export default WorkspaceRemindersPanel;

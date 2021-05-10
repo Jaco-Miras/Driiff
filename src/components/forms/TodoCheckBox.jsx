@@ -93,7 +93,7 @@ const TodoCheckBox = (props) => {
 
   return (
     <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`}
-             onClick={handleClick}>
+             onClick={handleClick} style={{ 'padding-left': '0rem' }}>
       <input ref={refs.checkbox} name={name} data-name={name} type="checkbox"
              className={`cci ${isChecked ? "cci-active" : ""}`} checked={isChecked}
              readOnly {...otherProps} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
 //import { useHistory } from "react-router-dom";
@@ -6,11 +6,20 @@ import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../h
 // import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
 // import { useDispatch, useSelector } from "react-redux";
 import { TodosList } from "./index";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
+  flex: unset !important;
+  height: auto !important;
+  ${(props) =>
+    props.active &&
+    `
+  height: 100% !important;
+  `}
+
   .list-group {
     .list-group-item {
-      padding: 0.75rem 1.5rem 0 0.75rem;
+      padding: 0rem 1.5rem 0 0.75rem;
 
       > a {
         display: block;
@@ -35,22 +44,6 @@ const Wrapper = styled.div`
     }
   }
 
-  li.link-title {
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 11px;
-    text-transform: uppercase;
-    line-height: 1.2;
-
-    &:not(:nth-child(1)) {
-      margin-top: 2rem;
-    }
-  }
-
-  .text-success {
-    text-decoration: line-through;
-  }
-
   .todo-title {
     color: #343a40;
 
@@ -64,9 +57,21 @@ const Wrapper = styled.div`
   }
 `;
 
+const ListGroup = styled.ul`
+  background: transparent;
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+`;
+
 const EmptyState = styled.div`
-  padding: 5rem 0;
-  max-width: 750px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
   margin: auto;
   text-align: center;
 
@@ -75,9 +80,12 @@ const EmptyState = styled.div`
     margin: 0 auto;
   }
 
+  h3 {
+    font-size: 16px;
+  }
   h5 {
-    margin-top: 2rem;
     margin-bottom: 0;
+    font-size: 14px;
   }
 
   button {
@@ -86,8 +94,37 @@ const EmptyState = styled.div`
   }
 `;
 
+const Icon = styled(SvgIconFeather)`
+  width: 16px;
+`;
+
+const DivContainer = styled.div`
+  padding-top: 15px;
+  padding-bottom: 15px;
+  :first-of-type {
+    padding-bottom: 10px;
+  }
+  :nth-child(even) {
+    background: #f8f9fa;
+  }
+  :nth-child(odd) {
+    background: transparent;
+  }
+  border-bottom: 1px solid #ebebeb;
+  :last-of-type {
+    border: none;
+  }
+`;
+const SpanTitle = styled.span`
+  font-weight: 700;
+  cursor: pointer;
+  background: #f8f9fa !important;
+  border: 1px solid #f8f9fa;
+  ${(props) => props.todo && "border:1px solid rgba(0, 0, 0, 0.125);"}
+`;
+
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, recent } = props;
+  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
 
   const config = {
     angle: 90,
@@ -145,123 +182,125 @@ const TodosBody = (props) => {
       refs.files.current.addEventListener("scroll", handleScroll, false);
     }
   }, [refs.files.current]);
-  console.log(filter);
+
+  const getTodoStatus = (todo) => {
+    switch (todo.status) {
+      case "OVERDUE":
+        return dictionary.statusOverdue;
+      case "TODAY":
+        return dictionary.statusUpcomingToday;
+      case "NEW":
+        return dictionary.statusUpcoming;
+      case "DONE":
+        return dictionary.statusDone;
+      default:
+        return "";
+    }
+  };
+
+  const [activeTitles, setActiveTitles] = useState({});
+
+  const handleTitleClick = (e) => {
+    setActiveTitles({
+      ...activeTitles,
+      [e.target.id]: !activeTitles[e.target.id],
+    });
+  };
+
+  const setTodoList = () => {
+    return filter === "" ? ["To do", "Done"] : ["To do"];
+  };
+
+  const getTodoList = () => {
+    return (
+      <>
+        {setTodoList().map((items, index) => {
+          let x = items === "To do" ? todoItems : getDone;
+          let reminder = x.map((todo, indexx) => {
+            return (
+              <TodosList
+                key={todo.id}
+                todo={todo}
+                todoActions={todoActions}
+                dictionary={dictionary}
+                handleLinkClick={handleLinkClick}
+                dark_mode={dark_mode}
+                todoFormat={todoFormat}
+                todoFormatShortCode={todoFormatShortCode}
+                getFileIcon={getFileIcon}
+              />
+            );
+          });
+          return (
+            <DivContainer key={items}>
+              <div style={{ "padding-left": "20px", "padding-right": "0px" }}>
+                <h6 className=" mb-0 font-size-11 text-uppercase">
+                  <SpanTitle className={"badge badge-light"} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
+                    <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
+                    {items}
+                  </SpanTitle>
+                </h6>
+              </div>
+              <ListGroup className="list-group list-group-flush ui-sortable fadeIn" style={activeTitles["t_" + items] ? { display: "none" } : { display: "block" }}>
+                {reminder}
+              </ListGroup>
+            </DivContainer>
+          );
+        })}
+      </>
+    );
+  };
+
   return (
-    <Wrapper className={`todos-body card app-content-body ${className}`}>
+    <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
-      <div className="card-body app-lists" data-loaded={0}>
-        {recent.length > 0 && filter === "" && (
-          <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {recent.slice(0, 5).map((rec, i) => {
-              return (
-                <TodosList
-                  key={rec.id}
-                  chatHeader={i === 0 ? "Recently done" : ""}
-                  todo={rec}
-                  todoActions={todoActions}
-                  dictionary={dictionary}
-                  handleLinkClick={handleLinkClick}
-                  dark_mode={dark_mode}
-                  todoFormat={todoFormat}
-                  todoFormatShortCode={todoFormatShortCode}
-                  getFileIcon={getFileIcon}
-                />
-              );
-            })}
-          </ul>
-        )}
+      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px" }}>
         {!isLoaded ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
-        ) : todoItems.length !== 0 ? (
-          <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {todoItems.map((todo, index) => {
-              let chatHeader = "";
-              if (index === 0) {
-                switch (todo.status) {
-                  case "OVERDUE": {
-                    chatHeader = dictionary.statusOverdue;
-                    break;
-                  }
-                  case "TODAY": {
-                    chatHeader = dictionary.statusUpcomingToday;
-                    break;
-                  }
-                  case "NEW": {
-                    chatHeader = dictionary.statusUpcoming;
-                    break;
-                  }
-                  case "DONE": {
-                    chatHeader = dictionary.statusDone;
-                    break;
-                  }
-                  default:
-                    return "";
-                }
-              } else {
-                let prevTodo = todoItems[index - 1];
-                if (prevTodo.status !== todo.status) {
-                  switch (todo.status) {
-                    case "TODAY": {
-                      chatHeader = dictionary.statusToday;
-                      break;
-                    }
-                    case "OVERDUE": {
-                      chatHeader = dictionary.statusOverdue;
-                      break;
-                    }
-                    case "NEW": {
-                      chatHeader = dictionary.statusUpcoming;
-                      break;
-                    }
-                    case "DONE": {
-                      chatHeader = dictionary.statusDone;
-                      break;
-                    }
-                    default:
-                      return "";
-                  }
-                }
-              }
-
-              return (
-                <TodosList
-                  key={todo.id}
-                  chatHeader={chatHeader}
-                  todo={todo}
-                  todoActions={todoActions}
-                  dictionary={dictionary}
-                  handleLinkClick={handleLinkClick}
-                  dark_mode={dark_mode}
-                  todoFormat={todoFormat}
-                  todoFormatShortCode={todoFormatShortCode}
-                  getFileIcon={getFileIcon}
-                />
-              );
-            })}
-          </ul>
+        ) : todoItems.length || getDone.length ? (
+          getTodoList()
         ) : (
-          <>
+          <DivContainer>
             {filter === "" ? (
-              <EmptyState>
-                <SvgEmptyState icon={1} height={282} />
-                <h5>{dictionary.emptyText}</h5>
-                <button onClick={() => todoActions.createFromModal()} className="btn btn-primary">
-                  {dictionary.emptyButtonText}
-                </button>
-              </EmptyState>
+              <>
+                <div style={{ "padding-left": "20px", "padding-right": "0px" }} W>
+                  <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+                    <SpanTitle className={"badge"}>
+                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
+                      To do
+                    </SpanTitle>
+                  </h6>
+                </div>
+                <EmptyState>
+                  <SvgEmptyState icon={1} height={282} />
+                  <h5>{dictionary.emptyText}</h5>
+                  <button onClick={() => todoActions.createFromModal()} className="btn btn-primary">
+                    {dictionary.emptyButtonText}
+                  </button>
+                </EmptyState>
+              </>
             ) : (
-              <EmptyState>
-                <SvgEmptyState icon={1} height={282} />
-                <h5>{dictionary.noItemsFound}</h5>
-              </EmptyState>
+              <>
+                <div style={{ "padding-left": "20px", "padding-right": "0px" }} W>
+                  <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
+                    <SpanTitle className={"badge"}>
+                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
+                      To do
+                    </SpanTitle>
+                  </h6>
+                </div>
+                <EmptyState>
+                  <h3>{dictionary.noItemsFoundHeader}</h3>
+                  <h5>{dictionary.noItemsFoundText} </h5>
+                </EmptyState>
+              </>
             )}
-          </>
+          </DivContainer>
         )}
       </div>
     </Wrapper>
   );
 };
-
 export default React.memo(TodosBody);
