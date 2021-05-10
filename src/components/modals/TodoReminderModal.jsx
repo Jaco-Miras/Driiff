@@ -139,6 +139,10 @@ const TodoReminderModal = (props) => {
           value: ws.id,
           label: ws.name,
         });
+        setForm({
+          ...form,
+          topic_id: { value: ws.id },
+        });
         setUserOptions(
           ws.members.map((u) => {
             return {
@@ -158,6 +162,10 @@ const TodoReminderModal = (props) => {
           icon: "compass",
           value: ws.id,
           label: ws.name,
+        });
+        setForm({
+          ...form,
+          topic_id: { value: ws.id },
         });
         setUserOptions(
           ws.members.map((u) => {
@@ -182,6 +190,10 @@ const TodoReminderModal = (props) => {
             value: ws.id,
             label: ws.name,
           });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
           setUserOptions(
             ws.members.map((u) => {
               return {
@@ -205,6 +217,10 @@ const TodoReminderModal = (props) => {
             icon: "compass",
             value: ws.id,
             label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
           });
           setUserOptions(
             ws.members.map((u) => {
