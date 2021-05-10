@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { useTodos, useTranslation } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 
@@ -17,6 +18,8 @@ const WorkspaceRemindersPanel = (props) => {
   const { getSortedItems, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
 
   const { _t } = useTranslation();
+
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
@@ -62,18 +65,19 @@ const WorkspaceRemindersPanel = (props) => {
   const items = getSortedItems({ filter: { status: filter, search: search } });
 
   const getDone = (filter, search) => {
-    return filter === "" ? getSortedItems({ filter: { status: "DONE", search: search } }) : [];
+    return filter === "" ? getSortedItems({ filter: { status: "DONE", search: search } }).filter((item) => item.workspace && activeTopic && item.workspace.id === activeTopic.id) : [];
   };
 
-  console.log(items);
+  const workspaceReminders = items.filter((item) => item.workspace && activeTopic && item.workspace.id === activeTopic.id);
+
   return (
     <Wrapper className={"container-fluid h-100 fadeIn"}>
-      <div className="row app-block" style={{ oveflow: "inherit", height: items.length ? "auto" : "100%" }}>
+      <div className="row app-block" style={{ oveflow: "inherit", height: workspaceReminders.length ? "auto" : "100%" }}>
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded} todoItems={items} dictionary={dictionary} todoActions={todoActions} filter={filter} getDone={getDone(filter, search)} />
+          <TodosBody complete={false} isLoaded={isLoaded} todoItems={workspaceReminders} dictionary={dictionary} todoActions={todoActions} filter={filter} getDone={getDone(filter, search)} />
         </div>
       </div>
     </Wrapper>
