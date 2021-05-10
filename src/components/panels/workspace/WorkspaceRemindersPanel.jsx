@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useTodos, useTranslation } from "../../hooks";
-import { TodosBody, TodosHeader, TodosSidebar } from "./index";
+import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -13,9 +13,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const TodosPanel = (props) => {
-  const { className = "" } = props;
-
+const WorkspaceRemindersPanel = (props) => {
   const { getSortedItems, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
 
   const { _t } = useTranslation();
@@ -30,10 +28,8 @@ const TodosPanel = (props) => {
     statusAll: _t("REMINDER.STATUS_ALL", "ALL"),
     statusExpired: _t("REMINDER.STATUS_EXPIRED", "Expired"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Today"),
-    statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcomingToday: _t("REMINDER.STATUS_UPCOMING", "Upcoming Today"),
-    statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
@@ -68,8 +64,10 @@ const TodosPanel = (props) => {
   const getDone = (filter, search) => {
     return filter === "" ? getSortedItems({ filter: { status: "DONE", search: search } }) : [];
   };
+
+  console.log(items);
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
+    <Wrapper className={"container-fluid h-100 fadeIn"}>
       <div className="row app-block" style={{ oveflow: "inherit", height: items.length ? "auto" : "100%" }}>
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
@@ -81,4 +79,5 @@ const TodosPanel = (props) => {
     </Wrapper>
   );
 };
-export default React.memo(TodosPanel);
+
+export default WorkspaceRemindersPanel;

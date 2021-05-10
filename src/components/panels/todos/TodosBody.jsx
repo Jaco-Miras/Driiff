@@ -9,9 +9,9 @@ import { TodosList } from "./index";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
-flex: unset !important;
-height: auto !important;
-${(props) =>
+  flex: unset !important;
+  height: auto !important;
+  ${(props) =>
     props.active &&
     `
   height: 100% !important;
@@ -58,20 +58,20 @@ ${(props) =>
 `;
 
 const ListGroup = styled.ul`
-background:transparent;
-.list-group-item:last-child {
-  border-bottom: none;
-}
+  background: transparent;
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
 `;
 
 const EmptyState = styled.div`
-margin: 0;
-position: absolute;
-top: 50%;
-width: 100%;
-text-align:center;
--ms-transform: translateY(-50%);
-transform: translateY(-50%);
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
   margin: auto;
   text-align: center;
 
@@ -83,7 +83,7 @@ transform: translateY(-50%);
   h3 {
     font-size: 16px;
   }
-  h5 {  
+  h5 {
     margin-bottom: 0;
     font-size: 14px;
   }
@@ -94,25 +94,33 @@ transform: translateY(-50%);
   }
 `;
 
-
 const Icon = styled(SvgIconFeather)`
   width: 16px;
 `;
 
 const DivContainer = styled.div`
-padding-top:15px;
-padding-bottom:15px;
-:first-of-type {padding-bottom:10px;}
-:nth-child(even) {background: #F8F9FA}
-:nth-child(odd) {background: transparent}
-border-bottom: 1px solid #ebebeb;
-:last-of-type { border: none;}
-
+  padding-top: 15px;
+  padding-bottom: 15px;
+  :first-of-type {
+    padding-bottom: 10px;
+  }
+  :nth-child(even) {
+    background: #f8f9fa;
+  }
+  :nth-child(odd) {
+    background: transparent;
+  }
+  border-bottom: 1px solid #ebebeb;
+  :last-of-type {
+    border: none;
+  }
 `;
-const SpanTitle = styled.span`font-weight: 700; cursor: pointer; background: #F8F9FA !important;border:1px solid #F8F9FA;
- ${(props) =>
-  props.todo &&
-  `border:1px solid rgba(0, 0, 0, 0.125);`}
+const SpanTitle = styled.span`
+  font-weight: 700;
+  cursor: pointer;
+  background: #f8f9fa !important;
+  border: 1px solid #f8f9fa;
+  ${(props) => props.todo && "border:1px solid rgba(0, 0, 0, 0.125);"}
 `;
 
 const TodosBody = (props) => {
@@ -195,47 +203,52 @@ const TodosBody = (props) => {
   const handleTitleClick = (e) => {
     setActiveTitles({
       ...activeTitles,
-      [e.target.id]: !activeTitles[e.target.id]
+      [e.target.id]: !activeTitles[e.target.id],
     });
   };
 
   const setTodoList = () => {
-    return (filter === "") ? ['To do', 'Done'] : ['To do'];
-  }
+    return filter === "" ? ["To do", "Done"] : ["To do"];
+  };
 
   const getTodoList = () => {
     return (
       <>
         {setTodoList().map((items, index) => {
-          let x = (items === 'To do') ? todoItems : getDone;
+          let x = items === "To do" ? todoItems : getDone;
           let reminder = x.map((todo, indexx) => {
             return (
-              <TodosList key={todo.id} todo={todo} todoActions={todoActions} dictionary={dictionary} handleLinkClick={handleLinkClick}
-                dark_mode={dark_mode} todoFormat={todoFormat} todoFormatShortCode={todoFormatShortCode} getFileIcon={getFileIcon}
+              <TodosList
+                key={todo.id}
+                todo={todo}
+                todoActions={todoActions}
+                dictionary={dictionary}
+                handleLinkClick={handleLinkClick}
+                dark_mode={dark_mode}
+                todoFormat={todoFormat}
+                todoFormatShortCode={todoFormatShortCode}
+                getFileIcon={getFileIcon}
               />
             );
           });
           return (
-            <DivContainer>
-              <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} >
+            <DivContainer key={items}>
+              <div style={{ "padding-left": "20px", "padding-right": "0px" }}>
                 <h6 className=" mb-0 font-size-11 text-uppercase">
-                  <SpanTitle className={`badge badge-light`} todo={(items === 'To do') ? false : true}
-                    onClick={handleTitleClick} id={'t_' + items}>
-                    <SvgIconFeather icon={activeTitles['t_' + items] ? "arrow-down" : "arrow-up"}
-                      width={16} height={16} className="mr-1" />
+                  <SpanTitle className={"badge badge-light"} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
+                    <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
                     {items}
                   </SpanTitle>
                 </h6>
               </div>
-              <ListGroup
-                className="list-group list-group-flush ui-sortable fadeIn"
-                style={activeTitles['t_' + items] ? { 'display': 'none' } : { 'display': 'block' }} >
+              <ListGroup className="list-group list-group-flush ui-sortable fadeIn" style={activeTitles["t_" + items] ? { display: "none" } : { display: "block" }}>
                 {reminder}
               </ListGroup>
-            </DivContainer>)
+            </DivContainer>
+          );
         })}
       </>
-    )
+    );
   };
 
   return (
@@ -243,19 +256,20 @@ const TodosBody = (props) => {
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
-      <div className="card-body app-lists" data-loaded={0} style={{ 'padding': '0px' }}>
+      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px" }}>
         {!isLoaded ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
         ) : todoItems.length || getDone.length ? (
           getTodoList()
         ) : (
-          <DivContainer >
+          <DivContainer>
             {filter === "" ? (
               <>
-                <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} W>
+                <div style={{ "padding-left": "20px", "padding-right": "0px" }} W>
                   <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                    <SpanTitle className={`badge`}>
-                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />To do
+                    <SpanTitle className={"badge"}>
+                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
+                      To do
                     </SpanTitle>
                   </h6>
                 </div>
@@ -269,10 +283,11 @@ const TodosBody = (props) => {
               </>
             ) : (
               <>
-                <div style={{ 'padding-left': '20px', 'padding-right': '0px' }} W>
+                <div style={{ "padding-left": "20px", "padding-right": "0px" }} W>
                   <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                    <SpanTitle className={`badge`}>
-                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />To do
+                    <SpanTitle className={"badge"}>
+                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
+                      To do
                     </SpanTitle>
                   </h6>
                 </div>
@@ -282,8 +297,7 @@ const TodosBody = (props) => {
                 </EmptyState>
               </>
             )}
-          </DivContainer >
-
+          </DivContainer>
         )}
       </div>
     </Wrapper>

@@ -19,13 +19,13 @@ const Navbar = styled.ul`
     }
     a {
       white-space: nowrap;
+      margin-left: 15px;
     }
   }
 `;
 
 const MainNavLink = styled(NavLink)`
   color: #828282;
-  margin: 0 1rem;
   transition: color 200ms ease 0ms;
   font-weight: 500;
   border-radius: 0;
@@ -97,6 +97,7 @@ const WorkspacePageHeaderPanel = (props) => {
     pageTitlePeople: _t("PAGE_TITLE.PEOPLE", "People"),
     pageTitleClientChat: _t("PAGE_TITLE.CLIENT_CHAT", "Client chat"),
     pageTitleTeamChat: _t("PAGE_TITLE.TEAM_CHAT", "Team chat"),
+    pageTitleReminders: _t("PAGE_TITLE.REMINDERS", "Reminders"),
   };
 
   return (
@@ -136,6 +137,11 @@ const WorkspacePageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
               {dictionary.pageTitlePeople}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
+              {dictionary.pageTitleReminders}
             </MainNavLink>
           </li>
         </Navbar>

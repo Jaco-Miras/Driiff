@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { addToModals, delRemoveToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
 import { useToaster, useTranslation } from "./index";
 
@@ -7,6 +8,7 @@ const useTodoActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { _t } = useTranslation();
+  const params = useParams();
 
   const dictionary = {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
@@ -33,32 +35,30 @@ const useTodoActions = () => {
     dispatch(postToDo(payload, callback));
   }, []);
 
-  const createFromModal = useCallback(
-    (callback = () => {}) => {
-      const onConfirm = (payload, modalCallback = () => {}) => {
-        create(payload, (err, res) => {
-          if (err) {
-            toaster.error(dictionary.toasterGeneraError);
-          }
-          if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
-          }
-          modalCallback(err, res);
-          callback(err, res);
-        });
-      };
+  const createFromModal = (callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
+      create(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.toasterGeneraError);
+        }
+        if (res) {
+          toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+        }
+        modalCallback(err, res);
+        callback(err, res);
+      });
+    };
 
-      let payload = {
-        type: "todo_reminder",
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+    let payload = {
+      type: "todo_reminder",
+      actions: {
+        onSubmit: onConfirm,
+      },
+      params: params,
+    };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    dispatch(addToModals(payload));
+  };
 
   const createForPost = useCallback((id, payload, callback) => {
     dispatch(
