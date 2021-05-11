@@ -53,9 +53,9 @@ const MainNavLink = styled(NavLink)`
     padding: 0;
     margin: 0;
     position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #28a745;
+    width: 7px;
+    height: 7px;
+    background: #7a1b8b;
     top: 0;
     right: -13px;
   }
