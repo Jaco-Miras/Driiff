@@ -71,29 +71,29 @@ const TodosSidebar = (props) => {
         </div>
         <div className="app-sidebar-menu" tabIndex="1">
           <div className="list-group list-group-flush">
-            <Filter onClick={setFilter} data-filter="" active={filter === ""} className={"list-group-item d-flex justify-content-between align-items-center"}>
+            <Filter onClick={setFilter} data-filter="" active={filter === ""} className={"list-group-item d-flex align-items-center"}>
               <span className="text-secondary fa fa-circle mr-2" />
               {dictionary.statusAll}
-              <span className="small ml-auto">{count.all}</span>
+              {count && count.all > 0 && <span className="small ml-auto">{count.all}</span>}
             </Filter>
-            <Filter onClick={setFilter} data-filter="OVERDUE" active={filter === "OVERDUE"} className={"list-group-item d-flex justify-content-between align-items-center"}>
+            <Filter onClick={setFilter} data-filter="OVERDUE" active={filter === "OVERDUE"} className={"list-group-item d-flex align-items-center"}>
               <span className="text-danger fa fa-circle mr-2" />
               {dictionary.statusExpired}
-              <span className="small ml-auto">{count.overdue}</span>
+              {count && count.overdue > 0 && <span className="small ml-auto">{count.overdue}</span>}
             </Filter>
-            <Filter onClick={setFilter} data-filter="TODAY" active={filter === "TODAY"} className={"list-group-item d-flex justify-content-between align-items-center"}>
+            <Filter onClick={setFilter} data-filter="TODAY" active={filter === "TODAY"} className={"list-group-item d-flex align-items-center"}>
               <span data-filter="TODAY">
                 <span className="text-success fa fa-circle mr-2" />
                 {dictionary.statusToday}
               </span>
-              <span className="small ml-auto">{count.today}</span>
+              {count && count.today > 0 && <span className="small ml-auto">{count.today}</span>}
             </Filter>
-            <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={"list-group-item d-flex justify-content-between align-items-center"}>
+            <Filter onClick={setFilter} data-filter="NEW" active={filter === "NEW"} className={"list-group-item d-flex align-items-center"}>
               <span data-filter="NEW">
                 <span className="text-default fa fa-circle mr-2" />
                 {dictionary.statusUpcoming}
               </span>
-              <span className="small ml-auto">{count.new}</span>
+              {count && count.new > 0 && <span className="small ml-auto">{count.new}</span>}
             </Filter>
           </div>
         </div>

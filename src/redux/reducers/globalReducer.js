@@ -231,17 +231,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
-      let count = state.todos.count;
-
-      action.data.forEach((d) => {
-        count[d.status.toLowerCase()] = d.count;
-      });
-
       return {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          count: action.data.reduce((res, c) => {
+            res[c.status.toLowerCase()] = c.count;
+            return res;
+          }, {}),
         },
       };
     }

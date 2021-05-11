@@ -392,3 +392,12 @@ export function getWorkspaceReminders(payload) {
     data: payload,
   });
 }
+
+export function getWorkspaceRemindersCount(payload) {
+  let url = `/v2/to-do-detail?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

@@ -234,6 +234,7 @@ export {
   getWorkspaceFolder,
   getWorkspacePostDetail,
   getWorkspaceReminders,
+  getWorkspaceRemindersCount,
   getWorkspaceTopics,
   getWorkspaces,
   joinWorkspace,
