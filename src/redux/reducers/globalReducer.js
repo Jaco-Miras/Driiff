@@ -37,7 +37,7 @@ const INITIAL_STATE = {
     count: {
       new: 0,
       today: 0,
-      all:0,
+      all: 0,
       overdue: 0,
       done: 0,
     },
@@ -245,6 +245,44 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_WORKSPACE_REMINDERS_SUCCESS": {
+      let items = state.todos.items;
+      action.data.todos.forEach((t) => {
+        items[t.id] = t;
+        switch (t.link_type) {
+          case "CHAT": {
+            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
+            break;
+          }
+          case "POST": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            }
+            break;
+          }
+          case "POST_COMMENT": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            }
+            break;
+          }
+          default:
+            return null;
+        }
+      });
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          items: { ...items, ...state.todos.items },
+        },
+      };
+    }
     case "GET_TO_DO_SUCCESS": {
       let items = state.todos.items;
       action.data.todos.forEach((t) => {
@@ -388,8 +426,8 @@ export default (state = INITIAL_STATE, action) => {
           count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
-        items[action.data.id] = action.data;
-        item = { ...items[action.data.id], status: "DONE", updated_at: action.data.updated_at };
+        item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at };
+        items[action.data.id] = item;
       }
 
       return {

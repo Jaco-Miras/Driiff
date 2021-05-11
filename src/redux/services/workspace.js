@@ -383,3 +383,12 @@ export function getWorkspaceFilterCount(payload) {
     data: payload,
   });
 }
+
+export function getWorkspaceReminders(payload) {
+  let url = `/v2/to-do?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

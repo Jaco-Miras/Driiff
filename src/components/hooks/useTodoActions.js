@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToModals, delRemoveToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
+import { getWorkspaceReminders, getWorkspaceRemindersCallback } from "../../redux/actions/workspaceActions";
 import { useToaster, useTranslation } from "./index";
 
 const useTodoActions = () => {
@@ -26,6 +27,21 @@ const useTodoActions = () => {
   const fetch = useCallback((payload, callback) => {
     dispatch(getToDo(payload, callback));
   }, []);
+
+  const fetchWs = (payload, callback) => {
+    dispatch(
+      getWorkspaceReminders(payload, (err, res) => {
+        if (callback) callback();
+        if (err) return;
+        dispatch(
+          getWorkspaceRemindersCallback({
+            ...res.data,
+            topic_id: payload.topic_id,
+          })
+        );
+      })
+    );
+  };
 
   const fetchDetail = useCallback((payload, callback) => {
     dispatch(getToDoDetail(payload, callback));
@@ -146,7 +162,7 @@ const useTodoActions = () => {
     [dispatch]
   );
 
-  const markDone = useCallback((payload, callback) => {
+  const markDone = useCallback((payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -162,7 +178,7 @@ const useTodoActions = () => {
     );
   }, []);
 
-  const markUnDone = useCallback((payload, callback) => {
+  const markUnDone = useCallback((payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -241,6 +257,7 @@ const useTodoActions = () => {
   return {
     fetch,
     fetchDetail,
+    fetchWs,
     create,
     createFromModal,
     createForPost,

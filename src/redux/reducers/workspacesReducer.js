@@ -65,6 +65,7 @@ const INITIAL_STATE = {
       },
     },
   },
+  workspaceReminders: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -2884,6 +2885,25 @@ export default (state = INITIAL_STATE, action) => {
             }
             return ws;
           }, {}),
+        },
+      };
+    }
+    case "GET_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              hasMore: action.data.todos.length === 25,
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: action.data.todos.length === 25,
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+            }),
+          },
         },
       };
     }

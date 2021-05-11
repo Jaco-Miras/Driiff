@@ -78,7 +78,7 @@ const TodoReminderModal = (props) => {
   /**
    * @todo refactor
    */
-  const { type, item, parentItem = null, itemType = null, actions, params } = props.data;
+  const { type, item, parentItem = null, itemType = null, actions, params, mode = "create" } = props.data;
 
   const {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
@@ -248,6 +248,41 @@ const TodoReminderModal = (props) => {
       );
     }
   }, [workspacesLoaded, params]);
+
+  useEffect(() => {
+    if (mode === "edit" && item && item.workspace && workspaces[item.workspace.id]) {
+      const ws = { ...workspaces[item.workspace.id] };
+      setSelectedWorkspace({
+        ...ws,
+        icon: "compass",
+        value: ws.id,
+        label: ws.name,
+      });
+      setUserOptions(
+        ws.members.map((u) => {
+          return {
+            ...u,
+            icon: "user-avatar",
+            value: u.id,
+            label: u.name ? u.name : u.email,
+            type: "USER",
+          };
+        })
+      );
+      setForm({
+        ...form,
+        topic_id: { value: ws.id },
+        assigned_to: { value: item.assigned_to.id },
+      });
+      setSelectedUser({
+        ...item.assigned_to,
+        icon: "user-avatar",
+        value: item.assigned_to.id,
+        label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
+        type: "USER",
+      });
+    }
+  }, []);
 
   const refs = {
     title: useRef(null),
