@@ -69,7 +69,12 @@ const TodosList = (props) => {
     setIsDone(!isDone);
   };
 
-  const getBadgeClass = (todo) => {
+  const getTextDarkModeClass = () => {
+    return dark_mode === "1" && "text-light";
+
+  }
+
+  const getTextColorClass = (todo) => {
 
     if (todo.status === "OVERDUE") {
       if (todoFormatShortCode(todo.remind_at.timestamp) === 'Yesterday')
@@ -86,11 +91,6 @@ const TodosList = (props) => {
       return "text-default";
     }
 
-    if (dark_mode === "1") {
-      return "text-dark";
-    } else {
-      return "text-light";
-    }
   };
 
   const getTodoType = (todo) => {
@@ -148,13 +148,13 @@ const TodosList = (props) => {
         >
           <span className="d-flex justify-content-between w-100 align-items-center">
             <span className="d-inline-flex overflow-hidden w-100 mr-3">
-              <span className="custom-control custom-checkbox custom-checkbox-warning mr-2">
+              <span className="custom-control custom-checkbox mr-2">
                 <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
                   <TodoCheckBox name="test" checked={isDone} onClick={handleDoneClick} />
                 </ToolTip>
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
-                <span className="todo-title mr-2" style={isDone ? { 'text-decoration': 'line-through' } : { 'text-decoration': 'none' }}>{todo.title}</span>
+                <span className={`todo-title mr-2 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`} style={isDone ? { 'text-decoration': 'line-through' } : { 'text-decoration': 'none' }}>{todo.title}</span>
                 {todo.files.map((file) => {
                   return (
                     <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
@@ -172,9 +172,9 @@ const TodosList = (props) => {
               <span className="mr-3 align-items-center d-flex">
                 <Icon icon="calendar" />
                 <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : 'Add Date'}>
-                  <span className={`badge ${getBadgeClass(todo)} mr-3`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp,'MM/DD/YYYY') : 'Add Date'}</span>
+                  <span className={`badge mr-3 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, 'MM/DD/YYYY') : 'Add Date'}</span>
                 </ToolTip>
-                {todo.link_type !== null && <span className={"badge mr-3"} style={{ 'background': 'rgb(248, 249, 250)' }}>{getTodoType(todo)}</span>}
+                {todo.link_type !== null && <span className={`badge mr-3 ${dark_mode === "1" && 'badge-light'}`} style={{ 'background': '#efefef' }}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
                 )}
