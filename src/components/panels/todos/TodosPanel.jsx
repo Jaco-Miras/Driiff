@@ -11,12 +11,16 @@ const Wrapper = styled.div`
     overflow: hidden;
     outline: currentcolor none medium;
   }
+  .app-block {
+    overflow: inherit;
+    height: ${(props) => (props.hasReminders ? "auto" : "100%")};
+  }
 `;
 
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const { getSortedItems, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
+  const { getReminders, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
 
   const { _t } = useTranslation();
 
@@ -30,10 +34,8 @@ const TodosPanel = (props) => {
     statusAll: _t("REMINDER.STATUS_ALL", "ALL"),
     statusExpired: _t("REMINDER.STATUS_EXPIRED", "Expired"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Today"),
-    statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcomingToday: _t("REMINDER.STATUS_UPCOMING", "Upcoming Today"),
-    statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
@@ -62,20 +64,16 @@ const TodosPanel = (props) => {
   const clearSearch = () => {
     setSearch("");
   };
+  const reminders = getReminders({ filter: { status: filter, search: search } });
 
-  const items = getSortedItems({ filter: { status: filter, search: search } });
-
-  const getDone = (filter, search) => {
-    return filter === "" ? getSortedItems({ filter: { status: "DONE", search: search } }) : [];
-  };
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
-      <div className="row app-block" style={{ oveflow: "inherit", height: items.length ? "auto" : "100%" }}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0}>
+      <div className="row app-block">
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded} todoItems={items} dictionary={dictionary} todoActions={todoActions} filter={filter} getDone={getDone(filter, search)} />
+          <TodosBody complete={false} isLoaded={isLoaded} todoItems={reminders.filter((i) => i.status !== "DONE")} dictionary={dictionary} todoActions={todoActions} filter={filter} getDone={reminders.filter((i) => i.status === "DONE")} />
         </div>
       </div>
     </Wrapper>

@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Avatar, ToolTip } from "../../common";
 import { TodoCheckBox } from "../../forms";
-import quillHelper from "../../../helpers/quillHelper";
-import { MoreOptions } from "../common";
+//import quillHelper from "../../../helpers/quillHelper";
+//import { MoreOptions } from "../common";
 import { setViewFiles } from "../../../redux/actions/fileActions";
 import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 
-const Description = styled.span`
-  * {
-    display: inline-block;
-  }
-`;
+// const Description = styled.span`
+//   * {
+//     display: inline-block;
+//   }
+// `;
 
 const Icon = styled(SvgIconFeather)`
   width: 16px;
@@ -30,30 +30,50 @@ const HoverButtons = styled.div`
 `;
 
 const ItemList = styled.li`
-background: transparent;
-font-size:13px;
-padding:0;
-.hover-btns {
-  display: none;
-  margin-right: 0.5rem;
-}
-&:hover {
-  .more-options,
-  .hover-btns {
-    display: inline-block;
+  &.reminder-list {
+    background: transparent;
+    font-size: 13px;
+    padding: 5px 20px;
+    margin-top: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    .dark & {
+      border-color: rgba(155, 155, 155, 0.1);
+    }
   }
-}
-:
+  .todo-title {
+    text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
+  }
+  .badge.badge-light {
+    background: #efefef;
+    color: #828282;
+    .dark & {
+      color: #fff;
+    }
+  }
+  .hover-btns {
+    display: none;
+    margin-right: 0.5rem;
+  }
+  &:hover {
+    .more-options,
+    .hover-btns {
+      display: inline-block;
+    }
+  }
 `;
 
 const TodosList = (props) => {
-  const { className = "", chatHeader, todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
+  const { todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
 
   const dispatch = useDispatch();
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
-  const bodyDescription = quillHelper.parseEmoji(todo.description);
+  //const bodyDescription = quillHelper.parseEmoji(todo.description);
 
   const handlePreviewFile = (e, files, file) => {
     e.preventDefault();
@@ -71,26 +91,21 @@ const TodosList = (props) => {
 
   const getTextDarkModeClass = () => {
     return dark_mode === "1" && "text-light";
-
-  }
+  };
 
   const getTextColorClass = (todo) => {
-
     if (todo.status === "OVERDUE") {
-      if (todoFormatShortCode(todo.remind_at.timestamp) === 'Yesterday')
-        return "text-warning";
+      if (todoFormatShortCode(todo.remind_at.timestamp) === "Yesterday") return "text-warning";
       return "text-danger";
     }
 
     if (todo.status === "TODAY") {
-      if (todo.remind_at === null)
-        return "text-default";
+      if (todo.remind_at === null) return "text-default";
       return "text-success";
     }
     if (todo.status === "NEW") {
       return "text-default";
     }
-
   };
 
   const getTodoType = (todo) => {
@@ -101,6 +116,8 @@ const TodosList = (props) => {
         return dictionary.typeChat;
       case "POST_COMMENT":
         return dictionary.typePostComment;
+      default:
+        return null;
     }
   };
 
@@ -112,29 +129,29 @@ const TodosList = (props) => {
     }
   }, [isDone]);
 
-  const handleRemoveClick = (e) => {
-    setIsDone(!isDone);
-  };
+  // const handleRemoveClick = (e) => {
+  //   setIsDone(!isDone);
+  // };
 
-  const handleEditClick = (e) => {
-    setIsDone(!isDone);
-  };
+  // const handleEditClick = (e) => {
+  //   setIsDone(!isDone);
+  // };
 
   const handleEdit = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    todoActions.updateFromModal(todo)
+    todoActions.updateFromModal(todo);
   };
 
   const handleRemove = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    todoActions.removeConfirmation(todo)
+    todoActions.removeConfirmation(todo);
   };
 
   return (
     <>
-      <ItemList className="pl-0 list-group-item" style={{ 'padding': '5px 20px', 'margin-top': '0px', 'border-radius': '0px', 'border-left': 'none', 'border-right': 'none', 'border-top': 'none' }}>
+      <ItemList className="pl-0 reminder-list" isDone={isDone}>
         <a
           // href={todo.link}
           href="#"
@@ -154,7 +171,7 @@ const TodosList = (props) => {
                 </ToolTip>
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
-                <span className={`todo-title mr-2 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`} style={isDone ? { 'text-decoration': 'line-through' } : { 'text-decoration': 'none' }}>{todo.title}</span>
+                <span className={`todo-title mr-2 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.title}</span>
                 {todo.files.map((file) => {
                   return (
                     <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
@@ -171,10 +188,10 @@ const TodosList = (props) => {
             <span className="action d-inline-flex justify-content-center align-items-center">
               <span className="mr-3 align-items-center d-flex">
                 <Icon icon="calendar" />
-                <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : 'Add Date'}>
-                  <span className={`badge mr-3 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, 'MM/DD/YYYY') : 'Add Date'}</span>
+                <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : "Add Date"}>
+                  <span className={`badge mr-3 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : "Add Date"}</span>
                 </ToolTip>
-                {todo.link_type !== null && <span className={`badge mr-3 ${dark_mode === "1" && 'badge-light'}`} style={{ 'background': '#efefef' }}>{getTodoType(todo)}</span>}
+                {todo.link_type !== null && <span className={"badge mr-3 badge-light"}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
                 )}
