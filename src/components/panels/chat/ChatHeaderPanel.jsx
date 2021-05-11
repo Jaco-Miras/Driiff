@@ -43,6 +43,12 @@ const Wrapper = styled.div`
   }
   .chat-header-right {
     margin-left: auto;
+    ul {
+      flex-flow: row;
+    }
+    li .more-options-tooltip {
+      top: 115%;
+    }
     li .more-options-tooltip > div {
       display: flex;
       align-items: center;
@@ -276,6 +282,44 @@ const ChatHeaderPanel = (props) => {
     else channelActions.pin(channel);
   };
 
+  const handlePinButton = () => {
+    if (channel.is_pinned) {
+      channelActions.unPin(channel);
+    } else {
+      channelActions.pin(channel);
+    }
+  };
+
+  const handleMuteChat = () => {
+    if (channel.is_muted) {
+      channelActions.unMute(channel);
+    } else {
+      channelActions.mute(channel);
+    }
+  };
+
+  const handleMarkAsUnreadSelected = (e) => {
+    e.stopPropagation();
+
+    if (channel.total_unread === 0 && channel.is_read) {
+      channelActions.markAsUnRead(channel);
+    } else {
+      channelActions.markAsRead(channel);
+    }
+  };
+
+  const handleHideChat = () => {
+    if (channel.is_hidden) {
+      channelActions.unHide(channel);
+    } else {
+      channelActions.hide(channel);
+    }
+
+    if (channel.total_unread > 0) {
+      channelActions.markAsRead(channel);
+    }
+  };
+
   if (channel === null) return null;
 
   return (
@@ -314,24 +358,16 @@ const ChatHeaderPanel = (props) => {
               <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
             </li>
           )}
-          {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
-            <li className="ml-2 d-sm-inline d-none">
-              <StyledMoreOptions role="tabList">
-                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
-                  <div onClick={handleShowArchiveConfirmation}>
-                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"} />
-                    {channel.is_archived ? "Restore" : "Archive"}
-                  </div>
-                )}
-                {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
-                  <div onClick={handleShowChatEditModal}>
-                    <Icon icon={"edit-3"} />
-                    {dictionary.edit}
-                  </div>
-                )}
-              </StyledMoreOptions>
-            </li>
-          )}
+          <li className="ml-2 d-sm-inline d-none">
+            <StyledMoreOptions role="tabList">
+              {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+              {channel.tyope === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+              <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+              <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+              <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+              {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+            </StyledMoreOptions>
+          </li>
         </ul>
       </div>
     </Wrapper>

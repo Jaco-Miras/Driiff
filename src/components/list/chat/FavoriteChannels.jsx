@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import ChannelIcon from "./ChannelIcon";
 import { SvgIconFeather } from "../../common";
-import ChannelOptions from "./ChannelOptions";
+//import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.div`
   padding: 0 24px;
@@ -23,14 +23,14 @@ const Wrapper = styled.div`
       cursor: pointer;
     }
   }
-  .more-options-tooltip {
-    position: fixed;
-    top: 240px;
-    left: ${(props) => (props.rect && props.rect.left ? `${props.rect.left}px` : "30px")};
-    &.orientation-left {
-      left: ${(props) => (props.rect && props.rect.left ? `${props.rect.left - 170}px` : "30px")};
-    }
-  }
+  // .more-options-tooltip {
+  //   position: fixed;
+  //   top: 240px;
+  //   left: ${(props) => (props.rect && props.rect.left ? `${props.rect.left}px` : "30px")};
+  //   &.orientation-left {
+  //     left: ${(props) => (props.rect && props.rect.left ? `${props.rect.left - 170}px` : "30px")};
+  //   }
+  // }
   .feather-star,
   .feather-volume-x {
     position: absolute;
@@ -132,13 +132,13 @@ const FavoriteChannels = (props) => {
   const handleSelectChannel = (channel) => {
     onSelectChannel(channel);
   };
-  const [rect, setRect] = useState(null);
-  const handleSelectOptions = (e) => {
-    setRect(e.target.getBoundingClientRect());
-  };
+  //const [rect, setRect] = useState(null);
+  // const handleSelectOptions = (e) => {
+  //   setRect(e.target.getBoundingClientRect());
+  // };
 
   return (
-    <Wrapper className="mb-2" rect={rect}>
+    <Wrapper className="mb-2">
       <ul>
         {channels.map((c) => {
           return (
@@ -153,7 +153,7 @@ const FavoriteChannels = (props) => {
               {/* <ChannelTitle className="text-truncate mt-1">
                 <span className="channel-title">{c.title}</span>
               </ChannelTitle> */}
-              <ChannelOptions channel={c} onSelectOptions={handleSelectOptions} />
+              {/* <ChannelOptions channel={c} onSelectOptions={handleSelectOptions} /> */}
             </ChannelWrapper>
           );
         })}
