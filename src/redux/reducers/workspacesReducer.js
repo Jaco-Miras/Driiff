@@ -3062,7 +3062,29 @@ export default (state = INITIAL_STATE, action) => {
             ...(!state.workspaceReminders[action.data.topic_id] && {
               hasMore: action.data.todos.length === 25,
               reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
             }),
+          },
+        },
+      };
+    }
+    case "UPDATE_WORKSPACE_REMINDERS_COUNT": {
+      console.log(action.data, "count");
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.id]: {
+            ...state.workspaceReminders[action.data.id],
+            count: action.data.count.reduce((res, c) => {
+              res[c.status.toLowerCase()] = c.count;
+              return res;
+            }, {}),
           },
         },
       };

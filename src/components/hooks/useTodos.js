@@ -28,26 +28,6 @@ const useTodos = (fetchTodosOnMount = false) => {
     );
   };
 
-  var newCount = count;
-
-  const handleNewCount = () => {
-    newCount.new = 0;
-    newCount.today = 0;
-    newCount.all = 0;
-    newCount.overdue = 0;
-    Object.values(items).map((item, i) => {
-      if (item.status !== "DONE") {
-        if (item.status === "NEW") newCount.new++;
-        if (item.remind_at !== null) {
-          if (localizeDate(item.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) newCount.today++;
-        }
-        if (item.status === "OVERDUE") newCount.overdue++;
-        newCount.all++;
-      }
-    });
-    return newCount;
-  };
-
   const getReminders = ({ filter = "" }) => {
     return Object.values(items)
       .map((t) => {
@@ -65,37 +45,32 @@ const useTodos = (fetchTodosOnMount = false) => {
         }
       })
       .filter((t) => {
-        if (t.workspace) {
-          //remove if condition if workspace reminders will be displayed on the main reminder page
-          return false;
-        } else {
-          if (filter) {
-            if (filter.search !== "") {
-              if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
-                return false;
-              }
+        if (filter) {
+          if (filter.search !== "") {
+            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+              return false;
             }
-            if (filter.status !== "") return t.status === filter.status;
           }
-          return true;
+          if (filter.status !== "") return t.status === filter.status;
         }
+        return true;
       });
   };
 
   useEffect(() => {
     if (!init) {
       init = true;
-      // todoActions.fetchDetail({});
     }
     if (!isLoaded && fetchTodosOnMount) {
       loadMore();
     }
+    todoActions.fetchDetail({});
   }, []);
 
   return {
     isLoaded,
     items,
-    count: handleNewCount(),
+    count,
     //getSortedItems,
     getReminders,
     action: {

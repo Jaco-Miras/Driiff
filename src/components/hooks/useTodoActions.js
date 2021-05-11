@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToModals, delRemoveToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
-import { getWorkspaceReminders, getWorkspaceRemindersCallback } from "../../redux/actions/workspaceActions";
+import { getWorkspaceReminders, getWorkspaceRemindersCallback, getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTranslation } from "./index";
 
 const useTodoActions = () => {
@@ -42,6 +42,15 @@ const useTodoActions = () => {
       })
     );
   };
+
+  const fetchWsCount = useCallback((payload, callback) => {
+    dispatch(
+      getWorkspaceRemindersCount(payload, (err, res) => {
+        if (err) return;
+        dispatch(updateWorkspaceRemindersCount({ count: res.data, id: payload.topic_id }));
+      })
+    );
+  }, []);
 
   const fetchDetail = useCallback((payload, callback) => {
     dispatch(getToDoDetail(payload, callback));
@@ -258,6 +267,7 @@ const useTodoActions = () => {
     fetch,
     fetchDetail,
     fetchWs,
+    fetchWsCount,
     create,
     createFromModal,
     createForPost,

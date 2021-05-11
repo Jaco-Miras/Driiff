@@ -16,6 +16,8 @@ const useWorkspaceReminders = () => {
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
+  const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
+
   const loadMore = () => {
     if (isFetchLoading) return;
 
@@ -32,15 +34,21 @@ const useWorkspaceReminders = () => {
       };
       todoActions.fetchWs(payload, () => {
         setIsFetchLoading(false);
+        fetchCount();
       });
     } else {
       todoActions.fetchWs(payload, () => {
         setIsFetchLoading(false);
+        fetchCount();
       });
     }
   };
 
-  let count = {
+  const fetchCount = () => {
+    todoActions.fetchWsCount({ topic_id: params.workspaceId });
+  };
+
+  let defaultCount = {
     new: 0,
     today: 0,
     all: 0,
@@ -82,12 +90,13 @@ const useWorkspaceReminders = () => {
 
   useEffect(() => {
     loadMore();
+    //fetchCount();
   }, []);
 
   return {
-    isLoaded: typeof workspaceReminders[params.workspaceId] !== "undefined",
+    isLoaded: isLoaded,
     items,
-    count: count,
+    count: isLoaded ? workspaceReminders[params.workspaceId].count : defaultCount,
     getWorkspaceReminders,
     action: {
       ...todoActions,
