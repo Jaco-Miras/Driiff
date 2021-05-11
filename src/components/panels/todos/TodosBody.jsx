@@ -62,6 +62,9 @@ const ListGroup = styled.ul`
   .list-group-item:last-child {
     border-bottom: none;
   }
+  li:last-child {
+    border-bottom: none;
+  }
 `;
 
 const EmptyState = styled.div`
@@ -115,7 +118,7 @@ const DivContainer = styled.div`
     border: none;
   }
   ${(props) =>
-    props.dark === '1' &&
+    props.dark === "1" &&
     `
     :first-of-type {
       border-bottom: none;
@@ -135,12 +138,11 @@ const DivContainer = styled.div`
 
   .list-group-done .custom-checkbox .cci.cci-active + .ccl span:first-child {
     background: #efefef;
-    border: 1px solid #9098A9;
+    border: 1px solid #9098a9;
   }
-  .list-group-done .custom-checkbox .cci.cci-active +  .ccl span:first-child svg {
+  .list-group-done .custom-checkbox .cci.cci-active + .ccl span:first-child svg {
     stroke: #191c20;
   }
-
 `;
 const SpanTitle = styled.span`
   font-weight: 700;
@@ -259,16 +261,16 @@ const TodosBody = (props) => {
             );
           });
           return (
-            <DivContainer key={items} dark={dark_mode} >
+            <DivContainer key={items} dark={dark_mode}>
               <div style={{ "padding-left": "20px", "padding-right": "0px" }}>
                 <h6 className=" mb-0 font-size-11 text-uppercase">
-                  <SpanTitle className={`badge  ${dark_mode === '1' && 'badge-light'} `} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
+                  <SpanTitle className={`badge  ${dark_mode === "1" && "badge-light"} `} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
                     <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
                     {items}
                   </SpanTitle>
                 </h6>
               </div>
-              <ListGroup className={`list-group list-group-flush ${ items === "Done" && 'list-group-done'} ui-sortable fadeIn`}style={activeTitles["t_" + items] ? { display: "none" } : { display: "block" }}>
+              <ListGroup className={`list-group list-group-flush ${items === "Done" && "list-group-done"} ui-sortable fadeIn`} style={activeTitles["t_" + items] ? { display: "none" } : { display: "block" }}>
                 {reminder}
               </ListGroup>
             </DivContainer>
