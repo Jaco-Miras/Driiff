@@ -96,14 +96,14 @@ const useCompanyPosts = () => {
             return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
           }
         } else if (filter === "my_posts") {
-          if (p.hasOwnProperty("author")) return p.author.id === user.id;
+          if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
           else return false;
         } else if (filter === "draft") {
           return p.hasOwnProperty("draft_type");
         } else if (filter === "star") {
-          return p.is_favourite;
+          return p.is_favourite && !p.hasOwnProperty("draft_type");
         } else if (filter === "archive") {
-          return p.is_archived === 1;
+          return p.is_archived === 1 && !p.hasOwnProperty("draft_type");
         }
       } else if (tag) {
         if (tag === "is_must_reply") {
@@ -116,13 +116,13 @@ const useCompanyPosts = () => {
           return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
         } else if (tag === "is_close") {
           return p.is_close && !p.hasOwnProperty("draft_type");
-        } else if (parseInt(tag) !== NaN) {
+        } else if (!isNaN(parseInt(tag))) {
           return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag);
         } else {
           return true;
         }
       } else if (postListTag) {
-        if (parseInt(postListTag) !== NaN) {
+        if (!isNaN(parseInt(postListTag))) {
           return p.post_list_connect.length > 0 && parseInt(p.post_list_connect[0].id) === parseInt(postListTag);
         } else {
           return true;
