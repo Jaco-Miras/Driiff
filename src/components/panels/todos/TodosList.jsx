@@ -200,7 +200,7 @@ const TodosList = (props) => {
                 {todo.author !== null && (
                   <Avatar key={todo.author.id} name={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
                 )}
-                {todo.assigned_to && (
+                {todo.assigned_to && todo.assigned_to.id !== todo.author.id && (
                   <>
                    <Icon icon="chevron-right" />
                   <Avatar key={todo.assigned_to.id} name={dictionary.reminderAssignedTo} imageLink={todo.assigned_to.profile_image_thumbnail_link ? todo.assigned_to.profile_image_thumbnail_link : todo.assigned_to.profile_image_link} id={todo.assigned_to.id} />
