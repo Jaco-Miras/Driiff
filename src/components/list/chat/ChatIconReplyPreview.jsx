@@ -78,7 +78,7 @@ const ReplyPreview = (props) => {
 
 
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
 
       let lastReplyBodyHtml = (channel.is_translate)?channel.last_reply.translated_body:channel.last_reply.body;
@@ -190,7 +190,6 @@ const ReplyPreview = (props) => {
             {hasUnRead && <Badge className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>}
           </>
         )}
-        {channel.is_pinned && <Icon icon="star" />}
         {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
       </div>
     </Wrapper>

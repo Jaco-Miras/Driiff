@@ -28,7 +28,7 @@ export function putChannel(payload) {
     url: url,
     data: payload,
     is_shared: !!payload.is_shared,
-    is_translate: !!payload.is_translate
+    is_translate: !!payload.is_translate,
   });
 }
 
@@ -472,5 +472,13 @@ export function getSkippedAnswers(payload) {
     method: "GET",
     url: url,
     data: payload,
+  });
+}
+
+export function getCompanyChannel(payload) {
+  let url = "/v2/company-post-channel";
+  return apiCall({
+    method: "GET",
+    url: url,
   });
 }

@@ -11,6 +11,7 @@ import {
   getChannels as getChannelsService,
   getChatMessages as getChatMessagesService,
   getChatStar as getChatStarService,
+  getCompanyChannel as getCompanyChannelService,
   getGlobalRecipients as getGlobalRecipientsService,
   getHuddleChatbot as getHuddleChatbotService,
   getSkippedAnswers as getSkippedAnswersService,
@@ -446,7 +447,14 @@ export function resetTranslatedBody(payload, callback) {
   return SimpleDispatchActionToReducer("RESET_TRANSLATED_BODY", payload, callback);
 }
 
-
 export function setChannelTranslateState(payload, callback) {
   return SimpleDispatchActionToReducer("SET_CHANNEL_TRANSLATE_STATE", payload, callback);
+}
+
+export function getCompanyChannel(payload, callback) {
+  return dispatchActionToReducer(getCompanyChannelService(payload), "GET_COMPANY_CHANNEL_START", "GET_COMPANY_CHANNEL_SUCCESS", "GET_COMPANY_CHANNEL_FAILURE", callback);
+}
+
+export function updateCompanyChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_COMPANY_CHANNEL", payload, callback);
 }

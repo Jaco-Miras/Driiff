@@ -6,6 +6,7 @@ export {
   getGlobalRecipients,
   getChannels,
   getChannel,
+  getCompanyChannel,
   getLastVisitedChannel,
   getChannelDrafts,
   getChannelMembers,
