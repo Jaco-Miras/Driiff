@@ -117,7 +117,9 @@ const MainSidebarLinks = (props) => {
       .reduce((total, k) => {
         total += unreadCounter[k];
         return total;
-      }, 0) !== 0 || count.overdue !== 0;
+      }, 0) !== 0 ||
+    count.overdue > 0 ||
+    count.today > 0;
 
   return (
     <Wrapper className="flex navigation-menu-tab-header-options">
@@ -145,7 +147,7 @@ const MainSidebarLinks = (props) => {
           <NavIconContainer to={"/todos"} active={["/todos"].includes(location.pathname)}>
             <NavIcon icon={"calendar"} />
             <div>{dictionary.todoLinks}</div>
-            <div>{count.overdue !== 0 && <Badge>&nbsp;</Badge>}</div>
+            <div>{(count.overdue > 0 || count.today > 0) && <Badge>&nbsp;</Badge>}</div>
           </NavIconContainer>
         </li>
         <li onClick={closeLeftNav}>
