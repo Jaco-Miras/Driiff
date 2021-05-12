@@ -451,3 +451,11 @@ export function getSearchChannels(payload) {
     url: url,
   });
 }
+
+export function getCompanyChannel(payload) {
+  let url = "/v2/company-post-channel";
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}

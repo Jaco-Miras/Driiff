@@ -718,8 +718,9 @@ const useChannelActions = () => {
         getSelectChannel({ code: code }, (err, res) => {
           if (err) {
             fetchLastChannel();
+            return;
           }
-          if (res.data) {
+          if (res && res.data) {
             history.push(`/chat/${res.data.code}`);
             if (callback) callback();
           }
