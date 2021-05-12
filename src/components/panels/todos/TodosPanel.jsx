@@ -64,6 +64,7 @@ const TodosPanel = (props) => {
   const clearSearch = () => {
     setSearch("");
   };
+
   const reminders = getReminders({ filter: { status: filter, search: search } });
 
   return (

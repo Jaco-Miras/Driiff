@@ -24,9 +24,9 @@ const useTodoActions = () => {
     modalConfirmationTodoRemoveCancel: _t("MODAL_CONFIRMATION.TODO_REMOVE_CANCEL", "Cancel"),
   };
 
-  const fetch = useCallback((payload, callback) => {
+  const fetch = (payload, callback) => {
     dispatch(getToDo(payload, callback));
-  }, []);
+  };
 
   const fetchWs = (payload, callback) => {
     dispatch(
@@ -43,22 +43,22 @@ const useTodoActions = () => {
     );
   };
 
-  const fetchWsCount = useCallback((payload, callback) => {
+  const fetchWsCount = (payload) => {
     dispatch(
       getWorkspaceRemindersCount(payload, (err, res) => {
         if (err) return;
         dispatch(updateWorkspaceRemindersCount({ count: res.data, id: payload.topic_id }));
       })
     );
-  }, []);
+  };
 
-  const fetchDetail = useCallback((payload, callback) => {
-    dispatch(getToDoDetail(payload, callback));
-  }, []);
+  const fetchDetail = () => {
+    dispatch(getToDoDetail());
+  };
 
-  const create = useCallback((payload, callback) => {
+  const create = (payload, callback) => {
     dispatch(postToDo(payload, callback));
-  }, []);
+  };
 
   const createFromModal = (callback = () => {}) => {
     const onConfirm = (payload, modalCallback = () => {}) => {
@@ -68,6 +68,11 @@ const useTodoActions = () => {
         }
         if (res) {
           toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+        }
+        if (params.workspaceId) {
+          fetchWsCount({ topic_id: params.workspaceId });
+        } else {
+          fetchDetail();
         }
         modalCallback(err, res);
         callback(err, res);
@@ -124,54 +129,57 @@ const useTodoActions = () => {
     );
   }, []);
 
-  const update = useCallback((payload, callback) => {
+  const update = (payload, callback) => {
     dispatch(putToDo(payload, callback));
-  }, []);
+  };
 
-  const updateFromModal = useCallback(
-    (todo, callback = () => {}) => {
-      const onConfirm = (payload, modalCallback = () => {}) => {
-        update(
-          {
-            ...payload,
-            id: todo.id,
-          },
-          (err, res) => {
-            if (err) {
-              toaster.error(dictionary.toasterGeneraError);
-            }
-            if (res) {
-              toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUpdateTodo }} />);
-            }
-            modalCallback(err, res);
-            callback(err, res);
+  const updateFromModal = (todo, callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
+      update(
+        {
+          ...payload,
+          id: todo.id,
+        },
+        (err, res) => {
+          if (err) {
+            toaster.error(dictionary.toasterGeneraError);
           }
-        );
-      };
+          if (res) {
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUpdateTodo }} />);
+            if (params.workspaceId) {
+              fetchWsCount({ topic_id: params.workspaceId });
+            } else {
+              fetchDetail();
+            }
+          }
 
-      let payload = {
-        type: "todo_reminder",
-        mode: "edit",
-        item: {
-          ...todo,
-          body: todo.description,
-          ...(typeof todo.user === "undefined" && {
-            user: todo.author,
-          }),
-        },
-        parentItem: todo,
-        itemType: todo.link_type,
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+          modalCallback(err, res);
+          callback(err, res);
+        }
+      );
+    };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    let payload = {
+      type: "todo_reminder",
+      mode: "edit",
+      item: {
+        ...todo,
+        body: todo.description,
+        ...(typeof todo.user === "undefined" && {
+          user: todo.author,
+        }),
+      },
+      parentItem: todo,
+      itemType: todo.link_type,
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
 
-  const markDone = useCallback((payload, callback = () => {}) => {
+    dispatch(addToModals(payload));
+  };
+
+  const markDone = (payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -185,9 +193,9 @@ const useTodoActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const markUnDone = useCallback((payload, callback = () => {}) => {
+  const markUnDone = (payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -202,9 +210,9 @@ const useTodoActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const toggleDone = useCallback((payload, callback = () => {}) => {
+  const toggleDone = (payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -223,9 +231,9 @@ const useTodoActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const remove = useCallback((payload, callback) => {
+  const remove = (payload, callback) => {
     dispatch(
       delRemoveToDo(
         {
@@ -234,34 +242,36 @@ const useTodoActions = () => {
         (err, res) => {
           if (res) {
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterDeleteTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
+            if (params.workspaceId) {
+              fetchWsCount({ topic_id: params.workspaceId });
+            } else {
+              fetchDetail();
+            }
           }
-          callback(err, res);
+          if (callback) callback(err, res);
         }
       )
     );
-  }, []);
+  };
 
-  const removeConfirmation = useCallback(
-    (payload, callback) => {
-      const onConfirm = () => {
-        remove(payload, callback);
-      };
+  const removeConfirmation = (payload, callback) => {
+    const onConfirm = () => {
+      remove(payload, callback);
+    };
 
-      dispatch(
-        addToModals({
-          type: "confirmation",
-          headerText: dictionary.modalConfirmationTodoRemoveHeader,
-          submitText: dictionary.modalConfirmationTodoRemoveSubmit,
-          cancelText: dictionary.modalConfirmationTodoRemoveCancel,
-          bodyText: dictionary.modalConfirmationTodoRemoveBody,
-          actions: {
-            onSubmit: onConfirm,
-          },
-        })
-      );
-    },
-    [dispatch]
-  );
+    dispatch(
+      addToModals({
+        type: "confirmation",
+        headerText: dictionary.modalConfirmationTodoRemoveHeader,
+        submitText: dictionary.modalConfirmationTodoRemoveSubmit,
+        cancelText: dictionary.modalConfirmationTodoRemoveCancel,
+        bodyText: dictionary.modalConfirmationTodoRemoveBody,
+        actions: {
+          onSubmit: onConfirm,
+        },
+      })
+    );
+  };
 
   return {
     fetch,
