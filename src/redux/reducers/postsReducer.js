@@ -30,6 +30,11 @@ const INITIAL_STATE = {
     has_more: true,
     limit: 25,
   },
+  myPosts: {
+    skip: 0,
+    has_more: true,
+    limit: 25,
+  },
   posts: {},
   postsLists: [],
   drafts: [],
@@ -102,6 +107,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_COMPANY_POSTS_SUCCESS": {
       let isArchived = action.data.posts.filter((p) => p.is_archived === 1).length > 0 && action.data.posts.filter((p) => p.is_archived === 1).length === action.data.posts.length;
       let isFavourites = action.data.posts.filter((p) => p.is_favourite).length === action.data.posts.length;
+      let isMyPosts = action.data.posts.filter((p) => p.author && p.author.id === state.user.id).length === action.data.posts.length;
       return {
         ...state,
         archived: {
@@ -118,6 +124,14 @@ export default (state = INITIAL_STATE, action) => {
             limit: 25,
             skip: action.data.next_skip,
             has_more: action.data.total_take === state.favourites.limit,
+          }),
+        },
+        myPosts: {
+          ...state.myPosts,
+          ...(isMyPosts && {
+            limit: 25,
+            skip: action.data.next_skip,
+            has_more: action.data.total_take === state.myPosts.limit,
           }),
         },
         companyPosts: {
