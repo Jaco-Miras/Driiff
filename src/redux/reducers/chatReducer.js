@@ -337,6 +337,7 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           [action.data.id]: channel,
         },
+        companyChannel: state.companyChannel && state.companyChannel.id === action.data.id ? { ...state.companyChannel, ...action.data } : state.companyChannel,
         selectedChannel: state.selectedChannel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
       };
     }
@@ -2572,6 +2573,7 @@ export default function (state = INITIAL_STATE, action) {
             },
           }),
         },
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, ...action.data } : state.selectedChannel,
       };
     }
     default:
