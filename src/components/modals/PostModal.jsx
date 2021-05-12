@@ -244,7 +244,7 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-const initTimestamp = Math.floor(Date.now() / 1000);
+//onst initTimestamp = Math.floor(Date.now() / 1000);
 
 const fileOptions = [
   // {
@@ -276,6 +276,7 @@ const PostModal = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
+  const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
