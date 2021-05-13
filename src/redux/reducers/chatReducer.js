@@ -2431,6 +2431,31 @@ export default function (state = INITIAL_STATE, action) {
         searchArchivedChannels: action.data,
       };
     }
+    case "GET_COMPANY_CHANNEL_SUCCESS": {
+      return {
+        ...state,
+        companyChannel: action.data,
+      };
+    }
+    case "UPDATE_COMPANY_CHANNEL": {
+      return {
+        ...state,
+        companyChannel: {
+          ...state.companyChannel,
+          ...action.data,
+        },
+        channels: {
+          ...state.channels,
+          ...(state.channels[action.data.id] && {
+            [action.data.id]: {
+              ...state.channels[action.data.id],
+              ...action.data,
+            },
+          }),
+        },
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, ...action.data } : state.selectedChannel,
+      };
+    }
     case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
       return {
         ...state,
@@ -2549,31 +2574,6 @@ export default function (state = INITIAL_STATE, action) {
               }),
             }
           : state.selectedChannel,
-      };
-    }
-    case "GET_COMPANY_CHANNEL_SUCCESS": {
-      return {
-        ...state,
-        companyChannel: action.data,
-      };
-    }
-    case "UPDATE_COMPANY_CHANNEL": {
-      return {
-        ...state,
-        companyChannel: {
-          ...state.companyChannel,
-          ...action.data,
-        },
-        channels: {
-          ...state.channels,
-          ...(state.channels[action.data.id] && {
-            [action.data.id]: {
-              ...state.channels[action.data.id],
-              ...action.data,
-            },
-          }),
-        },
-        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, ...action.data } : state.selectedChannel,
       };
     }
     default:
