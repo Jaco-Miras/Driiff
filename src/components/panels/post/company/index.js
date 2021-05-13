@@ -9,3 +9,5 @@ export { default as CompanyPostItemPanel } from "./CompanyPostItemPanel";
 export { default as CompanyPostSearch } from "./CompanyPostSearch";
 export { default as CompanyPostSidebar } from "./CompanyPostSidebar";
 export { default as CompanyPostList } from "./CompanyPostList";
+export { default as CompanyPostsEmptyState } from "./CompanyPostsEmptyState";
+export { default as CompanyPosts } from "./CompanyPosts";
