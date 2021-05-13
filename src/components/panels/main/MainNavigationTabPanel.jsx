@@ -112,13 +112,16 @@ const Wrapper = styled.div`
     position: relative;
     .badge {
       position: absolute;
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       padding: 0;
       background: #28a745;
       right: -12px;
       top: -12px;
       z-index: 9;
+      // .dark & {
+      //   background: #7a1b8b;
+      // }
     }
   }
   .navigation-menu-group {
