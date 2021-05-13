@@ -28,21 +28,26 @@ const useTodos = (fetchTodosOnMount = false) => {
     );
   };
 
+  count.new = 0;
+  count.today = 0;
+
   const getReminders = ({ filter = "" }) => {
     return Object.values(items)
       .map((t) => {
+        if (t.status !== "DONE") {
+          t.status === "NEW" && count.new++;
+          if (t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) {
+            count.today++;
+            t.status = "TODAY";
+          }
+        }
         if (t.author === null && t.link_type === null) {
           return {
             ...t,
             author: { ...loggedUser },
-            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status !== "DONE" ? "TODAY" : t.status,
-          };
-        } else {
-          return {
-            ...t,
-            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status !== "DONE" ? "TODAY" : t.status,
           };
         }
+        return t;
       })
       .filter((t) => {
         if (filter) {
