@@ -52,11 +52,11 @@ const ReadPostsHeader = styled.li`
 const CompanyPosts = (props) => {
   const { actions, dictionary, filter, isExternalUser, loading, posts, search } = props;
 
-  const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: false });
-  const [checkedPosts, setCheckedPosts] = useState([]);
-
   const readPosts = posts.filter((p) => p.is_unread === 0 && p.unread_count === 0);
   const unreadPosts = posts.filter((p) => p.is_unread === 1 || p.unread_count > 0);
+
+  const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
+  const [checkedPosts, setCheckedPosts] = useState([]);
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -79,11 +79,36 @@ const CompanyPosts = (props) => {
     setCheckedPosts([]);
   };
 
-  const handleShowPosts = (type) => {
-    setShowPosts({
-      ...showPosts,
-      [type]: !showPosts[type],
-    });
+  const handleShowUnread = () => {
+    if (showPosts.showUnread) {
+      // to false
+      setShowPosts({
+        showUnread: readPosts.length > 0 ? false : true,
+        showRead: readPosts.length > 0 ? true : false,
+      });
+    } else {
+      // to true
+      setShowPosts({
+        showUnread: true,
+        showRead: showPosts.showRead,
+      });
+    }
+  };
+
+  const handleShowRead = () => {
+    if (showPosts.showRead) {
+      // to false
+      setShowPosts({
+        showUnread: unreadPosts.length > 0 ? true : false,
+        showRead: unreadPosts.length > 0 ? false : true,
+      });
+    } else {
+      // to true
+      setShowPosts({
+        showUnread: unreadPosts.length > 0 ? true : false,
+        showRead: readPosts.length > 0 ? true : false,
+      });
+    }
   };
 
   const handleSelectAllDraft = () => {
@@ -102,6 +127,27 @@ const CompanyPosts = (props) => {
   useEffect(() => {
     setCheckedPosts([]);
   }, [filter]);
+
+  useEffect(() => {
+    // if bot category is set to false then show the category with posts
+    if (!showPosts.showUnread && !showPosts.showRead) {
+      if (unreadPosts.length) {
+        setShowPosts((prevState) => {
+          return {
+            ...prevState,
+            showUnread: true,
+          };
+        });
+      } else if (readPosts.length) {
+        setShowPosts((prevState) => {
+          return {
+            ...prevState,
+            showRead: true,
+          };
+        });
+      }
+    }
+  }, [showPosts, readPosts, unreadPosts]);
 
   return (
     <>
@@ -167,13 +213,7 @@ const CompanyPosts = (props) => {
           {filter !== "draft" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
-                <UnreadPostsHeader
-                  className={"list-group-item post-item-panel pl-3 unread-posts-header"}
-                  onClick={() => {
-                    handleShowPosts("showUnread");
-                  }}
-                  showPosts={showPosts.showUnread}
-                >
+                <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
                   <span className="badge badge-light">
                     <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
                     {dictionary.unread}
@@ -199,7 +239,7 @@ const CompanyPosts = (props) => {
                 </UnreadPostsContainer>
               )}
               <div>
-                <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={() => handleShowPosts("showRead")} showPosts={showPosts.showRead}>
+                <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
                   <span className="badge badge-light">
                     <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
                     {dictionary.allOthers}
