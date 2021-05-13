@@ -293,20 +293,90 @@ const WorkspacePostsPanel = (props) => {
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
   };
 
+  useEffect(() => {
+    if (filter === "star") {
+      let filterCb = (err, res) => {
+        if (err) return;
+        let files = res.data.posts.map((p) => p.files);
+        if (files.length) {
+          files = files.flat();
+        }
+        dispatch(
+          addToWorkspacePosts({
+            topic_id: parseInt(params.workspaceId),
+            posts: res.data.posts,
+            filter: res.data.posts,
+            files,
+            filters: {
+              favourites: {
+                active: true,
+                skip: res.data.next_skip,
+                hasMore: res.data.total_take === 25,
+              },
+            },
+          })
+        );
+      };
+
+      actions.getPosts(
+        {
+          filters: ["post", "favourites"],
+          topic_id: parseInt(params.workspaceId),
+        },
+        filterCb
+      );
+    } else if (filter === "my_posts") {
+      let filterCb = (err, res) => {
+        if (err) return;
+        let files = res.data.posts.map((p) => p.files);
+        if (files.length) {
+          files = files.flat();
+        }
+        dispatch(
+          addToWorkspacePosts({
+            topic_id: parseInt(params.workspaceId),
+            posts: res.data.posts,
+            filter: res.data.posts,
+            files,
+            filters: {
+              myPosts: {
+                active: true,
+                skip: res.data.next_skip,
+                hasMore: res.data.total_take === 25,
+              },
+            },
+          })
+        );
+      };
+
+      actions.getPosts(
+        {
+          filters: ["post", "created_by_me"],
+          topic_id: parseInt(params.workspaceId),
+        },
+        filterCb
+      );
+    }
+  }, [filter]);
+
   const handleLoadMore = () => {
     if (!fetching && search === "" && !post) {
       fetching = true;
       setLoading(true);
       let payload = {
-        filters: filter === "archive" ? ["post", "archived"] : [],
+        filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
-        skip: filter === "archive" ? filters?.archived.skip : filters.all.skip,
+        skip: filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
       };
 
       if (filter === "all") {
         if (filters.all && !filters.all.hasMore) return;
       } else if (filter === "archive") {
         if (filters.archived && !filters.archived.hasMore) return;
+      } else if (filter === "star") {
+        if (filters.favourites && !filters.favourites.hasMore) return;
+      } else if (filter === "my_posts") {
+        if (filters.myPosts && !filters.myPosts.hasMore) return;
       }
 
       let cb = (err, res) => {
@@ -333,6 +403,20 @@ const WorkspacePostsPanel = (props) => {
               }),
               ...(filter === "archive" && {
                 archived: {
+                  active: true,
+                  skip: res.data.next_skip,
+                  hasMore: res.data.total_take === 25,
+                },
+              }),
+              ...(filter === "star" && {
+                favourites: {
+                  active: true,
+                  skip: res.data.next_skip,
+                  hasMore: res.data.total_take === 25,
+                },
+              }),
+              ...(filter === "myPosts" && {
+                myPosts: {
                   active: true,
                   skip: res.data.next_skip,
                   hasMore: res.data.total_take === 25,
