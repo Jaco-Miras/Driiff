@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
 import { QuickLinks } from "../../list/links";
-import { Badge } from "reactstrap";
+//import { Badge } from "reactstrap";
 
 const Wrapper = styled.div`
   .badge {
@@ -137,7 +137,7 @@ const MainSidebarLinks = (props) => {
               <NavIconContainer active={["dashboard", "posts", "chat", "files", "people"].includes(params.page)} to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
                 <NavIcon icon={"home"} />
                 {driffSettings.company_name}
-                {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>}
+                {/* {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>} */}
               </NavIconContainer>
             )}
             {user.role && ["owner", "admin"].includes(user.role.name) && (
