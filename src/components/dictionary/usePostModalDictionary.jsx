@@ -58,6 +58,9 @@ const usePostModalDictionary = (props) => {
     uploading: _t("FILE_UPLOADING", "Uploading File"),
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
     fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
+    sendingPost: _t("TOASTER.SENDING_POST", "Sending post"),
+    updatingPost: _t("TOASTER.UPDATING_POST", "Updating post"),
+    uploadingAndSending: _t("TOASTER.SENDING_POST_WITH_FILE", "Uploading file and sending post"),
   };
 
   return {

@@ -355,116 +355,17 @@ const PostModal = (props) => {
     icon: null,
   });
 
-  // const toggleNested = () => {
-  //   // setNestedModal(!nestedModal);
-  //   // setCloseAll(false);
-  //   setCloseAll(true);
-  // };
+  const toastId = useRef(null);
+  const sendNotify = (text) => (toastId.current = toaster.info(text));
+  const dismiss = () => toaster.dismiss(toastId.current);
 
   const toggleAll = (saveDraft = false, showDeleteToaster = false) => {
-    // setNestedModal(!nestedModal);
-    // setCloseAll(true);
-    // if (saveDraft) {
-    //   handleSaveDraft();
-    // } else if (draftId) {
-    //   handleDeleteDraft(showDeleteToaster);
-    // }
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
 
   const toggle = () => {
     toggleAll();
-    // if (mode === "edit") {
-    //   const post = item.post;
-
-    //   if (form.title !== post.title) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.body !== post.body) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.end_at !== post.end_at) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.is_private !== post.is_personal) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.must_read !== post.is_must_read) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.no_reply !== post.is_must_reply) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.reply_required !== post.is_must_reply) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.show_at !== post.show_at) {
-    //     toggleNested();
-    //     return;
-    //   }
-    // } else {
-    //   if (form.title !== "") {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.body !== "<div><br></div>") {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.end_at !== null) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.has_folder !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.is_private !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.must_read !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.no_reply !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.reply_required !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.show_at !== null) {
-    //     toggleNested();
-    //     return;
-    //   }
-    // }
-
-    // toggleAll(false);
   };
 
   const handleSelectAddressTo = (e) => {
@@ -553,8 +454,10 @@ const PostModal = (props) => {
         uploadFiles(payload, "edit");
       } else {
         if (form.selectedAddressTo.length) {
+          sendNotify(dictionary.updatingPost);
           dispatch(
             putPost(payload, (err, res) => {
+              dismiss();
               setLoading(false);
               handleDeleteDraft();
             })
@@ -566,8 +469,10 @@ const PostModal = (props) => {
         uploadFiles(payload, "create");
       } else {
         if (form.selectedAddressTo.length) {
+          sendNotify(dictionary.sendingPost);
           dispatch(
             postCreate(payload, (err, res) => {
+              dismiss();
               setLoading(false);
               if (err) return;
               handleDeleteDraft();
@@ -757,6 +662,7 @@ const PostModal = (props) => {
           };
           dispatch(
             putPost(payload, () => {
+              if (toasterRef.current) toaster.dismiss(toasterRef.current);
               setLoading(false);
               handleDeleteDraft();
             })
@@ -768,6 +674,7 @@ const PostModal = (props) => {
           };
           dispatch(
             postCreate(payload, (err, res) => {
+              if (toasterRef.current) toaster.dismiss(toasterRef.current);
               setLoading(false);
               if (err) return;
               handleDeleteDraft();
@@ -812,7 +719,7 @@ const PostModal = (props) => {
   const handleOnUploadProgress = (progressEvent) => {
     const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
-      toasterRef.current = toaster.info(<div>{dictionary.uploading}.</div>, { progress: progressBar.current, autoClose: true });
+      toasterRef.current = toaster.info(<div>{dictionary.uploadingAndSending}.</div>, { progress: progressBar.current, autoClose: true });
     } else {
       toaster.update(toasterRef.current, { progress: progress, autoClose: true });
     }
