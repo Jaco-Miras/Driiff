@@ -17,40 +17,6 @@ const Wrapper = styled.div`
     li {
       list-style: none;
       position: relative;
-      cursor: pointer;
-      cursor: hand;
-    }
-
-    &.files {
-      li {
-        padding-right: 16px;
-        &:hover {
-          color: #972c86;
-
-          svg.feather-trash-2 {
-            color: #505050;
-          }
-        }
-        @media all and (max-width: 460px) {
-          width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        svg {
-          &.feather-trash-2 {
-            position: absolute;
-            margin-left: 5px;
-            width: 11px;
-            top: -1px;
-            right: 0;
-
-            &:hover {
-              color: #972c86;
-            }
-          }
-        }
-      }
     }
   }
 `;
@@ -119,6 +85,38 @@ const AttachmentIcon = styled(SvgIconFeather)`
   margin-right: 10px;
 `;
 
+const FileList = styled.li`
+  padding-right: 16px;
+  ${(props) => props.isDeleted && "text-decoration: line-through;"}
+  &:hover {
+    cursor: ${(props) => (props.isDeleted ? "inherit" : "pointer")};
+    color: ${(props) => (props.isDeleted ? "inherit" : "#972c86")};
+
+    svg.feather-trash-2 {
+      color: #505050;
+    }
+  }
+  @media all and (max-width: 460px) {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  svg {
+    &.feather-trash-2 {
+      position: absolute;
+      margin-left: 5px;
+      width: 11px;
+      top: -1px;
+      right: 0;
+
+      &:hover {
+        color: ${(props) => (props.isDeleted ? "inherit" : "#972c86")};
+      }
+    }
+  }
+`;
+
 const FileAttachments = (props) => {
   const { className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", comment = null, showDelete = true } = props;
   const dispatch = useDispatch();
@@ -178,7 +176,7 @@ const FileAttachments = (props) => {
 
   const handleClick = (e) => {
     const index = e.currentTarget.dataset.targetIndex;
-
+    if (attachedFiles[index].deleted_at) return;
     if (type === "modal") {
       if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
         closePreview(e);
@@ -189,32 +187,38 @@ const FileAttachments = (props) => {
         });
       }
     } else {
-      if (params.hasOwnProperty("workspaceId")) {
-        let payload = {
-          workspace_id: params.workspaceId,
-          file_id: attachedFiles[index].id,
-        };
+      let payload = {
+        file_id: attachedFiles[index].id,
+        files: attachedFiles,
+      };
+      dispatch(setViewFiles(payload));
+      // if (params.hasOwnProperty("workspaceId")) {
+      //   let payload = {
+      //     workspace_id: params.workspaceId,
+      //     file_id: attachedFiles[index].id,
+      //     topic_id: params.workspaceId,
+      //   };
 
-        if (params.hasOwnProperty("postId")) {
-          payload = {
-            ...payload,
-            files: attachedFiles,
-          };
-        }
-        dispatch(setViewFiles(payload));
-      } else {
-        let payload = {
-          file_id: attachedFiles[index].id,
-        };
+      //   if (params.hasOwnProperty("postId")) {
+      //     payload = {
+      //       ...payload,
+      //       files: attachedFiles,
+      //     };
+      //   }
+      //   dispatch(setViewFiles(payload));
+      // } else {
+      //   let payload = {
+      //     file_id: attachedFiles[index].id,
+      //   };
 
-        if (params.hasOwnProperty("postId")) {
-          payload = {
-            ...payload,
-            files: attachedFiles,
-          };
-        }
-        dispatch(setViewFiles(payload));
-      }
+      //   if (params.hasOwnProperty("postId")) {
+      //     payload = {
+      //       ...payload,
+      //       files: attachedFiles,
+      //     };
+      //   }
+      //   dispatch(setViewFiles(payload));
+      // }
     }
   };
 
@@ -272,12 +276,11 @@ const FileAttachments = (props) => {
       <ul className="files">
         {attachedFiles.map((f, i) => {
           return (
-            <li data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name}>
+            <FileList data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name} isDeleted={f.deleted_at}>
               <AttachmentIcon icon="paperclip" />
               {f.search ? f.search : f.name}
-              {showDelete && ((type === "modal") || (loggedUser.id === f.uploader.id)) &&
-              <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2"/>}
-            </li>
+              {!f.deleted_at && showDelete && (type === "modal" || loggedUser.id === f.uploader.id) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
+            </FileList>
           );
         })}
       </ul>
@@ -293,11 +296,11 @@ const FileAttachments = (props) => {
             {renderFile(filePreview.file)}
             <span className="file-name">{filePreview.file.name}</span>
           </a>
-          {
-            showDelete && <span className="file-delete" data-file-id={filePreview.file.id} onClick={handleDelete}>
-              <SvgIconFeather icon="trash-2"/> Delete
+          {showDelete && (
+            <span className="file-delete" data-file-id={filePreview.file.id} onClick={handleDelete}>
+              <SvgIconFeather icon="trash-2" /> Delete
             </span>
-          }
+          )}
         </Tooltip>
       )}
     </Wrapper>

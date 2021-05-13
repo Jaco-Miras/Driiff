@@ -57,7 +57,7 @@ import {
   setViewFiles,
   uploadCompanyFilesReducer,
   uploadFilesReducer,
-  uploadWorkspaceFiles
+  uploadWorkspaceFiles,
 } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster } from "./index";
@@ -74,27 +74,29 @@ const useFileActions = (params = null) => {
 
   const getFileIcon = (mimeType = "") => {
     if (mimeType) {
-      if (mimeType.includes("image")) {
-        return <i className="fa fa-file-image-o text-instagram"/>;
+      if (mimeType === "trashed") {
+        return <i class="fa fa-exclamation-triangle text-danger"></i>;
+      } else if (mimeType.includes("image")) {
+        return <i className="fa fa-file-image-o text-instagram" />;
       } else if (mimeType.includes("audio")) {
-        return <i className="fa fa-file-audio-o text-dark"/>;
+        return <i className="fa fa-file-audio-o text-dark" />;
       } else if (mimeType.includes("video")) {
-        return <i className="fa fa-file-video-o text-google"/>;
+        return <i className="fa fa-file-video-o text-google" />;
       } else if (mimeType.includes("pdf")) {
-        return <i className="fa fa-file-pdf-o text-danger"/>;
+        return <i className="fa fa-file-pdf-o text-danger" />;
       } else if (mimeType.includes("zip") || mimeType.includes("archive") || mimeType.includes("x-rar")) {
-        return <i className="fa fa-file-zip-o text-primary"/>;
+        return <i className="fa fa-file-zip-o text-primary" />;
       } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers") || mimeType.includes("xml")) {
-        return <i className="fa fa-file-excel-o text-success"/>;
+        return <i className="fa fa-file-excel-o text-success" />;
       } else if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) {
-        return <i className="fa fa-file-powerpoint-o text-secondary"/>;
+        return <i className="fa fa-file-powerpoint-o text-secondary" />;
       } else if (mimeType.includes("word") || mimeType.includes("document")) {
-        return <i className="fa fa-file-word-o text-info"/>;
+        return <i className="fa fa-file-word-o text-info" />;
       } else if (mimeType.includes("script")) {
-        return <i className="fa fa-file-code-o"/>;
-      } else return <i className="fa fa-file-text-o text-warning"/>;
+        return <i className="fa fa-file-code-o" />;
+      } else return <i className="fa fa-file-text-o text-warning" />;
     } else {
-      return <i className="fa fa-file-text-o text-warning"/>;
+      return <i className="fa fa-file-text-o text-warning" />;
     }
   };
 
@@ -220,7 +222,7 @@ const useFileActions = (params = null) => {
 
   const getPrimaryFiles = useCallback(
     (id, callback) => {
-      dispatch(getWorkspacePrimaryFiles({topic_id: id}, callback));
+      dispatch(getWorkspacePrimaryFiles({ topic_id: id }, callback));
     },
     [dispatch]
   );
@@ -228,10 +230,13 @@ const useFileActions = (params = null) => {
   const getGoogleDriveFiles = useCallback(
     (id, callback) => {
       dispatch(
-        getWorkspaceGoogleFileAttachments({
-          workspace_id: id
-        }, callback)
-      )
+        getWorkspaceGoogleFileAttachments(
+          {
+            workspace_id: id,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
@@ -239,19 +244,20 @@ const useFileActions = (params = null) => {
   const getGoogleDriveFolders = useCallback(
     (id, callback) => {
       dispatch(
-        getWorkspaceGoogleFolderAttachments({
-          workspace_id: id
-        }, callback)
-      )
+        getWorkspaceGoogleFolderAttachments(
+          {
+            workspace_id: id,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
 
   const getCompanyGoogleDriveFolders = useCallback(
     (id, callback) => {
-      dispatch(
-        getCompanyGoogleAttachmentsFolder({}, callback)
-      )
+      dispatch(getCompanyGoogleAttachmentsFolder({}, callback));
     },
     [dispatch]
   );
@@ -259,38 +265,41 @@ const useFileActions = (params = null) => {
   const getCompanyGoogleDriveFiles = useCallback(
     (id, callback) => {
       dispatch(
-        getCompanyGoogleAttachmentsFile({
-          workspace_id: id
-        }, callback)
-      )
+        getCompanyGoogleAttachmentsFile(
+          {
+            workspace_id: id,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
 
   const getFilesDetail = useCallback(
     (id, callback) => {
-      dispatch(getWorkspaceFilesDetail({topic_id: id}, callback));
+      dispatch(getWorkspaceFilesDetail({ topic_id: id }, callback));
     },
     [dispatch]
   );
 
   const getPopularFiles = useCallback(
     (id, callback) => {
-      dispatch(getWorkspacePopularFiles({topic_id: id}, callback));
+      dispatch(getWorkspacePopularFiles({ topic_id: id }, callback));
     },
     [dispatch]
   );
 
   const getEditedFiles = useCallback(
     (id, callback) => {
-      dispatch(getWorkspaceRecentlyEditedFiles({topic_id: id}, callback));
+      dispatch(getWorkspaceRecentlyEditedFiles({ topic_id: id }, callback));
     },
     [dispatch]
   );
 
   const getTrashFiles = useCallback(
     (id, callback) => {
-      dispatch(getWorkspaceTrashFiles({topic_id: id}, callback));
+      dispatch(getWorkspaceTrashFiles({ topic_id: id }, callback));
     },
     [dispatch]
   );
@@ -309,14 +318,12 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
-
   const getFoldersBreadcrumb = useCallback(
     (payload, callback) => {
       dispatch(getWorkspaceFoldersBreadcrumb(payload, callback));
     },
     [dispatch]
   );
-
 
   const updateFolder = useCallback(
     (payload, callback) => {
@@ -335,13 +342,16 @@ const useFileActions = (params = null) => {
   const uploadWorkspaceGoogleDriveFile = useCallback(
     (workspaceId, payload, callback) => {
       dispatch(
-        postGoogleAttachments({
-          link_id: workspaceId,
-          link_type: "topic",
-          attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
-          payload: payload
-        }, callback)
-      )
+        postGoogleAttachments(
+          {
+            link_id: workspaceId,
+            link_type: "topic",
+            attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
+            payload: payload,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
@@ -349,12 +359,15 @@ const useFileActions = (params = null) => {
   const uploadCompanyGoogleDriveFile = useCallback(
     (payload, callback) => {
       dispatch(
-        postGoogleAttachments({
-          link_type: "company_drive",
-          attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
-          payload: payload
-        }, callback)
-      )
+        postGoogleAttachments(
+          {
+            link_type: "company_drive",
+            attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
+            payload: payload,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
@@ -470,10 +483,13 @@ const useFileActions = (params = null) => {
   );
 
   const removeCompanyFile = useCallback(
-    (file, callback = () => {
-    }, options = {
-      force_delete: false
-    }) => {
+    (
+      file,
+      callback = () => {},
+      options = {
+        force_delete: false,
+      }
+    ) => {
       const handleDeleteFile = () => {
         let payload = {
           file_id: file.id,
@@ -492,7 +508,7 @@ const useFileActions = (params = null) => {
             toaster.info(`You have removed ${file.search}.`);
             callback(err, res);
           })
-        )
+        );
       };
       let payload = {
         type: "confirmation",
@@ -577,35 +593,37 @@ const useFileActions = (params = null) => {
 
   const renameCompanyFile = useCallback(
     (file, callback) => {
-
       const handleUpdateFileName = () => {
         let name = fileName.current;
-        let oname = file.search.split('.');
+        let oname = file.search.split(".");
         if (oname.length >= 2) {
           name = `${name}.${oname.pop()}`;
         }
-        updateCompanyFiles({
-          id: file.id,
-          name: name,
-        }, (err, res) => {
-          if (err) {
-            toaster.error(
-              <span>
-                    System failed to rename the <b>{file.search}</b> to {fileName.current}.
-                  </span>
-            );
-          }
+        updateCompanyFiles(
+          {
+            id: file.id,
+            name: name,
+          },
+          (err, res) => {
+            if (err) {
+              toaster.error(
+                <span>
+                  System failed to rename the <b>{file.search}</b> to {fileName.current}.
+                </span>
+              );
+            }
 
-          if (res) {
-            toaster.success(
-              <span>
-                    You renamed <b>{file.search}</b> to {fileName.current}.
-                  </span>
-            );
-          }
+            if (res) {
+              toaster.success(
+                <span>
+                  You renamed <b>{file.search}</b> to {fileName.current}.
+                </span>
+              );
+            }
 
-          callback(err, res);
-        })
+            callback(err, res);
+          }
+        );
       };
 
       const handleFileNameClose = () => {
@@ -646,8 +664,7 @@ const useFileActions = (params = null) => {
         if (err) {
           toaster.error(
             <div>
-              System failed to mark the
-              file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}
+              System failed to mark the file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}
             </div>
           );
 
@@ -671,8 +688,7 @@ const useFileActions = (params = null) => {
             addRemoveFavorite(payload, () => {
               toaster.success(
                 <>
-                  You have
-                  marked <b>{file.search}</b> {file.is_favorite ? "as favorite" : "unfavorite"}
+                  You have marked <b>{file.search}</b> {file.is_favorite ? "as favorite" : "unfavorite"}
                 </>
               );
             })
@@ -694,7 +710,7 @@ const useFileActions = (params = null) => {
 
   const getFavoriteFiles = useCallback(
     (id, callback) => {
-      dispatch(getWorkspaceFavoriteFiles({topic_id: id}, callback));
+      dispatch(getWorkspaceFavoriteFiles({ topic_id: id }, callback));
     },
     [dispatch]
   );
@@ -702,7 +718,7 @@ const useFileActions = (params = null) => {
   const viewFiles = useCallback(
     (file, callback) => {
       if (file.hasOwnProperty("payload_id")) {
-        let a = document.createElement('a');
+        let a = document.createElement("a");
         a.href = file.download_link.replace("/preview", "/view");
         a.target = "_blank";
         a.click();
@@ -718,15 +734,16 @@ const useFileActions = (params = null) => {
   );
 
   const viewCompanyFiles = useCallback(
-    (file, callback) => {
+    (file, files = [], callback) => {
       if (file.hasOwnProperty("payload_id")) {
-        let a = document.createElement('a');
+        let a = document.createElement("a");
         a.href = file.download_link.replace("/preview", "/view");
         a.target = "_blank";
         a.click();
       } else {
         let payload = {
           file_id: file.id,
+          files: Object.values(files),
         };
         dispatch(setViewFiles(payload, callback));
       }
@@ -768,7 +785,7 @@ const useFileActions = (params = null) => {
           })
         );
       };
-      fetchCompanyFiles(payload, cb)
+      fetchCompanyFiles(payload, cb);
     },
     [dispatch, params]
   );
@@ -809,9 +826,7 @@ const useFileActions = (params = null) => {
 
   const removeAllCompanyTrashFiles = useCallback(() => {
     const handleDeleteTrash = () => {
-      dispatch(
-        deleteCompanyDeleteAllTrashFiles({})
-      );
+      dispatch(deleteCompanyDeleteAllTrashFiles({}));
     };
     let payload = {
       type: "confirmation",
@@ -850,8 +865,7 @@ const useFileActions = (params = null) => {
 
   const moveCompanyFile = useCallback(
     (file) => {
-      const handleMoveFile = (payload, callback = () => {
-      }, options = {}) => {
+      const handleMoveFile = (payload, callback = () => {}, options = {}) => {
         dispatch(
           putCompanyFileMove(payload, (err, res) => {
             if (err) {
@@ -870,7 +884,7 @@ const useFileActions = (params = null) => {
             }
             callback(err, res);
           })
-        )
+        );
       };
 
       let payload = {
@@ -904,12 +918,12 @@ const useFileActions = (params = null) => {
     (file) => {
       const handleDownloadFile = () => {
         if (file.hasOwnProperty("payload_id")) {
-          let a = document.createElement('a');
+          let a = document.createElement("a");
           a.href = `https://drive.google.com/u/0/uc?export=download&id=${file.payload_id}`;
           a.target = "_blank";
           a.click();
         } else {
-          let a = document.createElement('a');
+          let a = document.createElement("a");
           a.href = file.download_link;
           a.target = "_blank";
           a.click();
@@ -982,8 +996,8 @@ const useFileActions = (params = null) => {
           payload: {
             id: file.payload_id,
             name: file.search,
-            mime_type: file.mime_type
-          }
+            mime_type: file.mime_type,
+          },
         };
         dispatch(
           deleteGoogleAttachment(payload, (err, res) => {
@@ -1018,8 +1032,8 @@ const useFileActions = (params = null) => {
           payload: {
             id: folder.payload_id,
             name: folder.search,
-            mime_type: folder.mime_type
-          }
+            mime_type: folder.mime_type,
+          },
         };
         dispatch(
           deleteGoogleAttachment(payload, (err, res) => {
@@ -1051,78 +1065,82 @@ const useFileActions = (params = null) => {
   );
 
   const restoreWorkspaceFile = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(putWorkspaceRestoreFile({
-        ...payload,
-        topic_id: params.workspaceId,
-      }, callback));
+    (payload, callback = () => {}) => {
+      dispatch(
+        putWorkspaceRestoreFile(
+          {
+            ...payload,
+            topic_id: params.workspaceId,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
 
   const restoreCompanyFile = useCallback(
-    (payload, callback = () => {
-    }, options = {
-      notification: true
-    }) => {
-      dispatch(putCompanyRestoreFile(payload, (err, res) => {
-        if (res) {
-          if (options.notification)
-            toaster.success(`Item ${payload.search} is restored.`);
-        }
-        callback(err, res);
-      }));
+    (
+      payload,
+      callback = () => {},
+      options = {
+        notification: true,
+      }
+    ) => {
+      dispatch(
+        putCompanyRestoreFile(payload, (err, res) => {
+          if (res) {
+            if (options.notification) toaster.success(`Item ${payload.search} is restored.`);
+          }
+          callback(err, res);
+        })
+      );
     },
     [dispatch]
   );
 
   const restoreWorkspaceFolder = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(putWorkspaceRestoreFolder({
-        ...payload,
-        topic_id: params.workspaceId,
-        folder_id: payload.id,
-      }, callback));
+    (payload, callback = () => {}) => {
+      dispatch(
+        putWorkspaceRestoreFolder(
+          {
+            ...payload,
+            topic_id: params.workspaceId,
+            folder_id: payload.id,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
 
   const restoreCompanyFolder = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(putCompanyRestoreFolder({
-        ...payload,
-        folder_id: payload.id
-      }, callback));
+    (payload, callback = () => {}) => {
+      dispatch(
+        putCompanyRestoreFolder(
+          {
+            ...payload,
+            folder_id: payload.id,
+          },
+          callback
+        )
+      );
     },
     [dispatch]
   );
 
-  const setGifSrc = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(
-        incomingGifData(payload, callback)
-      );
-    }, []);
+  const setGifSrc = useCallback((payload, callback = () => {}) => {
+    dispatch(incomingGifData(payload, callback));
+  }, []);
 
-  const setFileSrc = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(
-        incomingFileData(payload, callback)
-      );
-    }, []);
+  const setFileSrc = useCallback((payload, callback = () => {}) => {
+    dispatch(incomingFileData(payload, callback));
+  }, []);
 
-  const setFileThumbnailSrc = useCallback(
-    (payload, callback = () => {
-    }) => {
-      dispatch(
-        incomingFileThumbnailData(payload, callback)
-      );
-    }, []);
+  const setFileThumbnailSrc = useCallback((payload, callback = () => {}) => {
+    dispatch(incomingFileThumbnailData(payload, callback));
+  }, []);
 
   return {
     addGoogleDriveFile,

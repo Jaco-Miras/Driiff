@@ -247,6 +247,18 @@ const MarkAsRead = styled.div`
   cursor: pointer;
 `;
 
+const PostFilesTrashedContainer = styled.div`
+  h6 {
+    margin: 0;
+  }
+  .text-muted {
+    font-size: 0.75rem;
+  }
+  .file-attachments {
+    margin-top: 1rem;
+  }
+`;
+
 const CompanyPostDetail = (props) => {
   const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
@@ -472,8 +484,18 @@ const CompanyPostDetail = (props) => {
           <>
             <div className="card-body">
               <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
-              <PostFiles attachedFiles={post.files} type="company" post={post} />
+              <PostFiles attachedFiles={post.files} type="post" post={post} />
             </div>
+            <hr className="m-0" />
+          </>
+        )}
+        {post.files_trashed && post.files_trashed.length > 0 && (
+          <>
+            <PostFilesTrashedContainer className="card-body">
+              <h6 className="font-size-11 text-uppercase">{dictionary.files}</h6>
+              <span className="text-muted">{dictionary.filesAutomaticallyRemoved}</span>
+              <PostFiles attachedFiles={post.files_trashed} type="post" post={post} />
+            </PostFilesTrashedContainer>
             <hr className="m-0" />
           </>
         )}

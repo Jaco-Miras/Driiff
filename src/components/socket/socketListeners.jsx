@@ -69,6 +69,8 @@ import {
   incomingRemovedFolder,
   incomingRestoreFile,
   incomingRestoreFolder,
+  incomingRemoveFileAfterDownload,
+  incomingRemoveFileAutomatically,
 } from "../../redux/actions/fileActions";
 import {
   addToModals,
@@ -210,42 +212,8 @@ class SocketListeners extends Component {
     }
   };
 
-  // fetchOnlineUsers = (isMount = false) => {
-  //   if (isMount) {
-  //     this.props.getOnlineUsers();
-  //   }
-  //   this.onlineUsers.current = setInterval(() => {
-  //     if (this.props.selectedChannel && this.props.selectedChannel.isFetching) {
-  //       clearInterval(this.onlineUsers.current);
-  //       this.onlineUsers.current = setTimeout(() => {
-  //         this.fetchOnlineUsers();
-  //       }, 300);
-  //     } else {
-  //       this.props.getOnlineUsers();
-  //     }
-  //   }, 30000);
-  // };
-
   componentDidMount() {
     this.props.getOnlineUsers();
-    /* uncomment to test driff update notification bar
-    const handleReminder = () => {
-      setTimeout(() => {
-        this.props.addToModals({
-          id: "version",
-          type: "update_found",
-          requirement: "normal",
-          handleReminder: handleReminder,
-        });
-      }, [30 * 60 * 1000]);
-    };
-
-    this.props.addToModals({
-      id: "version",
-      type: "update_found",
-      requirement: "normal",
-      handleReminder: handleReminder,
-    });*/
 
     this.props.getLatestReply({}, (err, res) => {
       console.log(res, "latest");
@@ -268,19 +236,6 @@ class SocketListeners extends Component {
     window.Echo.connector.socket.on("reconnecting", function () {
       console.log("socket reconnecting");
     });
-    /**
-     * @todo Online users are determined every 30 seconds
-     * online user reducer should be updated every socket call
-     */
-    //this.fetchOnlineUsers(true);
-
-    // this.props.addUserToReducers({
-    //   id: this.props.user.id,
-    //   name: this.props.user.name,
-    //   partial_name: this.props.user.partial_name,
-    //   profile_image_link: this.props.user.profile_image_link,
-    //   type: this.props.user.type,
-    // });
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
@@ -687,6 +642,7 @@ class SocketListeners extends Component {
           }
           case "COMMENT_IMPORTANT": {
             this.props.incomingImportantComment(e);
+            break;
           }
           default:
             return null;
@@ -736,16 +692,6 @@ class SocketListeners extends Component {
                     count: res.data.result,
                   });
                 });
-                // this.props.getWorkspace({topic_id: ws.topic_id}, (err, res) => {
-                //   if (err) return;
-                //   this.props.updateWorkspaceCounter({
-                //     folder_id: ws.workspace_id,
-                //     topic_id: ws.topic_id,
-                //     unread_count: res.data.workspace_data.unread_count,
-                //     unread_posts: res.data.workspace_data.topic_detail.unread_posts,
-                //     unread_chats: res.data.workspace_data.topic_detail.unread_chats,
-                //   });
-                // });
               });
             }
             break;
@@ -905,11 +851,28 @@ class SocketListeners extends Component {
               this.props.incomingPostListDisconnect(post);
               break;
             }
+            default:
+              return null;
           }
         });
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".remove-file-notification", (e) => {
+        console.log(e, "remove file");
+        switch (e.SOCKET_TYPE) {
+          case "REMOVE_FILE": {
+            this.props.incomingRemoveFileAutomatically(e);
+            break;
+          }
+          case "REMOVE_FILE_ON_DOWNLOAD": {
+            this.props.incomingRemoveFileAfterDownload(e.files);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".workspace-team-channel", (e) => {
         console.log(e);
         this.props.incomingTeamChannel(e);
@@ -1026,6 +989,8 @@ class SocketListeners extends Component {
             this.props.incomingInternalUser(e);
             break;
           }
+          default:
+            return null;
         }
       })
       .listen(".company-notification", (e) => {
@@ -1035,6 +1000,8 @@ class SocketListeners extends Component {
             this.props.incomingUpdateCompanyName(e);
             break;
           }
+          default:
+            return null;
         }
       })
       .listen(".company-file-notification", (e) => {
@@ -1865,6 +1832,8 @@ function mapDispatchToProps(dispatch) {
     getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
     incomingPostRequired: bindActionCreators(incomingPostRequired, dispatch),
     incomingTeamChannel: bindActionCreators(incomingTeamChannel, dispatch),
+    incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),
+    incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
   };
 }

@@ -6,12 +6,13 @@ import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
-import { uploadDocument, uploadBulkDocument } from "../../redux/services/global";
+import { uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload, addComment } from "../../redux/actions/postActions";
 import { osName } from "react-device-detect";
+import { FolderSelect } from "../forms";
 
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
@@ -217,6 +218,27 @@ const StyledModalFooter = styled(ModalFooter)`
   flex-wrap: nowrap;
 `;
 
+const SelectFileOptionContainer = styled.div`
+  .react-select-container {
+    max-width: 320px;
+  }
+`;
+
+const fileOptions = [
+  // {
+  //   id: "remove_on_download",
+  //   value: "remove_on_download",
+  //   label: "Remove file after download",
+  //   icon: "eye-off",
+  // },
+  {
+    id: "remove_automatically",
+    value: "remove_automatically",
+    label: "Remove file automatically in 5 days",
+    icon: "file-minus",
+  },
+];
+
 const FileUploadModal = (props) => {
   const { type, mode, droppedFiles, post = null, members = [] } = props.data;
 
@@ -236,12 +258,13 @@ const FileUploadModal = (props) => {
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState(droppedFiles);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [sending, setSending] = useState(false);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);
+  //const [sending, setSending] = useState(false);
   const [comment, setComment] = useState("");
   const [textOnly, setTextOnly] = useState("");
   const [quillContents, setQuillContents] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [fileOption, setFileOption] = useState(null);
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -330,11 +353,13 @@ const FileUploadModal = (props) => {
 
   async function uploadFiles() {
     if (files.filter((f) => typeof f.id === "string").length) {
+      // new endpint
       let formData = new FormData();
       let payload = {
         user_id: user.id,
         file_type: "private",
         folder_id: null,
+        fileOption: fileOption,
         options: {
           config: {
             onUploadProgress: handleOnUploadProgress,
@@ -353,23 +378,13 @@ const FileUploadModal = (props) => {
         resolve(uploadBulkDocument(payload));
       })
         .then((result) => {
-          setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
+          const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+          handleSubmit(resFiles);
+          //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
         })
         .catch((error) => {
           handleNetWorkError(error);
         });
-      // await Promise.all(
-      //   uploadBulkDocument(payload)
-      // ).then((result) => {
-      //   console.log(result)
-      //   console.log( files)
-      //   setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
-      // })
-      //   .catch((error) => {
-      //   console.log(error)
-      // });
-    } else {
-      setUploadedFiles(files);
     }
   }
 
@@ -382,27 +397,6 @@ const FileUploadModal = (props) => {
     }
   };
 
-  // let totalProgress = useRef(null);
-
-  // const handleOnUploadProgress = (file) => (progressEvent) => {
-  //   let {loaded, total} = progressEvent;
-  //   const totalFiles = files.filter((f) => typeof f.id === "string").length;
-  //   const progress = loaded / total;
-  //   totalProgress.current = {
-  //     ...totalProgress.current,
-  //     [file.id]: progress,
-  //   }
-  //   let totalPercent = totalProgress.current ? Object.values(totalProgress.current).reduce((sum, num) => sum + num, 0) : 0
-  //   progressBar.current = totalPercent / totalFiles;
-
-  //   if (toasterRef.current === null) {
-  //     toasterRef.current = toaster.info(
-  //       <div>{dictionary.uploading}.</div>,
-  //       {progress: progressBar.current, autoClose: true});
-  //   } else {
-  //     toaster.update(toasterRef.current, {progress: progressBar.current, autoClose: true});
-  //   }
-  // }
   const handleOnUploadProgress = (progressEvent) => {
     const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
@@ -413,18 +407,46 @@ const FileUploadModal = (props) => {
   };
 
   const handleUpload = () => {
-    if (!loading && !sending) {
+    if (!loading) {
       setLoading(true);
       uploadFiles();
+      dispatch(clearModal({ type: type }));
     }
   };
 
-  const handleSubmit = (body, mention_ids) => {
+  const handleSubmit = (uFiles) => {
+    let mention_ids = [];
+    let body = comment;
+    let haveGif = false;
+    if (quillContents.ops && quillContents.ops.length > 0) {
+      let mentionIds = quillContents.ops
+        .filter((id) => {
+          return id.insert.mention ? id : null;
+        })
+        .map((mid) => Number(mid.insert.mention.id));
+      mention_ids = [...new Set(mentionIds)];
+      if (mention_ids.includes(NaN)) {
+        mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
+      } else {
+        //remove the nan in mention ids
+        mention_ids = mention_ids.filter((id) => !isNaN(id));
+      }
+
+      quillContents.ops.forEach((op) => {
+        if (op.insert.image) {
+          haveGif = true;
+        }
+      });
+    }
+
+    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
+      body = "<span></span>";
+    }
     if (mode === "chat") {
       dispatch(setSidebarSearch({ value: "" }));
-      uploadedFiles.forEach((file, k) => {
+      uFiles.forEach((file, k) => {
         let payload = {};
-        if (k === uploadedFiles.length - 1) {
+        if (k === uFiles.length - 1) {
           payload = {
             channel_id: selectedChannel.id,
             body: body,
@@ -438,10 +460,8 @@ const FileUploadModal = (props) => {
             dispatch(postChatMessage(payload));
           }, 300);
 
-          setUploadedFiles([]);
+          //setUploadedFiles([]);
           dispatch(saveInputData({ sent: true }));
-          dispatch(clearModal({ type: type }));
-          //toggle();
         } else {
           payload = {
             channel_id: selectedChannel.id,
@@ -461,20 +481,20 @@ const FileUploadModal = (props) => {
         post_id: post.id,
         body: body,
         mention_ids: mention_ids,
-        file_ids: uploadedFiles.map((f) => f.id),
+        file_ids: uFiles.map((f) => f.id),
         reference_id: reference_id,
         personalized_for_id: null,
         parent_id: parentId,
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
       };
-      setUploadedFiles([]);
+      //setUploadedFiles([]);
       dispatch(setParentIdForUpload(null));
       dispatch(saveInputData({ sent: true }));
       if (editPostComment) {
         payload = {
           ...payload,
           id: editPostComment.id,
-          file_ids: [...uploadedFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string")],
+          file_ids: [...uFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string")],
           parent_id: editPostComment.parent_id,
           reference_id: null,
         };
@@ -489,6 +509,7 @@ const FileUploadModal = (props) => {
           code: timestamp,
           created_at: { timestamp: timestamp },
           files: [],
+          files_trashed: [],
           id: reference_id,
           is_archive: false,
           is_editable: true,
@@ -516,55 +537,54 @@ const FileUploadModal = (props) => {
         dispatch(addComment(commentObj));
         dispatch(postComment(payload));
       }
-      dispatch(clearModal({ type: type }));
     }
   };
 
-  useEffect(() => {
-    if (uploadedFiles.length) {
-      if (uploadedFiles.length === files.length) {
-        let mention_ids = [];
-        let body = comment;
-        let haveGif = false;
-        if (quillContents.ops && quillContents.ops.length > 0) {
-          let mentionIds = quillContents.ops
-            .filter((id) => {
-              return id.insert.mention ? id : null;
-            })
-            .map((mid) => Number(mid.insert.mention.id));
-          mention_ids = [...new Set(mentionIds)];
-          if (mention_ids.includes(NaN)) {
-            mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
-          } else {
-            //remove the nan in mention ids
-            mention_ids = mention_ids.filter((id) => !isNaN(id));
-          }
+  // useEffect(() => {
+  //   if (uploadedFiles.length) {
+  //     if (uploadedFiles.length === files.length) {
+  //       let mention_ids = [];
+  //       let body = comment;
+  //       let haveGif = false;
+  //       if (quillContents.ops && quillContents.ops.length > 0) {
+  //         let mentionIds = quillContents.ops
+  //           .filter((id) => {
+  //             return id.insert.mention ? id : null;
+  //           })
+  //           .map((mid) => Number(mid.insert.mention.id));
+  //         mention_ids = [...new Set(mentionIds)];
+  //         if (mention_ids.includes(NaN)) {
+  //           mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
+  //         } else {
+  //           //remove the nan in mention ids
+  //           mention_ids = mention_ids.filter((id) => !isNaN(id));
+  //         }
 
-          quillContents.ops.forEach((op) => {
-            if (op.insert.image) {
-              haveGif = true;
-            }
-          });
-        }
+  //         quillContents.ops.forEach((op) => {
+  //           if (op.insert.image) {
+  //             haveGif = true;
+  //           }
+  //         });
+  //       }
 
-        if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
-          body = "<span></span>";
-        }
+  //       if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
+  //         body = "<span></span>";
+  //       }
 
-        if (uploadedFiles.filter((f) => isNaN(f.id)).length) {
-        } else {
-          if (!sending) {
-            handleSubmit(body, mention_ids);
-            setSending(true);
-          }
-          // if (modalData.quote) {
-          //     modalData.onClearQuote();
-          // }
-          // modalData.onClearContent();
-        }
-      }
-    }
-  });
+  //       if (uploadedFiles.filter((f) => isNaN(f.id)).length) {
+  //       } else {
+  //         if (!sending) {
+  //           handleSubmit(body, mention_ids);
+  //           setSending(true);
+  //         }
+  //         // if (modalData.quote) {
+  //         //     modalData.onClearQuote();
+  //         // }
+  //         // modalData.onClearContent();
+  //       }
+  //     }
+  //   }
+  // });
 
   const handleQuillChange = (content, delta, source, editor) => {
     setComment(content);
@@ -586,6 +606,11 @@ const FileUploadModal = (props) => {
       }, 300);
     }
   }, [init]);
+
+  const handleSelectFileUploadOption = (e) => {
+    console.log(e);
+    setFileOption(e);
+  };
 
   let hasExternal = false;
 
@@ -616,9 +641,17 @@ const FileUploadModal = (props) => {
           {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
         </DescriptionInputWrapper>
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
+        <SelectFileOptionContainer className="mt-1">
+          <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
+        </SelectFileOptionContainer>
       </ModalBody>
       <StyledModalFooter>
-        {((workspaces[selectedChannel.entity_id] && workspaces[selectedChannel.entity_id].is_shared && workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id && user.type === "internal") ||
+        {((selectedChannel &&
+          selectedChannel.entity_id &&
+          workspaces[selectedChannel.entity_id] &&
+          workspaces[selectedChannel.entity_id].is_shared &&
+          workspaces[selectedChannel.entity_id].team_channel.id === selectedChannel.id &&
+          user.type === "internal") ||
           (hasExternal && user.type === "internal")) && <ExternalLabel>{dictionary.fileUploadLabel}</ExternalLabel>}
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}

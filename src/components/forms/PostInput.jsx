@@ -216,6 +216,7 @@ const PostInput = forwardRef((props, ref) => {
         code: timestamp,
         created_at: { timestamp: timestamp },
         files: [],
+        files_trashed: [],
         id: reference_id,
         is_archive: false,
         is_editable: true,

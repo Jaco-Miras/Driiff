@@ -1544,7 +1544,6 @@ export default (state = INITIAL_STATE, action) => {
               newWorkspaceFiles[action.data.topic_id].folders[f.id].files = newWorkspaceFiles[action.data.topic_id].folders[f.id].files.filter((id) => {
                 return !action.data.deleted_file_ids.some((df) => df === id);
               });
-            } else {
             }
           });
           return {
@@ -1896,6 +1895,33 @@ export default (state = INITIAL_STATE, action) => {
         fileThumbnailBlobs: {
           ...state.fileThumbnailBlobs,
           [action.data.id]: action.data.src,
+        },
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...action.data.files.reduce((res, obj) => {
+            if (state.workspaceFiles[obj.topic_id]) {
+              res[obj.topic_id] = {
+                ...state.workspaceFiles[obj.topic_id],
+                files: {
+                  ...Object.values(state.workspaceFiles[obj.topic_id].files).reduce((fres, f) => {
+                    if (!action.data.files.some((file) => file.file_id === f.id)) {
+                      fres[f.id] = { ...f };
+                    }
+                    return fres;
+                  }, {}),
+                },
+                recently_edited: state.workspaceFiles[obj.topic_id].recently_edited.filter((id) => !action.data.files.some((file) => file.file_id === id)),
+                favorite_files: state.workspaceFiles[obj.topic_id].favorite_files.filter((id) => !action.data.files.some((file) => file.file_id === id)),
+                popular_files: state.workspaceFiles[obj.topic_id].popular_files.filter((id) => !action.data.files.some((file) => file.file_id === id)),
+              };
+            }
+            return res;
+          }, {}),
         },
       };
     }

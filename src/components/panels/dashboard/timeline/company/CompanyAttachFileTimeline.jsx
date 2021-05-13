@@ -39,6 +39,7 @@ const CompanyAttachFileTimeline = (props) => {
       setViewFiles({
         workspace_id: params.workspaceId,
         file_id: data.id,
+        files: [{ ...data, filename: data.name, file_id: data.id }],
       })
     );
   };

@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
 import useFileActions from "../../../hooks/useFileActions";
-import { useFiles, useTouchActions } from "../../../hooks";
+import { useFiles, useTouchActions, useTranslation } from "../../../hooks";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -48,15 +48,15 @@ const FileImage = styled.img`
   }
 `;
 
-const FileVideoOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  cursor: pointer;
-`;
+// const FileVideoOverlay = styled.div`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   z-index: 1;
+//   cursor: pointer;
+// `;
 
 const FileVideo = styled.video`
   max-height: 150px;
@@ -102,8 +102,14 @@ const FilePill = forwardRef((props, ref) => {
     file.type = file.mime_type;
   }
 
-  const refImageLoader = useRef();
+  //const refImageLoader = useRef();
   const refImage = useRef();
+
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+  };
 
   const {
     fileThumbnailBlobs,
@@ -115,6 +121,7 @@ const FilePill = forwardRef((props, ref) => {
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleViewFile = (e) => {
+    if (file.type === "trashed") return;
     cbFilePreview(e, file);
   };
 
@@ -206,9 +213,20 @@ const FilePill = forwardRef((props, ref) => {
     }
   }, []);
 
+  const isFileRemoved = file.file_type === "trashed";
+
   return (
     <FilePillContainer onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchMove={touchMove} onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
-      {file.type.toLowerCase() === "image" ? (
+      {isFileRemoved ? (
+        <DocFile>
+          <div className="card app-file-list">
+            <div className="app-file-icon">{fileHandler.getFileIcon("trashed")}</div>
+            <div className="p-2 small">
+              <div>{dictionary.fileAutomaticallyRemoved}</div>
+            </div>
+          </div>
+        </DocFile>
+      ) : file.type.toLowerCase() === "image" ? (
         <>
           <ImgLoader className={imgSrc ? "d-none" : ""}>
             <ImgLoaderDiv className={"img-loader"} />

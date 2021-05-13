@@ -11,7 +11,6 @@ import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
-//import { lang } from "moment-timezone";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -25,8 +24,6 @@ const ChatBubbleContainer = styled.div`
   color: ${(props) => (props.isAuthor ? "#ffffff" : "#000000")};
   font-size: 0.835rem;
   overflow: visible;
-  //z-index: 1;
-  //min-height: 40px;
   min-height: ${(props) => (props.hasGif ? "150px" : "33px")};
 
   &:after {
@@ -74,7 +71,7 @@ const ChatBubbleContainer = styled.div`
     max-height: 300px;
   }
   span.reply-date {
-    color: ${(props) => (props.showAvatar && props.hideBg === false ? "#a7abc3" : "#0000")};
+    color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles ? "#a7abc3" : "#0000")};
     font-style: italic;
     font-size: 11px;
     position: absolute;
@@ -82,7 +79,7 @@ const ChatBubbleContainer = styled.div`
     ${(props) => (props.isAuthor ? "right: 100%" : "left: 100%")};
     display: flex;
     height: 100%;
-    align-items: center;
+    text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
 
     .star-wrap {
@@ -129,38 +126,6 @@ const ChatBubbleContainer = styled.div`
     font-style: italic;
     color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#AAB0C8")};
   }
-  // .mention {
-  //   font-weight: ${(props) => (props.isAuthor ? "none" : "bold")};
-  //   color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")};
-  //   text-decoration: none;
-  //   &[data-value="All"],
-  //   &.is-author {
-  //     box-shadow: none;
-  //     padding: 0 4px;
-  //     border-radius: 8px;
-  //     text-decoration: underline;
-  //     display: inline-block;
-  //     width: auto;
-  //     height: auto;
-  //   }
-  //   a {
-  //     color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")} !important;
-  //     text-decoration: none;
-  //   }
-  // }
-  a.call-button {
-    display: block;
-  }
-  .call-user {
-    min-width: 30px;
-    min-height: 30px;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    margin-right: 5px;
-    display: inline-block;
-    background-size: contain;
-  }
 `;
 
 const QuoteContainer = styled.div`
@@ -187,22 +152,6 @@ const QuoteContainer = styled.div`
       display: none;
     }
   }
-  // &:after {
-  //   ${(props) => !props.isEmoticonOnly && "content: ''"};
-  //   border: 10px solid transparent;
-  //   ${(props) => (props.isAuthor ? "border-left-color: " + "#8C3B9B" : "border-right-color: " + "#E4E4E4")};
-  //   position: absolute;
-  //   top: ${(props) => (props.showAvatar && !props.isAuthor ? "11px" : "11px")};
-  //   z-index: 12;
-  //   ${(props) => (!props.isAuthor ? "left: -15px" : "right: -15px")};
-  //   height: 5px;
-  //   @media all and (max-width: 620px) {
-  //     display: none;
-  //   }
-  //   &:dark {
-  //     ${(props) => (props.isAuthor ? "border-left-color: red !important;" : "border-right-color: yellow !important;")};
-  //   }
-  // }
   @media all and (max-width: 620px) {
     margin: 7px -7px 10px -7px;
     padding: 7px;
@@ -366,10 +315,8 @@ const ReplyContent = styled.span`
   }
 `;
 const ChatContentClap = styled.div`
-  //margin-top: 10px;
   display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-  //z-index: 2;
 
   .chat-content {
     width: 100%;
@@ -407,14 +354,12 @@ const ChatContent = styled.div`
     `}
 
   .reply-author {
-    // padding: ${(props) => (props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px")};
     ${(props) => (props.isAuthor ? "margin-left: 30px" : "margin-right: 30px")};
   }
   .reply-content {
     clear: both;
     width: 100%;
     display: block;
-    // ${(props) => (props.isAuthor ? "margin-left: 30px" : "margin-right: 30px")};
 
     p {
       overflow: hidden;
@@ -469,19 +414,15 @@ const ChatContent = styled.div`
 `;
 
 const ChatTimeStamp = styled.div`
-  // position: absolute;
-  // left: ${(props) => (props.isAuthor ? "5px" : "unset")};
-  // right: ${(props) => (props.isAuthor ? "unset" : "5px")};
   color: #676767;
   display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
   .reply-date {
     margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 10px")};
+    flex-flow: column;
+    justify-content: center;
   }
   .reply-date.updated {
-    // -webkit-transition: all 0.2s ease-in-out;
-    // -o-transition: all 0.2s ease-in-out;
-    // transition: all 0.2s ease-in-out;
     > span:last-child {
       display: none;
     }
@@ -555,6 +496,7 @@ const ChatBubble = (props) => {
   });
 
   const hasFiles = reply.files.length > 0;
+  const hasRemoveOnDlFiles = reply.files.some((f) => f.remove_on_download);
 
   const refs = {
     container: useRef(null),
@@ -572,7 +514,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -581,7 +523,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -644,8 +586,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteClick = useCallback(
     (e) => {
-      if (reply.quote.channel_id) {
-      } else {
+      if (reply.quote) {
         let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
         if (el) {
           el.scrollIntoView({
@@ -672,6 +613,7 @@ const ChatBubble = (props) => {
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
       theme={chatSettings.chat_message_theme}
       hasGif={showGifPlayer}
+      hasRemoveOnDlFiles={hasRemoveOnDlFiles}
     >
       {
         <>
@@ -714,16 +656,17 @@ const ChatBubble = (props) => {
                   <QuoteContent ref={handleQuoteContentRef} className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
-              {
-                // !isAuthor && showAvatar && (
-                //   <>
-                //     {isBot === true && <GrippBotIcon icon={"gripp-bot"} />}
-                //     {/* @todo reply.message_from.name and reply.user.name issue
-                //                    <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
-                //   </>
-                // )
-              }
-              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} reply={reply} type="chat" />}
+              {reply.files.length > 0 && !reply.is_deleted && (
+                <ChatMessageFiles
+                  hasMessage={hasMessage}
+                  isAuthor={isAuthor}
+                  theme={chatSettings.chat_message_theme}
+                  files={reply.files}
+                  reply={reply}
+                  type="chat"
+                  topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null}
+                />
+              )}
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
@@ -745,11 +688,8 @@ const ChatBubble = (props) => {
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
             <span className="reply-date created">
-              {/* <span className="star-wrap mr-2">
-                <SvgIconFeather className={`${reply.i_starred ? "active" : ""}`} icon="star" />
-                {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-              </span> */}
               <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+              {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
             </span>
           </ChatTimeStamp>
         </>

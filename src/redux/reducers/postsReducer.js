@@ -1,4 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   user: {},
@@ -455,21 +456,22 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "ADD_TO_WORKSPACE_POSTS": {
-      let convertedPosts = convertArrayToObject(action.data.posts, "id");
-      let postDrafts = [];
-      if (state.drafts.length) {
-        postDrafts = convertArrayToObject(postDrafts, "post_id");
-      }
-      return {
-        ...state,
-        posts: {
-          ...state.posts,
-          ...convertedPosts,
-          ...postDrafts,
-        },
-      };
-    }
+    // need to review
+    // case "ADD_TO_WORKSPACE_POSTS": {
+    //   let convertedPosts = convertArrayToObject(action.data.posts, "id");
+    //   let postDrafts = [];
+    //   if (state.drafts.length) {
+    //     postDrafts = convertArrayToObject(postDrafts, "post_id");
+    //   }
+    //   return {
+    //     ...state,
+    //     posts: {
+    //       ...state.posts,
+    //       ...convertedPosts,
+    //       ...postDrafts,
+    //     },
+    //   };
+    // }
     case "GET_DRAFTS_SUCCESS": {
       let drafts = action.data
         .filter((d) => d.data.type === "draft_post")
@@ -1077,6 +1079,60 @@ export default (state = INITIAL_STATE, action) => {
                 user_reads: action.data.user_reads,
               },
             }),
+          },
+        },
+      };
+    }
+    case "SET_POST_COMMENT_TYPE": {
+      return {
+        ...state,
+        commentType: action.data,
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.files.reduce((res, obj) => {
+              if (obj.post_id && state.companyPosts.posts[obj.post_id]) {
+                const files_trashed =
+                  state.companyPosts.posts[obj.post_id].files.length === 0
+                    ? []
+                    : state.companyPosts.posts[obj.post_id].files
+                        .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                        .map((f) => {
+                          return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                        });
+                res[obj.post_id] = {
+                  ...state.companyPosts.posts[obj.post_id],
+                  files: state.companyPosts.posts[obj.post_id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                  files_trashed: files_trashed,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              if (post.files.some((f) => f.file_id === action.data.file_id)) {
+                res[post.id] = { ...state.companyPosts.posts[post.id], files: state.companyPosts.posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
+              } else {
+                res[post.id] = { ...state.companyPosts.posts[post.id] };
+              }
+              return res;
+            }, {}),
           },
         },
       };

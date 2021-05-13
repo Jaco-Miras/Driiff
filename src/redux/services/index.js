@@ -165,6 +165,7 @@ export {
   putCompanyRestoreFolder,
   getCompanyGoogleAttachmentsFile,
   getCompanyGoogleAttachmentsFolder,
+  removeFileDownload,
 } from "./files";
 
 export {
