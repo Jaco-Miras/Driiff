@@ -152,7 +152,7 @@ const MainSidebarLinks = (props) => {
             <NavIcon icon={"calendar"} />
             <div>{dictionary.todoLinks}</div>
             {/* <div>{count.overdue !== 0 && <Badge>&nbsp;</Badge>}</div> */}
-            {reminderCount && <Badge className={"badge badge-primary badge-pill ml-1"}>{reminderCount > 99 ? "99+" : reminderCount}</Badge>}
+            {/* {reminderCount && <Badge className={"badge badge-primary badge-pill ml-1"}>{reminderCount > 99 ? "99+" : reminderCount}</Badge>} */}
           </NavIconContainer>
         </li>
         <li onClick={closeLeftNav}>
