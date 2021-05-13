@@ -1295,7 +1295,13 @@ export default function (state = INITIAL_STATE, action) {
                 ...state.channels[action.data.channel.id],
                 ...(action.data.system_message && {
                   replies: [
-                    ...state.channels[action.data.channel.id].replies,
+                    ...state.channels[action.data.channel.id].replies.filter((r) => {
+                      if (r.body.startsWith("POST_CREATE::")) {
+                        return false;
+                      } else {
+                        return true;
+                      }
+                    }),
                     {
                       ...action.data.system_message,
                       created_at: action.data.updated_at,
@@ -1345,7 +1351,13 @@ export default function (state = INITIAL_STATE, action) {
               ...state.selectedChannel,
               ...(action.data.system_message && {
                 replies: [
-                  ...state.channels[action.data.channel.id].replies,
+                  ...state.channels[action.data.channel.id].replies.filter((r) => {
+                    if (r.body.startsWith("POST_CREATE::")) {
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  }),
                   {
                     ...action.data.system_message,
                     created_at: action.data.updated_at,
