@@ -75,7 +75,7 @@ const ReplyPreview = (props) => {
   let lastReplyBody = "";
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
@@ -176,7 +176,6 @@ const ReplyPreview = (props) => {
             {hasUnRead && <Badge className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>}
           </>
         )}
-        {channel.is_pinned && <Icon icon="star" />}
         {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
       </div>
     </Wrapper>

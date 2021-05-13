@@ -5,6 +5,7 @@ import { uniqByProp } from "../../helpers/arrayHelper";
 /** Initial State  */
 const INITIAL_STATE = {
   user: null,
+  companyChannel: null,
   channels: {},
   selectedChannel: null,
   startNewChannels: {},
@@ -283,6 +284,7 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           [action.data.id]: channel,
         },
+        companyChannel: state.companyChannel && state.companyChannel.id === action.data.id ? { ...state.companyChannel, ...action.data } : state.companyChannel,
         selectedChannel: state.selectedChannel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
       };
     }
@@ -2108,6 +2110,31 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         searchArchivedChannels: action.data,
+      };
+    }
+    case "GET_COMPANY_CHANNEL_SUCCESS": {
+      return {
+        ...state,
+        companyChannel: action.data,
+      };
+    }
+    case "UPDATE_COMPANY_CHANNEL": {
+      return {
+        ...state,
+        companyChannel: {
+          ...state.companyChannel,
+          ...action.data,
+        },
+        channels: {
+          ...state.channels,
+          ...(state.channels[action.data.id] && {
+            [action.data.id]: {
+              ...state.channels[action.data.id],
+              ...action.data,
+            },
+          }),
+        },
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, ...action.data } : state.selectedChannel,
       };
     }
     default:

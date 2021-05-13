@@ -6,6 +6,7 @@ import { SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { CompanyPageHeaderPanel } from "../company";
 import { useTranslation } from "../../hooks";
+import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -104,6 +105,20 @@ const CompanyName = styled.h2`
   }
 `;
 
+const StarIcon = styled(SvgIconFeather)`
+  height: 1rem;
+  width: 1rem;
+  cursor: pointer;
+  ${(props) =>
+    props.isFavorite &&
+    `
+    color: rgb(255, 193, 7)!important;
+    fill: rgb(255, 193, 7);
+    :hover {
+      color: rgb(255, 193, 7);
+    }`}
+`;
+
 const CompanyHeaderPanel = () => {
   const match = useRouteMatch();
 
@@ -114,6 +129,7 @@ const CompanyHeaderPanel = () => {
     },
   } = useSelector((state) => state.settings);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const companyChannel = useSelector((state) => state.chat.companyChannel);
   const { _t } = useTranslation();
 
   const dictionary = {
@@ -142,6 +158,23 @@ const CompanyHeaderPanel = () => {
   const handleMenuOpenMobile = (e) => {
     e.preventDefault();
     document.body.classList.add("navigation-show");
+  };
+
+  const handleFavoriteCompany = () => {
+    if (companyChannel) {
+      let payload = {
+        id: companyChannel.id,
+        is_pinned: !companyChannel.is_pinned,
+        is_muted: companyChannel.is_muted,
+        is_archived: companyChannel.is_archived,
+      };
+      dispatch(
+        putChannel(payload, (err, res) => {
+          if (err) return;
+          dispatch(updateCompanyChannel(payload));
+        })
+      );
+    }
   };
 
   const renderMainTitle = () => {
@@ -190,6 +223,7 @@ const CompanyHeaderPanel = () => {
         return (
           <>
             <SvgIconFeather className="mr-2" icon="home" /> <CompanyName>{driff.company_name}</CompanyName>
+            <StarIcon className="mr-2" icon="star" onClick={handleFavoriteCompany} isFavorite={companyChannel && companyChannel.is_pinned} />
           </>
         );
       }
