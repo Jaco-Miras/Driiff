@@ -42,6 +42,11 @@ const Wrapper = styled.div`
     }
   }
   .chat-header-right {
+    @media (max-width: 414px) {
+      .nav {
+        display: flex;
+      }
+    }
     margin-left: auto;
     ul {
       flex-flow: row;
@@ -128,9 +133,9 @@ const StyledMoreOptions = styled(MoreOptions)`
     }
   }
 
-  @media (max-width: 480px) {
-    margin: 0 0 0.75rem !important;
-  }
+  // @media (max-width: 480px) {
+  //   margin: 0 0 0.75rem !important;
+  // }
 `;
 
 const StyledBadge = styled.div`
@@ -358,7 +363,7 @@ const ChatHeaderPanel = (props) => {
               <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
             </li>
           )}
-          <li className="ml-2 d-sm-inline d-none">
+          <li className="ml-2">
             <StyledMoreOptions role="tabList">
               {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
               {channel.tyope === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
