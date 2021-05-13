@@ -115,13 +115,13 @@ const Wrapper = styled.div`
       width: 7px;
       height: 7px;
       padding: 0;
-      background: #a6c;
+      background: #28a745;
       right: -12px;
       top: -12px;
       z-index: 9;
-      .dark & {
-        background: #7a1b8b;
-      }
+      // .dark & {
+      //   background: #7a1b8b;
+      // }
     }
   }
   .navigation-menu-group {
