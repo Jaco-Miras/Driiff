@@ -5,6 +5,7 @@ import { SvgIconFeather } from "../common";
 
 const Wrapper = styled.div`
   display: flex;
+  padding-top: 5px;
   margin-bottom: 15px;
   cursor: pointer;
   .feather-star {
