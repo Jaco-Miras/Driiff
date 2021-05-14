@@ -165,7 +165,7 @@ const TodosList = (props) => {
         >
           {todo.workspace && (
             <div className="text-truncate false mt-2">
-                <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
+              <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
             </div>
           )}
           <span className="d-flex justify-content-between w-100 align-items-center">
@@ -198,12 +198,24 @@ const TodosList = (props) => {
                 </ToolTip>
                 {todo.link_type !== null && <span className={"badge mr-3 badge-light"}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
-                  <Avatar key={todo.author.id} name={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+                  <Avatar
+                    key={todo.author.id}
+                    name={todo.author.name}
+                    tooltipName={dictionary.reminderAuthor}
+                    imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link}
+                    id={todo.author.id}
+                  />
                 )}
                 {todo.assigned_to && todo.assigned_to.id !== todo.author.id && (
                   <>
-                   <Icon icon="chevron-right" />
-                  <Avatar key={todo.assigned_to.id} name={dictionary.reminderAssignedTo} imageLink={todo.assigned_to.profile_image_thumbnail_link ? todo.assigned_to.profile_image_thumbnail_link : todo.assigned_to.profile_image_link} id={todo.assigned_to.id} />
+                    <Icon icon="chevron-right" />
+                    <Avatar
+                      key={todo.assigned_to.id}
+                      name={todo.assigned_to.name}
+                      tooltipName={dictionary.reminderAssignedTo}
+                      imageLink={todo.assigned_to.profile_image_thumbnail_link ? todo.assigned_to.profile_image_thumbnail_link : todo.assigned_to.profile_image_link}
+                      id={todo.assigned_to.id}
+                    />
                   </>
                 )}
               </span>

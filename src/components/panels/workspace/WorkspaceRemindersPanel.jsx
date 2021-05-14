@@ -4,7 +4,7 @@ import { useWorkspaceReminders, useTranslation } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 
 const Wrapper = styled.div`
-overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")} ;
+  overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
   text-align: left;
   .app-sidebar-menu {
     overflow: hidden;
@@ -47,7 +47,7 @@ const TodosPanel = (props) => {
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
     actionFilter: _t("REMINDER.ACTION_FILTER", "Filter"),
     reminderAuthor: _t("REMINDER.AUTHOR", "Author"),
-    reminderAssignedTo: _t("REMINDER.ASSIGNED_TO", "Assigned to")
+    reminderAssignedTo: _t("REMINDER.ASSIGNED_TO", "Assigned to"),
   };
 
   const [filter, setFilter] = useState("");

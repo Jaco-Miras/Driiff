@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
+//import { SvgEmptyState } from "../../common";
 //import { useHistory } from "react-router-dom";
 import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../hooks";
 // import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
@@ -59,7 +59,7 @@ const Wrapper = styled.div`
 `;
 
 const ListGroup = styled.ul`
- list-style:none;
+  list-style: none;
   background: transparent;
   .list-group-item:last-child {
     border-bottom: none;
@@ -99,9 +99,9 @@ const EmptyState = styled.div`
   }
 `;
 
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
-`;
+// const Icon = styled(SvgIconFeather)`
+//   width: 16px;
+// `;
 
 const DivContainer = styled.div`
   padding-top: 15px;
@@ -157,19 +157,19 @@ const SpanTitle = styled.span`
 const TodosBody = (props) => {
   const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
 
-  const config = {
-    angle: 90,
-    spread: 360,
-    startVelocity: 40,
-    elementCount: 70,
-    dragFriction: 0.12,
-    duration: 3000,
-    stagger: 3,
-    width: "10px",
-    height: "10px",
-    perspective: "500px",
-    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-  };
+  // const config = {
+  //   angle: 90,
+  //   spread: 360,
+  //   startVelocity: 40,
+  //   elementCount: 70,
+  //   dragFriction: 0.12,
+  //   duration: 3000,
+  //   stagger: 3,
+  //   width: "10px",
+  //   height: "10px",
+  //   perspective: "500px",
+  //   colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
+  // };
 
   const refs = {
     files: useRef(null),
@@ -214,20 +214,20 @@ const TodosBody = (props) => {
     }
   }, [refs.files.current]);
 
-  const getTodoStatus = (todo) => {
-    switch (todo.status) {
-      case "OVERDUE":
-        return dictionary.statusOverdue;
-      case "TODAY":
-        return dictionary.statusUpcomingToday;
-      case "NEW":
-        return dictionary.statusUpcoming;
-      case "DONE":
-        return dictionary.statusDone;
-      default:
-        return "";
-    }
-  };
+  // const getTodoStatus = (todo) => {
+  //   switch (todo.status) {
+  //     case "OVERDUE":
+  //       return dictionary.statusOverdue;
+  //     case "TODAY":
+  //       return dictionary.statusUpcomingToday;
+  //     case "NEW":
+  //       return dictionary.statusUpcoming;
+  //     case "DONE":
+  //       return dictionary.statusDone;
+  //     default:
+  //       return "";
+  //   }
+  // };
 
   const [activeTitles, setActiveTitles] = useState({});
 
@@ -287,7 +287,7 @@ const TodosBody = (props) => {
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
-      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px", 'overflow' :'unset' }}>
+      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px", overflow: "unset" }}>
         {!isLoaded ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
         ) : todoItems.length || getDone.length ? (
