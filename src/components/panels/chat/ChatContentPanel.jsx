@@ -214,6 +214,7 @@ const ChatContentPanel = (props) => {
           isIdle={isIdle}
           translate={translate}
           language={language}
+          _t={_t}
         />
       ) : (
         <ChatMessagesPlaceholder />
