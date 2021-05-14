@@ -63,12 +63,12 @@ const NavIconContainer = styled(NavLink)`
 `;
 
 const MainSidebarLinks = (props) => {
-  const { count, dictionary, isExternal, driffSettings, user, updateCompanyName } = props;
+  const { dictionary, isExternal, driffSettings, user, updateCompanyName } = props;
 
   const params = useParams();
   const location = useLocation();
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [companyName, setCompanyName] = useState(driffSettings.company_name);
   const [editCompany, setEditCompany] = useState(false);
 
@@ -116,12 +116,12 @@ const MainSidebarLinks = (props) => {
     }
   };
 
-  const unreadCount = Object.keys(unreadCounter)
-    .filter((k) => k !== "chat_reminder_message")
-    .reduce((total, k) => {
-      total += unreadCounter[k];
-      return total;
-    }, 0);
+  // const unreadCount = Object.keys(unreadCounter)
+  //   .filter((k) => k !== "chat_reminder_message")
+  //   .reduce((total, k) => {
+  //     total += unreadCounter[k];
+  //     return total;
+  //   }, 0);
 
   return (
     <Wrapper className="flex navigation-menu-tab-header-options">
