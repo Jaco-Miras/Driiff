@@ -123,7 +123,7 @@ const MainSidebarLinks = (props) => {
   //     return total;
   //   }, 0);
 
-  const reminderCount = count.today + count.overdue;
+  //const reminderCount = count.today + count.overdue;
 
   return (
     <Wrapper className="flex navigation-menu-tab-header-options">
