@@ -177,6 +177,7 @@ const ChatContentPanel = (props) => {
     chatArchiveConfirmation: _t("CHAT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this channel?"),
     headerArchive: _t("HEADER.ARCHIVE", "Chat archive"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
+    clickHereToJoin: _t("CHAT.CLICK_HERE_TO_JOIN", "Click here to join"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));

@@ -357,7 +357,7 @@ const ChatFooterPanel = (props) => {
       type: "confirmation",
       cancelText: dictionary.no,
       headerText: dictionary.googleMeet,
-      submitText: devicePixelRatio.yes,
+      submitText: dictionary.yes,
       bodyText: dictionary.googleMeetConfirmation,
       actions: {
         onSubmit: handleStartGoogleMeet,
