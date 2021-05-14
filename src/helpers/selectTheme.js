@@ -20,6 +20,7 @@ export const selectTheme = {
       borderColor: state.isFocused ? "#000000" : "#000000",
     },
   }),
+  menu: provided => ({ ...provided, zIndex: 9999 })
 };
 
 export const lightTheme = {
@@ -44,6 +45,7 @@ export const lightTheme = {
       borderColor: state.isFocused ? "#7a1b8b" : "#cccccc",
     },
   }),
+  menu: provided => ({ ...provided, zIndex: 9999 })
 };
 
 export const darkTheme = {
@@ -60,13 +62,13 @@ export const darkTheme = {
   }),
   control: (provided, state) => ({
     ...provided,
-    borderColor: state.isFocused ? "#7a1b8b" : "#ffffff14",
+    borderColor: state.isFocused ? "#7a1b8b" : "#ffffff",
     boxShadow: state.isFocused ? 0 : 0,
     backgroundColor: "#111417",
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      borderColor: state.isFocused ? "#7a1b8b" : "#ffffff14",
+      borderColor: state.isFocused ? "#7a1b8b" : "#ffffff",
     },
   }),
   multiValue: (provided, state) => ({
@@ -87,9 +89,11 @@ export const darkTheme = {
   menu: (provided) => ({
     ...provided,
     backgroundColor: "#111417",
+    zIndex: 9999 
   }),
   dropdownItem: (provided) => ({
     ...provided,
     backgroundColor: "red",
   }),
+
 };

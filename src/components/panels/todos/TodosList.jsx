@@ -39,7 +39,7 @@ const ItemList = styled.li`
     border-left: none;
     border-right: none;
     border-top: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom: 1px solid #ebebeb;
     .dark & {
       border-color: rgba(155, 155, 155, 0.1);
     }
@@ -163,11 +163,16 @@ const TodosList = (props) => {
             else todoActions.updateFromModal(todo);
           }}
         >
+          {todo.workspace && (
+            <div className="text-truncate false mt-2">
+                <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
+            </div>
+          )}
           <span className="d-flex justify-content-between w-100 align-items-center">
             <span className="d-inline-flex overflow-hidden w-100 mr-3">
               <span className="custom-control custom-checkbox mr-2">
                 <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
-                  <TodoCheckBox name="test" checked={isDone} onClick={handleDoneClick} />
+                  <TodoCheckBox checked={isDone} onClick={handleDoneClick} />
                 </ToolTip>
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
@@ -193,7 +198,13 @@ const TodosList = (props) => {
                 </ToolTip>
                 {todo.link_type !== null && <span className={"badge mr-3 badge-light"}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (
-                  <Avatar key={todo.author.id} name={todo.author.name} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+                  <Avatar key={todo.author.id} name={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+                )}
+                {todo.assigned_to && (
+                  <>
+                   <Icon icon="chevron-right" />
+                  <Avatar key={todo.assigned_to.id} name={dictionary.reminderAssignedTo} imageLink={todo.assigned_to.profile_image_thumbnail_link ? todo.assigned_to.profile_image_thumbnail_link : todo.assigned_to.profile_image_link} id={todo.assigned_to.id} />
+                  </>
                 )}
               </span>
             </span>

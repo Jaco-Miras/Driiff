@@ -381,22 +381,22 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: {
-            ...state.todos.count,
-            [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1,
-          },
+          // count: {
+          //   ...state.todos.count,
+          //   [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1,
+          // },
           items: items,
         },
       };
     }
     case "INCOMING_UPDATE_TO_DO": {
       let items = state.todos.items;
-      let count = state.todos.count;
+      //let count = state.todos.count;
       if (typeof items[action.data.id] !== "undefined") {
-        if (items[action.data.id].status !== action.data.status) {
-          count[action.data.status.toLowerCase()] += 1;
-          count[items[action.data.id].status.toLowerCase()] -= 1;
-        }
+        // if (items[action.data.id].status !== action.data.status) {
+        //   count[action.data.status.toLowerCase()] += 1;
+        //   count[items[action.data.id].status.toLowerCase()] -= 1;
+        // }
 
         items[action.data.id] = {
           ...items[action.data.id],
@@ -407,20 +407,20 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          //count: count,
           items: items,
         },
       };
     }
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
-      let count = state.todos.count;
+      //let count = state.todos.count;
       let item = null;
 
       if (typeof items[action.data.id] !== "undefined") {
         if (items[action.data.id].status !== action.data.status) {
-          count[action.data.status.toLowerCase()] += 1;
-          count[items[action.data.id].status.toLowerCase()] -= 1;
+          // count[action.data.status.toLowerCase()] += 1;
+          // count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
         item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at };
@@ -431,7 +431,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          //count: count,
           items: items,
           doneRecently: [...state.todos.doneRecently, item],
         },
@@ -439,10 +439,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_REMOVE_TO_DO": {
       let items = state.todos.items;
-      let count = state.todos.count;
+      //let count = state.todos.count;
 
       if (typeof items[action.data.todo_id] !== "undefined") {
-        count[items[action.data.todo_id].status.toLowerCase()] -= 1;
+        //count[items[action.data.todo_id].status.toLowerCase()] -= 1;
 
         delete items[action.data.todo_id];
       }
@@ -450,7 +450,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          //count: count,
           items: items,
         },
       };

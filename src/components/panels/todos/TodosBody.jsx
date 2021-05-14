@@ -263,7 +263,7 @@ const TodosBody = (props) => {
           return (
             <DivContainer key={items} dark={dark_mode}>
               <div style={{ "padding-left": "20px", "padding-right": "0px" }}>
-                <h6 className=" mb-0 font-size-11 text-uppercase">
+                <h6 className=" mb-0 font-size-11 text-uppercase ml-1">
                   <SpanTitle className={`badge  ${dark_mode === "1" && "badge-light"} `} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
                     <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
                     {items}

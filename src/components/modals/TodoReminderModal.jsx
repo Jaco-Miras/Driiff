@@ -509,17 +509,21 @@ const TodoReminderModal = (props) => {
               <div className="col-12">
                 <StyledQuillEditor defaultValue={form.description.value} onChange={handleQuillChange} name="description" />
               </div>
-              <div className="col-12 modal-label">Workspace</div>
-              <WorkspacesContainer className="col-12 mb-2">
-                <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
-              </WorkspacesContainer>
+            </div>
+            <div className="column clearfix">
+              <div className="col-lg-6 float-left">
+                <div className="modal-label">Workspace</div>
+                <WorkspacesContainer className="mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                </WorkspacesContainer>
+              </div>
               {selectedWorkspace && (
-                <>
-                  <div className="col-12 modal-label">Assign to</div>
-                  <SelectedUserContainer className="col-12 mb-2">
+                <div className="col-lg-6 float-left">
+                  <div className="modal-label">Assign to</div>
+                  <SelectedUserContainer className="mb-2">
                     <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
                   </SelectedUserContainer>
-                </>
+                </div>
               )}
             </div>
           </>
@@ -537,17 +541,19 @@ const TodoReminderModal = (props) => {
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
                 <FileAttachments attachedFiles={item.files} showDelete={false} />
               </div>
-              <div className="col-12 modal-label">Workspace</div>
-              <WorkspacesContainer className="col-12 mb-2">
-                <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
-              </WorkspacesContainer>
+              <div className="col-6">
+                <div className="modal-label">Workspace</div>
+                <WorkspacesContainer className=" mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                </WorkspacesContainer>
+              </div>
               {selectedWorkspace && (
-                <>
-                  <div className="col-12 modal-label">Assign to</div>
-                  <SelectedUserContainer className="col-12 mb-2">
+                <div className="col-6">
+                  <div className="modal-label">Assign to</div>
+                  <SelectedUserContainer className="mb-2">
                     <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
                   </SelectedUserContainer>
-                </>
+                </div>
               )}
             </div>
           </>
@@ -565,17 +571,21 @@ const TodoReminderModal = (props) => {
                 <MessageFiles isAuthor={item.user.id === user.id} files={item.files} reply={item} type="chat" />
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
               </div>
-              <div className="col-12 modal-label">Workspace</div>
-              <WorkspacesContainer className="col-12 mb-2">
-                <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
-              </WorkspacesContainer>
+            </div>
+            <div className="column clearfix">
+              <div className="col-6">
+                <div className="modal-label">Workspace</div>
+                <WorkspacesContainer className="mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                </WorkspacesContainer>
+              </div>
               {selectedWorkspace && (
-                <>
-                  <div className="col-12 modal-label">Assign to</div>
-                  <SelectedUserContainer className="col-12 mb-2">
+                <div className="col-6">
+                  <div className="modal-label">Assign to</div>
+                  <SelectedUserContainer className="mb-2">
                     <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
                   </SelectedUserContainer>
-                </>
+                </div>
               )}
             </div>
           </>
@@ -593,22 +603,26 @@ const TodoReminderModal = (props) => {
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
                 <FileAttachments attachedFiles={item.files} showDelete={false} />
               </div>
-              <div className="col-12 modal-label">Workspace</div>
-              <WorkspacesContainer className="col-12 mb-2">
-                <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
-              </WorkspacesContainer>
+            </div>
+            <div className="column clearfix">
+              <div className="col-6">
+                <div className="modal-label">Workspace</div>
+                <WorkspacesContainer className="mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                </WorkspacesContainer>
+              </div>
               {selectedWorkspace && (
-                <>
-                  <div className="col-12 modal-label">Assign to</div>
-                  <SelectedUserContainer className="col-12 mb-2">
+                <div className="col-6">
+                  <div className="modal-label">Assign to</div>
+                  <SelectedUserContainer className="mb-2">
                     <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
                   </SelectedUserContainer>
-                </>
+                </div>
               )}
             </div>
           </>
         )}
-        <RadioInputContainer className="column mt-3">
+        <RadioInputContainer className="column mt-2">
           <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
           <div className="col-12 mb-3">
             <InputContainer>
@@ -667,7 +681,7 @@ const TodoReminderModal = (props) => {
           {dictionary.snooze}
         </Button>{" "}
       </ModalFooter>
-    </Wrapper>
+    </Wrapper >
   );
 };
 

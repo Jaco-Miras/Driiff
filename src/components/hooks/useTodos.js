@@ -28,6 +28,9 @@ const useTodos = (fetchTodosOnMount = false) => {
     );
   };
 
+  // count.new = 0;
+  // count.today = 0;
+
   const getReminders = ({ filter = "" }) => {
     return Object.values(items)
       .map((t) => {

@@ -47,6 +47,8 @@ const TodosPanel = (props) => {
     actionMarkAsUndone: _t("REMINDER.ACTION_MARK_AS_UNDONE", "Mark as not done"),
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
     actionFilter: _t("REMINDER.ACTION_FILTER", "Filter"),
+    reminderAuthor: _t("REMINDER.AUTHOR", "Author"),
+    reminderAssignedTo: _t("REMINDER.ASSIGNED_TO", "Assigned to")
   };
 
   const [filter, setFilter] = useState("");
