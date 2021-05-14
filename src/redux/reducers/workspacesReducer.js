@@ -156,6 +156,7 @@ export default (state = INITIAL_STATE, action) => {
             folder_name: null,
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
