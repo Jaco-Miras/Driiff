@@ -4,16 +4,21 @@ import { useWorkspaceReminders, useTranslation } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 
 const Wrapper = styled.div`
-  overflow-y: auto;
-  overflow-x: hidden;
+overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")} ;
   text-align: left;
   .app-sidebar-menu {
     overflow: hidden;
     outline: currentcolor none medium;
   }
+  .app-block {
+    overflow: unset !important;
+    height: ${(props) => (props.hasReminders ? "auto" : "100%")};
+  }
 `;
 
-const WorkspaceRemindersPanel = (props) => {
+const TodosPanel = (props) => {
+  const { className = "" } = props;
+
   const { getWorkspaceReminders, action: todoActions, isLoaded, count } = useWorkspaceReminders();
 
   const { _t } = useTranslation();
@@ -41,6 +46,8 @@ const WorkspaceRemindersPanel = (props) => {
     actionMarkAsUndone: _t("REMINDER.ACTION_MARK_AS_UNDONE", "Mark as not done"),
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
     actionFilter: _t("REMINDER.ACTION_FILTER", "Filter"),
+    reminderAuthor: _t("REMINDER.AUTHOR", "Author"),
+    reminderAssignedTo: _t("REMINDER.ASSIGNED_TO", "Assigned to")
   };
 
   const [filter, setFilter] = useState("");
@@ -60,11 +67,9 @@ const WorkspaceRemindersPanel = (props) => {
   };
 
   const reminders = getWorkspaceReminders({ filter: { status: filter, search: search } });
-
-  console.log(reminders);
   return (
-    <Wrapper className={"container-fluid h-100 fadeIn"}>
-      <div className="row app-block" style={{ oveflow: "inherit", height: reminders.length ? "auto" : "100%" }}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0}>
+      <div className="row app-block">
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
@@ -75,5 +80,4 @@ const WorkspaceRemindersPanel = (props) => {
     </Wrapper>
   );
 };
-
-export default WorkspaceRemindersPanel;
+export default React.memo(TodosPanel);

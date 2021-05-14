@@ -10,7 +10,8 @@ import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   flex: unset !important;
-  height: auto !important;
+  height:  100% !important;
+  overflow: unset !important;
   ${(props) =>
     props.active &&
     `
@@ -58,6 +59,7 @@ const Wrapper = styled.div`
 `;
 
 const ListGroup = styled.ul`
+ list-style:none;
   background: transparent;
   .list-group-item:last-child {
     border-bottom: none;
@@ -285,7 +287,7 @@ const TodosBody = (props) => {
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
-      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px" }}>
+      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px", 'overflow' :'unset' }}>
         {!isLoaded ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
         ) : todoItems.length || getDone.length ? (
@@ -303,11 +305,8 @@ const TodosBody = (props) => {
                   </h6>
                 </div>
                 <EmptyState>
-                  <SvgEmptyState icon={1} height={282} />
-                  <h5>{dictionary.emptyText}</h5>
-                  <button onClick={() => todoActions.createFromModal()} className="btn btn-primary">
-                    {dictionary.emptyButtonText}
-                  </button>
+                  <h3>{dictionary.noItemsFoundHeader}</h3>
+                  <h5>{dictionary.noItemsFoundText} </h5>
                 </EmptyState>
               </>
             ) : (

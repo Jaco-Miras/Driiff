@@ -4,15 +4,14 @@ import { useTodos, useTranslation } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 
 const Wrapper = styled.div`
-  overflow-y: auto;
-  overflow-x: hidden;
+overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")} ;
   text-align: left;
   .app-sidebar-menu {
     overflow: hidden;
     outline: currentcolor none medium;
   }
   .app-block {
-    overflow: inherit;
+    overflow: unset !important;
     height: ${(props) => (props.hasReminders ? "auto" : "100%")};
   }
 `;
@@ -68,7 +67,6 @@ const TodosPanel = (props) => {
   };
 
   const reminders = getReminders({ filter: { status: filter, search: search } });
-
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0}>
       <div className="row app-block">
