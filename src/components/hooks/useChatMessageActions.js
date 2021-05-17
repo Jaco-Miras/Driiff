@@ -18,7 +18,7 @@ import {
   setEditHuddleAnswers,
   setTranslatedBody,
 } from "../../redux/actions/chatActions";
-import { useToaster, useTodoActions } from "./index";
+import { useToaster, useTodoActions, useTranslation } from "./index";
 import useChannelActions from "./useChannelActions";
 import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
 
@@ -28,6 +28,13 @@ const useChatMessageActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const todoActions = useTodoActions();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
+  };
 
   const refs = {
     fetch: useRef(false),
@@ -285,14 +292,18 @@ const useChatMessageActions = () => {
       const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForChat(message.id, payload, (err, res) => {
           if (err) {
-            toaster.error("An error has occurred try again!");
+            if (err.response && err.response.data && err.response.data.errors) {
+              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+                toaster.error(dictionary.reminderAlreadyExists);
+              } else {
+                toaster.error(dictionary.toasterGeneraError);
+              }
+            } else {
+              toaster.error(dictionary.toasterGeneraError);
+            }
           }
           if (res) {
-            toaster.success(
-              <>
-                You will be reminded about this chat message under <b>To-dos & Reminders</b>.
-              </>
-            );
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
           }
           modalCallback(err, res);
           callback(err, res);
