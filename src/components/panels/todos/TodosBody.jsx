@@ -209,7 +209,6 @@ const TodosBody = (props) => {
         folder_id: todo.folder ? todo.folder.id : null,
         folder_name: todo.folder ? todo.folder.name : null,
       };
-
       redirect.toPost({ workspace, post });
     }
   };
