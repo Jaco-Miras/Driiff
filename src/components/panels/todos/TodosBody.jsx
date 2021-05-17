@@ -199,6 +199,18 @@ const TodosBody = (props) => {
     e.preventDefault();
     if (todo.link_type === "CHAT") {
       redirect.toChat(todo.data.channel, todo.data.chat_message);
+    } else {
+      let post = {
+        id: todo.link_id,
+        title: todo.title,
+      };
+      let workspace = {
+        ...todo.workspace,
+        folder_id: todo.folder ? todo.folder.id : null,
+        folder_name: todo.folder ? todo.folder.name : null,
+      };
+
+      redirect.toPost({ workspace, post });
     }
   };
 
