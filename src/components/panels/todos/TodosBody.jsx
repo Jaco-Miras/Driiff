@@ -201,7 +201,7 @@ const TodosBody = (props) => {
       redirect.toChat(todo.data.channel, todo.data.chat_message);
     } else {
       let post = {
-        id: todo.link_id,
+        id: todo.link_type === "POST_COMMENT" && todo.data ? todo.data.post.id : todo.link_id,
         title: todo.title,
       };
       let workspace = {

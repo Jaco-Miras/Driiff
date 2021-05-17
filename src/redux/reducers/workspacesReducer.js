@@ -3086,8 +3086,9 @@ export default (state = INITIAL_STATE, action) => {
               return res;
             }, {}),
           },
-        }
-      }
+        },
+      };
+    }
     default:
       return state;
   }
