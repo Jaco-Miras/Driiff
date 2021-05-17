@@ -28,10 +28,16 @@ export const stripHtml = (html) => {
   // return html.replace(/(<([^>]+)>)/gi, "")
 };
 
-export const stripGif = (html) => {
-  let gifUrls = html.match(FindGifRegex);
+export const stripImgGif = (html) => {
+  return html.replace(/<[/]?img src="(.*?gif)[^>]*>/gi, "");
+};
 
-  if (!gifUrls) return html;
+export const stripGif = (html) => {
+  let value = stripImgGif(html);
+
+  let gifUrls = value.match(FindGifRegex);
+
+  if (!gifUrls) return value;
 
   gifUrls.forEach((gifUrl) => {
     html = html.replace(gifUrl, "");
@@ -49,10 +55,6 @@ export const stripGif = (html) => {
 
 export const stripImgTag = (html) => {
   return html.replace(/<[/]?img[^>]*>/gi, "");
-};
-
-export const stripImgGif = (html) => {
-  return html.replace(/<[/]?img src="(.*?gif)"[^>]*>/gi, "");
 };
 
 export const parseEmojis = (value) => {

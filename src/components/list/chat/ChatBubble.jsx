@@ -5,7 +5,6 @@ import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
-import { stripGif } from "../../../helpers/stringFormatter";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
@@ -696,7 +695,7 @@ const ChatBubble = (props) => {
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
+                    dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
               )}
