@@ -169,7 +169,7 @@ const TodosList = (props) => {
             </div>
           )}
           <span className="d-flex justify-content-between w-100 align-items-center">
-            <span className="d-inline-flex overflow-hidden w-100 mr-3">
+            <span className="d-inline-flex overflow-hidden w-100 align-items-center mr-3">
               <span className="custom-control custom-checkbox mr-2">
                 <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
                   <TodoCheckBox checked={isDone} onClick={handleDoneClick} />
@@ -177,6 +177,7 @@ const TodosList = (props) => {
               </span>
               <span className="mr-3 d-grid justify-content-center align-items-center">
                 <span className={`todo-title mr-2 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.title}</span>
+                {(todo.link_type === "CHAT" || todo.link_type === "POST_COMMENT") && todo.data && <span dangerouslySetInnerHTML={{ __html: todo.description }} />}
                 {todo.files.map((file) => {
                   return (
                     <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>

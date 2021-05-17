@@ -298,11 +298,12 @@ const TodoReminderModal = (props) => {
     threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
     tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
     pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
-    snooze: _t("REMINDER.SNOOZE", "Remind me"),
+    //snooze: _t("REMINDER.SNOOZE", "Remind me"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
     feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
     feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
     reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
+    snooze: _t("REMINDER.REMIND", "Remind"),
   };
 
   if (itemType === null) {
