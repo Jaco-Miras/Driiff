@@ -11,6 +11,7 @@ const useRedirect = () => {
   const history = useHistory();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channels = useSelector((state) => state.chat.channels);
+  const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
 
   const fetchSelectChannel = useCallback(
@@ -32,36 +33,41 @@ const useRedirect = () => {
     history.push(`/chat/${channel.code}`);
   }, []);
 
-  const toChat = useCallback(
-    (cnl, message, callback) => {
-      console.log(cnl);
-      //history.push(`/chat/${channel.code}/${message.code}`);
-      let cb = () => {
+  const toChat = (cnl, message) => {
+    let cb = () => {
+      if (user.type === "external") {
+        let ws = Object.values(workspaces).find((ws) => ws.channel.id === cnl.id || (ws.team_channel && ws.team_channel.id === cnl.id));
+        if (ws) {
+          history.push({
+            pathname: ws.folder_id ? `/workspace/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/workspace/chat/${ws.id}/${ws.name}`,
+            state: { focusOn: message.code },
+          });
+        }
+      } else {
         history.push({
           pathname: `/chat/${cnl.code}/${message.code}`,
           state: { focusOn: message.code },
         });
-      };
-      if (channels.hasOwnProperty(cnl.id)) {
-        let channel = { ...channels[cnl.id] };
-        if (channel.replies.find((r) => r.id === message.id)) {
-          dispatch(setLastVisitedChannel(channel, cb));
-        } else {
-          let payload = {
-            channel_id: channel.id,
-            skip: 0,
-            before_chat_id: message.id,
-            limit: 10,
-          };
-          dispatch(getChatMessages(payload));
-          dispatch(setLastVisitedChannel(channel, cb));
-        }
-      } else {
-        fetchSelectChannel(cnl.code, cb);
       }
-    },
-    [channels, history]
-  );
+    };
+    if (channels.hasOwnProperty(cnl.id)) {
+      let channel = { ...channels[cnl.id] };
+      if (channel.replies.find((r) => r.id === message.id)) {
+        dispatch(setLastVisitedChannel(channel, cb));
+      } else {
+        let payload = {
+          channel_id: channel.id,
+          skip: 0,
+          before_chat_id: message.id,
+          limit: 10,
+        };
+        dispatch(getChatMessages(payload));
+        dispatch(setLastVisitedChannel(channel, cb));
+      }
+    } else {
+      fetchSelectChannel(cnl.code, cb);
+    }
+  };
 
   const toFiles = useCallback((file) => {
     console.log(file);
