@@ -189,6 +189,18 @@ const CommentBody = styled.div`
   }
 `;
 
+const CommentFilesTrashedContainer = styled.div`
+  h6 {
+    margin: 0;
+  }
+  .text-muted {
+    font-size: 0.75rem;
+  }
+  .file-attachments {
+    margin-top: 1rem;
+  }
+`;
+
 const CommentInput = styled(PostDetailFooter)``;
 
 const CompanyCommentInput = styled(CompanyPostDetailFooter)``;
@@ -569,7 +581,16 @@ const Comment = (props) => {
             <>
               <hr />
               <h6>{dictionary.files}</h6>
-              <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment} />
+              <FileAttachments attachedFiles={comment.files} type="comment" comment={comment} />
+            </>
+          )}
+          {comment.files_trashed && comment.files_trashed.length >= 1 && (
+            <>
+              <CommentFilesTrashedContainer>
+                <h6 className="font-size-11 text-uppercase">{dictionary.files}</h6>
+                <span className="text-muted">{dictionary.filesAutomaticallyRemoved}</span>
+                <FileAttachments attachedFiles={comment.files_trashed} type="comment" comment={comment} />
+              </CommentFilesTrashedContainer>
             </>
           )}
           <CommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} likers={likers} post={post} handleReaction={handleReaction} handleShowInput={handleShowInput} />

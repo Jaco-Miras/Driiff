@@ -5,6 +5,7 @@ import { uniqByProp } from "../../helpers/arrayHelper";
 /** Initial State  */
 const INITIAL_STATE = {
   user: null,
+  companyChannel: null,
   channels: {},
   selectedChannel: null,
   startNewChannels: {},
@@ -283,6 +284,7 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           [action.data.id]: channel,
         },
+        companyChannel: state.companyChannel && state.companyChannel.id === action.data.id ? { ...state.companyChannel, ...action.data } : state.companyChannel,
         selectedChannel: state.selectedChannel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
       };
     }
@@ -2108,6 +2110,151 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         searchArchivedChannels: action.data,
+      };
+    }
+    case "GET_COMPANY_CHANNEL_SUCCESS": {
+      return {
+        ...state,
+        companyChannel: action.data,
+      };
+    }
+    case "UPDATE_COMPANY_CHANNEL": {
+      return {
+        ...state,
+        companyChannel: {
+          ...state.companyChannel,
+          ...action.data,
+        },
+        channels: {
+          ...state.channels,
+          ...(state.channels[action.data.id] && {
+            [action.data.id]: {
+              ...state.channels[action.data.id],
+              ...action.data,
+            },
+          }),
+        },
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, ...action.data } : state.selectedChannel,
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...action.data.files.reduce((res, obj) => {
+            if (state.channels[obj.channel_id]) {
+              res[obj.channel_id] = {
+                ...state.channels[obj.channel_id],
+                replies: state.channels[obj.channel_id].replies.map((r) => {
+                  if (r.files.some((f) => f.file_id === obj.file_id)) {
+                    return {
+                      ...r,
+                      files: r.files.map((file) => {
+                        if (file.file_id === obj.file_id) {
+                          return {
+                            ...file,
+                            deleted_at: { timestamp: getCurrentTimestamp() },
+                            file_type: "trashed",
+                          };
+                        } else {
+                          return file;
+                        }
+                      }),
+                    };
+                  } else {
+                    return r;
+                  }
+                }),
+              };
+            }
+            return res;
+          }, {}),
+        },
+        selectedChannel:
+          state.selectedChannel && action.data.files.some((f) => f.channel_id === state.selectedChannel.id)
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.map((r) => {
+                  if (r.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
+                    return {
+                      ...r,
+                      files: r.files.map((file) => {
+                        if (action.data.files.some((f) => file.file_id === f.file_id)) {
+                          return {
+                            ...file,
+                            deleted_at: { timestamp: getCurrentTimestamp() },
+                            file_type: "trashed",
+                          };
+                        } else {
+                          return file;
+                        }
+                      }),
+                    };
+                  } else {
+                    return r;
+                  }
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
+      return {
+        ...state,
+        channels: {
+          ...Object.values(state.channels).reduce((res, channel) => {
+            res[channel.id] = {
+              ...channel,
+              replies: channel.replies.map((r) => {
+                if (r.files.some((f) => f.file_id === action.data.file_id)) {
+                  return {
+                    ...r,
+                    files: r.files.map((file) => {
+                      if (file.file_id === action.data.file_id) {
+                        return {
+                          ...file,
+                          deleted_at: { timestamp: getCurrentTimestamp() },
+                          file_type: "trashed",
+                        };
+                      } else {
+                        return file;
+                      }
+                    }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            };
+            return res;
+          }, {}),
+        },
+        selectedChannel: state.selectedChannel
+          ? {
+              ...state.selectedChannel,
+              replies: state.selectedChannel.replies.map((r) => {
+                if (r.files.some((f) => f.file_id === action.data.file_id)) {
+                  return {
+                    ...r,
+                    files: r.files.map((file) => {
+                      if (file.file_id === action.data.file_id) {
+                        return {
+                          ...file,
+                          deleted_at: { timestamp: getCurrentTimestamp() },
+                          file_type: "trashed",
+                        };
+                      } else {
+                        return file;
+                      }
+                    }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            }
+          : state.selectedChannel,
       };
     }
     default:

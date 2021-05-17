@@ -13,3 +13,5 @@ export { default as PostVideos } from "./PostVideos";
 export { default as PostChangeAccept } from "./PostChangeAccept";
 export { default as PostList } from "./PostList";
 export { default as PostRecipients } from "./PostRecipients";
+export { default as Posts } from "./Posts";
+export { default as PostsEmptyState } from "./PostsEmptyState";

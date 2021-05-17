@@ -51,6 +51,7 @@ const usePosts = () => {
         };
         actions.getPosts(payload, cb);
         actions.fetchPostList();
+
         let filterCb = (err, res) => {
           setFetchingPost(false);
           if (err) return;
@@ -68,7 +69,7 @@ const usePosts = () => {
                 archived: {
                   active: false,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === res.data.posts.length,
+                  hasMore: res.data.total_take === 25,
                 },
               },
             })
@@ -153,10 +154,6 @@ const usePosts = () => {
     activePostListTag = postListTag;
 
     counters = {
-      // all: 0,
-      // my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
-      // starred: Object.values(posts).filter((p) => p.is_favourite).length,
-      // archived: Object.values(posts).filter((p) => p.is_archived).length,
       drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
     };
 
@@ -188,14 +185,14 @@ const usePosts = () => {
               return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
             }
           } else if (activeFilter === "my_posts") {
-            if (p.hasOwnProperty("author")) return p.author.id === user.id;
+            if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
             else return false;
           } else if (activeFilter === "draft") {
             return p.hasOwnProperty("draft_type");
           } else if (activeFilter === "star") {
-            return p.is_favourite;
+            return p.is_favourite && !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "archive") {
-            return p.is_archived === 1;
+            return p.is_archived === 1 && !p.hasOwnProperty("draft_type");
           }
         } else if (activeTag) {
           if (activeTag === "is_must_reply") {
@@ -208,13 +205,13 @@ const usePosts = () => {
             return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
           } else if (tag === "is_close") {
             return p.is_close && !p.hasOwnProperty("draft_type");
-          } else if (parseInt(activeTag) !== NaN) {
+          } else if (!isNaN(parseInt(activeTag))) {
             return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(tag);
           } else {
             return true;
           }
         } else if (activePostListTag) {
-          if (parseInt(activePostListTag) !== NaN) {
+          if (!isNaN(parseInt(activePostListTag))) {
             return p.post_list_connect.length > 0 && p.post_list_connect[0].id === parseInt(activePostListTag);
           } else {
             return true;

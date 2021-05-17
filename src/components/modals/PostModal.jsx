@@ -86,15 +86,24 @@ const WrapperDiv = styled(InputGroup)`
     margin-top: 0;
     margin-bottom: 20px;
   }
+  &.file-attachment-wrapper > div {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    .react-select-container {
+      max-width: 300px;
+    }
+  }
   .file-attachments {
     position: relative;
     max-width: 100%;
-    margin-left: 128px;
+    // margin-left: 3rem;
+    // margin-right: 2rem;
     @media all and (max-width: 480px) {
       margin-left: 0;
     }
     ul {
-      margin-right: 128px;
+      //margin-right: 128px;
       margin-bottom: 0;
       @media all and (max-width: 480px) {
         padding-right: 40px;
@@ -235,7 +244,22 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-const initTimestamp = Math.floor(Date.now() / 1000);
+//onst initTimestamp = Math.floor(Date.now() / 1000);
+
+const fileOptions = [
+  // {
+  //   id: "remove_on_download",
+  //   value: "remove_on_download",
+  //   label: "Remove file after download",
+  //   icon: "eye-off",
+  // },
+  {
+    id: "remove_automatically",
+    value: "remove_automatically",
+    label: "Remove file automatically in 5 days",
+    icon: "file-minus",
+  },
+];
 
 const PostModal = (props) => {
   const { type, mode, item = {}, params = null } = props.data;
@@ -252,6 +276,7 @@ const PostModal = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
+  const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
   const [draftId, setDraftId] = useState(null);
   const [showDropzone, setShowDropzone] = useState(false);
@@ -266,6 +291,7 @@ const PostModal = (props) => {
   const [imageLoading, setImageLoading] = useState(null);
   const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
+  const [fileOption, setFileOption] = useState(null);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -329,116 +355,17 @@ const PostModal = (props) => {
     icon: null,
   });
 
-  // const toggleNested = () => {
-  //   // setNestedModal(!nestedModal);
-  //   // setCloseAll(false);
-  //   setCloseAll(true);
-  // };
+  const toastId = useRef(null);
+  const sendNotify = (text) => (toastId.current = toaster.info(text));
+  const dismiss = () => toaster.dismiss(toastId.current);
 
   const toggleAll = (saveDraft = false, showDeleteToaster = false) => {
-    // setNestedModal(!nestedModal);
-    // setCloseAll(true);
-    // if (saveDraft) {
-    //   handleSaveDraft();
-    // } else if (draftId) {
-    //   handleDeleteDraft(showDeleteToaster);
-    // }
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
 
   const toggle = () => {
     toggleAll();
-    // if (mode === "edit") {
-    //   const post = item.post;
-
-    //   if (form.title !== post.title) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.body !== post.body) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.end_at !== post.end_at) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.is_private !== post.is_personal) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.must_read !== post.is_must_read) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.no_reply !== post.is_must_reply) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.reply_required !== post.is_must_reply) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.show_at !== post.show_at) {
-    //     toggleNested();
-    //     return;
-    //   }
-    // } else {
-    //   if (form.title !== "") {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.body !== "<div><br></div>") {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.end_at !== null) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.has_folder !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.is_private !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.must_read !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.no_reply !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.reply_required !== false) {
-    //     toggleNested();
-    //     return;
-    //   }
-
-    //   if (form.show_at !== null) {
-    //     toggleNested();
-    //     return;
-    //   }
-    // }
-
-    // toggleAll(false);
   };
 
   const handleSelectAddressTo = (e) => {
@@ -527,8 +454,10 @@ const PostModal = (props) => {
         uploadFiles(payload, "edit");
       } else {
         if (form.selectedAddressTo.length) {
+          sendNotify(dictionary.updatingPost);
           dispatch(
             putPost(payload, (err, res) => {
+              dismiss();
               setLoading(false);
               handleDeleteDraft();
             })
@@ -540,8 +469,10 @@ const PostModal = (props) => {
         uploadFiles(payload, "create");
       } else {
         if (form.selectedAddressTo.length) {
+          sendNotify(dictionary.sendingPost);
           dispatch(
             postCreate(payload, (err, res) => {
+              dismiss();
               setLoading(false);
               if (err) return;
               handleDeleteDraft();
@@ -712,6 +643,7 @@ const PostModal = (props) => {
       user_id: user.id,
       file_type: "private",
       folder_id: null,
+      fileOption: fileOption,
       options: {
         config: {
           onUploadProgress: handleOnUploadProgress,
@@ -730,6 +662,7 @@ const PostModal = (props) => {
           };
           dispatch(
             putPost(payload, () => {
+              if (toasterRef.current) toaster.dismiss(toasterRef.current);
               setLoading(false);
               handleDeleteDraft();
             })
@@ -741,6 +674,7 @@ const PostModal = (props) => {
           };
           dispatch(
             postCreate(payload, (err, res) => {
+              if (toasterRef.current) toaster.dismiss(toasterRef.current);
               setLoading(false);
               if (err) return;
               handleDeleteDraft();
@@ -785,7 +719,7 @@ const PostModal = (props) => {
   const handleOnUploadProgress = (progressEvent) => {
     const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
-      toasterRef.current = toaster.info(<div>{dictionary.uploading}.</div>, { progress: progressBar.current, autoClose: true });
+      toasterRef.current = toaster.info(<div>{dictionary.uploadingAndSending}.</div>, { progress: progressBar.current, autoClose: true });
     } else {
       toaster.update(toasterRef.current, { progress: progress, autoClose: true });
     }
@@ -920,6 +854,11 @@ const PostModal = (props) => {
     }
   }, [form.shared_with_client]);
 
+  const handleSelectFileUploadOption = (e) => {
+    console.log(e);
+    setFileOption(e);
+  };
+
   const hasExternalWs = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
@@ -1000,8 +939,18 @@ const PostModal = (props) => {
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-            {hasExternalWs && !isExternalUser && <span className="file-label">{dictionary.fileUploadLabel}</span>}
+            <div className={"mb-2"}>
+              <Label className={"modal-label"} for="workspace">
+                {dictionary.fileAttachments}
+              </Label>
+            </div>
+            <div className={"mb-2"}>
+              <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
+              {hasExternalWs && !isExternalUser && <span className="file-label ml-2">{dictionary.fileUploadLabel}</span>}
+            </div>
+            <div>
+              <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            </div>
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option mb-0">

@@ -6,6 +6,7 @@ export {
   getGlobalRecipients,
   getChannels,
   getChannel,
+  getCompanyChannel,
   getLastVisitedChannel,
   getChannelDrafts,
   getChannelMembers,
@@ -164,6 +165,7 @@ export {
   putCompanyRestoreFolder,
   getCompanyGoogleAttachmentsFile,
   getCompanyGoogleAttachmentsFolder,
+  removeFileDownload,
 } from "./files";
 
 export {

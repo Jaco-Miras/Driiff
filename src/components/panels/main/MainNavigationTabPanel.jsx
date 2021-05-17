@@ -110,16 +110,6 @@ const Wrapper = styled.div`
   }
   li {
     position: relative;
-    .badge {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      padding: 0;
-      background: #28a745;
-      right: -12px;
-      top: -12px;
-      z-index: 9;
-    }
   }
   .navigation-menu-group {
     -ms-overflow-style: none;

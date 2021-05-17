@@ -285,7 +285,18 @@ const CompanyFilesBody = (props) => {
                           {files &&
                             fileIds.map((f) => {
                               if (files.files.hasOwnProperty(f)) {
-                                return <CompanyFileListItem key={f} scrollRef={scrollRef} actions={actions} folders={folders} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={files.files[f]} disableOptions={disableOptions} />;
+                                return (
+                                  <CompanyFileListItem
+                                    key={f}
+                                    scrollRef={scrollRef}
+                                    actions={actions}
+                                    folders={folders}
+                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                    file={files.files[f]}
+                                    files={files.files}
+                                    disableOptions={disableOptions}
+                                  />
+                                );
                               } else return null;
                             })}
                         </div>
@@ -308,7 +319,18 @@ const CompanyFilesBody = (props) => {
                       {files &&
                         fileIds.map((f) => {
                           if (files.files.hasOwnProperty(f)) {
-                            return <CompanyFileListItem key={f} scrollRef={scrollRef} actions={actions} folders={folders} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={files.files[f]} disableOptions={disableOptions} />;
+                            return (
+                              <CompanyFileListItem
+                                key={f}
+                                scrollRef={scrollRef}
+                                actions={actions}
+                                folders={folders}
+                                className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                file={files.files[f]}
+                                files={files.files}
+                                disableOptions={disableOptions}
+                              />
+                            );
                           } else return null;
                         })}
                     </div>

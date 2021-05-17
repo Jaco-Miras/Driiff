@@ -1,5 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   flipper: true,
@@ -2888,6 +2889,165 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.files.reduce((res, obj) => {
+            if (state.workspacePosts[obj.topic_id]) {
+              res[obj.topic_id] = {
+                ...state.workspacePosts[obj.topic_id],
+                posts: {
+                  ...state.workspacePosts[obj.topic_id].posts,
+                  ...action.data.files.reduce((pos, p) => {
+                    if (p.post_id && state.workspacePosts[obj.topic_id].posts[p.post_id]) {
+                      const files_trashed =
+                        state.workspacePosts[obj.topic_id].posts[p.post_id].files.length === 0
+                          ? []
+                          : state.workspacePosts[obj.topic_id].posts[p.post_id].files
+                              .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                              .map((f) => {
+                                return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                              });
+                      pos[p.post_id] = {
+                        ...state.workspacePosts[obj.topic_id].posts[p.post_id],
+                        files: state.workspacePosts[obj.topic_id].posts[p.post_id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                        files_trashed: files_trashed,
+                      };
+                    }
+                    return pos;
+                  }, {}),
+                },
+              };
+            }
+            return res;
+          }, {}),
+        },
+        postComments: {
+          ...state.postComments,
+          ...Object.keys(state.postComments).reduce((ws, id) => {
+            ws[id] = {
+              ...state.postComments[id],
+              comments: {
+                ...state.postComments[id].comments,
+                ...Object.values(state.postComments[id].comments).reduce((res, com) => {
+                  if (com.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
+                    const files_trashed =
+                      state.postComments[id].comments[com.id].files.length === 0
+                        ? []
+                        : state.postComments[id].comments[com.id].files
+                            .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                            .map((f) => {
+                              return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                            });
+                    res[com.id] = {
+                      ...state.postComments[id].comments[com.id],
+                      files: state.postComments[id].comments[com.id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                      files_trashed: files_trashed,
+                    };
+                  } else {
+                    res[com.id] = {
+                      ...state.postComments[id].comments[com.id],
+                      replies: {
+                        ...state.postComments[id].comments[com.id].replies,
+                        ...Object.values(state.postComments[id].comments[com.id].replies).reduce((sres, scom) => {
+                          if (scom.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
+                            const files_trashed =
+                              state.postComments[id].comments[com.id].replies[scom.id].files.length === 0
+                                ? []
+                                : state.postComments[id].comments[com.id].replies[scom.id].files
+                                    .filter((f) => action.data.files.some((file) => file.file_id === f.file_id))
+                                    .map((f) => {
+                                      return { ...f, deleted_at: { timestamp: getCurrentTimestamp() } };
+                                    });
+                            sres[scom.id] = {
+                              ...state.postComments[id].comments[com.id].replies[scom.id],
+                              files: state.postComments[id].comments[com.id].replies[scom.id].files.filter((f) => !action.data.files.some((file) => file.file_id === f.file_id)),
+                              files_trashed: files_trashed,
+                            };
+                          } else {
+                            sres[scom.id] = { ...state.postComments[id].comments[com.id].replies[scom.id] };
+                          }
+                          return sres;
+                        }, {}),
+                      },
+                    };
+                  }
+                  return res;
+                }, {}),
+              },
+            };
+            return ws;
+          }, {}),
+        },
+      };
+    }
+    case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts).reduce((ws, id) => {
+            if (state.workspacePosts[id]) {
+              ws[id] = {
+                ...state.workspacePosts[id],
+                posts: {
+                  ...state.workspacePosts[id].posts,
+                  ...Object.values(state.workspacePosts[id].posts).reduce((res, post) => {
+                    if (post.files.some((f) => f.file_id === action.data.file_id)) {
+                      res[post.id] = { ...state.workspacePosts[id].posts[post.id], files: state.workspacePosts[id].posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
+                    } else {
+                      res[post.id] = { ...state.workspacePosts[id].posts[post.id] };
+                    }
+                    return res;
+                  }, {}),
+                },
+              };
+            }
+            return ws;
+          }, {}),
+        },
+        postComments: {
+          ...state.postComments,
+          ...Object.keys(state.postComments).reduce((ws, id) => {
+            ws[id] = {
+              ...state.postComments[id],
+              comments: {
+                ...state.postComments[id].comments,
+                ...Object.values(state.postComments[id].comments).reduce((res, com) => {
+                  if (com.files.some((f) => f.file_id === action.data.file_id)) {
+                    res[com.id] = { ...state.postComments[id].comments[com.id], files: state.postComments[id].comments[com.id].files.filter((f) => f.file_id !== action.data.file_id) };
+                  } else {
+                    res[com.id] = {
+                      ...state.postComments[id].comments[com.id],
+                      replies: {
+                        ...state.postComments[id].comments[com.id].replies,
+                        ...Object.values(state.postComments[id].comments[com.id].replies).reduce((sres, scom) => {
+                          if (scom.files.some((f) => f.file_id === action.data.file_id)) {
+                            sres[scom.id] = {
+                              ...state.postComments[id].comments[com.id].replies[scom.id],
+                              files: state.postComments[id].comments[com.id].replies[scom.id].files.filter((f) => f.file_id !== action.data.file_id),
+                            };
+                          } else {
+                            sres[scom.id] = {
+                              ...state.postComments[id].comments[com.id].replies[scom.id],
+                            };
+                          }
+                          return sres;
+                        }, {}),
+                      },
+                    };
+                  }
+                  return res;
+                }, {}),
+              },
+            };
+            return ws;
+          }, {}),
+        },
+      };
+    }
     case "GET_WORKSPACE_REMINDERS_CALLBACK": {
       return {
         ...state,
@@ -2926,9 +3086,8 @@ export default (state = INITIAL_STATE, action) => {
               return res;
             }, {}),
           },
-        },
-      };
-    }
+        }
+      }
     default:
       return state;
   }

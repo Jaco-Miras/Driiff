@@ -4,9 +4,14 @@ import { useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
 import { QuickLinks } from "../../list/links";
-import { Badge } from "reactstrap";
+//import { Badge } from "reactstrap";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  .badge {
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+`;
 
 const NavInputContainer = styled.div`
   display: flex;
@@ -58,12 +63,12 @@ const NavIconContainer = styled(NavLink)`
 `;
 
 const MainSidebarLinks = (props) => {
-  const { count, dictionary, isExternal, driffSettings, user, updateCompanyName } = props;
+  const { dictionary, isExternal, driffSettings, user, updateCompanyName } = props;
 
   const params = useParams();
   const location = useLocation();
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [companyName, setCompanyName] = useState(driffSettings.company_name);
   const [editCompany, setEditCompany] = useState(false);
 
@@ -111,15 +116,12 @@ const MainSidebarLinks = (props) => {
     }
   };
 
-  const hasUnreadCounter =
-    Object.keys(unreadCounter)
-      .filter((k) => k !== "chat_reminder_message")
-      .reduce((total, k) => {
-        total += unreadCounter[k];
-        return total;
-      }, 0) !== 0 ||
-    count.overdue > 0 ||
-    count.today > 0;
+  // const unreadCount = Object.keys(unreadCounter)
+  //   .filter((k) => k !== "chat_reminder_message")
+  //   .reduce((total, k) => {
+  //     total += unreadCounter[k];
+  //     return total;
+  //   }, 0);
 
   return (
     <Wrapper className="flex navigation-menu-tab-header-options">
@@ -135,7 +137,7 @@ const MainSidebarLinks = (props) => {
               <NavIconContainer active={["dashboard", "posts", "chat", "files", "people"].includes(params.page)} to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
                 <NavIcon icon={"home"} />
                 {driffSettings.company_name}
-                <div>{hasUnreadCounter === true && <Badge>&nbsp;</Badge>}</div>
+                {/* {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>} */}
               </NavIconContainer>
             )}
             {user.role && ["owner", "admin"].includes(user.role.name) && (
@@ -147,7 +149,7 @@ const MainSidebarLinks = (props) => {
           <NavIconContainer to={"/todos"} active={["/todos"].includes(location.pathname)}>
             <NavIcon icon={"calendar"} />
             <div>{dictionary.todoLinks}</div>
-            <div>{(count.overdue > 0 || count.today > 0) && <Badge>&nbsp;</Badge>}</div>
+            {/* <div>{count.overdue !== 0 && <Badge>&nbsp;</Badge>}</div> */}
           </NavIconContainer>
         </li>
         <li onClick={closeLeftNav}>

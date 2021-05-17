@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
-import { getGlobalRecipients, getHuddleChatbot } from "../../redux/actions/chatActions";
+import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel } from "../../redux/actions/chatActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -34,6 +34,7 @@ const useInitialLoad = () => {
       dispatch(getGlobalRecipients());
       //dispatch(getDrafts());
     };
+    dispatch(getCompanyChannel());
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
     dispatch(getHuddleChatbot({}));
   }, []);

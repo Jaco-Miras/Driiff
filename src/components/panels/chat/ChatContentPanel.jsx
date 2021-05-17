@@ -162,7 +162,22 @@ const ChatContentPanel = (props) => {
     unMarkImportant: _t("CHAT.UNMARK_IMPORTANT", "Unmark as important"),
     teamFeedback: _t("HUDDLE.HUDDLE_TEAM_FEEDBACK", "Huddle team feedback"),
     replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
+    removeOnDownload: _t("CHAT.REMOVE_ON_DOWNLOAD", "Remove on download"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    mute: _t("CHAT.MUTE", "Mute"),
+    unmute: _t("CHAT.UNMUTE", "Unmute"),
+    hide: _t("CHAT.HIDE", "Hide"),
+    unhide: _t("CHAT.UNHIDE", "Unhide"),
+    favorite: _t("FAVORITE", "Favorite"),
+    unfavorite: _t("UNFAVORITE", "Unfavorite"),
+    markAsUnread: _t("POST.MARK_AS_UNREAD", "Mark as unread"),
+    markAsRead: _t("POST.MARK_AS_READ", "Mark as read"),
+    unarchive: _t("CHAT.UNARCHIVE", "Un-archive"),
+    archive: _t("CHAT.ARCHIVE", "Archive"),
+    chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this channel?"),
+    chatArchiveConfirmation: _t("CHAT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this channel?"),
+    headerArchive: _t("HEADER.ARCHIVE", "Chat archive"),
+    headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));

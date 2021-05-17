@@ -29,12 +29,12 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const CompanyFileOptions = (props) => {
-  const { className = "", folders, file, scrollRef = null, actions, forceDelete, disableOptions } = props;
+  const { className = "", folders, file, files, scrollRef = null, actions, forceDelete, disableOptions } = props;
 
   const toaster = useToaster();
 
   const handleViewDetail = () => {
-    actions.viewCompanyFiles(file);
+    actions.viewCompanyFiles(file, files);
   };
 
   const handleFavorite = () => {
