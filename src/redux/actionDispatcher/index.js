@@ -46,7 +46,7 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             }
             // this error for validation or not authorized user.
             toastr.warning(errorStringTitle, {
-              component: () => <div dangerouslySetInnerHTML={{ __html: errorString }}/>,
+              component: () => <div dangerouslySetInnerHTML={{ __html: errorString }} />,
             });
           }
           // not authenticated user.
@@ -55,8 +55,8 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             userForceLogout();
           }
           // internal server error
-          if (error.response.status === 500) {
-          }
+          // if (error.response.status === 500) {
+          // }
           dispatch({
             type: actionTypeFailure,
             error,
