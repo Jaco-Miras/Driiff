@@ -90,7 +90,7 @@ const useTodoActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const createForPost = useCallback((id, payload, callback) => {
+  const createForPost = (id, payload, callback) => {
     dispatch(
       postToDo(
         {
@@ -98,12 +98,19 @@ const useTodoActions = () => {
           link_id: id,
           link_type: "POST",
         },
-        callback
+        (err, res) => {
+          if (callback) callback(err, res);
+          if (params.workspaceId) {
+            fetchWsCount({ topic_id: params.workspaceId });
+          } else {
+            fetchDetail();
+          }
+        }
       )
     );
-  }, []);
+  };
 
-  const createForPostComment = useCallback((id, payload, callback) => {
+  const createForPostComment = (id, payload, callback) => {
     dispatch(
       postToDo(
         {
@@ -111,12 +118,19 @@ const useTodoActions = () => {
           link_id: id,
           link_type: "POST_COMMENT",
         },
-        callback
+        (err, res) => {
+          if (callback) callback(err, res);
+          if (params.workspaceId) {
+            fetchWsCount({ topic_id: params.workspaceId });
+          } else {
+            fetchDetail();
+          }
+        }
       )
     );
-  }, []);
+  };
 
-  const createForChat = useCallback((id, payload, callback) => {
+  const createForChat = (id, payload, callback) => {
     dispatch(
       postToDo(
         {
@@ -124,10 +138,17 @@ const useTodoActions = () => {
           link_id: id,
           link_type: "CHAT",
         },
-        callback
+        (err, res) => {
+          if (callback) callback(err, res);
+          if (params.workspaceId) {
+            fetchWsCount({ topic_id: params.workspaceId });
+          } else {
+            fetchDetail();
+          }
+        }
       )
     );
-  }, []);
+  };
 
   const update = (payload, callback) => {
     dispatch(putToDo(payload, callback));
@@ -187,6 +208,11 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (res) {
+            if (params.workspaceId) {
+              fetchWsCount({ topic_id: params.workspaceId });
+            } else {
+              fetchDetail();
+            }
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
           }
           callback(err, res);
@@ -204,6 +230,11 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (res) {
+            if (params.workspaceId) {
+              fetchWsCount({ topic_id: params.workspaceId });
+            } else {
+              fetchDetail();
+            }
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUnDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
           }
           callback(err, res);

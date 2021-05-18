@@ -4,7 +4,7 @@ import { useTodos, useTranslation } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 
 const Wrapper = styled.div`
-overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")} ;
+  overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
   text-align: left;
   .app-sidebar-menu {
     overflow: hidden;
@@ -23,17 +23,21 @@ const TodosPanel = (props) => {
 
   const { _t } = useTranslation();
 
-  var newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_1", 'Couldn’t find what you’re looking for.'),
-  _t("REMINDER.NO_ITEMS_FOUND_HEADER_2", 'WOO!'),
-  _t("REMINDER.NO_ITEMS_FOUND_HEADER_3", 'Nothing is overdue.'),
-  _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", 'Queue’s empty, time to dance!'),
-  _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", 'No reminders.')];
+  var newItemsFoundHeader = [
+    _t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for."),
+    _t("REMINDER.NO_ITEMS_FOUND_HEADER_2", "WOO!"),
+    _t("REMINDER.NO_ITEMS_FOUND_HEADER_3", "Nothing is overdue."),
+    _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", "Queue’s empty, time to dance!"),
+    _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", "No reminders."),
+  ];
 
-  var newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_1", 'Try something else, Sherlock. 🕵'),
-  _t("REMINDER.NO_ITEMS_FOUND_TEXT_2", 'Nothing here but me… 👻'),
-  _t("REMINDER.NO_ITEMS_FOUND_TEXT_3", 'You are out of this world! 👨‍🚀'),
-  _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", 'Job well done!💃🕺'),
-  _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", 'You run a tight ship captain! 🚀')];
+  var newItemsFoundText = [
+    _t("REMINDER.NO_ITEMS_FOUND_TEXT_1", "Try something else, Sherlock. 🕵"),
+    _t("REMINDER.NO_ITEMS_FOUND_TEXT_2", "Nothing here but me… 👻"),
+    _t("REMINDER.NO_ITEMS_FOUND_TEXT_3", "You are out of this world! 👨‍🚀"),
+    _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", "Job well done!💃🕺"),
+    _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀"),
+  ];
 
   var randomI = Math.floor(Math.random() * 5);
 
@@ -61,7 +65,10 @@ const TodosPanel = (props) => {
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
     actionFilter: _t("REMINDER.ACTION_FILTER", "Filter"),
     reminderAuthor: _t("REMINDER.AUTHOR", "Author"),
-    reminderAssignedTo: _t("REMINDER.ASSIGNED_TO", "Assigned to")
+    reminderAssignedTo: _t("REMINDER.ASSIGNED_TO", "Assigned to"),
+    todo: _t("REMINDER.TO_DO", "To do"),
+    done: _t("REMINDER.DONE", "Done"),
+    addDate: _t("REMINDER.ADD_DATE", "Add date"),
   };
 
   const [filter, setFilter] = useState("");
