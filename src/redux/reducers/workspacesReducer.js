@@ -3048,6 +3048,23 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS": {
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          ...(action.data.length > 0 && {
+            ...action.data.reduce((res, obj) => {
+              res[obj.topic_id] = {
+                ...state.workspaces[obj.topic_id],
+                workspace_counter_entries: obj.workspace_counter_entries,
+              };
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
     default:
       return state;
   }
