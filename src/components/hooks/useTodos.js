@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { useTimeFormat, useTodoActions } from "./index";
@@ -11,25 +11,14 @@ const useTodos = (fetchTodosOnMount = false) => {
 
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
-  const [isFetchLoading, setIsFetchLoading] = useState(false);
 
   const loadMore = () => {
-    if (isFetchLoading || !hasMore) return;
-
-    setIsFetchLoading(true);
-    todoActions.fetch(
-      {
-        skip: skip,
-        limit: limit,
-      },
-      () => {
-        setIsFetchLoading(false);
-      }
-    );
+    if (!hasMore) return;
+    todoActions.fetch({
+      skip: skip,
+      limit: limit,
+    });
   };
-
-  // count.new = 0;
-  // count.today = 0;
 
   const getReminders = ({ filter = "" }) => {
     return Object.values(items)

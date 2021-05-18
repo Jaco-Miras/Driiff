@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../hooks";
 import { TodosList, TodoEmptyState } from "./index";
@@ -123,31 +123,31 @@ const SpanTitle = styled.span`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
+  const { className = "", dictionary, isLoaded, todoActions, todoItems, getDone } = props;
 
-  const refs = {
-    files: useRef(null),
-    btnLoadMore: useRef(null),
-  };
+  // const refs = {
+  //   files: useRef(null),
+  //   btnLoadMore: useRef(null),
+  // };
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
   const {
     generalSettings: { dark_mode },
   } = useSettings();
-  const initLoading = () => {
-    loadMore.files();
-  };
+  // const initLoading = () => {
+  //   loadMore.files();
+  // };
 
   const redirect = useRedirect();
 
-  const handleScroll = (e) => {
-    if (e.target.dataset.loading === "false") {
-      if (e.target.scrollTop + 500 >= e.target.scrollHeight - e.target.offsetHeight) {
-        if (refs.btnLoadMore.current) refs.btnLoadMore.current.click();
-      }
-    }
-  };
+  // const handleScroll = (e) => {
+  //   if (e.target.dataset.loading === "false") {
+  //     if (e.target.scrollTop + 500 >= e.target.scrollHeight - e.target.offsetHeight) {
+  //       if (refs.btnLoadMore.current) refs.btnLoadMore.current.click();
+  //     }
+  //   }
+  // };
 
   const handleLinkClick = (e, todo) => {
     e.preventDefault();
@@ -167,17 +167,17 @@ const TodosBody = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (!refs.files.current) return;
+  // useEffect(() => {
+  //   if (!refs.files.current) return;
 
-    let el = refs.files.current;
-    if (el && el.dataset.loaded === "0") {
-      initLoading();
+  //   let el = refs.files.current;
+  //   if (el && el.dataset.loaded === "0") {
+  //     initLoading();
 
-      el.dataset.loaded = "1";
-      refs.files.current.addEventListener("scroll", handleScroll, false);
-    }
-  }, [refs.files.current]);
+  //     el.dataset.loaded = "1";
+  //     refs.files.current.addEventListener("scroll", handleScroll, false);
+  //   }
+  // }, [refs.files.current]);
 
   const [activeTitles, setActiveTitles] = useState({});
 
@@ -236,9 +236,6 @@ const TodosBody = (props) => {
 
   return (
     <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
-      <span className="d-none" ref={refs.btnLoadMore}>
-        Load more
-      </span>
       <div className="card-body" data-loaded={0}>
         {!isLoaded && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
         {isLoaded && (todoItems.length > 0 || getDone.length > 0) && getTodoList()}

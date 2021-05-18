@@ -3056,11 +3056,13 @@ export default (state = INITIAL_STATE, action) => {
           [action.data.topic_id]: {
             ...(state.workspaceReminders[action.data.topic_id] && {
               ...state.workspaceReminders[action.data.topic_id],
-              hasMore: action.data.todos.length === 25,
+              hasMore: action.data.todos.length === action.data.limit,
+              skip: state.workspaceReminders[action.data.topic_id].skip + action.data.todos.length,
               reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
             }),
             ...(!state.workspaceReminders[action.data.topic_id] && {
-              hasMore: action.data.todos.length === 25,
+              skip: action.data.todos.length,
+              hasMore: action.data.todos.length === action.data.limit,
               reminderIds: [...action.data.todos.map((t) => t.id)],
               count: {
                 all: 0,
@@ -3074,7 +3076,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UPDATE_WORKSPACE_REMINDERS_COUNT": {
-      console.log(action.data, "count");
       return {
         ...state,
         workspaceReminders: {
