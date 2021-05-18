@@ -1,6 +1,6 @@
 import { parseEmojis, textToLink } from "./stringFormatter";
 import { validURL } from "./urlContentHelper";
-import { GoogleDriveLink, SvgIcon } from "../components/common";
+import { GoogleDriveLink, FancyLink, SvgIcon } from "../components/common";
 import React from "react";
 import { renderToString } from "react-dom/server";
 
@@ -108,8 +108,10 @@ class quillHelper {
             // if (!(word.includes("href") || word.includes("src"))) {
             //   word = parseEmojis(textToLink(word));
             // }
+            
           } else {
-            word = `<a target="_blank" href="${word}">${word}</a>`;
+           word = renderToString(<FancyLink link={word} />); //`<a target="_blank" href="${word}">${word}</a>`
+          //word = `<a target="_blank" href="${word}">${word}</a>`;
             // let taskUrl = parseTaskUrl(word);
 
             // if (!taskUrl) {
@@ -152,7 +154,7 @@ class quillHelper {
     this.convertContentByTag(el, "div", false);
     this.convertContentByTag(el, "p", false);
     this.convertContentByTag(el, "li", false);
-
+    this.convertContentByTag(el, "a", false);
     return el.innerHTML;
   }
 
