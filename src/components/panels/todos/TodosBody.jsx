@@ -249,16 +249,19 @@ const TodosBody = (props) => {
     });
   };
 
+  /*
   const setTodoList = () => {
-    return filter === "" ? ["To do", "Done"] : ["To do"];
-  };
+   //return filter === "" ? ["To do", "Done"] : ["To do", "Done"];
+   return  ["To do", "Done"];
+  };*/
+  
 
   const getTodoList = () => {
     return (
       <>
-        {setTodoList().map((items, index) => {
+        { ["To do", "Done"].map((items, i) => {
           let x = items === "To do" ? todoItems : getDone;
-          let reminder = x.map((todo, indexx) => {
+          let reminder = x.map((todo, ii) => {
             return (
               <TodosList
                 key={todo.id}
