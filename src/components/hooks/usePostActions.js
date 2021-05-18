@@ -34,7 +34,7 @@ import {
   postFavorite,
   postFollow,
   postMarkDone,
-  postMarkRead,
+  //postMarkRead,
   postToggleRead,
   postUnfollow,
   postVisit,
@@ -62,7 +62,7 @@ import {
   postRequired,
   setPostCommentType,
 } from "../../redux/actions/postActions";
-import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
+import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
 
@@ -383,6 +383,9 @@ const usePostActions = () => {
           count: count === 0 ? 1 : count,
         };
         if (res) {
+          if (post.recipients.some((r) => r.type === "TOPIC")) {
+            dispatch(getFavoriteWorkspaceCounters());
+          }
           if (showToaster)
             toaster.success(
               <>
@@ -422,6 +425,9 @@ const usePostActions = () => {
         };
 
         if (res) {
+          if (post.recipients.some((r) => r.type === "TOPIC")) {
+            dispatch(getFavoriteWorkspaceCounters());
+          }
           if (showToaster)
             toaster.success(
               <>

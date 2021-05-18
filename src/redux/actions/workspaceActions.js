@@ -13,6 +13,7 @@ import {
   fetchTimeline as fetchTimelineService,
   getAllWorkspace as getAllWorkspaceService,
   getPostStatusCount as getPostStatusCountService,
+  getFavoriteWorkspaceCounters as getFavoriteWorkspaceCountersService,
   getWorkspace as getWorkspaceService,
   getWorkspaceFilterCount as getWorkspaceFilterCountService,
   getWorkspaceFolder as getWorkspaceFolderService,
@@ -247,4 +248,8 @@ export function getWorkspaceRemindersCount(payload, callback) {
 
 export function updateWorkspaceRemindersCount(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_REMINDERS_COUNT", payload, callback);
+}
+
+export function getFavoriteWorkspaceCounters(payload, callback) {
+  return dispatchActionToReducer(getFavoriteWorkspaceCountersService(payload), "GET_FAVORITE_WORKSPACE_COUNTERS_START", "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS", "GET_FAVORITE_WORKSPACE_COUNTERS_FAIL", callback);
 }

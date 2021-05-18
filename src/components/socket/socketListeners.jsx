@@ -137,6 +137,7 @@ import {
   incomingOnlineUsers,
 } from "../../redux/actions/userAction";
 import {
+  getFavoriteWorkspaceCounters,
   getUnreadWorkspacePostEntries,
   getWorkspace,
   getWorkspaceFolder,
@@ -233,6 +234,7 @@ class SocketListeners extends Component {
       this.refetchOtherMessages();
       this.refetchPosts();
       this.refetchPostComments();
+      this.props.getFavoriteWorkspaceCounters();
     });
     window.Echo.connector.socket.on("reconnecting", function () {
       console.log("socket reconnecting");
@@ -331,6 +333,11 @@ class SocketListeners extends Component {
       })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
+        if (e.workspace) {
+          if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
+            this.props.getFavoriteWorkspaceCounters();
+          }
+        }
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
             this.props.incomingToDo(e);
@@ -562,6 +569,13 @@ class SocketListeners extends Component {
                   pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
                 }
               }
+              //check if post has favorite workspace as recipient
+              if (e.recipients.some((r) => r.type === "TOPIC")) {
+                let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
+                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+                  this.props.getFavoriteWorkspaceCounters();
+                }
+              }
             }
             if (e.show_at !== null && this.props.user.id === e.author.id) {
               this.props.incomingPost({
@@ -683,6 +697,10 @@ class SocketListeners extends Component {
                   count: 1,
                   entity_type: "WORKSPACE_POST",
                 });
+                let topicRecipientIds = e.workspaces.map((r) => r.topic_id);
+                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+                  this.props.getFavoriteWorkspaceCounters();
+                }
               }
             }
             if (e.author.id !== this.props.user.id) {
@@ -824,6 +842,9 @@ class SocketListeners extends Component {
                   count: 1,
                   entity_type: "WORKSPACE_CHAT_MESSAGE",
                 });
+                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace_id === ws.id)) {
+                  this.props.getFavoriteWorkspaceCounters();
+                }
               }
             }
 
@@ -1666,6 +1687,14 @@ class SocketListeners extends Component {
       })
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
+        if (e.entity_group_type === "CHAT") {
+          let workspace = Object.values(this.props.workspaces).find((ws) => {
+            return ws.is_favourite && (ws.channel.id === parseInt(e.entity_id) || (ws.team_channel && ws.team_channel.id === parseInt(e.entity_id)));
+          });
+          if (workspace) {
+            this.props.getFavoriteWorkspaceCounters();
+          }
+        }
         this.props.setUnreadNotificationCounterEntries(e);
       });
   }
@@ -1858,6 +1887,7 @@ function mapDispatchToProps(dispatch) {
     incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),
     incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
+    getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
   };
 }
 
