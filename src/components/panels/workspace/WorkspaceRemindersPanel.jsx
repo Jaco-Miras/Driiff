@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
 import { useWorkspaceReminders, useTranslation } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
+import { throttle } from "lodash";
 
 const Wrapper = styled.div`
   overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
@@ -73,6 +74,7 @@ const TodosPanel = (props) => {
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
+  const [loadReminders, setLoadReminders] = useState(false);
 
   const handleFilterFile = (e) => {
     setFilter(e.target.dataset.filter);
@@ -87,9 +89,28 @@ const TodosPanel = (props) => {
     setSearch("");
   };
 
+  const handleScroll = useMemo(() => {
+    const throttled = throttle((e) => {
+      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+        setLoadReminders(true);
+      }
+    }, 300);
+    return (e) => {
+      e.persist();
+      return throttled(e);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (loadReminders) {
+      todoActions.loadMore();
+    }
+  }, [loadReminders]);
+
   const reminders = getWorkspaceReminders({ filter: { status: filter, search: search } });
+
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0} onScroll={handleScroll}>
       <div className="row app-block">
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">

@@ -33,7 +33,7 @@ const INITIAL_STATE = {
     isLoaded: false,
     hasMore: true,
     skip: 0,
-    limit: 50,
+    limit: 25,
     count: {
       new: 0,
       today: 0,
@@ -340,7 +340,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
-          limit: state.todos.limit + state.todos.limit,
+          skip: state.todos.skip + action.data.todos.length,
           items: items,
           doneRecently: recent,
         },

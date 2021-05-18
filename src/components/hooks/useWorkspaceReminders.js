@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { useTimeFormat, useTodoActions } from "./index";
@@ -11,7 +11,6 @@ const useWorkspaceReminders = () => {
   const { user: loggedUser } = useSelector((state) => state.session);
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
-  const [isFetchLoading, setIsFetchLoading] = useState(false);
 
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
@@ -19,28 +18,37 @@ const useWorkspaceReminders = () => {
   const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 
   const loadMore = () => {
-    if (isFetchLoading) return;
-
-    setIsFetchLoading(true);
-    let payload = {
-      skip: 0,
-      limit: 25,
-      topic_id: params.workspaceId,
-    };
-    if (workspaceReminders[params.workspaceId]) {
-      payload = {
-        ...payload,
-        skip: workspaceReminders[params.workspaceId].reminderIds.length,
-      };
-      todoActions.fetchWs(payload, () => {
-        setIsFetchLoading(false);
-        fetchCount();
-      });
+    if (isLoaded) {
+      let ws = workspaceReminders[params.workspaceId];
+      if (ws && ws.hasMore) {
+        let payload = {
+          skip: ws.skip,
+          limit: 25,
+          topic_id: params.workspaceId,
+        };
+        todoActions.fetchWs(payload, () => {
+          fetchCount();
+        });
+      }
     } else {
-      todoActions.fetchWs(payload, () => {
-        setIsFetchLoading(false);
-        fetchCount();
-      });
+      let payload = {
+        skip: 0,
+        limit: 25,
+        topic_id: params.workspaceId,
+      };
+      if (workspaceReminders[params.workspaceId]) {
+        payload = {
+          ...payload,
+          skip: workspaceReminders[params.workspaceId].reminderIds.length,
+        };
+        todoActions.fetchWs(payload, () => {
+          fetchCount();
+        });
+      } else {
+        todoActions.fetchWs(payload, () => {
+          fetchCount();
+        });
+      }
     }
   };
 
