@@ -194,8 +194,8 @@ const TodosList = (props) => {
             <span className="action d-inline-flex justify-content-center align-items-center">
               <span className="mr-3 align-items-center d-flex">
                 <Icon icon="calendar" />
-                <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : "Add Date"}>
-                  <span className={`badge mr-3 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : "Add Date"}</span>
+                <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
+                  <span className={`badge mr-3 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}</span>
                 </ToolTip>
                 {todo.link_type !== null && <span className={"badge mr-3 badge-light"}>{getTodoType(todo)}</span>}
                 {todo.author !== null && (

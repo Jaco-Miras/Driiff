@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-//import { SvgEmptyState } from "../../common";
-//import { useHistory } from "react-router-dom";
 import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../hooks";
-// import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
-// import { useDispatch, useSelector } from "react-redux";
-import { TodosList } from "./index";
+import { TodosList, TodoEmptyState } from "./index";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
@@ -56,6 +52,12 @@ const Wrapper = styled.div`
       height: 16px;
     }
   }
+
+  .card-body {
+    padding: 0; 
+    overflow: unset;
+    height: 100%;
+  }
 `;
 
 const ListGroup = styled.ul`
@@ -68,40 +70,6 @@ const ListGroup = styled.ul`
     border-bottom: none;
   }
 `;
-
-const EmptyState = styled.div`
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  text-align: center;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  margin: auto;
-  text-align: center;
-
-  svg {
-    display: block;
-    margin: 0 auto;
-  }
-
-  h3 {
-    font-size: 16px;
-  }
-  h5 {
-    margin-bottom: 0;
-    font-size: 14px;
-  }
-
-  button {
-    width: auto !important;
-    margin: 2rem auto;
-  }
-`;
-
-// const Icon = styled(SvgIconFeather)`
-//   width: 16px;
-// `;
 
 const DivContainer = styled.div`
   padding-top: 15px;
@@ -155,21 +123,7 @@ const SpanTitle = styled.span`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
-
-  // const config = {
-  //   angle: 90,
-  //   spread: 360,
-  //   startVelocity: 40,
-  //   elementCount: 70,
-  //   dragFriction: 0.12,
-  //   duration: 3000,
-  //   stagger: 3,
-  //   width: "10px",
-  //   height: "10px",
-  //   perspective: "500px",
-  //   colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-  // };
+  const { className = "", dictionary, isLoaded, loadMore, todoActions, todoItems, getDone } = props;
 
   const refs = {
     files: useRef(null),
@@ -225,21 +179,6 @@ const TodosBody = (props) => {
     }
   }, [refs.files.current]);
 
-  // const getTodoStatus = (todo) => {
-  //   switch (todo.status) {
-  //     case "OVERDUE":
-  //       return dictionary.statusOverdue;
-  //     case "TODAY":
-  //       return dictionary.statusUpcomingToday;
-  //     case "NEW":
-  //       return dictionary.statusUpcoming;
-  //     case "DONE":
-  //       return dictionary.statusDone;
-  //     default:
-  //       return "";
-  //   }
-  // };
-
   const [activeTitles, setActiveTitles] = useState({});
 
   const handleTitleClick = (e) => {
@@ -249,16 +188,18 @@ const TodosBody = (props) => {
     });
   };
 
+  /*
   const setTodoList = () => {
-    return filter === "" ? ["To do", "Done"] : ["To do"];
-  };
+   //return filter === "" ? ["To do", "Done"] : ["To do", "Done"];
+   return  ["To do", "Done"];
+  };*/
 
   const getTodoList = () => {
     return (
       <>
-        {setTodoList().map((items, index) => {
+        {["To do", "Done"].map((items, i) => {
           let x = items === "To do" ? todoItems : getDone;
-          let reminder = x.map((todo, indexx) => {
+          let reminder = x.map((todo, ii) => {
             return (
               <TodosList
                 key={todo.id}
@@ -276,10 +217,10 @@ const TodosBody = (props) => {
           return (
             <DivContainer key={items} dark={dark_mode}>
               <div style={{ "padding-left": "20px", "padding-right": "0px" }}>
-                <h6 className=" mb-0 font-size-11 text-uppercase ml-1">
+                <h6 className=" mb-0 font-size-11 ml-1">
                   <SpanTitle className={`badge  ${dark_mode === "1" && "badge-light"} `} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
                     <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-                    {items}
+                    {items === "To do" ? dictionary.todo : dictionary.done}
                   </SpanTitle>
                 </h6>
               </div>
@@ -298,46 +239,10 @@ const TodosBody = (props) => {
       <span className="d-none" ref={refs.btnLoadMore}>
         Load more
       </span>
-      <div className="card-body app-lists" data-loaded={0} style={{ padding: "0px", overflow: "unset" }}>
-        {!isLoaded ? (
-          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
-        ) : todoItems.length || getDone.length ? (
-          getTodoList()
-        ) : (
-          <DivContainer>
-            {filter === "" ? (
-              <>
-                <div style={{ "padding-left": "20px", "padding-right": "0px" }} W>
-                  <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                    <SpanTitle className={"badge"}>
-                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
-                      To do
-                    </SpanTitle>
-                  </h6>
-                </div>
-                <EmptyState>
-                  <h3>{dictionary.noItemsFoundHeader}</h3>
-                  <h5>{dictionary.noItemsFoundText} </h5>
-                </EmptyState>
-              </>
-            ) : (
-              <>
-                <div style={{ "padding-left": "20px", "padding-right": "0px" }} W>
-                  <h6 className="mt-3 mb-0 font-size-11 text-uppercase">
-                    <SpanTitle className={"badge"}>
-                      <SvgIconFeather icon="arrow-up" width={16} height={16} className="mr-1" />
-                      To do
-                    </SpanTitle>
-                  </h6>
-                </div>
-                <EmptyState>
-                  <h3>{dictionary.noItemsFoundHeader}</h3>
-                  <h5>{dictionary.noItemsFoundText} </h5>
-                </EmptyState>
-              </>
-            )}
-          </DivContainer>
-        )}
+      <div className="card-body" data-loaded={0}>
+        {!isLoaded && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+        {isLoaded && (todoItems.length > 0 || getDone.length > 0) && getTodoList()}
+        {isLoaded && !todoItems.length && !getDone.length && <TodoEmptyState dictionary={dictionary} />}
       </div>
     </Wrapper>
   );
