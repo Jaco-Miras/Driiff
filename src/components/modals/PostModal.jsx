@@ -196,6 +196,11 @@ const WrapperDiv = styled(InputGroup)`
     width: 100%;
     .post-info {
       font-size: 0.8rem;
+      flex-flow: wrap;
+      justify-content: flex-end;
+      @media all and (max-width: 480px) {
+        justify-content: flex-start;
+      }
     }
   }
   .dark & {
