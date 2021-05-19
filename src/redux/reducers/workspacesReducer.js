@@ -3080,13 +3080,26 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceReminders: {
           ...state.workspaceReminders,
-          [action.data.id]: {
-            ...state.workspaceReminders[action.data.id],
-            count: action.data.count.reduce((res, c) => {
-              res[c.status.toLowerCase()] = c.count;
-              return res;
-            }, {}),
-          },
+          ...(state.workspaceReminders[action.data.id] && {
+            [action.data.id]: {
+              ...state.workspaceReminders[action.data.id],
+              count: action.data.count.reduce((res, c) => {
+                res[c.status.toLowerCase()] = c.count;
+                return res;
+              }, {}),
+            },
+          }),
+          ...(typeof state.workspaceReminders[action.data.id] === "undefined" && {
+            [action.data.id]: {
+              skip: 0,
+              hasMore: true,
+              reminderIds: [],
+              count: action.data.count.reduce((res, c) => {
+                res[c.status.toLowerCase()] = c.count;
+                return res;
+              }, {}),
+            },
+          }),
         },
       };
     }

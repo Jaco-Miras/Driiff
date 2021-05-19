@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
 import { NavLink } from "../../common";
 import { useTranslation } from "../../hooks";
+import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div``;
 
@@ -67,6 +69,31 @@ const MainNavLink = styled(NavLink)`
 const WorkspacePageHeaderPanel = (props) => {
   const history = useHistory();
   const { className = "", workspace, user } = props;
+
+  const dispatch = useDispatch();
+
+  const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
+  const params = useParams();
+
+  const fetchWsCount = () => {
+    let payload = {
+      topic_id: params.workspaceId,
+    };
+    dispatch(
+      getWorkspaceRemindersCount(payload, (err, res) => {
+        if (err) return;
+        dispatch(updateWorkspaceRemindersCount({ count: res.data, id: payload.topic_id }));
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (!workspaceReminders.hasOwnProperty(params.workspaceId)) {
+      fetchWsCount();
+    }
+  }, [workspaceReminders, params]);
+
+  const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 
   let pathname = props.match.url;
   if (
@@ -142,6 +169,7 @@ const WorkspacePageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
               {dictionary.pageTitleReminders}
+              {isLoaded && workspaceReminders[params.workspaceId].count.all > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.all}</div>}
             </MainNavLink>
           </li>
         </Navbar>
