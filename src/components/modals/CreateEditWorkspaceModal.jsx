@@ -373,6 +373,7 @@ const CreateEditWorkspaceModal = (props) => {
     .map((ws) => {
       return {
         ...ws,
+        icon: "folder",
         value: ws.id,
         label: ws.name,
       };
