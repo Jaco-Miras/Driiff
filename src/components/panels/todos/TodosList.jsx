@@ -46,11 +46,13 @@ const ItemList = styled.li`
   }
   .todo-title {
     text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
+    cursor: pointer;
   }
   .badge.badge-light {
     background: #efefef;
     color: #828282;
     .dark & {
+      background: rgb(175, 184, 189, 0.2) !important;
       color: #fff;
     }
   }
@@ -64,10 +66,15 @@ const ItemList = styled.li`
       display: inline-block;
     }
   }
+  .reminder-date,
+  .todo-type-badge,
+  .todo-title-description {
+    cursor: pointer;
+  }
 `;
 
 const TodosList = (props) => {
-  const { todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon } = props;
+  const { todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge } = props;
 
   const dispatch = useDispatch();
 
@@ -149,10 +156,16 @@ const TodosList = (props) => {
     todoActions.removeConfirmation(todo);
   };
 
+  const handleTitleClick = (e) => {
+    e.preventDefault();
+    if (todo.link_type) handleLinkClick(e, todo);
+    else todoActions.updateFromModal(todo);
+  };
+
   return (
     <>
       <ItemList className="pl-0 reminder-list" isDone={isDone}>
-        <a
+        {/* <a
           // href={todo.link}
           href="#"
           target="_blank"
@@ -162,67 +175,74 @@ const TodosList = (props) => {
             if (todo.link_type) handleLinkClick(e, todo);
             else todoActions.updateFromModal(todo);
           }}
-        >
-          {todo.workspace && (
-            <div className="text-truncate false mt-2">
-              <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
-            </div>
-          )}
-          <span className="d-flex justify-content-between w-100 align-items-center">
-            <span className="d-inline-flex overflow-hidden w-100 align-items-center mr-3">
-              <span className="custom-control custom-checkbox mr-2">
-                <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
-                  <TodoCheckBox checked={isDone} onClick={handleDoneClick} />
-                </ToolTip>
-              </span>
-              <span className="mr-3 d-grid justify-content-center align-items-center">
-                <span className={`todo-title mr-2 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.title}</span>
-                {(todo.link_type === "CHAT" || todo.link_type === "POST_COMMENT") && todo.data && <span dangerouslySetInnerHTML={{ __html: todo.description }} />}
-                {todo.files.map((file) => {
-                  return (
-                    <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
-                      {getFileIcon(file.mime_type)}
-                    </span>
-                  );
-                })}
-              </span>
-              <HoverButtons className="hover-btns ml-1">
-                <Icon icon="pencil" onClick={handleEdit} />
-                <Icon icon="trash" onClick={handleRemove} />
-              </HoverButtons>
+        > */}
+        {todo.workspace && showWsBadge && (
+          <div className="text-truncate false mt-2">
+            <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
+          </div>
+        )}
+        <span className="d-flex justify-content-between w-100 align-items-center">
+          <span className="d-inline-flex overflow-hidden w-100 align-items-center mr-3">
+            <span className="custom-control custom-checkbox mr-2">
+              <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
+                <TodoCheckBox checked={isDone} onClick={handleDoneClick} />
+              </ToolTip>
             </span>
-            <span className="action d-inline-flex justify-content-center align-items-center">
-              <span className="mr-3 align-items-center d-flex">
-                <Icon icon="calendar" />
-                <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
-                  <span className={`badge mr-3 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}</span>
-                </ToolTip>
-                {todo.link_type !== null && <span className={"badge mr-3 badge-light"}>{getTodoType(todo)}</span>}
-                {todo.author !== null && (
+            <span className="mr-3 d-grid justify-content-center align-items-center todo-title-description" onClick={handleTitleClick}>
+              <span className={`todo-title mr-2 ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.title}</span>
+              {(todo.link_type === "CHAT" || todo.link_type === "POST_COMMENT") && todo.data && <span dangerouslySetInnerHTML={{ __html: todo.description }} />}
+              {todo.files.map((file) => {
+                return (
+                  <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
+                    {getFileIcon(file.mime_type)}
+                  </span>
+                );
+              })}
+            </span>
+            <HoverButtons className="hover-btns ml-1">
+              <Icon icon="pencil" onClick={handleEdit} />
+              <Icon icon="trash" onClick={handleRemove} />
+            </HoverButtons>
+          </span>
+          <span className="action d-inline-flex justify-content-center align-items-center">
+            <span className="mr-3 align-items-center d-flex">
+              <Icon icon="calendar" />
+              <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
+                <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)} ${getTextDarkModeClass()}`} onClick={handleEdit}>
+                  {todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}
+                </span>
+              </ToolTip>
+              {todo.link_type !== null && (
+                <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
+                  {getTodoType(todo)}
+                </span>
+              )}
+              {todo.author !== null && (
+                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+              )}
+              {todo.assigned_to && (
+                <>
+                  <Icon icon="chevron-right" />
                   <Avatar
-                    key={todo.author.id}
-                    name={todo.author.name}
-                    tooltipName={dictionary.reminderAuthor}
-                    imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link}
-                    id={todo.author.id}
+                    name={todo.assigned_to.id === todo.author.id && todo.workspace ? todo.workspace.name : todo.assigned_to.name}
+                    tooltipName={dictionary.reminderAssignedTo}
+                    imageLink={
+                      todo.assigned_to.id === todo.author.id && todo.workspace
+                        ? todo.workspace.channel.icon_link
+                        : todo.assigned_to.profile_image_thumbnail_link
+                        ? todo.assigned_to.profile_image_thumbnail_link
+                        : todo.assigned_to.profile_image_link
+                    }
+                    id={todo.assigned_to.id === todo.author.id && todo.workspace ? todo.workspace.id : todo.assigned_to.id}
+                    type={todo.workspace ? "TOPIC" : "USER"}
+                    noDefaultClick={todo.workspace ? true : false}
                   />
-                )}
-                {todo.assigned_to && todo.assigned_to.id !== todo.author.id && (
-                  <>
-                    <Icon icon="chevron-right" />
-                    <Avatar
-                      key={todo.assigned_to.id}
-                      name={todo.assigned_to.name}
-                      tooltipName={dictionary.reminderAssignedTo}
-                      imageLink={todo.assigned_to.profile_image_thumbnail_link ? todo.assigned_to.profile_image_thumbnail_link : todo.assigned_to.profile_image_link}
-                      id={todo.assigned_to.id}
-                    />
-                  </>
-                )}
-              </span>
+                </>
+              )}
             </span>
           </span>
-        </a>
+        </span>
+        {/* </a> */}
       </ItemList>
     </>
   );
