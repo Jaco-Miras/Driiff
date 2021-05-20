@@ -8,7 +8,7 @@ import ListContainer from "./ListContainer";
 const Wrapper = styled.div`
   flex: unset !important;
   height: 100% !important;
-  min-height: 200px;
+  min-height: 150px;
   overflow: unset !important;
   ${(props) =>
     props.active &&
@@ -33,6 +33,10 @@ const Wrapper = styled.div`
   .custom-checkbox {
     position: relative;
     top: 1.5px;
+    padding: 0;
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
 
     .cci.cci-active + .ccl {
       span:first-child {
