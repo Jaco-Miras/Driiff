@@ -5,15 +5,15 @@ import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 import { throttle } from "lodash";
 
 const Wrapper = styled.div`
-  overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
   text-align: left;
+  min-height: 200px;
   .app-sidebar-menu {
     overflow: hidden;
     outline: currentcolor none medium;
   }
   .app-block {
     overflow: unset !important;
-    height: ${(props) => (props.hasReminders ? "auto" : "100%")};
+    height: auto;
   }
 `;
 
@@ -40,7 +40,7 @@ const TodosPanel = (props) => {
     _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀"),
   ];
 
-  const [inDexer, setSetDexer] = useState(Math.floor(Math.random() * newItemsFoundHeader.length));
+  const [inDexer, setInDexer] = useState(Math.floor(Math.random() * newItemsFoundHeader.length));
 
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
@@ -107,16 +107,28 @@ const TodosPanel = (props) => {
     }
   }, [loadReminders]);
 
+  useEffect(() => {
+    setInDexer(Math.floor(Math.random() * newItemsFoundHeader.length));
+  }, [filter]);
+
   const reminders = getReminders({ filter: { status: filter, search: search } });
 
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0} onScroll={handleScroll}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       <div className="row app-block">
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch} searchValue={search} />
-          <TodosBody complete={false} isLoaded={isLoaded} todoItems={reminders.filter((i) => i.status !== "DONE")} dictionary={dictionary} todoActions={todoActions} filter={filter} doneTodoItems={reminders.filter((i) => i.status === "DONE")} />
+          <TodosBody
+            complete={false}
+            isLoaded={isLoaded}
+            todoItems={reminders.filter((i) => i.status !== "DONE")}
+            dictionary={dictionary}
+            todoActions={todoActions}
+            filter={filter}
+            doneTodoItems={reminders.filter((i) => i.status === "DONE")}
+          />
         </div>
       </div>
     </Wrapper>
