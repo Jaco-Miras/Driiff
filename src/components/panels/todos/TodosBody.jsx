@@ -123,7 +123,7 @@ const SpanTitle = styled.span`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, isLoaded, todoActions, todoItems, getDone } = props;
+  const { className = "", dictionary, isLoaded, todoActions, todoItems, doneTodoItems } = props;
 
   // const refs = {
   //   files: useRef(null),
@@ -197,9 +197,9 @@ const TodosBody = (props) => {
   const getTodoList = () => {
     return (
       <>
-        {["To do", "Done"].map((items, i) => {
-          let x = items === "To do" ? todoItems : getDone;
-          let reminder = x.map((todo, ii) => {
+        {[dictionary.todo, dictionary.done].map((items, i) => {
+          const todos = i === 0 ? todoItems : doneTodoItems;
+          let reminder = todos.map((todo, ii) => {
             return (
               <TodosList
                 key={todo.id}
@@ -220,7 +220,7 @@ const TodosBody = (props) => {
                 <h6 className=" mb-0 font-size-11 ml-1">
                   <SpanTitle className={`badge  ${dark_mode === "1" && "badge-light"} `} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
                     <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-                    {items === "To do" ? dictionary.todo : dictionary.done}
+                    {items}
                   </SpanTitle>
                 </h6>
               </div>
@@ -238,8 +238,8 @@ const TodosBody = (props) => {
     <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
       <div className="card-body" data-loaded={0}>
         {!isLoaded && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-        {isLoaded && (todoItems.length > 0 || getDone.length > 0) && getTodoList()}
-        {isLoaded && !todoItems.length && !getDone.length && <TodoEmptyState dictionary={dictionary} />}
+        {isLoaded && (todoItems.length > 0 || doneTodoItems.length > 0) && getTodoList()}
+        {isLoaded && !todoItems.length && !doneTodoItems.length && <TodoEmptyState dictionary={dictionary} />}
       </div>
     </Wrapper>
   );
