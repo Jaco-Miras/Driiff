@@ -670,7 +670,7 @@ const PostModal = (props) => {
         } else {
           payload = {
             ...payload,
-            file_ids: result.data.map((res) => res.id),
+            file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
           };
           dispatch(
             postCreate(payload, (err, res) => {
