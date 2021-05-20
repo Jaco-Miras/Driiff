@@ -15307,7 +15307,8 @@ body.form-membership .form-wrapper hr {
   width: calc(100% - 60px);
 }
 
-.timeline .timeline-item::before {
+
+.timeline .timeline-item:not(.timeline-item-no-line) ::before {
   content: "";
   display: block;
   position: absolute;
