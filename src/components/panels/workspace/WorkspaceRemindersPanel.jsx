@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const { getWorkspaceReminders, action: todoActions, isLoaded, count } = useWorkspaceReminders();
+  const { getWorkspaceReminders, action: todoActions, isLoaded, count, workspaceName } = useWorkspaceReminders();
 
   const { _t } = useTranslation();
 
@@ -131,6 +131,7 @@ const TodosPanel = (props) => {
             todoActions={todoActions}
             filter={filter}
             doneTodoItems={reminders.filter((i) => i.status === "DONE")}
+            workspaceName={workspaceName}
           />
         </div>
       </div>
