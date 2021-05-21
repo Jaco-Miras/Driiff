@@ -79,6 +79,7 @@ import {
   generateUnfurlReducer,
   getConnectedSlugs,
   getLatestReply,
+  getToDoDetail,
   getUnreadNotificationCounterEntries,
   incomingCreatedAnnouncement,
   incomingDoneToDo,
@@ -309,6 +310,7 @@ class SocketListeners extends Component {
       })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
+        this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
             this.props.incomingToDo(e);
@@ -1835,6 +1837,7 @@ function mapDispatchToProps(dispatch) {
     incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),
     incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
+    getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
   };
 }
 
