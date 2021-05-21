@@ -37,29 +37,33 @@ const useTodos = (fetchTodosOnMount = false) => {
         }
       })
       .filter((t) => {
-        if (filter) {
-          if (filter.search !== "") {
-            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+        if (t.workspace && t.assigned_to && t.assigned_to.id !== loggedUser.id) {
+          return false;
+        } else {
+          if (filter) {
+            if (filter.search !== "") {
+              if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+                return false;
+              }
+            }
+            /*
+            if (filter.status !== "")
+              return t.status === filter.status;
+            */
+
+            if (filter.status !== "") {
+              if (t.status === filter.status) return true;
+              if (t.status === "DONE") {
+                if (filter.status === "TODAY" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) return true;
+                if (filter.status === "OVERDUE" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") < moment().format("YYYY-MM-DD")) return true;
+                if (filter.status === "NEW" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") > moment().format("YYYY-MM-DD")) return true;
+                if (filter.status === "NEW" && t.remind_at === null) return true;
+              }
               return false;
             }
           }
-          /*
-          if (filter.status !== "")
-            return t.status === filter.status;
-          */
-
-          if (filter.status !== "") {
-            if (t.status === filter.status) return true;
-            if (t.status === "DONE") {
-              if (filter.status === "TODAY" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) return true;
-              if (filter.status === "OVERDUE" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") < moment().format("YYYY-MM-DD")) return true;
-              if (filter.status === "NEW" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") > moment().format("YYYY-MM-DD")) return true;
-              if (filter.status === "NEW" && t.remind_at === null) return true;
-            }
-            return false;
-          }
+          return true;
         }
-        return true;
       });
   };
 

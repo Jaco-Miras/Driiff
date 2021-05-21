@@ -80,6 +80,7 @@ import {
   generateUnfurlReducer,
   getConnectedSlugs,
   getLatestReply,
+  getToDoDetail,
   getUnreadNotificationCounterEntries,
   incomingCreatedAnnouncement,
   incomingDoneToDo,
@@ -338,6 +339,7 @@ class SocketListeners extends Component {
             this.props.getFavoriteWorkspaceCounters();
           }
         }
+        this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
             this.props.incomingToDo(e);
@@ -1888,6 +1890,7 @@ function mapDispatchToProps(dispatch) {
     incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
+    getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
   };
 }
 
