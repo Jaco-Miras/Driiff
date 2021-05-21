@@ -27,7 +27,10 @@ export const useUserLogin = (props) => {
     if (magicLinkMatch !== null && !checkingRef.current) {
       checkingRef.current = true;
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
-        checkingRef.current = null;
+        setTimeout(() => {
+          checkingRef.current = null;
+        }, 3000);
+
         if (res) {
           console.log(res.data);
           if (res.data.additional_data) {
