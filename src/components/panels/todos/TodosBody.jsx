@@ -8,7 +8,6 @@ import ListContainer from "./ListContainer";
 const Wrapper = styled.div`
   flex: unset !important;
   height: 100% !important;
-  min-height: 150px;
   overflow: unset !important;
   ${(props) =>
     props.active &&
