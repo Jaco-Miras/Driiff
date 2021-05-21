@@ -5,6 +5,8 @@ import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 import { throttle } from "lodash";
 
 const Wrapper = styled.div`
+  //overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
+  overflow: auto;
   text-align: left;
   min-height: 200px;
   .app-sidebar-menu {
@@ -14,6 +16,7 @@ const Wrapper = styled.div`
   .app-block {
     overflow: unset !important;
     height: auto;
+    // height: ${(props) => (props.hasReminders ? "auto" : "100%")};
   }
 `;
 

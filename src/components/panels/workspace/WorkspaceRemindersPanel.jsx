@@ -6,6 +6,7 @@ import { throttle } from "lodash";
 
 const Wrapper = styled.div`
   //overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
+  overflow: auto;
   text-align: left;
   min-height: 200px;
   .app-sidebar-menu {
