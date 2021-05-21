@@ -15,7 +15,7 @@ const Navbar = styled.ul`
   li {
     display: inline-block;
     text-align: center;
-    margin-right: 15px;
+    margin-right: 1.5rem;
     &:last-child {
       display: inline-flex !important;
       justify-content: flex-end;
