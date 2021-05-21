@@ -109,7 +109,7 @@ const StyledListContainer = styled(ListContainer)`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, todoActions, todoItems, doneTodoItems } = props;
+  const { className = "", dictionary, filter, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
@@ -267,7 +267,7 @@ const TodosBody = (props) => {
             handleHeaderClick={handleShowTodo}
             headerText={dictionary.todo}
             items={todoItems}
-            headerChild={params.hasOwnProperty("workspaceId") ? <span className="badge badge-light">{params.workspaceId}</span> : null}
+            headerChild={params.hasOwnProperty("workspaceId") ? <span className="badge badge-light">{workspaceName}</span> : null}
             ItemList={(item) => (
               <TodosList
                 key={item.id}

@@ -21,7 +21,7 @@ const Navbar = styled.ul`
     }
     a {
       white-space: nowrap;
-      margin-left: 15px;
+      margin: 0 10px;
     }
   }
 `;
