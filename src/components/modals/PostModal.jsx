@@ -451,7 +451,7 @@ const PostModal = (props) => {
       payload = {
         ...payload,
         id: item.post.id,
-        file_ids: uploadedFiles.map((f) => f.id),
+        file_ids: [...uploadedFiles.map((f) => f.id), ...payload.file_ids],
       };
       if (item.post.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
         delete payload.approval_user_ids;
