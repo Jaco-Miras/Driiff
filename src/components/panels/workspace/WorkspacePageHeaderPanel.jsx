@@ -15,13 +15,19 @@ const Navbar = styled.ul`
   li {
     display: inline-block;
     text-align: center;
+    margin-right: 15px;
     &:last-child {
       display: inline-flex !important;
       justify-content: flex-end;
     }
     a {
       white-space: nowrap;
-      margin: 0 10px;
+    }
+  }
+  li:first-child {
+    margin-left: 15px;
+    @media all and (max-width: 700px) {
+      margin-left: 0;
     }
   }
 `;
