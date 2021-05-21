@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../hooks";
+import { useFileActions, useTimeFormat, useRedirect } from "../../hooks";
 import { TodosList } from "./index";
 import ListContainer from "./ListContainer";
 
@@ -47,7 +47,7 @@ const Wrapper = styled.div`
   }
 
   .todo-title {
-    color: #343a40;
+    // color: #343a40;
 
     &.description {
       color: #b8b8b8;
@@ -114,9 +114,6 @@ const TodosBody = (props) => {
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
-  const {
-    generalSettings: { dark_mode },
-  } = useSettings();
 
   const redirect = useRedirect();
   const params = useParams();
@@ -195,9 +192,9 @@ const TodosBody = (props) => {
   }, [filter]);
 
   useEffect(() => {
-    // if bot category is set to false then show the category with posts
+    // if bot category is set to false then show the to do section
     if (!showList.done && !showList.todo) {
-      if (doneTodoItems.length) {
+      if (todoItems.length && doneTodoItems.length) {
         setShowList((prevState) => {
           return {
             ...prevState,
@@ -279,7 +276,6 @@ const TodosBody = (props) => {
                 todoActions={todoActions}
                 dictionary={dictionary}
                 handleLinkClick={handleLinkClick}
-                dark_mode={dark_mode}
                 todoFormat={todoFormat}
                 todoFormatShortCode={todoFormatShortCode}
                 getFileIcon={getFileIcon}
@@ -302,7 +298,6 @@ const TodosBody = (props) => {
                 todoActions={todoActions}
                 dictionary={dictionary}
                 handleLinkClick={handleLinkClick}
-                dark_mode={dark_mode}
                 todoFormat={todoFormat}
                 todoFormatShortCode={todoFormatShortCode}
                 getFileIcon={getFileIcon}

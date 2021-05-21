@@ -83,7 +83,7 @@ const ReminderDescription = styled.span`
 `;
 
 const TodosList = (props) => {
-  const { todo, todoActions, handleLinkClick, dictionary, dark_mode, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge } = props;
+  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge } = props;
 
   const dispatch = useDispatch();
 
@@ -103,10 +103,6 @@ const TodosList = (props) => {
 
   const handleDoneClick = (e) => {
     setIsDone(!isDone);
-  };
-
-  const getTextDarkModeClass = () => {
-    return dark_mode === "1" && "text-light";
   };
 
   const getTextColorClass = (todo) => {
@@ -178,7 +174,7 @@ const TodosList = (props) => {
             </ToolTip>
           </span>
           <span className="align-items-center todo-title-description text-truncate mr-3" onClick={handleTitleClick}>
-            <span className={`todo-title ${getTextColorClass(todo)} ${getTextDarkModeClass()}`}>{todo.title}</span>
+            <span className={`todo-title ${getTextColorClass(todo)}`}>{todo.title}</span>
             {todo.description && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
           </span>
           <HoverButtons className="hover-btns ml-1">
@@ -188,7 +184,7 @@ const TodosList = (props) => {
           <div className="d-flex align-items-center ml-auto">
             <Icon icon="calendar" />
             <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
-              <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)} ${getTextDarkModeClass()}`} onClick={handleEdit}>
+              <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
                 {todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}
               </span>
             </ToolTip>

@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   //overflow: ${(props) => (props.hasReminders ? "auto !important" : "unset !important")};
   overflow: auto;
   text-align: left;
-  min-height: 200px;
+  min-height: 100px;
   .app-sidebar-menu {
     overflow: hidden;
     outline: currentcolor none medium;
