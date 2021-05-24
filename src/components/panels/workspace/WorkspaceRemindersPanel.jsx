@@ -73,6 +73,7 @@ const TodosPanel = (props) => {
     todo: _t("REMINDER.TO_DO", "To do"),
     done: _t("REMINDER.DONE", "Done"),
     addDate: _t("REMINDER.ADD_DATE", "Add date"),
+    assignedByMe: _t("REMINDER.ASSIGNED_BY_ME", "Assigned by me"),
   };
 
   const [filter, setFilter] = useState("");
