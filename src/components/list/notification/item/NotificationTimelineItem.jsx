@@ -8,6 +8,7 @@ const Icon = styled(SvgIconFeather)`
   width: 12px;
 `;
 const Wrapper = styled.div`
+  cursor: pointer;
   padding: 1.5em 1.5em 0em 1.5em !important;
   background: ${(props) => (props.isRead ? "transparent" : props.darkMode === "1" ? "#191c20" : "#F9F9F9")};
 
