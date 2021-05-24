@@ -151,7 +151,6 @@ const MainSidebarLinks = (props) => {
           <NavIconContainer to={"/todos"} active={["/todos"].includes(location.pathname)}>
             <NavIcon icon={"calendar"} />
             <div>{dictionary.todoLinks}</div>
-            {reminderCount && <Badge className={"badge badge-primary badge-pill ml-1"}>{reminderCount > 99 ? "99+" : reminderCount}</Badge>}
           </NavIconContainer>
         </li> */}
         <li onClick={closeLeftNav}>
