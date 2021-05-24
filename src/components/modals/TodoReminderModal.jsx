@@ -578,12 +578,15 @@ const TodoReminderModal = (props) => {
               </div>
             </div>
             <div className="column clearfix">
-              <div className="col-6 float-left">
-                <div className="modal-label">{dictionary.workspaceLabel}</div>
-                <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
-                </WorkspacesContainer>
-              </div>
+              {itemType && parentItem && itemType === "CHAT" && parentItem.type === "TOPIC" && (
+                <div className="col-6 float-left">
+                  <div className="modal-label">{dictionary.workspaceLabel}</div>
+                  <WorkspacesContainer className="mb-2">
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                  </WorkspacesContainer>
+                </div>
+              )}
+
               {selectedWorkspace && (
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.assignedToLabel}</div>
