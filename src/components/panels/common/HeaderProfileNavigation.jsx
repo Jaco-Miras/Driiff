@@ -4,7 +4,7 @@ import { Avatar, SvgIconFeather, ToolTip } from "../../common";
 import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../hooks";
 import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const Wrapper = styled.ul`
   padding-left: 5px;
@@ -72,6 +72,15 @@ const Wrapper = styled.ul`
     }
     .notif-bell {
       position: relative;
+    }
+    .notif-bell.active div {
+      filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.25);
+  -webkit-transform: rotate(25deg);
+  -moz-transform: rotate(25deg);
+  -ms-transform: rotate(25deg);
+  -o-transform: rotate(25deg);
+  transform: rotate(25deg);
+  display: inline-block;
     }
   }
 `;
@@ -179,6 +188,9 @@ const HomeProfileNavigation = (props) => {
     history.push("/notifications");
   };
 
+
+  const location = useLocation();
+
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
   return (
@@ -192,7 +204,7 @@ const HomeProfileNavigation = (props) => {
         {dropDown.name === "search" && dropDown.value && <SearchDropDown />}
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className={"nav-link notif-bell"} data-toggle="notification" onClick={gotoNotifications}>
+        <a href="/" className={`nav-link notif-bell ${location.pathname.split("/")[1] === 'notifications' && 'active'}`} data-toggle="notification" onClick={gotoNotifications}>
           {unreadNotifications > 0 && (
             <NotificationBadge className={`badge badge-danger badge-pill ${unreadNotifications > 99 ? "triple" : unreadNotifications > 9 ? "double" : "single"}`}>{unreadNotifications > 99 ? "99+" : unreadNotifications}</NotificationBadge>
           )}
