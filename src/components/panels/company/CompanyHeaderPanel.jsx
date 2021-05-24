@@ -204,14 +204,14 @@ const CompanyHeaderPanel = () => {
           </>
         );
       }
-      case "todos": {
-        return (
-          <>
-            <SvgIconFeather className="mr-2" icon="check" />
-            <CompanyName>{dictionary.pageTitleTodos}</CompanyName>
-          </>
-        );
-      }
+      // case "todos": {
+      //   return (
+      //     <>
+      //       <SvgIconFeather className="mr-2" icon="check" />
+      //       <CompanyName>{dictionary.pageTitleTodos}</CompanyName>
+      //     </>
+      //   );
+      // }
       case "system": {
         return (
           <>
@@ -302,7 +302,7 @@ const CompanyHeaderPanel = () => {
               </li>
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">{renderMainTitle()}</li>
             </div>
-            {!["todos", "system", "notifications", "profile", "settings"].includes(match.params.page) && (
+            {!["system", "notifications", "profile", "settings"].includes(match.params.page) && (
               <div className="navbar-bottom">
                 <div className="navbar-main">
                   <CompanyPageHeaderPanel dictionary={dictionary} />
