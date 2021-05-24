@@ -45,6 +45,7 @@ const WrapperDiv = styled(InputGroup)`
     @media all and (max-width: 480px) {
       margin-left: 0;
       margin-right: 0;
+      margin-bottom: 1rem;
     }
   }
   &.schedule-post {
@@ -195,6 +196,11 @@ const WrapperDiv = styled(InputGroup)`
     width: 100%;
     .post-info {
       font-size: 0.8rem;
+      flex-flow: wrap;
+      justify-content: flex-end;
+      @media all and (max-width: 480px) {
+        justify-content: flex-start;
+      }
     }
   }
   .dark & {
@@ -953,7 +959,7 @@ const PostModal = (props) => {
             </div>
           </WrapperDiv>
         )}
-        <WrapperDiv className="modal-label more-option mb-0">
+        <WrapperDiv className="modal-label more-option">
           <MoreOption>{dictionary.moreOptions}</MoreOption>
           <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
         </WrapperDiv>

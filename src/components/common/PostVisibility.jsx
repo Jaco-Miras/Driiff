@@ -86,7 +86,7 @@ const PostVisibility = (props) => {
             );
           })}
       </span>
-      <span className="d-flex justify-content-end align-items-center post-info" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
+      <span className="d-flex align-items-center post-info" dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }} />
     </div>
   );
 };
