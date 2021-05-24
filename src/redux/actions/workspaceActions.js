@@ -18,6 +18,8 @@ import {
   getWorkspaceFilterCount as getWorkspaceFilterCountService,
   getWorkspaceFolder as getWorkspaceFolderService,
   getWorkspacePostDetail as getWorkspacePostDetailService,
+  getWorkspaceReminders as getWorkspaceRemindersService,
+  getWorkspaceRemindersCount as getWorkspaceRemindersCountService,
   getWorkspaces as getWorkspacesService,
   getWorkspaceTopics as getWorkspaceTopicsService,
   joinWorkspace as joinWorkspaceService,
@@ -226,4 +228,20 @@ export function getWorkspaceFitlerCount(payload, callback) {
 
 export function getFavoriteWorkspaceCounters(payload, callback) {
   return dispatchActionToReducer(getFavoriteWorkspaceCountersService(payload), "GET_FAVORITE_WORKSPACE_COUNTERS_START", "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS", "GET_FAVORITE_WORKSPACE_COUNTERS_FAIL", callback);
+}
+
+export function getWorkspaceReminders(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceRemindersService(payload), "GET_WORKSPACE_REMINDERS_START", "GET_WORKSPACE_REMINDERS_SUCCESS", "GET_WORKSPACE_REMINDERS_FAIL", callback);
+}
+
+export function getWorkspaceRemindersCallback(payload, callback) {
+  return SimpleDispatchActionToReducer("GET_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
+}
+
+export function getWorkspaceRemindersCount(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceRemindersCountService(payload), "GET_WORKSPACE_REMINDERS_COUNT_START", "GET_WORKSPACE_REMINDERS_COUNT_SUCCESS", "GET_WORKSPACE_REMINDERS_COUNT_FAIL", callback);
+}
+
+export function updateWorkspaceRemindersCount(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_REMINDERS_COUNT", payload, callback);
 }

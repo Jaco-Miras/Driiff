@@ -67,6 +67,7 @@ const NavBarLeft = styled.div`
           left: 0;
           width: 100%;
           padding: 0 16px;
+          overflow: auto;
         }
       }
     }
@@ -282,6 +283,7 @@ const WorspaceHeaderPanel = (props) => {
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
+    pageTitleWorkspaceReminders: _t("PAGE_TITLE.WORKSPACE_REMINDERS", "Reminders"),
     pageTitleWorkspaceDashboard: _t("PAGE_TITLE.WORKSPACE_DASHBOARD", "Dashboard"),
     pageTitleWorkspacePosts: _t("PAGE_TITLE.WORKSPACE_POSTS", "Posts"),
     pageTitleWorkspaceChat: _t("PAGE_TITLE.WORKSPACE_CHAT", "Chat"),
@@ -379,6 +381,10 @@ const WorspaceHeaderPanel = (props) => {
       }
       case "settings": {
         pageName = dictionary.pageTitleSettings;
+        break;
+      }
+      case "reminders": {
+        pageName = dictionary.pageTitleWorkspaceReminders;
         break;
       }
       default: {
