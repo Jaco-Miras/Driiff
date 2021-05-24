@@ -163,6 +163,12 @@ const WorkspacePageHeaderPanel = (props) => {
             </MainNavLink>
           </li>
           <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
+              {dictionary.pageTitleReminders}
+              {isLoaded && workspaceReminders[params.workspaceId].count.all > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.all}</div>}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
               {dictionary.pageTitleFiles}
             </MainNavLink>
@@ -170,12 +176,6 @@ const WorkspacePageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
               {dictionary.pageTitlePeople}
-            </MainNavLink>
-          </li>
-          <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
-              {dictionary.pageTitleReminders}
-              {isLoaded && workspaceReminders[params.workspaceId].count.all > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.all}</div>}
             </MainNavLink>
           </li>
         </Navbar>

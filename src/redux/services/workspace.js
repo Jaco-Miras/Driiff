@@ -384,6 +384,19 @@ export function getWorkspaceFilterCount(payload) {
   });
 }
 
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function getFavoriteWorkspaceCounters(payload) {
+  let url = "/v2/workspace-favourite-entries";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
 export function getWorkspaceReminders(payload) {
   let url = `/v2/to-do?${objToUrlParams(payload)}`;
   return apiCall({
@@ -395,19 +408,6 @@ export function getWorkspaceReminders(payload) {
 
 export function getWorkspaceRemindersCount(payload) {
   let url = `/v2/to-do-detail?${objToUrlParams(payload)}`;
-  return apiCall({
-    method: "GET",
-    url: url,
-    data: payload,
-  });
-}
-
-/**
- * @param {Object} payload
- * @returns {Promise<*>}
- */
-export function getFavoriteWorkspaceCounters(payload) {
-  let url = "/v2/workspace-favourite-entries";
   return apiCall({
     method: "GET",
     url: url,
