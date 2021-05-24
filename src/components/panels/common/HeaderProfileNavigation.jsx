@@ -4,6 +4,7 @@ import { Avatar, SvgIconFeather, ToolTip } from "../../common";
 import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../hooks";
 import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.ul`
   padding-left: 5px;
@@ -172,6 +173,12 @@ const HomeProfileNavigation = (props) => {
     }
   }, []);
 
+  const history = useHistory();
+  const gotoNotifications = (e) => {
+    e.preventDefault();
+    history.push("/notifications");
+  };
+
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
   return (
@@ -185,7 +192,7 @@ const HomeProfileNavigation = (props) => {
         {dropDown.name === "search" && dropDown.value && <SearchDropDown />}
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className={"nav-link notif-bell"} data-toggle="notification" onClick={toggleDropdown}>
+        <a href="/" className={"nav-link notif-bell"} data-toggle="notification" onClick={gotoNotifications}>
           {unreadNotifications > 0 && (
             <NotificationBadge className={`badge badge-danger badge-pill ${unreadNotifications > 99 ? "triple" : unreadNotifications > 9 ? "double" : "single"}`}>{unreadNotifications > 99 ? "99+" : unreadNotifications}</NotificationBadge>
           )}
@@ -193,7 +200,6 @@ const HomeProfileNavigation = (props) => {
             <SvgIconFeather icon="bell" />
           </ToolTip>
         </a>
-        {dropDown.name === "notification" && dropDown.value && <NotificationDropDown toggleDropdown={toggleDropdown} />}
       </li>
       <li className="nav-item">
         <a href="/" className={"nav-link dark-mode-switch"} onClick={setThemeButton}>
