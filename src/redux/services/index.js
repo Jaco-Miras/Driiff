@@ -229,6 +229,7 @@ export {
   fetchPrimaryFiles,
   fetchMembers,
   fetchTimeline,
+  getFavoriteWorkspaceCounters,
   getWorkspaceFilterCount,
   getPostStatusCount,
   getAllWorkspace,

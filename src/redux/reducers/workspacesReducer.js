@@ -155,6 +155,7 @@ export default (state = INITIAL_STATE, action) => {
             folder_name: null,
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -3044,6 +3045,23 @@ export default (state = INITIAL_STATE, action) => {
             };
             return ws;
           }, {}),
+        },
+      };
+    }
+    case "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS": {
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          ...(action.data.length > 0 && {
+            ...action.data.reduce((res, obj) => {
+              res[obj.topic_id] = {
+                ...state.workspaces[obj.topic_id],
+                workspace_counter_entries: obj.workspace_counter_entries,
+              };
+              return res;
+            }, {}),
+          }),
         },
       };
     }
