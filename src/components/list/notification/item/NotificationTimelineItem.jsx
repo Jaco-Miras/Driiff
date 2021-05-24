@@ -143,6 +143,8 @@ export const NotificationTimelineItem = (props) => {
     reminder: _t("NOTIFICATION.REMINDER_ICON", "Reminder"),
     mustRead: _t("NOTIFICATION.MUST_READ", "Must read"),
     needsReply: _t("NOTIFICATION.NEEDS_REPLY", "Needs reply"),
+    markAsRead: _t("NOTIFICATION.MARK_AS_READ", "Mark as read"),
+    markAsUnread: _t("NOTIFICATION.MARK_AS_UNREAD", "Mark as unread"),
   };
 
   const renderTitle = useCallback(() => {
@@ -311,11 +313,11 @@ export const NotificationTimelineItem = (props) => {
               <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
               <p style={{ textAlign: "right", lineHeight: "1" }}>
                 {notification.is_read === 0 ? (
-                  <span title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                  <span title={dictionary.markAsRead} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
                     ...
                   </span>
                 ) : (
-                  <span title="Mark as unread" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                  <span title={dictionary.markAsUnread} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
                     ...
                   </span>
                 )}
