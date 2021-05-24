@@ -4,15 +4,14 @@ import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { useTimeFormat } from "../../../hooks";
 
-
 const Icon = styled(SvgIconFeather)`
   width: 12px;
 `;
 const Wrapper = styled.div`
-padding:1.5em  1.5em 0em  1.5em   !important;
-background: ${(props) => props.isRead ? "transparent" : (props.darkMode === "1"? "#191c20":"#F9F9F9")};
+  padding: 1.5em 1.5em 0em 1.5em !important;
+  background: ${(props) => (props.isRead ? "transparent" : props.darkMode === "1" ? "#191c20" : "#F9F9F9")};
 
-border-bottom: ${(props) => (props.darkMode === "1" ? '1px solid #9b9b9b1a': "1px solid #ebebeb;")};
+  border-bottom: ${(props) => (props.darkMode === "1" ? "1px solid #9b9b9b1a" : "1px solid #ebebeb;")};
   .avatar {
     margin-right: 1rem;
   }
@@ -20,11 +19,11 @@ border-bottom: ${(props) => (props.darkMode === "1" ? '1px solid #9b9b9b1a': "1p
     margin: 0;
   }
   h6 {
-  color: ${(props) => (props.darkMode === "1" ? '#afb8bd': "#000000")};
-  font-family: Inter;
-  font-size: 12px;
-  letter-spacing: 0;
-  line-height: 15px;
+    color: ${(props) => (props.darkMode === "1" ? "#afb8bd" : "#000000")};
+    font-family: Inter;
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 15px;
     .text-link {
       color: #828282;
       cursor: hand;
@@ -54,12 +53,16 @@ border-bottom: ${(props) => (props.darkMode === "1" ? '1px solid #9b9b9b1a': "1p
       visibility: hidden;
     }
   }
-  .badge-danger {background-color: #FF4445; }
-  .badge-success {background-color: #00C851; }
+  .badge-danger {
+    background-color: #ff4445;
+  }
+  .badge-success {
+    background-color: #00c851;
+  }
 `;
 
 export const NotificationTimelineItem = (props) => {
-  const { notification, actions, history, redirect, user, _t, darkMode  } = props;
+  const { notification, actions, history, redirect, user, _t, darkMode } = props;
 
   const { fromNow } = useTimeFormat();
 
@@ -238,22 +241,19 @@ export const NotificationTimelineItem = (props) => {
     }
   }, [notification]);
 
-
   const getBadgeClass = (data) => {
-    if (data.must_read)
-      return "badge-danger";
-    if (data.must_reply)
-      return "badge-success";
+    if (data.must_read) return "badge-danger";
+    if (data.must_reply) return "badge-success";
     return null;
   };
 
   const getMustText = (data) => {
-    if (data.must_read)
-      return dictionary.mustRead;
-    if (data.must_reply)
-      return dictionary.needsReply;
+    if (data.must_read) return dictionary.mustRead;
+    if (data.must_reply) return dictionary.needsReply;
     return null;
   };
+
+  console.log(notification);
 
   return (
     <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
@@ -273,35 +273,58 @@ export const NotificationTimelineItem = (props) => {
         <div onClick={handleRedirect}>
           <h6 className="d-flex justify-content-between mb-4">
             <div>
-              <span style={{ 'font-weight': 'bold' }}>{renderTitle()}: {notification.type === "NEW_TODO" ? (
-                <>{stripHtml(notification.data.description)}</>
-              ) : notification.type === "POST_CREATE" ||
-                notification.type === "POST_REQST_APPROVAL" ||
-                notification.type === "POST_ACCEPT_APPROVAL" ||
-                notification.type === "POST_REJECT_APPROVAL" ||
-                notification.type === "CLOSED_POST" ||
-                notification.type === "WORKSPACE_ADD_MEMBER" ? (
-                <span style={{ 'font-weight': 'normal' }}>{notification.data && notification.data.title}</span>
-              ) : (
-                <span style={{ 'font-weight': 'normal' }}>{stripHtml(notification.data.comment_body)}</span>
-              )}</span>
-              <p style={{ 'font-weight': 'normal', 'color': '#8B8B8B' }}>
-                {notification.type === "NEW_TODO" && (<><Icon icon="calendar" /> {dictionary.reminder} </>)}
-                {notification.data.workspaces && notification.data.workspaces[0].workspace_name && (<><Icon icon="folder" /><span style={{ 'vertical-align': 'middle' }}> {notification.data.workspaces[0].workspace_name} </span> </>)}
-                {notification.data.workspaces && notification.data.workspaces[0].topic_name && (<><Icon icon="compass" /><span style={{ 'vertical-align': 'middle' }}> {notification.data.workspaces[0].topic_name} </span> </>)}
-              </p>
-            </div>
-            <div style={{ 'text-align': 'right' }}>
-              <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
-              <p style={{ 'text-align': 'right', 'line-height': '1' }}>
-                {notification.is_read === 0 ? (
-                  <span title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">...</span>
+              <span style={{ "font-weight": "bold" }}>
+                {renderTitle()}:{" "}
+                {notification.type === "NEW_TODO" ? (
+                  <>{stripHtml(notification.data.description)}</>
+                ) : notification.type === "POST_CREATE" ||
+                  notification.type === "POST_REQST_APPROVAL" ||
+                  notification.type === "POST_ACCEPT_APPROVAL" ||
+                  notification.type === "POST_REJECT_APPROVAL" ||
+                  notification.type === "CLOSED_POST" ||
+                  notification.type === "WORKSPACE_ADD_MEMBER" ? (
+                  <span style={{ "font-weight": "normal" }}>{notification.data && notification.data.title}</span>
                 ) : (
-                  <span title="Mark as unread" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">...</span>
+                  <span style={{ "font-weight": "normal" }}>{stripHtml(notification.data.comment_body)}</span>
+                )}
+              </span>
+              <p style={{ "font-weight": "normal", color: "#8B8B8B" }}>
+                {notification.type === "NEW_TODO" && (
+                  <>
+                    <Icon icon="calendar" /> {dictionary.reminder}{" "}
+                  </>
+                )}
+                {notification.data.workspaces && notification.data.workspaces.length > 0 && notification.data.workspaces[0].workspace_name && (
+                  <>
+                    <Icon icon="folder" />
+                    <span style={{ "vertical-align": "middle" }}> {notification.data.workspaces[0].workspace_name} </span>{" "}
+                  </>
+                )}
+                {notification.data.workspaces && notification.data.workspaces.length > 0 && notification.data.workspaces[0].topic_name && (
+                  <>
+                    <Icon icon="compass" />
+                    <span style={{ "vertical-align": "middle" }}> {notification.data.workspaces[0].topic_name} </span>{" "}
+                  </>
                 )}
               </p>
-              <p>  <span className={`badge ${getBadgeClass(notification.data)} text-white`}>{getMustText(notification.data)}</span></p>
-            
+            </div>
+            <div style={{ "text-align": "right" }}>
+              <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
+              <p style={{ "text-align": "right", "line-height": "1" }}>
+                {notification.is_read === 0 ? (
+                  <span title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                    ...
+                  </span>
+                ) : (
+                  <span title="Mark as unread" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                    ...
+                  </span>
+                )}
+              </p>
+              <p>
+                {" "}
+                <span className={`badge ${getBadgeClass(notification.data)} text-white`}>{getMustText(notification.data)}</span>
+              </p>
             </div>
           </h6>
         </div>
