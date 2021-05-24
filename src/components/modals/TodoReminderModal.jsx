@@ -88,6 +88,7 @@ const TodoReminderModal = (props) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.users);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
   const [componentUpdate, setComponentUpdate] = useState(0);
@@ -122,16 +123,31 @@ const TodoReminderModal = (props) => {
   const [userOptions, setUserOptions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userInputValue, setUserInputValue] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  const setAllUsersOptions = () => {
+    setUserOptions(
+      Object.values(users).map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
+      })
+    );
+  };
 
   useEffect(() => {
-    if (workspacesLoaded) {
-      console.log(props);
+    if (workspacesLoaded && mounted) {
       /**
        * params sent to reminder modal, if params is existing then the modal is triggered in workspace
        * if params is undefined, reminder modal is triggered in the main sidebar or on the main reminder page
        * **/
       if (!itemType && params && workspaces[params.workspaceId]) {
         const ws = { ...workspaces[params.workspaceId] };
+        console.log("set default workspace");
         // set default selected workspace and set the user options using the workspace members
         setSelectedWorkspace({
           ...ws,
@@ -247,7 +263,7 @@ const TodoReminderModal = (props) => {
         })
       );
     }
-  }, [workspacesLoaded, params]);
+  }, [mounted, workspacesLoaded, params]);
 
   useEffect(() => {
     if (mode === "edit" && item && item.workspace && workspaces[item.workspace.id]) {
@@ -281,7 +297,10 @@ const TodoReminderModal = (props) => {
         label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
         type: "USER",
       });
+    } else {
+      setAllUsersOptions();
     }
+    setMounted(true);
   }, []);
 
   const refs = {
@@ -440,7 +459,6 @@ const TodoReminderModal = (props) => {
   };
 
   const handleSelectWorkspace = (value) => {
-    console.log(value);
     setSelectedWorkspace(value);
     if (value) {
       setForm({
@@ -469,13 +487,12 @@ const TodoReminderModal = (props) => {
         topic_id: { value: null },
         assigned_to: { value: null },
       });
-      setUserOptions([]);
+      setAllUsersOptions();
       setSelectedUser(null);
     }
   };
 
   const handleSelectUser = (value) => {
-    console.log(value);
     setSelectedUser(value);
     if (value) {
       setForm({
@@ -518,14 +535,12 @@ const TodoReminderModal = (props) => {
                   <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
                 </WorkspacesContainer>
               </div>
-              {selectedWorkspace && (
-                <div className="col-lg-6 float-left">
-                  <div className="modal-label">Assign to</div>
-                  <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                  </SelectedUserContainer>
-                </div>
-              )}
+              <div className="col-lg-6 float-left">
+                <div className="modal-label">Assign to</div>
+                <SelectedUserContainer className="mb-2">
+                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                </SelectedUserContainer>
+              </div>
             </div>
           </>
         )}
@@ -548,14 +563,12 @@ const TodoReminderModal = (props) => {
                   <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
                 </WorkspacesContainer>
               </div>
-              {selectedWorkspace && (
-                <div className="col-6">
-                  <div className="modal-label">Assign to</div>
-                  <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                  </SelectedUserContainer>
-                </div>
-              )}
+              <div className="col-6">
+                <div className="modal-label">Assign to</div>
+                <SelectedUserContainer className="mb-2">
+                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                </SelectedUserContainer>
+              </div>
             </div>
           </>
         )}
@@ -580,14 +593,12 @@ const TodoReminderModal = (props) => {
                   <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
                 </WorkspacesContainer>
               </div>
-              {selectedWorkspace && (
-                <div className="col-6">
-                  <div className="modal-label">Assign to</div>
-                  <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                  </SelectedUserContainer>
-                </div>
-              )}
+              <div className="col-6">
+                <div className="modal-label">Assign to</div>
+                <SelectedUserContainer className="mb-2">
+                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                </SelectedUserContainer>
+              </div>
             </div>
           </>
         )}
@@ -612,14 +623,12 @@ const TodoReminderModal = (props) => {
                   <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
                 </WorkspacesContainer>
               </div>
-              {selectedWorkspace && (
-                <div className="col-6">
-                  <div className="modal-label">Assign to</div>
-                  <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                  </SelectedUserContainer>
-                </div>
-              )}
+              <div className="col-6">
+                <div className="modal-label">Assign to</div>
+                <SelectedUserContainer className="mb-2">
+                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                </SelectedUserContainer>
+              </div>
             </div>
           </>
         )}
@@ -682,7 +691,7 @@ const TodoReminderModal = (props) => {
           {dictionary.snooze}
         </Button>{" "}
       </ModalFooter>
-    </Wrapper >
+    </Wrapper>
   );
 };
 
