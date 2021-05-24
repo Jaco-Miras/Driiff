@@ -2,11 +2,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { useNotificationActions, useNotifications, useRedirect, useTranslation, useSettings} from "../../hooks";
+import { useNotificationActions, useNotifications, useRedirect, useTranslation, useSettings } from "../../hooks";
 import { NotificationTimelineItem } from "../../list/notification/item";
 import { SvgEmptyState } from "../../common";
 import { UserNotificationSidebar } from "./index";
-import { CompanyPostTimeline } from "../dashboard/timeline/company";
+//import { CompanyPostTimeline } from "../dashboard/timeline/company";
 const Wrapper = styled.div`
   .empty-notification {
     h4 {
@@ -47,7 +47,7 @@ const UserNotificationPanel = (props) => {
   };
 
   const notif = Object.values(notifications).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
-  console.log(notif);
+
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
       <div className="row row-user-profile-panel">
@@ -55,10 +55,10 @@ const UserNotificationPanel = (props) => {
         <div className="col-md-6">
           {notif.length > 0 && (
             <div className="card app-content-body mb-4 ">
-              <div className="card-body " style={{ 'padding': '0px' }}>
+              <div className="card-body " style={{ padding: "0px" }}>
                 <div className="timeline">
                   {notif.map((n) => {
-                    return <NotificationTimelineItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} user={user} _t={_t} darkMode={dark_mode}  />;
+                    return <NotificationTimelineItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} user={user} _t={_t} darkMode={dark_mode} />;
                   })}
                 </div>
               </div>
