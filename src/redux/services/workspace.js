@@ -384,6 +384,19 @@ export function getWorkspaceFilterCount(payload) {
   });
 }
 
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function getFavoriteWorkspaceCounters(payload) {
+  let url = "/v2/workspace-favourite-entries";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
 export function getWorkspaceReminders(payload) {
   let url = `/v2/to-do?${objToUrlParams(payload)}`;
   return apiCall({

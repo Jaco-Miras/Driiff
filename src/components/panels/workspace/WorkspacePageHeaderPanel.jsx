@@ -15,13 +15,19 @@ const Navbar = styled.ul`
   li {
     display: inline-block;
     text-align: center;
+    margin-right: 1.5rem;
     &:last-child {
       display: inline-flex !important;
       justify-content: flex-end;
     }
     a {
       white-space: nowrap;
-      margin-left: 15px;
+    }
+  }
+  li:first-child {
+    margin-left: 15px;
+    @media all and (max-width: 700px) {
+      margin-left: 0;
     }
   }
 `;
@@ -157,6 +163,12 @@ const WorkspacePageHeaderPanel = (props) => {
             </MainNavLink>
           </li>
           <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
+              {dictionary.pageTitleReminders}
+              {isLoaded && workspaceReminders[params.workspaceId].count.all > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.all}</div>}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
               {dictionary.pageTitleFiles}
             </MainNavLink>
@@ -164,12 +176,6 @@ const WorkspacePageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
               {dictionary.pageTitlePeople}
-            </MainNavLink>
-          </li>
-          <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
-              {dictionary.pageTitleReminders}
-              {isLoaded && workspaceReminders[params.workspaceId].count.all > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.all}</div>}
             </MainNavLink>
           </li>
         </Navbar>

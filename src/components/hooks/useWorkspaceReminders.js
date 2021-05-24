@@ -70,12 +70,12 @@ const useWorkspaceReminders = () => {
           return {
             ...t,
             author: { ...loggedUser },
-            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status !== "DONE" ? "TODAY" : t.status,
+            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
           };
         } else {
           return {
             ...t,
-            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status !== "DONE" ? "TODAY" : t.status,
+            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
           };
         }
       })
@@ -119,6 +119,7 @@ const useWorkspaceReminders = () => {
       ...todoActions,
       loadMore,
     },
+    workspaceName: activeTopic ? activeTopic.name : null,
   };
 };
 
