@@ -253,8 +253,6 @@ export const NotificationTimelineItem = (props) => {
     return null;
   };
 
-  console.log(notification);
-
   return (
     <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
       <div>
@@ -273,7 +271,7 @@ export const NotificationTimelineItem = (props) => {
         <div onClick={handleRedirect}>
           <h6 className="d-flex justify-content-between mb-4">
             <div>
-              <span style={{ "font-weight": "bold" }}>
+              <span style={{ fontWeight: "bold" }}>
                 {renderTitle()}:{" "}
                 {notification.type === "NEW_TODO" ? (
                   <>{stripHtml(notification.data.description)}</>
@@ -283,12 +281,12 @@ export const NotificationTimelineItem = (props) => {
                   notification.type === "POST_REJECT_APPROVAL" ||
                   notification.type === "CLOSED_POST" ||
                   notification.type === "WORKSPACE_ADD_MEMBER" ? (
-                  <span style={{ "font-weight": "normal" }}>{notification.data && notification.data.title}</span>
+                  <span style={{ fontWeight: "normal" }}>{notification.data && notification.data.title}</span>
                 ) : (
-                  <span style={{ "font-weight": "normal" }}>{stripHtml(notification.data.comment_body)}</span>
+                  <span style={{ fontWeight: "normal" }}>{stripHtml(notification.data.comment_body)}</span>
                 )}
               </span>
-              <p style={{ "font-weight": "normal", color: "#8B8B8B" }}>
+              <p style={{ fontWeight: "normal", color: "#8B8B8B" }}>
                 {notification.type === "NEW_TODO" && (
                   <>
                     <Icon icon="calendar" /> {dictionary.reminder}{" "}
@@ -297,20 +295,20 @@ export const NotificationTimelineItem = (props) => {
                 {notification.data.workspaces && notification.data.workspaces.length > 0 && notification.data.workspaces[0].workspace_name && (
                   <>
                     <Icon icon="folder" />
-                    <span style={{ "vertical-align": "middle" }}> {notification.data.workspaces[0].workspace_name} </span>{" "}
+                    <span style={{ verticalAlign: "middle" }}> {notification.data.workspaces[0].workspace_name} </span>{" "}
                   </>
                 )}
                 {notification.data.workspaces && notification.data.workspaces.length > 0 && notification.data.workspaces[0].topic_name && (
                   <>
                     <Icon icon="compass" />
-                    <span style={{ "vertical-align": "middle" }}> {notification.data.workspaces[0].topic_name} </span>{" "}
+                    <span style={{ verticalAlign: "middle" }}> {notification.data.workspaces[0].topic_name} </span>{" "}
                   </>
                 )}
               </p>
             </div>
-            <div style={{ "text-align": "right" }}>
+            <div style={{ textAlign: "right" }}>
               <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
-              <p style={{ "text-align": "right", "line-height": "1" }}>
+              <p style={{ textAlign: "right", lineHeight: "1" }}>
                 {notification.is_read === 0 ? (
                   <span title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
                     ...
