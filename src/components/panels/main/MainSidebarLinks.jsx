@@ -145,13 +145,12 @@ const MainSidebarLinks = (props) => {
             )}
           </li>
         )}
-        <li>
+        {/* <li>
           <NavIconContainer to={"/todos"} active={["/todos"].includes(location.pathname)}>
             <NavIcon icon={"calendar"} />
             <div>{dictionary.todoLinks}</div>
-            {/* <div>{count.overdue !== 0 && <Badge>&nbsp;</Badge>}</div> */}
           </NavIconContainer>
-        </li>
+        </li> */}
         <li onClick={closeLeftNav}>
           <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(location.pathname)}>
             <NavIcon icon={"compass"} />
@@ -167,14 +166,14 @@ const MainSidebarLinks = (props) => {
           </li>
         )}
         <QuickLinks user={user} dictionary={dictionary} />
-        {user.role && ["owner"].includes(user.role.name) && (
+        {/* {user.role && ["owner"].includes(user.role.name) && (
           <li>
             <NavIconContainer to={"/bot"} active={["/bot"].includes(location.pathname)}>
               <NavIcon icon={"cpu"} />
               <div>{dictionary.bots}</div>
             </NavIconContainer>
           </li>
-        )}
+        )} */}
       </ul>
     </Wrapper>
   );

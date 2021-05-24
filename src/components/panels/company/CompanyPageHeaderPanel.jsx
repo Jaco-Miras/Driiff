@@ -65,6 +65,7 @@ const CompanyPageHeaderPanel = (props) => {
 
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
+  const user = useSelector((state) => state.session.user);
   //const { driff: driffSettings, user: userSettings } = useSelector((state) => state.settings);
 
   //const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
@@ -87,11 +88,19 @@ const CompanyPageHeaderPanel = (props) => {
             </MainNavLink>
           </li>
           <li className="nav-item">
+            <MainNavLink to="/todos">{dictionary.pageTitleTodos}</MainNavLink>
+          </li>
+          <li className="nav-item">
             <MainNavLink to="/files">{dictionary.pageTitleFiles}</MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
           </li>
+          {user.role && ["owner"].includes(user.role.name) && (
+            <li className="nav-item">
+              <MainNavLink to="/bot">{dictionary.bots}</MainNavLink>
+            </li>
+          )}
           {/* <li className="nav-item">
             <MainNavLink to="/releases">
               Releases{" "}
