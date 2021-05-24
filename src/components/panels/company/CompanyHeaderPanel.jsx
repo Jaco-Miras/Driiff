@@ -149,6 +149,7 @@ const CompanyHeaderPanel = () => {
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
       mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode"),
     }),
+    bots: _t("SIDEBAR.BOTS", "Bots"),
   };
 
   const dispatch = useDispatch();
