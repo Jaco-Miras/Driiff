@@ -535,12 +535,12 @@ const ChatNameNotAuthor = styled.span`
 
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users, translate, language } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users, translate, chat_language } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
 
-  useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, language, actions: chatMessageActions,});
+  useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, chat_language, actions: chatMessageActions,});
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
     dictionary,
@@ -550,7 +550,7 @@ const ChatBubble = (props) => {
     selectedChannel,
     users,
     translate,
-    language,
+    chat_language,
   });
 
   const hasFiles = reply.files.length > 0;

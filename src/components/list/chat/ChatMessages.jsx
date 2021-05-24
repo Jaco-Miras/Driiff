@@ -942,7 +942,7 @@ class ChatMessages extends React.PureComponent {
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
                                       translate={this.props.translate} 
-                                      language={this.props.language}
+                                      chat_language={this.props.chat_language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {/* <span className="star-wrap mr-2" onMouseOver={this.handleStarMouseOver} onClick={this.handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">

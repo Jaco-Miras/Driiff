@@ -85,7 +85,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -113,7 +113,7 @@ const ProfileSettings = (props) => {
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
-    chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
+    chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
   };
 
   // const notificationSoundOptions = [
@@ -168,6 +168,225 @@ const ProfileSettings = (props) => {
     },
   ];
 
+  const ChatLanguageOptions = [
+    {
+      value: "en",
+      label: (
+        <>
+          <Flag countryAbbr="en" className="mr-2" width="18" />
+          {_t("LANGUAGE.ENGLISH", "English")}
+        </>
+      ),
+    },
+    {
+      value: "bg",
+      label: (
+        <>
+          <Flag countryAbbr="bg" className="mr-2" width="18" />
+          {_t("LANGUAGE.BULGARIAN", "Bulgarian")}
+        </>
+      ),
+    },
+    {
+      value: "cs",
+      label: (
+        <>
+          <Flag countryAbbr="cs" className="mr-2" width="18" />
+          {_t("LANGUAGE.CZECH", "Czech")}
+        </>
+      ),
+    },
+    {
+      value: "da",
+      label: (
+        <>
+          <Flag countryAbbr="da" className="mr-2" width="18" />
+          {_t("LANGUAGE.DANISH", "Danish")}
+        </>
+      ),
+    },
+    {
+      value: "de",
+      label: (
+        <>
+          <Flag countryAbbr="de" className="mr-2" width="18" />
+          {_t("LANGUAGE.GERMAN", "German")}
+        </>
+      ),
+    },
+    {
+      value: "el",
+      label: (
+        <>
+          <Flag countryAbbr="el" className="mr-2" width="18" />
+          {_t("LANGUAGE.GREEK", "Greek")}
+        </>
+      ),
+    },
+    {
+      value: "es",
+      label: (
+        <>
+          <Flag countryAbbr="es" className="mr-2" width="18" />
+          {_t("LANGUAGE.SPANISH", "Spanish")}
+        </>
+      ),
+    },
+    {
+      value: "et",
+      label: (
+        <>
+          <Flag countryAbbr="et" className="mr-2" width="18" />
+          {_t("LANGUAGE.ESTONIAN", "Estonian")}
+        </>
+      ),
+    },
+    {
+      value: "fi",
+      label: (
+        <>
+          <Flag countryAbbr="fi" className="mr-2" width="18" />
+          {_t("LANGUAGE.FINNISH", "Finnish")}
+        </>
+      ),
+    },
+    {
+      value: "fr",
+      label: (
+        <>
+          <Flag countryAbbr="fi" className="mr-2" width="18" />
+          {_t("LANGUAGE.FRENCH", "French")}
+        </>
+      ),
+    },
+    {
+      value: "hu",
+      label: (
+        <>
+          <Flag countryAbbr="fi" className="mr-2" width="18" />
+          {_t("LANGUAGE.HUNGARAIN", "Hungarian")}
+        </>
+      ),
+    },
+    {
+      value: "it",
+      label: (
+        <>
+          <Flag countryAbbr="it" className="mr-2" width="18" />
+          {_t("LANGUAGE.ITALIAN", "Italian")}
+        </>
+      ),
+    },
+    {
+      value: "ja",
+      label: (
+        <>
+          <Flag countryAbbr="ja" className="mr-2" width="18" />
+          {_t("LANGUAGE.JAPANESE", "Japanese")}
+        </>
+      ),
+    },
+    {
+      value: "lt",
+      label: (
+        <>
+          <Flag countryAbbr="lt" className="mr-2" width="18" />
+          {_t("LANGUAGE.LITHUANIAN", "Lithuanian")}
+        </>
+      ),
+    },
+    {
+      value: "lv",
+      label: (
+        <>
+          <Flag countryAbbr="lv" className="mr-2" width="18" />
+          {_t("LANGUAGE.LATVIAN", "Latvian")}
+        </>
+      ),
+    },
+    {
+      value: "nl",
+      label: (
+        <>
+          <Flag countryAbbr="nl" className="mr-2" width="18" />
+          {_t("LANGUAGE.DUTCH", "Dutch")}
+        </>
+      ),
+    },
+    {
+      value: "pl",
+      label: (
+        <>
+          <Flag countryAbbr="pl" className="mr-2" width="18" />
+          {_t("LANGUAGE.POLISH", "Polish")}
+        </>
+      ),
+    },
+    {
+      value: "pt",
+      label: (
+        <>
+          <Flag countryAbbr="pt" className="mr-2" width="18" />
+          {_t("LANGUAGE.PORTUGUESE", "Portuguese")}
+        </>
+      ),
+    },
+    {
+      value: "ro",
+      label: (
+        <>
+          <Flag countryAbbr="ro" className="mr-2" width="18" />
+          {_t("LANGUAGE.ROMANIAN", "Romanian")}
+        </>
+      ),
+    },
+    {
+      value: "ru",
+      label: (
+        <>
+          <Flag countryAbbr="ru" className="mr-2" width="18" />
+          {_t("LANGUAGE.RUSSIAN", "Russian")}
+        </>
+      ),
+    },
+    {
+      value: "sk",
+      label: (
+        <>
+          <Flag countryAbbr="sk" className="mr-2" width="18" />
+          {_t("LANGUAGE.SLOVAK", "Slovak")}
+        </>
+      ),
+    },
+    {
+      value: "sk",
+      label: (
+        <>
+          <Flag countryAbbr="sk" className="mr-2" width="18" />
+          {_t("LANGUAGE.SLOVENIAN", "Slovenian")}
+        </>
+      ),
+    },
+    {
+      value: "sk",
+      label: (
+        <>
+          <Flag countryAbbr="SV" className="mr-2" width="18" />
+          {_t("LANGUAGE.SWEDISH", "Swedish")}
+        </>
+      ),
+    },
+    {
+      value: "zh",
+      label: (
+        <>
+          <Flag countryAbbr="zh" className="mr-2" width="18" />
+          {_t("LANGUAGE.CHINESE", "Chinese")}
+        </>
+      ),
+    },
+  ];
+
   const TimezoneOptions = momentTZ.tz.names().map((tz) => {
     return {
       value: tz,
@@ -204,6 +423,13 @@ const ProfileSettings = (props) => {
   const handleLanguageChange = (e) => {
     setLocale(e.value);
     toaster.success(<span>You have successfully updated Language</span>);
+  };
+
+  const handleChatLanguageChange = (e) => {
+    setGeneralSetting({
+      chat_language: e.value,
+    });
+    toaster.success(<span>You have successfully updated chat target language</span>);
   };
 
   const handleChatSwitchToggle = useCallback(
@@ -375,6 +601,7 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+
               <div className="row mb-3">
                 <div className="col-12">
                   <CustomInput
@@ -389,6 +616,7 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+
               {
                 <div className="row mb-3">
                   <div className="col-12">
@@ -405,22 +633,13 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               }
-{
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={translate}
-                      type="switch"
-                      id="translate_chat"
-                      name="translate"
-                      onChange={handleChatSwitchToggle}
-                      data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
-                      label={<span>{dictionary.chatTranslateTitle}</span>}
-                    />
-                  </div>
+              <div className="row mb-2">
+                <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
+                <div className="col-7">
+                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={ChatLanguageOptions.find((o) => o.value === chat_language)} onChange={handleChatLanguageChange} options={ChatLanguageOptions} />
                 </div>
-              }
+              </div>
+
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
                 <div className="col-7">
