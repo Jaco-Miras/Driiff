@@ -5,7 +5,7 @@ import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useSettings, useTranslation, useToaster } from "../hooks";
+import { useSettings, useTranslation, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
@@ -54,24 +54,12 @@ const RadioInputContainer = styled.div`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${(props) => props.height}px;
-    max-height: 300px;
+    height: ${(props) => (props.height > 80 ? props.height : 80)}px;
   }
 
   label {
     min-width: 100%;
     font-weight: 500;
-  }
-
-  .ql-toolbar {
-    bottom: 30px;
-    left: 40px;
-  }
-
-  .invalid-feedback {
-    position: absolute;
-    bottom: 0;
-    top: auto;
   }
 `;
 
@@ -88,6 +76,7 @@ const TodoReminderModal = (props) => {
   const { _t } = useTranslation();
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const winSize = useWindowSize();
 
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
@@ -682,7 +671,7 @@ const TodoReminderModal = (props) => {
               <div className="col-12">
                 <StyledDescriptionInput
                   className="modal-description"
-                  height={window.innerHeight - 660}
+                  height={winSize.height - 660}
                   defaultValue={form.description.value}
                   showFileButton={true}
                   onChange={handleQuillChange}
