@@ -159,8 +159,6 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
-  console.log(todo);
-
   return (
     <>
       <ItemList className="reminder-list" isDone={isDone}>
@@ -205,22 +203,16 @@ const TodosList = (props) => {
             {todo.author !== null && (
               <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
             )}
-            {todo.assigned_to && (
+            {(todo.assigned_to || todo.workspace) && (
               <>
                 <Icon icon="chevron-right" />
                 <Avatar
-                  name={todo.assigned_to.id === todo.author.id && todo.workspace ? todo.workspace.name : todo.assigned_to.name}
+                  name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
                   tooltipName={dictionary.reminderAssignedTo}
-                  imageLink={
-                    todo.assigned_to.id === todo.author.id && todo.workspace
-                      ? todo.workspace.channel.icon_link
-                      : todo.assigned_to.profile_image_thumbnail_link
-                      ? todo.assigned_to.profile_image_thumbnail_link
-                      : todo.assigned_to.profile_image_link
-                  }
-                  id={todo.assigned_to.id === todo.author.id && todo.workspace ? todo.workspace.id : todo.assigned_to.id}
-                  type={todo.workspace ? "TOPIC" : "USER"}
-                  noDefaultClick={todo.workspace ? true : false}
+                  imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace ? todo.workspace.channel.icon_link : null}
+                  id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
+                  type={todo.assigned_to ? "USER" : "TOPIC"}
+                  noDefaultClick={todo.assigned_to ? false : true}
                 />
               </>
             )}
