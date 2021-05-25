@@ -60,6 +60,9 @@ const Wrapper = styled.div`
   .badge-success {
     background-color: #00c851;
   }
+  :before {
+    display: none !important;
+  }
 `;
 
 export const NotificationTimelineItem = (props) => {
