@@ -52,6 +52,7 @@ const useTodos = (fetchTodosOnMount = false) => {
             */
 
             if (filter.status !== "") {
+              if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to_others;
               if (t.status === filter.status) return true;
               if (t.status === "DONE") {
                 if (filter.status === "TODAY" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) return true;
@@ -60,6 +61,8 @@ const useTodos = (fetchTodosOnMount = false) => {
                 if (filter.status === "NEW" && t.remind_at === null) return true;
               }
               return false;
+            } else {
+              return !t.assigned_to_others;
             }
           }
           return true;

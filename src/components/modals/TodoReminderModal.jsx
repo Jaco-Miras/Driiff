@@ -5,17 +5,25 @@ import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useSettings, useTranslation } from "../hooks";
+import { useSettings, useTranslation, useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import quillHelper from "../../helpers/quillHelper";
-import { FormInput, InputFeedback, QuillEditor, FolderSelect, PeopleSelect } from "../forms";
+import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
 import moment from "moment";
 import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
+import { DropDocument } from "../dropzone/DropDocument";
+import { uploadBulkDocument } from "../../redux/services/global";
 
 const Wrapper = styled(Modal)`
   .invalid-feedback {
     display: block;
+  }
+  .modal-body {
+    padding-bottom: 0 !important;
+  }
+  .file-attachments-container {
+    display: inline-flex;
   }
 `;
 
@@ -25,36 +33,6 @@ const InputContainer = styled.div`
   flex-flow: column;
   > div {
     margin-bottom: 10px;
-  }
-`;
-
-const StyledQuillEditor = styled(QuillEditor)`
-  width: 100%;
-  height: 150px;
-  border-radius: 6px;
-  border: 1px solid #e1e1e1;
-  margin-bottom: 1rem;
-
-  &.description-input {
-    overflow: auto;
-    overflow-x: hidden;
-    position: static;
-    width: 100%;
-  }
-  .ql-toolbar {
-    position: absolute;
-    bottom: 0;
-    padding: 0;
-    border: none;
-    .ql-formats {
-      margin-right: 10px;
-    }
-  }
-  .ql-container {
-    border: none;
-  }
-  .ql-editor {
-    padding: 5px;
   }
 `;
 
@@ -74,6 +52,29 @@ const RadioInputContainer = styled.div`
   z-index: 1;
 `;
 
+const StyledDescriptionInput = styled(DescriptionInput)`
+  .description-input {
+    height: ${(props) => props.height}px;
+    max-height: 300px;
+  }
+
+  label {
+    min-width: 100%;
+    font-weight: 500;
+  }
+
+  .ql-toolbar {
+    bottom: 30px;
+    left: 40px;
+  }
+
+  .invalid-feedback {
+    position: absolute;
+    bottom: 0;
+    top: auto;
+  }
+`;
+
 const TodoReminderModal = (props) => {
   /**
    * @todo refactor
@@ -86,6 +87,7 @@ const TodoReminderModal = (props) => {
 
   const { _t } = useTranslation();
   const dispatch = useDispatch();
+  const toaster = useToaster();
 
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
@@ -124,6 +126,14 @@ const TodoReminderModal = (props) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [userInputValue, setUserInputValue] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [showDropzone, setShowDropzone] = useState(false);
+  const [inlineImages, setInlineImages] = useState([]);
+  const [imageLoading, setImageLoading] = useState(null);
+
+  const toasterRef = useRef(null);
+  const progressBar = useRef(0);
 
   const setAllUsersOptions = () => {
     setUserOptions(
@@ -305,6 +315,7 @@ const TodoReminderModal = (props) => {
 
   const refs = {
     title: useRef(null),
+    dropzone: useRef(null),
   };
 
   let dictionary = {
@@ -325,6 +336,9 @@ const TodoReminderModal = (props) => {
     snooze: _t("REMINDER.REMIND", "Remind"),
     workspaceLabel: _t("LABEL.WORKSPACE", "Workspace"),
     assignedToLabel: _t("LABEL.ASSIGN_TO", "Assign to"),
+    fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
+    uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
+    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
   };
 
   if (itemType === null) {
@@ -424,7 +438,7 @@ const TodoReminderModal = (props) => {
   };
 
   const handleSnooze = () => {
-    if (loading || !isFormValid()) return;
+    if (loading || !isFormValid() || imageLoading) return;
 
     setLoading(true);
 
@@ -436,18 +450,25 @@ const TodoReminderModal = (props) => {
         payload[k] = form[k].value;
       }
     });
-    console.log(payload);
-    actions.onSubmit(payload, (err, res) => {
-      // if (res) {
-      //   toggle();
-      // }
-      // setLoading(false);
-    });
-    /**
-     * @todo need to recheck the submit callback
-     * **/
-    setLoading(false);
-    toggle();
+    if (attachedFiles.length > 0) {
+      payload = {
+        ...payload,
+        file_ids: [...uploadedFiles.map((f) => f.id)],
+      };
+      uploadFiles(payload);
+    } else {
+      actions.onSubmit(payload, (err, res) => {
+        // if (res) {
+        //   toggle();
+        // }
+        // setLoading(false);
+      });
+      /**
+       * @todo need to recheck the submit callback
+       * **/
+      setLoading(false);
+      toggle();
+    }
   };
 
   const handleTitleRef = (e) => {
@@ -513,10 +534,134 @@ const TodoReminderModal = (props) => {
     setUserInputValue(e);
   };
 
+  const handleOpenFileDialog = () => {
+    if (refs.dropzone.current) {
+      refs.dropzone.current.open();
+    }
+  };
+
+  const handleHideDropzone = () => {
+    setShowDropzone(false);
+  };
+
+  const onDragEnter = () => {
+    if (!showDropzone) setShowDropzone(true);
+  };
+
+  const dropAction = (acceptedFiles) => {
+    let selectedFiles = [];
+    acceptedFiles.forEach((file) => {
+      var bodyFormData = new FormData();
+      bodyFormData.append("file", file);
+      let timestamp = Math.floor(Date.now());
+      if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+        selectedFiles.push({
+          rawFile: file,
+          bodyFormData: bodyFormData,
+          type: "IMAGE",
+          id: timestamp,
+          status: false,
+          src: URL.createObjectURL(file),
+          name: file.name ? file.name : file.path,
+          uploader: user,
+        });
+      } else if (file.type === "video/mp4") {
+        selectedFiles.push({
+          rawFile: file,
+          bodyFormData: bodyFormData,
+          type: "VIDEO",
+          id: timestamp,
+          status: false,
+          src: URL.createObjectURL(file),
+          name: file.name ? file.name : file.path,
+          uploader: user,
+        });
+      } else {
+        selectedFiles.push({
+          rawFile: file,
+          bodyFormData: bodyFormData,
+          type: "DOC",
+          id: timestamp,
+          status: false,
+          src: URL.createObjectURL(file),
+          name: file.name ? file.name : file.path,
+          uploader: user,
+        });
+      }
+    });
+    setAttachedFiles((prevState) => [...prevState, ...selectedFiles]);
+    handleHideDropzone();
+  };
+
+  const handleRemoveFile = (fileId) => {
+    setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+    setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+  };
+
+  const handleOnUploadProgress = (progressEvent) => {
+    const progress = progressEvent.loaded / progressEvent.total;
+    if (toasterRef.current === null) {
+      toasterRef.current = toaster.info(<div>{dictionary.uploadingAndSending}.</div>, { progress: progressBar.current, autoClose: true });
+    } else {
+      toaster.update(toasterRef.current, { progress: progress, autoClose: true });
+    }
+  };
+
+  const handleNetWorkError = () => {
+    if (toasterRef.curent !== null) {
+      setLoading(false);
+      toaster.dismiss(toasterRef.current);
+      toaster.error(<div>{dictionary.unsuccessful}.</div>);
+      toasterRef.current = null;
+    }
+  };
+
+  async function uploadFiles(payload, type = "create") {
+    let formData = new FormData();
+
+    let uploadData = {
+      user_id: user.id,
+      file_type: "private",
+      folder_id: null,
+      fileOption: null,
+      options: {
+        config: {
+          onUploadProgress: handleOnUploadProgress,
+        },
+      },
+    };
+    attachedFiles.map((file, index) => formData.append(`files[${index}]`, file.bodyFormData.get("file")));
+    uploadData["files"] = formData;
+
+    await new Promise((resolve, reject) => resolve(uploadBulkDocument(uploadData)))
+      .then((result) => {
+        payload = {
+          ...payload,
+          file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
+        };
+        actions.onSubmit(payload);
+        setLoading(false);
+        toggle();
+      })
+      .catch((error) => {
+        handleNetWorkError(error);
+      });
+  }
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
-      <ModalBody data-set-update={componentUpdate}>
+      <ModalBody data-set-update={componentUpdate} onDragOver={onDragEnter}>
+        <DropDocument
+          hide={!showDropzone}
+          ref={refs.dropzone}
+          onDragLeave={handleHideDropzone}
+          onDrop={({ acceptedFiles }) => {
+            dropAction(acceptedFiles);
+          }}
+          onCancel={handleHideDropzone}
+          attachedFiles={attachedFiles}
+        />
         {itemType === null && (
           <>
             <div className="column">
@@ -525,10 +670,35 @@ const TodoReminderModal = (props) => {
               <div className="col-12">
                 <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
               </div>
-              <div className="col-12 modal-label">{dictionary.description}</div>
+              {/* <div className="col-12 modal-label">{dictionary.description}</div> */}
+              {/* <div className="col-12"><StyledQuillEditor defaultValue={form.description.value} onChange={handleQuillChange} name="description" /> </div>*/}
               <div className="col-12">
-                <StyledQuillEditor defaultValue={form.description.value} onChange={handleQuillChange} name="description" />
+                <StyledDescriptionInput
+                  className="modal-description"
+                  height={window.innerHeight - 660}
+                  defaultValue={form.description.value}
+                  showFileButton={true}
+                  onChange={handleQuillChange}
+                  onOpenFileDialog={handleOpenFileDialog}
+                  disableBodyMention={true}
+                  modal={"reminders"}
+                  mentionedUserIds={[]}
+                  setInlineImages={setInlineImages}
+                  setImageLoading={setImageLoading}
+                />
               </div>
+              {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+                <div className="col-12">
+                  <div>
+                    <label className={"modal-label"} for="workspace">
+                      {dictionary.fileAttachments}
+                    </label>
+                  </div>
+                  <div className="file-attachments-container">
+                    <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="column clearfix">
               <div className="col-lg-6 float-left">
