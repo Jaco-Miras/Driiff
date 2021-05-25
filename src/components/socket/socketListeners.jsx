@@ -320,7 +320,7 @@ class SocketListeners extends Component {
         this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
-            this.props.incomingToDo(e);
+            this.props.incomingToDo({ ...e, user: e.user_id });
             break;
           }
           case "UPDATE_TODO": {

@@ -8,6 +8,7 @@ const useTodos = (fetchTodosOnMount = false) => {
   const { isLoaded, skip, limit, hasMore, items, count, doneRecently } = useSelector((state) => state.global.todos);
 
   const { user: loggedUser } = useSelector((state) => state.session);
+  const users = useSelector((state) => state.users.users);
 
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
@@ -24,9 +25,10 @@ const useTodos = (fetchTodosOnMount = false) => {
     return Object.values(items)
       .map((t) => {
         if (t.author === null && t.link_type === null) {
+          const author = Object.values(users).find((u) => u.id === t.user);
           return {
             ...t,
-            author: { ...loggedUser },
+            author: author ? author : { ...loggedUser },
             status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
           };
         } else {
