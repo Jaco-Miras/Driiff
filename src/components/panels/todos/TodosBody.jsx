@@ -209,6 +209,11 @@ const TodosBody = (props) => {
   //     }
   //   }
   // }, [showList, todoItems, doneTodoItems]);
+  const handleRedirectToWorkspace = (e, todo) => {
+    e.preventDefault();
+    e.stopPropagation();
+    redirect.toWorkspace(todo.workspace, "reminders");
+  };
 
   return (
     <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
@@ -238,6 +243,7 @@ const TodosBody = (props) => {
                 todoFormatShortCode={todoFormatShortCode}
                 getFileIcon={getFileIcon}
                 showWsBadge={!params.hasOwnProperty("workspaceId")}
+                handleRedirectToWorkspace={handleRedirectToWorkspace}
               />
             )}
           ></StyledListContainer>
@@ -260,6 +266,7 @@ const TodosBody = (props) => {
                 todoFormatShortCode={todoFormatShortCode}
                 getFileIcon={getFileIcon}
                 showWsBadge={!params.hasOwnProperty("workspaceId")}
+                handleRedirectToWorkspace={handleRedirectToWorkspace}
               />
             )}
           ></StyledListContainer>

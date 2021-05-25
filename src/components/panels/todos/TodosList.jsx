@@ -38,8 +38,15 @@ const ItemList = styled.li`
       border-color: rgba(155, 155, 155, 0.1);
     }
   }
+  .avatars-container {
+    display: flex;
+    align-items: center;
+    min-width: 105px;
+    justify-content: flex-end;
+  }
   .workspace-label {
     text-align: right;
+    cursor: pointer;
   }
   .todo-title {
     text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
@@ -86,7 +93,7 @@ const ReminderDescription = styled.span`
 `;
 
 const TodosList = (props) => {
-  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge } = props;
+  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
 
@@ -171,7 +178,7 @@ const TodosList = (props) => {
     <>
       <ItemList className="reminder-list" isDone={isDone}>
         {todo.workspace && showWsBadge && (
-          <div className="text-truncate false mt-2 workspace-label">
+          <div className="text-truncate false mt-2 workspace-label" onClick={(e) => handleRedirectToWorkspace(e, todo)}>
             <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
           </div>
         )}
@@ -208,22 +215,24 @@ const TodosList = (props) => {
                 {getTodoType(todo)}
               </span>
             )}
-            {todo.author !== null && (
-              <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
-            )}
-            {(todo.assigned_to || todo.workspace) && (
-              <>
-                <Icon icon="chevron-right" />
-                <Avatar
-                  name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
-                  tooltipName={dictionary.reminderAssignedTo}
-                  imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace ? todo.workspace.channel.icon_link : null}
-                  id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
-                  type={todo.assigned_to ? "USER" : "TOPIC"}
-                  noDefaultClick={todo.assigned_to ? false : true}
-                />
-              </>
-            )}
+            <div className="avatars-container">
+              {todo.author !== null && (
+                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+              )}
+              {(todo.assigned_to || todo.workspace) && (
+                <>
+                  <Icon icon="chevron-right" />
+                  <Avatar
+                    name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
+                    tooltipName={dictionary.reminderAssignedTo}
+                    imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace ? todo.workspace.channel.icon_link : null}
+                    id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
+                    type={todo.assigned_to ? "USER" : "TOPIC"}
+                    noDefaultClick={todo.assigned_to ? false : true}
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </ItemList>
