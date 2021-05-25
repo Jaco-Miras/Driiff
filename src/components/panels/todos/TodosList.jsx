@@ -159,6 +159,8 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
+  console.log(todo);
+
   return (
     <>
       <ItemList className="reminder-list" isDone={isDone}>

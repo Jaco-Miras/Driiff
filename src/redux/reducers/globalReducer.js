@@ -41,6 +41,7 @@ const INITIAL_STATE = {
       overdue: 0,
       done: 0,
       assigned_to_others: 0,
+      added_by_others: 0,
     },
     items: {},
     doneRecently: [],

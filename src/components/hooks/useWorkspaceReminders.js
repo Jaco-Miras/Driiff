@@ -9,6 +9,7 @@ const useWorkspaceReminders = () => {
 
   const params = useParams();
   const { user: loggedUser } = useSelector((state) => state.session);
+  const users = useSelector((state) => state.users.users);
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
 
@@ -62,15 +63,17 @@ const useWorkspaceReminders = () => {
     all: 0,
     overdue: 0,
     assigned_to_others: 0,
+    added_by_others: 0,
   };
 
   const getWorkspaceReminders = ({ filter = "" }) => {
     return Object.values(items)
       .map((t) => {
         if (t.author === null && t.link_type === null) {
+          const author = Object.values(users).find((u) => u.id === t.user);
           return {
             ...t,
-            author: { ...loggedUser },
+            author: author ? author : { ...loggedUser },
             status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
           };
         } else {
