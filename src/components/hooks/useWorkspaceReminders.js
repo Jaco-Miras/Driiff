@@ -92,7 +92,8 @@ const useWorkspaceReminders = () => {
               }
             }
             if (filter.status !== "") {
-              if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to_others;
+              if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to && t.assigned_to.id !== loggedUser.id && t.user === loggedUser.id;
+              if (filter.status === "ADDED_BY_OTHERS") return t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id;
               if (t.status === filter.status) return true;
               if (t.status === "DONE") {
                 if (filter.status === "TODAY" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) return true;
