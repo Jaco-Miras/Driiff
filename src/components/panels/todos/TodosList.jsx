@@ -176,6 +176,13 @@ const TodosList = (props) => {
           <span className="align-items-center todo-title-description text-truncate mr-3" onClick={handleTitleClick}>
             <span className={`todo-title ${getTextColorClass(todo)}`}>{todo.title}</span>
             {todo.description && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {todo.files.map((file) => {
+              return (
+                <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
+                  {getFileIcon(file.mime_type)}
+                </span>
+              );
+            })}
           </span>
           <HoverButtons className="hover-btns ml-1">
             <Icon icon="pencil" onClick={handleEdit} />

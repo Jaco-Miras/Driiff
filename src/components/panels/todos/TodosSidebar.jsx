@@ -70,12 +70,12 @@ const TodosSidebar = (props) => {
               </span>
               {count && count.new > 0 && <span className="small ml-auto">{count.new}</span>}
             </Filter>
-            <Filter onClick={setFilter} data-filter="BY_ME" active={filter === "BY_ME"} className={"list-group-item d-flex align-items-center"}>
-              <span data-filter="BY_ME">
+            <Filter onClick={setFilter} data-filter="ASSIGNED_TO_OTHERS" active={filter === "ASSIGNED_TO_OTHERS"} className={"list-group-item d-flex align-items-center"}>
+              <span data-filter="ASSIGNED_TO_OTHERS">
                 <span className="text-info fa fa-circle mr-2" />
-                {dictionary.assignedByMe}
+                {dictionary.addedByMe}
               </span>
-              {/* {count && count.new > 0 && <span className="small ml-auto">{count.new}</span>} */}
+              {count && count.assigned_to_others > 0 && <span className="small ml-auto">{count.assigned_to_others}</span>}
             </Filter>
           </div>
         </div>

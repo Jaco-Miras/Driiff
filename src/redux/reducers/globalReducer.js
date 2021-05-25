@@ -40,6 +40,7 @@ const INITIAL_STATE = {
       all: 0,
       overdue: 0,
       done: 0,
+      assigned_to_others: 0,
     },
     items: {},
     doneRecently: [],
