@@ -135,50 +135,49 @@ const TodosBody = (props) => {
     }
   };
 
-  //const [activeTitles, setActiveTitles] = useState({});
-
-  // const handleTitleClick = (e) => {
-  //   setActiveTitles({
-  //     ...activeTitles,
-  //     [e.target.id]: !activeTitles[e.target.id],
-  //   });
-  // };
-
   const [showList, setShowList] = useState({
-    todo: false,
+    todo: true,
     done: false,
   });
 
   const handleShowTodo = () => {
-    if (showList.todo) {
-      // to false
-      setShowList({
-        todo: doneTodoItems.length > 0 ? false : true,
-        done: doneTodoItems.length > 0 ? true : false,
-      });
-    } else {
-      // to true
-      setShowList({
-        todo: true,
-        done: showList.done,
-      });
-    }
+    // if (showList.todo) {
+    //   // to false
+    //   setShowList({
+    //     todo: doneTodoItems.length > 0 ? false : true,
+    //     done: doneTodoItems.length > 0 ? true : false,
+    //   });
+    // } else {
+    //   // to true
+    //   setShowList({
+    //     todo: true,
+    //     done: showList.done,
+    //   });
+    // }
+    setShowList({
+      todo: !showList.todo,
+      done: showList.done,
+    });
   };
 
   const handleShowDone = () => {
-    if (showList.done) {
-      // to false
-      setShowList({
-        todo: todoItems.length > 0 ? true : false,
-        done: todoItems.length > 0 ? false : true,
-      });
-    } else {
-      // to true
-      setShowList({
-        todo: todoItems.length > 0 ? true : false,
-        done: doneTodoItems.length > 0 ? true : false,
-      });
-    }
+    // if (showList.done) {
+    //   // to false
+    //   setShowList({
+    //     todo: todoItems.length > 0 ? true : false,
+    //     done: todoItems.length > 0 ? false : true,
+    //   });
+    // } else {
+    //   // to true
+    //   setShowList({
+    //     todo: todoItems.length > 0 ? true : false,
+    //     done: doneTodoItems.length > 0 ? true : false,
+    //   });
+    // }
+    setShowList({
+      todo: showList.todo,
+      done: !showList.done,
+    });
   };
 
   useEffect(() => {
@@ -190,66 +189,26 @@ const TodosBody = (props) => {
     });
   }, [filter]);
 
-  useEffect(() => {
-    // if bot category is set to false then show the to do section
-    if (!showList.done && !showList.todo) {
-      if (todoItems.length && doneTodoItems.length) {
-        setShowList((prevState) => {
-          return {
-            ...prevState,
-            done: true,
-          };
-        });
-      } else {
-        setShowList((prevState) => {
-          return {
-            ...prevState,
-            todo: true,
-          };
-        });
-      }
-    }
-  }, [showList, todoItems, doneTodoItems]);
-
-  // const getTodoList = () => {
-  //   return (
-  //     <>
-  //       {[dictionary.todo, dictionary.done].map((items, i) => {
-  //         const todos = i === 0 ? todoItems : doneTodoItems;
-  //         let reminder = todos.map((todo, ii) => {
-  //           return (
-  //             <TodosList
-  //               key={todo.id}
-  //               todo={todo}
-  //               todoActions={todoActions}
-  //               dictionary={dictionary}
-  //               handleLinkClick={handleLinkClick}
-  //               dark_mode={dark_mode}
-  //               todoFormat={todoFormat}
-  //               todoFormatShortCode={todoFormatShortCode}
-  //               getFileIcon={getFileIcon}
-  //             />
-  //           );
-  //         });
-  //         return (
-  //           <DivContainer key={items}>
-  //             <div style={{ "padding-left": "20px", "padding-right": "0px" }}>
-  //               <h6 className=" mb-0 font-size-11 ml-1">
-  //                 <SpanTitle className={`badge  ${dark_mode === "1" && "badge-light"} `} todo={items === "To do" ? false : true} onClick={handleTitleClick} id={"t_" + items}>
-  //                   <SvgIconFeather icon={activeTitles["t_" + items] ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
-  //                   {items}
-  //                 </SpanTitle>
-  //               </h6>
-  //             </div>
-  //             <ListGroup className={`list-group list-group-flush ${items === "Done" && "list-group-done"} ui-sortable fadeIn`} style={activeTitles["t_" + items] ? { display: "none" } : { display: "block" }}>
-  //               {reminder}
-  //             </ListGroup>
-  //           </DivContainer>
-  //         );
-  //       })}
-  //     </>
-  //   );
-  // };
+  // useEffect(() => {
+  //   // if bot category is set to false then show the to do section
+  //   if (!showList.done && !showList.todo) {
+  //     if (todoItems.length && doneTodoItems.length) {
+  //       setShowList((prevState) => {
+  //         return {
+  //           ...prevState,
+  //           done: true,
+  //         };
+  //       });
+  //     } else {
+  //       setShowList((prevState) => {
+  //         return {
+  //           ...prevState,
+  //           todo: true,
+  //         };
+  //       });
+  //     }
+  //   }
+  // }, [showList, todoItems, doneTodoItems]);
 
   return (
     <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
