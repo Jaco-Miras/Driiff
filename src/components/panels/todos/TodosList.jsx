@@ -38,6 +38,9 @@ const ItemList = styled.li`
       border-color: rgba(155, 155, 155, 0.1);
     }
   }
+  .workspace-label {
+    text-align: right;
+  }
   .todo-title {
     text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
     cursor: pointer;
@@ -95,7 +98,12 @@ const TodosList = (props) => {
     e.preventDefault();
     e.stopPropagation();
     const payload = {
-      files: files,
+      files: files.map((f) => {
+        return {
+          ...f,
+          filename: f.name,
+        };
+      }),
       file_id: file.file_id,
     };
     dispatch(setViewFiles(payload));
@@ -163,7 +171,7 @@ const TodosList = (props) => {
     <>
       <ItemList className="reminder-list" isDone={isDone}>
         {todo.workspace && showWsBadge && (
-          <div className="text-truncate false mt-2">
+          <div className="text-truncate false mt-2 workspace-label">
             <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
           </div>
         )}
