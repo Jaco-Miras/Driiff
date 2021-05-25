@@ -563,17 +563,16 @@ const TodoReminderModal = (props) => {
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.workspaceLabel}</div>
                   <WorkspacesContainer className=" mb-2">
-                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
                   </WorkspacesContainer>
                 </div>
-                {selectedWorkspace && (
-                  <div className="col-6 float-left">
-                    <div className="modal-label">{dictionary.assignedToLabel}</div>
-                    <SelectedUserContainer className="mb-2">
-                      <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                    </SelectedUserContainer>
-                  </div>
-                )}
+
+                <div className="col-6 float-left">
+                  <div className="modal-label">{dictionary.assignedToLabel}</div>
+                  <SelectedUserContainer className="mb-2">
+                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  </SelectedUserContainer>
+                </div>
               </div>
             </div>
           </>
@@ -597,19 +596,17 @@ const TodoReminderModal = (props) => {
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.workspaceLabel}</div>
                   <WorkspacesContainer className="mb-2">
-                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
                   </WorkspacesContainer>
                 </div>
               )}
 
-              {selectedWorkspace && (
-                <div className="col-6 float-left">
-                  <div className="modal-label">{dictionary.assignedToLabel}</div>
-                  <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                  </SelectedUserContainer>
-                </div>
-              )}
+              <div className="col-6 float-left">
+                <div className="modal-label">{dictionary.assignedToLabel}</div>
+                <SelectedUserContainer className="mb-2">
+                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                </SelectedUserContainer>
+              </div>
             </div>
           </>
         )}
@@ -631,17 +628,16 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
                 </WorkspacesContainer>
               </div>
-              {selectedWorkspace && (
-                <div className="col-6 float-left">
-                  <div className="modal-label">{dictionary.assignedToLabel}</div>
-                  <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
-                  </SelectedUserContainer>
-                </div>
-              )}
+
+              <div className="col-6 float-left">
+                <div className="modal-label">{dictionary.assignedToLabel}</div>
+                <SelectedUserContainer className="mb-2">
+                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                </SelectedUserContainer>
+              </div>
             </div>
           </>
         )}
