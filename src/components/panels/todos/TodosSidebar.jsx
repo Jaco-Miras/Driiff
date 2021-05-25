@@ -82,7 +82,7 @@ const TodosSidebar = (props) => {
                 <span className="text-info fa fa-circle mr-2" />
                 {dictionary.addedByOthers}
               </span>
-              {count && count.assigned_by_others > 0 && <span className="small ml-auto">{count.assigned_by_others}</span>}
+              {count && count.added_by_others > 0 && <span className="small ml-auto">{count.added_by_others}</span>}
             </Filter>
           </div>
         </div>

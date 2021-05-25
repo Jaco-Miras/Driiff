@@ -310,6 +310,13 @@ const TodoReminderModal = (props) => {
     } else {
       setAllUsersOptions();
     }
+    if (mode === "edit" && item && item.files.length) {
+      setUploadedFiles(
+        item.files.map((f) => {
+          return { ...f, id: f.file_id };
+        })
+      );
+    }
     setMounted(true);
   }, []);
 
@@ -450,11 +457,11 @@ const TodoReminderModal = (props) => {
         payload[k] = form[k].value;
       }
     });
+    payload = {
+      ...payload,
+      file_ids: [...inlineImages.map((i) => i.id), ...uploadedFiles.map((f) => f.id)],
+    };
     if (attachedFiles.length > 0) {
-      payload = {
-        ...payload,
-        file_ids: [...uploadedFiles.map((f) => f.id)],
-      };
       uploadFiles(payload);
     } else {
       actions.onSubmit(payload, (err, res) => {
