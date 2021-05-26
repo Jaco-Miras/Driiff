@@ -24,12 +24,18 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, setSelectedChannel, putChannel } from "../../redux/actions/chatActions";
-import { useSettings } from "./index";
+import { useSettings, useToaster, useTranslation } from "./index";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { setGeneralSetting, loggedUser } = useSettings();
+  const toaster = useToaster();
+  const { _t } = useTranslation();
+  const dictionary = {
+    notificationError: _t("NOTIFICATION.ERROR", "An error has occurred try again!"),
+    errorFetchingChannel: _t("ERROR.CHANNEL_FETCH", "Fetching channel failed"),
+  };
 
   const fetchWorkspace = useCallback(
     (id, callback) => {
@@ -116,6 +122,7 @@ const useWorkspaceActions = () => {
         getChannel(payload, (err, res) => {
           if (err) {
             callback();
+            toaster.error(dictionary.errorFetchingChannel);
           }
           if (res.data) {
             let channel = {
