@@ -327,7 +327,7 @@ class SocketListeners extends Component {
             this.props.incomingUpdateToDo(e);
             break;
           }
-          case "DONE_WORKSPACE_TODO": {
+          case "DONE_TODO": {
             this.props.incomingDoneToDo(e);
             break;
           }
