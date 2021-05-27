@@ -381,13 +381,40 @@ const CompanyPostDetail = (props) => {
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed) {
-      postActions.visit({
-        post_id: post.id,
-        personalized_for_id: null,
-      });
+      if (post.is_must_read && post.author.id !== user.id) {
+        if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && u.must_read)) {
+          postActions.visit({
+            post_id: post.id,
+            personalized_for_id: null,
+          });
+        }
+      } else if (post.is_must_reply && post.author.id !== user.id) {
+        if (post.required_users && post.required_users.some((u) => u.id === user.id && u.must_reply)) {
+          postActions.visit({
+            post_id: post.id,
+            personalized_for_id: null,
+          });
+        }
+      } else {
+        postActions.visit({
+          post_id: post.id,
+          personalized_for_id: null,
+        });
+      }
     }
+
     if (post.is_unread === 1 || post.unread_count > 0 || !post.is_updated) {
-      postActions.markAsRead(post);
+      if (post.is_must_read && post.author.id !== user.id) {
+        if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && u.must_read)) {
+          postActions.markAsRead(post);
+        }
+      } else if (post.is_must_reply && post.author.id !== user.id) {
+        if (post.required_users && post.required_users.some((u) => u.id === user.id && u.must_reply)) {
+          postActions.markAsRead(post);
+        }
+      } else {
+        postActions.markAsRead(post);
+      }
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
