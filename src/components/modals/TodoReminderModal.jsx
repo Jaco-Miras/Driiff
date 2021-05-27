@@ -287,6 +287,21 @@ const TodoReminderModal = (props) => {
       setForm({
         ...form,
         topic_id: { value: ws.id },
+        assigned_to: { value: item.assigned_to ? item.assigned_to.id : null },
+      });
+      if (item.assigned_to) {
+        setSelectedUser({
+          ...item.assigned_to,
+          icon: "user-avatar",
+          value: item.assigned_to.id,
+          label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
+          type: "USER",
+        });
+      }
+    } else if (mode === "edit" && item && !item.workspace) {
+      setForm({
+        ...form,
+        topic_id: { value: null },
         assigned_to: { value: item.assigned_to.id },
       });
       setSelectedUser({
@@ -296,6 +311,7 @@ const TodoReminderModal = (props) => {
         label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
         type: "USER",
       });
+      setAllUsersOptions();
     } else {
       setAllUsersOptions();
     }
