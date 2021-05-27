@@ -41,6 +41,8 @@ const useTodos = (fetchTodosOnMount = false) => {
       .filter((t) => {
         if (t.workspace && t.assigned_to && t.assigned_to.id !== loggedUser.id) {
           return false;
+        } else if (t.workspace && !t.assigned_to) {
+          return false;
         } else {
           if (filter) {
             if (filter.search !== "") {

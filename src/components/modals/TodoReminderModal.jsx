@@ -302,15 +302,17 @@ const TodoReminderModal = (props) => {
       setForm({
         ...form,
         topic_id: { value: null },
-        assigned_to: { value: item.assigned_to.id },
+        assigned_to: { value: item.assigned_to ? item.assigned_to.id : null },
       });
-      setSelectedUser({
-        ...item.assigned_to,
-        icon: "user-avatar",
-        value: item.assigned_to.id,
-        label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
-        type: "USER",
-      });
+      if (item.assigned_to) {
+        setSelectedUser({
+          ...item.assigned_to,
+          icon: "user-avatar",
+          value: item.assigned_to.id,
+          label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
+          type: "USER",
+        });
+      }
       setAllUsersOptions();
     } else {
       setAllUsersOptions();
@@ -659,8 +661,6 @@ const TodoReminderModal = (props) => {
         handleNetWorkError(error);
       });
   }
-
-  console.log(props);
 
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
