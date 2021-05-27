@@ -4,7 +4,7 @@ import { Avatar, ToolTip } from "../../common";
 import { TodoCheckBox } from "../../forms";
 //import quillHelper from "../../../helpers/quillHelper";
 import { setViewFiles } from "../../../redux/actions/fileActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 
 const Icon = styled(SvgIconFeather)`
@@ -84,7 +84,8 @@ const ItemList = styled.li`
   }
 `;
 
-const ReminderDescription = styled.span`
+const ReminderDescription = styled.div`
+  max-height: 50px;
   > * {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -96,6 +97,7 @@ const TodosList = (props) => {
   const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
@@ -199,10 +201,12 @@ const TodosList = (props) => {
               );
             })}
           </span>
-          <HoverButtons className="hover-btns ml-1">
-            <Icon icon="pencil" onClick={handleEdit} />
-            <Icon icon="trash" onClick={handleRemove} />
-          </HoverButtons>
+          {todo.user === user.id && (
+            <HoverButtons className="hover-btns ml-1">
+              <Icon icon="pencil" onClick={handleEdit} />
+              <Icon icon="trash" onClick={handleRemove} />
+            </HoverButtons>
+          )}
           <div className="d-flex align-items-center ml-auto">
             <Icon icon="calendar" />
             <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
