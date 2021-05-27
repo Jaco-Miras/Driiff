@@ -402,11 +402,12 @@ class SocketListeners extends Component {
       })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
-        if (e.workspace) {
-          if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
-            this.props.getFavoriteWorkspaceCounters();
-          }
-        }
+        // if (e.workspace) {
+        //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
+        //     this.props.getFavoriteWorkspaceCounters();
+        //   }
+        // }
+        this.props.getFavoriteWorkspaceCounters();
         this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {

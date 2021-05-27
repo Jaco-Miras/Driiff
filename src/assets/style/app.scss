@@ -15306,9 +15306,7 @@ body.form-membership .form-wrapper hr {
   // flex: 1;
   width: calc(100% - 60px);
 }
-
-
-.timeline .timeline-item:not(.timeline-item-no-line) ::before {
+.timeline .timeline-item::before {
   content: "";
   display: block;
   position: absolute;
@@ -15318,6 +15316,17 @@ body.form-membership .form-wrapper hr {
   left: 21px;
   background: #e1e1e1;
 }
+
+// .timeline .timeline-item:not(.timeline-item-no-line) ::before {
+//   content: "";
+//   display: block;
+//   position: absolute;
+//   width: 1px;
+//   bottom: 0;
+//   top: 32px;
+//   left: 21px;
+//   background: #e1e1e1;
+// }
 
 .timeline .timeline-item:last-child {
   padding-bottom: 0;
