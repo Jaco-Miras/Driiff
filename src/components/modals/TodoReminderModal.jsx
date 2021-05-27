@@ -195,7 +195,7 @@ const TodoReminderModal = (props) => {
         );
       }
 
-      if (itemType && itemType === "POST") {
+      if (itemType && itemType === "POST" && mode === "create") {
         const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
         if (workspaceRecipient) {
           const ws = { ...workspaces[workspaceRecipient.id] };
@@ -223,7 +223,7 @@ const TodoReminderModal = (props) => {
         }
       }
 
-      if (itemType && itemType === "POST_COMMENT" && parentItem) {
+      if (itemType && itemType === "POST_COMMENT" && parentItem && mode === "create") {
         const workspaceRecipient = parentItem.recipients.find((r) => r.type === "TOPIC");
         if (workspaceRecipient) {
           const ws = { ...workspaces[workspaceRecipient.id] };
@@ -660,6 +660,8 @@ const TodoReminderModal = (props) => {
       });
   }
 
+  console.log(props);
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -774,14 +776,12 @@ const TodoReminderModal = (props) => {
               </div>
             </div>
             <div className="column clearfix">
-              {itemType && parentItem && itemType === "CHAT" && parentItem.type === "TOPIC" && (
-                <div className="col-6 float-left">
-                  <div className="modal-label">{dictionary.workspaceLabel}</div>
-                  <WorkspacesContainer className="mb-2">
-                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
-                  </WorkspacesContainer>
-                </div>
-              )}
+              <div className="col-6 float-left">
+                <div className="modal-label">{dictionary.workspaceLabel}</div>
+                <WorkspacesContainer className="mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                </WorkspacesContainer>
+              </div>
 
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
