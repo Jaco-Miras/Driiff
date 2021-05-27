@@ -77,6 +77,9 @@ const ItemList = styled.li`
   .todo-title-description {
     cursor: pointer;
   }
+  .todo-title-description i {
+    margin-right: 5px;
+  }
   @media all and (max-width: 480px) {
     .reminder-content {
       flex-wrap: wrap;
@@ -91,6 +94,16 @@ const ReminderDescription = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+`;
+
+const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const LabelWrapper = styled.div`
+  min-width: 142px;
+  text-align: right;
 `;
 
 const TodosList = (props) => {
@@ -201,24 +214,28 @@ const TodosList = (props) => {
               );
             })}
           </span>
-          {todo.user === user.id && (
-            <HoverButtons className="hover-btns ml-1">
-              <Icon icon="pencil" onClick={handleEdit} />
-              <Icon icon="trash" onClick={handleRemove} />
-            </HoverButtons>
-          )}
+
+          <HoverButtons className="hover-btns ml-1">
+            <Icon icon="pencil" onClick={handleEdit} />
+            <Icon icon="trash" onClick={handleRemove} />
+          </HoverButtons>
+
           <div className="d-flex align-items-center ml-auto">
-            <Icon icon="calendar" />
-            <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
-              <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
-                {todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}
-              </span>
-            </ToolTip>
-            {todo.link_type !== null && (
-              <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
-                {getTodoType(todo)}
-              </span>
-            )}
+            <DateWrapper>
+              <Icon icon="calendar" />
+              <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
+                <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
+                  {todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}
+                </span>
+              </ToolTip>
+            </DateWrapper>
+            <LabelWrapper>
+              {todo.link_type !== null && (
+                <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
+                  {getTodoType(todo)}
+                </span>
+              )}
+            </LabelWrapper>
             <div className="avatars-container">
               {todo.author !== null && (
                 <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
