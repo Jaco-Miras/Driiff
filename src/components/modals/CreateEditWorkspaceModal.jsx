@@ -607,7 +607,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleConfirm = () => {
     if (loading) return;
-    if (Object.values(valid).filter((v) => !v).length) return;
+    //if (Object.values(valid).filter((v) => !v).length) return;
 
     const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
     const member_ids = selectedMembers.map((u) => u.id);
@@ -1417,7 +1417,7 @@ const CreateEditWorkspaceModal = (props) => {
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={handleConfirm}>
+          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>
