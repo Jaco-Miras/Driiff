@@ -88,6 +88,22 @@ export function putUser(payload) {
 /**
  *
  * @param {Object} payload
+ * @param {string} payload.type
+ * @returns {Promise<*>}
+ */
+export function updateUserType(payload) {
+  let url = `/users/${payload.id}/user-type`;
+
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ *
+ * @param {Object} payload
  * @param {string} payload.company_name
  * @param {string} payload.password
  * @param {string} payload.email
