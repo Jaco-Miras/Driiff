@@ -86,35 +86,64 @@ export default (state = INITIAL_STATE, action) => {
         user: action.data,
       };
     }
-    case "INCOMING_UPDATED_USER": {
-      let workspaces = { ...state.workspaces };
-      let activeTopic = { ...state.activeTopic };
 
-      const index = activeTopic.members.map((m) => m.id).indexOf(action.data.id);
-      if (index !== -1) {
-        Object.keys(activeTopic.members[index]).forEach((attr) => {
-          const value = action.data[attr];
-          if (activeTopic.members[index].hasOwnProperty(attr)) {
-            activeTopic.members[index][attr] = value;
-          }
-        });
+    case "INCOMING_UPDATED_USER": {
+      let activeTopic = state.activeTopic;
+
+      if (activeTopic && activeTopic.members.some((m) => m.id === action.data.id)) {
+        activeTopic = {
+          ...activeTopic,
+          members: activeTopic.members.map((m) => {
+            if (m.id === action.data.id) {
+              return {
+                ...m,
+                active: action.data.active ? action.data.active : m.active,
+                email: action.data.email ? action.data.email : m.email,
+                name: action.data.name ? action.data.name : m.name,
+                profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+                profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+                type: action.data.type ? action.data.type : m.type,
+                designation: action.data.designation ? action.data.designation : m.designation,
+                contact: action.data.contact ? action.data.contact : m.contact,
+                external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+              };
+            } else {
+              return m;
+            }
+          }),
+        };
       }
 
-      Object.values(workspaces).forEach((ws) => {
-        const index = workspaces[ws.id].members.map((m) => m.id).indexOf(action.data.id);
-        if (index !== -1) {
-          Object.keys(workspaces[ws.id].members[index]).forEach((attr) => {
-            const value = action.data[attr];
-            if (workspaces[ws.id].members[index].hasOwnProperty(attr)) {
-              workspaces[ws.id].members[index][attr] = value;
-            }
-          });
-        }
-      });
       return {
         ...state,
         flipper: !state.flipper,
-        workspaces: workspaces,
+        workspaces: Object.values(state.workspaces).reduce((res, ws) => {
+          res[ws.id] = {
+            ...ws,
+            members: ws.members.some((m) => m.id === action.data.id)
+              ? ws.members.map((m) => {
+                  if (m.id === action.data.id) {
+                    return {
+                      ...m,
+                      active: action.data.active ? action.data.active : m.active,
+                      email: action.data.email ? action.data.email : m.email,
+                      name: action.data.name ? action.data.name : m.name,
+                      profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+                      profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+                      type: action.data.type ? action.data.type : m.type,
+                      designation: action.data.designation ? action.data.designation : m.designation,
+                      contact: action.data.contact ? action.data.contact : m.contact,
+                      external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+                    };
+                  } else {
+                    return m;
+                  }
+                })
+              : ws.members,
+          };
+          return res;
+        }, {}),
+        activeTopic: activeTopic,
       };
     }
     case "GET_WORKSPACES_SUCCESS": {

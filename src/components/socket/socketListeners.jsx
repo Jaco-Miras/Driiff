@@ -1211,6 +1211,12 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "USER_UPDATE": {
             this.props.incomingUpdatedUser(e);
+            if (e.id === this.props.user.id || e.user_id === this.props.user.id) {
+              this.props.getUser({ id: this.props.user.id }, (err, res) => {
+                if (err) return;
+                sessionService.saveUser({ ...res.data });
+              });
+            }
             break;
           }
           default:

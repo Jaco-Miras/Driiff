@@ -25,6 +25,7 @@ import {
   userLogin,
   userLogout,
   unarchiveUser,
+  updateUserType,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -528,6 +529,15 @@ const useUserActions = () => {
     dispatch(getArchivedUsers());
   }, []);
 
+  const updateType = (user, type) => {
+    dispatch(
+      updateUserType({ id: user.id, type: type }, (err, res) => {
+        if (err) return;
+        toaster.success(`Change user type to ${type}`);
+      })
+    );
+  };
+
   return {
     checkCredentials,
     login,
@@ -560,6 +570,7 @@ const useUserActions = () => {
     activate,
     deactivate,
     fetchArchivedUsers,
+    updateType,
   };
 };
 

@@ -77,6 +77,7 @@ export {
   getExternalUsers,
   getArchivedUsers,
   unarchiveUser,
+  updateUserType,
 } from "./user";
 
 export {
