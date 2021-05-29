@@ -372,12 +372,10 @@ const CreateEditWorkspaceModal = (props) => {
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((ws) => {
       return {
+        ...ws,
+        icon: "folder",
         value: ws.id,
-        label: (
-          <>
-            {ws.name} {ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2" />}
-          </>
-        ),
+        label: ws.name,
       };
     });
 
