@@ -230,7 +230,6 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
       }
     } else if (data.removed_members.length > 1) {
       let rm = Object.values(users).filter((u) => data.removed_members.includes(u.id));
-
       if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
         if (newBody === "") {
           newBody = (
@@ -249,7 +248,7 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
         if (rm.length !== 0) {
           newBody = (
             <>
-              {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
+              {newBody} {dictionary.andRemoved} <b>{rm.map((m) => m.name).join(", ")}</b>
               <br />
             </>
           );
@@ -288,7 +287,7 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
         if (rm.length !== 0) {
           newBody = (
             <>
-              {newBody} <b>{rm.join(", ")}</b>
+              {newBody} <b>{rm.map((m) => m.name).join(", ")}</b>
               <br />
             </>
           );
