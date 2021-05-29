@@ -576,7 +576,7 @@ const PostDetailFooter = (props) => {
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id);
-  const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
+  //const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
   const approverNames = post.users_approval.map((u) => u.name);
   const isMultipleApprovers = post.users_approval.length > 1;
   const hasAnswered = post.users_approval.some((ua) => ua.id === user.id && ua.ip_address !== null);
@@ -586,6 +586,7 @@ const PostDetailFooter = (props) => {
     if (err) return;
     if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
       postActions.markReplyRequirement(post);
+      postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {

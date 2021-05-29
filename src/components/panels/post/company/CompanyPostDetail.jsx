@@ -384,7 +384,8 @@ const CompanyPostDetail = (props) => {
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    if (!viewed && !hasPendingApproval) {
       if (post.is_must_read && post.author.id !== user.id) {
         if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && u.must_read)) {
           postActions.visit({
@@ -417,13 +418,14 @@ const CompanyPostDetail = (props) => {
           postActions.markAsRead(post);
         }
       } else {
-        postActions.markAsRead(post);
+        if (!hasPendingApproval) postActions.markAsRead(post);
       }
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
 
     postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     // postActions.getUnreadPostsCount();
   }, []);
 
@@ -501,7 +503,7 @@ const CompanyPostDetail = (props) => {
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && post && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.author.id !== user.id && post.is_must_read && post && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
