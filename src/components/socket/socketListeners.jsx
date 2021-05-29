@@ -1251,7 +1251,7 @@ class SocketListeners extends Component {
               // get the folder if the workspace folder does not exists yet
             }
           }
-          if (e.remove_member_ids.length > 0) {
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
               if (this.props.user.type === "external" || e.private === 1) {
                 if (Object.keys(this.props.workspaces).length) {
@@ -1281,7 +1281,7 @@ class SocketListeners extends Component {
             }
           }
         }
-        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/workspace") && this.props.match.url !== "/workspace/search") {
           let currentPage = this.props.location.pathname;
           currentPage = currentPage.split("/")[2];
           if (e.workspace_id === 0) {
@@ -1419,7 +1419,7 @@ class SocketListeners extends Component {
               // get the folder if the workspace folder does not exists yet
             }
           }
-          if (e.remove_member_ids.length > 0) {
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
               if (this.props.user.type === "external" || e.private === 1) {
                 if (Object.keys(this.props.workspaces).length) {
@@ -1449,7 +1449,7 @@ class SocketListeners extends Component {
             }
           }
         }
-        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/workspace") && this.props.match.url !== "/workspace/search") {
           let currentPage = this.props.location.pathname;
           currentPage = currentPage.split("/")[2];
           if (e.workspace_id === 0) {
