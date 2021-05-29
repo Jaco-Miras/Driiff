@@ -387,7 +387,8 @@ const PostDetail = (props) => {
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    if (!viewed && !hasPendingApproval) {
       if (post.is_must_read && post.author.id !== user.id) {
         if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && u.must_read)) {
           postActions.visit({
@@ -420,12 +421,13 @@ const PostDetail = (props) => {
           postActions.markAsRead(post);
         }
       } else {
-        postActions.markAsRead(post);
+        if (!hasPendingApproval) postActions.markAsRead(post);
       }
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
     postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
   }, []);
 
   const privateWsOnly = post.recipients.filter((r) => {
@@ -515,7 +517,7 @@ const PostDetail = (props) => {
         />
         <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}

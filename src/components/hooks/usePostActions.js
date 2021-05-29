@@ -605,6 +605,7 @@ const usePostActions = () => {
             },
             actions: {
               onSubmit: () => {
+                markAsRead(post);
                 if (rewardRef && rewardRef.current) {
                   rewardRef.current.rewardMe();
                 }
@@ -876,6 +877,7 @@ const usePostActions = () => {
       };
 
       dispatch(postRequired(payload));
+      markAsRead(post);
     },
     [dispatch, params]
   );
