@@ -27,7 +27,7 @@ import {
   unarchiveUser,
   updateUserType,
 } from "../../redux/actions/userAction";
-import { useDriffActions, useSettings, useToaster } from "./index";
+import { useDriffActions, useSettings, useToaster, useTranslation } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
@@ -64,6 +64,8 @@ const useUserActions = () => {
     setReadAnnouncement,
   } = useSettings();
   const { persistor, persistenceOn } = reduxPersist();
+
+  const { _t } = useTranslation();
 
   //const { getUserFilter } = useSelector((state) => state.users);
   const getUserFilter = useSelector((state) => state.users.getUserFilter);
@@ -533,7 +535,7 @@ const useUserActions = () => {
     dispatch(
       updateUserType({ id: user.id, type: type }, (err, res) => {
         if (err) return;
-        toaster.success(`Change user type to ${type}`);
+        toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: type })}`);
       })
     );
   };

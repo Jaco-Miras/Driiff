@@ -91,26 +91,29 @@ export default (state = INITIAL_STATE, action) => {
       let activeTopic = state.activeTopic;
 
       if (activeTopic && activeTopic.members.some((m) => m.id === action.data.id)) {
+        const updatedMembers = activeTopic.members.map((m) => {
+          if (m.id === action.data.id) {
+            return {
+              ...m,
+              active: action.data.active ? action.data.active : m.active,
+              email: action.data.email ? action.data.email : m.email,
+              name: action.data.name ? action.data.name : m.name,
+              profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+              profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+              type: action.data.type ? action.data.type : m.type,
+              designation: action.data.designation ? action.data.designation : m.designation,
+              contact: action.data.contact ? action.data.contact : m.contact,
+              external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+            };
+          } else {
+            return m;
+          }
+        });
+        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
         activeTopic = {
           ...activeTopic,
-          members: activeTopic.members.map((m) => {
-            if (m.id === action.data.id) {
-              return {
-                ...m,
-                active: action.data.active ? action.data.active : m.active,
-                email: action.data.email ? action.data.email : m.email,
-                name: action.data.name ? action.data.name : m.name,
-                profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
-                profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
-                type: action.data.type ? action.data.type : m.type,
-                designation: action.data.designation ? action.data.designation : m.designation,
-                contact: action.data.contact ? action.data.contact : m.contact,
-                external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
-              };
-            } else {
-              return m;
-            }
-          }),
+          is_shared: action.data.type === "external" ? true : isStillExternal,
+          members: updatedMembers,
         };
       }
 
@@ -118,28 +121,31 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         flipper: !state.flipper,
         workspaces: Object.values(state.workspaces).reduce((res, ws) => {
+          const wsMembers = ws.members.some((m) => m.id === action.data.id)
+            ? ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return {
+                    ...m,
+                    active: action.data.active ? action.data.active : m.active,
+                    email: action.data.email ? action.data.email : m.email,
+                    name: action.data.name ? action.data.name : m.name,
+                    profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+                    profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+                    type: action.data.type ? action.data.type : m.type,
+                    designation: action.data.designation ? action.data.designation : m.designation,
+                    contact: action.data.contact ? action.data.contact : m.contact,
+                    external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+                  };
+                } else {
+                  return m;
+                }
+              })
+            : ws.members;
+          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
           res[ws.id] = {
             ...ws,
-            members: ws.members.some((m) => m.id === action.data.id)
-              ? ws.members.map((m) => {
-                  if (m.id === action.data.id) {
-                    return {
-                      ...m,
-                      active: action.data.active ? action.data.active : m.active,
-                      email: action.data.email ? action.data.email : m.email,
-                      name: action.data.name ? action.data.name : m.name,
-                      profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
-                      profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
-                      type: action.data.type ? action.data.type : m.type,
-                      designation: action.data.designation ? action.data.designation : m.designation,
-                      contact: action.data.contact ? action.data.contact : m.contact,
-                      external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
-                    };
-                  } else {
-                    return m;
-                  }
-                })
-              : ws.members,
+            members: wsMembers,
+            is_shared: action.data.type === "external" ? true : isStillExternal,
           };
           return res;
         }, {}),
