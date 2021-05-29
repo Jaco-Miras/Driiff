@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
@@ -8,7 +8,7 @@ import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import quillHelper from "../../helpers/quillHelper";
-import { FormInput, InputFeedback, QuillEditor } from "../forms";
+import { FormInput, InputFeedback, QuillEditor, FolderSelect, PeopleSelect } from "../forms";
 import moment from "moment";
 import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
@@ -33,6 +33,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   height: 150px;
   border-radius: 6px;
   border: 1px solid #e1e1e1;
+  margin-bottom: 1rem;
 
   &.description-input {
     overflow: auto;
@@ -61,11 +62,23 @@ const StyleInputFeedback = styled(InputFeedback)`
   display: block;
 `;
 
+const WorkspacesContainer = styled.div`
+  z-index: 3;
+`;
+
+const SelectedUserContainer = styled.div`
+  z-index: 2;
+`;
+
+const RadioInputContainer = styled.div`
+  z-index: 1;
+`;
+
 const TodoReminderModal = (props) => {
   /**
    * @todo refactor
    */
-  const { type, item, parentItem = null, itemType = null, actions } = props.data;
+  const { type, item, parentItem = null, itemType = null, actions, params, mode = "create" } = props.data;
 
   const {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
@@ -75,6 +88,8 @@ const TodoReminderModal = (props) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.session.user);
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
   const [componentUpdate, setComponentUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -87,6 +102,12 @@ const TodoReminderModal = (props) => {
     set_time: {
       value: "1h",
     },
+    topic_id: {
+      value: null,
+    },
+    assigned_to: {
+      value: null,
+    },
   });
 
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
@@ -95,6 +116,173 @@ const TodoReminderModal = (props) => {
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
   const [initFocused, setInitFocused] = useState(false);
+
+  const [workspaceOptions, setWorkspaceOptions] = useState([]);
+  const [selectedWorkspace, setSelectedWorkspace] = useState(null);
+  const [userOptions, setUserOptions] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userInputValue, setUserInputValue] = useState("");
+
+  useEffect(() => {
+    if (workspacesLoaded) {
+      console.log(props);
+      /**
+       * params sent to reminder modal, if params is existing then the modal is triggered in workspace
+       * if params is undefined, reminder modal is triggered in the main sidebar or on the main reminder page
+       * **/
+      if (!itemType && params && workspaces[params.workspaceId]) {
+        const ws = { ...workspaces[params.workspaceId] };
+        // set default selected workspace and set the user options using the workspace members
+        setSelectedWorkspace({
+          ...ws,
+          icon: "compass",
+          value: ws.id,
+          label: ws.name,
+        });
+        setForm({
+          ...form,
+          topic_id: { value: ws.id },
+        });
+        setUserOptions(
+          ws.members.map((u) => {
+            return {
+              ...u,
+              icon: "user-avatar",
+              value: u.id,
+              label: u.name ? u.name : u.email,
+              type: "USER",
+            };
+          })
+        );
+      }
+      if (itemType && parentItem && itemType === "CHAT" && parentItem.type === "TOPIC" && workspaces[parentItem.entity_id]) {
+        const ws = { ...workspaces[parentItem.entity_id] };
+        setSelectedWorkspace({
+          ...ws,
+          icon: "compass",
+          value: ws.id,
+          label: ws.name,
+        });
+        setForm({
+          ...form,
+          topic_id: { value: ws.id },
+        });
+        setUserOptions(
+          ws.members.map((u) => {
+            return {
+              ...u,
+              icon: "user-avatar",
+              value: u.id,
+              label: u.name ? u.name : u.email,
+              type: "USER",
+            };
+          })
+        );
+      }
+
+      if (itemType && itemType === "POST") {
+        const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
+        if (workspaceRecipient) {
+          const ws = { ...workspaces[workspaceRecipient.id] };
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name ? u.name : u.email,
+                type: "USER",
+              };
+            })
+          );
+        }
+      }
+
+      if (itemType && itemType === "POST_COMMENT" && parentItem) {
+        const workspaceRecipient = parentItem.recipients.find((r) => r.type === "TOPIC");
+        if (workspaceRecipient) {
+          const ws = { ...workspaces[workspaceRecipient.id] };
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name ? u.name : u.email,
+                type: "USER",
+              };
+            })
+          );
+        }
+      }
+
+      setWorkspaceOptions(
+        Object.values(workspaces).map((ws) => {
+          return {
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          };
+        })
+      );
+    }
+  }, [workspacesLoaded, params]);
+
+  useEffect(() => {
+    if (mode === "edit" && item && item.workspace && workspaces[item.workspace.id]) {
+      const ws = { ...workspaces[item.workspace.id] };
+      setSelectedWorkspace({
+        ...ws,
+        icon: "compass",
+        value: ws.id,
+        label: ws.name,
+      });
+      setUserOptions(
+        ws.members.map((u) => {
+          return {
+            ...u,
+            icon: "user-avatar",
+            value: u.id,
+            label: u.name ? u.name : u.email,
+            type: "USER",
+          };
+        })
+      );
+      setForm({
+        ...form,
+        topic_id: { value: ws.id },
+        assigned_to: { value: item.assigned_to.id },
+      });
+      setSelectedUser({
+        ...item.assigned_to,
+        icon: "user-avatar",
+        value: item.assigned_to.id,
+        label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
+        type: "USER",
+      });
+    }
+  }, []);
 
   const refs = {
     title: useRef(null),
@@ -110,11 +298,14 @@ const TodoReminderModal = (props) => {
     threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
     tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
     pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
-    snooze: _t("REMINDER.SNOOZE", "Remind me"),
+    //snooze: _t("REMINDER.SNOOZE", "Remind me"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
     feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
     feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
     reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
+    snooze: _t("REMINDER.REMIND", "Remind"),
+    workspaceLabel: _t("LABEL.WORKSPACE", "Workspace"),
+    assignedToLabel: _t("LABEL.ASSIGN_TO", "Assign to"),
   };
 
   if (itemType === null) {
@@ -184,9 +375,6 @@ const TodoReminderModal = (props) => {
       newForm.title.feedback = null;
     }
 
-    if (form.description.value) {
-    }
-
     if (timeValue === "pick_data") {
       const currentDate = new Date();
       const reminderDate = new Date(customTimeValue);
@@ -225,7 +413,7 @@ const TodoReminderModal = (props) => {
     Object.keys(form).forEach((k) => {
       if (k === "set_time") {
         if (form[k].value !== "") payload[k] = form[k].value;
-      } else {
+      } else if (form[k].value) {
         payload[k] = form[k].value;
       }
     });
@@ -236,6 +424,9 @@ const TodoReminderModal = (props) => {
       // }
       // setLoading(false);
     });
+    /**
+     * @todo need to recheck the submit callback
+     * **/
     setLoading(false);
     toggle();
   };
@@ -248,6 +439,61 @@ const TodoReminderModal = (props) => {
         setInitFocused(true);
       }, 500);
     }
+  };
+
+  const handleSelectWorkspace = (value) => {
+    console.log(value);
+    setSelectedWorkspace(value);
+    if (value) {
+      setForm({
+        ...form,
+        topic_id: { value: value.id },
+        assigned_to: { value: selectedUser && value.member_ids.some((id) => selectedUser.id !== id) ? null : form.assigned_to.value },
+      });
+      setUserOptions(
+        value.members.map((u) => {
+          return {
+            ...u,
+            icon: "user-avatar",
+            value: u.id,
+            label: u.name ? u.name : u.email,
+            type: "USER",
+          };
+        })
+      );
+      // if there is a selected user but the user is not a member of the selected workspace then reset selected user to null
+      if (selectedUser && value.member_ids.some((id) => selectedUser.id !== id)) {
+        setSelectedUser(null);
+      }
+    } else {
+      setForm({
+        ...form,
+        topic_id: { value: null },
+        assigned_to: { value: null },
+      });
+      setUserOptions([]);
+      setSelectedUser(null);
+    }
+  };
+
+  const handleSelectUser = (value) => {
+    console.log(value);
+    setSelectedUser(value);
+    if (value) {
+      setForm({
+        ...form,
+        assigned_to: { value: value.id },
+      });
+    } else {
+      setForm({
+        ...form,
+        assigned_to: { value: null },
+      });
+    }
+  };
+
+  const handleUserInputChange = (e) => {
+    setUserInputValue(e);
   };
 
   return (
@@ -267,6 +513,22 @@ const TodoReminderModal = (props) => {
                 <StyledQuillEditor defaultValue={form.description.value} onChange={handleQuillChange} name="description" />
               </div>
             </div>
+            <div className="column clearfix">
+              <div className="col-lg-6 float-left">
+                <div className="modal-label">{dictionary.workspaceLabel}</div>
+                <WorkspacesContainer className="mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                </WorkspacesContainer>
+              </div>
+              {selectedWorkspace && (
+                <div className="col-lg-6 float-left">
+                  <div className="modal-label">{dictionary.assignedToLabel}</div>
+                  <SelectedUserContainer className="mb-2">
+                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  </SelectedUserContainer>
+                </div>
+              )}
+            </div>
           </>
         )}
         {itemType === "POST" && (
@@ -281,6 +543,22 @@ const TodoReminderModal = (props) => {
               <div className="col-12 mb-3">
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
                 <FileAttachments attachedFiles={item.files} showDelete={false} />
+              </div>
+              <div className="column clearfix">
+                <div className="col-6 float-left">
+                  <div className="modal-label">{dictionary.workspaceLabel}</div>
+                  <WorkspacesContainer className=" mb-2">
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                  </WorkspacesContainer>
+                </div>
+                {selectedWorkspace && (
+                  <div className="col-6 float-left">
+                    <div className="modal-label">{dictionary.assignedToLabel}</div>
+                    <SelectedUserContainer className="mb-2">
+                      <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                    </SelectedUserContainer>
+                  </div>
+                )}
               </div>
             </div>
           </>
@@ -299,6 +577,25 @@ const TodoReminderModal = (props) => {
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
               </div>
             </div>
+            <div className="column clearfix">
+              {itemType && parentItem && itemType === "CHAT" && parentItem.type === "TOPIC" && (
+                <div className="col-6 float-left">
+                  <div className="modal-label">{dictionary.workspaceLabel}</div>
+                  <WorkspacesContainer className="mb-2">
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                  </WorkspacesContainer>
+                </div>
+              )}
+
+              {selectedWorkspace && (
+                <div className="col-6 float-left">
+                  <div className="modal-label">{dictionary.assignedToLabel}</div>
+                  <SelectedUserContainer className="mb-2">
+                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  </SelectedUserContainer>
+                </div>
+              )}
+            </div>
           </>
         )}
         {itemType === "POST_COMMENT" && (
@@ -315,9 +612,25 @@ const TodoReminderModal = (props) => {
                 <FileAttachments attachedFiles={item.files} showDelete={false} />
               </div>
             </div>
+            <div className="column clearfix">
+              <div className="col-6 float-left">
+                <div className="modal-label">{dictionary.workspaceLabel}</div>
+                <WorkspacesContainer className="mb-2">
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={true} />
+                </WorkspacesContainer>
+              </div>
+              {selectedWorkspace && (
+                <div className="col-6 float-left">
+                  <div className="modal-label">{dictionary.assignedToLabel}</div>
+                  <SelectedUserContainer className="mb-2">
+                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  </SelectedUserContainer>
+                </div>
+              )}
+            </div>
           </>
         )}
-        <div className="column mt-3">
+        <RadioInputContainer className="column mt-2">
           <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
           <div className="col-12 mb-3">
             <InputContainer>
@@ -365,7 +678,7 @@ const TodoReminderModal = (props) => {
               )}
             </InputContainer>
           </div>
-        </div>
+        </RadioInputContainer>
       </ModalBody>
       <ModalFooter>
         <Button outline color="secondary" onClick={toggle}>

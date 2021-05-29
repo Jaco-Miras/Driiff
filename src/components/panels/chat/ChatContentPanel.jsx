@@ -119,7 +119,8 @@ const ChatContentPanel = (props) => {
   const { _t } = useTranslation();
 
   const dictionary = {
-    remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
+    //remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
+    remindMeAboutThis: _t("TODO.REMIND_ABOUT_THIS", "Remind about this"),
     quote: _t("CHAT.QUOTE", "Quote"),
     copyMessageLink: _t("CHAT.COPY_MESSAGE_LINK", "Copy message link"),
     forward: _t("CHAT.FORWARD", "Forward"),
@@ -177,6 +178,7 @@ const ChatContentPanel = (props) => {
     chatArchiveConfirmation: _t("CHAT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this channel?"),
     headerArchive: _t("HEADER.ARCHIVE", "Chat archive"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
+    clickHereToJoin: _t("CHAT.CLICK_HERE_TO_JOIN", "Click here to join"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -214,6 +216,7 @@ const ChatContentPanel = (props) => {
           isIdle={isIdle}
           translate={translate}
           language={language}
+          _t={_t}
         />
       ) : (
         <ChatMessagesPlaceholder />

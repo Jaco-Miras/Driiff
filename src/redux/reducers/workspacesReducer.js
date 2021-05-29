@@ -66,6 +66,7 @@ const INITIAL_STATE = {
       },
     },
   },
+  workspaceReminders: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -155,6 +156,7 @@ export default (state = INITIAL_STATE, action) => {
             folder_name: null,
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -3044,6 +3046,78 @@ export default (state = INITIAL_STATE, action) => {
             };
             return ws;
           }, {}),
+        },
+      };
+    }
+    case "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS": {
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          ...(action.data.length > 0 && {
+            ...action.data.reduce((res, obj) => {
+              res[obj.topic_id] = {
+                ...state.workspaces[obj.topic_id],
+                workspace_counter_entries: obj.workspace_counter_entries,
+              };
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
+    case "GET_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              hasMore: action.data.todos.length === action.data.limit,
+              skip: state.workspaceReminders[action.data.topic_id].skip + action.data.todos.length,
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              skip: action.data.todos.length,
+              hasMore: action.data.todos.length === action.data.limit,
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "UPDATE_WORKSPACE_REMINDERS_COUNT": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          ...(state.workspaceReminders[action.data.id] && {
+            [action.data.id]: {
+              ...state.workspaceReminders[action.data.id],
+              count: action.data.count.reduce((res, c) => {
+                res[c.status.toLowerCase()] = c.count;
+                return res;
+              }, {}),
+            },
+          }),
+          ...(typeof state.workspaceReminders[action.data.id] === "undefined" && {
+            [action.data.id]: {
+              skip: 0,
+              hasMore: true,
+              reminderIds: [],
+              count: action.data.count.reduce((res, c) => {
+                res[c.status.toLowerCase()] = c.count;
+                return res;
+              }, {}),
+            },
+          }),
         },
       };
     }

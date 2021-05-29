@@ -2,10 +2,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { useNotificationActions, useNotifications, useRedirect, useTranslation } from "../../hooks";
+import { useNotificationActions, useNotifications, useRedirect, useTranslation, useSettings } from "../../hooks";
 import { NotificationTimelineItem } from "../../list/notification/item";
 import { SvgEmptyState } from "../../common";
-
+import { UserNotificationSidebar } from "./index";
+//import { CompanyPostTimeline } from "../dashboard/timeline/company";
 const Wrapper = styled.div`
   .empty-notification {
     h4 {
@@ -23,70 +24,47 @@ const UserNotificationPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const history = useHistory();
   const actions = useNotificationActions();
-  const { notifications } = useNotifications();
+  const { notifications, unreadNotifications } = useNotifications();
   const { _t } = useTranslation();
   const redirect = useRedirect();
+
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
 
   const dictionary = {
     new: _t("NOTIFICATION.NEW", "New"),
     markAllAsRead: _t("NOTIFICATION.MARK_ALL_AS_READ", "Mark all as read"),
     oldNotifications: _t("NOTIFICATION.OLD_NOTIFICATIONS", "Old notifications"),
     noNotificationsToShow: _t("NOTIFICATION.NO_NOTIFICATIONS_TO_SHOW", "There are no notifications to show."),
+    howdy: _t("NOTIFICATION.howdy", "Here you go, "),
+    notificationCount1: _t("NOTIFICATION.noficicationCount1", "You have"),
+    notificationCount2: _t("NOTIFICATION.noficicationCount2", "new notifications."),
+    viewSettings: _t("NOTIFICATION.VIEW_SETTINGS", "View Settings"),
+    improve: _t("NOTIFICATION.IMPROVE_NOTIFICATIONS", "Improve your notifications"),
+    mustRead: _t("NOTIFICATION.MUST_READ", "Must read"),
+    needsReply: _t("NOTIFICATION.NEEDS_REPLY", "Needs reply"),
   };
 
-  const newNotifications = Object.values(notifications)
-    .filter((n) => n.is_read === 0)
-    .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
-
-  const oldNotifications = Object.values(notifications)
-    .filter((n) => n.is_read === 1)
-    .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+  const notif = Object.values(notifications).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
 
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
-      <div className="row row-user-profile-panel justify-content-center">
+      <div className="row row-user-profile-panel">
+        <UserNotificationSidebar className="col-md-3" dictionary={dictionary} user={user} unreadNotifications={unreadNotifications} darkMode={dark_mode} />
         <div className="col-md-6">
-          {newNotifications.length > 0 && (
-            <div className="card">
-              <div className="card-body">
-                <h6 className="card-title d-flex justify-content-between align-items-center">
-                  <div>{dictionary.new}</div>
-                  <div>
-                    <span className="cursor-pointer" onClick={actions.readAll}>
-                      <i className="hide-show-toggler-item fa fa-check font-size-16 mr-2" />
-                      {dictionary.markAllAsRead}
-                    </span>
-                  </div>
-                </h6>
+          {notif.length > 0 && (
+            <div className="card app-content-body mb-4 ">
+              <div className="card-body " style={{ padding: "0px" }}>
                 <div className="timeline">
-                  {newNotifications.map((n) => {
-                    return <NotificationTimelineItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} user={user} _t={_t} />;
+                  {notif.map((n) => {
+                    return <NotificationTimelineItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} user={user} _t={_t} darkMode={dark_mode} />;
                   })}
                 </div>
               </div>
             </div>
           )}
-          {oldNotifications.length > 0 && (
-            <div className="card">
-              <div className="card-body">
-                <h6 className="card-title d-flex justify-content-between align-items-center">
-                  <div>{dictionary.oldNotifications}</div>
-                  <div>
-                    {/* <span className="cursor-pointer" onClick={actions.readAll}>
-                      <i className="hide-show-toggler-item fa fa-check font-size-16 mr-2"/>
-                      Mark all as unread
-                    </span> */}
-                  </div>
-                </h6>
-                <div className="timeline">
-                  {oldNotifications.map((n) => {
-                    return <NotificationTimelineItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} user={user} _t={_t} />;
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
-          {newNotifications.length === 0 && oldNotifications.length === 0 && (
+          {!notif.length && (
             <div className="card empty-notification">
               <h4>{dictionary.noNotificationsToShow}</h4>
               <div className="card-body d-flex justify-content-center align-items-center">

@@ -50,9 +50,9 @@ body {
   padding-left: 0.3rem;
 }
 
-.post-modal {
-  max-width: calc(100% - 20rem) !important;
-}
+// .post-modal {
+//   max-width: calc(100% - 20rem) !important;
+// }
 
 .time-stamp {
   cursor: default;
@@ -15306,7 +15306,6 @@ body.form-membership .form-wrapper hr {
   // flex: 1;
   width: calc(100% - 60px);
 }
-
 .timeline .timeline-item::before {
   content: "";
   display: block;
@@ -15317,6 +15316,17 @@ body.form-membership .form-wrapper hr {
   left: 21px;
   background: #e1e1e1;
 }
+
+// .timeline .timeline-item:not(.timeline-item-no-line) ::before {
+//   content: "";
+//   display: block;
+//   position: absolute;
+//   width: 1px;
+//   bottom: 0;
+//   top: 32px;
+//   left: 21px;
+//   background: #e1e1e1;
+// }
 
 .timeline .timeline-item:last-child {
   padding-bottom: 0;

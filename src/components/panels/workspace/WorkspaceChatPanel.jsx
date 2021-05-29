@@ -60,10 +60,12 @@ const WorkspaceChatPanel = (props) => {
             </button>
           </EmptyState>
         )}
-        {(route.path.startsWith("/workspace/chat") || (workspace && workspace.team_channel.code && user.type === "internal")) && <ChatContentPanel className={"col-lg-12"} isWorkspace="true" selectedChannel={selectedChannel} />}
+        {(route.path.startsWith("/workspace/chat") || (workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.team)) && (
+          <ChatContentPanel className={"col-lg-12"} isWorkspace={true} selectedChannel={selectedChannel} />
+        )}
       </Chatblock>
     </Wrapper>
   );
 };
 
-export default React.memo(WorkspaceChatPanel);
+export default WorkspaceChatPanel;
