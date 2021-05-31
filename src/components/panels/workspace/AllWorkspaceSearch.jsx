@@ -95,7 +95,7 @@ const AllWorkspaceSearch = (props) => {
       results: [],
       searching: true,
       value: "",
-      filterBy: null,
+      filterBy: "all",
       page: 1,
       maxPage: 1,
       count: 0,
@@ -105,19 +105,19 @@ const AllWorkspaceSearch = (props) => {
         search: "",
         skip: 0,
         limit: 25,
-        filter_by: "",
+        filter_by: "all",
       },
       (err, res) => {
         if (err) {
           actions.updateSearch({
             searching: false,
             value: "",
-            filterBy: null,
+            filterBy: "all",
           });
         } else {
           actions.updateSearch({
             value: "",
-            filterBy: null,
+            filterBy: "all",
             searching: false,
             count: res.data.total_count,
             results: res.data.workspaces,

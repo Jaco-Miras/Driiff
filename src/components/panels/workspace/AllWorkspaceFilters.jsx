@@ -27,15 +27,10 @@ const AllWorkspaceFilters = (props) => {
   const handleClickFilter = (e) => {
     e.persist();
 
-    if (filterBy === e.target.dataset.value) {
-      actions.updateSearch({
-        filterBy: null,
-      });
-    } else {
-      actions.updateSearch({
-        filterBy: e.target.dataset.value,
-      });
-    }
+    if (filterBy === e.target.dataset.value) return;
+    actions.updateSearch({
+      filterBy: e.target.dataset.value,
+    });
 
     //onGoBack();
     document.body.classList.remove("mobile-modal-open");
