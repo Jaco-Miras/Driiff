@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useTranslation } from "../../hooks";
-import { Avatar, SvgIconFeather } from "../../common";
+import { Avatar } from "../../common";
 
 const Wrapper = styled.div``;
 const ApprovedText = styled.div`
@@ -36,6 +36,7 @@ const ApprovalBadgeWrapper = styled.div`
   display: flex;
   justify-content: center;
   .read-users-container .name {
+    color: #212529;
     .dark & {
       color: #fff;
     }
