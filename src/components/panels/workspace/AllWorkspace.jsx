@@ -80,6 +80,7 @@ const AllWorkspace = (props) => {
     externalAccess: _t("WORKSPACE_SEARCH.EXTERNAL_ACCESS", "External access"),
     addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
     favourites: _t("WORKSPACE.FAVOURITES", "Favourites"),
+    all: _t("ALL_WORKSPACE.ALL", "All"),
   };
 
   const handleLoadMore = () => {
