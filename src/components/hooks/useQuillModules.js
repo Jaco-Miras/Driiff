@@ -251,6 +251,7 @@ const useQuillModules = ({
       imageUploader: {
         upload: (file) => {
           console.log(setImageLoading);
+          if (!setInlineImages) return;
           if (setImageLoading) setImageLoading(true);
           return new Promise((resolve, reject) => {
             var formData = new FormData();
