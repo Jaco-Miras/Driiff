@@ -49,7 +49,7 @@ const PostBadge = (props) => {
     <div ref={refs.container}>
       {(post.is_must_read || post.is_must_reply || post.is_read_only || post.type === "draft_post" || post.is_archived !== 0 || post.is_personal === true) && (
         <>
-          {post.is_personal === true && post.recipients.length > 1 && (
+          {!post.recipients.every((r) => r.type === "USER") && post.recipients.some((r) => r.type === "USER") && (
             <div className={`${className} mr-3 d-sm-inline d-none`}>
               <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.private}</div>
             </div>
