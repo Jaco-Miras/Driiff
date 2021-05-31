@@ -125,6 +125,9 @@ const ChatBubbleContainer = styled.div`
     font-style: italic;
     color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#AAB0C8")};
   }
+  span.image-uploading {
+    display: none;
+  }
 `;
 
 const QuoteContainer = styled.div`

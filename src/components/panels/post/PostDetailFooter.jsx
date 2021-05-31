@@ -270,6 +270,7 @@ const PostDetailFooter = (props) => {
   const [approving, setApproving] = useState({ approve: false, change: false });
   const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client && user.type === "internal" ? true : false);
   const [commentType, setCommentType] = useState(!post.shared_with_client ? "internal" : null);
+  const [imageLoading, setImageLoading] = useState(null);
 
   const handleSend = useCallback(() => {
     if (!disableButtons) setSent(true);
@@ -395,7 +396,7 @@ const PostDetailFooter = (props) => {
   const onActive = (active) => {
     setActive(active);
     let sendButtonValues;
-    active ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
+    active && !imageLoading ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
     setBackgroundSend(sendButtonValues[0]);
     setCursor(sendButtonValues[1]);
     setFillSend(sendButtonValues[2]);
@@ -754,6 +755,8 @@ const PostDetailFooter = (props) => {
                 readOnly={disableButtons}
                 onToggleCommentType={handleCommentType}
                 commentType={commentType}
+                imageLoading={imageLoading}
+                setImageLoading={setImageLoading}
               />
               <PostInputButtons
                 parentId={parentId}
