@@ -119,18 +119,11 @@ const PostChangeAccept = (props) => {
           </span>
         </ApprovedText>
       )}
-      {/* {isMultipleApprovers && (
-        <ApprovalLabelWrapper className="readers-container">
-          {usersApproved.length > 0 && (
-            <div className="user-reads-container read-by">
-              {userApprovedIds.some((id) => id === user.id) && (
-                <span className="mr-2">
-                  <Icon className="mr-2" icon="check" /> {dictionary.agreedToThis}
-                </span>
-              )}
-              <span className="no-readers">
-                {dictionary.agreedBy} {usersApproved.length} users
-              </span>
+      {isMultipleApprovers && (
+        <ApprovalBadgeWrapper className="readers-container">
+          {agreedUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-success">
+              <span className="no-readers">{_t("POST.PERSON_APPROVED", "::count:: person approved", { count: usersApproved.length })}</span>
               <span className="hover read-users-container">
                 {agreedUsers.map((u) => {
                   return (
@@ -142,17 +135,23 @@ const PostChangeAccept = (props) => {
               </span>
             </div>
           )}
-          <br />
-          {usersDisagreed.length > 0 && (
-            <div className="user-reads-container read-by">
-              {userDisagreedIds.some((id) => id === user.id) && (
-                <span className="mr-2">
-                  <Icon className="mr-2" icon="check" /> {dictionary.disagreedToThis}
-                </span>
-              )}
-              <span className="no-readers">
-                {dictionary.disagreedBy} {usersDisagreed.length} users
+          {pendingUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-warning">
+              <span className="no-readers">{_t("POST.PERSON_PENDING", "::count:: person pending", { count: pendingUsers.length })}</span>
+              <span className="hover read-users-container">
+                {pendingUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
               </span>
+            </div>
+          )}
+          {disagreedUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-danger">
+              <span className="no-readers">{_t("POST.PERSON_DISAGREED", "::count:: person disagreed", { count: usersDisagreed.length })}</span>
               <span className="hover read-users-container">
                 {disagreedUsers.map((u) => {
                   return (
@@ -164,46 +163,6 @@ const PostChangeAccept = (props) => {
               </span>
             </div>
           )}
-        </ApprovalLabelWrapper>
-      )} */}
-      {isMultipleApprovers && (
-        <ApprovalBadgeWrapper className="readers-container">
-          <div className="user-reads-container read-by badge badge-success">
-            <span className="no-readers">{_t("POST.PERSON_APPROVED", "::count:: person approved", { count: usersApproved.length })}</span>
-            <span className="hover read-users-container">
-              {agreedUsers.map((u) => {
-                return (
-                  <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
-                  </span>
-                );
-              })}
-            </span>
-          </div>
-          <div className="user-reads-container read-by badge badge-warning">
-            <span className="no-readers">{_t("POST.PERSON_PENDING", "::count:: person pending", { count: pendingUsers.length })}</span>
-            <span className="hover read-users-container">
-              {pendingUsers.map((u) => {
-                return (
-                  <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
-                  </span>
-                );
-              })}
-            </span>
-          </div>
-          <div className="user-reads-container read-by badge badge-danger">
-            <span className="no-readers">{_t("POST.PERSON_DISAGREED", "::count:: person disagreed", { count: usersDisagreed.length })}</span>
-            <span className="hover read-users-container">
-              {disagreedUsers.map((u) => {
-                return (
-                  <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
-                  </span>
-                );
-              })}
-            </span>
-          </div>
         </ApprovalBadgeWrapper>
       )}
     </Wrapper>
