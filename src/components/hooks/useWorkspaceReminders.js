@@ -11,7 +11,6 @@ const useWorkspaceReminders = () => {
   const { user: loggedUser } = useSelector((state) => state.session);
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
-  const users = useSelector((state) => state.users.users);
 
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);

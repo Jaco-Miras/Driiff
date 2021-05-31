@@ -189,6 +189,8 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
+  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null);
+
   return (
     <>
       <ItemList className="reminder-list" isDone={isDone}>
@@ -240,7 +242,7 @@ const TodosList = (props) => {
               {todo.author !== null && (
                 <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
               )}
-              {(todo.assigned_to || todo.workspace) && (
+              {showAssignedTo && (
                 <>
                   <Icon icon="chevron-right" />
                   <Avatar
