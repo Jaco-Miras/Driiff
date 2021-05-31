@@ -369,7 +369,7 @@ export default function (state = INITIAL_STATE, action) {
           return {
             ...r,
             is_read: true,
-            //body: r.body.includes("image-uploading") ? r.body.replace(/<[/]?img[^>]*>/gi, "") : r.body,
+            body: r.body.includes("image-uploading") ? r.body.replace(/<[/]?img[^>]*>/gi, "") : r.body,
             channel_id: action.data.channel_id,
             translated_body: null,
             //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
