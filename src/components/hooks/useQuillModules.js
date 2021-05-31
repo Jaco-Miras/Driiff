@@ -160,7 +160,7 @@ const useQuillModules = ({
       newWorkSpaceValues = [];
     }
 
-    const modules = {
+    let modules = {
       magicUrl: true,
       clipboard: {
         allowed: {
@@ -249,34 +249,6 @@ const useQuillModules = ({
         },
       },
       toolbar: ["bold", "italic", "image", "link"],
-      imageUploader: {
-        upload: (file) => {
-          console.log(setImageLoading);
-          if (!setInlineImages) return;
-          if (setImageLoading) setImageLoading(true);
-          return new Promise((resolve, reject) => {
-            var formData = new FormData();
-            formData.append("file", file);
-            uploadDocument({
-              user_id: user.id,
-              file: formData,
-              file_type: "private",
-              folder_id: null,
-            })
-              .then((result) => {
-                console.log(result);
-                if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
-                if (setImageLoading) setImageLoading(false);
-                resolve(result.data.thumbnail_link);
-              })
-              .catch((error) => {
-                reject("Upload failed");
-                if (setImageLoading) setImageLoading(false);
-                console.error("Error:", error);
-              });
-          });
-        },
-      },
       keyboard: {
         bindings: {
           tab: false,
@@ -324,7 +296,42 @@ const useQuillModules = ({
         },
       },
     };
-    setModules(modules);
+    if (mode === "chat") {
+      setModules(modules);
+    } else {
+      modules = {
+        ...modules,
+        imageUploader: {
+          upload: (file) => {
+            console.log(setImageLoading);
+            if (!setInlineImages) return;
+            if (setImageLoading) setImageLoading(true);
+            return new Promise((resolve, reject) => {
+              var formData = new FormData();
+              formData.append("file", file);
+              uploadDocument({
+                user_id: user.id,
+                file: formData,
+                file_type: "private",
+                folder_id: null,
+              })
+                .then((result) => {
+                  console.log(result);
+                  if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
+                  if (setImageLoading) setImageLoading(false);
+                  resolve(result.data.thumbnail_link);
+                })
+                .catch((error) => {
+                  reject("Upload failed");
+                  if (setImageLoading) setImageLoading(false);
+                  console.error("Error:", error);
+                });
+            });
+          },
+        },
+      };
+      setModules(modules);
+    }
   };
 
   useEffect(() => {
