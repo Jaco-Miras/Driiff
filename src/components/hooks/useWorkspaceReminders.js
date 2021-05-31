@@ -9,6 +9,7 @@ const useWorkspaceReminders = () => {
 
   const params = useParams();
   const { user: loggedUser } = useSelector((state) => state.session);
+  const users = useSelector((state) => state.users.users);
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
 
