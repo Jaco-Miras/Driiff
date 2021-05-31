@@ -43,6 +43,11 @@ const AllWorkspaceFilters = (props) => {
 
   return (
     <Wrapper className={"list-group list-group-flush"}>
+      <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
+        <span className="text-primary fa fa-circle mr-2" />
+        {dictionary.all}
+        <span className="small ml-auto">{counters.nonMember + counters.member > 0 && counters.nonMember + counters.member}</span>
+      </li>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "member" ? "active" : ""}`} data-value="member" onClick={handleClickFilter}>
         <span className="text-success fa fa-circle mr-2" />
         {dictionary.labelJoined}
@@ -60,7 +65,7 @@ const AllWorkspaceFilters = (props) => {
       </li>
       {!isExternal && (
         <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "nonMember" ? "active" : ""}`} data-value="nonMember" onClick={handleClickFilter}>
-          <span className="text-primary fa fa-circle mr-2" />
+          <span className="text-secondary fa fa-circle mr-2" />
           {dictionary.notJoined}
           <span className="small ml-auto">{counters.nonMember > 0 && counters.nonMember}</span>
         </li>
