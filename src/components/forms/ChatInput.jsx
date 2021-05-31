@@ -87,26 +87,26 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
-const CloseButton = styled(SvgIconFeather)`
-  position: absolute;
-  top: 0;
-  right: 70px;
-  margin: 4px;
-  height: calc(100% - 8px);
-  background: white;
-  border: 1px solid white;
-  border-radius: 4px;
-  width: 40px;
-  padding: 9px;
-  cursor: pointer;
-  z-index: 9;
-  color: #cacaca;
-  transition: color 0.15s ease-in-out;
+// const CloseButton = styled(SvgIconFeather)`
+//   position: absolute;
+//   top: 0;
+//   right: 70px;
+//   margin: 4px;
+//   height: calc(100% - 8px);
+//   background: white;
+//   border: 1px solid white;
+//   border-radius: 4px;
+//   width: 40px;
+//   padding: 9px;
+//   cursor: pointer;
+//   z-index: 9;
+//   color: #cacaca;
+//   transition: color 0.15s ease-in-out;
 
-  &:hover {
-    color: #7a1b8b;
-  }
-`;
+//   &:hover {
+//     color: #7a1b8b;
+//   }
+// `;
 
 const FileIcon = styled(SvgIconFeather)`
   position: absolute;
@@ -139,7 +139,7 @@ const ChatInput = (props) => {
   const { setSidebarSearch, create, fetchChannelLastReply } = useChannelActions();
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const slugs = useSelector((state) => state.global.slugs);
+  //const slugs = useSelector((state) => state.global.slugs);
   const recipients = useSelector((state) => state.global.recipients);
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
@@ -166,7 +166,7 @@ const ChatInput = (props) => {
 
   const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
 
-  const setEditedAnswerId = useRef(null);
+  //const setEditedAnswerId = useRef(null);
 
   useEffect(() => {
     if (editHuddle && question && answerId !== question.answer_id && textOnly !== question.original_answer) {
@@ -179,31 +179,9 @@ const ChatInput = (props) => {
   }, [editHuddle, question, answerId, textOnly]);
 
   const handleSubmit = () => {
-    //let specialCommands = ["/sound-on", "/sound-off"];
-    // if (specialCommands.includes(textOnly.trim())) {
-    //     setText("")
-    //     setTextOnly("")
-    //     reactQuillRef.getEditor().setContents([]);
-    //     reactQuillRef.getEditor().setText("");
-
-    //     switch (textOnly.trim()) {
-    //         case "/sound-on":
-    //         case "/sound-off": {
-    //             let payload = {
-    //                 disable_sound: textOnly.trim() === "/sound-on" ? "0" : "1",
-    //             };
-    //             this.props.updateSettingsAction(payload, (err, res) => {
-    //                 this.props.updateUserSettingsAction(payload);
-    //                 toastr.success("Chat Notification",
-    //                     `Successfully turned ${textOnly.trim() === "/sound-on" ? "on" : "off"}`);
-    //             });
-    //             break;
-    //         }
-    //         default: {
-    //         }
-    //     }
-    //     return;
-    // }
+    // if quill has inline image upload progress then return submit
+    // eslint-disable-next-line quotes
+    if (text.includes('<span class="image-uploading">')) return;
     if (showQuestions) {
       if (question.isLastQuestion) {
         const currentDate = new Date();

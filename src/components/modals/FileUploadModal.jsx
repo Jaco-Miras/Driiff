@@ -265,6 +265,8 @@ const FileUploadModal = (props) => {
   const [quillContents, setQuillContents] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [fileOption, setFileOption] = useState(null);
+  const [inlineImages, setInlineImages] = useState([]);
+  const [imageLoading, setImageLoading] = useState(null);
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -481,7 +483,7 @@ const FileUploadModal = (props) => {
         post_id: post.id,
         body: body,
         mention_ids: mention_ids,
-        file_ids: uFiles.map((f) => f.id),
+        file_ids: [...uFiles.map((f) => f.id), ...inlineImages.map((i) => i.id)],
         reference_id: reference_id,
         personalized_for_id: null,
         parent_id: parentId,
@@ -494,7 +496,7 @@ const FileUploadModal = (props) => {
         payload = {
           ...payload,
           id: editPostComment.id,
-          file_ids: [...uFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string")],
+          file_ids: [...uFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string"), ...inlineImages.map((i) => i.id)],
           parent_id: editPostComment.parent_id,
           reference_id: null,
         };
@@ -620,7 +622,7 @@ const FileUploadModal = (props) => {
     });
   }
 
-  const { modules } = useQuillModules({ mode: "chat_upload", mentionOrientation: "bottom", quillRef: reactQuillRef, members });
+  const { modules } = useQuillModules({ mode: mode, mentionOrientation: "bottom", quillRef: reactQuillRef, members, setImageLoading, setInlineImages });
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
@@ -656,7 +658,7 @@ const FileUploadModal = (props) => {
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
-        <Button color="primary" onClick={handleUpload}>
+        <Button color="primary" onClick={handleUpload} disabled={imageLoading}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.upload}
         </Button>

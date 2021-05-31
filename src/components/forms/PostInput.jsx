@@ -111,6 +111,8 @@ const PostInput = forwardRef((props, ref) => {
     onClearApprovers,
     onSubmitCallback = () => {},
     mainInput,
+    imageLoading = null,
+    setImageLoading = null,
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -136,6 +138,7 @@ const PostInput = forwardRef((props, ref) => {
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
   const handleSubmit = () => {
+    if (imageLoading) return;
     let timestamp = Math.floor(Date.now() / 1000);
     let mention_ids = [];
     let haveGif = false;
@@ -570,6 +573,7 @@ const PostInput = forwardRef((props, ref) => {
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
+    setImageLoading,
     prioMentionIds: Object.values(users)
       .filter((u) => prioIds.some((id) => id === u.id))
       .map((u) => u.id),

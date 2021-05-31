@@ -18,8 +18,7 @@ const Wrapper = styled.div`
   &.page-notifications,
   &.page-profile,
   &.page-settings,
-  &.page-system,
-  &.page-todos {
+  &.page-system {
     .navbar-left {
       .navbar-nav {
         .navbar-wrap {
