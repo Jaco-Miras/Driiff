@@ -212,16 +212,18 @@ const CompanyPosts = (props) => {
           )}
           {filter !== "draft" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
-              <div>
-                <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
-                  <span className="badge badge-light">
-                    <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                    {dictionary.unread}
-                  </span>
-                </UnreadPostsHeader>
-              </div>
+              {search === "" && (
+                <div>
+                  <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
+                    <span className="badge badge-light">
+                      <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                      {dictionary.unread}
+                    </span>
+                  </UnreadPostsHeader>
+                </div>
+              )}
               {unreadPosts.length > 0 && (
-                <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
+                <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread || search !== "" ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                   {unreadPosts.map((p) => {
                     return (
                       <CompanyPostItemPanel
@@ -238,16 +240,18 @@ const CompanyPosts = (props) => {
                   })}
                 </UnreadPostsContainer>
               )}
-              <div>
-                <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
-                  <span className="badge badge-light">
-                    <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                    {dictionary.allOthers}
-                  </span>
-                </ReadPostsHeader>
-              </div>
+              {search === "" && (
+                <div>
+                  <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
+                    <span className="badge badge-light">
+                      <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                      {dictionary.allOthers}
+                    </span>
+                  </ReadPostsHeader>
+                </div>
+              )}
               {readPosts.length > 0 && (
-                <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
+                <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead || search !== "" ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
                   {readPosts.map((p) => {
                     return (
                       <CompanyPostItemPanel
