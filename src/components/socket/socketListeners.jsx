@@ -1155,6 +1155,11 @@ class SocketListeners extends Component {
       .listen(".upload-bulk-workspace-files", (e) => {
         console.log(e, "files bulk");
         this.props.incomingFiles(e);
+        e.channel_messages &&
+          e.channel_messages.forEach((m) => {
+            m.channel_id = m.channel.id;
+            this.props.incomingPostNotificationMessage(m.system_message);
+          });
       })
       .listen(".workspace-file-notification", (e) => {
         console.log(e, "file", "line 506");
