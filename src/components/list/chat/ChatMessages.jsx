@@ -997,6 +997,7 @@ class ChatMessages extends React.PureComponent {
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                         users={this.props.users}
+                                        _t={this.props._t}
                                       />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
