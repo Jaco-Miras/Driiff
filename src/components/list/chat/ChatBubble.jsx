@@ -128,6 +128,12 @@ const ChatBubbleContainer = styled.div`
   span.image-uploading {
     display: none;
   }
+  .chat-file-notification {
+    b:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
 `;
 
 const QuoteContainer = styled.div`

@@ -14,12 +14,12 @@ const QuoteWrapper = styled.div`
   margin-top: 8px;
   background: #fafafa;
   border-radius: 4px;
-  
+
   .dark & {
     background: #25282c;
     color: #fff;
   }
-  
+
   .quote-author-name,
   .quote-message {
     position: relative;

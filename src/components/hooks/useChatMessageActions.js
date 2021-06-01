@@ -24,6 +24,7 @@ import {
 import { useToaster, useTodoActions, useTranslation } from "./index";
 import useChannelActions from "./useChannelActions";
 import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
+import { setViewFiles } from "../../redux/actions/fileActions";
 
 const useChatMessageActions = () => {
   //const sharedSlugs = useSelector((state) => state.global.slugs);
@@ -60,6 +61,14 @@ const useChatMessageActions = () => {
   //   },
   //   [sharedSlugs]
   // );
+
+  const viewFiles = (files) => {
+    const payload = {
+      files: files,
+      file_id: files[0].file_id,
+    };
+    dispatch(setViewFiles(payload));
+  };
 
   /**
    * @param {Object} channel
@@ -454,6 +463,7 @@ const useChatMessageActions = () => {
     saveTranslationBody,
     resetTranslationBody,
     saveChannelTranslateState,
+    viewFiles,
   };
 };
 
