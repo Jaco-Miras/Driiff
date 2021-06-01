@@ -98,6 +98,24 @@ const PostChangeAccept = (props) => {
           </div>
         </ApprovedText>
       )}
+      {usersPending && !isMultipleApprovers && (
+        <ApprovalBadgeWrapper className="readers-container">
+          {pendingUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-warning">
+              <span className="no-readers">{_t("POST.PERSON_PENDING_SINGLE", "Waiting for approval from: ::name::", { name: pendingUsers[0].name })}</span>
+              <span className="hover read-users-container">
+                {pendingUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
+        </ApprovalBadgeWrapper>
+      )}
       {userApproved && !isMultipleApprovers && (
         <ApprovedText>
           <div className="d-flex align-items-center justify-content-center">
