@@ -1247,7 +1247,19 @@ class SocketListeners extends Component {
         this.props.incomingFiles(e);
         e.channel_messages &&
           e.channel_messages.forEach((m) => {
-            m.channel_id = m.channel.id;
+            m.system_message.channel_id = m.channel.id;
+            m.system_message.files = [];
+            m.system_message.editable = false;
+            m.system_message.unfurls = [];
+            m.system_message.reactions = [];
+            m.system_message.is_deleted = false;
+            m.system_message.todo_reminder = null;
+            m.system_message.is_read = false;
+            m.system_message.is_completed = false;
+            m.system_message.user = null;
+            // m.system_message.new_post = true;
+            m.system_message.topic = m.topic;
+            m.system_message.shared_with_client = true;
             this.props.incomingPostNotificationMessage(m.system_message);
           });
       })

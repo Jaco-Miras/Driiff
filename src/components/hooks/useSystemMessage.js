@@ -82,11 +82,12 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
   } else if (reply.body.startsWith("UPLOAD_BULK::")) {
     const data = JSON.parse(reply.body.replace("UPLOAD_BULK::", ""));
     if (data.files && data.files.length === 1) {
+      // eslint-disable-next-line quotes
       parseBody = _t("SYSTEM.USER_UPLOADED_FILE", '<span class="chat-file-notification">::name:: uploaded <b>::filename::</b></span>', { name: data.author.first_name, filename: data.files[0].search });
     } else {
+      // eslint-disable-next-line quotes
       parseBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
     }
-    console.log(parseBody);
   } else if (reply.body.includes("CHANNEL_UPDATE::")) {
     const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
 

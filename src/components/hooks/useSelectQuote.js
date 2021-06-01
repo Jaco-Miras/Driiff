@@ -56,7 +56,7 @@ const useSelectQuote = (props) => {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
         let selectedQuoteBody = "";
-        if (selectedQuote.user && (selectedQuote.body.startsWith("{\"Welk punt geef je ons\"") || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
+        if (selectedQuote.user && (selectedQuote.body.startsWith('{"Welk punt geef je ons"') || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
           const renderStars = (num) => {
             let star = "";
             for (let i = 1; i <= 10; i++) {
@@ -165,9 +165,11 @@ const useSelectQuote = (props) => {
           } else if (selectedQuote.body.startsWith("UPLOAD_BULK::")) {
             const data = JSON.parse(selectedQuote.body.replace("UPLOAD_BULK::", ""));
             if (data.files && data.files.length === 1) {
-              selectedQuoteBody = _t("SYSTEM.USER_UPLOADED_FILE", "<span class=\"chat-file-notification\">::name:: uploaded <b>::filename::</b></span>", { name: data.author.first_name, filename: data.files[0].search });
+              // eslint-disable-next-line quotes
+              selectedQuoteBody = _t("SYSTEM.USER_UPLOADED_FILE", '<span class="chat-file-notification">::name:: uploaded <b>::filename::</b></span>', { name: data.author.first_name, filename: data.files[0].search });
             } else {
-              selectedQuoteBody = _t("SYSTEM.USER_UPLOADED_FILES", "<span class=\"chat-file-notification\">::name:: uploaded ::count::  <b>files</b></span>", { name: data.author.first_name, count: data.files.length });
+              // eslint-disable-next-line quotes
+              selectedQuoteBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
             }
           } else {
             selectedQuoteBody = selectedQuote.body;
