@@ -123,6 +123,7 @@ const useWorkspaceActions = () => {
           if (err) {
             callback();
             toaster.error(dictionary.errorFetchingChannel);
+            return;
           }
           if (res.data) {
             let channel = {
