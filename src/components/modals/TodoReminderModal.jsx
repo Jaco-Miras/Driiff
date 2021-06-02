@@ -117,6 +117,7 @@ const TodoReminderModal = (props) => {
   const [mounted, setMounted] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [removedFiles, setRemovedFiles] = useState([]);
   const [showDropzone, setShowDropzone] = useState(false);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
@@ -467,6 +468,7 @@ const TodoReminderModal = (props) => {
     payload = {
       ...payload,
       file_ids: [...inlineImages.map((i) => i.id), ...uploadedFiles.map((f) => f.id)],
+      remove_file_ids: removedFiles.map((f) => f.id),
     };
     if (attachedFiles.length > 0) {
       uploadFiles(payload);
@@ -608,6 +610,7 @@ const TodoReminderModal = (props) => {
   };
 
   const handleRemoveFile = (fileId) => {
+    if (uploadedFiles.some((f) => f.id === parseInt(fileId))) setRemovedFiles(uploadedFiles.filter((f) => f.id === parseInt(fileId)));
     setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   };
