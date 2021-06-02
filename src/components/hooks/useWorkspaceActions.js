@@ -120,9 +120,10 @@ const useWorkspaceActions = () => {
     (payload, callback) => {
       dispatch(
         getChannel(payload, (err, res) => {
+          callback(err, res);
           if (err) {
-            callback();
             toaster.error(dictionary.errorFetchingChannel);
+            return;
           }
           if (res.data) {
             let channel = {
@@ -134,7 +135,7 @@ const useWorkspaceActions = () => {
               isFetching: false,
             };
             dispatch(addToChannels(channel));
-            selectChannel(channel, () => callback());
+            selectChannel(channel);
           }
         })
       );
