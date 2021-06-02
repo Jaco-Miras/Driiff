@@ -47,6 +47,7 @@ const INITIAL_STATE = {
   clearApprovingState: null,
   changeRequestedComment: null,
   commentType: null,
+  commentDrafts: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -489,6 +490,7 @@ export default (state = INITIAL_STATE, action) => {
           });
         });
       let postDrafts = [];
+      let commentDrafts = action.data.filter((d) => d.data.type === "comment");
       if (drafts.length) {
         postDrafts = convertArrayToObject(drafts, "post_id");
       }
@@ -502,6 +504,7 @@ export default (state = INITIAL_STATE, action) => {
             ...postDrafts,
           },
         },
+        commentDrafts: commentDrafts,
       };
     }
     case "DELETE_DRAFT": {
@@ -542,9 +545,20 @@ export default (state = INITIAL_STATE, action) => {
             },
           },
         };
+      } else if (action.data.data.draft_type === "comment") {
+        return {
+          ...state,
+          commentDrafts: [...state.commentDrafts, action.data],
+        };
       } else {
         return state;
       }
+    }
+    case "REMOVE_COMMENT_DRAFT": {
+      return {
+        ...state,
+        commentDrafts: state.commentDrafts.filter((d) => d.id !== action.data.id),
+      };
     }
     case "UPDATE_DRAFT_SUCCESS": {
       if (action.data.data.type === "draft_post") {
@@ -563,6 +577,17 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           companyPosts: companyPosts,
+        };
+      } else if (action.data.data.draft_type === "comment") {
+        return {
+          ...state,
+          commentDrafts: state.commentDrafts.map((d) => {
+            if (d.id === parseInt(action.data.id)) {
+              return { ...action.data, id: parseInt(action.data.id) };
+            } else {
+              return d;
+            }
+          }),
         };
       } else {
         return state;

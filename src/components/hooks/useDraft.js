@@ -27,10 +27,12 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
   const handleSaveDraft = (id) => {
     if (textOnly.trim() === "") {
       if (draftId) {
-        dispatch(deleteDraft({
-          type: "channel",
-          draft_id: draftId
-        }));
+        dispatch(
+          deleteDraft({
+            type: "channel",
+            draft_id: draftId,
+          })
+        );
       } else {
         return;
       }
@@ -59,7 +61,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
       dispatch(addToChannelDraft(payload));
     } else {
       dispatch(saveDraft(payload));
-    }    
+    }
   };
 
   useEffect(() => {
