@@ -27,7 +27,7 @@ const useInitialLoad = () => {
   useEffect(() => {
     document.body.classList.remove("form-membership");
     const fetchChannelCb = () => {
-      dispatch(getAllRecipients());
+      // dispatch(getAllRecipients());
       dispatch(
         getUsers({}, () => {
           dispatch(getArchivedUsers());
@@ -45,6 +45,7 @@ const useInitialLoad = () => {
       dispatch(getGlobalRecipients());
       //dispatch(getDrafts());
     };
+    dispatch(getAllRecipients());
     dispatch(getCompanyChannel());
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
     dispatch(getSkippedAnswers({}));

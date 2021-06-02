@@ -94,6 +94,12 @@ const FavoriteWorkspacesPanel = (props) => {
   const channels = useSelector((state) => state.chat.channels);
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
+  const recipients = useSelector((state) => state.global.recipients);
+
+  const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
+  const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
+  const companyChannel = useSelector((state) => state.chat.companyChannel);
+
   const [defaultTopic, setDefaultTopic] = useState(null);
 
   useEffect(() => {
@@ -148,26 +154,31 @@ const FavoriteWorkspacesPanel = (props) => {
   const favoriteWorkspaces = sortWorkspace().filter((ws) => ws.is_favourite);
 
   const handleSelectWorkspace = (ws) => {
-    document.body.classList.remove("navigation-show");
+    if (companyWs && ws.id === companyWs.id && companyChannel) {
+      history.push(`/chat/${companyChannel.code}`);
+      actions.selectChannel(channels[companyChannel.id]);
+    } else {
+      document.body.classList.remove("navigation-show");
 
-    if (selectedChannel && !virtualization) {
-      const scrollComponent = document.getElementById("component-chat-thread");
-      if (scrollComponent) {
-        console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, "save this scroll");
-        dispatch(
-          setChannelHistoricalPosition({
-            channel_id: selectedChannel.id,
-            scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-          })
-        );
+      if (selectedChannel && !virtualization) {
+        const scrollComponent = document.getElementById("component-chat-thread");
+        if (scrollComponent) {
+          console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, "save this scroll");
+          dispatch(
+            setChannelHistoricalPosition({
+              channel_id: selectedChannel.id,
+              scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+            })
+          );
+        }
       }
+      //if (selected && onWorkspace) return;
+      if (selectedChannel && selectedChannel.id !== ws.channel.id && channels[ws.channel.id]) {
+        actions.selectChannel(channels[ws.channel.id]);
+      }
+      actions.selectWorkspace(ws);
+      actions.redirectTo(ws);
     }
-    //if (selected && onWorkspace) return;
-    if (selectedChannel && selectedChannel.id !== ws.channel.id && channels[ws.channel.id]) {
-      actions.selectChannel(channels[ws.channel.id]);
-    }
-    actions.selectWorkspace(ws);
-    actions.redirectTo(ws);
   };
 
   const handleBrowseAll = () => {
