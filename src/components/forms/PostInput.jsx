@@ -137,12 +137,6 @@ const PostInput = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
-  const { _t } = useTranslation();
-
-  const dictionary = {
-    addInternalNote: _t("POST_COMMENT.ADD_INTERNAL_NOTE", "Add internal note"),
-    replyToCustomer: _t("POST_COMMENT.REPLY_TO_CUSTOMER", "Reply to customer"),
-  };
 
   //const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const slugs = useSelector(state => state.global.slugs);
@@ -170,6 +164,8 @@ const PostInput = forwardRef((props, ref) => {
   const dictionary = {
     savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),
     draftSavedLabel: _t("DRAFT.SAVED", "Draft saved"),
+    addInternalNote: _t("POST_COMMENT.ADD_INTERNAL_NOTE", "Add internal note"),
+    replyToCustomer: _t("POST_COMMENT.REPLY_TO_CUSTOMER", "Reply to customer"),
   };
 
   const loadDraftCallback = (draft) => {
