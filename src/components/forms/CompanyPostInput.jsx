@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BodyMention from "../common/BodyMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft } from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft, useTranslation } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -87,6 +87,12 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
+const SavingDraftIndicator = styled.span`
+  position: absolute;
+  top: 105%;
+  font-size: 0.8rem;
+`;
+
 /***  Commented out code are to be visited/refactored ***/
 const CompanyPostInput = forwardRef((props, ref) => {
   const {
@@ -113,6 +119,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     imageLoading = null,
     setImageLoading = null,
   } = props;
+
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const user = useSelector((state) => state.session.user);
@@ -135,6 +142,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),
+    draftSavedLabel: _t("DRAFT.SAVED", "Draft saved"),
+  };
+
   const loadDraftCallback = (draft) => {
     if (draft) {
       reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.data.text);
@@ -145,7 +159,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     }
   };
 
-  const { removeDraft } = useCommentDraft(loadDraftCallback, "comment", text, textOnly, draftId, commentId, post.id, parentId);
+  const { removeDraft, savingDraft, draftSaved } = useCommentDraft(loadDraftCallback, "comment", text, textOnly, draftId, commentId, post.id, parentId, setDraftId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
@@ -595,6 +609,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     <Wrapper className="chat-input-wrapper" ref={ref}>
       {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
+      {(savingDraft || draftSaved) && <SavingDraftIndicator className="text-muted">{draftSaved ? dictionary.draftSavedLabel : dictionary.savingDraftLabel}</SavingDraftIndicator>}
     </Wrapper>
   );
 });
