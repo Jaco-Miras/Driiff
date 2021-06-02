@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BodyMention from "../common/BodyMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -128,11 +128,24 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
+  const [draftId, setDraftId] = useState(null);
   const [inlineImages, setInlineImages] = useState([]);
 
   const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
+
+  const loadDraftCallback = (draft) => {
+    if (draft) {
+      reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.data.text);
+      setDraftId(draft.id);
+      setText(draft.data.text);
+    } else {
+      setDraftId(null);
+    }
+  };
+
+  const { removeDraft } = useCommentDraft(loadDraftCallback, "comment", text, textOnly, draftId, commentId, post.id, parentId);
 
   const hasCompanyAsRecipient = post.recipients.filter((r) => r.type === "DEPARTMENT").length > 0;
 
@@ -271,10 +284,10 @@ const CompanyPostInput = forwardRef((props, ref) => {
     if (quote) {
       commentActions.clearQuote(commentId);
     }
-    // if (draftId) {
-    //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
-    //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
-    // }
+    if (draftId) {
+      removeDraft(draftId);
+      setDraftId(null);
+    }
 
     if (mentionUsersPayload.hasOwnProperty("post_id")) {
       dispatch(
@@ -319,6 +332,11 @@ const CompanyPostInput = forwardRef((props, ref) => {
       if (editPostComment !== null) {
         dispatch(setEditComment(null));
       }
+    }
+
+    if (textOnly.trim() === "" && draftId) {
+      removeDraft(draftId);
+      setDraftId(null);
     }
 
     setText(content);

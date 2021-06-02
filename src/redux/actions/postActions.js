@@ -435,3 +435,7 @@ export function incomingPostRequired(payload, callback) {
 export function removeDraftPost(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_DRAFT_POST", payload, callback);
 }
+
+export function removeCommentDraft(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_COMMENT_DRAFT", payload, callback);
+}
