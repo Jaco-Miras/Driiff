@@ -10,6 +10,7 @@ import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
+import useChatFancyLink from "../../hooks/useChatFancyLink";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -133,6 +134,34 @@ const ChatBubbleContainer = styled.div`
       text-decoration: underline;
       cursor: pointer;
     }
+  }
+
+  a.fancied {
+    border-radius: 5px !important;
+    background-color: #f8f8f8 !important;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.11) !important;
+    text-decoration: none !important;
+    display: inline-block;
+    height: auto !important;
+    padding: 5px 10px;
+
+    margin-bottom: 5px;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+
+    vertical-align: middle;
+    line-height: normal;
+
+    color: #696969 !important;
+    font-family: Inter !important;
+    font-size: 13px !important;
+    letter-spacing: 0 !important;
+    line-height: 21px !important;
+  }
+
+  a.fancied > img {
+    display: inline-block;
+    padding-right: 0.5em;
   }
 `;
 
@@ -509,7 +538,10 @@ const ChatBubble = (props) => {
   const history = useHistory();
   const googleApis = useGoogleApis();
 
-  useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, language, actions: chatMessageActions,});
+  //useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, language, actions: chatMessageActions,});
+  useChatFancyLink({ message: reply, actions: chatMessageActions });
+
+  useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
@@ -543,7 +575,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -552,7 +584,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

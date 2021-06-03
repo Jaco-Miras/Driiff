@@ -45,6 +45,7 @@ export {
   getSearchChannels,
   postSkipHuddle,
   getSkippedAnswers,
+  getChatMsgsForFancy,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";

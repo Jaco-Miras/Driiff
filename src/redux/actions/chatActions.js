@@ -451,6 +451,10 @@ export function setChannelTranslateState(payload, callback) {
   return SimpleDispatchActionToReducer("SET_CHANNEL_TRANSLATE_STATE", payload, callback);
 }
 
+export function setFancyLink(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_FANCY_LINK", payload, callback);
+}
+
 export function getCompanyChannel(payload, callback) {
   return dispatchActionToReducer(getCompanyChannelService(payload), "GET_COMPANY_CHANNEL_START", "GET_COMPANY_CHANNEL_SUCCESS", "GET_COMPANY_CHANNEL_FAILURE", callback);
 }
