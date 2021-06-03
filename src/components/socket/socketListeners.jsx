@@ -599,6 +599,8 @@ class SocketListeners extends Component {
       })
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
+        this.props.getFavoriteWorkspaceCounters();
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost(e);
@@ -658,12 +660,12 @@ class SocketListeners extends Component {
                 }
               }
               //check if post has favorite workspace as recipient
-              if (e.recipients.some((r) => r.type === "TOPIC")) {
-                let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
-                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
-                  this.props.getFavoriteWorkspaceCounters();
-                }
-              }
+              // if (e.recipients.some((r) => r.type === "TOPIC")) {
+              //   let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
+              //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+              //     this.props.getFavoriteWorkspaceCounters();
+              //   }
+              // }
             }
             if (e.show_at !== null && this.props.user.id === e.author.id) {
               this.props.incomingPost({
@@ -676,9 +678,9 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            if (this.props.user.id !== e.author.id) {
-              this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
-            }
+            // if (this.props.user.id !== e.author.id) {
+            //   this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+            // }
 
             e.channel_messages &&
               e.channel_messages.forEach((m) => {
