@@ -472,6 +472,7 @@ const TodoReminderModal = (props) => {
     };
     if (attachedFiles.length > 0) {
       uploadFiles(payload);
+      toggle();
     } else {
       actions.onSubmit(payload, (err, res) => {
         // if (res) {
@@ -656,9 +657,9 @@ const TodoReminderModal = (props) => {
           ...payload,
           file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
         };
-        actions.onSubmit(payload);
-        setLoading(false);
-        toggle();
+        actions.onSubmit(payload, () => toaster.dismiss(toasterRef.current));
+        //setLoading(false);
+        //toggle();
       })
       .catch((error) => {
         handleNetWorkError(error);
