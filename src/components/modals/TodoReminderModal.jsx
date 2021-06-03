@@ -610,7 +610,7 @@ const TodoReminderModal = (props) => {
   };
 
   const handleRemoveFile = (fileId) => {
-    if (uploadedFiles.some((f) => f.id === parseInt(fileId))) setRemovedFiles(uploadedFiles.filter((f) => f.id === parseInt(fileId)));
+    if (uploadedFiles.some((f) => f.id === parseInt(fileId))) setRemovedFiles([...uploadedFiles.filter((f) => f.id === parseInt(fileId)), ...removedFiles]);
     setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   };
