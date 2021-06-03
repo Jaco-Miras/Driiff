@@ -1,6 +1,7 @@
 import { parseEmojis, textToLink } from "./stringFormatter";
 import { validURL } from "./urlContentHelper";
-import { GoogleDriveLink, FancyLink, SvgIcon } from "../components/common";
+//import { GoogleDriveLink, FancyLink, SvgIcon } from "../components/common";
+import {SvgIcon } from "../components/common";
 import React from "react";
 import { renderToString } from "react-dom/server";
 
@@ -99,7 +100,9 @@ class quillHelper {
             }
           }
         }
+        /*
         if (editMode !== true && validURL(word) === true) {
+         /*
           const googleDriveFileUrlPattern = /^(https:\/\/(drive|docs)\.google\.com\/)(file|spreadsheets|document|presentation|forms)\/d\/([^\/]+)\/.*$/;
           const urlPattern = /^((http|https|ftp):\/\/)/;
           if (googleDriveFileUrlPattern.test(word)) {
@@ -110,8 +113,8 @@ class quillHelper {
             // }
             
           } else {
-           word = renderToString(<FancyLink link={word} />); //`<a target="_blank" href="${word}">${word}</a>`
-          //word = `<a target="_blank" href="${word}">${word}</a>`;
+           //word = renderToString(<FancyLink link={word} />); //`<a target="_blank" href="${word}">${word}</a>`
+           word = `<a target="_blank" href="${word}">${word}</a>`;
             // let taskUrl = parseTaskUrl(word);
 
             // if (!taskUrl) {
@@ -120,8 +123,12 @@ class quillHelper {
             //   word = taskUrl;
             // }
           }
-        }
+           */ 
+       // word = renderToString(<FancyLink link={word} />);
+        // word = `<a target="_blank" href="${word}">${word}</a>`;
+       // }
 
+      
         parseText.push(word);
         i++;
       }
@@ -154,7 +161,7 @@ class quillHelper {
     this.convertContentByTag(el, "div", false);
     this.convertContentByTag(el, "p", false);
     this.convertContentByTag(el, "li", false);
-    this.convertContentByTag(el, "a", false);
+    //this.convertContentByTag(el, "a", false);
     return el.innerHTML;
   }
 

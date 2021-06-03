@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
-import { ImageTextLink, SvgIconFeather } from "../common";
+import { ImageTextLink, SvgIconFeather,FancyLink } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
 //import { lang } from "moment-timezone";
 
-const StyledImageTextLink = styled(ImageTextLink)` 
+const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
   svg,
   polyline,
@@ -350,6 +350,26 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   }
 
   replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
+/*
+  function replaceURLs(message) {
+    if(!message) return;
+  
+    var contentSansAnchors = message.replace(/<\/?a[^>]*>/g, "");
+
+    var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+    return contentSansAnchors.replace(urlRegex, function (url) {
+      var hyperlink = url.replace(/<\/?a[^>]*>/g, "")
+      
+      if (!hyperlink.match('^https?:\/\/')) {
+        hyperlink = 'http://' + hyperlink;
+      }
+     // return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer bleep">' + url + '</a>'
+      return renderToString(<FancyLink link={hyperlink} />);
+    });
+  }
+  
+  replyBody = replaceURLs(replyBody);
+*/
 
   let quoteAuthor = "";
   let quoteBody = "";

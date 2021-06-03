@@ -460,7 +460,7 @@ export function getCompanyChannel(payload) {
   });
 }
 
-export function getSiteMetaData(payload) {
+export function getChatMsgsForFancy(payload) {
   let url = `/v2/fancy-link`;
   return apiCall({
     method: "POST",

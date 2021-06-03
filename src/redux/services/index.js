@@ -43,7 +43,7 @@ export {
   getUnpublishedAnswers,
   putUnpublishedAnswers,
   getSearchChannels,
-  getSiteMetaData
+  getChatMsgsForFancy
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";

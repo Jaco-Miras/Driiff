@@ -371,6 +371,7 @@ export default function (state = INITIAL_STATE, action) {
             is_read: true,
             channel_id: action.data.channel_id,
             translated_body: null,
+            is_fancy: false,
             //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
           };
         }),
@@ -469,6 +470,33 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "SET_TRANSLATED_BODY": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          is_hidden: false,
+          last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? action.data : channel.last_reply,
+          replies: channel.replies.map((r) => {
+            if (r.id === action.data.id) {
+              return action.data;
+            } else return r;
+          }),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+      };
+    }
+    case "SET_FANCY_LINK": {
       let channel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };

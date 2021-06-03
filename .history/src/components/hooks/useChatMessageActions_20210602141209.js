@@ -393,7 +393,7 @@ const useChatMessageActions = () => {
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-    const saveFancyContent = useCallback(
+    const saveFancyLink = useCallback(
       (payload) => {
         dispatch(setFancyLink(payload));
       },
@@ -420,7 +420,7 @@ const useChatMessageActions = () => {
     setStar,
     setHuddleAnswers,
     saveTranslationBody,
-    saveFancyContent
+    saveFancyLink
   };
 };
 
