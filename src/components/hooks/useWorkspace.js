@@ -139,6 +139,9 @@ const useWorkspace = () => {
 
   useEffect(() => {
     //check if workspace is active and channel is not set yet
+    const fetchingCallback = (err, res) => {
+      if (res) setFetchingChannel(false);
+    };
     if (activeTopic && !selectedChannel && Object.keys(channels).length && url.startsWith("/workspace")) {
       if (url.startsWith("/workspace/team-chat")) {
         if (activeTopic.team_channel.code && channels.hasOwnProperty(activeTopic.team_channel.id)) {
@@ -146,7 +149,7 @@ const useWorkspace = () => {
         } else if (activeTopic.team_channel.code && !channels.hasOwnProperty(activeTopic.team_channel.id)) {
           if (!fetchingChannel) {
             setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.team_channel.code }, () => setFetchingChannel(false));
+            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
           }
         }
       } else {
@@ -155,7 +158,7 @@ const useWorkspace = () => {
         } else {
           if (!fetchingChannel) {
             setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.channel.code }, () => setFetchingChannel(false));
+            actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
           }
         }
       }
@@ -168,7 +171,7 @@ const useWorkspace = () => {
           } else {
             if (!fetchingChannel) {
               setFetchingChannel(true);
-              actions.fetchChannel({ code: activeTopic.team_channel.code }, () => setFetchingChannel(false));
+              actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
             }
           }
         }
@@ -179,13 +182,20 @@ const useWorkspace = () => {
           } else {
             if (!fetchingChannel) {
               setFetchingChannel(true);
-              actions.fetchChannel({ code: activeTopic.channel.code }, () => setFetchingChannel(false));
+              actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
             }
           }
         }
       }
     }
   }, [activeTopic, selectedChannel, fetchingChannel, url, channels]);
+
+  useEffect(() => {
+    // setFetching to false when changing workspaces
+    if (params.hasOwnProperty("workspaceId")) {
+      setFetchingChannel(false);
+    }
+  }, [params]);
 
   useEffect(() => {
     if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/")) {

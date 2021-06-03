@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import { useParams } from "react-router-dom";
 import quillHelper from "../../helpers/quillHelper";
 
-const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user, users }) => {
+const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user, users, _t }) => {
   const params = useParams();
   let parseBody = "";
   if (reply.body.includes("POST_CREATE::")) {
@@ -78,6 +78,15 @@ const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user
       parseBody = `${dictionary.update}: ${newBody}' ${dictionary.accountActivated}.`;
     } else {
       parseBody = `${dictionary.update}: ${newBody}'s ${dictionary.accountActivated}.`;
+    }
+  } else if (reply.body.startsWith("UPLOAD_BULK::")) {
+    const data = JSON.parse(reply.body.replace("UPLOAD_BULK::", ""));
+    if (data.files && data.files.length === 1) {
+      // eslint-disable-next-line quotes
+      parseBody = _t("SYSTEM.USER_UPLOADED_FILE", '<span class="chat-file-notification">::name:: uploaded <b>::filename::</b></span>', { name: data.author.first_name, filename: data.files[0].search });
+    } else {
+      // eslint-disable-next-line quotes
+      parseBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
     }
   } else if (reply.body.includes("CHANNEL_UPDATE::")) {
     const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
