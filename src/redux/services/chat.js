@@ -484,7 +484,15 @@ export function getCompanyChannel(payload) {
 }
 
 export function getChatMsgsForFancy(payload) {
-  let url = `/v2/fancy-link`;
+  let url = "/v2/fancy-link";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+export function getSiteMetaData(payload) {
+  let url = "/v2/fancy-link";
   return apiCall({
     method: "POST",
     url: url,
