@@ -1262,7 +1262,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const filterOptions = (candidate, input) => {
     if (input) {
-      return candidate.label.toLowerCase().search(input.toLowerCase()) !== -1 || candidate.data.email.toLowerCase().search(input.toLowerCase()) !== -1;
+      return candidate.label.toLowerCase().search(input.toLowerCase()) !== -1 || (candidate.data.email && candidate.data.email.toLowerCase().search(input.toLowerCase()) !== -1);
     }
     return true;
   };
