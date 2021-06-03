@@ -140,11 +140,11 @@ const PostChangeAccept = (props) => {
       )}
       {isMultipleApprovers && (
         <ApprovalBadgeWrapper className="readers-container">
-          {agreedUsers.length > 0 && (
-            <div className="user-reads-container read-by badge badge-success">
-              <span className="no-readers">{_t("POST.PERSON_APPROVED", "::count:: person approved", { count: usersApproved.length })}</span>
+          {disagreedUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-danger">
+              <span className="no-readers">{_t("POST.PERSON_DISAGREED", "::count:: person disagreed", { count: usersDisagreed.length })}</span>
               <span className="hover read-users-container">
-                {agreedUsers.map((u) => {
+                {disagreedUsers.map((u) => {
                   return (
                     <span key={u.id}>
                       <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
@@ -168,11 +168,11 @@ const PostChangeAccept = (props) => {
               </span>
             </div>
           )}
-          {disagreedUsers.length > 0 && (
-            <div className="user-reads-container read-by badge badge-danger">
-              <span className="no-readers">{_t("POST.PERSON_DISAGREED", "::count:: person disagreed", { count: usersDisagreed.length })}</span>
+          {agreedUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-success">
+              <span className="no-readers">{_t("POST.PERSON_APPROVED", "::count:: person approved", { count: usersApproved.length })}</span>
               <span className="hover read-users-container">
-                {disagreedUsers.map((u) => {
+                {agreedUsers.map((u) => {
                   return (
                     <span key={u.id}>
                       <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
