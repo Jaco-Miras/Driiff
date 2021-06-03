@@ -507,6 +507,12 @@ const UserProfilePanel = (props) => {
   }, [user]);
 
   useEffect(() => {
+    if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
+      history.push(`/profile/${loggedUser.id}/${replaceChar(loggedUser.name)}`);
+    }
+  }, []);
+
+  useEffect(() => {
     const selectedUser = users[props.match.params.id] ? users[props.match.params.id] : {};
     if (selectedUser.hasOwnProperty("loaded")) {
       if (form.id !== selectedUser.id) setForm(selectedUser);
