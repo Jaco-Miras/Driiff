@@ -342,13 +342,13 @@ export default (state = INITIAL_STATE, action) => {
         if (!action.data.member_ids.some((id) => id === state.user.id)) {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
-            if (Object.values(updatedWorkspaces).length) {
-              if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
-                updatedTopic = Object.values(updatedWorkspaces)[1];
-              } else {
-                updatedTopic = Object.values(updatedWorkspaces)[0];
-              }
-            }
+            // if (Object.values(updatedWorkspaces).length) {
+            //   if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
+            //     updatedTopic = Object.values(updatedWorkspaces)[1];
+            //   } else {
+            //     updatedTopic = Object.values(updatedWorkspaces)[0];
+            //   }
+            // }
             if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
               let isMember = false;
               updatedFolders[action.data.workspace_id].workspace_ids
@@ -655,7 +655,7 @@ export default (state = INITIAL_STATE, action) => {
       let activeTopic = null;
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
-          if (ws.channel.id === action.data.channel_id) {
+          if (ws.channel.id && ws.channel.id === action.data.channel_id) {
             updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, ...action.data.users];
             updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, ...action.data.users.map((u) => u.id)];
             activeTopic = updatedWorkspaces[ws.id];
