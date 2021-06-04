@@ -23,13 +23,14 @@ const INITIAL_STATE = {
   search: {
     results: [],
     searching: false,
-    filterBy: "member",
+    filterBy: "all",
     value: "",
     page: 1,
     maxPage: 1,
     count: 0,
     hasMore: false,
     counters: {
+      all: 0,
       new: 0,
       nonMember: 0,
       external: 0,
