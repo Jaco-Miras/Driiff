@@ -15,6 +15,7 @@ import {
   fetchTimeline,
   getWorkspace,
   getWorkspaces,
+  getFavoriteWorkspaces,
   postWorkspaceRole,
   setActiveTopic,
   updateWorkspaceTimelinePage,
@@ -247,12 +248,17 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
+  const fetchFavoriteWorkspaces = (payload, callback) => {
+    dispatch(getFavoriteWorkspaces(payload, callback));
+  };
+
   return {
     addPrimaryFilesToWorkspace,
     addRole,
     deleteRole,
     clearChannel,
     fetchChannel,
+    fetchFavoriteWorkspaces,
     fetchWorkspaceChannels,
     fetchWorkspace,
     fetchWorkspaces,
