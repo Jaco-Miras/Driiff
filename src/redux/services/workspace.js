@@ -414,3 +414,12 @@ export function getWorkspaceRemindersCount(payload) {
     data: payload,
   });
 }
+
+export function getFavoriteWorkspaces(payload) {
+  let url = "/v2/workspace-favourites";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

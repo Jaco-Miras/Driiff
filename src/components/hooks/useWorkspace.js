@@ -13,7 +13,7 @@ const useWorkspace = () => {
   const history = useHistory();
   const { params, url } = route;
   const actions = useWorkspaceActions();
-  const { activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded } = useSelector((state) => state.workspaces);
+  const { activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded, favoriteWorkspacesLoaded } = useSelector((state) => state.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
@@ -21,31 +21,16 @@ const useWorkspace = () => {
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
   useEffect(() => {
-    // if (!init && !workspacesLoaded && fetchOnMount) {
-    //   setInit(true);
-    //   let fetchCb = (err, res) => {
-    //     setInit(false);
-    //     setInternalLoaded(true);
-    //     setExternalLoaded(true);
-    //     if (err) return;
-    //     //callback on get workspaces
-    //   };
-    //   actions.fetchWorkspaces(
-    //     {
-    //       sort_by: orderChannel.sort_by.toLowerCase(),
-    //       order_by: orderChannel.order_by,
-    //     },
-    //     fetchCb
-    //   );
-    // } else if (workspacesLoaded && activeTopic) {
-    //   if (channels.hasOwnProperty(activeTopic.channel.id) && url.startsWith("/workspace")) {
-    //     actions.selectChannel(channels[activeTopic.channel.id]);
-    //   }
-    // }
-    actions.fetchWorkspaces({
-      sort_by: orderChannel.sort_by.toLowerCase(),
-      order_by: orderChannel.order_by,
+    if (params.workspaceId) {
+      actions.fetchWorkspace(params.workspaceId);
+    }
+    actions.fetchFavoriteWorkspaces({}, () => {
+      actions.fetchWorkspaces({
+        sort_by: orderChannel.sort_by.toLowerCase(),
+        order_by: orderChannel.order_by,
+      });
     });
+
     if (user.type === "external" && url.startsWith("/workspace/team-chat")) {
       history.push("/workspace/chat");
     }
@@ -222,6 +207,7 @@ const useWorkspace = () => {
   }
 
   return {
+    favoriteWorkspacesLoaded,
     folders,
     //sortedWorkspaces: Object.values(workspaces).sort((a, b) => a.name.localeCompare(b.name)),
     workspaces,

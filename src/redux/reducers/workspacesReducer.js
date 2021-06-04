@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   workspaces: {},
   activeTopic: null,
   activeTab: "intern",
+  favoriteWorkspacesLoaded: false,
   workspacesLoaded: false,
   externalWorkspacesLoaded: false,
   workspacePosts: {},
@@ -212,6 +213,57 @@ export default (state = INITIAL_STATE, action) => {
           updatedWorkspaces[state.activeChannel.entity_id].channel.id === state.activeChannel.id
             ? { code: updatedWorkspaces[state.activeChannel.entity_id].team_channel.code, id: updatedWorkspaces[state.activeChannel.entity_id].team_channel.id }
             : null,
+      };
+    }
+    case "GET_FAVORITE_WORKSPACES_SUCCESS": {
+      let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
+      action.data.workspaces.forEach((ws) => {
+        if (ws.type === "FOLDER") {
+          if (updatedFolders.hasOwnProperty(ws.id)) {
+            updatedFolders[ws.id].workspace_ids = [...updatedFolders[ws.id].workspace_ids, ...ws.topics.map((t) => t.id)];
+          } else {
+            updatedFolders[ws.id] = {
+              ...ws,
+              workspace_ids: ws.topics.map((t) => t.id),
+            };
+          }
+          ws.topics.forEach((t) => {
+            updatedWorkspaces[t.id] = {
+              ...t,
+              channel: { ...t.channel, loaded: false },
+              is_lock: t.private,
+              folder_id: ws.id,
+              folder_name: ws.name,
+              team_channel: t.team_channel,
+              is_favourite: t.is_favourite,
+              type: "WORKSPACE",
+            };
+          });
+          delete updatedFolders[ws.id].topics;
+        } else if (ws.type === "WORKSPACE") {
+          updatedWorkspaces[ws.id] = {
+            ...ws,
+            is_favourite: ws.topic_detail.is_favourite,
+            is_shared: ws.topic_detail.is_shared,
+            active: ws.topic_detail.active,
+            channel: { ...ws.topic_detail.channel, loaded: false },
+            unread_chats: ws.topic_detail.unread_chats,
+            unread_posts: ws.topic_detail.unread_posts,
+            folder_id: null,
+            folder_name: null,
+            team_channel: ws.topic_detail.team_channel,
+            team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+          };
+          delete updatedWorkspaces[ws.id].topic_detail;
+        }
+      });
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        folders: updatedFolders,
+        favoriteWorkspacesLoaded: true,
       };
     }
     case "GET_WORKSPACE_SUCCESS": {

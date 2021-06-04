@@ -59,7 +59,7 @@ const WorkspaceContentPanel = (props) => {
 
   const { loggedUser } = useUsers();
   const actions = useWorkspaceActions();
-  const { workspaces, workspacesLoaded, activeTopic: workspace, workspaceTimeline } = useSelector((state) => state.workspaces);
+  const { workspaces, workspacesLoaded, favoriteWorkspacesLoaded, activeTopic: workspace, workspaceTimeline } = useSelector((state) => state.workspaces);
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && workspace && workspaceTimeline[workspace.id]) {
     timeline = workspaceTimeline[workspace.id];
@@ -77,7 +77,7 @@ const WorkspaceContentPanel = (props) => {
 
   return (
     <Wrapper className={`main-content ${className}`}>
-      {!workspacesLoaded ? (
+      {!workspacesLoaded && !favoriteWorkspacesLoaded ? (
         <div className="spinner-container">
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
         </div>
