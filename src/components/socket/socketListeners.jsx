@@ -156,6 +156,7 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter,
   updateWorkspacePostCount,
+  setActiveTopic,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -1378,30 +1379,22 @@ class SocketListeners extends Component {
             }
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
-            if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
-              if (this.props.user.type === "external" || e.private === 1) {
-                if (Object.keys(this.props.workspaces).length) {
-                  let workspace = Object.values(this.props.workspaces)[0];
-                  if (workspace.folder_id) {
-                    this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                  } else {
-                    this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                  }
+            if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.props.user.id)) {
+              //redirect to first favorite workspace
+              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              if (favoriteWorkspaces.length) {
+                let workspace = favoriteWorkspaces[0];
+                this.props.setActiveTopic(workspace);
+                if (workspace.folder_id) {
+                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
                 }
-              }
-            }
-            if (this.props.selectedChannel) {
-              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                //redirect to first channel
-                let wsChannels = Object.values(this.props.channels).filter((c) => {
-                  const checkForId = (id) => id === this.props.user.id;
-                  let isMember = c.members.map((m) => m.id).some(checkForId);
-                  return c.type === "TOPIC" && isMember && !c.is_hidden;
-                });
-                if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                  let channel = wsChannels[0];
-                  this.props.setSelectedChannel(channel);
-                  this.props.history.push(`/chat/${channel.code}`);
+                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+                    this.props.history.push(`/chat/${workspace.channel.code}`);
+                  }
                 }
               }
             }
@@ -1547,29 +1540,21 @@ class SocketListeners extends Component {
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
-              if (this.props.user.type === "external" || e.private === 1) {
-                if (Object.keys(this.props.workspaces).length) {
-                  let workspace = Object.values(this.props.workspaces)[0];
-                  if (workspace.folder_id) {
-                    this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                  } else {
-                    this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                  }
+              //redirect to first favorite workspace
+              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              if (favoriteWorkspaces.length) {
+                let workspace = favoriteWorkspaces[0];
+                this.props.setActiveTopic(workspace);
+                if (workspace.folder_id) {
+                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
                 }
-              }
-            }
-            if (this.props.selectedChannel) {
-              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                //redirect to first channel
-                let wsChannels = Object.values(this.props.channels).filter((c) => {
-                  const checkForId = (id) => id === this.props.user.id;
-                  let isMember = c.members.map((m) => m.id).some(checkForId);
-                  return c.type === "TOPIC" && isMember && !c.is_hidden;
-                });
-                if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                  let channel = wsChannels[0];
-                  this.props.setSelectedChannel(channel);
-                  this.props.history.push(`/chat/${channel.code}`);
+                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+                    this.props.history.push(`/chat/${workspace.channel.code}`);
+                  }
                 }
               }
             }
@@ -2002,6 +1987,7 @@ function mapDispatchToProps(dispatch) {
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
+    setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
   };
 }
 
