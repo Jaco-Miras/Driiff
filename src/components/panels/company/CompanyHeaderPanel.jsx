@@ -6,7 +6,8 @@ import { SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { CompanyPageHeaderPanel } from "../company";
 import { useTranslation } from "../../hooks";
-import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
+//import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
+import { favouriteWorkspace } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -128,7 +129,11 @@ const CompanyHeaderPanel = () => {
     },
   } = useSelector((state) => state.settings);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
-  const companyChannel = useSelector((state) => state.chat.companyChannel);
+  // const companyChannel = useSelector((state) => state.chat.companyChannel);
+  const recipients = useSelector((state) => state.global.recipients);
+
+  const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
+  const companyChannel = useSelector((state) => Object.values(state.workspaces.workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id));
   const { _t } = useTranslation();
 
   const dictionary = {
@@ -164,16 +169,11 @@ const CompanyHeaderPanel = () => {
     if (companyChannel) {
       let payload = {
         id: companyChannel.id,
-        is_pinned: !companyChannel.is_pinned,
-        is_muted: companyChannel.is_muted,
-        is_archived: companyChannel.is_archived,
+        workspace_id: 0,
+        is_pinned: companyChannel.is_favourite ? 0 : 1,
       };
-      dispatch(
-        putChannel(payload, (err, res) => {
-          if (err) return;
-          dispatch(updateCompanyChannel(payload));
-        })
-      );
+
+      dispatch(favouriteWorkspace(payload));
     }
   };
 
@@ -223,7 +223,7 @@ const CompanyHeaderPanel = () => {
         return (
           <>
             <SvgIconFeather className="mr-2" icon="home" /> <CompanyName>{driff.company_name}</CompanyName>
-            <StarIcon className="mr-2" icon="star" onClick={handleFavoriteCompany} isFavorite={companyChannel && companyChannel.is_pinned} />
+            {companyRecipient && <StarIcon className="mr-2" icon="star" onClick={handleFavoriteCompany} isFavorite={companyChannel && companyChannel.is_favourite} />}
           </>
         );
       }
