@@ -117,6 +117,7 @@ const TodoReminderModal = (props) => {
   const [mounted, setMounted] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [removedFiles, setRemovedFiles] = useState([]);
   const [showDropzone, setShowDropzone] = useState(false);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
@@ -467,9 +468,11 @@ const TodoReminderModal = (props) => {
     payload = {
       ...payload,
       file_ids: [...inlineImages.map((i) => i.id), ...uploadedFiles.map((f) => f.id)],
+      remove_file_ids: removedFiles.map((f) => f.id),
     };
     if (attachedFiles.length > 0) {
       uploadFiles(payload);
+      toggle();
     } else {
       actions.onSubmit(payload, (err, res) => {
         // if (res) {
@@ -608,6 +611,7 @@ const TodoReminderModal = (props) => {
   };
 
   const handleRemoveFile = (fileId) => {
+    if (uploadedFiles.some((f) => f.id === parseInt(fileId))) setRemovedFiles([...uploadedFiles.filter((f) => f.id === parseInt(fileId)), ...removedFiles]);
     setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   };
@@ -653,9 +657,9 @@ const TodoReminderModal = (props) => {
           ...payload,
           file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
         };
-        actions.onSubmit(payload);
-        setLoading(false);
-        toggle();
+        actions.onSubmit(payload, () => toaster.dismiss(toasterRef.current));
+        //setLoading(false);
+        //toggle();
       })
       .catch((error) => {
         handleNetWorkError(error);
@@ -736,13 +740,44 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.author.name}</div>
-              <div className="col-12 modal-label">{dictionary.title}</div>
-              <div className="col-12 mb-3">{form.title.value}</div>
-              <div className="col-12 modal-label">{dictionary.description}</div>
-              <div className="col-12 mb-3">
+              {/* <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12 mb-3">{form.title.value}</div> */}
+              {/* <div className="col-12 modal-label">{dictionary.description}</div> */}
+              {/* <div className="col-12 mb-3">
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
                 <FileAttachments attachedFiles={item.files} showDelete={false} />
+              </div> */}
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12">
+                <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
               </div>
+              <div className="col-12">
+                <StyledDescriptionInput
+                  className="modal-description"
+                  height={winSize.height - 660}
+                  defaultValue={form.description.value}
+                  showFileButton={true}
+                  onChange={handleQuillChange}
+                  onOpenFileDialog={handleOpenFileDialog}
+                  disableBodyMention={true}
+                  modal={"reminders"}
+                  mentionedUserIds={[]}
+                  setInlineImages={setInlineImages}
+                  setImageLoading={setImageLoading}
+                />
+              </div>
+              {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+                <div className="col-12">
+                  <div>
+                    <label className={"modal-label"} for="workspace">
+                      {dictionary.fileAttachments}
+                    </label>
+                  </div>
+                  <div className="file-attachments-container">
+                    <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+                  </div>
+                </div>
+              )}
               <div className="column clearfix">
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.workspaceLabel}</div>
@@ -767,13 +802,44 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.user ? item.user.name : "System"}</div>
-              <div className="col-12 modal-label">{dictionary.title}</div>
+              {/* <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12 mb-3">{form.title.value}</div>
-              <div className="col-12 modal-label">{dictionary.message}</div>
-              <div className="col-12 mb-3">
+              <div className="col-12 modal-label">{dictionary.message}</div> */}
+              {/* <div className="col-12 mb-3">
                 <MessageFiles isAuthor={item.user.id === user.id} files={item.files} reply={item} type="chat" />
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
+              </div> */}
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12">
+                <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
               </div>
+              <div className="col-12">
+                <StyledDescriptionInput
+                  className="modal-description"
+                  height={winSize.height - 660}
+                  defaultValue={form.description.value}
+                  showFileButton={true}
+                  onChange={handleQuillChange}
+                  onOpenFileDialog={handleOpenFileDialog}
+                  disableBodyMention={true}
+                  modal={"reminders"}
+                  mentionedUserIds={[]}
+                  setInlineImages={setInlineImages}
+                  setImageLoading={setImageLoading}
+                />
+              </div>
+              {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+                <div className="col-12">
+                  <div>
+                    <label className={"modal-label"} for="workspace">
+                      {dictionary.fileAttachments}
+                    </label>
+                  </div>
+                  <div className="file-attachments-container">
+                    <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="column clearfix">
               <div className="col-6 float-left">
@@ -798,13 +864,44 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.author.name}</div>
-              <div className="col-12 modal-label">{dictionary.title}</div>
+              {/* <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.message}</div>
               <div className="col-12 mb-3">
                 <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
                 <FileAttachments attachedFiles={item.files} showDelete={false} />
+              </div> */}
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12">
+                <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
               </div>
+              <div className="col-12">
+                <StyledDescriptionInput
+                  className="modal-description"
+                  height={winSize.height - 660}
+                  defaultValue={form.description.value}
+                  showFileButton={true}
+                  onChange={handleQuillChange}
+                  onOpenFileDialog={handleOpenFileDialog}
+                  disableBodyMention={true}
+                  modal={"reminders"}
+                  mentionedUserIds={[]}
+                  setInlineImages={setInlineImages}
+                  setImageLoading={setImageLoading}
+                />
+              </div>
+              {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+                <div className="col-12">
+                  <div>
+                    <label className={"modal-label"} for="workspace">
+                      {dictionary.fileAttachments}
+                    </label>
+                  </div>
+                  <div className="file-attachments-container">
+                    <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="column clearfix">
               <div className="col-6 float-left">
