@@ -127,30 +127,6 @@ const ChatBubbleContainer = styled.div`
     font-style: italic;
     color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#AAB0C8")};
   }
-
-  a.fancied {border-radius: 5px !important;
-    background-color: #F8F8F8 !important;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.11) !important; 
-    text-decoration: none !important;
-    display: inline-block;
-    height: auto !important;
-    padding:5px 10px;
-
-    margin-bottom: 5px;
-    margin-right: .5em;
-    margin-left: .5em;
-
-    vertical-align: middle;
-    line-height: normal; 
-
-    color: #696969 !important;
-    font-family: Inter !important;
-    font-size: 13px !important;
-    letter-spacing: 0 !important;
-    line-height: 21px !important;
- }
-
-    a.fancied > img {display: inline-block; padding-right:.5em};
 `;
 
 const QuoteContainer = styled.div`
