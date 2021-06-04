@@ -310,6 +310,74 @@ class SocketListeners extends Component {
             return null;
         }
       })
+      .listen(".workspace-todo-notification", (e) => {
+        console.log("workspace todo notification", e);
+        if (e.workspace) {
+          if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
+            this.props.getFavoriteWorkspaceCounters();
+          }
+        }
+        this.props.getToDoDetail();
+        switch (e.SOCKET_TYPE) {
+          case "CREATE_WORKSPACE_TODO": {
+            this.props.incomingToDo({ ...e, user: e.user_id });
+            break;
+          }
+          case "UPDATE_WORKSPACE_TODO": {
+            this.props.incomingUpdateToDo(e);
+            break;
+          }
+          case "DONE_TODO": {
+            this.props.incomingDoneToDo(e);
+            break;
+          }
+          case "DELETE_WORKSPACE_TODO": {
+            this.props.incomingRemoveToDo(e);
+            break;
+          }
+          case "REMIND_WORKSPCE_TODO": {
+            //pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+            this.props.incomingUpdateToDo(e);
+            break;
+          }
+          case "ADVANCE_REMIND_TODO": {
+            if (isSafari) {
+              if (this.props.notificationsOn) {
+                let redirect = () => {
+                  if (e.link_type) {
+                    let link = "";
+                    if (e.link_type === "POST_COMMENT" || e.link_type === "POST") {
+                      if (e.data.workspaces.length) {
+                        if (e.data.workspaces[0].workspace) {
+                          link = `/workspace/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${
+                            e.data.post.id
+                          }/${replaceChar(e.data.post.title)}`;
+                        } else {
+                          link = `/workspace/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                        }
+                      } else {
+                        link = `/posts/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                      }
+                    } else if (e.link_type === "CHAT") {
+                      link = `/chat/${e.data.channel.code}/${e.data.chat_message.code}`;
+                    }
+                    if (link !== "") {
+                      this.props.history.push(link);
+                    }
+                  } else {
+                    this.props.history.push("/todos");
+                  }
+                };
+                pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
+              }
+            }
+            this.props.incomingReminderNotification(e);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
         // if (e.workspace) {
