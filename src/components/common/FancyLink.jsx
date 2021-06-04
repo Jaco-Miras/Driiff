@@ -1,52 +1,29 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
-import { getSiteMetaData } from "../../redux/services/chat";
-
-const Wrapper = styled.div`
+const Wrapper = styled.a`
 border-radius: 5px !important;
 background-color: #F8F8F8 !important;
 box-shadow: 0 1px 1px 0 rgba(0,0,0,0.11) !important; 
 text-decoration: none !important;
 display: inline-block;
-height: 34px !important;
+height: auto !important;
 padding:5px 10px;
 margin-bottom: 5px;
-`;
-
-const Img = styled.img`
-height: 16px;
-width: 16px;
-`;
-
-const Span = styled.span`color: #696969 !important;
+color: #696969 !important;
 font-family: Inter !important;
 font-size: 13px !important;
 letter-spacing: 0 !important;
-line-height: 21px !important; padding-left: 5px;`;
-
+line-height: 21px !important;
+margin-right: 1pt;
+::before { content : url(${props => props.favlink});  display: inline-block;vertical-align: middle;line-height: normal; padding-right: .3em;}
+`;
 const FancyLink = (props) => {
-
-  const { className = "", link } = props;
-  const [title, setTitle] = useState('No title found!');
-
-  const metaA = function (data, callback) {
-    getSiteMetaData(data).then((response) => {
-      callback(response.data.title);
-    });
-  }
-
-  metaA({ received_url: link }, function (response) {
-    setTitle(title);
-  });
-  
-  const faviLink = 'https://www.google.com/s2/favicons?domain=' + link;
+  const { link, title } = props;
   return (
-    <Wrapper className={`${className}`}>
-      <a href={link} target="_blank"><Img src={faviLink} /><Span>{title}</Span></a>
+    <Wrapper href={`${link}`} target="_blank" favlink={'https://www.google.com/s2/favicons?domain=' + link}>
+      {title}
     </Wrapper>
-
   );
 };
-
 export default FancyLink;

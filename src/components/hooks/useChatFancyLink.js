@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-//import { GoogleDriveLink, FancyLink } from "../common";
-//import { renderToString } from "react-dom/server";
+import { FancyLink } from "../common";
+import { renderToString } from "react-dom/server";
 import { getChatMsgsForFancy } from "../../redux/services/chat";
 
 const useChatFancyLink = (props) => {
@@ -18,12 +18,21 @@ const useChatFancyLink = (props) => {
   const messageBody = message.body;
 
   let result = messageBody;
-  if ((messageBody.match(/(((https?:\/\/)|(www\.))[^\s]+)/g) || []).length > 0 && !message.is_fancy)
+  if ((messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy)
     result = getMessage(message);
+
+  function convertFavis(content) {
+    return (content).replace(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g,
+      function (fullText, beforeLink, anchorContent, href, lnkUrl, linkText, endAnchor) {
+        return renderToString(<FancyLink link={href} title={lnkUrl} />);
+      }
+    );
+  }
 
   useEffect(() => {
     if (fancyContent !== null) {
-      actions.saveFancyContent({ ...message, body: result, is_fancy: true });
+      let body = convertFavis(result);
+      actions.saveFancyContent({ ...message, body: body, is_fancy: true });
     }
   }, [fancyContent]);
 
