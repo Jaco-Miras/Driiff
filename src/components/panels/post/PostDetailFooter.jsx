@@ -206,6 +206,19 @@ const ApproverSelectWrapper = styled.div`
   }
 `;
 
+const OverviewNextLink = styled.span`
+  display: flex;
+  align-items: center;
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`;
+
 const PostDetailFooter = (props) => {
   const {
     className = "",
@@ -779,12 +792,12 @@ const PostDetailFooter = (props) => {
       {filter && (filter === "all" || filter === "inbox") && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <button className="btn btn-outline-light mr-3" onClick={() => overview()}>
+            <OverviewNextLink className="mr-3" onClick={overview}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
-            </button>
-            <button className="btn btn-outline-light" onClick={handleNextPost}>
+            </OverviewNextLink>
+            <OverviewNextLink onClick={handleNextPost}>
               {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
-            </button>
+            </OverviewNextLink>
           </div>
         </Dflex>
       )}

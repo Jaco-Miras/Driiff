@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useTranslation } from "../../hooks";
-import { Avatar, SvgIconFeather } from "../../common";
+import { Avatar } from "../../common";
 
 const Wrapper = styled.div``;
 const ApprovedText = styled.div`
@@ -19,16 +19,28 @@ const ApprovedText = styled.div`
   }
 `;
 
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
+// const Icon = styled(SvgIconFeather)`
+//   width: 16px;
 
-  &.close {
-    cursor: pointer;
-  }
-`;
+//   &.close {
+//     cursor: pointer;
+//   }
+// `;
 
-const ApprovalLabelWrapper = styled.div`
+// const ApprovalLabelWrapper = styled.div`
+//   text-align: right;
+// `;
+
+const ApprovalBadgeWrapper = styled.div`
   text-align: right;
+  display: flex;
+  justify-content: center;
+  .read-users-container .name {
+    color: #212529;
+    .dark & {
+      color: #fff;
+    }
+  }
 `;
 
 const PostChangeAccept = (props) => {
@@ -55,15 +67,18 @@ const PostChangeAccept = (props) => {
   const isApprover = usersApproval.some((ua) => ua.id === user.id);
   const usersApproved = usersApproval.filter((u) => u.ip_address !== null && u.is_approved);
   const usersDisagreed = usersApproval.filter((u) => u.ip_address !== null && !u.is_approved);
+  const usersPending = usersApproval.filter((u) => u.ip_address === null);
   const userApprovedIds = usersApproved.map((ua) => ua.id);
   const agreedUsers = Object.values(users).filter((u) => userApprovedIds.some((id) => id === u.id));
   const userDisagreedIds = usersDisagreed.map((ua) => ua.id);
   const disagreedUsers = Object.values(users).filter((u) => userDisagreedIds.some((id) => id === u.id));
+  const userPendingIds = usersPending.map((ua) => ua.id);
+  const pendingUsers = Object.values(users).filter((u) => userPendingIds.some((id) => id === u.id));
   const hasAnswered = usersApproval.some((ua) => ua.id === user.id && ua.ip_address !== null);
   const allUsersAgreed = usersApproval.filter((u) => u.ip_address !== null && u.is_approved).length === usersApproval.length;
 
   return (
-    <Wrapper className="mb-3">
+    <Wrapper>
       {!postBody && !hasAnswered && isApprover && (
         <div className="d-flex align-items-center mt-3">
           <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
@@ -82,6 +97,24 @@ const PostChangeAccept = (props) => {
             </div>
           </div>
         </ApprovedText>
+      )}
+      {usersPending && !isMultipleApprovers && (
+        <ApprovalBadgeWrapper className="readers-container">
+          {pendingUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-warning">
+              <span className="no-readers">{_t("POST.PERSON_PENDING_SINGLE", "Waiting for approval from: ::name::", { name: pendingUsers[0].name })}</span>
+              <span className="hover read-users-container">
+                {pendingUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
+        </ApprovalBadgeWrapper>
       )}
       {userApproved && !isMultipleApprovers && (
         <ApprovedText>
@@ -106,39 +139,10 @@ const PostChangeAccept = (props) => {
         </ApprovedText>
       )}
       {isMultipleApprovers && (
-        <ApprovalLabelWrapper className="readers-container">
-          {usersApproved.length > 0 && (
-            <div className="user-reads-container read-by">
-              {userApprovedIds.some((id) => id === user.id) && (
-                <span className="mr-2">
-                  <Icon className="mr-2" icon="check" /> {dictionary.agreedToThis}
-                </span>
-              )}
-              <span className="no-readers">
-                {dictionary.agreedBy} {usersApproved.length} users
-              </span>
-              <span className="hover read-users-container">
-                {agreedUsers.map((u) => {
-                  return (
-                    <span key={u.id}>
-                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
-                    </span>
-                  );
-                })}
-              </span>
-            </div>
-          )}
-          <br />
-          {usersDisagreed.length > 0 && (
-            <div className="user-reads-container read-by">
-              {userDisagreedIds.some((id) => id === user.id) && (
-                <span className="mr-2">
-                  <Icon className="mr-2" icon="check" /> {dictionary.disagreedToThis}
-                </span>
-              )}
-              <span className="no-readers">
-                {dictionary.disagreedBy} {usersDisagreed.length} users
-              </span>
+        <ApprovalBadgeWrapper className="readers-container">
+          {disagreedUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-danger">
+              <span className="no-readers">{_t("POST.PERSON_DISAGREED", "::count:: person disagreed", { count: usersDisagreed.length })}</span>
               <span className="hover read-users-container">
                 {disagreedUsers.map((u) => {
                   return (
@@ -150,7 +154,35 @@ const PostChangeAccept = (props) => {
               </span>
             </div>
           )}
-        </ApprovalLabelWrapper>
+          {pendingUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-warning">
+              <span className="no-readers">{_t("POST.PERSON_PENDING", "::count:: person pending", { count: pendingUsers.length })}</span>
+              <span className="hover read-users-container">
+                {pendingUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
+          {agreedUsers.length > 0 && (
+            <div className="user-reads-container read-by badge badge-success">
+              <span className="no-readers">{_t("POST.PERSON_APPROVED", "::count:: person approved", { count: usersApproved.length })}</span>
+              <span className="hover read-users-container">
+                {agreedUsers.map((u) => {
+                  return (
+                    <span key={u.id}>
+                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
+        </ApprovalBadgeWrapper>
       )}
     </Wrapper>
   );
