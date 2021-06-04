@@ -460,6 +460,7 @@ const FileUploadModal = (props) => {
           };
           setTimeout(() => {
             dispatch(postChatMessage(payload));
+            toaster.dismiss(toasterRef.current);
           }, 300);
 
           //setUploadedFiles([]);
@@ -502,6 +503,7 @@ const FileUploadModal = (props) => {
         };
         dispatch(putComment(payload));
         dispatch(setEditComment(null));
+        toaster.dismiss(toasterRef.current);
       } else {
         let timestamp = Math.floor(Date.now() / 1000);
         let commentObj = {
@@ -538,6 +540,7 @@ const FileUploadModal = (props) => {
 
         dispatch(addComment(commentObj));
         dispatch(postComment(payload));
+        toaster.dismiss(toasterRef.current);
       }
     }
   };
