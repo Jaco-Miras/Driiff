@@ -711,17 +711,15 @@ const ChatInput = (props) => {
     quillRef: reactQuillRef,
     members:
       user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted)
+        ? selectedChannel.members.filter((m) => m.has_accepted)
         : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
               return true;
             } else {
               return false;
             }
           }),
-    prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted).map((m) => m.id),
+    prioMentionIds: selectedChannel.members.filter((m) => m.has_accepted).map((m) => m.id),
   });
 
   //to be converted into hooks
