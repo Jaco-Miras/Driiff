@@ -8,6 +8,7 @@ import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
   const notifications = useSelector((state) => state.notifications.notifications);
+  const user = useSelector((state) => state.session.user);
 
   const channelActions = useChannelActions();
 
@@ -27,7 +28,7 @@ const useInitialLoad = () => {
   useEffect(() => {
     document.body.classList.remove("form-membership");
     const fetchChannelCb = () => {
-      // dispatch(getAllRecipients());
+      dispatch(getAllRecipients());
       dispatch(
         getUsers({}, () => {
           dispatch(getArchivedUsers());
@@ -35,7 +36,6 @@ const useInitialLoad = () => {
       );
       dispatch(getExternalUsers());
       dispatch(getDrafts());
-      //dispatch(getUnreadPostEntries());
       if (Object.keys(notifications).length === 0) {
         dispatch(getNotifications({ skip: 0, limit: 50 }));
       }
@@ -43,10 +43,8 @@ const useInitialLoad = () => {
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
-      //dispatch(getDrafts());
     };
-    dispatch(getAllRecipients());
-    dispatch(getCompanyChannel());
+    if (user && user.type === "internal") dispatch(getCompanyChannel());
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
     dispatch(getSkippedAnswers({}));
     dispatch(
