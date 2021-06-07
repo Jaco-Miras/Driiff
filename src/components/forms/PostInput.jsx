@@ -570,7 +570,7 @@ const PostInput = forwardRef((props, ref) => {
   );
   useQuillInput(handleClearQuillInput, reactQuillRef);
 
-  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
+  //let prioIds = [...new Set(prioMentionIds)];
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -593,9 +593,7 @@ const PostInput = forwardRef((props, ref) => {
     disableMention: false,
     setInlineImages,
     setImageLoading,
-    prioMentionIds: Object.values(users)
-      .filter((u) => prioIds.some((id) => id === u.id))
-      .map((u) => u.id),
+    prioMentionIds: [...new Set(prioMentionIds)],
     post,
   });
 

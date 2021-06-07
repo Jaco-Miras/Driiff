@@ -63,7 +63,7 @@ const useQuillModules = ({
 
     let newAtValues = [];
     let newWorkSpaceValues = [];
-    let prioIds = prioMentionIds.filter((id) => id !== user.id);
+    let prioIds = prioMentionIds;
     if (members.length) {
       newAtValues = [
         ...members
