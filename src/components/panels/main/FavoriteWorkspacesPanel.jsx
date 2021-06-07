@@ -89,7 +89,7 @@ const FavoriteWorkspacesPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  const { actions, folders, history, orderChannel, workspaces, workspacesLoaded } = useWorkspace();
+  const { actions, folders, history, orderChannel, workspaces, favoriteWorkspacesLoaded } = useWorkspace();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const channels = useSelector((state) => state.chat.channels);
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -215,7 +215,7 @@ const FavoriteWorkspacesPanel = (props) => {
       </FavWorkspacesLabel>
       <WorkspaceListContainer>
         <div id="elements" className="open">
-          {workspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length === 0 && (
+          {favoriteWorkspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length === 0 && (
             <FavEmptyState>
               <span role="img" aria-label="star">
                 ✨
@@ -225,8 +225,8 @@ const FavoriteWorkspacesPanel = (props) => {
             </FavEmptyState>
           )}
 
-          {workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 && <EmptyWorkspaces />}
-          {workspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length > 0 && (
+          {favoriteWorkspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 && <EmptyWorkspaces />}
+          {favoriteWorkspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length > 0 && (
             <>
               <ul>
                 {favoriteWorkspaces.map((ws) => {
