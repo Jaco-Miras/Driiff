@@ -10,6 +10,7 @@ import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
+import useChatFancyLink from "../../hooks/useChatFancyLink";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -508,6 +509,8 @@ const ChatBubble = (props) => {
 
   const history = useHistory();
   const googleApis = useGoogleApis();
+
+  useChatFancyLink({ message: reply, actions: chatMessageActions });
 
   useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
 
