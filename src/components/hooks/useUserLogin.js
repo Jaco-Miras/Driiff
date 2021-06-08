@@ -125,11 +125,11 @@ export const useUserLogin = (props) => {
           });
       }
     }
-    if (history.location.pathname.startsWith("/authenticate-ios/")) {
+    if (history.location.pathname.startsWith("/authenticate-ios/") && !checkingRef.current) {
       const data = getUrlParams(`${getBaseUrl()}/authenticate-ios?auth_token=${params.tokens}`);
 
       checkingRef.current = true;
-      if (data.id && data.auth_token) {
+      if (data.id && data.auth_token && data.redirect_url) {
         fetch(`${getAPIUrl()}/users/${data.id}`, {
           method: "GET",
           keepalive: true,
@@ -143,6 +143,9 @@ export const useUserLogin = (props) => {
         })
           .then((res) => res.json())
           .then((res) => {
+            setTimeout(() => {
+              checkingRef.current = null;
+            }, 3000);
             sessionService
               .saveSession({
                 token: `Bearer ${data.auth_token}`,
@@ -154,7 +157,8 @@ export const useUserLogin = (props) => {
                 sessionService.saveUser({
                   ...res,
                 });
-                history.push("/chat");
+                //history.push("/chat");
+                window.location.href = data.redirect_url;
               });
           });
       }
