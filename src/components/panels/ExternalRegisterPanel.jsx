@@ -35,6 +35,7 @@ const ExternalRegisterPanel = (props) => {
     user_id: 0,
     topic_id: 0,
     first_name: "",
+    middle_name: "",
     last_name: "",
     email: "",
     password: "",
@@ -159,6 +160,10 @@ const ExternalRegisterPanel = (props) => {
             topic_id: res.data.topic.id,
             email: res.data.user.email,
             responsible_user_id: res.data.responsible_user_id,
+            last_name: res.data.user.last_name,
+            first_name: res.data.user.first_name,
+            middle_name: res.data.user.middle_name,
+            company_name: res.data.user.company ? res.data.user.company : "",
           }));
 
           refs.first_name.current.focus();
@@ -172,19 +177,29 @@ const ExternalRegisterPanel = (props) => {
   return (
     <Wrapper>
       <FormGroup className="form-group">
-        <FormInput innerRef={refs.first_name} onChange={handleInputChange} name="first_name" placeholder={dictionary.firstName} isValid={formResponse.valid.first_name} feedback={formResponse.message.first_name} required autoFocus />
+        <FormInput
+          innerRef={refs.first_name}
+          value={form.first_name}
+          onChange={handleInputChange}
+          name="first_name"
+          placeholder={dictionary.firstName}
+          isValid={formResponse.valid.first_name}
+          feedback={formResponse.message.first_name}
+          required
+          autoFocus
+        />
       </FormGroup>
       <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} name="middle_name" type="text" placeholder={dictionary.middleName} isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name} />
+        <FormInput onChange={handleInputChange} value={form.middle_name} name="middle_name" type="text" placeholder={dictionary.middleName} isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name} />
       </FormGroup>
       <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} />
+        <FormInput onChange={handleInputChange} value={form.last_name} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} />
       </FormGroup>
       <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} name="company_name" placeholder={dictionary.companyName} />
+        <FormInput onChange={handleInputChange} value={form.company_name} name="company_name" placeholder={dictionary.companyName} />
       </FormGroup>
       <FormGroup className="form-group text-left">
-        <FormInput onChange={handleInputChange} name="last_name" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
+        <FormInput onChange={handleInputChange} name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
       </FormGroup>
       <FormGroup className="form-group">
         <PasswordInput innerRef={refs.password} name="password" onChange={handleInputChange} placeholder={dictionary.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} required />
