@@ -183,7 +183,7 @@ const FilePill = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    if (!imgSrc) {
+    if (!imgSrc && userAuth) {
       fetch(file.thumbnail_link, {
         method: "GET",
         keepalive: true,
