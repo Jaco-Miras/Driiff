@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
 import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
 import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
+import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
 import { useFileActions, useToaster, useTranslation } from "../hooks";
@@ -15,6 +16,8 @@ import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getExternalUsers } from "../../redux/actions/userAction";
 import { debounce } from "lodash";
+import Select from "react-select";
+import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -190,10 +193,10 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-const LockIcon = styled(SvgIconFeather)`
-  width: 1rem;
-  height: 1rem;
-`;
+// const LockIcon = styled(SvgIconFeather)`
+//   width: 1rem;
+//   height: 1rem;
+// `;
 
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
@@ -204,6 +207,8 @@ const CreateEditWorkspaceModal = (props) => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const [modal, setModal] = useState(true);
+  const [showNestedModal, setShowNestedModal] = useState(false);
+  const userSettings = useSelector((state) => state.settings.user);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const externalUsers = useSelector((state) => state.users.externalUsers);
@@ -213,7 +218,7 @@ const CreateEditWorkspaceModal = (props) => {
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [invitedEmails, setInvitedEmails] = useState([]);
+  //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
   const [form, setForm] = useState({
     is_private: false,
@@ -270,8 +275,47 @@ const CreateEditWorkspaceModal = (props) => {
   };
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+  const [invitedExternals, setInvitedExternals] = useState([]);
+  const [invitedExternal, setInvitedExternal] = useState({
+    email: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    company: "",
+    language: "en",
+  });
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
+
+  const languageOptions = [
+    {
+      value: "en",
+      label: (
+        <>
+          <Flag countryAbbr="en" className="mr-2" width="18" />
+          {_t("LANGUAGE.ENGLISH", "English")}
+        </>
+      ),
+    },
+    {
+      value: "nl",
+      label: (
+        <>
+          <Flag countryAbbr="nl" className="mr-2" width="18" />
+          {_t("LANGUAGE.DUTCH", "Dutch")}
+        </>
+      ),
+    },
+    {
+      value: "de",
+      label: (
+        <>
+          <Flag countryAbbr="de" className="mr-2" width="18" />
+          {_t("LANGUAGE.GERMAN", "German")}
+        </>
+      ),
+    },
+  ];
 
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
@@ -402,12 +446,25 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleSelectExternalUser = (e) => {
+    if (e && e.some((data) => data.label.startsWith("Add ") && !data.hasOwnProperty("id"))) {
+      setShowNestedModal(true);
+      const email = e.find((d) => d.label.startsWith("Add "));
+      setInvitedExternal({
+        email: email.value,
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        company: "",
+        language: "en",
+      });
+    }
     if (e === null) {
       setForm((prevState) => ({
         ...prevState,
         selectedExternals: [],
       }));
-      setInvitedEmails([]);
+      //setInvitedEmails([]);
+      setInvitedExternals([]);
     } else {
       const externals = e.map((e) => {
         if (e.id) {
@@ -429,7 +486,8 @@ const CreateEditWorkspaceModal = (props) => {
         ...prevState,
         selectedExternals: externals,
       }));
-      setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
+      //setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
+      setInvitedExternals(invitedExternals.filter((ex) => e.some((e) => e.email === ex.email)));
     }
   };
 
@@ -438,7 +496,7 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleCreateOption = (inputValue) => {
-    setInvitedEmails((prevState) => [...prevState, inputValue]);
+    //setInvitedEmails((prevState) => [...prevState, inputValue]);
     setForm((prevState) => ({
       ...prevState,
       selectedExternals: [
@@ -621,17 +679,32 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     //const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    if (invitedEmails.length && form.has_externals) {
+    // if (invitedEmails.length && form.has_externals) {
+    //   if (mode === "edit") {
+    //     payload = {
+    //       ...payload,
+    //       new_external_emails: invitedEmails,
+    //       is_external: 1,
+    //     };
+    //   } else {
+    //     payload = {
+    //       ...payload,
+    //       external_emails: invitedEmails,
+    //       is_external: 1,
+    //     };
+    //   }
+    // }
+    if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
           ...payload,
-          new_external_emails: invitedEmails,
+          new_externals: invitedExternals.filter((ex) => form.selectedExternals.some((e) => e.email === ex.email)),
           is_external: 1,
         };
       } else {
         payload = {
           ...payload,
-          external_emails: invitedEmails,
+          external_emails: invitedExternals.filter((ex) => form.selectedExternals.some((e) => e.email === ex.email)),
           is_external: 1,
         };
       }
@@ -1271,10 +1344,62 @@ const CreateEditWorkspaceModal = (props) => {
     refs.iconDropZone.current.open();
   };
 
+  const toggleNested = () => {
+    setShowNestedModal((prevState) => !prevState);
+  };
+
+  const handleSaveExternalFields = () => {
+    toggleNested();
+    setInvitedExternals([...invitedExternals, invitedExternal]);
+    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en" });
+  };
+
+  const handleExternalFieldChange = (e) => {
+    e.persist();
+    setInvitedExternal((prevState) => {
+      return {
+        ...prevState,
+        [e.target.name]: e.target.value.trim(),
+      };
+    });
+  };
+
+  const handleLanguageChange = (e) => {
+    setInvitedExternal((prevState) => {
+      return {
+        ...prevState,
+        language: e.value,
+      };
+    });
+  };
+
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
       <ModalBody onDragOver={handleShowDropzone}>
+        <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
+          <ModalHeaderSection toggle={toggleNested}>External user</ModalHeaderSection>
+          <ModalBody>
+            <Label className={"modal-label"}>First name</Label>
+            <Input className="mb-2" name="first_name" onChange={handleExternalFieldChange} autoFocus />
+            <Label className={"modal-label"}>Middle name</Label>
+            <Input className="mb-2" name="middle_name" onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>Last name</Label>
+            <Input className="mb-2" name="last_name" onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>Company name</Label>
+            <Input className="mb-2" name="company" onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>Language</Label>
+            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
+          </ModalBody>
+          <ModalFooter>
+            <Button className="btn-outline-secondary" onClick={toggleNested}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={handleSaveExternalFields}>
+              Save
+            </Button>
+          </ModalFooter>
+        </Modal>
         <DropDocument
           hide={!showDropzone}
           ref={refs.dropZone}
