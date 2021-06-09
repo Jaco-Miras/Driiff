@@ -165,6 +165,10 @@ const SelectPeople = styled(PeopleSelect)`
     border-color: #7a1b8b !important;
     box-shadow: none;
   }
+  .has-not-accepted .react-select__multi-value__label {
+    background: #33b5e5;
+    color: #fff;
+  }
   @media all and (max-width: 480px) {
     width: 100%;
   }
@@ -1347,7 +1351,17 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleSaveExternalFields = () => {
     toggleNested();
-    setInvitedExternals([...invitedExternals, invitedExternal]);
+    if (invitedExternals.some((ex) => ex.email === invitedExternal.email)) {
+      setInvitedExternals(
+        invitedExternals.map((ex) => {
+          if (ex.email === invitedExternal.email) {
+            return invitedExternal;
+          } else return ex;
+        })
+      );
+    } else {
+      setInvitedExternals([...invitedExternals, invitedExternal]);
+    }
     setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", signup_link: "driff" });
   };
 
@@ -1375,6 +1389,13 @@ const CreateEditWorkspaceModal = (props) => {
       ...invitedExternal,
       signup_link: type,
     });
+  };
+
+  const handleEmailClick = (data) => {
+    const external = invitedExternals.find((ex) => ex.email === data.email);
+    console.log(external);
+    if (external) setInvitedExternal(external);
+    toggleNested(true);
   };
 
   return (
@@ -1411,13 +1432,13 @@ const CreateEditWorkspaceModal = (props) => {
             </div>
 
             <Label className={"modal-label"}>First name</Label>
-            <Input className="mb-2" name="first_name" onChange={handleExternalFieldChange} autoFocus />
+            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus />
             <Label className={"modal-label"}>Middle name</Label>
-            <Input className="mb-2" name="middle_name" onChange={handleExternalFieldChange} />
+            <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
             <Label className={"modal-label"}>Last name</Label>
-            <Input className="mb-2" name="last_name" onChange={handleExternalFieldChange} />
+            <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
             <Label className={"modal-label"}>Company name</Label>
-            <Input className="mb-2" name="company" onChange={handleExternalFieldChange} />
+            <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
             <Label className={"modal-label"}>Language</Label>
             <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
           </ModalBody>
@@ -1535,6 +1556,7 @@ const CreateEditWorkspaceModal = (props) => {
               isSearchable
               classNamePrefix="react-select"
               onMenuClose={handleMenuClose}
+              onEmailClick={handleEmailClick}
             />
           </WrapperDiv>
         )}
