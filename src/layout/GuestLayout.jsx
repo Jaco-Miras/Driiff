@@ -207,7 +207,7 @@ const GuestLayout = (props) => {
             <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
             <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props} />} />
             <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props} />} />
-            <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
+            <Route path={"/request-form"} render={() => <ExternalRegisterPanel {...props} />} />
             <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
             <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
           </Switch>
