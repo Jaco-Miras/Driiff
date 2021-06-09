@@ -10,7 +10,7 @@ import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from
 import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
-import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
+import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, RadioInput } from "../forms";
 import { useFileActions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
@@ -283,6 +283,7 @@ const CreateEditWorkspaceModal = (props) => {
     last_name: "",
     company: "",
     language: "en",
+    signup_link: "driff",
   });
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
@@ -303,15 +304,6 @@ const CreateEditWorkspaceModal = (props) => {
         <>
           <Flag countryAbbr="nl" className="mr-2" width="18" />
           {_t("LANGUAGE.DUTCH", "Dutch")}
-        </>
-      ),
-    },
-    {
-      value: "de",
-      label: (
-        <>
-          <Flag countryAbbr="de" className="mr-2" width="18" />
-          {_t("LANGUAGE.GERMAN", "German")}
         </>
       ),
     },
@@ -357,6 +349,10 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
     emailExists: _t("WORKSPACE.EMAIL_EXISTS", "Email already used"),
     invalidEmail: _t("WORKSPACE.INVALID_EMAIL", "Invalid email"),
+    newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (#::email::#). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
+      email: invitedExternal.email,
+    }),
+    newExternalUser: _t("WORKSPACE.NEW_EXTERNAL_USER", "New external user"),
   };
 
   const _validateName = useCallback(() => {
@@ -456,6 +452,7 @@ const CreateEditWorkspaceModal = (props) => {
         last_name: "",
         company: "",
         language: "en",
+        signup_link: "driff",
       });
     }
     if (e === null) {
@@ -1351,7 +1348,7 @@ const CreateEditWorkspaceModal = (props) => {
   const handleSaveExternalFields = () => {
     toggleNested();
     setInvitedExternals([...invitedExternals, invitedExternal]);
-    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en" });
+    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", signup_link: "driff" });
   };
 
   const handleExternalFieldChange = (e) => {
@@ -1373,13 +1370,46 @@ const CreateEditWorkspaceModal = (props) => {
     });
   };
 
+  const handleSetSignupLink = (e, type) => {
+    setInvitedExternal({
+      ...invitedExternal,
+      signup_link: type,
+    });
+  };
+
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
       <ModalBody onDragOver={handleShowDropzone}>
         <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
-          <ModalHeaderSection toggle={toggleNested}>External user</ModalHeaderSection>
+          <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
           <ModalBody>
+            <Label className={"modal-info"}>{dictionary.newExternalInfo}</Label>
+            <div className={"mb-3"}>
+              <RadioInput
+                readOnly
+                onClick={(e) => {
+                  handleSetSignupLink(e, "myself");
+                }}
+                checked={invitedExternal.signup_link === "myself"}
+                value={"myself"}
+                name={"myself"}
+              >
+                Send the signup link myself
+              </RadioInput>
+              <RadioInput
+                readOnly
+                onClick={(e) => {
+                  handleSetSignupLink(e, "driff");
+                }}
+                checked={invitedExternal.signup_link === "driff"}
+                value={"driff"}
+                name={"driff"}
+              >
+                Send the signup link through Driff
+              </RadioInput>
+            </div>
+
             <Label className={"modal-label"}>First name</Label>
             <Input className="mb-2" name="first_name" onChange={handleExternalFieldChange} autoFocus />
             <Label className={"modal-label"}>Middle name</Label>
@@ -1389,7 +1419,7 @@ const CreateEditWorkspaceModal = (props) => {
             <Label className={"modal-label"}>Company name</Label>
             <Input className="mb-2" name="company" onChange={handleExternalFieldChange} />
             <Label className={"modal-label"}>Language</Label>
-            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
+            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
           </ModalBody>
           <ModalFooter>
             <Button className="btn-outline-secondary" onClick={toggleNested}>
