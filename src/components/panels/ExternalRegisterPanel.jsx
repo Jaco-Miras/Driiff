@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useToaster, useUserActions } from "../hooks";
+import { useToaster, useUserActions, useTranslation } from "../hooks";
 import { useHistory } from "react-router-dom";
 import { FormInput, PasswordInput } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
@@ -21,7 +21,6 @@ const FormGroup = styled.div`
 `;
 
 const ExternalRegisterPanel = (props) => {
-  const { dictionary } = props;
   const history = useHistory();
   const userAction = useUserActions();
   const toaster = useToaster();
@@ -47,6 +46,57 @@ const ExternalRegisterPanel = (props) => {
     valid: {},
     message: {},
   });
+
+  const [languageLoaded, setLanguageLoaded] = useState(false);
+
+  const { _t, setLocale } = useTranslation();
+
+  const dictionary = {
+    magicLink: _t("LOGIN.MAGIC_LINK", "Magic link"),
+    rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
+    resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
+    signIn: _t("LOGIN.SIGN_IN", "Sign in"),
+    loginSocialMedia: _t("LOGIN.SOCIAL_MEDIA_LOGIN", "Login with your social media account."),
+    noAccount: _t("LOGIN.NO_ACCOUNT", "Don't have an account?"),
+    registerNow: _t("LOGIN.REGISTER_NOW", "Register now!"),
+    logDifferent: _t("LOGIN.LOG_INTO_DIFFERENT_DRIFF", "Log into different Driff"),
+    registerNewDriff: _t("DOMAIN.REGISTER_NEW_DRIFF", "Register new Driff"),
+    submit: _t("RESET_PASSWORD.SUBMIT", "Submit"),
+    login: _t("RESET_PASSWORD.LOGIN", "Login!"),
+    takeADifferentAction: _t("RESET_PASSWORD.TAKE_A_DIFFERENT_ACTION", "Take a different action."),
+    updatePassword: _t("UPDATE_PASSWORD.UPDATE_PASSWORD", "Update password"),
+    register: _t("REGISTER.REGISTER", "Register"),
+    haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
+    password: _t("REGISTER.PASSWORD", "Password"),
+    firstName: _t("REGISTER.FIRST_NAME", "First name"),
+    middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
+    lastName: _t("REGISTER.LAST_NAME", "Last name"),
+    accept: _t("REGISTER.ACCEPT", "Accept"),
+    driffRegistration: _t("DRIFF.DRIFF_REGISTRATION", "Driff registration."),
+    inviteUser: _t("DRIFF.INVITE", "Invite user"),
+    companyName: _t("DRIFF.COMPANY_NAME", "Company name"),
+    yourEmail: _t("DRIFF.YOUR_EMAIL", "Your email"),
+    yourName: _t("DRIFF.YOUR_NAME", "Your name"),
+    sendLink: _t("MAGIC_LINK.SEND_LINK", "Send link"),
+    emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
+    passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED", "Password is required."),
+    invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
+    yourNameRequired: _t("FEEDBACK.YOUR_NAME_REQUIRED", "Your name is required."),
+    firstNameRequired: _t("FEEDBACK.FIRST_NAME_REQUIRED", "First name is required."),
+    lastNameRequired: _t("FEEDBACK.LAST_NAME_REQUIRED", "Last name is required."),
+    companyRequired: _t("FEEDBACK.COMPANY_REQUIRED", "Company name is required."),
+    driffRequired: _t("FEEDBACK.DRIFF_REQUIRED", "Driff is required."),
+    driffTaken: _t("FEEDBACK.DRIFF_TAKEN", "Driff is already taken"),
+    emailNotFound: _t("FEEDBACK.EMAIL_NOT_FOUND", "Email not found."),
+    notAllowedForExternal: _t("FEEDBACK.NOT_ALLOWED_FOR_EXTERNAL", "Not allowed for external users."),
+    thankYou: _t("FEEDBACK.THANK_YOU", "Thank you!"),
+    or: _t("RESET_PASSWORD.OR", "or"),
+    createAccount: _t("LOGIN.CREATE_ACCOUNT", "Create account"),
+    authentication: _t("LOGIN.AUTHENTICATION", "Authentication"),
+    email: _t("LOGIN.EMAIL", "Email"),
+    invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
+    acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
+  };
 
   const handleInputChange = useCallback((e) => {
     e.persist();
@@ -165,6 +215,11 @@ const ExternalRegisterPanel = (props) => {
             middle_name: res.data.user.middle_name,
             company_name: res.data.user.company ? res.data.user.company : "",
           }));
+          setLocale(res.data.user.language, setLanguageLoaded(true));
+          setTimeout(() => {
+            setLanguageLoaded(false);
+          }, 1000);
+          localStorage.setItem("i18n_lang", res.data.user.language);
 
           refs.first_name.current.focus();
         }
