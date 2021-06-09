@@ -8,6 +8,7 @@ import {
   getChatMessages,
   getChatStar,
   postChatMessage,
+  postChatMessageTranslate,
   postChatReaction,
   putChatMessage,
   putChatStar,
@@ -394,7 +395,7 @@ const useChatMessageActions = () => {
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const saveTranslationBody = useCallback(
+  const setTranslationBody = useCallback(
     (payload) => {
       dispatch(setTranslatedBody(payload));
     },
@@ -412,6 +413,18 @@ const useChatMessageActions = () => {
       },
       [dispatch]
     );
+
+     /**
+   * @param {object} payload
+   * @parm number payload.message_id chat.id
+   * @param {function} [callback]
+   */
+  const saveTranslation = useCallback(
+    (payload) => {
+      dispatch(postChatMessageTranslate(payload));
+    },
+    [dispatch]
+  );
   
 
   return {
@@ -433,9 +446,10 @@ const useChatMessageActions = () => {
     getStars,
     setStar,
     setHuddleAnswers,
-    saveTranslationBody,
+    setTranslationBody,
     resetTranslationBody,
-    saveChannelTranslateState
+    saveChannelTranslateState,
+    saveTranslation,
   };
 };
 

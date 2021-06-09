@@ -22,6 +22,7 @@ export {
   deleteChannelMembers,
   getChatMessages,
   postChatMessage,
+  postChatMessageTranslate,
   postChatReminder,
   postChatReaction,
   putChatMessage,

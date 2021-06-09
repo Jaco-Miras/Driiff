@@ -368,7 +368,6 @@ export default function (state = INITIAL_STATE, action) {
             ...r,
             is_read: true,
             channel_id: action.data.channel_id,
-            is_translated: false,
             //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
           };
         }),

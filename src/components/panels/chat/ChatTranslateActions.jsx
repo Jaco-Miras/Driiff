@@ -1,4 +1,4 @@
-import React, { useCallback} from "react";
+import React, { useCallback } from "react";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { useSettings, useToaster, useTranslation } from "../../hooks/";
@@ -32,8 +32,8 @@ const ChatTranslateActions = (props) => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const {
-    generalSettings: { language },
-    chatSettings: { translate }
+    generalSettings: { translated_channels },
+    setGeneralSetting
   } = useSettings();
 
   const { _t, setLocale, uploadTranslationToServer } = useTranslation();
@@ -47,23 +47,22 @@ const ChatTranslateActions = (props) => {
       e.persist();
       const { name, checked, dataset } = e.target;
       toaster.success(<span>{dataset.successMessage}</span>);
-      chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked, hash: Math.random() });
+      chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked });
 
       setChannelTrans({
         ...selectedChannel,
         [name]: checked,
       });
-      /*
-       setTimeout(
-         function() {
-           setChannelTrans({
-             ...selectedChannel,
-             [name]: checked,
-           });
-         }
-         .bind(this),
-         3000
-     );*/
+      const id = selectedChannel.id;
+      if (checked) {
+        setGeneralSetting({
+          translated_channels: [...translated_channels, id],
+        });
+      } else {
+        setGeneralSetting({
+          translated_channels: translated_channels.filter(function (e) { return e !== id }),
+        });
+      }
     },
   );
 
@@ -78,24 +77,27 @@ const ChatTranslateActions = (props) => {
     },
   );
 
-  let is_translate = (selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
+  if (!selectedChannel.is_translate && translated_channels.includes(selectedChannel.id))
+    chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: true });
+
+  let is_translate = translated_channels.includes(selectedChannel.id); //(selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
 
   return (
     <Wrapper>
-       <div className="d-flex">
-         <div className="flex-grow-1 ">
-           <span>{dictionary.chatTranslateTitleExtra}</span>
-         </div>
-      <CustomInput
-        className="cursor-pointer text-muted"
-        type="switch"
-        id="is_translate"
-        checked={is_translate}
-        name="is_translate"
-        onChange={handleTranslateSwitchToggle}
-        data-success-message={`You have turn ${is_translate ? "OFF" : "ON"} translate chat messages!`}
-        label={<span>{dictionary.chatTranslateTitle}</span>}
-      />
+      <div className="d-flex">
+        <div className="flex-grow-1 ">
+          <span>{dictionary.chatTranslateTitleExtra}</span>
+        </div>
+        <CustomInput
+          className="cursor-pointer text-muted"
+          type="switch"
+          id="is_translate"
+          checked={is_translate}
+          name="is_translate"
+          onChange={handleTranslateSwitchToggle}
+          data-success-message={`You have turn ${is_translate ? "OFF" : "ON"} translate chat messages!`}
+          label={<span>{dictionary.chatTranslateTitle}</span>}
+        />
       </div>
     </Wrapper>
   );

@@ -18,7 +18,7 @@ const StyledImageTextLink = styled(ImageTextLink)`
 
 const TranslationHtmlContainer = styled.div`
   cursor: pointer;
-  &:hover > div {
+  &:hover div.OriginalHtml {
     transition: opacity 2s ease-out;
     opacity: 1;
     height: auto;
@@ -449,8 +449,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     // check if the channel is_translate is on and reply is already translated
     let OriginalHtmlRow = (
       <TranslationHtmlContainer
-        className="TranslationHtmlContainer"
-        dangerouslySetInnerHTML={{ __html: reply.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: reply.original_body }}></OriginalHtml>) }}
+        dangerouslySetInnerHTML={{ __html: reply.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: reply.body }}></OriginalHtml>) }}
       ></TranslationHtmlContainer>
     );
     replyBody = renderToString(OriginalHtmlRow);
