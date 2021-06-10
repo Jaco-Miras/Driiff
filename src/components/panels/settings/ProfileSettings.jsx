@@ -1,5 +1,5 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Select from "react-select";
@@ -7,7 +7,7 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation } from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslation,useUserActions } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
@@ -424,11 +424,20 @@ const ProfileSettings = (props) => {
     setLocale(e.value);
     toaster.success(<span>You have successfully updated Language</span>);
   };
-
+  
+  const { processBackendLogout } = useUserActions();
+  
   const handleChatLanguageChange = (e) => {
+    const newChatLang = e.value;
     setGeneralSetting({
-      chat_language: e.value,
+      chat_language: newChatLang,
+      translated_channels: []
     });
+   
+    setTimeout(function(){
+      processBackendLogout();
+   }, 2000);
+   
     toaster.success(<span>You have successfully updated chat target language</span>);
   };
 

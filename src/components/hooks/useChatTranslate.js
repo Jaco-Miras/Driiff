@@ -15,11 +15,11 @@ const useChatTranslate = (props) => {
           let text = result.translations[0].text;
           actions.setTranslationBody({ ...message, translated_body: text, is_translated: translate });
           actions.saveTranslation({ message_id: message.id, body: text, language: chat_language });
-          console.log('translated');
+          
         }
       });
     }
 
-  }, [chat_language]);
+  }, [translate]);
 };
 export default useChatTranslate;
