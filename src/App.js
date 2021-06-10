@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation, useHistory } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
 import { useDriff, useSettings, useTranslation } from "./components/hooks";
@@ -16,6 +16,7 @@ import { setProfileSlider } from "./redux/actions/globalActions";
 
 import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -56,6 +57,7 @@ function App() {
   const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
   const location = useLocation();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { profileSlider: userProfile } = useSelector((state) => state.users);
 
   const session = useSelector((state) => state.session);
@@ -87,6 +89,12 @@ function App() {
   // }, [session]);
 
   useEffect(() => {
+    if (location.pathname === "/force-logout") {
+      sessionService.deleteSession().then(() => {
+        sessionService.deleteUser();
+        history.push("/login");
+      });
+    }
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
       driffActions.checkUpdateVersion();
     }
@@ -98,7 +106,6 @@ function App() {
 
     handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
