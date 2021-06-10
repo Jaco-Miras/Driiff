@@ -8,6 +8,7 @@ import { replaceChar } from "../../../../helpers/stringFormatter";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { postResendInvite } from "../../../../redux/actions/workspaceActions";
 import { useToaster } from "../../../hooks";
+import { copyTextToClipboard } from "../../../../helpers/commonFunctions";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -152,6 +153,10 @@ const TeamListItem = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const handleCopyInviteLink = () => {
+    copyTextToClipboard(toaster, member.invite_link);
+  };
+
   const roleDisplay = () => {
     switch (member.workspace_role) {
       case "ADVISOR": {
@@ -273,6 +278,7 @@ const TeamListItem = (props) => {
           {member.id === loggedUser.id && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.leave}</div>}
           {member.id !== loggedUser.id && loggedUser.type === "internal" && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>}
           {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
+          {!member.has_accepted && member.active === 0 && member.type === "external" && member.invite_link && <div onClick={handleCopyInviteLink}>{dictionary.sendInviteManually}</div>}
         </MoreOptions>
       )}
     </Wrapper>

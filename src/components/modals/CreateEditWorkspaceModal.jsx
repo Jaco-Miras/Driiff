@@ -18,6 +18,7 @@ import { getExternalUsers } from "../../redux/actions/userAction";
 import { debounce } from "lodash";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
+import { copyTextToClipboard } from "../../helpers/commonFunctions";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -287,7 +288,7 @@ const CreateEditWorkspaceModal = (props) => {
     last_name: "",
     company: "",
     language: "en",
-    signup_link: "driff",
+    send_by_email: true,
   });
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
@@ -464,7 +465,7 @@ const CreateEditWorkspaceModal = (props) => {
         last_name: "",
         company: "",
         language: "en",
-        signup_link: "driff",
+        send_by_email: true,
       });
     }
     if (e === null) {
@@ -897,6 +898,15 @@ const CreateEditWorkspaceModal = (props) => {
                 is_shared: form.has_externals,
               };
 
+              const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
+              if (sendByMyselfEmail) {
+                const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
+                if (member && member.invite_link) {
+                  //copy to clipboard invite link
+                  copyTextToClipboard(toaster, member.invite_link);
+                }
+              }
+
               dispatch(setActiveTopic(newWorkspace));
               if (form.icon) {
                 handleUpdateWorkspaceIcon(newWorkspace, form.icon);
@@ -1037,9 +1047,9 @@ const CreateEditWorkspaceModal = (props) => {
     setShowIconDropzone(false);
   };
 
-  const handleShowIconDropzone = () => {
-    setShowIconDropzone(true);
-  };
+  // const handleShowIconDropzone = () => {
+  //   setShowIconDropzone(true);
+  // };
 
   const dropAction = (acceptedFiles) => {
     let selectedFiles = [];
@@ -1370,7 +1380,7 @@ const CreateEditWorkspaceModal = (props) => {
     } else {
       setInvitedExternals([...invitedExternals, invitedExternal]);
     }
-    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", signup_link: "driff" });
+    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
   };
 
   const handleExternalFieldChange = (e) => {
@@ -1395,7 +1405,7 @@ const CreateEditWorkspaceModal = (props) => {
   const handleSetSignupLink = (e, type) => {
     setInvitedExternal({
       ...invitedExternal,
-      signup_link: type,
+      send_by_email: type === "myself" ? false : true,
     });
   };
 
@@ -1420,7 +1430,7 @@ const CreateEditWorkspaceModal = (props) => {
                 onClick={(e) => {
                   handleSetSignupLink(e, "myself");
                 }}
-                checked={invitedExternal.signup_link === "myself"}
+                checked={!invitedExternal.send_by_email}
                 value={"myself"}
                 name={"myself"}
               >
@@ -1431,7 +1441,7 @@ const CreateEditWorkspaceModal = (props) => {
                 onClick={(e) => {
                   handleSetSignupLink(e, "driff");
                 }}
-                checked={invitedExternal.signup_link === "driff"}
+                checked={invitedExternal.send_by_email}
                 value={"driff"}
                 name={"driff"}
               >
