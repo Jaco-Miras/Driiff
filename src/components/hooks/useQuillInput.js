@@ -8,7 +8,7 @@ const useQuillInput = (callback, quillRef) => {
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const savedCallback = useRef(callback);
   const previousChannel = usePreviousValue(selectedChannel);
-  const channelFiles = useSelector((state) => state.files.channelFiles);
+  //const channelFiles = useSelector((state) => state.files.channelFiles);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -49,9 +49,9 @@ const useQuillInput = (callback, quillRef) => {
         //handleGetChannelFiles();
       }
     }
-    if (!previousChannel && selectedChannel !== null) {
-      //handleGetChannelFiles();
-    }
+    // if (!previousChannel && selectedChannel !== null) {
+    //   //handleGetChannelFiles();
+    // }
   }, [selectedChannel, previousChannel]);
 };
 

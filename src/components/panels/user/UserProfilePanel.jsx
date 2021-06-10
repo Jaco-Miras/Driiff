@@ -439,9 +439,8 @@ const UserProfilePanel = (props) => {
   const handleAvatarClick = () => {
     if (!editInformation) {
       setEditInformation(true);
+      refs.dropZoneRef.current.open();
     }
-
-    refs.dropZoneRef.current.open();
   };
 
   const handleShowDropZone = useCallback(() => {
@@ -573,11 +572,11 @@ const UserProfilePanel = (props) => {
                   Some fields cannot be edited.
                 </ImportWarning>
               )}*/}
-              <div className="avatar-container" onClick={handleAvatarClick}>
+              <div className="avatar-container">
                 {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
                 {(isLoggedUser || isAdmin) && (
                   <span className="btn btn-outline-light btn-sm">
-                    <SvgIconFeather icon="pencil" />
+                    <SvgIconFeather icon="pencil" onClick={handleAvatarClick} />
                   </span>
                 )}
               </div>
