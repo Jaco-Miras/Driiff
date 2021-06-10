@@ -357,6 +357,14 @@ const CreateEditWorkspaceModal = (props) => {
       email: invitedExternal.email,
     }),
     newExternalUser: _t("WORKSPACE.NEW_EXTERNAL_USER", "New external user"),
+    firstName: _t("REGISTER.FIRST_NAME", "First name"),
+    middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
+    lastName: _t("REGISTER.LAST_NAME", "Last name"),
+    companyName: _t("DRIFF.COMPANY_NAME", "Company name"),
+    languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
+    save: _t("POST.SAVE", "Save"),
+    sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
+    sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Send the signup link through Driff"),
   };
 
   const _validateName = useCallback(() => {
@@ -1416,7 +1424,7 @@ const CreateEditWorkspaceModal = (props) => {
                 value={"myself"}
                 name={"myself"}
               >
-                Send the signup link myself
+                {dictionary.sendMyself}
               </RadioInput>
               <RadioInput
                 readOnly
@@ -1427,27 +1435,27 @@ const CreateEditWorkspaceModal = (props) => {
                 value={"driff"}
                 name={"driff"}
               >
-                Send the signup link through Driff
+                {dictionary.sendTruDriff}
               </RadioInput>
             </div>
 
-            <Label className={"modal-label"}>First name</Label>
+            <Label className={"modal-label"}>{dictionary.firstName}</Label>
             <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus />
-            <Label className={"modal-label"}>Middle name</Label>
+            <Label className={"modal-label"}>{dictionary.middleName}</Label>
             <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>Last name</Label>
+            <Label className={"modal-label"}>{dictionary.lastName}</Label>
             <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>Company name</Label>
+            <Label className={"modal-label"}>{dictionary.companyName}</Label>
             <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>Language</Label>
+            <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
             <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
           </ModalBody>
           <ModalFooter>
             <Button className="btn-outline-secondary" onClick={toggleNested}>
-              Cancel
+              {dictionary.cancel}
             </Button>
             <Button color="primary" onClick={handleSaveExternalFields}>
-              Save
+              {dictionary.save}
             </Button>
           </ModalFooter>
         </Modal>
