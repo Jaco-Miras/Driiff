@@ -244,7 +244,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
           if (rm.length !== 0) {
             newBody = (
               <>
-                {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
+                {newBody} {dictionary.andRemoved} <b>{rm.map((m) => m.name).join(", ")}</b>
                 <br />
               </>
             );
@@ -283,7 +283,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
           if (rm.length !== 0) {
             newBody = (
               <>
-                {newBody} <b>{rm.join(", ")}</b>
+                {newBody} <b>{rm.map((m) => m.name).join(", ")}</b>
                 <br />
               </>
             );

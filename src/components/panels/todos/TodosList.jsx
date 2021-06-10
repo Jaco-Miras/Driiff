@@ -4,7 +4,7 @@ import { Avatar, ToolTip } from "../../common";
 import { TodoCheckBox } from "../../forms";
 //import quillHelper from "../../../helpers/quillHelper";
 import { setViewFiles } from "../../../redux/actions/fileActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 
 const Icon = styled(SvgIconFeather)`
@@ -38,6 +38,16 @@ const ItemList = styled.li`
       border-color: rgba(155, 155, 155, 0.1);
     }
   }
+  .avatars-container {
+    display: flex;
+    align-items: center;
+    min-width: 105px;
+    justify-content: flex-end;
+  }
+  .workspace-label {
+    text-align: right;
+    cursor: pointer;
+  }
   .todo-title {
     text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
     cursor: pointer;
@@ -67,6 +77,9 @@ const ItemList = styled.li`
   .todo-title-description {
     cursor: pointer;
   }
+  .todo-title-description i {
+    margin-right: 5px;
+  }
   @media all and (max-width: 480px) {
     .reminder-content {
       flex-wrap: wrap;
@@ -74,7 +87,8 @@ const ItemList = styled.li`
   }
 `;
 
-const ReminderDescription = styled.span`
+const ReminderDescription = styled.div`
+  max-height: 50px;
   > * {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -82,10 +96,21 @@ const ReminderDescription = styled.span`
   }
 `;
 
+const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const LabelWrapper = styled.div`
+  min-width: 142px;
+  text-align: right;
+`;
+
 const TodosList = (props) => {
-  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge } = props;
+  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
@@ -95,7 +120,12 @@ const TodosList = (props) => {
     e.preventDefault();
     e.stopPropagation();
     const payload = {
-      files: files,
+      files: files.map((f) => {
+        return {
+          ...f,
+          filename: f.name,
+        };
+      }),
       file_id: file.file_id,
     };
     dispatch(setViewFiles(payload));
@@ -159,11 +189,13 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
+  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null);
+
   return (
     <>
       <ItemList className="reminder-list" isDone={isDone}>
         {todo.workspace && showWsBadge && (
-          <div className="text-truncate false mt-2">
+          <div className="text-truncate false mt-2 workspace-label" onClick={(e) => handleRedirectToWorkspace(e, todo)}>
             <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
           </div>
         )}
@@ -176,45 +208,54 @@ const TodosList = (props) => {
           <span className="align-items-center todo-title-description text-truncate mr-3" onClick={handleTitleClick}>
             <span className={`todo-title ${getTextColorClass(todo)}`}>{todo.title}</span>
             {todo.description && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {todo.files.map((file) => {
+              return (
+                <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
+                  {getFileIcon(file.mime_type)}
+                </span>
+              );
+            })}
           </span>
+
           <HoverButtons className="hover-btns ml-1">
             <Icon icon="pencil" onClick={handleEdit} />
             <Icon icon="trash" onClick={handleRemove} />
           </HoverButtons>
+
           <div className="d-flex align-items-center ml-auto">
-            <Icon icon="calendar" />
-            <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
-              <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
-                {todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}
-              </span>
-            </ToolTip>
-            {todo.link_type !== null && (
-              <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
-                {getTodoType(todo)}
-              </span>
-            )}
-            {todo.author !== null && (
-              <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
-            )}
-            {todo.assigned_to && (
-              <>
-                <Icon icon="chevron-right" />
-                <Avatar
-                  name={todo.assigned_to.id === todo.author.id && todo.workspace ? todo.workspace.name : todo.assigned_to.name}
-                  tooltipName={dictionary.reminderAssignedTo}
-                  imageLink={
-                    todo.assigned_to.id === todo.author.id && todo.workspace
-                      ? todo.workspace.channel.icon_link
-                      : todo.assigned_to.profile_image_thumbnail_link
-                      ? todo.assigned_to.profile_image_thumbnail_link
-                      : todo.assigned_to.profile_image_link
-                  }
-                  id={todo.assigned_to.id === todo.author.id && todo.workspace ? todo.workspace.id : todo.assigned_to.id}
-                  type={todo.workspace ? "TOPIC" : "USER"}
-                  noDefaultClick={todo.workspace ? true : false}
-                />
-              </>
-            )}
+            <DateWrapper>
+              <Icon icon="calendar" />
+              <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
+                <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
+                  {todo.remind_at ? todoFormatShortCode(todo.remind_at.timestamp, "MM/DD/YYYY") : dictionary.addDate}
+                </span>
+              </ToolTip>
+            </DateWrapper>
+            <LabelWrapper>
+              {todo.link_type !== null && (
+                <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
+                  {getTodoType(todo)}
+                </span>
+              )}
+            </LabelWrapper>
+            <div className="avatars-container">
+              {todo.author !== null && (
+                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+              )}
+              {showAssignedTo && (
+                <>
+                  <Icon icon="chevron-right" />
+                  <Avatar
+                    name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
+                    tooltipName={dictionary.reminderAssignedTo}
+                    imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace ? todo.workspace.channel.icon_link : null}
+                    id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
+                    type={todo.assigned_to ? "USER" : "TOPIC"}
+                    noDefaultClick={todo.assigned_to ? false : true}
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </ItemList>

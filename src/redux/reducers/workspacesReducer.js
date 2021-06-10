@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   workspaces: {},
   activeTopic: null,
   activeTab: "intern",
+  favoriteWorkspacesLoaded: false,
   workspacesLoaded: false,
   externalWorkspacesLoaded: false,
   workspacePosts: {},
@@ -23,13 +24,14 @@ const INITIAL_STATE = {
   search: {
     results: [],
     searching: false,
-    filterBy: "member",
+    filterBy: "all",
     value: "",
     page: 1,
     maxPage: 1,
     count: 0,
     hasMore: false,
     counters: {
+      all: 0,
       new: 0,
       nonMember: 0,
       external: 0,
@@ -86,35 +88,70 @@ export default (state = INITIAL_STATE, action) => {
         user: action.data,
       };
     }
-    case "INCOMING_UPDATED_USER": {
-      let workspaces = { ...state.workspaces };
-      let activeTopic = { ...state.activeTopic };
 
-      const index = activeTopic.members.map((m) => m.id).indexOf(action.data.id);
-      if (index !== -1) {
-        Object.keys(activeTopic.members[index]).forEach((attr) => {
-          const value = action.data[attr];
-          if (activeTopic.members[index].hasOwnProperty(attr)) {
-            activeTopic.members[index][attr] = value;
+    case "INCOMING_UPDATED_USER": {
+      let activeTopic = state.activeTopic;
+
+      if (activeTopic && activeTopic.members.some((m) => m.id === action.data.id)) {
+        const updatedMembers = activeTopic.members.map((m) => {
+          if (m.id === action.data.id) {
+            return {
+              ...m,
+              active: action.data.active ? action.data.active : m.active,
+              email: action.data.email ? action.data.email : m.email,
+              name: action.data.name ? action.data.name : m.name,
+              profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+              profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+              type: action.data.type ? action.data.type : m.type,
+              designation: action.data.designation ? action.data.designation : m.designation,
+              contact: action.data.contact ? action.data.contact : m.contact,
+              external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+            };
+          } else {
+            return m;
           }
         });
+        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        activeTopic = {
+          ...activeTopic,
+          is_shared: action.data.type === "external" ? true : isStillExternal,
+          members: updatedMembers,
+        };
       }
 
-      Object.values(workspaces).forEach((ws) => {
-        const index = workspaces[ws.id].members.map((m) => m.id).indexOf(action.data.id);
-        if (index !== -1) {
-          Object.keys(workspaces[ws.id].members[index]).forEach((attr) => {
-            const value = action.data[attr];
-            if (workspaces[ws.id].members[index].hasOwnProperty(attr)) {
-              workspaces[ws.id].members[index][attr] = value;
-            }
-          });
-        }
-      });
       return {
         ...state,
         flipper: !state.flipper,
-        workspaces: workspaces,
+        workspaces: Object.values(state.workspaces).reduce((res, ws) => {
+          const wsMembers = ws.members.some((m) => m.id === action.data.id)
+            ? ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return {
+                    ...m,
+                    active: action.data.active ? action.data.active : m.active,
+                    email: action.data.email ? action.data.email : m.email,
+                    name: action.data.name ? action.data.name : m.name,
+                    profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+                    profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+                    type: action.data.type ? action.data.type : m.type,
+                    designation: action.data.designation ? action.data.designation : m.designation,
+                    contact: action.data.contact ? action.data.contact : m.contact,
+                    external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+                  };
+                } else {
+                  return m;
+                }
+              })
+            : ws.members;
+          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
+          res[ws.id] = {
+            ...ws,
+            members: wsMembers,
+            is_shared: action.data.type === "external" ? true : isStillExternal,
+          };
+          return res;
+        }, {}),
+        activeTopic: activeTopic,
       };
     }
     case "GET_WORKSPACES_SUCCESS": {
@@ -176,6 +213,57 @@ export default (state = INITIAL_STATE, action) => {
           updatedWorkspaces[state.activeChannel.entity_id].channel.id === state.activeChannel.id
             ? { code: updatedWorkspaces[state.activeChannel.entity_id].team_channel.code, id: updatedWorkspaces[state.activeChannel.entity_id].team_channel.id }
             : null,
+      };
+    }
+    case "GET_FAVORITE_WORKSPACES_SUCCESS": {
+      let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
+      action.data.workspaces.forEach((ws) => {
+        if (ws.type === "FOLDER") {
+          if (updatedFolders.hasOwnProperty(ws.id)) {
+            updatedFolders[ws.id].workspace_ids = [...updatedFolders[ws.id].workspace_ids, ...ws.topics.map((t) => t.id)];
+          } else {
+            updatedFolders[ws.id] = {
+              ...ws,
+              workspace_ids: ws.topics.map((t) => t.id),
+            };
+          }
+          ws.topics.forEach((t) => {
+            updatedWorkspaces[t.id] = {
+              ...t,
+              channel: { ...t.channel, loaded: false },
+              is_lock: t.private,
+              folder_id: ws.id,
+              folder_name: ws.name,
+              team_channel: t.team_channel,
+              is_favourite: t.is_favourite,
+              type: "WORKSPACE",
+            };
+          });
+          delete updatedFolders[ws.id].topics;
+        } else if (ws.type === "WORKSPACE") {
+          updatedWorkspaces[ws.id] = {
+            ...ws,
+            is_favourite: ws.topic_detail.is_favourite,
+            is_shared: ws.topic_detail.is_shared,
+            active: ws.topic_detail.active,
+            channel: { ...ws.topic_detail.channel, loaded: false },
+            unread_chats: ws.topic_detail.unread_chats,
+            unread_posts: ws.topic_detail.unread_posts,
+            folder_id: null,
+            folder_name: null,
+            team_channel: ws.topic_detail.team_channel,
+            team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+          };
+          delete updatedWorkspaces[ws.id].topic_detail;
+        }
+      });
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        folders: updatedFolders,
+        favoriteWorkspacesLoaded: true,
       };
     }
     case "GET_WORKSPACE_SUCCESS": {

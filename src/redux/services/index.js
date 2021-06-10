@@ -75,6 +75,7 @@ export {
   getExternalUsers,
   getArchivedUsers,
   unarchiveUser,
+  updateUserType,
 } from "./user";
 
 export {
@@ -229,6 +230,7 @@ export {
   fetchPrimaryFiles,
   fetchMembers,
   fetchTimeline,
+  getFavoriteWorkspaces,
   getFavoriteWorkspaceCounters,
   getWorkspaceFilterCount,
   getPostStatusCount,

@@ -15,6 +15,7 @@ import {
   fetchTimeline,
   getWorkspace,
   getWorkspaces,
+  getFavoriteWorkspaces,
   postWorkspaceRole,
   setActiveTopic,
   updateWorkspaceTimelinePage,
@@ -120,9 +121,10 @@ const useWorkspaceActions = () => {
     (payload, callback) => {
       dispatch(
         getChannel(payload, (err, res) => {
+          callback(err, res);
           if (err) {
-            callback();
             toaster.error(dictionary.errorFetchingChannel);
+            return;
           }
           if (res.data) {
             let channel = {
@@ -134,7 +136,7 @@ const useWorkspaceActions = () => {
               isFetching: false,
             };
             dispatch(addToChannels(channel));
-            selectChannel(channel, () => callback());
+            selectChannel(channel);
           }
         })
       );
@@ -246,12 +248,17 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
+  const fetchFavoriteWorkspaces = (payload, callback) => {
+    dispatch(getFavoriteWorkspaces(payload, callback));
+  };
+
   return {
     addPrimaryFilesToWorkspace,
     addRole,
     deleteRole,
     clearChannel,
     fetchChannel,
+    fetchFavoriteWorkspaces,
     fetchWorkspaceChannels,
     fetchWorkspace,
     fetchWorkspaces,

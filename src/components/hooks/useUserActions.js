@@ -25,8 +25,9 @@ import {
   userLogin,
   userLogout,
   unarchiveUser,
+  updateUserType,
 } from "../../redux/actions/userAction";
-import { useDriffActions, useSettings, useToaster } from "./index";
+import { useDriffActions, useSettings, useToaster, useTranslation } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
@@ -61,6 +62,8 @@ const useUserActions = () => {
     setGeneralSetting,
     setReadAnnouncement,
   } = useSettings();
+
+  const { _t } = useTranslation();
 
   //const { getUserFilter } = useSelector((state) => state.users);
   const getUserFilter = useSelector((state) => state.users.getUserFilter);
@@ -514,6 +517,15 @@ const useUserActions = () => {
     dispatch(getArchivedUsers());
   }, []);
 
+  const updateType = (user, type) => {
+    dispatch(
+      updateUserType({ id: user.id, type: type }, (err, res) => {
+        if (err) return;
+        toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: type })}`);
+      })
+    );
+  };
+
   return {
     checkCredentials,
     login,
@@ -546,6 +558,7 @@ const useUserActions = () => {
     activate,
     deactivate,
     fetchArchivedUsers,
+    updateType,
   };
 };
 

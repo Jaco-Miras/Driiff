@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-//import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div``;
 
@@ -33,30 +32,6 @@ const Filter = styled.span`
     }
   }
 `;
-
-// const Badge = styled.span`
-//   .badge {
-//     position: absolute;
-//     width: 6px;
-//     height: 6px;
-//     padding: 0;
-//     background: #28a745;
-//     z-index: 9;
-//   }
-// `;
-// const Icon = styled(SvgIconFeather)`
-//   width: 15px;
-// `;
-
-// const StyledIcon = styled(SvgIconFeather)`
-//   width: 1em;
-//   vertical-align: bottom;
-//   margin-right: 40px;
-
-//   &:hover {
-//     color: #000000;
-//   }
-// `;
 
 const TodosSidebar = (props) => {
   const { className = "", dictionary, todoActions, setFilter, filter, count } = props;
@@ -94,6 +69,20 @@ const TodosSidebar = (props) => {
                 {dictionary.statusUpcoming}
               </span>
               {count && count.new > 0 && <span className="small ml-auto">{count.new}</span>}
+            </Filter>
+            <Filter onClick={setFilter} data-filter="ASSIGNED_TO_OTHERS" active={filter === "ASSIGNED_TO_OTHERS"} className={"list-group-item d-flex align-items-center"}>
+              <span data-filter="ASSIGNED_TO_OTHERS">
+                <span className="text-info fa fa-circle mr-2" />
+                {dictionary.addedByMe}
+              </span>
+              {count && count.assigned_to_others > 0 && <span className="small ml-auto">{count.assigned_to_others}</span>}
+            </Filter>
+            <Filter onClick={setFilter} data-filter="ADDED_BY_OTHERS" active={filter === "ADDED_BY_OTHERS"} className={"list-group-item d-flex align-items-center"}>
+              <span data-filter="ADDED_BY_OTHERS">
+                <span className="text-info fa fa-circle mr-2" />
+                {dictionary.addedByOthers}
+              </span>
+              {count && count.added_by_others > 0 && <span className="small ml-auto">{count.added_by_others}</span>}
             </Filter>
           </div>
         </div>

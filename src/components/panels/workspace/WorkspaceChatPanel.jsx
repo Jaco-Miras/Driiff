@@ -60,9 +60,8 @@ const WorkspaceChatPanel = (props) => {
             </button>
           </EmptyState>
         )}
-        {(route.path.startsWith("/workspace/chat") || (workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.team)) && (
-          <ChatContentPanel className={"col-lg-12"} isWorkspace={true} selectedChannel={selectedChannel} />
-        )}
+        {((route.path.startsWith("/workspace/chat") && selectedChannel && selectedChannel.id === workspace.channel.id) ||
+          (workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.team)) && <ChatContentPanel className={"col-lg-12"} isWorkspace={true} selectedChannel={selectedChannel} />}
       </Chatblock>
     </Wrapper>
   );

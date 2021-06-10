@@ -9,9 +9,9 @@ const useWorkspaceReminders = () => {
 
   const params = useParams();
   const { user: loggedUser } = useSelector((state) => state.session);
+  const users = useSelector((state) => state.users.users);
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
-  const users = useSelector((state) => state.users.users);
 
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
@@ -62,6 +62,8 @@ const useWorkspaceReminders = () => {
     today: 0,
     all: 0,
     overdue: 0,
+    assigned_to_others: 0,
+    added_by_others: 0,
   };
 
   const getWorkspaceReminders = ({ filter = "" }) => {
@@ -90,6 +92,8 @@ const useWorkspaceReminders = () => {
               }
             }
             if (filter.status !== "") {
+              if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to && t.assigned_to.id !== loggedUser.id && t.user === loggedUser.id;
+              if (filter.status === "ADDED_BY_OTHERS") return t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id;
               if (t.status === filter.status) return true;
               if (t.status === "DONE") {
                 if (filter.status === "TODAY" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) return true;
@@ -98,6 +102,8 @@ const useWorkspaceReminders = () => {
                 if (filter.status === "NEW" && t.remind_at === null) return true;
               }
               return false;
+            } else {
+              return !t.assigned_to_others;
             }
           }
           return true;
