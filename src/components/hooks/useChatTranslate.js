@@ -1,72 +1,24 @@
-import React, { useEffect } from "react";
-import { renderToString } from "react-dom/server";
-import styled from "styled-components";
-
-const TranslationHtmlContainer = styled.div`
-  cursor: pointer;
-  &:hover > div {
-    transition: opacity 2s ease-out;
-    opacity: 1;
-    height: auto;
-  }
-`;
-
-const OriginalHtml = styled.div`
-  font-size: small;
-  padding-left: 0.5em;
-  border-left: gray 2px solid;
-  transition: opacity 2s ease-in;
-  opacity: 0;
-  height: 0;
-  overflow: hidden;
-`;
-
-const OriginalHtmlShow = styled.div``;
-
-const TranslatedHtml = styled.div``;
-
+import { useEffect } from "react";
 const useChatTranslate = (props) => {
-  const { message, isAuthor, translate, language, actions } = props;
-
-  //const [trans, transSet] = useState("");
+  const { message, isAuthor, translate, chat_language, actions } = props;
+  function fetchTrans(message) {
+    return fetch("https://api.deepl.com/v2/translate?auth_key=4fb7583d-a163-7abb-8e71-c882d1fd9408&text=" + message.body + "&target_lang=" + chat_language)
+      .then((res) => res.json())
+      .then((data) => { return data; })
+      .catch(console.log);
+  };
   useEffect(() => {
-    const fetchTrans = (message) => {
-      fetch("https://api.deepl.com/v2/translate?auth_key=4fb7583d-a163-7abb-8e71-c882d1fd9408&text=" + message.body + "&target_lang=" + language)
-        .then((res) => res.json())
-        .then((data) => {
-          let OriginalHtmlRow = (
-            <TranslationHtmlContainer
-              className="TranslationHtmlContainer"
-              dangerouslySetInnerHTML={{ __html: data.translations[0].text + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: message.body }}></OriginalHtml>) }}
-            ></TranslationHtmlContainer>
-          );
-          //transSet(renderToString(OriginalHtmlRow));
-          // update the body in the reducer, no need to return the translated body or set the translated body to state
-          // will also update the last reply body so useChatTranslatePreview is not need
-          actions.saveTranslationBody({ ...message, translated_body: data.translations[0].text, original_body: message.body, is_translated: translate });
-        })
-        .catch(console.log);
-    };
-
-    //check if message has translated_body value, if translated_body is undefined or null then trigger deepl api
-    if (!isAuthor && message.user && message.user.language !== language && translate && !message.translated_body) fetchTrans(message);
-    //else clause possible not needed anymore
-    else {
-      if (message.original_body && !translate) actions.saveTranslationBody({ ...message, is_translated: translate });
-      else if (message.original_body) {
-        let OriginalHtmlRow = (
-          <TranslationHtmlContainer
-            className="TranslationHtmlContainer"
-            dangerouslySetInnerHTML={{ __html: message.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: message.original_body }}></OriginalHtml>) }}
-          ></TranslationHtmlContainer>
-        );
-        actions.saveTranslationBody({ ...message, is_translated: translate });
-      }
-      //transSet(message);
-      //return message.body;
+    //&& message.translated_language !== chat_language
+    if (!isAuthor && message.user.chat_language !== chat_language && translate && !message.is_translated && message.translated_language !== chat_language) {
+      fetchTrans(message).then(function (result) {
+        if (typeof result !== "undefined") {
+          let text = result.translations[0].text;
+          actions.setTranslationBody({ ...message, translated_body: text, is_translated: translate, translated_language: chat_language });
+          actions.saveTranslation({ message_id: message.id, body: text, language: chat_language });
+        }
+      });
     }
-    //pass translate dependency to trigger evertime the channel is_translate value changes
+
   }, [translate]);
-  //return trans;
 };
 export default useChatTranslate;

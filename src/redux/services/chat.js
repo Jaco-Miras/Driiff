@@ -88,6 +88,15 @@ export function getChatMessages(payload) {
   });
 }
 
+export function postChatMessageTranslate(payload) {
+  let url = "/v2/post-channel-messages-translate";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload
+  });
+}
+
 export function postChatMessage(payload) {
   let url = "/v2/post-channel-messages";
   return apiCall({

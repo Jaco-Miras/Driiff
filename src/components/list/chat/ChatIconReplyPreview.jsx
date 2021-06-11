@@ -81,7 +81,7 @@ const ReplyPreview = (props) => {
       lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
 
-      let lastReplyBodyHtml = (channel.is_translate)?channel.last_reply.translated_body:channel.last_reply.body;
+      let lastReplyBodyHtml = (channel.is_translate && channel.last_reply.translated_body) ? channel.last_reply.translated_body : channel.last_reply.body;
 
       var div = document.createElement('div');
       div.innerHTML = lastReplyBodyHtml;
@@ -132,7 +132,7 @@ const ReplyPreview = (props) => {
         }
         previewText = renderToString(<LastReplyName className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
-        previewText = renderToString(<LastReplyName className="last-reply-name">{(channel.last_reply.user.first_name)??channel.last_reply.user.name}:</LastReplyName>) + " " + previewText;
+        previewText = renderToString(<LastReplyName className="last-reply-name">{(channel.last_reply.user.first_name) ?? channel.last_reply.user.name}:</LastReplyName>) + " " + previewText;
       }
 
       previewText = previewText.replace("NEW_ACCOUNT_ACTIVATED", "New account activated");

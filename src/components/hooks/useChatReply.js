@@ -5,7 +5,7 @@ import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
 
-const StyledImageTextLink = styled(ImageTextLink)` 
+const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
   svg,
   polyline,
@@ -17,7 +17,7 @@ const StyledImageTextLink = styled(ImageTextLink)`
 
 const TranslationHtmlContainer = styled.div`
   cursor: pointer;
-  &:hover > div {
+  &:hover div.OriginalHtml {
     transition: opacity 2s ease-out;
     opacity: 1;
     height: auto;
@@ -34,7 +34,7 @@ const OriginalHtml = styled.div`
   overflow: hidden;
 `;
 
-const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language, _t }) => {
+const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, translated_channels, language, _t }) => {
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
     if (message.startsWith("<div>I started a Google meet: ")) {
@@ -334,7 +334,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -454,13 +454,11 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
-
-  if (selectedChannel.is_translate && reply.is_translated) {
+  if (selectedChannel.is_translate && reply.is_translated && translated_channels.length > 0 && translated_channels.includes(selectedChannel.id)) {
     // check if the channel is_translate is on and reply is already translated
     let OriginalHtmlRow = (
       <TranslationHtmlContainer
-        className="TranslationHtmlContainer"
-        dangerouslySetInnerHTML={{ __html: reply.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: reply.original_body }}></OriginalHtml>) }}
+        dangerouslySetInnerHTML={{ __html: reply.translated_body + renderToString(<OriginalHtml className="OriginalHtml" dangerouslySetInnerHTML={{ __html: reply.body }}></OriginalHtml>) }}
       ></TranslationHtmlContainer>
     );
     replyBody = renderToString(OriginalHtmlRow);

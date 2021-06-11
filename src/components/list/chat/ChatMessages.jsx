@@ -944,6 +944,8 @@ class ChatMessages extends React.PureComponent {
                                       translate={this.props.translate}
                                       language={this.props.language}
                                       _t={this.props._t}
+                                      translated_channels={this.props.translated_channels}
+                                      chat_language={this.props.chat_language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}

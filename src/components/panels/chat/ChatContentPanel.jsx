@@ -35,8 +35,7 @@ const ChatContentPanel = (props) => {
 
   //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
-  const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
 
@@ -217,11 +216,13 @@ const ChatContentPanel = (props) => {
             unreadCount={unreadCount}
             teamChannelId={teamChannelId}
             isIdle={isIdle}
-            translate={translate}
-            language={language}
+            // translate={translate}
+            // language={language}
             _t={_t}
+            translated_channels={translated_channels}
+            chat_language={chat_language}
           />
-          <ChatTranslateActions selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} />
+          <ChatTranslateActions selectedChannel={selectedChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />
         </>
       ) : (
         <ChatMessagesPlaceholder />

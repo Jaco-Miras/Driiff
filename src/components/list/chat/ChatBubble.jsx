@@ -502,6 +502,8 @@ const ChatBubble = (props) => {
     isLastChatVisible,
     dictionary,
     users,
+    translated_channels,
+    chat_language,
     translate,
     language,
     _t,
@@ -513,7 +515,7 @@ const ChatBubble = (props) => {
   //useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, language, actions: chatMessageActions,});
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
-  useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
+  useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
@@ -526,6 +528,8 @@ const ChatBubble = (props) => {
     translate,
     language,
     _t,
+    translated_channels,
+    chat_language,
   });
 
   const hasFiles = reply.files.length > 0;
@@ -547,7 +551,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -556,7 +560,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

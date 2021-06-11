@@ -24,6 +24,7 @@ import {
   getWorkspaceChannels as getWorkspaceChannelsService,
   postChannelMembers as postChannelMembersService,
   postChatMessage as postChatMessageService,
+  postChatMessageTranslate as postChatMessageTranslateService,
   postChatReaction as postChatReactionService,
   postChatReminder as postChatReminderService,
   postCreateChannel as postCreateChannelService,
@@ -102,6 +103,10 @@ export function addChatMessage(payload, callback) {
 
 export function postChatMessage(payload, callback) {
   return dispatchActionToReducer(postChatMessageService(payload), "CREATE_CHAT_MESSAGE_START", "CREATE_CHAT_MESSAGE_SUCCESS", "CREATE_CHAT_MESSAGE_FAILURE", callback);
+}
+
+export function postChatMessageTranslate(payload, callback) {
+  return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }
 
 export function putChatMessage(payload, callback) {
