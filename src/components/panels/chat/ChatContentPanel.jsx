@@ -25,11 +25,6 @@ const ChatMessagesPlaceholder = styled.div`
 `;
 
 const ChatContentPanel = (props) => {
-
-  if (localStorage.getItem("chat_translate_change") !== null) {
-    localStorage.removeItem("chat_translate_change");
-    window.location.reload();
-  }
   const { className = "", isWorkspace = false } = props;
 
   const { isIdle } = useIdleTimer({ timeout: 1000 * 60 });
@@ -40,8 +35,7 @@ const ChatContentPanel = (props) => {
 
   //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
-  const { chat_language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
 
@@ -203,10 +197,10 @@ const ChatContentPanel = (props) => {
             unreadCount={unreadCount}
             teamChannelId={teamChannelId}
             isIdle={isIdle}
-            translate={translate}
+            translated_channels={translated_channels}
             chat_language={chat_language}
           />
-          <ChatTranslateActions selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} />
+          <ChatTranslateActions selectedChannel={selectedChannel}  translated_channels={translated_channels} chatMessageActions={chatMessageActions} />
         </>
       ) : (
         <ChatMessagesPlaceholder />

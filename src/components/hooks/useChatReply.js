@@ -35,7 +35,7 @@ const OriginalHtml = styled.div`
   overflow: hidden;
 `;
 
-const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language }) => {
+const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translated_channels, language }) => {
   const parseSystemMessage = useCallback((message) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
@@ -444,8 +444,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
-
-  if (selectedChannel.is_translate && reply.is_translated) {
+  console.log({selectedChannel});
+  if (selectedChannel.is_translate && reply.is_translated && translated_channels.length > 0 && translated_channels.includes(selectedChannel.id)) {
     // check if the channel is_translate is on and reply is already translated
     let OriginalHtmlRow = (
       <TranslationHtmlContainer

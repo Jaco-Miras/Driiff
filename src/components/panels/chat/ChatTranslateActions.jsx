@@ -26,15 +26,12 @@ const ReleaseLink = styled.span`
 `;
 
 const ChatTranslateActions = (props) => {
-  const { className = "", selectedChannel, chatMessageActions } = props;
+  const { className = "", selectedChannel, chatMessageActions,  translated_channels} = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const {
-    generalSettings: { translated_channels },
-    setGeneralSetting
-  } = useSettings();
+  const {setGeneralSetting} = useSettings();
 
   const { _t, setLocale, uploadTranslationToServer } = useTranslation();
   const dictionary = {
@@ -48,7 +45,6 @@ const ChatTranslateActions = (props) => {
       const { name, checked, dataset } = e.target;
       toaster.success(<span>{dataset.successMessage}</span>);
       chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: checked });
-
       setChannelTrans({
         ...selectedChannel,
         [name]: checked,
@@ -77,8 +73,9 @@ const ChatTranslateActions = (props) => {
     },
   );
 
-  if (!selectedChannel.is_translate && translated_channels.includes(selectedChannel.id))
+  if (translated_channels.length > 0 && translated_channels.includes(selectedChannel.id) && !selectedChannel.is_translate)
     chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: true });
+  
 
   let is_translate = translated_channels.includes(selectedChannel.id); //(selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
 

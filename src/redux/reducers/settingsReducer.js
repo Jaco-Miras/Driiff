@@ -78,6 +78,8 @@ const INITIAL_STATE = {
         order_by: "channel_date_updated",
         sort_by: "DESC",
       },
+      translated_channels:[],
+      chat_language:'en'
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {

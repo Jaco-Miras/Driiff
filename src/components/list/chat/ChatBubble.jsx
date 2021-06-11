@@ -535,7 +535,7 @@ const ChatNameNotAuthor = styled.span`
 
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users, translate, chat_language } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users, translated_channels, chat_language } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -549,7 +549,7 @@ const ChatBubble = (props) => {
     recipients,
     selectedChannel,
     users,
-    translate,
+    translated_channels,
     chat_language,
   });
 

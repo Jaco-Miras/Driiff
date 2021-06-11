@@ -941,7 +941,7 @@ class ChatMessages extends React.PureComponent {
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
-                                      translate={this.props.translate} 
+                                      translated_channels={this.props.translated_channels} 
                                       chat_language={this.props.chat_language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
