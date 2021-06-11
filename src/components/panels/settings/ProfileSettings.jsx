@@ -7,7 +7,7 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation,useUserActions } from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslation} from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
@@ -424,22 +424,20 @@ const ProfileSettings = (props) => {
     setLocale(e.value);
     toaster.success(<span>You have successfully updated Language</span>);
   };
-  
-  const { processBackendLogout } = useUserActions();
-  
-  const handleChatLanguageChange = (e) => {
-    const newChatLang = e.value;
-    setGeneralSetting({
-      chat_language: newChatLang,
-      translated_channels: []
-    });
-   
-    setTimeout(function(){
-      processBackendLogout();
-   }, 2000);
-   
-    toaster.success(<span>You have successfully updated chat target language</span>);
-  };
+
+  const handleChatLanguageChange = useCallback(
+    (e) => {
+      setGeneralSetting({
+        chat_language: e.value,
+        translated_channels: []
+      });
+      setTimeout(function () {
+        localStorage.setItem("chat_translate_change", "1");
+      }, 1000);
+      toaster.success(<span>You have successfully updated chat target language</span>);
+    },
+    [setGeneralSetting]
+  );
 
   const handleChatSwitchToggle = useCallback(
     (e) => {

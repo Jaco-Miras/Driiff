@@ -25,6 +25,11 @@ const ChatMessagesPlaceholder = styled.div`
 `;
 
 const ChatContentPanel = (props) => {
+
+  if (localStorage.getItem("chat_translate_change") !== null) {
+    localStorage.removeItem("chat_translate_change");
+    window.location.reload();
+  }
   const { className = "", isWorkspace = false } = props;
 
   const { isIdle } = useIdleTimer({ timeout: 1000 * 60 });

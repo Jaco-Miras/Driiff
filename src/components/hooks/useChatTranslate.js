@@ -9,13 +9,12 @@ const useChatTranslate = (props) => {
   };
   useEffect(() => {
     //&& message.translated_language !== chat_language
-    if (!isAuthor && message.user.language !== chat_language && translate && !message.is_translated  && message.translated_language !== chat_language) {
+    if (!isAuthor && message.user.chat_language !== chat_language && translate && !message.is_translated && message.translated_language !== chat_language) {
       fetchTrans(message).then(function (result) {
         if (typeof result !== "undefined") {
           let text = result.translations[0].text;
-          actions.setTranslationBody({ ...message, translated_body: text, is_translated: translate });
+          actions.setTranslationBody({ ...message, translated_body: text, is_translated: translate, translated_language: chat_language });
           actions.saveTranslation({ message_id: message.id, body: text, language: chat_language });
-          
         }
       });
     }
