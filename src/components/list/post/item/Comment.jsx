@@ -320,11 +320,22 @@ const Comment = (props) => {
   const { fromNow } = useTimeFormat();
 
   const handleInlineImageClick = (e) => {
-    let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-    if (file) {
+    // let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
+    // if (file) {
+    //   dispatch(
+    //     setViewFiles({
+    //       file_id: file.id,
+    //       files: comment.files,
+    //     })
+    //   );
+    // }
+    let id = null;
+    if (e.target.dataset.id) id = e.target.dataset.id;
+
+    if (id) {
       dispatch(
         setViewFiles({
-          file_id: file.id,
+          file_id: parseInt(id),
           files: comment.files,
         })
       );
@@ -335,7 +346,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -348,11 +359,13 @@ const Comment = (props) => {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         }
       });
