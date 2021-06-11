@@ -6,7 +6,7 @@ import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../
 import styled from "styled-components";
 //import { lang } from "moment-timezone";
 
-const StyledImageTextLink = styled(ImageTextLink)`
+const StyledImageTextLink = styled(ImageTextLink)` 
   display: block;
   svg,
   polyline,
@@ -422,7 +422,6 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     }
 
     quoteBody += quillHelper.parseEmoji(reply.quote.body);
-    quoteBody = parseSystemMessage(quoteBody);
   }
 
   let isGifOnly = !!reply.body.substring(15, reply.body.length - 8).match(GifRegex);

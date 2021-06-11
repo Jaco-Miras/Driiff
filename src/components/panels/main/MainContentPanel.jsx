@@ -24,7 +24,7 @@ const MainContentPanel = (props) => {
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
       <Switch>
-        <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]} />
+        <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile", "/profile/:id"]} exact={true} />
         <Route {...props} component={UserNotificationPanel} path={["/notifications"]} />
         <Route {...props} component={UserSearchPanel} path={["/search"]} />
         {!isExternal && <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]} />}

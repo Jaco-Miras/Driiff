@@ -17,6 +17,7 @@ import {
   setLastChatVisibility,
   setEditHuddleAnswers,
   setTranslatedBody,
+  setFancyLink,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions, useTranslation } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -407,6 +408,18 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
+  /**
+   * @param {object} payload
+   * @parm number payload.message_id chat.id
+   * @param {function} [callback]
+   */
+  const saveFancyContent = useCallback(
+    (payload) => {
+      dispatch(setFancyLink(payload));
+    },
+    [dispatch]
+  );
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -428,6 +441,7 @@ const useChatMessageActions = () => {
     setHuddleAnswers,
     saveTranslationBody,
     viewFiles,
+    saveFancyContent,
   };
 };
 

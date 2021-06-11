@@ -9,6 +9,7 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import {
   addPrimaryFiles,
   deleteWorkspaceRole,
+  favouriteWorkspace,
   fetchDetail,
   fetchMembers,
   fetchPrimaryFiles,
@@ -205,51 +206,61 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
-  const leave = useCallback(
-    (workspace, member, callback) => {
-      if (workspace.members.length === 1 && workspace.is_lock === 1) {
-        let archivePayload = {
-          id: workspace.channel.id,
-          is_archived: true,
-          is_muted: false,
-          is_pinned: false,
-        };
-        dispatch(putChannel(archivePayload));
-      } else {
-        let payload = {
-          name: workspace.name,
-          description: workspace.description,
-          topic_id: workspace.id,
-          is_external: 0,
-          member_ids: workspace.members.map((m) => m.id),
-          is_lock: workspace.is_lock ? 1 : 0,
-          workspace_id: workspace.folder_id ? workspace.folder_id : 0,
-          new_member_ids: [],
-          remove_member_ids: [member.id],
-        };
-        payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
-          author: {
-            id: loggedUser.id,
-            name: loggedUser.name,
-            first_name: loggedUser.first_name,
-            partial_name: loggedUser.partial_name,
-            profile_image_link: loggedUser.profile_image_thumbnail_link ? loggedUser.profile_image_thumbnail_link : loggedUser.profile_image_link,
-          },
-          title: "",
-          added_members: [],
-          removed_members: [member.id],
-        })}`;
-        if (member.id === loggedUser.id) {
-          dispatch(leaveWorkspace({ workspace_id: workspace.id, channel_id: workspace.channel.id }, callback));
-        }
-        dispatch(updateWorkspace(payload));
+  const leave = (workspace, member, callback) => {
+    if (member.id === loggedUser.id && workspace.is_favourite) {
+      favourite(workspace);
+    }
+    if (workspace.members.length === 1 && workspace.is_lock === 1) {
+      let archivePayload = {
+        id: workspace.channel.id,
+        is_archived: true,
+        is_muted: false,
+        is_pinned: false,
+      };
+      dispatch(putChannel(archivePayload));
+    } else {
+      let payload = {
+        name: workspace.name,
+        description: workspace.description,
+        topic_id: workspace.id,
+        is_external: 0,
+        member_ids: workspace.members.map((m) => m.id),
+        is_lock: workspace.is_lock ? 1 : 0,
+        workspace_id: workspace.folder_id ? workspace.folder_id : 0,
+        new_member_ids: [],
+        remove_member_ids: [member.id],
+      };
+      payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
+        author: {
+          id: loggedUser.id,
+          name: loggedUser.name,
+          first_name: loggedUser.first_name,
+          partial_name: loggedUser.partial_name,
+          profile_image_link: loggedUser.profile_image_thumbnail_link ? loggedUser.profile_image_thumbnail_link : loggedUser.profile_image_link,
+        },
+        title: "",
+        added_members: [],
+        removed_members: [member.id],
+      })}`;
+      if (member.id === loggedUser.id) {
+        dispatch(leaveWorkspace({ workspace_id: workspace.id, channel_id: workspace.channel.id }, callback));
       }
-    },
-    [dispatch]
-  );
+      dispatch(updateWorkspace(payload));
+    }
+  };
 
   const fetchFavoriteWorkspaces = (payload, callback) => {
     dispatch(getFavoriteWorkspaces(payload, callback));
+  };
+
+  const favourite = (workspace) => {
+    let payload = {
+      id: workspace.id,
+      workspace_id: workspace.folder_id ? workspace.folder_id : 0,
+      is_pinned: workspace.is_favourite ? 0 : 1,
+    };
+
+    dispatch(favouriteWorkspace(payload));
   };
 
   return {

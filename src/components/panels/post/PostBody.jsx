@@ -244,7 +244,7 @@ const SharedBadge = styled.span`
 `;
 
 const PostBody = (props) => {
-  const { post, user, postActions, dictionary, disableOptions, workspaceId } = props;
+  const { post, user, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead } = props;
 
   const isExternalUser = user.type === "external";
   const dispatch = useDispatch();
@@ -290,14 +290,21 @@ const PostBody = (props) => {
   };
 
   const handleInlineImageClick = (e) => {
-    let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-    if (file) {
-      let payload = {
-        file_id: file.id,
-        files: post.files,
-        //workspace_id: workspaceId,
-      };
-      dispatch(setViewFiles(payload));
+    let id = null;
+    if (e.srcElement.currentSrc.startsWith("blob")) {
+      if (e.target.dataset.id) id = e.target.dataset.id;
+    } else {
+      let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
+      if (file) id = file.id;
+    }
+
+    if (id) {
+      dispatch(
+        setViewFiles({
+          file_id: parseInt(id),
+          files: post.files,
+        })
+      );
     }
   };
 
@@ -331,11 +338,13 @@ const PostBody = (props) => {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         }
       });
@@ -501,7 +510,7 @@ const PostBody = (props) => {
             <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
             {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
             <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
-            {!disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
+            {!disableOptions && !disableMarkAsRead() && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
             <div className={"time-stamp"}>
               <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
                 <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
