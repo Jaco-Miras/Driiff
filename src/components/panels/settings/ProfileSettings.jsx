@@ -679,7 +679,7 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              <div className="row mb-3">
+              {/* <div className="row mb-3">
                 <div className="col-12">
                   <CustomInput
                     className="cursor-pointer text-muted"
@@ -692,7 +692,7 @@ const ProfileSettings = (props) => {
                     label={<span>{dictionary.chatTranslateTitle}</span>}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
                 <div className="col-7">
