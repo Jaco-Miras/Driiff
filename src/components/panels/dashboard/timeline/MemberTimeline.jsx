@@ -31,9 +31,12 @@ const MemberTimeline = (props) => {
   const { className = "", data, dictionary, scrollRef } = props;
   const { fromNow, localizeDate } = useTimeFormat();
 
-  const user = useSelector((state) => state.session.user);
-  const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  // const user = useSelector((state) => state.session.user);
+  // const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
+  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+
+  const allUsers = [...Object.values(users), ...inactiveUsers];
 
   let message = null;
   let author = null;
@@ -45,7 +48,7 @@ const MemberTimeline = (props) => {
     if (message.author.name) {
       author = message.author;
     } else {
-      author = Object.values(users).find((u) => u.id === message.author);
+      author = allUsers.find((u) => u.id === message.author);
     }
   }
 
@@ -60,14 +63,14 @@ const MemberTimeline = (props) => {
     if (message.title !== "") {
       return `${dictionary.updatedWorkspaceTo} ${message.title}`;
     }
-    if (message.added_members.length !== 0 || message.removed_members.length) {
-    }
+    // if (message.added_members.length !== 0 || message.removed_members.length) {
+    // }
   };
 
   const renderAddedMembers = () => {
     if (message.author === null) {
       if (message.accepted_members) {
-        let members = Object.values(users).filter((u) => message.accepted_members.some((id) => id === u.id));
+        let members = allUsers.filter((u) => message.accepted_members.some((id) => id === u.id));
         if (members.length) {
           return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
         }
@@ -76,12 +79,12 @@ const MemberTimeline = (props) => {
       }
     } else {
       if (message.accepted_members) {
-        let members = Object.values(users).filter((u) => message.accepted_members.some((id) => id === u.id));
+        let members = allUsers.filter((u) => message.accepted_members.some((id) => id === u.id));
         if (members.length) {
           return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
         }
       } else {
-        let members = Object.values(users).filter((u) => message.added_members.some((id) => id === u.id));
+        let members = allUsers.filter((u) => message.added_members.some((id) => id === u.id));
         if (members.length) {
           return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
         }
@@ -93,7 +96,7 @@ const MemberTimeline = (props) => {
     if (message.author === null) {
       return "";
     } else {
-      let members = Object.values(users).filter((u) => message.removed_members.some((id) => id === u.id));
+      let members = allUsers.filter((u) => message.removed_members.some((id) => id === u.id));
       if (members.length) {
         return members.map((m) => m.name).join(", ") + ` ${dictionary.isRemoved}.`;
       }

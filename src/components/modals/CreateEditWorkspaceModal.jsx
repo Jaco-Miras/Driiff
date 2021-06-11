@@ -277,6 +277,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspace_name: useRef(null),
     dropZone: useRef(null),
     iconDropZone: useRef(null),
+    first_name: useRef(null),
   };
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
@@ -290,6 +291,7 @@ const CreateEditWorkspaceModal = (props) => {
     language: "en",
     send_by_email: true,
   });
+  const [inactiveMembers, setInactiveMembers] = useState([]);
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
 
@@ -708,13 +710,33 @@ const CreateEditWorkspaceModal = (props) => {
       if (mode === "edit") {
         payload = {
           ...payload,
-          new_externals: invitedExternals.filter((ex) => form.selectedExternals.some((e) => e.email === ex.email)),
+          new_externals: invitedExternals
+            .filter((ex) => form.selectedExternals.some((e) => e.email === ex.email))
+            .map((ex) => {
+              return {
+                ...ex,
+                first_name: ex.first_name.trim(),
+                middle_name: ex.middle_name.trim(),
+                last_name: ex.last_name.trim(),
+                company: ex.company.trim(),
+              };
+            }),
           is_external: 1,
         };
       } else {
         payload = {
           ...payload,
-          external_emails: invitedExternals.filter((ex) => form.selectedExternals.some((e) => e.email === ex.email)),
+          external_emails: invitedExternals
+            .filter((ex) => form.selectedExternals.some((e) => e.email === ex.email))
+            .map((ex) => {
+              return {
+                ...ex,
+                first_name: ex.first_name.trim(),
+                middle_name: ex.middle_name.trim(),
+                last_name: ex.last_name.trim(),
+                company: ex.company.trim(),
+              };
+            }),
           is_external: 1,
         };
       }
@@ -736,7 +758,7 @@ const CreateEditWorkspaceModal = (props) => {
         remove_member_ids: removed_members.map((m) => m.id),
         new_member_ids: added_members,
       };
-      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r)).length || item.name !== form.name) {
+      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length || item.name !== form.name) {
         payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
           author: {
             id: user.id,
@@ -746,7 +768,7 @@ const CreateEditWorkspaceModal = (props) => {
             profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           },
           title: form.name === item.name ? "" : form.name,
-          added_members: added_members.filter((r) => !invitedIds.some((id) => id === r)),
+          added_members: added_members.filter((mid) => !invitedIds.some((id) => id === mid) && !inactiveMembers.some((m) => m.id === mid)),
           removed_members: removed_members.filter((rm) => rm.has_accepted).map((m) => m.id),
         })}`;
       }
@@ -760,6 +782,17 @@ const CreateEditWorkspaceModal = (props) => {
 
           if (form.icon) {
             handleUpdateWorkspaceIcon(payload, form.icon);
+          }
+
+          if (res.data) {
+            const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
+            if (sendByMyselfEmail) {
+              const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
+              if (member && member.invite_link) {
+                //copy to clipboard invite link
+                copyTextToClipboard(toaster, member.invite_link);
+              }
+            }
           }
 
           handleDeleteFileAttachements();
@@ -1217,7 +1250,7 @@ const CreateEditWorkspaceModal = (props) => {
           .map((m) => {
             return {
               value: m.id,
-              label: m.name,
+              label: m.name !== "" ? m.name : m.first_name !== "" ? m.first_name : m.email,
               name: m.name,
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
@@ -1227,6 +1260,7 @@ const CreateEditWorkspaceModal = (props) => {
               has_accepted: m.has_accepted,
             };
           });
+        setInactiveMembers(item.members.filter((m) => m.active === 0 && m.has_accepted));
       }
       setForm({
         ...form,
@@ -1388,7 +1422,7 @@ const CreateEditWorkspaceModal = (props) => {
     setInvitedExternal((prevState) => {
       return {
         ...prevState,
-        [e.target.name]: e.target.value.trim(),
+        [e.target.name]: e.target.value,
       };
     });
   };
@@ -1411,16 +1445,21 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleEmailClick = (data) => {
     const external = invitedExternals.find((ex) => ex.email === data.email);
-    console.log(external);
     if (external) setInvitedExternal(external);
     toggleNested(true);
+  };
+
+  const onOpenedNested = () => {
+    if (refs.first_name && refs.first_name.current) {
+      refs.first_name.current.focus();
+    }
   };
 
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
       <ModalBody onDragOver={handleShowDropzone}>
-        <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
+        <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
           <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
           <ModalBody>
             <Label className={"modal-info"}>{dictionary.newExternalInfo}</Label>
@@ -1450,7 +1489,7 @@ const CreateEditWorkspaceModal = (props) => {
             </div>
 
             <Label className={"modal-label"}>{dictionary.firstName}</Label>
-            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus />
+            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
             <Label className={"modal-label"}>{dictionary.middleName}</Label>
             <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
             <Label className={"modal-label"}>{dictionary.lastName}</Label>
