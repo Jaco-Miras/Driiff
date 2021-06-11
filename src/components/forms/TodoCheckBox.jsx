@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
-  cursor: pointer;
-
+  min-height: 1rem;
+  input {
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  }
   .cci {
     z-index: 1;
     position: absolute;
@@ -64,7 +66,7 @@ const Wrapper = styled.div`
 `;
 
 const TodoCheckBox = (props) => {
-  const { className = "", type = "", checked = false, name, onClick, children, ...otherProps } = props;
+  const { className = "", type = "", checked = false, name, onClick, children, disabled = false, ...otherProps } = props;
   const [isChecked, setIsChecked] = useState(checked);
 
   let classType = "";
@@ -92,8 +94,8 @@ const TodoCheckBox = (props) => {
   }, [checked, isChecked]);
 
   return (
-    <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={handleClick} style={{ paddingLeft: 0 }}>
-      <input ref={refs.checkbox} name={name} data-name={name} type="checkbox" className={`cci ${isChecked ? "cci-active" : ""}`} checked={isChecked} readOnly {...otherProps} />
+    <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={handleClick} disabled={disabled}>
+      <input ref={refs.checkbox} name={name} data-name={name} type="checkbox" className={`cci ${isChecked ? "cci-active" : ""}`} checked={isChecked} readOnly {...otherProps} disabled={disabled} />
       <label data-name={name} className="ccl">
         <span>
           <svg width="12px" height="10px" viewBox="0 0 12 10">

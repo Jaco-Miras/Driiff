@@ -221,11 +221,28 @@ const CompanyPostItemPanel = (props) => {
     }
   };
 
+  const disableCheckbox = () => {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    if (post.is_must_read && post.author.id !== user.id) {
+      if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+        return true;
+      }
+    } else if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+        return true;
+      }
+    } else if (hasPendingApproval) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className} pl-3`} onClick={() => openPost(post, "/posts")}>
       <PostRecipients post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
       <PostContent>
-        <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)} />
+        <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)} disabled={disableCheckbox()} />
         <Author className="d-flex ml-2 mr-2">
           <Avatar
             title={`FROM: ${post.author.name}`}
@@ -244,7 +261,7 @@ const CompanyPostItemPanel = (props) => {
               </span>
               <HoverButtons className="hover-btns ml-1">
                 {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}
-                {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
+                {!disableOptions && !disableCheckbox() && <Icon icon="archive" onClick={handleArchivePost} />}
               </HoverButtons>
             </div>
             <PostReplyCounter>
@@ -262,7 +279,7 @@ const CompanyPostItemPanel = (props) => {
             <MoreOptions className={"d-flex ml-2"} item={post} width={220} moreButton={"more-horizontal"}>
               {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
               {post.author && post.author.id === user.id && <div onClick={() => showModal("edit_company", post)}>{dictionary.editPost}</div>}
-              {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
+              {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableCheckbox() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>

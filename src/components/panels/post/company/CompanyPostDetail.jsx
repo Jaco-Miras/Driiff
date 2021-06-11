@@ -378,21 +378,40 @@ const CompanyPostDetail = (props) => {
 
   const isMember = post.users_responsible.some((u) => u.id === user.id);
 
+  const disableMarkAsRead = () => {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    if (post.is_must_read && post.author.id !== user.id) {
+      if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+        return true;
+      }
+    } else if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+        return true;
+      }
+    } else if (hasPendingApproval) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
+    if (!viewed && !disableMarkAsRead()) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
       });
     }
+
     if (post.is_unread === 1 || post.unread_count > 0 || !post.is_updated) {
-      postActions.markAsRead(post);
+      if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
 
     postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     // postActions.getUnreadPostsCount();
   }, []);
 
@@ -449,7 +468,7 @@ const CompanyPostDetail = (props) => {
           <div>
             <StyledMoreOptions className="ml-2" item={post} width={220} moreButton={"more-horizontal"}>
               {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
-              {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
+              {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableMarkAsRead() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
@@ -468,9 +487,9 @@ const CompanyPostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
+        <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && post && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.author.id !== user.id && post.is_must_read && post && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}

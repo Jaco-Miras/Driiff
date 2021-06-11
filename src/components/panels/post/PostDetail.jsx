@@ -383,22 +383,41 @@ const PostDetail = (props) => {
     }
   };
 
+  const disableMarkAsRead = () => {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    if (post.is_must_read && post.author.id !== user.id) {
+      if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+        return true;
+      }
+    } else if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+        return true;
+      }
+    } else if (hasPendingApproval) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   //const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
+    if (!viewed && !disableMarkAsRead()) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
       });
     }
+
     if (post.is_unread === 1 || post.unread_count > 0 || !post.is_updated) {
-      postActions.markAsRead(post);
+      if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
     postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
   }, []);
 
   const privateWsOnly = post.recipients.filter((r) => {
@@ -465,7 +484,7 @@ const PostDetail = (props) => {
             <div>
               <StyledMoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
                 {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
-                <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
+                {!disableMarkAsRead() && <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
                 <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
@@ -486,9 +505,18 @@ const PostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} user={user} postActions={postActions} isAuthor={post.author && post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} workspaceId={workspace.id} />
+        <PostBody
+          post={post}
+          user={user}
+          postActions={postActions}
+          isAuthor={post.author && post.author.id === user.id}
+          dictionary={dictionary}
+          disableOptions={disableOptions}
+          workspaceId={workspace.id}
+          disableMarkAsRead={disableMarkAsRead}
+        />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && !hasRead && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}

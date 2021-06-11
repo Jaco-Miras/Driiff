@@ -486,6 +486,7 @@ const CompanyPostDetailFooter = (props) => {
     if (err) return;
     if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
       postActions.markReplyRequirement(post);
+      postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
