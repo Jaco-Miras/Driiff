@@ -85,7 +85,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, daily_digest },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, order_channel: orderChannel, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -276,12 +276,12 @@ const ProfileSettings = (props) => {
     [setGeneralSetting]
   );
 
-  const handleNotificationSoundChange = (e) => {
-    setGeneralSetting({
-      notification_sound: e.value,
-    });
-    toaster.success(<span>You have successfully updated notification sound</span>);
-  };
+  // const handleNotificationSoundChange = (e) => {
+  //   setGeneralSetting({
+  //     notification_sound: e.value,
+  //   });
+  //   toaster.success(<span>You have successfully updated notification sound</span>);
+  // };
 
   const handleSortChannelChange = (e) => {
     setChatSetting({

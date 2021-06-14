@@ -3,7 +3,7 @@ import styled from "styled-components";
 //import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
 import { SvgIconFeather } from "./SvgIcon";
-import Badge from "./Badge";
+//import Badge from "./Badge";
 import { useOutsideClick, useUserChannels, useTranslation } from "../hooks";
 
 const ProfileWrapper = styled.div``;

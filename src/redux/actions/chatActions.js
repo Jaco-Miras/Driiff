@@ -16,7 +16,7 @@ import {
   getHuddleChatbot as getHuddleChatbotService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
-  getSearchChannels as getSearchChannelsService,
+  //getSearchChannels as getSearchChannelsService,
   getSelectChannel as getSelectChannelService,
   getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,

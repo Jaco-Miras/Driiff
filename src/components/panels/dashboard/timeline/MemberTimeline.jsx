@@ -31,8 +31,8 @@ const MemberTimeline = (props) => {
   const { className = "", data, dictionary, scrollRef } = props;
   const { fromNow, localizeDate } = useTimeFormat();
 
-  const user = useSelector((state) => state.session.user);
-  const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  // const user = useSelector((state) => state.session.user);
+  // const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
 
   let message = null;

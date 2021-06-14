@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -42,11 +42,11 @@ const NotificationBar = styled.div`
   }
 `;
 
-const AudioStyle = styled.audio`
-  display: none;
-  opacity: 0;
-  visibility: hidden;
-`;
+// const AudioStyle = styled.audio`
+//   display: none;
+//   opacity: 0;
+//   visibility: hidden;
+// `;
 
 const DriffUpdateModal = (props) => {
   const { type, requirement, handleReminder } = props.data;
@@ -55,9 +55,9 @@ const DriffUpdateModal = (props) => {
   const dispatch = useDispatch();
   const { _t } = useTranslation();
 
-  const refs = {
-    audio: useRef(null),
-  };
+  // const refs = {
+  //   audio: useRef(null),
+  // };
 
   const dictionary = {
     update: _t("DRIFF.DRIFF_VERSION_UPDATE", "Go!"),

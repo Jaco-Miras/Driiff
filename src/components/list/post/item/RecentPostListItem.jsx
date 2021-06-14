@@ -26,15 +26,15 @@ const Wrapper = styled.li`
 `;
 
 const RecentPostListItem = (props) => {
-  const { className = "", post, postActions, onOpenPost, disableOptions } = props;
+  const { className = "", post, onOpenPost } = props;
 
   const { localizeChatDate } = useTimeFormat();
 
-  const toggleCheck = (e) => {
-    e.stopPropagation();
-    if (disableOptions) return;
-    postActions.markPost(post);
-  };
+  // const toggleCheck = (e) => {
+  //   e.stopPropagation();
+  //   if (disableOptions) return;
+  //   postActions.markPost(post);
+  // };
 
   const handleOpenPost = (e) => {
     onOpenPost(post);
@@ -44,9 +44,8 @@ const RecentPostListItem = (props) => {
     <Wrapper className={`recent-post-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`} onClick={handleOpenPost}>
       <div className="flex-grow-1 min-width-0" onClick={handleOpenPost}>
         <div className="mb-1 d-flex align-items-center justify-content-between">
-          <div className={`app-list-title text-truncate`}>{post.title}</div>
-          <div
-            className={`pl-3 d-flex recent-post-timestamp align-items-center`}>{localizeChatDate(post.created_at.timestamp)}</div>
+          <div className={"app-list-title text-truncate"}>{post.title}</div>
+          <div className={"pl-3 d-flex recent-post-timestamp align-items-center"}>{localizeChatDate(post.created_at.timestamp)}</div>
         </div>
       </div>
     </Wrapper>

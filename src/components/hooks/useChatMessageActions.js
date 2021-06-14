@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
@@ -42,24 +42,6 @@ const useChatMessageActions = () => {
     fetch: useRef(false),
   };
 
-  // const getSharedPayload = useCallback(
-  //   (channel) => {
-  //     if (channel && channel.is_shared && sharedSlugs.length) {
-  //       let slug = sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0];
-  //       return {
-  //         is_shared_topic: 1,
-  //         topic_id: channel.entity_id,
-  //         is_shared: channel.entity_id,
-  //         token: slug.access_token,
-  //         slug: slug.slug_name,
-  //       };
-  //     } else {
-  //       return {};
-  //     }
-  //   },
-  //   [sharedSlugs]
-  // );
-
   const viewFiles = (files) => {
     const payload = {
       files: files,
@@ -75,27 +57,24 @@ const useChatMessageActions = () => {
    * @param {number} [filter.limit=20]
    * @param {function} [callback]
    */
-  const fetch = useCallback(
-    (channel, { skip = 0, limit = 20 }, callback = () => {}) => {
-      // if (!refs.fetch.current) {
-      //   refs.fetch.current = true;
-      let payload = {
-        channel_id: channel.id,
-        skip: skip,
-        limit: limit,
-        //...getSharedPayload(channel),
-      };
+  const fetch = (channel, { skip = 0, limit = 20 }, callback = () => {}) => {
+    // if (!refs.fetch.current) {
+    //   refs.fetch.current = true;
+    let payload = {
+      channel_id: channel.id,
+      skip: skip,
+      limit: limit,
+      //...getSharedPayload(channel),
+    };
 
-      dispatch(
-        getChatMessages(payload, (err, res) => {
-          refs.fetch.current = false;
-          callback(err, res);
-        })
-      );
-      //}
-    },
-    [dispatch]
-  );
+    dispatch(
+      getChatMessages(payload, (err, res) => {
+        refs.fetch.current = false;
+        callback(err, res);
+      })
+    );
+    //}
+  };
 
   /**
    * @param {Object} message
@@ -111,11 +90,10 @@ const useChatMessageActions = () => {
    * @param {null|Object} [message.quote.files]
    * @param {function} [callback]
    */
-  const create = useCallback(
-    (channel, message, callback = () => {}) => {
-      let payload = {};
+  const create = (channel, message, callback = () => {}) => {
+    let payload = {};
 
-      /*let payload = {
+    /*let payload = {
          channel_id: channel.id,
          reference_title: channel.type === "DIRECT" && channel.members.length === 2
          ? `${user.first_name} in a direct message` : channel.title,
@@ -149,84 +127,70 @@ const useChatMessageActions = () => {
          g_date: localizeDate(timestamp, "YYYY-MM-DD"),
          };*/
 
-      dispatch(postChatMessage(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(postChatMessage(payload, callback));
+  };
 
   /**
    * @param {Object} message
    * @param {function} [callback]
    */
-  const edit = useCallback(
-    (message, callback = () => {}) => {
-      dispatch(putChatMessage(message, callback));
-    },
-    [dispatch]
-  );
+  const edit = (message, callback = () => {}) => {
+    dispatch(putChatMessage(message, callback));
+  };
 
   /**
    * @param {number} messageId
    * @param {string} reactType
    * @param {function} [callback]
    */
-  const react = useCallback(
-    (messageId, reactType, callback = () => {}) => {
-      dispatch(
-        postChatReaction(
-          {
-            message_id: messageId,
-            react_type: reactType,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
+  const react = (messageId, reactType, callback = () => {}) => {
+    dispatch(
+      postChatReaction(
+        {
+          message_id: messageId,
+          react_type: reactType,
+        },
+        callback
+      )
+    );
+  };
 
   /**
    * @param {number} messageId
    * @param {function} [callback]
    */
-  const remove = useCallback(
-    (messageId, callback = () => {}) => {
-      dispatch(
-        deleteChatMessage(
-          {
-            message_id: messageId,
-            //...getSharedPayload(),
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
+  const remove = (messageId, callback = () => {}) => {
+    dispatch(
+      deleteChatMessage(
+        {
+          message_id: messageId,
+          //...getSharedPayload(),
+        },
+        callback
+      )
+    );
+  };
 
   /**
    * @param {number} messageId
    * @param {function} [callback]
    */
-  const markComplete = useCallback(
-    (messageId, callback = () => {}) => {
-      dispatch(
-        putMarkReminderComplete(
-          {
-            message_id: messageId,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
+  const markComplete = (messageId, callback = () => {}) => {
+    dispatch(
+      putMarkReminderComplete(
+        {
+          message_id: messageId,
+        },
+        callback
+      )
+    );
+  };
 
   /**
    * @param {Object} channel
    * @param {string} body
    */
-  const forward = useCallback((channel, body, callback = () => {}) => {
+  const forward = (channel, body, callback = () => {}) => {
     let payload = {
       channel_id: channel.current.id,
       body: body,
@@ -238,7 +202,7 @@ const useChatMessageActions = () => {
     };
 
     dispatch(postChatMessage(payload, callback));
-  });
+  };
 
   /**
    * Reducer
@@ -269,9 +233,9 @@ const useChatMessageActions = () => {
    * @param {Object} channel
    * @param {Object} message
    */
-  const clipboardLink = useCallback((channel, message) => {
+  const clipboardLink = (channel, message) => {
     copyTextToClipboard(toaster, `${getBaseUrl()}/chat/${channel.code}/${message.code}`);
-  }, []);
+  };
 
   /**
    * @param {number} unfurl_id
@@ -279,97 +243,82 @@ const useChatMessageActions = () => {
    * @param {number} message_id
    * @param {string} type
    */
-  const removeUnfurl = useCallback(
-    (payload) => {
-      dispatch(deleteUnfurl(payload));
-      dispatch(removeUnfurlReducer(payload));
-    },
-    [dispatch]
-  );
+  const removeUnfurl = (payload) => {
+    dispatch(deleteUnfurl(payload));
+    dispatch(removeUnfurlReducer(payload));
+  };
 
   /**
    * @param {boolean} status
    */
-  const setLastMessageVisiblility = useCallback(
-    (payload) => {
-      dispatch(setLastChatVisibility(payload));
-    },
-    [dispatch]
-  );
+  const setLastMessageVisiblility = (payload) => {
+    dispatch(setLastChatVisibility(payload));
+  };
 
-  const remind = useCallback(
-    (message, channel, callback = () => {}) => {
-      const onConfirm = (payload, modalCallback = () => {}) => {
-        todoActions.createForChat(message.id, payload, (err, res) => {
-          if (err) {
-            if (err.response && err.response.data && err.response.data.errors) {
-              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
-                toaster.error(dictionary.reminderAlreadyExists);
-              } else {
-                toaster.error(dictionary.toasterGeneraError);
-              }
+  const remind = (message, channel, callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
+      todoActions.createForChat(message.id, payload, (err, res) => {
+        if (err) {
+          if (err.response && err.response.data && err.response.data.errors) {
+            if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+              toaster.error(dictionary.reminderAlreadyExists);
             } else {
               toaster.error(dictionary.toasterGeneraError);
             }
+          } else {
+            toaster.error(dictionary.toasterGeneraError);
           }
-          if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
-          }
-          modalCallback(err, res);
-          callback(err, res);
-        });
-      };
-      let payload = {
-        type: "todo_reminder",
-        parentItem: channel,
-        item: message,
-        itemType: "CHAT",
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+        }
+        if (res) {
+          toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+        }
+        modalCallback(err, res);
+        callback(err, res);
+      });
+    };
+    let payload = {
+      type: "todo_reminder",
+      parentItem: channel,
+      item: message,
+      itemType: "CHAT",
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    dispatch(addToModals(payload));
+  };
 
   /**
    * @param {chat} object
    * @param {function} [callback]
    */
-  const markImportant = useCallback(
-    (chat, callback = () => {}) => {
-      dispatch(
-        putImportantChat(
-          {
-            message_id: chat.id,
-            is_important: chat.is_important ? 0 : 1,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
+  const markImportant = (chat, callback = () => {}) => {
+    dispatch(
+      putImportantChat(
+        {
+          message_id: chat.id,
+          is_important: chat.is_important ? 0 : 1,
+        },
+        callback
+      )
+    );
+  };
 
   /**
    * @param number messageId
    * @param {function} [callback]
    */
-  const getStars = useCallback(
-    (messageId, callback = () => {}) => {
-      dispatch(
-        getChatStar(
-          {
-            message_id: messageId,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
+  const getStars = (messageId, callback = () => {}) => {
+    dispatch(
+      getChatStar(
+        {
+          message_id: messageId,
+        },
+        callback
+      )
+    );
+  };
 
   /**
    * @param {object} payload
@@ -377,48 +326,36 @@ const useChatMessageActions = () => {
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const setStar = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(putChatStar(payload, callback));
-    },
-    [dispatch]
-  );
+  const setStar = (payload, callback = () => {}) => {
+    dispatch(putChatStar(payload, callback));
+  };
 
   /**
    * @param {object} payload
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const setHuddleAnswers = useCallback(
-    (payload) => {
-      dispatch(setEditHuddleAnswers(payload));
-    },
-    [dispatch]
-  );
+  const setHuddleAnswers = (payload) => {
+    dispatch(setEditHuddleAnswers(payload));
+  };
 
   /**
    * @param {object} payload
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const saveTranslationBody = useCallback(
-    (payload) => {
-      dispatch(setTranslatedBody(payload));
-    },
-    [dispatch]
-  );
+  const saveTranslationBody = (payload) => {
+    dispatch(setTranslatedBody(payload));
+  };
 
   /**
    * @param {object} payload
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const saveFancyContent = useCallback(
-    (payload) => {
-      dispatch(setFancyLink(payload));
-    },
-    [dispatch]
-  );
+  const saveFancyContent = (payload) => {
+    dispatch(setFancyLink(payload));
+  };
 
   return {
     channelActions: useChannelActions(),

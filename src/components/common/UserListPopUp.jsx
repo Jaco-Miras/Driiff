@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, ProfileSlider } from "../common";
 import { useOutsideClick } from "../hooks";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 //import { replaceChar } from "../../helpers/stringFormatter";
 import { CSSTransition } from "react-transition-group";
 

@@ -1063,7 +1063,7 @@ export const SvgIcon = React.memo(
 
 export const SvgEmptyState = React.memo(
   React.forwardRef((props, ref) => {
-    const { className = "", width = "100%", height = "100%", fill = "none", stroke = "", strokeWidth = "", strokeLinecap = "", strokeLinejoin = "", title = "", subTitle = "", icon, ...rest } = props;
+    const { className = "", width = "100%", height = "100%", fill = "none", stroke = "", strokeWidth = "", strokeLinecap = "", strokeLinejoin = "", icon, ...rest } = props;
 
     let iconSet = icon;
     let content = "";
