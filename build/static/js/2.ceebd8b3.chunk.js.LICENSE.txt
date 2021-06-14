@@ -20,19 +20,19 @@ object-assign
      */
 
 /*!
-  Copyright (c) 2017 Jed Watson.
+  Copyright (c) 2018 Jed Watson.
   Licensed under the MIT License (MIT), see
   http://jedwatson.github.io/classnames
 */
 
 /*!
- * Cropper.js v1.5.9
+ * Cropper.js v1.5.12
  * https://fengyuanchen.github.io/cropperjs
  *
  * Copyright 2015-present Chen Fengyuan
  * Released under the MIT license
  *
- * Date: 2020-09-10T13:16:26.743Z
+ * Date: 2021-06-12T08:00:17.411Z
  */
 
 /*!
@@ -76,15 +76,6 @@ object-assign
  *
  * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
- */
-
-/*!
- * UAParser.js v0.7.23
- * Lightweight JavaScript-based User-Agent string parser
- * https://github.com/faisalman/ua-parser-js
- *
- * Copyright © 2012-2019 Faisal Salman <f@faisalman.com>
- * Licensed under MIT License
  */
 
 /*!
@@ -143,13 +134,23 @@ and limitations under the License.
 
 /*! ./LogRocket */
 
+/*! ./arrayLikeToArray.js */
+
+/*! ./arrayWithoutHoles.js */
+
 /*! ./createEnhancer */
 
 /*! ./createMiddleware */
 
 /*! ./fetchIntercept */
 
+/*! ./iterableToArray.js */
+
 /*! ./makeLogRocket */
+
+/*! ./nonIterableSpread.js */
+
+/*! ./objectWithoutPropertiesLoose.js */
 
 /*! ./raven/raven */
 
@@ -159,11 +160,15 @@ and limitations under the License.
 
 /*! ./registerFetch */
 
+/*! ./registerNetworkInformation */
+
 /*! ./registerXHR */
 
 /*! ./setup */
 
 /*! ./stackTraceFromError */
+
+/*! ./unsupportedIterableToArray.js */
 
 /*! /root/project/packages/logrocket/src/module-npm.js */
 
@@ -177,11 +182,31 @@ and limitations under the License.
 
 /*! @apphub/logrocket-utils/src/TraceKit */
 
+/*! @apphub/logrocket-utils/src/constants/nps */
+
 /*! @apphub/logrocket-utils/src/enhanceFunc */
 
 /*! @apphub/logrocket-utils/src/mapValues */
 
+/*! @apphub/logrocket-utils/src/startsWith */
+
 /*! @apphub/now */
+
+/*! @babel/runtime/helpers/classCallCheck */
+
+/*! @babel/runtime/helpers/createClass */
+
+/*! @babel/runtime/helpers/defineProperty */
+
+/*! @babel/runtime/helpers/interopRequireDefault */
+
+/*! @babel/runtime/helpers/interopRequireWildcard */
+
+/*! @babel/runtime/helpers/objectWithoutProperties */
+
+/*! @babel/runtime/helpers/toConsumableArray */
+
+/*! @babel/runtime/helpers/typeof */
 
 /*! @license DOMPurify | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/2.0.8/LICENSE */
 
@@ -222,6 +247,10 @@ and limitations under the License.
         \****************************************************/
 
 /*!*******************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
+        \*******************************************************/
+
+/*!*******************************************************!*\
         !*** ./packages/@apphub:logrocket-redux/src/index.js ***!
         \*******************************************************/
 
@@ -242,7 +271,15 @@ and limitations under the License.
         \***********************************************************/
 
 /*!************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/createClass.js ***!
+        \************************************************************/
+
+/*!************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/index.js ***!
+        \************************************************************/
+
+/*!************************************************************!*\
+        !*** ./packages/@apphub:logrocket-utils/src/startsWith.js ***!
         \************************************************************/
 
 /*!*************************************************************!*\
@@ -254,16 +291,48 @@ and limitations under the License.
         \**************************************************************/
 
 /*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/classCallCheck.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/defineProperty.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
         !*** ./packages/@apphub:logrocket-network/src/registerXHR.js ***!
         \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./packages/@apphub:logrocket-utils/src/constants/nps.js ***!
+        \***************************************************************/
+
+/*!****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/iterableToArray.js ***!
+        \****************************************************************/
 
 /*!****************************************************************!*\
         !*** ./packages/@apphub:logrocket-redux/src/createEnhancer.js ***!
         \****************************************************************/
 
 /*!*****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayLikeToArray.js ***!
+        \*****************************************************************/
+
+/*!*****************************************************************!*\
         !*** ./packages/@apphub:logrocket-network/src/registerFetch.js ***!
         \*****************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js ***!
+        \******************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/nonIterableSpread.js ***!
+        \******************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/toConsumableArray.js ***!
+        \******************************************************************/
 
 /*!******************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/raven/raven.js ***!
@@ -281,6 +350,18 @@ and limitations under the License.
         !*** ./packages/@apphub:logrocket-console/src/registerConsole.js ***!
         \*******************************************************************/
 
+/*!**********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
+        \**********************************************************************/
+
+/*!***********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/interopRequireWildcard.js ***!
+        \***********************************************************************/
+
+/*!************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/objectWithoutProperties.js ***!
+        \************************************************************************/
+
 /*!*************************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/registerExceptions.js ***!
         \*************************************************************************/
@@ -288,6 +369,27 @@ and limitations under the License.
 /*!**************************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/stackTraceFromError.js ***!
         \**************************************************************************/
+
+/*!***************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js ***!
+        \***************************************************************************/
+
+/*!*****************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js ***!
+        \*****************************************************************************/
+
+/*!******************************************************************************!*\
+        !*** ./packages/@apphub:logrocket-network/src/registerNetworkInformation.js ***!
+        \******************************************************************************/
+
+/*!@license
+ * UAParser.js v0.7.28
+ * Lightweight JavaScript-based User-Agent string parser
+ * https://github.com/faisalman/ua-parser-js
+ *
+ * Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
+ * Licensed under MIT License
+ */
 
 /**
  *
