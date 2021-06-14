@@ -984,12 +984,9 @@ const usePostActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const setCommentType = useCallback(
-    (type, callback = () => {}) => {
-      dispatch(setPostCommentType(type, callback));
-    },
-    [dispatch]
-  );
+  const setCommentType = (type, callback = () => {}) => {
+    dispatch(setPostCommentType(type, callback));
+  };
 
   return {
     approve,
