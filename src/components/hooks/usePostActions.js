@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
@@ -124,818 +124,733 @@ const usePostActions = () => {
     toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
   };
 
-  const fetchPostList = useCallback((payload = {}, callback) => {
+  const fetchPostList = (payload = {}, callback) => {
     dispatch(getPostList(payload, callback));
-  });
+  };
 
-  const createNewPostList = useCallback((payload = {}, callback) => {
+  const createNewPostList = (payload = {}, callback) => {
     dispatch(createPostList(payload, callback));
-  });
+  };
 
-  const updatePostsList = useCallback((payload = {}, callback) => {
+  const updatePostsList = (payload = {}, callback) => {
     dispatch(updatePostList(payload, callback));
-  });
+  };
 
-  const deletePostsList = useCallback((payload = {}, callback) => {
+  const deletePostsList = (payload = {}, callback) => {
     dispatch(deletePostList(payload, callback));
-  });
+  };
 
-  const connectPostList = useCallback((payload, callback) => {
+  const connectPostList = (payload, callback) => {
     dispatch(postListConnect(payload, callback));
-  });
+  };
 
-  const disconnectPostList = useCallback(
-    (payload, callback) => {
-      dispatch(postListDisconnected(payload, callback));
-    },
-    [dispatch, params]
-  );
+  const disconnectPostList = (payload, callback) => {
+    dispatch(postListDisconnected(payload, callback));
+  };
 
-  const updatePostListConnect = useCallback(
-    (payload, callback) => {
-      if (payload.SOCKET_TYPE === "POST_LIST_CONNECTED") {
-        dispatch(incomingPostListConnect(payload, callback));
-      } else {
-        dispatch(incomingPostListDisconnect(payload, callback));
-      }
-    },
-    [dispatch, params]
-  );
+  const updatePostListConnect = (payload, callback) => {
+    if (payload.SOCKET_TYPE === "POST_LIST_CONNECTED") {
+      dispatch(incomingPostListConnect(payload, callback));
+    } else {
+      dispatch(incomingPostListDisconnect(payload, callback));
+    }
+  };
 
-  const starPost = useCallback(
-    (post) => {
-      if (post.type === "draft_post") return;
-      let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
-      dispatch(
-        postFavorite({ type: "post", type_id: post.id }, (err, res) => {
-          //@todo reverse the action/data in the reducer
-          if (err) {
-            toaster.error(<>{dictionary.notificationActionFailed}</>);
-          }
-
-          if (res) {
-            toaster.success(
-              <>
-                {dictionary.notificationYouMarked}
-                <b>{post.title}</b> {post.is_favourite ? dictionary.notificationNotStar : dictionary.notificationStar}.
-              </>
-            );
-          }
-        })
-      );
-      dispatch(
-        starPostReducer({
-          post_id: post.id,
-          topic_id,
-        })
-      );
-    },
-    [dispatch, params]
-  );
-
-  const markPost = useCallback(
-    (post) => {
-      if (post.type === "draft_post") return;
-
-      dispatch(
-        postMarkDone({ post_id: post.id }, (err, res) => {
-          if (err) {
-            toaster.error(<>{dictionary.notificationActionFailed}</>);
-          }
-
-          if (res) {
-            toaster.success(
-              <>
-                {dictionary.notificationYouMarked}
-                <b>
-                  {post.name} {post.is_mark_done ? dictionary.notificationNotDone : dictionary.notificationDone}
-                </b>
-              </>
-            );
-          }
-        })
-      );
-      dispatch(
-        incomingPostMarkDone({
-          post_id: post.id,
-          is_done: !post.is_mark_done,
-        })
-      );
-    },
-    [dispatch, params]
-  );
-
-  const openPost = useCallback(
-    (post, path = null) => {
-      if (post.type === "draft_post") {
-        let payload = {
-          type: "post_modal",
-          mode: "create",
-          item: {
-            draft: post,
-          },
-          params: params,
-        };
-
-        dispatch(addToModals(payload));
-      } else {
-        if (path) {
-          if (path === "/posts") {
-            history.push(path + `/${post.id}/${replaceChar(post.title)}`);
-          } else {
-            history.push(path + `/post/${post.id}/${replaceChar(post.title)}`);
-          }
-        } else {
-          history.push(location.pathname + `/post/${post.id}/${replaceChar(post.title)}`);
-        }
-      }
-    },
-    [dispatch, history, location, params]
-  );
-
-  const archivePost = useCallback(
-    (post, callback = () => {}) => {
-      if (post.type === "draft_post") {
-        const onConfirm = () => {
-          dispatch(
-            deleteDraft({
-              draft_id: post.draft_id,
-              type: post.type,
-            })
-          );
-          dispatch(
-            removeDraftPost(
-              {
-                post_id: post.id,
-              },
-              (err, res) => {
-                if (err) {
-                  toaster.error(<>{dictionary.notificationActionFailed}</>);
-                  return;
-                }
-
-                if (res) {
-                  toaster.success(
-                    <>
-                      <b>{post.title}</b> {dictionary.notificationRemoved}.
-                    </>
-                  );
-                }
-                callback(err, res);
-              }
-            )
-          );
-        };
-
-        // let payload = {
-        //   type: "confirmation",
-        //   headerText: dictionary.headerRemoveDraftHeader,
-        //   submitText: dictionary.buttonRemove,
-        //   cancelText: dictionary.buttonCancel,
-        //   bodyText: dictionary.removeThisDraft,
-        //   actions: {
-        //     onSubmit: onConfirm,
-        //   },
-        // };
-
-        // dispatch(addToModals(payload));
-        onConfirm();
-      } else {
-        const onConfirm = () => {
-          dispatch(
-            postArchive(
-              {
-                post_id: post.id,
-                is_archived: post.is_archived === 1 ? 0 : 1,
-              },
-              (err, res) => {
-                if (err) {
-                  toaster.success(<>Action failed.</>);
-                  return;
-                }
-
-                if (res) {
-                  if (!post.is_archived) {
-                    toaster.success(
-                      <>
-                        <b>{post.title}</b> {dictionary.postArchivedMuted}
-                      </>
-                    );
-                  } else {
-                    toaster.success(
-                      <>
-                        <b>{post.title}</b> is unarchived.
-                      </>
-                    );
-                  }
-
-                  dispatch(
-                    archiveReducer({
-                      post_id: post.id,
-                      //topic_id: parseInt(params.workspaceId),
-                      is_archived: post.is_archived === 1 ? 0 : 1,
-                    })
-                  );
-                  // if (params.hasOwnProperty("postId")) {
-                  //   history.goBack();
-                  // }
-                }
-                callback(err, res);
-              }
-            )
-          );
-        };
-
-        // let payload = {
-        //   type: "confirmation",
-        //   headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
-        //   submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
-        //   cancelText: dictionary.buttonCancel,
-        //   bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
-        //   actions: {
-        //     onSubmit: onConfirm,
-        //   },
-        // };
-
-        // dispatch(addToModals(payload));
-        onConfirm();
-      }
-    },
-    [dispatch, params, history]
-  );
-
-  const markAsRead = useCallback(
-    (post, showToaster = false) => {
-      let payload = {
-        post_id: post.id,
-        unread: 0,
-        topic_id: parseInt(params.workspaceId),
-      };
-      let count = post.unread_count;
-      let cb = (err, res) => {
+  const starPost = (post) => {
+    if (post.type === "draft_post") return;
+    let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
+    dispatch(
+      postFavorite({ type: "post", type_id: post.id }, (err, res) => {
+        //@todo reverse the action/data in the reducer
         if (err) {
-          toaster.success(<>Action failed.</>);
-          return;
+          toaster.error(<>{dictionary.notificationActionFailed}</>);
         }
-        payload = {
-          ...payload,
-          folderId: params.hasOwnProperty("folderId") ? parseInt(params.folderId) : null,
-          count: count === 0 ? 1 : count,
-        };
-        if (res) {
-          if (post.recipients.some((r) => r.type === "TOPIC")) {
-            dispatch(getFavoriteWorkspaceCounters());
-          }
-          if (showToaster)
-            toaster.success(
-              <>
-                {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationRead}.
-              </>
-            );
-
-          dispatch(
-            incomingReadUnreadReducer({
-              post_id: post.id,
-              unread: 0,
-              user_id: user.id,
-            })
-          );
-        }
-      };
-      dispatch(postToggleRead(payload, cb));
-    },
-    [dispatch, params]
-  );
-
-  const markAsUnread = useCallback(
-    (post, showToaster = false) => {
-      let payload = {
-        post_id: post.id,
-        unread: 1,
-        topic_id: params.workspaceId,
-      };
-      let cb = (err, res) => {
-        if (err) {
-          toaster.success(<>Action failed.</>);
-          return;
-        }
-        payload = {
-          ...payload,
-          folderId: params.hasOwnProperty("folderId") ? params.folderId : null,
-        };
 
         if (res) {
-          if (post.recipients.some((r) => r.type === "TOPIC")) {
-            dispatch(getFavoriteWorkspaceCounters());
-          }
-          if (showToaster)
-            toaster.success(
-              <>
-                {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationUnread}.
-              </>
-            );
-
-          dispatch(
-            incomingReadUnreadReducer({
-              post_id: post.id,
-              unread: 1,
-              user_id: user.id,
-            })
+          toaster.success(
+            <>
+              {dictionary.notificationYouMarked}
+              <b>{post.title}</b> {post.is_favourite ? dictionary.notificationNotStar : dictionary.notificationStar}.
+            </>
           );
         }
-      };
-      dispatch(postToggleRead(payload, cb));
-    },
-    [dispatch, params]
-  );
+      })
+    );
+    dispatch(
+      starPostReducer({
+        post_id: post.id,
+        topic_id,
+      })
+    );
+  };
 
-  const sharePost = useCallback(
-    (post) => {
-      let link = `${getBaseUrl()}${location.pathname}/post/${post.id}/${replaceChar(post.title)}`;
-      copyTextToClipboard(toaster, link);
-    },
-    [dispatch, location, getBaseUrl]
-  );
+  const markPost = (post) => {
+    if (post.type === "draft_post") return;
 
-  const snoozePost = useCallback(
-    (post) => {
+    dispatch(
+      postMarkDone({ post_id: post.id }, (err, res) => {
+        if (err) {
+          toaster.error(<>{dictionary.notificationActionFailed}</>);
+        }
+
+        if (res) {
+          toaster.success(
+            <>
+              {dictionary.notificationYouMarked}
+              <b>
+                {post.name} {post.is_mark_done ? dictionary.notificationNotDone : dictionary.notificationDone}
+              </b>
+            </>
+          );
+        }
+      })
+    );
+    dispatch(
+      incomingPostMarkDone({
+        post_id: post.id,
+        is_done: !post.is_mark_done,
+      })
+    );
+  };
+
+  const openPost = (post, path = null) => {
+    if (post.type === "draft_post") {
       let payload = {
-        type: "snooze_post",
-        post: post,
-        topic_id: params.workspaceId,
+        type: "post_modal",
+        mode: "create",
+        item: {
+          draft: post,
+        },
+        params: params,
       };
 
       dispatch(addToModals(payload));
-    },
-    [dispatch, params]
-  );
-
-  const followPost = useCallback(
-    (post) => {
-      if (post.is_followed) {
-        //When: The user is following/recipient of the post - and not the creator.
-        dispatch(
-          postUnfollow({ post_id: post.id }, (err, res) => {
-            if (err) return;
-            let notification = `${dictionary.notificationStopFollow} ${post.title}`;
-            toaster.info(notification);
-            dispatch(
-              setPostToggleFollow({
-                post_id: post.id,
-                is_followed: false,
-              })
-            );
-          })
-        );
+    } else {
+      if (path) {
+        if (path === "/posts") {
+          history.push(path + `/${post.id}/${replaceChar(post.title)}`);
+        } else {
+          history.push(path + `/post/${post.id}/${replaceChar(post.title)}`);
+        }
       } else {
-        //When: The user not following the post and the post is in an open topic.
-        dispatch(
-          postFollow({ post_id: post.id }, (err, res) => {
-            if (err) return;
-            let notification = `${dictionary.notificationStartFollow} ${post.title}`;
-            toaster.info(notification);
-            dispatch(
-              setPostToggleFollow({
-                post_id: post.id,
-                is_followed: true,
-              })
-            );
-          })
-        );
+        history.push(location.pathname + `/post/${post.id}/${replaceChar(post.title)}`);
       }
-    },
-    [dispatch]
-  );
+    }
+  };
 
-  const trash = useCallback(
-    (post) => {
+  const archivePost = (post, callback = () => {}) => {
+    if (post.type === "draft_post") {
       const onConfirm = () => {
         dispatch(
-          deletePost(
+          deleteDraft({
+            draft_id: post.draft_id,
+            type: post.type,
+          })
+        );
+        dispatch(
+          removeDraftPost(
             {
-              id: post.id,
+              post_id: post.id,
             },
             (err, res) => {
-              if (err) return;
-              dispatch(
-                removePost({
-                  post_id: post.id,
-                  topic_id: parseInt(params.workspaceId),
-                })
-              );
-              if (params.hasOwnProperty("postId")) {
-                history.goBack();
+              if (err) {
+                toaster.error(<>{dictionary.notificationActionFailed}</>);
+                return;
               }
+
+              if (res) {
+                toaster.success(
+                  <>
+                    <b>{post.title}</b> {dictionary.notificationRemoved}.
+                  </>
+                );
+              }
+              callback(err, res);
             }
           )
         );
       };
 
-      let payload = {
-        type: "confirmation",
-        headerText: dictionary.headerRemovePostHeader,
-        submitText: dictionary.buttonRemove,
-        cancelText: dictionary.buttonCancel,
-        bodyText: dictionary.removeThisPost,
-        actions: {
-          onSubmit: onConfirm,
-        },
+      // let payload = {
+      //   type: "confirmation",
+      //   headerText: dictionary.headerRemoveDraftHeader,
+      //   submitText: dictionary.buttonRemove,
+      //   cancelText: dictionary.buttonCancel,
+      //   bodyText: dictionary.removeThisDraft,
+      //   actions: {
+      //     onSubmit: onConfirm,
+      //   },
+      // };
+
+      // dispatch(addToModals(payload));
+      onConfirm();
+    } else {
+      const onConfirm = () => {
+        dispatch(
+          postArchive(
+            {
+              post_id: post.id,
+              is_archived: post.is_archived === 1 ? 0 : 1,
+            },
+            (err, res) => {
+              if (err) {
+                toaster.success(<>Action failed.</>);
+                return;
+              }
+
+              if (res) {
+                if (!post.is_archived) {
+                  toaster.success(
+                    <>
+                      <b>{post.title}</b> {dictionary.postArchivedMuted}
+                    </>
+                  );
+                } else {
+                  toaster.success(
+                    <>
+                      <b>{post.title}</b> is unarchived.
+                    </>
+                  );
+                }
+
+                dispatch(
+                  archiveReducer({
+                    post_id: post.id,
+                    //topic_id: parseInt(params.workspaceId),
+                    is_archived: post.is_archived === 1 ? 0 : 1,
+                  })
+                );
+                // if (params.hasOwnProperty("postId")) {
+                //   history.goBack();
+                // }
+              }
+              callback(err, res);
+            }
+          )
+        );
       };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch, params]
-  );
+      // let payload = {
+      //   type: "confirmation",
+      //   headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
+      //   submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
+      //   cancelText: dictionary.buttonCancel,
+      //   bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
+      //   actions: {
+      //     onSubmit: onConfirm,
+      //   },
+      // };
 
-  const showModal = useCallback(
-    (mode = "create", post = null, comment = null, rewardRef = null) => {
-      let payload = {};
+      // dispatch(addToModals(payload));
+      onConfirm();
+    }
+  };
 
-      switch (mode) {
-        case "create_company": {
-          payload = {
-            type: "post_modal",
-            mode: "create",
-            item: {
-              post: post,
-            },
-            action: {
-              create: createCompany,
-            },
-          };
-          break;
+  const markAsRead = (post, showToaster = false) => {
+    let payload = {
+      post_id: post.id,
+      unread: 0,
+      topic_id: parseInt(params.workspaceId),
+    };
+    let count = post.unread_count;
+    let cb = (err, res) => {
+      if (err) {
+        toaster.success(<>Action failed.</>);
+        return;
+      }
+      payload = {
+        ...payload,
+        folderId: params.hasOwnProperty("folderId") ? parseInt(params.folderId) : null,
+        count: count === 0 ? 1 : count,
+      };
+      if (res) {
+        if (post.recipients.some((r) => r.type === "TOPIC")) {
+          dispatch(getFavoriteWorkspaceCounters());
         }
-        case "edit_company": {
-          payload = {
-            type: "post_modal",
-            mode: "edit",
-            item: {
-              post: post,
-            },
-            action: {
-              update: updateCompany,
-            },
-          };
-          break;
+        if (showToaster)
+          toaster.success(
+            <>
+              {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationRead}.
+            </>
+          );
+
+        dispatch(
+          incomingReadUnreadReducer({
+            post_id: post.id,
+            unread: 0,
+            user_id: user.id,
+          })
+        );
+      }
+    };
+    dispatch(postToggleRead(payload, cb));
+  };
+
+  const markAsUnread = (post, showToaster = false) => {
+    let payload = {
+      post_id: post.id,
+      unread: 1,
+      topic_id: params.workspaceId,
+    };
+    let cb = (err, res) => {
+      if (err) {
+        toaster.success(<>Action failed.</>);
+        return;
+      }
+      payload = {
+        ...payload,
+        folderId: params.hasOwnProperty("folderId") ? params.folderId : null,
+      };
+
+      if (res) {
+        if (post.recipients.some((r) => r.type === "TOPIC")) {
+          dispatch(getFavoriteWorkspaceCounters());
         }
-        case "edit": {
-          payload = {
-            type: "post_modal",
-            mode: mode,
-            item: {
-              post: post,
-            },
-            action: {
-              update: update,
-            },
-            params: params,
-          };
-          break;
-        }
-        case "confirmation": {
-          payload = {
-            type: "confirmation",
-            mode: mode,
-            submitText: dictionary.accept,
-            cancelText: dictionary.buttonCancel,
-            headerText: dictionary.acceptThisPost,
-            bodyText: dictionary.acceptThisPostText,
-            generalConditionText: dictionary.acceptCondition,
-            item: {
-              post: post,
-            },
-            actions: {
-              onSubmit: () => {
-                markAsRead(post);
-                if (rewardRef && rewardRef.current) {
-                  rewardRef.current.rewardMe();
-                }
-                if (comment) {
-                  let cpayload = {
+        if (showToaster)
+          toaster.success(
+            <>
+              {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationUnread}.
+            </>
+          );
+
+        dispatch(
+          incomingReadUnreadReducer({
+            post_id: post.id,
+            unread: 1,
+            user_id: user.id,
+          })
+        );
+      }
+    };
+    dispatch(postToggleRead(payload, cb));
+  };
+
+  const sharePost = (post) => {
+    let link = `${getBaseUrl()}${location.pathname}/post/${post.id}/${replaceChar(post.title)}`;
+    copyTextToClipboard(toaster, link);
+  };
+
+  const snoozePost = (post) => {
+    let payload = {
+      type: "snooze_post",
+      post: post,
+      topic_id: params.workspaceId,
+    };
+
+    dispatch(addToModals(payload));
+  };
+
+  const followPost = (post) => {
+    if (post.is_followed) {
+      //When: The user is following/recipient of the post - and not the creator.
+      dispatch(
+        postUnfollow({ post_id: post.id }, (err, res) => {
+          if (err) return;
+          let notification = `${dictionary.notificationStopFollow} ${post.title}`;
+          toaster.info(notification);
+          dispatch(
+            setPostToggleFollow({
+              post_id: post.id,
+              is_followed: false,
+            })
+          );
+        })
+      );
+    } else {
+      //When: The user not following the post and the post is in an open topic.
+      dispatch(
+        postFollow({ post_id: post.id }, (err, res) => {
+          if (err) return;
+          let notification = `${dictionary.notificationStartFollow} ${post.title}`;
+          toaster.info(notification);
+          dispatch(
+            setPostToggleFollow({
+              post_id: post.id,
+              is_followed: true,
+            })
+          );
+        })
+      );
+    }
+  };
+
+  const trash = (post) => {
+    const onConfirm = () => {
+      dispatch(
+        deletePost(
+          {
+            id: post.id,
+          },
+          (err, res) => {
+            if (err) return;
+            dispatch(
+              removePost({
+                post_id: post.id,
+                topic_id: parseInt(params.workspaceId),
+              })
+            );
+            if (params.hasOwnProperty("postId")) {
+              history.goBack();
+            }
+          }
+        )
+      );
+    };
+
+    let payload = {
+      type: "confirmation",
+      headerText: dictionary.headerRemovePostHeader,
+      submitText: dictionary.buttonRemove,
+      cancelText: dictionary.buttonCancel,
+      bodyText: dictionary.removeThisPost,
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
+    dispatch(addToModals(payload));
+  };
+
+  const showModal = (mode = "create", post = null, comment = null, rewardRef = null) => {
+    let payload = {};
+
+    switch (mode) {
+      case "create_company": {
+        payload = {
+          type: "post_modal",
+          mode: "create",
+          item: {
+            post: post,
+          },
+          action: {
+            create: createCompany,
+          },
+        };
+        break;
+      }
+      case "edit_company": {
+        payload = {
+          type: "post_modal",
+          mode: "edit",
+          item: {
+            post: post,
+          },
+          action: {
+            update: updateCompany,
+          },
+        };
+        break;
+      }
+      case "edit": {
+        payload = {
+          type: "post_modal",
+          mode: mode,
+          item: {
+            post: post,
+          },
+          action: {
+            update: update,
+          },
+          params: params,
+        };
+        break;
+      }
+      case "confirmation": {
+        payload = {
+          type: "confirmation",
+          mode: mode,
+          submitText: dictionary.accept,
+          cancelText: dictionary.buttonCancel,
+          headerText: dictionary.acceptThisPost,
+          bodyText: dictionary.acceptThisPostText,
+          generalConditionText: dictionary.acceptCondition,
+          item: {
+            post: post,
+          },
+          actions: {
+            onSubmit: () => {
+              markAsRead(post);
+              if (rewardRef && rewardRef.current) {
+                rewardRef.current.rewardMe();
+              }
+              if (comment) {
+                let cpayload = {
+                  post_id: post.id,
+                  body: "<div></div>",
+                  mention_ids: [],
+                  file_ids: [],
+                  post_file_ids: [],
+                  personalized_for_id: null,
+                  parent_id: comment.parent_id ? comment.parent_id : comment.id,
+                  approval_user_ids: [],
+                  code_data: {
+                    push_title: `${user.name} replied in ${post.title}`,
                     post_id: post.id,
-                    body: "<div></div>",
-                    mention_ids: [],
-                    file_ids: [],
-                    post_file_ids: [],
-                    personalized_for_id: null,
-                    parent_id: comment.parent_id ? comment.parent_id : comment.id,
-                    approval_user_ids: [],
-                    code_data: {
-                      push_title: `${user.name} replied in ${post.title}`,
-                      post_id: post.id,
-                      post_title: post.title,
-                    },
-                  };
-                  if (comment.users_approval.length === 1) {
-                    dispatch(
-                      postComment(cpayload, (err, res) => {
+                    post_title: post.title,
+                  },
+                };
+                if (comment.users_approval.length === 1) {
+                  dispatch(
+                    postComment(cpayload, (err, res) => {
+                      if (err) return;
+                      approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
                         if (err) return;
-                        approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
-                          if (err) return;
-                          dispatch(
-                            addCommentReact({
-                              counter: 1,
-                              id: comment.id,
-                              parent_id: comment.parent_id,
-                              post_id: post.id,
-                              reaction: "clap",
-                            })
-                          );
-                        });
+                        dispatch(
+                          addCommentReact({
+                            counter: 1,
+                            id: comment.id,
+                            parent_id: comment.parent_id,
+                            post_id: post.id,
+                            reaction: "clap",
+                          })
+                        );
+                      });
+                    })
+                  );
+                } else {
+                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
+                    if (err) return;
+                    dispatch(
+                      addCommentReact({
+                        counter: 1,
+                        id: comment.id,
+                        parent_id: comment.parent_id,
+                        post_id: post.id,
+                        reaction: "clap",
                       })
                     );
-                  } else {
-                    approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
-                      if (err) return;
-                      dispatch(
-                        addCommentReact({
-                          counter: 1,
-                          id: comment.id,
-                          parent_id: comment.parent_id,
-                          post_id: post.id,
-                          reaction: "clap",
-                        })
+                    const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
+                    const allUsersAgreed = comment.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === comment.users_approval.length - 1;
+                    if (isLastUserToAnswer && allUsersAgreed) {
+                      generateSystemMessage(
+                        post,
+                        comment.users_approval.map((ua) => ua.id),
+                        []
                       );
-                      const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
-                      const allUsersAgreed = comment.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === comment.users_approval.length - 1;
-                      if (isLastUserToAnswer && allUsersAgreed) {
-                        generateSystemMessage(
-                          post,
-                          comment.users_approval.map((ua) => ua.id),
-                          []
-                        );
-                      }
-                    });
-                  }
-                } else {
-                  const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
-                  const allUsersAgreed = post.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === post.users_approval.length - 1;
-                  setTimeout(() => {
-                    approve({ post_id: post.id, approved: 1 }, (err, res) => {
-                      if (err) return;
-                      console.log(isLastUserToAnswer, allUsersAgreed, post);
-                      if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
-                        generateSystemMessage(
-                          post,
-                          post.users_approval.map((ua) => ua.id),
-                          []
-                        );
-                      }
-                      if (post.users_approval.length === 1) {
-                        let cpayload = {
-                          post_id: post.id,
-                          body: "<div></div>",
-                          mention_ids: [],
-                          file_ids: [],
-                          post_file_ids: [],
-                          personalized_for_id: null,
-                          parent_id: null,
-                          approval_user_ids: [],
-                          has_accepted: 1,
-                          code_data: {
-                            push_title: `${user.name} replied in ${post.title}`,
-                            post_id: post.id,
-                            post_title: post.title,
-                          },
-                        };
-                        dispatch(postComment(cpayload));
-                      }
-                    });
-                  }, 1000);
+                    }
+                  });
                 }
-              },
-            },
-          };
-          break;
-        }
-        case "create_edit_post_list": {
-          payload = {
-            type: "post_list",
-            mode: "create",
-          };
-          break;
-        }
-        case "add_to_list": {
-          payload = {
-            type: "post_list",
-            mode: "add",
-            item: {
-              post: post,
-            },
-          };
-          break;
-        }
-        case "edit_post_list": {
-          payload = {
-            type: "post_list",
-            mode: "edit",
-            item: {
-              post: post,
-            },
-          };
-          break;
-        }
-        default: {
-          payload = {
-            type: "post_modal",
-            mode: mode,
-            item: {
-              post: post,
-            },
-            action: {
-              create: create,
-            },
-            params: params,
-          };
-        }
-      }
-
-      dispatch(addToModals(payload));
-    },
-    [dispatch, params]
-  );
-
-  const create = useCallback(
-    (payload) => {
-      dispatch(postCreate(payload));
-    },
-    [dispatch]
-  );
-
-  const createCompany = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(
-        postCompanyPosts(payload, (err, res) => {
-          if (res) {
-            toaster.success(<>{dictionary.notificationCreatePost}</>);
-          }
-          callback(err, res);
-        })
-      );
-    },
-    [dispatch]
-  );
-
-  const update = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(
-        putPost(payload, (err, res) => {
-          if (res) {
-            toaster.success(
-              <>
-                {dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}
-              </>
-            );
-          }
-          callback(err, res);
-        })
-      );
-    },
-    [dispatch]
-  );
-
-  const updateCompany = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(
-        putCompanyPosts(payload, (err, res) => {
-          if (res) {
-            toaster.success(
-              <>
-                {dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}
-              </>
-            );
-          }
-          callback(err, res);
-        })
-      );
-    },
-    [dispatch]
-  );
-
-  const clap = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(postClap(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const getRecentPosts = useCallback(
-    (id, callback = () => {}) => {
-      dispatch(fetchRecentPosts({ topic_id: id }, callback));
-    },
-    [dispatch]
-  );
-
-  const getTagsCount = useCallback(
-    (id, callback) => {
-      dispatch(fetchTagCounter({ topic_id: id }, callback));
-    },
-    [dispatch]
-  );
-
-  const fetchCompanyPosts = useCallback(
-    (payload, callback) => {
-      dispatch(getCompanyPosts(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const fetchUnreadCompanyPosts = useCallback(
-    (payload, callback) => {
-      dispatch(getUnreadCompanyPosts(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const setCompanyFilterPosts = useCallback(
-    (payload, callback) => {
-      dispatch(updateCompanyPostFilterSort(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const getPosts = useCallback(
-    (payload, callback) => {
-      dispatch(fetchPosts(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const visit = useCallback(
-    (payload) => {
-      dispatch(postVisit(payload));
-    },
-    [dispatch]
-  );
-
-  const markReadRequirement = useCallback(
-    (post) => {
-      let payload = {
-        post_id: post.id,
-        must_read: 1,
-        must_reply: 0,
-        is_approved: 0,
-      };
-
-      dispatch(postRequired(payload));
-      markAsRead(post);
-    },
-    [dispatch, params]
-  );
-
-  const markReplyRequirement = useCallback(
-    (post) => {
-      let payload = {
-        post_id: post.id,
-        must_read: 0,
-        must_reply: 1,
-        is_approved: 0,
-      };
-
-      dispatch(postRequired(payload));
-    },
-    [dispatch, params]
-  );
-
-  const remind = useCallback(
-    (post, callback = () => {}) => {
-      const onConfirm = (payload, modalCallback = () => {}) => {
-        todoActions.createForPost(post.id, payload, (err, res) => {
-          if (err) {
-            if (err.response && err.response.data && err.response.data.errors) {
-              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
-                toaster.error(dictionary.reminderAlreadyExists);
               } else {
-                toaster.error(dictionary.toasterGeneraError);
+                const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
+                const allUsersAgreed = post.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === post.users_approval.length - 1;
+                setTimeout(() => {
+                  approve({ post_id: post.id, approved: 1 }, (err, res) => {
+                    if (err) return;
+                    console.log(isLastUserToAnswer, allUsersAgreed, post);
+                    if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
+                      generateSystemMessage(
+                        post,
+                        post.users_approval.map((ua) => ua.id),
+                        []
+                      );
+                    }
+                    if (post.users_approval.length === 1) {
+                      let cpayload = {
+                        post_id: post.id,
+                        body: "<div></div>",
+                        mention_ids: [],
+                        file_ids: [],
+                        post_file_ids: [],
+                        personalized_for_id: null,
+                        parent_id: null,
+                        approval_user_ids: [],
+                        has_accepted: 1,
+                        code_data: {
+                          push_title: `${user.name} replied in ${post.title}`,
+                          post_id: post.id,
+                          post_title: post.title,
+                        },
+                      };
+                      dispatch(postComment(cpayload));
+                    }
+                  });
+                }, 1000);
               }
+            },
+          },
+        };
+        break;
+      }
+      case "create_edit_post_list": {
+        payload = {
+          type: "post_list",
+          mode: "create",
+        };
+        break;
+      }
+      case "add_to_list": {
+        payload = {
+          type: "post_list",
+          mode: "add",
+          item: {
+            post: post,
+          },
+        };
+        break;
+      }
+      case "edit_post_list": {
+        payload = {
+          type: "post_list",
+          mode: "edit",
+          item: {
+            post: post,
+          },
+        };
+        break;
+      }
+      default: {
+        payload = {
+          type: "post_modal",
+          mode: mode,
+          item: {
+            post: post,
+          },
+          action: {
+            create: create,
+          },
+          params: params,
+        };
+      }
+    }
+
+    dispatch(addToModals(payload));
+  };
+
+  const create = (payload) => {
+    dispatch(postCreate(payload));
+  };
+
+  const createCompany = (payload, callback = () => {}) => {
+    dispatch(
+      postCompanyPosts(payload, (err, res) => {
+        if (res) {
+          toaster.success(<>{dictionary.notificationCreatePost}</>);
+        }
+        callback(err, res);
+      })
+    );
+  };
+
+  const update = (payload, callback = () => {}) => {
+    dispatch(
+      putPost(payload, (err, res) => {
+        if (res) {
+          toaster.success(
+            <>
+              {dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}
+            </>
+          );
+        }
+        callback(err, res);
+      })
+    );
+  };
+
+  const updateCompany = (payload, callback = () => {}) => {
+    dispatch(
+      putCompanyPosts(payload, (err, res) => {
+        if (res) {
+          toaster.success(
+            <>
+              {dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}
+            </>
+          );
+        }
+        callback(err, res);
+      })
+    );
+  };
+
+  const clap = (payload, callback = () => {}) => {
+    dispatch(postClap(payload, callback));
+  };
+
+  const getRecentPosts = (id, callback = () => {}) => {
+    dispatch(fetchRecentPosts({ topic_id: id }, callback));
+  };
+
+  const getTagsCount = (id, callback) => {
+    dispatch(fetchTagCounter({ topic_id: id }, callback));
+  };
+
+  const fetchCompanyPosts = (payload, callback) => {
+    dispatch(getCompanyPosts(payload, callback));
+  };
+
+  const fetchUnreadCompanyPosts = (payload, callback) => {
+    dispatch(getUnreadCompanyPosts(payload, callback));
+  };
+
+  const setCompanyFilterPosts = (payload, callback) => {
+    dispatch(updateCompanyPostFilterSort(payload, callback));
+  };
+
+  const getPosts = (payload, callback) => {
+    dispatch(fetchPosts(payload, callback));
+  };
+
+  const visit = (payload) => {
+    dispatch(postVisit(payload));
+  };
+
+  const markReadRequirement = (post) => {
+    let payload = {
+      post_id: post.id,
+      must_read: 1,
+      must_reply: 0,
+      is_approved: 0,
+    };
+
+    dispatch(postRequired(payload));
+    markAsRead(post);
+  };
+
+  const markReplyRequirement = (post) => {
+    let payload = {
+      post_id: post.id,
+      must_read: 0,
+      must_reply: 1,
+      is_approved: 0,
+    };
+
+    dispatch(postRequired(payload));
+  };
+
+  const remind = (post, callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
+      todoActions.createForPost(post.id, payload, (err, res) => {
+        if (err) {
+          if (err.response && err.response.data && err.response.data.errors) {
+            if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+              toaster.error(dictionary.reminderAlreadyExists);
             } else {
               toaster.error(dictionary.toasterGeneraError);
             }
+          } else {
+            toaster.error(dictionary.toasterGeneraError);
           }
-          if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
-          }
-          modalCallback(err, res);
-          callback(err, res);
-        });
-      };
-      let payload = {
-        type: "todo_reminder",
-        item: post,
-        itemType: "POST",
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+        }
+        if (res) {
+          toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+        }
+        modalCallback(err, res);
+        callback(err, res);
+      });
+    };
+    let payload = {
+      type: "todo_reminder",
+      item: post,
+      itemType: "POST",
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch, params]
-  );
+    dispatch(addToModals(payload));
+  };
 
-  const getUnreadPostsCount = useCallback(() => {
+  const getUnreadPostsCount = () => {
     dispatch(getUnreadPostEntries());
-  }, []);
+  };
 
   const fetchPostClapHover = (postId, callback = () => {}) => {
     dispatch(
@@ -948,168 +863,126 @@ const usePostActions = () => {
     );
   };
 
-  const archiveAll = useCallback(
-    (payload = {}, callback) => {
-      dispatch(
-        archiveAllPosts(payload, (err, res) => {
-          if (err) return;
+  const archiveAll = (payload = {}, callback) => {
+    dispatch(
+      archiveAllPosts(payload, (err, res) => {
+        if (err) return;
 
-          // if (callback) callback();
-          // dispatch(archiveAllCallback(payload))
-        })
-      );
-    },
-    [dispatch]
-  );
+        // if (callback) callback();
+        // dispatch(archiveAllCallback(payload))
+      })
+    );
+  };
 
-  const readAll = useCallback(
-    (payload = {}, callback) => {
-      dispatch(
-        markAllPostAsRead(payload, (err, res) => {
-          if (err) return;
+  const readAll = (payload = {}, callback) => {
+    dispatch(
+      markAllPostAsRead(payload, (err, res) => {
+        if (err) return;
 
-          // if (callback) callback();
-          // dispatch(readAllCallback(payload))
-        })
-      );
-    },
-    [dispatch]
-  );
+        // if (callback) callback();
+        // dispatch(readAllCallback(payload))
+      })
+    );
+  };
 
-  const addUserToPost = useCallback(
-    (payload = {}, callback) => {
-      dispatch(addUserToPostRecipients(payload, callback));
-    },
-    [dispatch]
-  );
+  const addUserToPost = (payload = {}, callback) => {
+    dispatch(addUserToPostRecipients(payload, callback));
+  };
 
-  const getUnreadPostCommentsCount = useCallback(() => {
+  const getUnreadPostCommentsCount = () => {
     dispatch(getUnreadPostComments());
-  }, [dispatch]);
+  };
 
-  const getUnreadNotificationEntries = useCallback(
-    (payload = {}) => {
-      dispatch(getUnreadNotificationCounterEntries(payload));
-    },
-    [dispatch]
-  );
+  const getUnreadNotificationEntries = (payload = {}) => {
+    dispatch(getUnreadNotificationCounterEntries(payload));
+  };
 
-  const like = useCallback(
-    (payload = {}, callback) => {
-      dispatch(addPostReact(payload, callback));
-    },
-    [dispatch]
-  );
+  const like = (payload = {}, callback) => {
+    dispatch(addPostReact(payload, callback));
+  };
 
-  const unlike = useCallback(
-    (payload = {}, callback) => {
-      dispatch(removePostReact(payload, callback));
-    },
-    [dispatch]
-  );
+  const unlike = (payload = {}, callback) => {
+    dispatch(removePostReact(payload, callback));
+  };
 
-  const fetchPostDetail = useCallback(
-    (payload = {}) => {
-      dispatch(fetchDetail(payload));
-    },
-    [dispatch]
-  );
+  const fetchPostDetail = (payload = {}) => {
+    dispatch(fetchDetail(payload));
+  };
 
-  const updatePostImages = useCallback(
-    (payload = {}) => {
-      dispatch(updatePostFiles(payload));
-    },
-    [dispatch]
-  );
+  const updatePostImages = (payload = {}) => {
+    dispatch(updatePostFiles(payload));
+  };
 
-  const getUnreadWsPostsCount = useCallback(
-    (payload = {}, callback = () => {}) => {
-      dispatch(
-        getUnreadWorkspacePostEntries(payload, (err, res) => {
-          if (err) return;
-          dispatch(
-            updateWorkspacePostCount({
-              topic_id: payload.topic_id,
-              count: res.data.result,
-            })
-          );
-        })
-      );
-    },
-    [dispatch]
-  );
-
-  const approve = useCallback(
-    (payload, callback) => {
-      dispatch(postApprove(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const approveComment = useCallback(
-    (payload = {}, callback) => {
-      dispatch(commentApprove(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const close = useCallback(
-    (post, callback) => {
-      dispatch(postClose({ post_id: post.id, is_close: post.is_close ? 0 : 1 }, callback));
-    },
-    [dispatch]
-  );
-
-  const generateSystemMessage = useCallback(
-    (post, accepted_ids, rejected_ids) => {
-      let payload = {
-        post_id: post.id,
-        //body: rejected_ids.length ? "<div>Everyone disagreed to this post</div>" : "<div>Everyone agreed to this post</div>",
-        body: `COMMENT_APPROVAL::${JSON.stringify({
-          message: rejected_ids.length ? "Everyone disagreed to this post" : "Everyone agreed to this post",
-        })}`,
-        generate_system_message: 1,
-        accepted_user_ids: accepted_ids,
-        rejected_user_ids: rejected_ids,
-      };
-      dispatch(postComment(payload));
-    },
-    [dispatch]
-  );
-
-  const snooze = useCallback(
-    (post) => {
-      const onConfirm = () => {
+  const getUnreadWsPostsCount = (payload = {}, callback = () => {}) => {
+    dispatch(
+      getUnreadWorkspacePostEntries(payload, (err, res) => {
+        if (err) return;
         dispatch(
-          postSnooze(
-            {
-              post_id: post.id,
-              set_time: "tomorrow",
-            },
-            (err, res) => {
-              if (err) return;
-              toaster.success("Post successfully snoozed.");
-            }
-          )
+          updateWorkspacePostCount({
+            topic_id: payload.topic_id,
+            count: res.data.result,
+          })
         );
-        dispatch(removePost(post));
-      };
+      })
+    );
+  };
 
-      let payload = {
-        type: "confirmation",
-        headerText: dictionary.headerSnoozePost,
-        submitText: dictionary.buttonSnooze,
-        cancelText: dictionary.buttonCancel,
-        bodyText: dictionary.snoozeThisPost,
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+  const approve = (payload, callback) => {
+    dispatch(postApprove(payload, callback));
+  };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+  const approveComment = (payload = {}, callback) => {
+    dispatch(commentApprove(payload, callback));
+  };
+
+  const close = (post, callback) => {
+    dispatch(postClose({ post_id: post.id, is_close: post.is_close ? 0 : 1 }, callback));
+  };
+
+  const generateSystemMessage = (post, accepted_ids, rejected_ids) => {
+    let payload = {
+      post_id: post.id,
+      //body: rejected_ids.length ? "<div>Everyone disagreed to this post</div>" : "<div>Everyone agreed to this post</div>",
+      body: `COMMENT_APPROVAL::${JSON.stringify({
+        message: rejected_ids.length ? "Everyone disagreed to this post" : "Everyone agreed to this post",
+      })}`,
+      generate_system_message: 1,
+      accepted_user_ids: accepted_ids,
+      rejected_user_ids: rejected_ids,
+    };
+    dispatch(postComment(payload));
+  };
+
+  const snooze = (post) => {
+    const onConfirm = () => {
+      dispatch(
+        postSnooze(
+          {
+            post_id: post.id,
+            set_time: "tomorrow",
+          },
+          (err, res) => {
+            if (err) return;
+            toaster.success("Post successfully snoozed.");
+          }
+        )
+      );
+      dispatch(removePost(post));
+    };
+
+    let payload = {
+      type: "confirmation",
+      headerText: dictionary.headerSnoozePost,
+      submitText: dictionary.buttonSnooze,
+      cancelText: dictionary.buttonCancel,
+      bodyText: dictionary.snoozeThisPost,
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
+
+    dispatch(addToModals(payload));
+  };
 
   const setCommentType = useCallback(
     (type, callback = () => {}) => {

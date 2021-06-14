@@ -4,7 +4,7 @@ import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName } from "../../helpers/dateFormatter";
+import { formatHoursAMPM } from "../../helpers/dateFormatter";
 import { postChatReminder } from "../../redux/actions/chatActions";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";

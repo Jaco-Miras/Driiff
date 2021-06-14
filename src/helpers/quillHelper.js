@@ -1,7 +1,7 @@
-import { parseEmojis, textToLink } from "./stringFormatter";
-import { validURL } from "./urlContentHelper";
+import { parseEmojis } from "./stringFormatter";
+//import { validURL } from "./urlContentHelper";
 //import { GoogleDriveLink, FancyLink, SvgIcon } from "../components/common";
-import {SvgIcon } from "../components/common";
+import { SvgIcon } from "../components/common";
 import React from "react";
 import { renderToString } from "react-dom/server";
 
@@ -123,12 +123,11 @@ class quillHelper {
             //   word = taskUrl;
             // }
           }
-           */ 
-       // word = renderToString(<FancyLink link={word} />);
+           */
+        // word = renderToString(<FancyLink link={word} />);
         // word = `<a target="_blank" href="${word}">${word}</a>`;
-       // }
+        // }
 
-      
         parseText.push(word);
         i++;
       }

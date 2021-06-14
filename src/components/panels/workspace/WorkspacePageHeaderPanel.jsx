@@ -97,7 +97,7 @@ const WorkspacePageHeaderPanel = (props) => {
     if (!workspaceReminders.hasOwnProperty(params.workspaceId)) {
       fetchWsCount();
     }
-  }, [workspaceReminders, params]);
+  }, [workspaceReminders, params, fetchWsCount]);
 
   const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 

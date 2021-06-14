@@ -4,7 +4,7 @@ import { Avatar, ToolTip } from "../../common";
 import { TodoCheckBox } from "../../forms";
 //import quillHelper from "../../../helpers/quillHelper";
 import { setViewFiles } from "../../../redux/actions/fileActions";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 
 const Icon = styled(SvgIconFeather)`
@@ -110,7 +110,7 @@ const TodosList = (props) => {
   const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.session.user);
+  //const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
