@@ -978,33 +978,21 @@ const useFileActions = (params = null) => {
     dispatch(incomingFileThumbnailData(payload, callback));
   };
 
-  const fetchTeamChatFiles = useCallback(
-    (payload, callback) => {
-      dispatch(getTeamChatFiles(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchTeamChatFiles = (payload, callback) => {
+    dispatch(getTeamChatFiles(payload, callback));
+  };
 
-  const fetchClientChatFiles = useCallback(
-    (payload, callback) => {
-      dispatch(getClientChatFiles(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchClientChatFiles = (payload, callback) => {
+    dispatch(getClientChatFiles(payload, callback));
+  };
 
-  const fetchClientPostFiles = useCallback(
-    (payload, callback) => {
-      dispatch(getClientPostFiles(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchClientPostFiles = (payload, callback) => {
+    dispatch(getClientPostFiles(payload, callback));
+  };
 
-  const fetchPrivatePostFiles = useCallback(
-    (payload, callback) => {
-      dispatch(getPrivatePostFiles(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchPrivatePostFiles = (payload, callback) => {
+    dispatch(getPrivatePostFiles(payload, callback));
+  };
 
   return {
     addGoogleDriveFile,
