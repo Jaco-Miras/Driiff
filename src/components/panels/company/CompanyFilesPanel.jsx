@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -45,13 +45,10 @@ const CompanyFilesPanel = (props) => {
     document.body.classList.remove("mobile-modal-open");
   };
 
-  const handleSearchChange = useCallback(
-    (e) => {
-      if (e.target.value === "") clearSearch();
-      setSearch(e.target.value);
-    },
-    [setSearch]
-  );
+  const handleSearchChange = (e) => {
+    if (e.target.value === "") clearSearch();
+    setSearch(e.target.value);
+  };
 
   const handleSearch = () => {
     actions.searchCompany(search);
@@ -62,14 +59,11 @@ const CompanyFilesPanel = (props) => {
     actions.clearSearch();
   };
 
-  const handleEnter = useCallback(
-    (e) => {
-      if (e.key === "Enter") {
-        handleSearch();
-      }
-    },
-    [handleSearch]
-  );
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   const dictionary = {
     createFolder: _t("FILE.CREATE_FOLDER", "Create folder"),
@@ -180,9 +174,9 @@ const CompanyFilesPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const clearFilter = useCallback(() => {
+  const clearFilter = () => {
     setFilter("");
-  }, [setFilter]);
+  };
 
   useEffect(() => {
     if (folder && folder.is_archived && filter !== "removed") {
@@ -210,7 +204,7 @@ const CompanyFilesPanel = (props) => {
           disableOptions={disableOptions}
         />
         <div className="col-lg-9 app-content mb-4">
-          <div className="app-content-overlay"/>
+          <div className="app-content-overlay" />
           <CompanyFilesHeader
             isMember={isMember}
             clearFilter={clearFilter}

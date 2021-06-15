@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../../common";
@@ -123,14 +123,11 @@ export const NotificationTimelineItem = (props) => {
       actions.remove({ id: notification.id });
     };*/
 
-  const handleAuthorNameClick = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
-    },
-    [notification.author]
-  );
+  const handleAuthorNameClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
+  };
 
   //const { _t } = useTranslation();
 
@@ -150,7 +147,7 @@ export const NotificationTimelineItem = (props) => {
     markAsUnread: _t("NOTIFICATION.MARK_AS_UNREAD", "Mark as unread"),
   };
 
-  const renderTitle = useCallback(() => {
+  const renderTitle = () => {
     switch (notification.type) {
       case "POST_CREATE": {
         return (
@@ -245,7 +242,7 @@ export const NotificationTimelineItem = (props) => {
       default:
         return null;
     }
-  }, [notification]);
+  };
 
   const getBadgeClass = (data) => {
     if (data.must_read) return "badge-danger";

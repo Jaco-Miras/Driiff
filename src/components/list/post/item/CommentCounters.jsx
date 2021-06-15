@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import Viewers from "./Viewers";
@@ -49,13 +49,13 @@ const Reply = styled.span`
 const CommentCounters = (props) => {
   const { comment, dictionary, disableOptions, likers, post, handleReaction, handleShowInput } = props;
 
-  const userReadPost = useCallback(() => {
+  const userReadPost = () => {
     let filter_post_read = [];
     if (post.post_reads) {
       return post.post_reads.filter((u) => u.last_read_timestamp >= comment.updated_at.timestamp);
     }
     return filter_post_read;
-  }, [post]);
+  };
 
   return (
     <Wrapper className="d-flex align-items-center justify-content-start">

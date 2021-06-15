@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
@@ -106,11 +106,11 @@ const CompanyPostsPanel = (props) => {
   const [activePostListName, setActivePostListName] = useState({});
   const isExternalUser = user.type === "external";
 
-  const handleGoback = useCallback(() => {
+  const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
       history.push("/posts");
     }
-  }, [params, history]);
+  };
 
   const { _t } = useTranslation();
 
@@ -265,13 +265,13 @@ const CompanyPostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(() => {
+  const handleEditArchivePostList = () => {
     const payload = {
       tag: null,
       filter: "all",
     };
     actions.setCompanyFilterPosts(payload);
-  }, [activePostListName]);
+  };
 
   if (posts === null) return <></>;
   return (

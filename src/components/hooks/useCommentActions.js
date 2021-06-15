@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import {
   addCommentReact,
@@ -36,136 +36,106 @@ const useCommentActions = () => {
     toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
   };
 
-  const fetchPostComments = useCallback(
-    (payload, callback) => {
-      dispatch(fetchComments(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchPostComments = (payload, callback) => {
+    dispatch(fetchComments(payload, callback));
+  };
 
-  const setToEdit = useCallback(
-    (comment) => {
-      dispatch(setEditComment(comment));
-    },
-    [dispatch]
-  );
+  const setToEdit = (comment) => {
+    dispatch(setEditComment(comment));
+  };
 
-  const add = useCallback(
-    (payload) => {
-      dispatch(addComment(payload));
-    },
-    [dispatch]
-  );
+  const add = (payload) => {
+    dispatch(addComment(payload));
+  };
 
-  const create = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(postComment(payload, callback));
-    },
-    [dispatch]
-  );
+  const create = (payload, callback = () => {}) => {
+    dispatch(postComment(payload, callback));
+  };
 
-  const edit = useCallback(
-    (payload) => {
-      dispatch(putComment(payload));
-    },
-    [dispatch]
-  );
+  const edit = (payload) => {
+    dispatch(putComment(payload));
+  };
 
-  const addQuote = useCallback(
-    (comment) => {
-      dispatch(addCommentQuote(comment));
-    },
-    [dispatch]
-  );
+  const addQuote = (comment) => {
+    dispatch(addCommentQuote(comment));
+  };
 
-  const clearQuote = useCallback(
-    (comment) => {
-      dispatch(clearCommentQuote(comment));
-    },
-    [dispatch]
-  );
+  const clearQuote = (comment) => {
+    dispatch(clearCommentQuote(comment));
+  };
 
-  const clap = useCallback(
-    (payload) => {
-      dispatch(postCommentClap(payload));
-    },
-    [dispatch]
-  );
+  const clap = (payload) => {
+    dispatch(postCommentClap(payload));
+  };
 
-  const remove = useCallback(
-    (comment) => {
-      console.log(comment);
-      const onConfirm = () => {
-        if (Object.keys(comment.replies).length > 0) {
-          let obj = {
-            post_id: comment.post_id,
-            id: comment.id,
-            user_id: comment.author.id,
-            body: "<i>The comment has been removed by the author.</i>",
-            post_file_ids: [],
-            file_ids: [],
-            mention_ids: [],
-            personalized_for_id: null,
-            parent_id: comment.parent_id,
-          };
-          dispatch(putComment(obj));
-        } else {
-          dispatch(deleteComment({ comment_id: comment.id }));
-        }
-      };
+  const remove = (comment) => {
+    console.log(comment);
+    const onConfirm = () => {
+      if (Object.keys(comment.replies).length > 0) {
+        let obj = {
+          post_id: comment.post_id,
+          id: comment.id,
+          user_id: comment.author.id,
+          body: "<i>The comment has been removed by the author.</i>",
+          post_file_ids: [],
+          file_ids: [],
+          mention_ids: [],
+          personalized_for_id: null,
+          parent_id: comment.parent_id,
+        };
+        dispatch(putComment(obj));
+      } else {
+        dispatch(deleteComment({ comment_id: comment.id }));
+      }
+    };
 
-      let payload = {
-        type: "confirmation",
-        headerText: "Remove post comment?",
-        submitText: "Remove",
-        cancelText: "Cancel",
-        bodyText: "Are you sure you want to remove this comment?",
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+    let payload = {
+      type: "confirmation",
+      headerText: "Remove post comment?",
+      submitText: "Remove",
+      cancelText: "Cancel",
+      bodyText: "Are you sure you want to remove this comment?",
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    dispatch(addToModals(payload));
+  };
 
-  const remind = useCallback(
-    (postComment, post, callback = () => {}) => {
-      const onConfirm = (payload, modalCallback = () => {}) => {
-        todoActions.createForPostComment(postComment.id, payload, (err, res) => {
-          if (err) {
-            if (err.response && err.response.data && err.response.data.errors) {
-              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
-                toaster.error(dictionary.reminderAlreadyExists);
-              } else {
-                toaster.error(dictionary.toasterGeneraError);
-              }
+  const remind = (postComment, post, callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
+      todoActions.createForPostComment(postComment.id, payload, (err, res) => {
+        if (err) {
+          if (err.response && err.response.data && err.response.data.errors) {
+            if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+              toaster.error(dictionary.reminderAlreadyExists);
             } else {
               toaster.error(dictionary.toasterGeneraError);
             }
+          } else {
+            toaster.error(dictionary.toasterGeneraError);
           }
-          if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
-          }
-          modalCallback(err, res);
-          callback(err, res);
-        });
-      };
-      let payload = {
-        type: "todo_reminder",
-        parentItem: post,
-        item: postComment,
-        itemType: "POST_COMMENT",
-        actions: {
-          onSubmit: onConfirm,
-        },
-      };
+        }
+        if (res) {
+          toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+        }
+        modalCallback(err, res);
+        callback(err, res);
+      });
+    };
+    let payload = {
+      type: "todo_reminder",
+      parentItem: post,
+      item: postComment,
+      itemType: "POST_COMMENT",
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    dispatch(addToModals(payload));
+  };
 
   const fetchPostReplyHover = (messageId, callback = () => {}) => {
     dispatch(
@@ -178,80 +148,53 @@ const useCommentActions = () => {
     );
   };
 
-  const like = useCallback(
-    (payload = {}, callback) => {
-      dispatch(addCommentReact(payload, callback));
-    },
-    [dispatch]
-  );
+  const like = (payload = {}, callback) => {
+    dispatch(addCommentReact(payload, callback));
+  };
 
-  const unlike = useCallback(
-    (payload = {}, callback) => {
-      dispatch(removeCommentReact(payload, callback));
-    },
-    [dispatch]
-  );
+  const unlike = (payload = {}, callback) => {
+    dispatch(removeCommentReact(payload, callback));
+  };
 
-  const updateCommentImages = useCallback(
-    (payload = {}) => {
-      dispatch(updateCommentFiles(payload));
-    },
-    [dispatch]
-  );
+  const updateCommentImages = (payload = {}) => {
+    dispatch(updateCommentFiles(payload));
+  };
 
-  const important = useCallback(
-    (comment) => {
-      dispatch(
-        putCommentImportant({
-          message_id: comment.id,
-          is_important: comment.is_important ? 0 : 1,
-        })
-      );
-    },
-    [dispatch]
-  );
+  const important = (comment) => {
+    dispatch(
+      putCommentImportant({
+        message_id: comment.id,
+        is_important: comment.is_important ? 0 : 1,
+      })
+    );
+  };
 
-  const approve = useCallback(
-    (payload = {}, callback) => {
-      dispatch(commentApprove(payload, callback));
-    },
-    [dispatch]
-  );
+  const approve = (payload = {}, callback) => {
+    dispatch(commentApprove(payload, callback));
+  };
 
-  const fetchPostRead = useCallback(
-    (postId, callback) => {
-      dispatch(
-        getPostRead(
-          {
-            post_id: postId,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
+  const fetchPostRead = (postId, callback) => {
+    dispatch(
+      getPostRead(
+        {
+          post_id: postId,
+        },
+        callback
+      )
+    );
+  };
 
-  const setPostReadComments = useCallback(
-    (payload, callback) => {
-      dispatch(setPostRead(payload, callback));
-    },
-    [dispatch]
-  );
+  const setPostReadComments = (payload, callback) => {
+    dispatch(setPostRead(payload, callback));
+  };
 
-  const clearApprovingStatus = useCallback(
-    (payload, callback) => {
-      dispatch(clearApprovingState(payload, callback));
-    },
-    [dispatch]
-  );
+  const clearApprovingStatus = (payload, callback) => {
+    dispatch(clearApprovingState(payload, callback));
+  };
 
-  const setRequestForChangeComment = useCallback(
-    (payload, callback) => {
-      dispatch(setChangeRequestedComment(payload, callback));
-    },
-    [dispatch]
-  );
+  const setRequestForChangeComment = (payload, callback) => {
+    dispatch(setChangeRequestedComment(payload, callback));
+  };
 
   return {
     add,

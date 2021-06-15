@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
@@ -112,12 +112,12 @@ const WorkspacePostsPanel = (props) => {
 
   const isExternalUser = user.type === "external";
 
-  const handleGoback = useCallback(() => {
+  const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
       let pathname = history.location.pathname.split("/post/")[0];
       history.push(pathname);
     }
-  }, [params, history]);
+  };
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
@@ -402,7 +402,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(() => {
+  const handleEditArchivePostList = () => {
     const payload = {
       topic_id: workspace.id,
       tag: null,
@@ -410,7 +410,7 @@ const WorkspacePostsPanel = (props) => {
       filter: "all",
     };
     dispatch(updateWorkspacePostFilterSort(payload));
-  }, [activePostListName]);
+  };
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;

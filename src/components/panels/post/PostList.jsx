@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
@@ -24,34 +24,28 @@ const PostList = (props) => {
   const { showModal } = postActions;
   const dispatch = useDispatch();
 
-  const handleClickFilter = useCallback(
-    (e) => {
-      e.persist();
-      let payload = {
-        topic_id: workspace.id,
-        tag: null,
-        postListTag: e.target.dataset.id,
-        filter: null,
-      };
+  const handleClickFilter = (e) => {
+    e.persist();
+    let payload = {
+      topic_id: workspace.id,
+      tag: null,
+      postListTag: e.target.dataset.id,
+      filter: null,
+    };
 
-      dispatch(updateWorkspacePostFilterSort(payload));
-      onGoBack();
-      document.body.classList.remove("mobile-modal-open");
-    },
-    [workspace]
-  );
+    dispatch(updateWorkspacePostFilterSort(payload));
+    onGoBack();
+    document.body.classList.remove("mobile-modal-open");
+  };
 
-  const handleEditArchivePostList = useCallback((e, data) => {
+  const handleEditArchivePostList = (e, data) => {
     e.stopPropagation();
     showModal("edit_post_list", data);
-  });
+  };
 
-  const handleHover = useCallback(
-    (e, data) => {
-      setSelectedFilter(data.id);
-    },
-    [selectedFilter]
-  );
+  const handleHover = (e, data) => {
+    setSelectedFilter(data.id);
+  };
 
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>

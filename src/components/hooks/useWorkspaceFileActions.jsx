@@ -1,4 +1,3 @@
-import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import {
   deleteWorkspaceFile,
@@ -25,19 +24,16 @@ const useWorkspaceFileActions = () => {
    * @param {string} [payload.search]
    * @param {number} [payload.folder_id]
    */
-  const fetch = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetch = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspaceFiles(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspaceFiles(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -47,19 +43,16 @@ const useWorkspaceFileActions = () => {
    * @param {string} [payload.search]
    * @param {number} [payload.folder_id]
    */
-  const fetchPrimary = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetchPrimary = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspacePrimaryFiles(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspacePrimaryFiles(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -68,19 +61,16 @@ const useWorkspaceFileActions = () => {
    * @param {number} [payload.limit=1000]
    * @param {string} [payload.search]
    */
-  const fetchRecentlyEdited = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetchRecentlyEdited = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspaceRecentlyEditedFiles(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspaceRecentlyEditedFiles(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -89,19 +79,16 @@ const useWorkspaceFileActions = () => {
    * @param {number} [payload.limit=1000]
    * @param {string} [payload.search]
    */
-  const fetchImportant = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetchImportant = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspaceFavoriteFiles(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspaceFavoriteFiles(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -110,19 +97,16 @@ const useWorkspaceFileActions = () => {
    * @param {number} [payload.limit=1000]
    * @param {string} [payload.search]
    */
-  const fetchRemoved = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetchRemoved = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspaceTrashFiles(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspaceTrashFiles(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -131,19 +115,16 @@ const useWorkspaceFileActions = () => {
    * @param {number} [payload.limit=1000]
    * @param {string} [payload.search]
    */
-  const fetchPopular = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetchPopular = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspacePopularFiles(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspacePopularFiles(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -152,19 +133,16 @@ const useWorkspaceFileActions = () => {
    * @param {number} [payload.limit=1000]
    * @param {string} [payload.search]
    */
-  const fetchFolders = useCallback(
-    (workspaceId, filter = {}, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        skip: 0,
-        limit: 1000,
-        ...filter,
-      };
+  const fetchFolders = (workspaceId, filter = {}, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      skip: 0,
+      limit: 1000,
+      ...filter,
+    };
 
-      dispatch(getWorkspaceFolders(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspaceFolders(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
@@ -173,64 +151,52 @@ const useWorkspaceFileActions = () => {
    * @param {number} [payload.limit=1000]
    * @param {string} [payload.search]
    */
-  const fetchStats = useCallback(
-    (workspaceId, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-      };
+  const fetchStats = (workspaceId, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+    };
 
-      dispatch(getWorkspaceFilesDetail(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(getWorkspaceFilesDetail(payload, callback));
+  };
 
   /**
    * @param {number} workspaceId
    * @param {Object} file
    */
-  const create = useCallback(
-    (workspaceId, file, callback = () => {}) => {
-      let payload = {
-        topic_id: workspaceId,
-        ...file,
-      };
+  const create = (workspaceId, file, callback = () => {}) => {
+    let payload = {
+      topic_id: workspaceId,
+      ...file,
+    };
 
-      dispatch(uploadWorkspaceFile(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(uploadWorkspaceFile(payload, callback));
+  };
 
   /**
    * @param {Object} file
    */
-  const remove = useCallback(
-    (file, callback = () => {}) => {
-      let payload = {
-        link_type: file.link_type,
-        link_id: file.link_id,
-        file_id: file.id,
-      };
+  const remove = (file, callback = () => {}) => {
+    let payload = {
+      link_type: file.link_type,
+      link_id: file.link_id,
+      file_id: file.id,
+    };
 
-      dispatch(deleteWorkspaceFile(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(deleteWorkspaceFile(payload, callback));
+  };
 
   /**
    * @param {Object} file
    */
-  const restore = useCallback(
-    (file, callback = () => {}) => {
-      let payload = {
-        link_type: file.link_type,
-        link_id: file.link_id,
-        file_id: file.id,
-      };
+  const restore = (file, callback = () => {}) => {
+    let payload = {
+      link_type: file.link_type,
+      link_id: file.link_id,
+      file_id: file.id,
+    };
 
-      dispatch(restoreWorkspaceFile(payload, callback));
-    },
-    [dispatch]
-  );
+    dispatch(restoreWorkspaceFile(payload, callback));
+  };
 
   return {
     create,

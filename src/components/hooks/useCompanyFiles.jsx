@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useFileActions } from "../hooks";
@@ -60,7 +60,7 @@ const useFiles = () => {
     }
   };
 
-  const loadMoreFolderFiles = useCallback(() => {
+  const loadMoreFolderFiles = () => {
     if (!folder || fetchingFolderFiles) return;
 
     setFetchingFolderFiles(true);
@@ -78,7 +78,7 @@ const useFiles = () => {
         }
       );
     }
-  }, [folder, setFetchingFolderFiles]);
+  };
 
   const loadMoreRecentEditedFiles = () => {
     if (!fetchingRecentlyEditedFiles && hasMoreRecentlyEdited) {

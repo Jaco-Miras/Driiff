@@ -1,5 +1,5 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
@@ -616,21 +616,18 @@ const ChatBubble = (props) => {
     }
   }, [isLastChat, entry, isLastChatVisible, inView]);
 
-  const handleQuoteClick = useCallback(
-    (e) => {
-      if (reply.quote) {
-        let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
-        if (el) {
-          el.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-          });
-        }
+  const handleQuoteClick = (e) => {
+    if (reply.quote) {
+      let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
+      if (el) {
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
       }
-    },
-    [reply]
-  );
+    }
+  };
 
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
 

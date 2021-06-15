@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
@@ -64,12 +64,9 @@ const SystemPeoplePanel = (props) => {
     setSearch("");
   };
 
-  const handleUserNameClick = useCallback(
-    (user) => {
-      history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
-    },
-    [history]
-  );
+  const handleUserNameClick = (user) => {
+    history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
+  };
 
   const handleUserChat = (user) => selectUserChannel(user);
 

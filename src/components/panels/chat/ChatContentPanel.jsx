@@ -10,6 +10,7 @@ import ChatMessages from "../../list/chat/ChatMessages";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 //import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
+import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -32,7 +33,7 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -195,29 +196,35 @@ const ChatContentPanel = (props) => {
         onCancel={handleHideDropzone}
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
-      {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
-      {/* {selectedChannel !== null ? (
-        virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
-        ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} translate={translate} language={language}/>
-        )
-      ) : (
-        <ChatMessagesPlaceholder />
-      )} */}
       {selectedChannel !== null ? (
-        <ChatMessages
-          selectedChannel={selectedChannel}
-          chatMessageActions={chatMessageActions}
-          timeFormat={timeFormat}
-          dictionary={dictionary}
-          unreadCount={unreadCount}
-          teamChannelId={teamChannelId}
-          isIdle={isIdle}
-          translate={translate}
-          language={language}
-          _t={_t}
-        />
+        virtualization ? (
+          // <VirtuosoContainer />
+          <ChatMessages
+            selectedChannel={selectedChannel}
+            chatMessageActions={chatMessageActions}
+            timeFormat={timeFormat}
+            dictionary={dictionary}
+            unreadCount={unreadCount}
+            teamChannelId={teamChannelId}
+            isIdle={isIdle}
+            translate={translate}
+            language={language}
+            _t={_t}
+          />
+        ) : (
+          <ChatMessages
+            selectedChannel={selectedChannel}
+            chatMessageActions={chatMessageActions}
+            timeFormat={timeFormat}
+            dictionary={dictionary}
+            unreadCount={unreadCount}
+            teamChannelId={teamChannelId}
+            isIdle={isIdle}
+            translate={translate}
+            language={language}
+            _t={_t}
+          />
+        )
       ) : (
         <ChatMessagesPlaceholder />
       )}

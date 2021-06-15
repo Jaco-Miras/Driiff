@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsMember, useOutsideClick, useTranslation, useToaster } from "../hooks";
@@ -75,9 +75,9 @@ const SettingsLink = (props) => {
   const topic = useSelector((state) => state.workspaces.activeTopic);
   const folders = useSelector((state) => state.workspaces.folders);
   const [show, setShow] = useState(false);
-  const toggle = useCallback(() => {
+  const toggle = () => {
     setShow(!show);
-  }, [show]);
+  };
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");

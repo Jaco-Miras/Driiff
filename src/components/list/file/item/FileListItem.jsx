@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather, ToolTip } from "../../../common";
 import { FileOptions } from "../../../panels/files";
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 
       &.uploading {
         background: #afb8bd;
-        opacity: .8;
+        opacity: 0.8;
       }
       .progress {
         bottom: 10px;
@@ -48,43 +48,35 @@ const Star = styled(SvgIconFeather)`
 `;
 
 const FileListItem = (props) => {
-  const {className = "", folders, file, actions, isMember, forceDelete = false, disableOptions} = props;
+  const { className = "", folders, file, actions, isMember, forceDelete = false, disableOptions } = props;
 
   const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
 
-  const handleFileView = useCallback(() => {
+  const handleFileView = () => {
     actions.viewFiles(file);
-  }, [file]);
+  };
 
-  const handleFavorite = useCallback(() => {
-    setIsFavorite(prevState => !prevState);
+  const handleFavorite = () => {
+    setIsFavorite((prevState) => !prevState);
     actions.favorite(file);
-  }, [file, setIsFavorite]);
+  };
 
   return (
     <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleFileView}>
       <div className="card  app-file-list">
         <div className={typeof file.id === "string" ? "app-file-icon uploading" : "app-file-icon uploaded"}>
-          {isFavorite === true && <Star icon="star"/>}
+          {isFavorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
-          {typeof file.id === "number" &&
-          <FileOptions
-            file={file} folders={folders}
-            actions={{...actions, favorite: handleFavorite}} isMember={isMember} forceDelete={forceDelete}
-            disableOptions={disableOptions}/>}
-          {typeof file.id === "string" &&
-          <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"}/>}
+          {typeof file.id === "number" && <FileOptions file={file} folders={folders} actions={{ ...actions, favorite: handleFavorite }} isMember={isMember} forceDelete={forceDelete} disableOptions={disableOptions} />}
+          {typeof file.id === "string" && <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"} />}
         </div>
         <div className="p-2 small">
           <ToolTip content={file.name ? file.name : file.search}>
             <div className="file-name">
-              {
-                file.hasOwnProperty("payload_id") &&
-                <SvgIconFeather className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20"
-                                width="15" opacity=".8"/>
-              }
-              {file.name ? file.name : file.search}</div>
+              {file.hasOwnProperty("payload_id") && <SvgIconFeather className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20" width="15" opacity=".8" />}
+              {file.name ? file.name : file.search}
+            </div>
           </ToolTip>
           <div className="text-muted">
             {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}

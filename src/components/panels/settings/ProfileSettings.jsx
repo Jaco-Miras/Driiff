@@ -86,7 +86,7 @@ const ProfileSettings = (props) => {
 
   const {
     generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, order_channel: orderChannel, daily_digest },
-    chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
+    chatSettings: { order_channel, sound_enabled, preview_message, translate, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
@@ -390,38 +390,34 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
-              {
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={virtualization}
-                      type="switch"
-                      id="chat_virtualization"
-                      name="virtualization"
-                      onChange={handleChatSwitchToggle}
-                      data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
-                      label={<span>Virtualized chat</span>}
-                    />
-                  </div>
+              <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={virtualization}
+                    type="switch"
+                    id="chat_virtualization"
+                    name="virtualization"
+                    onChange={handleChatSwitchToggle}
+                    data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
+                    label={<span>Virtualized chat</span>}
+                  />
                 </div>
-              }
-              {
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={translate}
-                      type="switch"
-                      id="translate_chat"
-                      name="translate"
-                      onChange={handleChatSwitchToggle}
-                      data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
-                      label={<span>{dictionary.liveTranslation}</span>}
-                    />
-                  </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={translate}
+                    type="switch"
+                    id="translate_chat"
+                    name="translate"
+                    onChange={handleChatSwitchToggle}
+                    data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
+                    label={<span>{dictionary.liveTranslation}</span>}
+                  />
                 </div>
-              }
+              </div>
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
                 <div className="col-7">

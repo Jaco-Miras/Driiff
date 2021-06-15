@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -224,13 +224,13 @@ const CompanyPostDetailFooter = (props) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
 
-  const handleSend = useCallback(() => {
+  const handleSend = () => {
     setSent(true);
-  }, [setSent]);
+  };
 
-  const handleClearSent = useCallback(() => {
+  const handleClearSent = () => {
     setSent(false);
-  }, [setSent]);
+  };
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
