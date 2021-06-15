@@ -534,6 +534,14 @@ const ChatInput = (props) => {
       if (files.length) {
         dropAction(files);
       }
+      setTimeout(() => {
+        const editor = reactQuillRef.current.getEditor();
+        reactQuillRef.current.focus();
+        const cursorPosition = editor.getSelection().index;
+        console.log(e.clipboardData, e, cursorPosition);
+        editor.insertText(cursorPosition, " ");
+        editor.setSelection(cursorPosition + 1);
+      }, 100);
     };
 
     document.addEventListener("paste", handlePaste, false);
