@@ -508,7 +508,10 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleCreateOption = (inputValue) => {
-    //setInvitedEmails((prevState) => [...prevState, inputValue]);
+    const external = invitedExternals.find((ex) => ex.email === inputValue);
+    if (external) setInvitedExternal(external);
+    else setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    toggleNested(true);
     setForm((prevState) => ({
       ...prevState,
       selectedExternals: [
@@ -1462,8 +1465,18 @@ const CreateEditWorkspaceModal = (props) => {
         <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
           <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
           <ModalBody>
-            <Label className={"modal-info"}>{dictionary.newExternalInfo}</Label>
-            <div className={"mb-3"}>
+            <Label className={"modal-info mb-3"}>{dictionary.newExternalInfo}</Label>
+            <Label className={"modal-label"}>{dictionary.firstName}</Label>
+            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
+            <Label className={"modal-label"}>{dictionary.middleName}</Label>
+            <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>{dictionary.lastName}</Label>
+            <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>{dictionary.companyName}</Label>
+            <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
+            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
+            <div className="mt-3">
               <RadioInput
                 readOnly
                 onClick={(e) => {
@@ -1487,17 +1500,6 @@ const CreateEditWorkspaceModal = (props) => {
                 {dictionary.sendTruDriff}
               </RadioInput>
             </div>
-
-            <Label className={"modal-label"}>{dictionary.firstName}</Label>
-            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
-            <Label className={"modal-label"}>{dictionary.middleName}</Label>
-            <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>{dictionary.lastName}</Label>
-            <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>{dictionary.companyName}</Label>
-            <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
-            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
           </ModalBody>
           <ModalFooter>
             <Button className="btn-outline-secondary" onClick={toggleNested}>
