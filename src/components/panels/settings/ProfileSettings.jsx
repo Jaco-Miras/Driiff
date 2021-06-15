@@ -647,22 +647,20 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              {
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={virtualization}
-                      type="switch"
-                      id="chat_virtualization"
-                      name="virtualization"
-                      onChange={handleChatSwitchToggle}
-                      data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
-                      label={<span>Virtualized chat</span>}
-                    />
-                  </div>
+              <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={virtualization}
+                    type="switch"
+                    id="chat_virtualization"
+                    name="virtualization"
+                    onChange={handleChatSwitchToggle}
+                    data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
+                    label={<span>Virtualized chat</span>}
+                  />
                 </div>
-              }
+              </div>
 
               <div className="row mb-3">
                 <div className="col-12">

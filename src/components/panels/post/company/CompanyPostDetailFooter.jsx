@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -231,13 +231,13 @@ const CompanyPostDetailFooter = (props) => {
   const [commentType, setCommentType] = useState(!post.shared_with_client ? "internal" : null);
   const [imageLoading, setImageLoading] = useState(null);
 
-  const handleSend = useCallback(() => {
+  const handleSend = () => {
     if (!disableButtons) setSent(true);
-  }, [setSent, disableButtons]);
+  };
 
-  const handleClearSent = useCallback(() => {
+  const handleClearSent = () => {
     setSent(false);
-  }, [setSent]);
+  };
 
   const handleShowEmojiPicker = () => {
     if (!disableButtons) setShowEmojiPicker(!showEmojiPicker);

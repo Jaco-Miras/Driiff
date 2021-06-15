@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import {
   deleteAllNotification,
@@ -20,77 +20,59 @@ const useNotificationActions = (props) => {
   const dispatch = useDispatch();
   const toaster = useToaster();
 
-  const get = useCallback(
-    (payload, callback) => {
-      dispatch(getNotifications(payload, callback));
-    },
-    [dispatch]
-  );
+  const get = (payload, callback) => {
+    dispatch(getNotifications(payload, callback));
+  };
 
-  const read = useCallback(
-    (payload) => {
-      let callback = (err, res) => {
-        if (err) return;
-        dispatch(readNotificationReducer(payload));
-      };
-      dispatch(patchNotification(payload, callback));
-    },
-    [dispatch]
-  );
+  const read = (payload) => {
+    let callback = (err, res) => {
+      if (err) return;
+      dispatch(readNotificationReducer(payload));
+    };
+    dispatch(patchNotification(payload, callback));
+  };
 
-  const readAll = useCallback(
-    (payload) => {
-      let callback = (err, res) => {
-        if (err) {
-          toaster.error(<>Action failed</>);
-          return;
-        }
-        if (res) {
-          dispatch(readAllNotificationReducer());
-          toaster.success(<>You marked all notifications read</>);
-        }
-      };
-      dispatch(readAllNotification(payload, callback));
-    },
-    [dispatch]
-  );
+  const readAll = (payload) => {
+    let callback = (err, res) => {
+      if (err) {
+        toaster.error(<>Action failed</>);
+        return;
+      }
+      if (res) {
+        dispatch(readAllNotificationReducer());
+        toaster.success(<>You marked all notifications read</>);
+      }
+    };
+    dispatch(readAllNotification(payload, callback));
+  };
 
-  const unread = useCallback(
-    (payload) => {
-      let callback = (err, res) => {
-        if (err) return;
-        dispatch(unreadNotificationReducer(payload));
-      };
-      dispatch(unreadNotification(payload, callback));
-    },
-    [dispatch]
-  );
+  const unread = (payload) => {
+    let callback = (err, res) => {
+      if (err) return;
+      dispatch(unreadNotificationReducer(payload));
+    };
+    dispatch(unreadNotification(payload, callback));
+  };
 
-  const remove = useCallback(
-    (payload) => {
-      let callback = (err, res) => {
-        if (err) return;
-        dispatch(removeNotificationReducer(payload));
-      };
-      dispatch(deleteNotification(payload, callback));
-    },
-    [dispatch]
-  );
+  const remove = (payload) => {
+    let callback = (err, res) => {
+      if (err) return;
+      dispatch(removeNotificationReducer(payload));
+    };
+    dispatch(deleteNotification(payload, callback));
+  };
 
-  const removeAll = useCallback(() => {
+  const removeAll = () => {
     let callback = (err, res) => {
       if (err) return;
       dispatch(removeAllNotificationReducer());
     };
     dispatch(deleteAllNotification({}, callback));
-  }, [dispatch]);
+  };
 
-  const selectWorkspace = useCallback(
-    (workspace, callback) => {
-      dispatch(setActiveTopic(workspace, callback));
-    },
-    [dispatch]
-  );
+  const selectWorkspace = (workspace, callback) => {
+    dispatch(setActiveTopic(workspace, callback));
+  };
 
   return {
     get,

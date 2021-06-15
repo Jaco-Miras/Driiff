@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { usePostActions } from "../../../hooks";
 
@@ -16,7 +16,7 @@ const CompanyPostFilterTag = (props) => {
 
   const { setCompanyFilterPosts } = usePostActions();
 
-  const handleClickFilter = useCallback((e) => {
+  const handleClickFilter = (e) => {
     e.persist();
 
     let payload = {
@@ -33,7 +33,7 @@ const CompanyPostFilterTag = (props) => {
     setCompanyFilterPosts(payload);
     onGoBack();
     document.body.classList.remove("mobile-modal-open");
-  }, []);
+  };
 
   return (
     <Wrapper className={`list-group list-group-flush ${className}`}>

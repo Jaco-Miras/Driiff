@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 
@@ -119,13 +119,10 @@ const DashboardAboutWorkspace = (props) => {
     }
   };
 
-  const toggleShowMore = useCallback(
-    (e) => {
-      e.preventDefault();
-      setShowMore((state) => !state);
-    },
-    [setShowMore]
-  );
+  const toggleShowMore = (e) => {
+    e.preventDefault();
+    setShowMore((state) => !state);
+  };
 
   useEffect(() => {
     if (refs.description.current) {

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../../common";
 import { usePostActions } from "../../../hooks";
@@ -26,7 +26,7 @@ const CompanyPostList = (props) => {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const { setCompanyFilterPosts, showModal } = usePostActions();
 
-  const handleClickFilter = useCallback((e) => {
+  const handleClickFilter = (e) => {
     let payload = {
       tag: null,
       postListTag: e.target.dataset.id,
@@ -42,19 +42,16 @@ const CompanyPostList = (props) => {
     setCompanyFilterPosts(payload);
     onGoBack();
     document.body.classList.remove("mobile-modal-open");
-  }, []);
+  };
 
-  const handleEditArchivePostList = useCallback((e, data) => {
+  const handleEditArchivePostList = (e, data) => {
     e.stopPropagation();
     showModal("edit_post_list", data);
-  });
+  };
 
-  const handleHover = useCallback(
-    (e, data) => {
-      setSelectedFilter(data.id);
-    },
-    [selectedFilter]
-  );
+  const handleHover = (e, data) => {
+    setSelectedFilter(data.id);
+  };
 
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>

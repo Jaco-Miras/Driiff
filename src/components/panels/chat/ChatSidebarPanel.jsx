@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
@@ -176,16 +176,13 @@ const ChatSidebarPanel = (props) => {
     setTabPill("pills-home");
   };
 
-  const handleTabChange = useCallback(
-    (e) => {
-      if (tabPill === e.target.getAttribute("aria-controls")) {
-        handleResetFilter();
-      } else {
-        setTabPill(e.target.getAttribute("aria-controls"));
-      }
-    },
-    [setTabPill, tabPill]
-  );
+  const handleTabChange = (e) => {
+    if (tabPill === e.target.getAttribute("aria-controls")) {
+      handleResetFilter();
+    } else {
+      setTabPill(e.target.getAttribute("aria-controls"));
+    }
+  };
 
   const { _t } = useTranslation();
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 import { SvgIconFeather } from "../common";
@@ -18,7 +18,7 @@ const TextWrapper = styled.div`
 `;
 
 const useToaster = () => {
-  const success = useCallback((text, options = {}) => {
+  const success = (text, options = {}) => {
     return toast.success(
       <Wrapper>
         <Icon icon="check" strokeWidth="2" />
@@ -26,9 +26,9 @@ const useToaster = () => {
       </Wrapper>,
       options
     );
-  }, []);
+  };
 
-  const error = useCallback((text, options = {}) => {
+  const error = (text, options = {}) => {
     return toast.error(
       <Wrapper>
         <Icon icon="alert-x" strokeWidth="2" />
@@ -36,9 +36,9 @@ const useToaster = () => {
       </Wrapper>,
       options
     );
-  }, []);
+  };
 
-  const info = useCallback((text, options = {}) => {
+  const info = (text, options = {}) => {
     return toast.info(
       <Wrapper>
         <Icon icon="info" strokeWidth="2" />
@@ -46,9 +46,9 @@ const useToaster = () => {
       </Wrapper>,
       options
     );
-  }, []);
+  };
 
-  const warning = useCallback((text, options = {}) => {
+  const warning = (text, options = {}) => {
     return toast.warn(
       <Wrapper>
         <Icon icon="warning" strokeWidth="2" />
@@ -56,24 +56,24 @@ const useToaster = () => {
       </Wrapper>,
       options
     );
-  }, []);
+  };
 
-  const notify = useCallback((text, options = {}) => {
+  const notify = (text, options = {}) => {
     return toast(
       <Wrapper>
         <TextWrapper>{text}</TextWrapper>
       </Wrapper>,
       options
     );
-  }, []);
+  };
 
-  const update = useCallback((text, options = {}) => {
+  const update = (text, options = {}) => {
     toast.update(text, options);
-  }, []);
+  };
 
-  const dismiss = useCallback((toastId, options = {}) => {
+  const dismiss = (toastId, options = {}) => {
     toast.dismiss(toastId);
-  }, []);
+  };
 
   return {
     success,

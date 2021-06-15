@@ -1,9 +1,8 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 const useFocusInput = (e) => {
-  const handleOnKeyDown = useCallback((target) => {
-    if (target.metaKey || target.ctrlKey || target.keyCode === 17 || target.which === 17)
-      return;
+  const handleOnKeyDown = (target) => {
+    if (target.metaKey || target.ctrlKey || target.keyCode === 17 || target.which === 17) return;
 
     if (
       !(document.activeElement.tagName.toLowerCase() === "input" || (document.activeElement.classList.contains("ql-editor") && !document.activeElement.classList.contains("chat-bubble"))) &&
@@ -13,7 +12,7 @@ const useFocusInput = (e) => {
         e.focus();
       }
     }
-  }, [e]);
+  };
 
   useEffect(() => {
     document.addEventListener("keydown", handleOnKeyDown, false);

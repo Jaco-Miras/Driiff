@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../../common";
 import { usePostActions } from "../../../hooks";
@@ -40,34 +40,31 @@ const CompanyPostFilterItem = (props) => {
 
   const [fetching, setFetching] = useState(false);
 
-  const handleClickFilter = useCallback(
-    (e) => {
-      e.persist();
-      if (e.target.dataset.value === "archive" && archived.skip === 0 && !fetching) {
-        setFetching(true);
-        fetchCompanyPosts(
-          {
-            skip: 0,
-            limit: 25,
-            filters: ["post", "archived"],
-          },
-          () => setFetching(false)
-        );
-      }
-      if (e.target.dataset.value === filter) {
-        onGoBack();
-      } else {
-        let payload = {
-          filter: e.target.dataset.value,
-          tag: null,
-        };
-        setCompanyFilterPosts(payload);
-        onGoBack();
-      }
-      document.body.classList.remove("mobile-modal-open");
-    },
-    [filter, onGoBack, fetching]
-  );
+  const handleClickFilter = (e) => {
+    e.persist();
+    if (e.target.dataset.value === "archive" && archived.skip === 0 && !fetching) {
+      setFetching(true);
+      fetchCompanyPosts(
+        {
+          skip: 0,
+          limit: 25,
+          filters: ["post", "archived"],
+        },
+        () => setFetching(false)
+      );
+    }
+    if (e.target.dataset.value === filter) {
+      onGoBack();
+    } else {
+      let payload = {
+        filter: e.target.dataset.value,
+        tag: null,
+      };
+      setCompanyFilterPosts(payload);
+      onGoBack();
+    }
+    document.body.classList.remove("mobile-modal-open");
+  };
 
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>

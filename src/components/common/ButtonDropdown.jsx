@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useOutsideClick } from "../hooks";
 
@@ -7,11 +7,11 @@ const Wrapper = styled.div`
 
   .dropdown-toggle {
     color: #212529 !important;
-    
+
     .dark & {
       color: #c7c7c7 !important;
     }
-    
+
     &:after {
       margin-left: 10px;
     }
@@ -37,9 +37,9 @@ const ButtonDropdown = (props) => {
 
   const [show, setShow] = useState(false);
 
-  const toggle = useCallback(() => {
+  const toggle = () => {
     setShow(!show);
-  }, [show]);
+  };
 
   useOutsideClick(wrapperRef, toggle, show);
 
@@ -47,9 +47,7 @@ const ButtonDropdown = (props) => {
 
   return (
     <Wrapper className={`button-dropdown ${className}`} ref={wrapperRef}>
-      <span
-        className={`btn btn-outline-light dropdown-toggle d-flex justify-content-between ${show ? "show" : ""} ${value !== null ? "active" : ""}`}
-        data-toggle="dropdown" onClick={toggle}>
+      <span className={`btn btn-outline-light dropdown-toggle d-flex justify-content-between ${show ? "show" : ""} ${value !== null ? "active" : ""}`} data-toggle="dropdown" onClick={toggle}>
         {dropdown.label} {dropDownItem ? dropDownItem.label : ""}
       </span>
       <div className={`dropdown-menu ${show ? "show" : ""}`}>

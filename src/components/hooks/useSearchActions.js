@@ -1,44 +1,26 @@
-import { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import {
-    globalSearch,
-    saveSearchInput,
-    updateTab,
-} from "../../redux/actions/searchActions";
+import { globalSearch, saveSearchInput, updateTab } from "../../redux/actions/searchActions";
 
 const useSearchActions = () => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
-    
-    const search = useCallback(
-        (payload, callback) => {
-          dispatch(
-              globalSearch(payload, callback)
-            );
-        }, [dispatch]
-    );
+  const search = (payload, callback) => {
+    dispatch(globalSearch(payload, callback));
+  };
 
-    const saveSearchValue = useCallback(
-        (payload, callback) => {
-          dispatch(
-              saveSearchInput(payload, callback)
-            );
-        }, [dispatch]
-    );
-    
-    const updateTabPage = useCallback(
-        (payload, callback) => {
-          dispatch(
-              updateTab(payload, callback)
-            );
-        }, [dispatch]
-    );
+  const saveSearchValue = (payload, callback) => {
+    dispatch(saveSearchInput(payload, callback));
+  };
 
-    return {
-        search,
-        saveSearchValue,
-        updateTabPage
-    }
+  const updateTabPage = (payload, callback) => {
+    dispatch(updateTab(payload, callback));
+  };
+
+  return {
+    search,
+    saveSearchValue,
+    updateTabPage,
+  };
 };
 
 export default useSearchActions;

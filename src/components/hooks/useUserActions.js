@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sessionService } from "redux-react-session";
 import {
@@ -71,24 +71,24 @@ const useUserActions = () => {
   const getUserFilter = useSelector((state) => state.users.getUserFilter);
   const { user: loggedUser } = useSelector((state) => state.session);
 
-  const storeLoginToken = useCallback((payload) => {
+  const storeLoginToken = (payload) => {
     localStorage.setItem("userAuthToken", JSON.stringify(payload));
     localStorage.setItem("token", payload.download_token);
     localStorage.setItem("atoken", payload.auth_token);
-  }, []);
+  };
 
-  const getFrontEndAuthUrl = useCallback((payload, returnUrl = "") => {
+  const getFrontEndAuthUrl = (payload, returnUrl = "") => {
     if (returnUrl !== "") returnUrl = `/${btoa(returnUrl)}`;
 
     return `/authenticate/${payload.access_token}${returnUrl}`;
-  }, []);
+  };
 
-  const processBackendLogin = useCallback((payload, returnUrl) => {
+  const processBackendLogin = (payload, returnUrl) => {
     let redirectLink = `${getCurrentDriffUrl()}${getFrontEndAuthUrl(payload, returnUrl)}`;
     window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
-  }, []);
+  };
 
-  const checkCredentials = useCallback((payload, callback = () => {}) => {
+  const checkCredentials = (payload, callback = () => {}) => {
     dispatch(
       userLogin(payload, (err, res) => {
         if (err) {
@@ -97,14 +97,14 @@ const useUserActions = () => {
         callback(err, res);
       })
     );
-  }, []);
+  };
 
-  const login = useCallback((payload, returnUrl) => {
+  const login = (payload, returnUrl) => {
     storeLoginToken(payload);
     processBackendLogin(payload, returnUrl);
-  }, []);
+  };
 
-  const googleLogin = useCallback(() => {
+  const googleLogin = () => {
     let payload = {
       slug: getDriffName(),
     };
@@ -125,9 +125,9 @@ const useUserActions = () => {
         }
       })
     );
-  }, []);
+  };
 
-  const checkEmail = useCallback((email, callback = () => {}) => {
+  const checkEmail = (email, callback = () => {}) => {
     dispatch(
       checkDriffUserEmail(
         {
@@ -137,9 +137,9 @@ const useUserActions = () => {
         callback
       )
     );
-  }, []);
+  };
 
-  const sendMagicLink = useCallback((email, callback = () => {}) => {
+  const sendMagicLink = (email, callback = () => {}) => {
     dispatch(
       postMagicLink(
         {
@@ -160,9 +160,9 @@ const useUserActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const checkMagicLink = useCallback((token, callback = () => {}) => {
+  const checkMagicLink = (token, callback = () => {}) => {
     dispatch(
       putMagicLink(
         {
@@ -176,109 +176,100 @@ const useUserActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const fetch = useCallback(
-    ({ skip = 0, limit = getUserFilter.limit, ...res }, callback = () => {}) => {
-      dispatch(
-        getUsers(
-          {
-            ...res,
-            skip: skip,
-            limit: limit,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch, getUserFilter.limit]
-  );
+  const fetch = ({ skip = 0, limit = getUserFilter.limit, ...res }, callback = () => {}) => {
+    dispatch(
+      getUsers(
+        {
+          ...res,
+          skip: skip,
+          limit: limit,
+        },
+        callback
+      )
+    );
+  };
 
-  const fetchMore = useCallback(() => {
+  const fetchMore = () => {
     if (getUserFilter.hasMore) {
       fetch(getUserFilter.skip, getUserFilter.limit);
     }
-  }, [fetch, getUserFilter]);
+  };
 
-  const fetchById = useCallback(
-    (userId, callback = () => {}) => {
-      dispatch(getUser({ id: userId }, callback));
-    },
-    [dispatch]
-  );
+  const fetchById = (userId, callback = () => {}) => {
+    dispatch(getUser({ id: userId }, callback));
+  };
 
-  const update = useCallback(
-    (user, callback = () => {}) => {
-      const allowed = [
-        "id",
-        "first_name",
-        "last_name",
-        "middle_name",
-        "name",
-        "password",
-        "role_id",
-        "company",
-        "company_name",
-        "designation",
-        "skills",
-        "email",
-        "contact",
-        "place",
-        "address",
-        "house_number",
-        "country",
-        "zip_code",
-        "birthday",
-        "gender",
-        "timezone",
-        "language",
-        "change_email",
-      ];
+  const update = (user, callback = () => {}) => {
+    const allowed = [
+      "id",
+      "first_name",
+      "last_name",
+      "middle_name",
+      "name",
+      "password",
+      "role_id",
+      "company",
+      "company_name",
+      "designation",
+      "skills",
+      "email",
+      "contact",
+      "place",
+      "address",
+      "house_number",
+      "country",
+      "zip_code",
+      "birthday",
+      "gender",
+      "timezone",
+      "language",
+      "change_email",
+    ];
 
-      let payload = {};
-      allowed.forEach((field) => {
-        payload = {
-          ...payload,
-          [field]: user[field],
-        };
+    let payload = {};
+    allowed.forEach((field) => {
+      payload = {
+        ...payload,
+        [field]: user[field],
+      };
 
-        if (field === "password") {
-          if (user[field]) {
-            payload = {
-              ...payload,
-              type: 2,
-            };
-          } else {
-            payload = {
-              ...payload,
-              password: "",
-              type: 0,
-            };
-          }
+      if (field === "password") {
+        if (user[field]) {
+          payload = {
+            ...payload,
+            type: 2,
+          };
+        } else {
+          payload = {
+            ...payload,
+            password: "",
+            type: 0,
+          };
         }
-      });
+      }
+    });
 
-      dispatch(
-        putUser(payload, (err, res) => {
-          if (err) {
-            toaster.error("Saving profile information failed.");
+    dispatch(
+      putUser(payload, (err, res) => {
+        if (err) {
+          toaster.error("Saving profile information failed.");
+        }
+
+        if (res) {
+          if (loggedUser.id === res.data.id) {
+            sessionService.saveUser({ ...res.data });
           }
+          toaster.success("Profile information saved.");
+        }
 
-          if (res) {
-            if (loggedUser.id === res.data.id) {
-              sessionService.saveUser({ ...res.data });
-            }
-            toaster.success("Profile information saved.");
-          }
+        callback(err, res);
+      })
+    );
+  };
 
-          callback(err, res);
-        })
-      );
-    },
-    [dispatch]
-  );
-
-  const getReadOnlyFields = useCallback((source) => {
+  const getReadOnlyFields = (source) => {
     switch (source) {
       case "gripp":
         return [];
@@ -286,9 +277,9 @@ const useUserActions = () => {
       default:
         return [];
     }
-  }, []);
+  };
 
-  const getRequiredFields = useCallback((source) => {
+  const getRequiredFields = (source) => {
     let required = ["first_name", "last_name", "password", "email"];
 
     switch (source) {
@@ -297,14 +288,14 @@ const useUserActions = () => {
       default:
         return required;
     }
-  }, []);
+  };
 
   /**
    * @param {Object} user
    * @param {File} file
    * @param {Object} callback
    */
-  const updateProfileImage = useCallback((user, file, callback = () => {}) => {
+  const updateProfileImage = (user, file, callback = () => {}) => {
     const payload = {
       id: user.id,
       file: file,
@@ -322,9 +313,9 @@ const useUserActions = () => {
         }
       })
     );
-  }, []);
+  };
 
-  const fetchStateCode = useCallback((stateCode, callback) => {
+  const fetchStateCode = (stateCode, callback) => {
     dispatch(
       postExternalUserData(
         {
@@ -339,17 +330,17 @@ const useUserActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const updateExternalUser = useCallback((payload, callback) => {
+  const updateExternalUser = (payload, callback) => {
     dispatch(
       putExternalUserUpdate(payload, (err, res) => {
         callback(err, res);
       })
     );
-  }, []);
+  };
 
-  const updatePassword = useCallback((payload, callback) => {
+  const updatePassword = (payload, callback) => {
     dispatch(
       postPasswordReset(payload, (err, res) => {
         if (err) {
@@ -363,9 +354,9 @@ const useUserActions = () => {
         }
       })
     );
-  }, []);
+  };
 
-  const requestPasswordReset = useCallback((email, callback) => {
+  const requestPasswordReset = (email, callback) => {
     dispatch(
       resetPassword(
         {
@@ -386,18 +377,18 @@ const useUserActions = () => {
         }
       )
     );
-  }, []);
+  };
 
-  const processBackendLogout = useCallback(() => {
+  const processBackendLogout = () => {
     if (persistenceOn) {
       persistor.purge();
       localStorage.removeItem("persist:root");
     }
     let redirectLink = `${getCurrentDriffUrl()}/logged-out`;
     window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/logout?redirect_link=${redirectLink}`;
-  }, []);
+  };
 
-  const logout = useCallback((callback = () => {}) => {
+  const logout = (callback = () => {}) => {
     if (persistenceOn) {
       persistor.purge();
       localStorage.removeItem("persist:root");
@@ -426,7 +417,7 @@ const useUserActions = () => {
           .then(() => callback(err, res));
       })
     );
-  }, []);
+  };
 
   /**
    * @param {Object} user
@@ -436,7 +427,7 @@ const useUserActions = () => {
    * @param {string} user.lastname
    * @param {Object} callback
    */
-  const register = useCallback((payload, callback = () => {}) => {
+  const register = (payload, callback = () => {}) => {
     checkEmail(payload.email, (err, res) => {
       if (res && !res.data.status) {
         dispatch(
@@ -461,9 +452,9 @@ const useUserActions = () => {
         });
       }
     });
-  }, []);
+  };
 
-  const displayWelcomeBanner = useCallback(() => {
+  const displayWelcomeBanner = () => {
     if (!localStorage.getItem("welcomeBanner")) {
       localStorage.setItem("welcomeBanner", "init");
       const slugName = driffActions.getName();
@@ -497,39 +488,39 @@ const useUserActions = () => {
         toaster.success(<>Welcome back, {loggedUser.first_name}</>);
       }
     }
-  }, [loggedUser, driffActions, is_new, driffSettings, userSettings]);
+  };
 
-  const inviteAsInternalUsers = useCallback((payload, callback) => {
+  const inviteAsInternalUsers = (payload, callback) => {
     dispatch(postInternalRequestForm(payload, callback));
-  });
+  };
 
-  const updateUserRole = useCallback((payload, callback = () => {}) => {
+  const updateUserRole = (payload, callback = () => {}) => {
     dispatch(putUserRole(payload, callback));
-  }, []);
+  };
 
-  const fetchRoles = useCallback(() => {
+  const fetchRoles = () => {
     dispatch(getRoles());
-  }, []);
+  };
 
-  const archive = useCallback((payload, callback) => {
+  const archive = (payload, callback) => {
     dispatch(archiveUser(payload, callback));
-  });
+  };
 
-  const unarchive = useCallback((payload, callback) => {
+  const unarchive = (payload, callback) => {
     dispatch(unarchiveUser(payload, callback));
-  });
+  };
 
-  const activate = useCallback((payload, callback) => {
+  const activate = (payload, callback) => {
     dispatch(activateUser(payload, callback));
-  });
+  };
 
-  const deactivate = useCallback((payload, callback) => {
+  const deactivate = (payload, callback) => {
     dispatch(deactivateUser(payload, callback));
-  });
+  };
 
-  const fetchArchivedUsers = useCallback(() => {
+  const fetchArchivedUsers = () => {
     dispatch(getArchivedUsers());
-  }, []);
+  };
 
   const updateType = (user, type) => {
     dispatch(
