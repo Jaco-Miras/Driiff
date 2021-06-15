@@ -91,7 +91,7 @@ const FavoriteWorkspacesPanel = (props) => {
 
   const { actions, folders, history, orderChannel, workspaces, favoriteWorkspacesLoaded } = useWorkspace();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  //const channels = useSelector((state) => state.chat.channels);
+  const channels = useSelector((state) => state.chat.channels);
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const recipients = useSelector((state) => state.global.recipients);
@@ -156,7 +156,7 @@ const FavoriteWorkspacesPanel = (props) => {
   const handleSelectWorkspace = (ws) => {
     if (companyWs && ws.id === companyWs.id && companyChannel) {
       history.push(`/chat/${companyChannel.code}`);
-      //actions.selectChannel(channels[companyChannel.id]);
+      actions.selectChannel(channels[companyChannel.id]);
     } else {
       document.body.classList.remove("navigation-show");
 
@@ -173,9 +173,9 @@ const FavoriteWorkspacesPanel = (props) => {
         }
       }
       //if (selected && onWorkspace) return;
-      // if (selectedChannel && selectedChannel.id !== ws.channel.id && channels[ws.channel.id]) {
-      //   actions.selectChannel(channels[ws.channel.id]);
-      // }
+      if (selectedChannel && selectedChannel.id !== ws.channel.id && channels[ws.channel.id]) {
+        actions.selectChannel(channels[ws.channel.id]);
+      }
       actions.selectWorkspace(ws);
       actions.redirectTo(ws);
     }
