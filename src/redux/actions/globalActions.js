@@ -89,7 +89,7 @@ export function uploadDocument(payload, callback) {
 }
 
 export function uploadBulkDocument(payload, callback) {
-  return dispatchActionToReducer(uploadBulkDocumentService(payload), "UPLOAD_BULK_DOCUMENT_START", "UPLOAD_BULK_DOCUMENT_SUCCESS", "UPLOAD_BULK_DOCUMENT_FAIL", callback);  
+  return dispatchActionToReducer(uploadBulkDocumentService(payload), "UPLOAD_BULK_DOCUMENT_START", "UPLOAD_BULK_DOCUMENT_SUCCESS", "UPLOAD_BULK_DOCUMENT_FAIL", callback);
 }
 
 export function saveInputData(payload, callback) {
@@ -242,4 +242,8 @@ export function setProfileSlider(payload, callback) {
 }
 export function setIdleStatus(payload, callback) {
   return SimpleDispatchActionToReducer("SET_IDLE_STATUS", payload, callback);
+}
+
+export function getDoneToDo(payload, callback) {
+  return dispatchActionToReducer(getToDoService(payload), "GET_DONE_TO_DO_START", "GET_DONE_TO_DO_SUCCESS", "GET_DONE_TO_DO_FAILURE", callback);
 }

@@ -1,8 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addToModals, delRemoveToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
-import { getWorkspaceReminders, getWorkspaceRemindersCallback, getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../redux/actions/workspaceActions";
+import { addToModals, delRemoveToDo, getDoneToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
+import { getDoneWorkspaceRemindersCallback, getWorkspaceReminders, getWorkspaceRemindersCallback, getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../redux/actions/workspaceActions";
 import { useToaster, useTranslation } from "./index";
 
 const useTodoActions = () => {
@@ -28,6 +28,10 @@ const useTodoActions = () => {
     dispatch(getToDo(payload, callback));
   };
 
+  const fetchDone = (payload, callback) => {
+    dispatch(getDoneToDo(payload, callback));
+  };
+
   const fetchWs = (payload, callback) => {
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
@@ -35,6 +39,21 @@ const useTodoActions = () => {
         if (err) return;
         dispatch(
           getWorkspaceRemindersCallback({
+            ...res.data,
+            topic_id: payload.topic_id,
+          })
+        );
+      })
+    );
+  };
+
+  const fetchWsDone = (payload, callback) => {
+    dispatch(
+      getWorkspaceReminders(payload, (err, res) => {
+        if (callback) callback();
+        if (err) return;
+        dispatch(
+          getDoneWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
           })
@@ -321,6 +340,8 @@ const useTodoActions = () => {
     toggleDone,
     remove,
     removeConfirmation,
+    fetchDone,
+    fetchWsDone,
   };
 };
 

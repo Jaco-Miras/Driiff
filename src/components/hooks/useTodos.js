@@ -5,7 +5,7 @@ import { useTimeFormat, useTodoActions } from "./index";
 
 let init = false;
 const useTodos = (fetchTodosOnMount = false) => {
-  const { isLoaded, skip, limit, hasMore, items, count, doneRecently } = useSelector((state) => state.global.todos);
+  const { isLoaded, skip, limit, hasMore, items, count, doneRecently, done } = useSelector((state) => state.global.todos);
 
   const { user: loggedUser } = useSelector((state) => state.session);
   const users = useSelector((state) => state.users.users);
@@ -14,11 +14,20 @@ const useTodos = (fetchTodosOnMount = false) => {
   const { localizeDate } = useTimeFormat();
 
   const loadMore = () => {
-    if (!hasMore) return;
-    todoActions.fetch({
-      skip: skip,
-      limit: limit,
-    });
+    if (hasMore) {
+      todoActions.fetch({
+        skip: skip,
+        limit: limit,
+        filter: "new",
+      });
+    }
+    if (done.hasMore) {
+      todoActions.fetchDone({
+        skip: done.skip,
+        limit: done.limit,
+        filter: "done",
+      });
+    }
   };
 
   const getReminders = ({ filter = "" }) => {
