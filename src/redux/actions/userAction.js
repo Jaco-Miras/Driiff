@@ -27,6 +27,7 @@ import {
   getExternalUsers as getExternalUsersService,
   unarchiveUser as unarchiveUserService,
   getArchivedUsers as getArchivedUsersService,
+  updateUserType as updateUserTypeService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -171,4 +172,8 @@ export function incomingActivatedUser(payload, callback) {
 
 export function incomingOnlineUsers(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ONLINE_USERS", payload, callback);
+}
+
+export function updateUserType(payload, callback) {
+  return dispatchActionToReducer(updateUserTypeService(payload), "UPDATE_USER_TYPE_START", "UPDATE_USER_TYPE_SUCCESS", "UPDATE_USER_TYPE_FAILURE", callback);
 }

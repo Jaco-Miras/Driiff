@@ -255,6 +255,10 @@ const ChatFooterPanel = (props) => {
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
     youAreViewing: _t("CHAT.LABEL", "You are viewing"),
     joinWorkspaceChat: _t("CHAT.JOIN_WORKSPACE_CHAT", "Join workspace chat"),
+    googleMeet: _t("CONFIRMATION.GOOGLE_MEET", "Google meet"),
+    yes: _t("YES", "Yes"),
+    no: _t("NO", "No"),
+    googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -351,10 +355,10 @@ const ChatFooterPanel = (props) => {
   const handleGoogleMeet = () => {
     let modalPayload = {
       type: "confirmation",
-      cancelText: "No",
-      headerText: "Google meet",
-      submitText: "Yes",
-      bodyText: "Are you sure you want to start a meeting in this channel?",
+      cancelText: dictionary.no,
+      headerText: dictionary.googleMeet,
+      submitText: dictionary.yes,
+      bodyText: dictionary.googleMeetConfirmation,
       actions: {
         onSubmit: handleStartGoogleMeet,
       },

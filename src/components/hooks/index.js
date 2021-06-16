@@ -62,3 +62,5 @@ export { default as useHuddleChatbot } from "./useHuddleChatbot";
 export { default as useHuddle } from "./useHuddle";
 export { default as useHuddleNotification } from "./useHuddleNotification";
 export { default as usePostDraft } from "./usePostDraft";
+export { default as useWorkspaceReminders } from "./useWorkspaceReminders";
+export { default as useCommentDraft } from "./useCommentDraft";

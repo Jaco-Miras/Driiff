@@ -53,7 +53,9 @@ const ProfileSlider = (props) => {
     };
     if (!loading) selectUserChannel(user, cb);
   };
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     onShowPopup();
   };
 

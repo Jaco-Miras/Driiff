@@ -237,7 +237,7 @@ const SharedBadge = styled.span`
 `;
 
 const CompanyPostBody = (props) => {
-  const { post, user, postActions, dictionary, disableOptions } = props;
+  const { post, user, postActions, dictionary, disableOptions, disableMarkAsRead } = props;
 
   const isExternalUser = user.type === "external";
 
@@ -284,12 +284,18 @@ const CompanyPostBody = (props) => {
   };
 
   const handleInlineImageClick = (e) => {
-    console.log(post.files, e.srcElement.currentSrc);
-    let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-    if (file) {
+    let id = null;
+    if (e.srcElement.currentSrc.startsWith("blob")) {
+      if (e.target.dataset.id) id = e.target.dataset.id;
+    } else {
+      let file = post.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
+      if (file) id = file.id;
+    }
+
+    if (id) {
       dispatch(
         setViewFiles({
-          file_id: file.id,
+          file_id: parseInt(id),
           files: post.files,
         })
       );
@@ -300,7 +306,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -313,11 +319,13 @@ const CompanyPostBody = (props) => {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         }
       });
@@ -439,7 +447,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -482,7 +490,7 @@ const CompanyPostBody = (props) => {
             <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
             {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
             <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
-            {!disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
+            {!disableOptions && !disableMarkAsRead() && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
             <div className={"time-stamp"}>
               <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
                 <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>

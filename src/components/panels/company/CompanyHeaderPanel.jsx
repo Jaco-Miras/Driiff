@@ -6,7 +6,8 @@ import { SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { CompanyPageHeaderPanel } from "../company";
 import { useTranslation } from "../../hooks";
-import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
+//import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
+import { favouriteWorkspace } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,8 +19,7 @@ const Wrapper = styled.div`
   &.page-notifications,
   &.page-profile,
   &.page-settings,
-  &.page-system,
-  &.page-todos {
+  &.page-system {
     .navbar-left {
       .navbar-nav {
         .navbar-wrap {
@@ -129,7 +129,11 @@ const CompanyHeaderPanel = () => {
     },
   } = useSelector((state) => state.settings);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
-  const companyChannel = useSelector((state) => state.chat.companyChannel);
+  // const companyChannel = useSelector((state) => state.chat.companyChannel);
+  const recipients = useSelector((state) => state.global.recipients);
+
+  const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
+  const companyChannel = useSelector((state) => Object.values(state.workspaces.workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id));
   const { _t } = useTranslation();
 
   const dictionary = {
@@ -149,6 +153,7 @@ const CompanyHeaderPanel = () => {
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
       mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode"),
     }),
+    bots: _t("SIDEBAR.BOTS", "Bots"),
   };
 
   const dispatch = useDispatch();
@@ -164,16 +169,11 @@ const CompanyHeaderPanel = () => {
     if (companyChannel) {
       let payload = {
         id: companyChannel.id,
-        is_pinned: !companyChannel.is_pinned,
-        is_muted: companyChannel.is_muted,
-        is_archived: companyChannel.is_archived,
+        workspace_id: 0,
+        is_pinned: companyChannel.is_favourite ? 0 : 1,
       };
-      dispatch(
-        putChannel(payload, (err, res) => {
-          if (err) return;
-          dispatch(updateCompanyChannel(payload));
-        })
-      );
+
+      dispatch(favouriteWorkspace(payload));
     }
   };
 
@@ -203,14 +203,14 @@ const CompanyHeaderPanel = () => {
           </>
         );
       }
-      case "todos": {
-        return (
-          <>
-            <SvgIconFeather className="mr-2" icon="check" />
-            <CompanyName>{dictionary.pageTitleTodos}</CompanyName>
-          </>
-        );
-      }
+      // case "todos": {
+      //   return (
+      //     <>
+      //       <SvgIconFeather className="mr-2" icon="check" />
+      //       <CompanyName>{dictionary.pageTitleTodos}</CompanyName>
+      //     </>
+      //   );
+      // }
       case "system": {
         return (
           <>
@@ -223,7 +223,7 @@ const CompanyHeaderPanel = () => {
         return (
           <>
             <SvgIconFeather className="mr-2" icon="home" /> <CompanyName>{driff.company_name}</CompanyName>
-            <StarIcon className="mr-2" icon="star" onClick={handleFavoriteCompany} isFavorite={companyChannel && companyChannel.is_pinned} />
+            {companyRecipient && <StarIcon className="mr-2" icon="star" onClick={handleFavoriteCompany} isFavorite={companyChannel && companyChannel.is_favourite} />}
           </>
         );
       }
@@ -301,7 +301,7 @@ const CompanyHeaderPanel = () => {
               </li>
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">{renderMainTitle()}</li>
             </div>
-            {!["todos", "system", "notifications", "profile", "settings"].includes(match.params.page) && (
+            {!["system", "notifications", "profile", "settings"].includes(match.params.page) && (
               <div className="navbar-bottom">
                 <div className="navbar-main">
                   <CompanyPageHeaderPanel dictionary={dictionary} />

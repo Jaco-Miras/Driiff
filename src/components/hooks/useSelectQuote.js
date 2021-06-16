@@ -5,6 +5,7 @@ import styled from "styled-components";
 import quillHelper from "../../helpers/quillHelper";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "./useTranslation";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
@@ -42,6 +43,7 @@ const PushLink = styled.a`
 const useSelectQuote = (props) => {
   const params = useParams();
 
+  const { _t } = useTranslation();
   const quotes = useSelector((state) => state.chat.chatQuotes);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const [quote, setQuote] = useState(null);
@@ -160,6 +162,15 @@ const useSelectQuote = (props) => {
                 </PushLink>
               );
             }
+          } else if (selectedQuote.body.startsWith("UPLOAD_BULK::")) {
+            const data = JSON.parse(selectedQuote.body.replace("UPLOAD_BULK::", ""));
+            if (data.files && data.files.length === 1) {
+              // eslint-disable-next-line quotes
+              selectedQuoteBody = _t("SYSTEM.USER_UPLOADED_FILE", '<span class="chat-file-notification">::name:: uploaded <b>::filename::</b></span>', { name: data.author.first_name, filename: data.files[0].search });
+            } else {
+              // eslint-disable-next-line quotes
+              selectedQuoteBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
+            }
           } else {
             selectedQuoteBody = selectedQuote.body;
           }
@@ -173,7 +184,7 @@ const useSelectQuote = (props) => {
       setQuote(null);
       setQuoteBody(null);
     }
-  }, [quotes, selectedChannel]);
+  }, [quotes, selectedChannel, _t]);
 
   return [quote, quoteBody];
 };

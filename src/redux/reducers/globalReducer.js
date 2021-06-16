@@ -33,11 +33,15 @@ const INITIAL_STATE = {
     isLoaded: false,
     hasMore: true,
     skip: 0,
-    limit: 50,
+    limit: 25,
     count: {
       new: 0,
+      today: 0,
+      all: 0,
       overdue: 0,
       done: 0,
+      assigned_to_others: 0,
+      added_by_others: 0,
     },
     items: {},
     doneRecently: [],
@@ -229,17 +233,52 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
-      let count = state.todos.count;
-
-      action.data.forEach((d) => {
-        count[d.status.toLowerCase()] = d.count;
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          count: action.data.reduce((res, c) => {
+            res[c.status.toLowerCase()] = c.count;
+            return res;
+          }, {}),
+        },
+      };
+    }
+    case "GET_WORKSPACE_REMINDERS_SUCCESS": {
+      let items = state.todos.items;
+      action.data.todos.forEach((t) => {
+        items[t.id] = t;
+        switch (t.link_type) {
+          case "CHAT": {
+            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
+            break;
+          }
+          case "POST": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            }
+            break;
+          }
+          case "POST_COMMENT": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            }
+            break;
+          }
+          default:
+            return null;
+        }
       });
 
       return {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          items: { ...items, ...state.todos.items },
         },
       };
     }
@@ -303,7 +342,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
-          limit: state.todos.limit + state.todos.limit,
+          skip: state.todos.skip + action.data.todos.length,
           items: items,
           doneRecently: recent,
         },
@@ -344,22 +383,22 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: {
-            ...state.todos.count,
-            [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1,
-          },
+          // count: {
+          //   ...state.todos.count,
+          //   [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1,
+          // },
           items: items,
         },
       };
     }
     case "INCOMING_UPDATE_TO_DO": {
       let items = state.todos.items;
-      let count = state.todos.count;
+      //let count = state.todos.count;
       if (typeof items[action.data.id] !== "undefined") {
-        if (items[action.data.id].status !== action.data.status) {
-          count[action.data.status.toLowerCase()] += 1;
-          count[items[action.data.id].status.toLowerCase()] -= 1;
-        }
+        // if (items[action.data.id].status !== action.data.status) {
+        //   count[action.data.status.toLowerCase()] += 1;
+        //   count[items[action.data.id].status.toLowerCase()] -= 1;
+        // }
 
         items[action.data.id] = {
           ...items[action.data.id],
@@ -370,31 +409,31 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          //count: count,
           items: items,
         },
       };
     }
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
-      let count = state.todos.count;
+      //let count = state.todos.count;
       let item = null;
 
       if (typeof items[action.data.id] !== "undefined") {
         if (items[action.data.id].status !== action.data.status) {
-          count[action.data.status.toLowerCase()] += 1;
-          count[items[action.data.id].status.toLowerCase()] -= 1;
+          // count[action.data.status.toLowerCase()] += 1;
+          // count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
-        items[action.data.id] = action.data;
-        item = { ...items[action.data.id], status: "DONE", updated_at: action.data.updated_at };
+        item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at };
+        items[action.data.id] = item;
       }
 
       return {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          //count: count,
           items: items,
           doneRecently: [...state.todos.doneRecently, item],
         },
@@ -402,10 +441,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_REMOVE_TO_DO": {
       let items = state.todos.items;
-      let count = state.todos.count;
+      //let count = state.todos.count;
 
       if (typeof items[action.data.todo_id] !== "undefined") {
-        count[items[action.data.todo_id].status.toLowerCase()] -= 1;
+        //count[items[action.data.todo_id].status.toLowerCase()] -= 1;
 
         delete items[action.data.todo_id];
       }
@@ -413,7 +452,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: count,
+          //count: count,
           items: items,
         },
       };

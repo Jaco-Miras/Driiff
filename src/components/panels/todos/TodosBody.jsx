@@ -1,16 +1,22 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
-//import { useHistory } from "react-router-dom";
-import { useFileActions, useSettings, useTimeFormat, useRedirect } from "../../hooks";
-// import { getChatMessages, setLastVisitedChannel } from "../../../redux/actions/chatActions";
-// import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useFileActions, useTimeFormat, useRedirect } from "../../hooks";
 import { TodosList } from "./index";
+import ListContainer from "./ListContainer";
 
 const Wrapper = styled.div`
+  flex: unset !important;
+  height: 100% !important;
+  overflow: unset !important;
+  ${(props) =>
+    props.active &&
+    `
+  height: 100% !important;
+  `}
   .list-group {
     .list-group-item {
-      padding: 0.75rem 1.5rem 0 0.75rem;
+      padding: 0rem 1.5rem 0 0.75rem;
 
       > a {
         display: block;
@@ -26,6 +32,10 @@ const Wrapper = styled.div`
   .custom-checkbox {
     position: relative;
     top: 1.5px;
+    padding: 0;
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
 
     .cci.cci-active + .ccl {
       span:first-child {
@@ -35,24 +45,8 @@ const Wrapper = styled.div`
     }
   }
 
-  li.link-title {
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 11px;
-    text-transform: uppercase;
-    line-height: 1.2;
-
-    &:not(:nth-child(1)) {
-      margin-top: 2rem;
-    }
-  }
-
-  .text-success {
-    text-decoration: line-through;
-  }
-
   .todo-title {
-    color: #343a40;
+    // color: #343a40;
 
     &.description {
       color: #b8b8b8;
@@ -62,204 +56,222 @@ const Wrapper = styled.div`
       height: 16px;
     }
   }
+
+  .card-body {
+    padding: 0;
+    overflow: unset;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+  }
 `;
 
-const EmptyState = styled.div`
-  padding: 5rem 0;
-  max-width: 750px;
-  margin: auto;
-  text-align: center;
-
-  svg {
-    display: block;
-    margin: 0 auto;
+const StyledListContainer = styled(ListContainer)`
+  padding-top: 15px;
+  padding-bottom: 15px;
+  :first-of-type {
+    padding-bottom: 10px;
+  }
+  :nth-child(even) {
+    background: #f8f9fa;
+  }
+  :nth-child(odd) {
+    background: transparent;
+  }
+  border-bottom: 1px solid #ebebeb;
+  :last-of-type {
+    border: none;
+  }
+  .dark & {
+    :first-of-type {
+      border-bottom: none;
+    }
+    :last-of-type {
+      background: #2b2d31;
+      border-color: rgba(155, 155, 155, 0.1);
+    }
+    :last-of-type .list-group-item {
+      background: transparent !important;
+    }
   }
 
-  h5 {
-    margin-top: 2rem;
-    margin-bottom: 0;
+  .custom-checkbox .ccl span:first-child {
+    border-radius: 10px;
   }
 
-  button {
-    width: auto !important;
-    margin: 2rem auto;
+  .list-group-done .custom-checkbox .cci.cci-active + .ccl span:first-child {
+    background: #efefef;
+    border: 1px solid #9098a9;
+  }
+  .list-group-done .custom-checkbox .cci.cci-active + .ccl span:first-child svg {
+    stroke: #191c20;
   }
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, loadMore, todoActions, todoItems, recent } = props;
-
-  const config = {
-    angle: 90,
-    spread: 360,
-    startVelocity: 40,
-    elementCount: 70,
-    dragFriction: 0.12,
-    duration: 3000,
-    stagger: 3,
-    width: "10px",
-    height: "10px",
-    perspective: "500px",
-    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-  };
-
-  const refs = {
-    files: useRef(null),
-    btnLoadMore: useRef(null),
-  };
+  const { className = "", dictionary, filter, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
-  const {
-    generalSettings: { dark_mode },
-  } = useSettings();
-  const initLoading = () => {
-    loadMore.files();
-  };
 
   const redirect = useRedirect();
-
-  const handleScroll = (e) => {
-    if (e.target.dataset.loading === "false") {
-      if (e.target.scrollTop + 500 >= e.target.scrollHeight - e.target.offsetHeight) {
-        if (refs.btnLoadMore.current) refs.btnLoadMore.current.click();
-      }
-    }
-  };
+  const params = useParams();
 
   const handleLinkClick = (e, todo) => {
     e.preventDefault();
     if (todo.link_type === "CHAT") {
       redirect.toChat(todo.data.channel, todo.data.chat_message);
+    } else {
+      let post = {
+        id: todo.link_type === "POST_COMMENT" && todo.data ? todo.data.post.id : todo.link_id,
+        title: todo.title,
+      };
+      let workspace = {
+        ...todo.workspace,
+        folder_id: todo.folder ? todo.folder.id : null,
+        folder_name: todo.folder ? todo.folder.name : null,
+      };
+      redirect.toPost({ workspace, post });
     }
   };
 
+  const [showList, setShowList] = useState({
+    todo: true,
+    done: false,
+  });
+
+  const handleShowTodo = () => {
+    // if (showList.todo) {
+    //   // to false
+    //   setShowList({
+    //     todo: doneTodoItems.length > 0 ? false : true,
+    //     done: doneTodoItems.length > 0 ? true : false,
+    //   });
+    // } else {
+    //   // to true
+    //   setShowList({
+    //     todo: true,
+    //     done: showList.done,
+    //   });
+    // }
+    setShowList({
+      todo: !showList.todo,
+      done: showList.done,
+    });
+  };
+
+  const handleShowDone = () => {
+    // if (showList.done) {
+    //   // to false
+    //   setShowList({
+    //     todo: todoItems.length > 0 ? true : false,
+    //     done: todoItems.length > 0 ? false : true,
+    //   });
+    // } else {
+    //   // to true
+    //   setShowList({
+    //     todo: todoItems.length > 0 ? true : false,
+    //     done: doneTodoItems.length > 0 ? true : false,
+    //   });
+    // }
+    setShowList({
+      todo: showList.todo,
+      done: !showList.done,
+    });
+  };
+
   useEffect(() => {
-    if (!refs.files.current) return;
+    setShowList((prevState) => {
+      return {
+        todo: todoItems.length > 0 || doneTodoItems.length === 0 ? true : prevState.todo,
+        done: todoItems.length > 0 ? false : true,
+      };
+    });
+  }, [filter]);
 
-    let el = refs.files.current;
-    if (el && el.dataset.loaded === "0") {
-      initLoading();
+  // useEffect(() => {
+  //   // if bot category is set to false then show the to do section
+  //   if (!showList.done && !showList.todo) {
+  //     if (todoItems.length && doneTodoItems.length) {
+  //       setShowList((prevState) => {
+  //         return {
+  //           ...prevState,
+  //           done: true,
+  //         };
+  //       });
+  //     } else {
+  //       setShowList((prevState) => {
+  //         return {
+  //           ...prevState,
+  //           todo: true,
+  //         };
+  //       });
+  //     }
+  //   }
+  // }, [showList, todoItems, doneTodoItems]);
+  const handleRedirectToWorkspace = (e, todo) => {
+    e.preventDefault();
+    e.stopPropagation();
+    redirect.toWorkspace(todo.workspace, "reminders");
+  };
 
-      el.dataset.loaded = "1";
-      refs.files.current.addEventListener("scroll", handleScroll, false);
-    }
-  }, [refs.files.current]);
-  console.log(filter);
   return (
-    <Wrapper className={`todos-body card app-content-body ${className}`}>
-      <span className="d-none" ref={refs.btnLoadMore}>
-        Load more
-      </span>
-      <div className="card-body app-lists" data-loaded={0}>
-        {recent.length > 0 && filter === "" && (
-          <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {recent.slice(0, 5).map((rec, i) => {
-              return (
-                <TodosList
-                  key={rec.id}
-                  chatHeader={i === 0 ? "Recently done" : ""}
-                  todo={rec}
-                  todoActions={todoActions}
-                  dictionary={dictionary}
-                  handleLinkClick={handleLinkClick}
-                  dark_mode={dark_mode}
-                  todoFormat={todoFormat}
-                  todoFormatShortCode={todoFormatShortCode}
-                  getFileIcon={getFileIcon}
-                />
-              );
-            })}
-          </ul>
-        )}
-        {!isLoaded ? (
+    <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
+      {!isLoaded && (
+        <div className="card-body">
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
-        ) : todoItems.length !== 0 ? (
-          <ul className="list-group list-group-flush ui-sortable fadeIn">
-            {todoItems.map((todo, index) => {
-              let chatHeader = "";
-              if (index === 0) {
-                switch (todo.status) {
-                  case "OVERDUE": {
-                    chatHeader = dictionary.statusOverdue;
-                    break;
-                  }
-                  case "TODAY": {
-                    chatHeader = dictionary.statusUpcomingToday;
-                    break;
-                  }
-                  case "NEW": {
-                    chatHeader = dictionary.statusUpcoming;
-                    break;
-                  }
-                  case "DONE": {
-                    chatHeader = dictionary.statusDone;
-                    break;
-                  }
-                  default:
-                    return "";
-                }
-              } else {
-                let prevTodo = todoItems[index - 1];
-                if (prevTodo.status !== todo.status) {
-                  switch (todo.status) {
-                    case "TODAY": {
-                      chatHeader = dictionary.statusToday;
-                      break;
-                    }
-                    case "OVERDUE": {
-                      chatHeader = dictionary.statusOverdue;
-                      break;
-                    }
-                    case "NEW": {
-                      chatHeader = dictionary.statusUpcoming;
-                      break;
-                    }
-                    case "DONE": {
-                      chatHeader = dictionary.statusDone;
-                      break;
-                    }
-                    default:
-                      return "";
-                  }
-                }
-              }
-
-              return (
-                <TodosList
-                  key={todo.id}
-                  chatHeader={chatHeader}
-                  todo={todo}
-                  todoActions={todoActions}
-                  dictionary={dictionary}
-                  handleLinkClick={handleLinkClick}
-                  dark_mode={dark_mode}
-                  todoFormat={todoFormat}
-                  todoFormatShortCode={todoFormatShortCode}
-                  getFileIcon={getFileIcon}
-                />
-              );
-            })}
-          </ul>
-        ) : (
-          <>
-            {filter === "" ? (
-              <EmptyState>
-                <SvgEmptyState icon={1} height={282} />
-                <h5>{dictionary.emptyText}</h5>
-                <button onClick={() => todoActions.createFromModal()} className="btn btn-primary">
-                  {dictionary.emptyButtonText}
-                </button>
-              </EmptyState>
-            ) : (
-              <EmptyState>
-                <SvgEmptyState icon={1} height={282} />
-                <h5>{dictionary.noItemsFound}</h5>
-              </EmptyState>
+        </div>
+      )}
+      {/* {isLoaded && (todoItems.length > 0 || doneTodoItems.length > 0) && getTodoList()} */}
+      {isLoaded && (
+        <div className="card-body">
+          <StyledListContainer
+            active={showList.todo}
+            dictionary={dictionary}
+            handleHeaderClick={handleShowTodo}
+            headerText={dictionary.todo}
+            items={todoItems}
+            headerChild={params.hasOwnProperty("workspaceId") ? <span className="badge badge-light">{workspaceName}</span> : null}
+            ItemList={(item) => (
+              <TodosList
+                key={item.id}
+                todo={item}
+                todoActions={todoActions}
+                dictionary={dictionary}
+                handleLinkClick={handleLinkClick}
+                todoFormat={todoFormat}
+                todoFormatShortCode={todoFormatShortCode}
+                getFileIcon={getFileIcon}
+                showWsBadge={!params.hasOwnProperty("workspaceId")}
+                handleRedirectToWorkspace={handleRedirectToWorkspace}
+              />
             )}
-          </>
-        )}
-      </div>
+          ></StyledListContainer>
+          <StyledListContainer
+            active={showList.done}
+            dictionary={dictionary}
+            showEmptyState={false}
+            listGroupClassname={"list-group-done"}
+            handleHeaderClick={handleShowDone}
+            headerText={dictionary.done}
+            items={doneTodoItems}
+            ItemList={(item) => (
+              <TodosList
+                key={item.id}
+                todo={item}
+                todoActions={todoActions}
+                dictionary={dictionary}
+                handleLinkClick={handleLinkClick}
+                todoFormat={todoFormat}
+                todoFormatShortCode={todoFormatShortCode}
+                getFileIcon={getFileIcon}
+                showWsBadge={!params.hasOwnProperty("workspaceId")}
+                handleRedirectToWorkspace={handleRedirectToWorkspace}
+              />
+            )}
+          ></StyledListContainer>
+        </div>
+      )}
     </Wrapper>
   );
 };

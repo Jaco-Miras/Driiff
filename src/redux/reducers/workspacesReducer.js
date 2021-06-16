@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   workspaces: {},
   activeTopic: null,
   activeTab: "intern",
+  favoriteWorkspacesLoaded: false,
   workspacesLoaded: false,
   externalWorkspacesLoaded: false,
   workspacePosts: {},
@@ -23,13 +24,14 @@ const INITIAL_STATE = {
   search: {
     results: [],
     searching: false,
-    filterBy: "member",
+    filterBy: "all",
     value: "",
     page: 1,
     maxPage: 1,
     count: 0,
     hasMore: false,
     counters: {
+      all: 0,
       new: 0,
       nonMember: 0,
       external: 0,
@@ -66,6 +68,7 @@ const INITIAL_STATE = {
       },
     },
   },
+  workspaceReminders: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -85,35 +88,70 @@ export default (state = INITIAL_STATE, action) => {
         user: action.data,
       };
     }
-    case "INCOMING_UPDATED_USER": {
-      let workspaces = { ...state.workspaces };
-      let activeTopic = { ...state.activeTopic };
 
-      const index = activeTopic.members.map((m) => m.id).indexOf(action.data.id);
-      if (index !== -1) {
-        Object.keys(activeTopic.members[index]).forEach((attr) => {
-          const value = action.data[attr];
-          if (activeTopic.members[index].hasOwnProperty(attr)) {
-            activeTopic.members[index][attr] = value;
+    case "INCOMING_UPDATED_USER": {
+      let activeTopic = state.activeTopic;
+
+      if (activeTopic && activeTopic.members.some((m) => m.id === action.data.id)) {
+        const updatedMembers = activeTopic.members.map((m) => {
+          if (m.id === action.data.id) {
+            return {
+              ...m,
+              active: action.data.active ? action.data.active : m.active,
+              email: action.data.email ? action.data.email : m.email,
+              name: action.data.name ? action.data.name : m.name,
+              profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+              profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+              type: action.data.type ? action.data.type : m.type,
+              designation: action.data.designation ? action.data.designation : m.designation,
+              contact: action.data.contact ? action.data.contact : m.contact,
+              external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+            };
+          } else {
+            return m;
           }
         });
+        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        activeTopic = {
+          ...activeTopic,
+          is_shared: action.data.type === "external" ? true : isStillExternal,
+          members: updatedMembers,
+        };
       }
 
-      Object.values(workspaces).forEach((ws) => {
-        const index = workspaces[ws.id].members.map((m) => m.id).indexOf(action.data.id);
-        if (index !== -1) {
-          Object.keys(workspaces[ws.id].members[index]).forEach((attr) => {
-            const value = action.data[attr];
-            if (workspaces[ws.id].members[index].hasOwnProperty(attr)) {
-              workspaces[ws.id].members[index][attr] = value;
-            }
-          });
-        }
-      });
       return {
         ...state,
         flipper: !state.flipper,
-        workspaces: workspaces,
+        workspaces: Object.values(state.workspaces).reduce((res, ws) => {
+          const wsMembers = ws.members.some((m) => m.id === action.data.id)
+            ? ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return {
+                    ...m,
+                    active: action.data.active ? action.data.active : m.active,
+                    email: action.data.email ? action.data.email : m.email,
+                    name: action.data.name ? action.data.name : m.name,
+                    profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+                    profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+                    type: action.data.type ? action.data.type : m.type,
+                    designation: action.data.designation ? action.data.designation : m.designation,
+                    contact: action.data.contact ? action.data.contact : m.contact,
+                    external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+                  };
+                } else {
+                  return m;
+                }
+              })
+            : ws.members;
+          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
+          res[ws.id] = {
+            ...ws,
+            members: wsMembers,
+            is_shared: action.data.type === "external" ? true : isStillExternal,
+          };
+          return res;
+        }, {}),
+        activeTopic: activeTopic,
       };
     }
     case "GET_WORKSPACES_SUCCESS": {
@@ -155,6 +193,7 @@ export default (state = INITIAL_STATE, action) => {
             folder_name: null,
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -174,6 +213,57 @@ export default (state = INITIAL_STATE, action) => {
           updatedWorkspaces[state.activeChannel.entity_id].channel.id === state.activeChannel.id
             ? { code: updatedWorkspaces[state.activeChannel.entity_id].team_channel.code, id: updatedWorkspaces[state.activeChannel.entity_id].team_channel.id }
             : null,
+      };
+    }
+    case "GET_FAVORITE_WORKSPACES_SUCCESS": {
+      let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
+      action.data.workspaces.forEach((ws) => {
+        if (ws.type === "FOLDER") {
+          if (updatedFolders.hasOwnProperty(ws.id)) {
+            updatedFolders[ws.id].workspace_ids = [...updatedFolders[ws.id].workspace_ids, ...ws.topics.map((t) => t.id)];
+          } else {
+            updatedFolders[ws.id] = {
+              ...ws,
+              workspace_ids: ws.topics.map((t) => t.id),
+            };
+          }
+          ws.topics.forEach((t) => {
+            updatedWorkspaces[t.id] = {
+              ...t,
+              channel: { ...t.channel, loaded: false },
+              is_lock: t.private,
+              folder_id: ws.id,
+              folder_name: ws.name,
+              team_channel: t.team_channel,
+              is_favourite: t.is_favourite,
+              type: "WORKSPACE",
+            };
+          });
+          delete updatedFolders[ws.id].topics;
+        } else if (ws.type === "WORKSPACE") {
+          updatedWorkspaces[ws.id] = {
+            ...ws,
+            is_favourite: ws.topic_detail.is_favourite,
+            is_shared: ws.topic_detail.is_shared,
+            active: ws.topic_detail.active,
+            channel: { ...ws.topic_detail.channel, loaded: false },
+            unread_chats: ws.topic_detail.unread_chats,
+            unread_posts: ws.topic_detail.unread_posts,
+            folder_id: null,
+            folder_name: null,
+            team_channel: ws.topic_detail.team_channel,
+            team_unread_chats: ws.topic_detail.team_unread_chats,
+            workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+          };
+          delete updatedWorkspaces[ws.id].topic_detail;
+        }
+      });
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        folders: updatedFolders,
+        favoriteWorkspacesLoaded: true,
       };
     }
     case "GET_WORKSPACE_SUCCESS": {
@@ -304,13 +394,13 @@ export default (state = INITIAL_STATE, action) => {
         if (!action.data.member_ids.some((id) => id === state.user.id)) {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
-            if (Object.values(updatedWorkspaces).length) {
-              if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
-                updatedTopic = Object.values(updatedWorkspaces)[1];
-              } else {
-                updatedTopic = Object.values(updatedWorkspaces)[0];
-              }
-            }
+            // if (Object.values(updatedWorkspaces).length) {
+            //   if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
+            //     updatedTopic = Object.values(updatedWorkspaces)[1];
+            //   } else {
+            //     updatedTopic = Object.values(updatedWorkspaces)[0];
+            //   }
+            // }
             if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
               let isMember = false;
               updatedFolders[action.data.workspace_id].workspace_ids
@@ -617,7 +707,7 @@ export default (state = INITIAL_STATE, action) => {
       let activeTopic = null;
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
-          if (ws.channel.id === action.data.channel_id) {
+          if (ws.channel.id && ws.channel.id === action.data.channel_id) {
             updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, ...action.data.users];
             updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, ...action.data.users.map((u) => u.id)];
             activeTopic = updatedWorkspaces[ws.id];
@@ -3044,6 +3134,78 @@ export default (state = INITIAL_STATE, action) => {
             };
             return ws;
           }, {}),
+        },
+      };
+    }
+    case "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS": {
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          ...(action.data.length > 0 && {
+            ...action.data.reduce((res, obj) => {
+              res[obj.topic_id] = {
+                ...state.workspaces[obj.topic_id],
+                workspace_counter_entries: obj.workspace_counter_entries,
+              };
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
+    case "GET_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              hasMore: action.data.todos.length === action.data.limit,
+              skip: state.workspaceReminders[action.data.topic_id].skip + action.data.todos.length,
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              skip: action.data.todos.length,
+              hasMore: action.data.todos.length === action.data.limit,
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "UPDATE_WORKSPACE_REMINDERS_COUNT": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          ...(state.workspaceReminders[action.data.id] && {
+            [action.data.id]: {
+              ...state.workspaceReminders[action.data.id],
+              count: action.data.count.reduce((res, c) => {
+                res[c.status.toLowerCase()] = c.count;
+                return res;
+              }, {}),
+            },
+          }),
+          ...(typeof state.workspaceReminders[action.data.id] === "undefined" && {
+            [action.data.id]: {
+              skip: 0,
+              hasMore: true,
+              reminderIds: [],
+              count: action.data.count.reduce((res, c) => {
+                res[c.status.toLowerCase()] = c.count;
+                return res;
+              }, {}),
+            },
+          }),
         },
       };
     }

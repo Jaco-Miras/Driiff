@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
-import { useSettings, useTodos, useTranslation } from "../../hooks";
+import { useSettings, useTranslation } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
@@ -194,7 +194,7 @@ const MainNavigationTabPanel = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { count } = useTodos();
+  const count = useSelector((state) => state.global.todos.count);
   const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
   const user = useSelector((state) => state.session.user);
   // const workspaces = useSelector((state) => state.workspaces.workspaces);

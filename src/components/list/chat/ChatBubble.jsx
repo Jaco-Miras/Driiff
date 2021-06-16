@@ -5,7 +5,6 @@ import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
-import { stripGif } from "../../../helpers/stringFormatter";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
@@ -126,6 +125,15 @@ const ChatBubbleContainer = styled.div`
   span.is-deleted {
     font-style: italic;
     color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#AAB0C8")};
+  }
+  span.image-uploading {
+    display: none;
+  }
+  .chat-file-notification {
+    b:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -477,7 +485,27 @@ const ChatNameNotAuthor = styled.span`
 
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, users, translate, language } = props;
+  const {
+    reply,
+    showAvatar,
+    selectedChannel,
+    showGifPlayer,
+    isAuthor,
+    addMessageRef,
+    user,
+    recipients,
+    isLastChat,
+    chatMessageActions,
+    timeFormat,
+    isBot,
+    chatSettings,
+    isLastChatVisible,
+    dictionary,
+    users,
+    translate,
+    language,
+    _t,
+  } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -496,6 +524,7 @@ const ChatBubble = (props) => {
     users,
     translate,
     language,
+    _t,
   });
 
   const hasFiles = reply.files.length > 0;
@@ -678,7 +707,7 @@ const ChatBubble = (props) => {
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
+                    dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
               )}

@@ -76,6 +76,7 @@ export {
   getExternalUsers,
   getArchivedUsers,
   unarchiveUser,
+  updateUserType,
 } from "./user";
 
 export {
@@ -230,12 +231,16 @@ export {
   fetchPrimaryFiles,
   fetchMembers,
   fetchTimeline,
+  getFavoriteWorkspaces,
+  getFavoriteWorkspaceCounters,
   getWorkspaceFilterCount,
   getPostStatusCount,
   getAllWorkspace,
   getWorkspace,
   getWorkspaceFolder,
   getWorkspacePostDetail,
+  getWorkspaceReminders,
+  getWorkspaceRemindersCount,
   getWorkspaceTopics,
   getWorkspaces,
   joinWorkspace,

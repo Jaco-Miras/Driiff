@@ -79,6 +79,7 @@ import {
   generateUnfurlReducer,
   getConnectedSlugs,
   getLatestReply,
+  getToDoDetail,
   getUnreadNotificationCounterEntries,
   incomingCreatedAnnouncement,
   incomingDoneToDo,
@@ -136,6 +137,7 @@ import {
   incomingOnlineUsers,
 } from "../../redux/actions/userAction";
 import {
+  getFavoriteWorkspaceCounters,
   getUnreadWorkspacePostEntries,
   getWorkspace,
   getWorkspaceFolder,
@@ -153,6 +155,7 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter,
   updateWorkspacePostCount,
+  setActiveTopic,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -232,6 +235,7 @@ class SocketListeners extends Component {
       this.refetchOtherMessages();
       this.refetchPosts();
       this.refetchPostComments();
+      this.props.getFavoriteWorkspaceCounters();
     });
     window.Echo.connector.socket.on("reconnecting", function () {
       console.log("socket reconnecting");
@@ -307,11 +311,86 @@ class SocketListeners extends Component {
             return null;
         }
       })
+      .listen(".workspace-todo-notification", (e) => {
+        console.log("workspace todo notification", e);
+        if (e.workspace) {
+          if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
+            this.props.getFavoriteWorkspaceCounters();
+          }
+        }
+        this.props.getToDoDetail();
+        switch (e.SOCKET_TYPE) {
+          case "CREATE_WORKSPACE_TODO": {
+            this.props.incomingToDo({ ...e, user: e.user_id });
+            break;
+          }
+          case "UPDATE_WORKSPACE_TODO": {
+            this.props.incomingUpdateToDo(e);
+            break;
+          }
+          case "DONE_TODO": {
+            this.props.incomingDoneToDo(e);
+            break;
+          }
+          case "DELETE_WORKSPACE_TODO": {
+            this.props.incomingRemoveToDo(e);
+            break;
+          }
+          case "REMIND_WORKSPCE_TODO": {
+            //pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+            this.props.incomingUpdateToDo(e);
+            break;
+          }
+          case "ADVANCE_REMIND_TODO": {
+            if (isSafari) {
+              if (this.props.notificationsOn) {
+                let redirect = () => {
+                  if (e.link_type) {
+                    let link = "";
+                    if (e.link_type === "POST_COMMENT" || e.link_type === "POST") {
+                      if (e.data.workspaces.length) {
+                        if (e.data.workspaces[0].workspace) {
+                          link = `/workspace/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${
+                            e.data.post.id
+                          }/${replaceChar(e.data.post.title)}`;
+                        } else {
+                          link = `/workspace/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                        }
+                      } else {
+                        link = `/posts/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                      }
+                    } else if (e.link_type === "CHAT") {
+                      link = `/chat/${e.data.channel.code}/${e.data.chat_message.code}`;
+                    }
+                    if (link !== "") {
+                      this.props.history.push(link);
+                    }
+                  } else {
+                    this.props.history.push("/todos");
+                  }
+                };
+                pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
+              }
+            }
+            this.props.incomingReminderNotification(e);
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
+        // if (e.workspace) {
+        //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
+        //     this.props.getFavoriteWorkspaceCounters();
+        //   }
+        // }
+        this.props.getFavoriteWorkspaceCounters();
+        this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
-            this.props.incomingToDo(e);
+            this.props.incomingToDo({ ...e, user: e.user_id });
             break;
           }
           case "UPDATE_TODO": {
@@ -463,6 +542,23 @@ class SocketListeners extends Component {
       .listen(".upload-bulk-private-workspace-files", (e) => {
         console.log(e, "files bulk");
         this.props.incomingFiles(e);
+        e.channel_messages &&
+          e.channel_messages.forEach((m) => {
+            m.system_message.channel_id = m.channel.id;
+            m.system_message.files = [];
+            m.system_message.editable = false;
+            m.system_message.unfurls = [];
+            m.system_message.reactions = [];
+            m.system_message.is_deleted = false;
+            m.system_message.todo_reminder = null;
+            m.system_message.is_read = false;
+            m.system_message.is_completed = false;
+            m.system_message.user = null;
+            // m.system_message.new_post = true;
+            m.system_message.topic = m.topic;
+            m.system_message.shared_with_client = true;
+            this.props.incomingPostNotificationMessage(m.system_message);
+          });
       })
       .listen(".favourite-notification", (e) => {
         console.log(e, "favourite-notification");
@@ -482,6 +578,8 @@ class SocketListeners extends Component {
       })
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
+        this.props.getFavoriteWorkspaceCounters();
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost(e);
@@ -540,6 +638,13 @@ class SocketListeners extends Component {
                   pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
                 }
               }
+              //check if post has favorite workspace as recipient
+              // if (e.recipients.some((r) => r.type === "TOPIC")) {
+              //   let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
+              //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+              //     this.props.getFavoriteWorkspaceCounters();
+              //   }
+              // }
             }
             if (e.show_at !== null && this.props.user.id === e.author.id) {
               this.props.incomingPost({
@@ -552,9 +657,9 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            if (this.props.user.id !== e.author.id) {
-              this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
-            }
+            // if (this.props.user.id !== e.author.id) {
+            //   this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+            // }
 
             e.channel_messages &&
               e.channel_messages.forEach((m) => {
@@ -661,6 +766,10 @@ class SocketListeners extends Component {
                   count: 1,
                   entity_type: "WORKSPACE_POST",
                 });
+                let topicRecipientIds = e.workspaces.map((r) => r.topic_id);
+                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+                  this.props.getFavoriteWorkspaceCounters();
+                }
               }
             }
             if (e.author.id !== this.props.user.id) {
@@ -802,6 +911,9 @@ class SocketListeners extends Component {
                   count: 1,
                   entity_type: "WORKSPACE_CHAT_MESSAGE",
                 });
+                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace_id === ws.id)) {
+                  this.props.getFavoriteWorkspaceCounters();
+                }
               }
             }
 
@@ -1097,6 +1209,12 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "USER_UPDATE": {
             this.props.incomingUpdatedUser(e);
+            if (e.id === this.props.user.id || e.user_id === this.props.user.id) {
+              this.props.getUser({ id: this.props.user.id }, (err, res) => {
+                if (err) return;
+                sessionService.saveUser({ ...res.data });
+              });
+            }
             break;
           }
           default:
@@ -1125,6 +1243,23 @@ class SocketListeners extends Component {
       .listen(".upload-bulk-workspace-files", (e) => {
         console.log(e, "files bulk");
         this.props.incomingFiles(e);
+        e.channel_messages &&
+          e.channel_messages.forEach((m) => {
+            m.system_message.channel_id = m.channel.id;
+            m.system_message.files = [];
+            m.system_message.editable = false;
+            m.system_message.unfurls = [];
+            m.system_message.reactions = [];
+            m.system_message.is_deleted = false;
+            m.system_message.todo_reminder = null;
+            m.system_message.is_read = false;
+            m.system_message.is_completed = false;
+            m.system_message.user = null;
+            // m.system_message.new_post = true;
+            m.system_message.topic = m.topic;
+            m.system_message.shared_with_client = true;
+            this.props.incomingPostNotificationMessage(m.system_message);
+          });
       })
       .listen(".workspace-file-notification", (e) => {
         console.log(e, "file", "line 506");
@@ -1221,37 +1356,29 @@ class SocketListeners extends Component {
               // get the folder if the workspace folder does not exists yet
             }
           }
-          if (e.remove_member_ids.length > 0) {
-            if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
-              if (this.props.user.type === "external" || e.private === 1) {
-                if (Object.keys(this.props.workspaces).length) {
-                  let workspace = Object.values(this.props.workspaces)[0];
-                  if (workspace.folder_id) {
-                    this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                  } else {
-                    this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                  }
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
+            if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.props.user.id)) {
+              //redirect to first favorite workspace
+              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              if (favoriteWorkspaces.length) {
+                let workspace = favoriteWorkspaces[0];
+                this.props.setActiveTopic(workspace);
+                if (workspace.folder_id) {
+                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
                 }
-              }
-            }
-            if (this.props.selectedChannel) {
-              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                //redirect to first channel
-                let wsChannels = Object.values(this.props.channels).filter((c) => {
-                  const checkForId = (id) => id === this.props.user.id;
-                  let isMember = c.members.map((m) => m.id).some(checkForId);
-                  return c.type === "TOPIC" && isMember && !c.is_hidden;
-                });
-                if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                  let channel = wsChannels[0];
-                  this.props.setSelectedChannel(channel);
-                  this.props.history.push(`/chat/${channel.code}`);
+                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+                    this.props.history.push(`/chat/${workspace.channel.code}`);
+                  }
                 }
               }
             }
           }
         }
-        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/workspace") && this.props.match.url !== "/workspace/search") {
           let currentPage = this.props.location.pathname;
           currentPage = currentPage.split("/")[2];
           if (e.workspace_id === 0) {
@@ -1389,37 +1516,29 @@ class SocketListeners extends Component {
               // get the folder if the workspace folder does not exists yet
             }
           }
-          if (e.remove_member_ids.length > 0) {
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
-              if (this.props.user.type === "external" || e.private === 1) {
-                if (Object.keys(this.props.workspaces).length) {
-                  let workspace = Object.values(this.props.workspaces)[0];
-                  if (workspace.folder_id) {
-                    this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                  } else {
-                    this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                  }
+              //redirect to first favorite workspace
+              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              if (favoriteWorkspaces.length) {
+                let workspace = favoriteWorkspaces[0];
+                this.props.setActiveTopic(workspace);
+                if (workspace.folder_id) {
+                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
                 }
-              }
-            }
-            if (this.props.selectedChannel) {
-              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                //redirect to first channel
-                let wsChannels = Object.values(this.props.channels).filter((c) => {
-                  const checkForId = (id) => id === this.props.user.id;
-                  let isMember = c.members.map((m) => m.id).some(checkForId);
-                  return c.type === "TOPIC" && isMember && !c.is_hidden;
-                });
-                if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                  let channel = wsChannels[0];
-                  this.props.setSelectedChannel(channel);
-                  this.props.history.push(`/chat/${channel.code}`);
+                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+                    this.props.history.push(`/chat/${workspace.channel.code}`);
+                  }
                 }
               }
             }
           }
         }
-        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/workspace") && this.props.match.url !== "/workspace/search") {
           let currentPage = this.props.location.pathname;
           currentPage = currentPage.split("/")[2];
           if (e.workspace_id === 0) {
@@ -1644,6 +1763,14 @@ class SocketListeners extends Component {
       })
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
+        if (e.entity_group_type === "CHAT") {
+          let workspace = Object.values(this.props.workspaces).find((ws) => {
+            return ws.is_favourite && (ws.channel.id === parseInt(e.entity_id) || (ws.team_channel && ws.team_channel.id === parseInt(e.entity_id)));
+          });
+          if (workspace) {
+            this.props.getFavoriteWorkspaceCounters();
+          }
+        }
         this.props.setUnreadNotificationCounterEntries(e);
       });
   }
@@ -1835,6 +1962,9 @@ function mapDispatchToProps(dispatch) {
     incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),
     incomingRemoveFileAutomatically: bindActionCreators(incomingRemoveFileAutomatically, dispatch),
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
+    getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
+    getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
+    setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
   };
 }
 

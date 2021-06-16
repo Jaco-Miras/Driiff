@@ -23,7 +23,6 @@ const CompanyTimelinePanel = (props) => {
     <Wrapper className={`timeline-panel card ${className}`} ref={mainRef}>
       <div className="card-body">
         <h5 className="card-title">{dictionary.timeline}</h5>
-
         <div className="timeline">
           {!init ? (
             <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
@@ -53,5 +52,4 @@ const CompanyTimelinePanel = (props) => {
     </Wrapper>
   );
 };
-
 export default React.memo(CompanyTimelinePanel);

@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 `;
 
 const TodosHeader = (props) => {
-  const { className = "", clearSearch, onEnter, dictionary, onSearchChange, onClickEmpty, searchValue } = props;
+  const { className = "", clearSearch, onEnter, dictionary, onSearchChange, searchValue } = props;
 
   const openMobileModal = () => {
     document.body.classList.toggle("mobile-modal-open");
@@ -49,21 +49,20 @@ const TodosHeader = (props) => {
     <Wrapper className={`todos-header app-action ${className}`}>
       <div className="action-left">
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
-          <SvgIconFeather icon="menu"/>
+          <SvgIconFeather icon="menu" />
         </span>
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onKeyDown={onEnter} onChange={onSearchChange} value={searchValue} className="form-control"
-                 placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1"/>
+          <input type="text" onKeyDown={onEnter} onChange={onSearchChange} value={searchValue} className="form-control" placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1" />
           {searchValue.trim() !== "" && (
             <button onClick={clearSearch} className="btn-cross" type="button">
-              <SvgIconFeather icon="x"/>
+              <SvgIconFeather icon="x" />
             </button>
           )}
           <div className="input-group-append">
             <button className="btn btn-outline-light" type="button" id="button-addon1">
-              <SvgIconFeather icon="search"/>
+              <SvgIconFeather icon="search" />
             </button>
           </div>
         </div>

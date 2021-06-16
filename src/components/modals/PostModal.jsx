@@ -45,6 +45,7 @@ const WrapperDiv = styled(InputGroup)`
     @media all and (max-width: 480px) {
       margin-left: 0;
       margin-right: 0;
+      margin-bottom: 1rem;
     }
   }
   &.schedule-post {
@@ -195,6 +196,11 @@ const WrapperDiv = styled(InputGroup)`
     width: 100%;
     .post-info {
       font-size: 0.8rem;
+      flex-flow: wrap;
+      justify-content: flex-end;
+      @media all and (max-width: 480px) {
+        justify-content: flex-start;
+      }
     }
   }
   .dark & {
@@ -445,7 +451,7 @@ const PostModal = (props) => {
       payload = {
         ...payload,
         id: item.post.id,
-        file_ids: uploadedFiles.map((f) => f.id),
+        file_ids: [...uploadedFiles.map((f) => f.id), ...payload.file_ids],
       };
       if (item.post.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
         delete payload.approval_user_ids;
@@ -670,7 +676,7 @@ const PostModal = (props) => {
         } else {
           payload = {
             ...payload,
-            file_ids: result.data.map((res) => res.id),
+            file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
           };
           dispatch(
             postCreate(payload, (err, res) => {
@@ -953,7 +959,7 @@ const PostModal = (props) => {
             </div>
           </WrapperDiv>
         )}
-        <WrapperDiv className="modal-label more-option mb-0">
+        <WrapperDiv className="modal-label more-option">
           <MoreOption>{dictionary.moreOptions}</MoreOption>
           <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
         </WrapperDiv>

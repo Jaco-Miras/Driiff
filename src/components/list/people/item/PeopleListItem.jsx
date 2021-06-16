@@ -95,6 +95,7 @@ const PeopleListItem = (props) => {
     roles,
     onArchiveUser = null,
     onActivateUser = null,
+    onChangeUserType = null,
     showInactive = false,
     showWorkspaceRole = false,
   } = props;
@@ -201,6 +202,14 @@ const PeopleListItem = (props) => {
     }
   };
 
+  const handleChangeToInternal = () => {
+    if (onChangeUserType) onChangeUserType(user, "internal");
+  };
+
+  const handleChangeToExternal = () => {
+    if (onChangeUserType) onChangeUserType(user, "external");
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
       <div className="col-12">
@@ -256,6 +265,8 @@ const PeopleListItem = (props) => {
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       {!showInactive && user.type === "internal" && user.role && user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
                       {!showInactive && user.type === "internal" && user.role && user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
+                      {!showInactive && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
+                      {!showInactive && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
                       {/* <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div> */}
                       {showInactive && user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}

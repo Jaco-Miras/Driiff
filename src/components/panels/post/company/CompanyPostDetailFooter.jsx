@@ -184,6 +184,19 @@ const ApproverSelectWrapper = styled.div`
   }
 `;
 
+const OverviewNextLink = styled.span`
+  display: flex;
+  align-items: center;
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`;
+
 const CompanyPostDetailFooter = (props) => {
   const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
 
@@ -204,6 +217,7 @@ const CompanyPostDetailFooter = (props) => {
   const [showApprover, setShowApprover] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approving, setApproving] = useState({ approve: false, change: false });
+  const [imageLoading, setImageLoading] = useState(null);
 
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
@@ -242,7 +256,7 @@ const CompanyPostDetailFooter = (props) => {
   const onActive = (active) => {
     setActive(active);
     let sendButtonValues;
-    active ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
+    active && !imageLoading ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
     setBackgroundSend(sendButtonValues[0]);
     setCursor(sendButtonValues[1]);
     setFillSend(sendButtonValues[2]);
@@ -294,9 +308,9 @@ const CompanyPostDetailFooter = (props) => {
     setShowApprover((prevState) => !prevState);
   };
 
-  const privateWsOnly = post.recipients.filter((r) => {
-    return r.type === "TOPIC" && r.private === 1;
-  });
+  // const privateWsOnly = post.recipients.filter((r) => {
+  //   return r.type === "TOPIC" && r.private === 1;
+  // });
   const prioMentionIds = post.recipients
     .filter((r) => r.type !== "DEPARTMENT")
     .map((r) => {
@@ -472,6 +486,7 @@ const CompanyPostDetailFooter = (props) => {
     if (err) return;
     if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
       postActions.markReplyRequirement(post);
+      postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
@@ -606,6 +621,8 @@ const CompanyPostDetailFooter = (props) => {
               onSubmitCallback={requestForChangeCallback}
               isApprover={approving.change && hasPendingAproval}
               mainInput={mainInput}
+              imageLoading={imageLoading}
+              setImageLoading={setImageLoading}
             />
             <PostInputButtons
               parentId={parentId}
@@ -652,12 +669,12 @@ const CompanyPostDetailFooter = (props) => {
       {filter && (filter === "all" || filter === "inbox") && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <button className="btn btn-outline-light mr-3" onClick={overview}>
+            <OverviewNextLink className="mr-3" onClick={overview}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
-            </button>
-            <button className="btn btn-outline-light" onClick={handleNextPost}>
+            </OverviewNextLink>
+            <OverviewNextLink onClick={handleNextPost}>
               {dictionary.archivePostOpenNext} <SvgIconFeather className="ml-2" icon="corner-up-right" />
-            </button>
+            </OverviewNextLink>
           </div>
         </Dflex>
       )}

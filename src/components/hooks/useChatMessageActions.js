@@ -19,9 +19,10 @@ import {
   setTranslatedBody,
   setFancyLink,
 } from "../../redux/actions/chatActions";
-import { useToaster, useTodoActions } from "./index";
+import { useToaster, useTodoActions, useTranslation } from "./index";
 import useChannelActions from "./useChannelActions";
 import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
+import { setViewFiles } from "../../redux/actions/fileActions";
 
 const useChatMessageActions = () => {
   //const sharedSlugs = useSelector((state) => state.global.slugs);
@@ -29,6 +30,13 @@ const useChatMessageActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const todoActions = useTodoActions();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
+  };
 
   const refs = {
     fetch: useRef(false),
@@ -51,6 +59,14 @@ const useChatMessageActions = () => {
   //   },
   //   [sharedSlugs]
   // );
+
+  const viewFiles = (files) => {
+    const payload = {
+      files: files,
+      file_id: files[0].file_id,
+    };
+    dispatch(setViewFiles(payload));
+  };
 
   /**
    * @param {Object} channel
@@ -286,14 +302,18 @@ const useChatMessageActions = () => {
       const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForChat(message.id, payload, (err, res) => {
           if (err) {
-            toaster.error("An error has occurred try again!");
+            if (err.response && err.response.data && err.response.data.errors) {
+              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+                toaster.error(dictionary.reminderAlreadyExists);
+              } else {
+                toaster.error(dictionary.toasterGeneraError);
+              }
+            } else {
+              toaster.error(dictionary.toasterGeneraError);
+            }
           }
           if (res) {
-            toaster.success(
-              <>
-                You will be reminded about this chat message under <b>To-dos & Reminders</b>.
-              </>
-            );
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
           }
           modalCallback(err, res);
           callback(err, res);
@@ -388,17 +408,17 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
-   /**
+  /**
    * @param {object} payload
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-    const saveFancyContent = useCallback(
-      (payload) => {
-        dispatch(setFancyLink(payload));
-      },
-      [dispatch]
-    );
+  const saveFancyContent = useCallback(
+    (payload) => {
+      dispatch(setFancyLink(payload));
+    },
+    [dispatch]
+  );
 
   return {
     channelActions: useChannelActions(),
@@ -420,7 +440,8 @@ const useChatMessageActions = () => {
     setStar,
     setHuddleAnswers,
     saveTranslationBody,
-    saveFancyContent
+    viewFiles,
+    saveFancyContent,
   };
 };
 

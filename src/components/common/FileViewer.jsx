@@ -236,12 +236,12 @@ const FileRender = (props) => {
   let refFiles = {};
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
-  const handleImageOnLoad = (e) => {
-    console.log(e);
-  };
+  // const handleImageOnLoad = (e) => {
+  //   console.log(e);
+  // };
 
   const handlePdfOnLoad = (e) => {
-    console.log(e.target);
+    //console.log(e.target);
   };
 
   const handleImageOnError = (e) => {
@@ -275,7 +275,6 @@ const FileRender = (props) => {
   };
 
   const handleDownloadFile = (e, file) => {
-    console.log(file);
     if (file.remove_on_download) {
       let payload = {
         file_id: file.file_id,
@@ -379,7 +378,7 @@ const FileRender = (props) => {
               className={"file"}
               data-index={file.id}
               data-attempt={0}
-              onLoad={handleImageOnLoad}
+              // onLoad={handleImageOnLoad}
               onError={handleImageOnError}
               ref={(e) => (refFiles[file.id] = e)}
               key={file.id}
@@ -463,7 +462,6 @@ const FileViewer = (props) => {
   };
 
   const handleDownloadFile = (e, file) => {
-    console.log(file);
     if (file.remove_on_download) {
       let payload = {
         file_id: file.file_id,
@@ -545,7 +543,6 @@ const FileViewer = (props) => {
   useOutsideClick(fileRef, handleCloseFileViewer, true);
 
   let file = files[activeIndex];
-  console.log(file);
   if (files.length === 0 || activeIndex === null || typeof file === "undefined") return;
 
   return (

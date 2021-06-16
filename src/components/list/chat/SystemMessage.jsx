@@ -3,11 +3,18 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
-import { SvgIconFeather } from "../../common";
+//import { SvgIconFeather } from "../../common";
 
 const SystemMessageContainer = styled.span`
   display: block;
   width: 100%;
+
+  .chat-file-notification {
+    b:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
 
   .push-link {
     display: inline-block;
@@ -87,11 +94,11 @@ const ChatTimeStamp = styled.div`
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = forwardRef((props, ref) => {
-  const { reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary, users } = props;
+  const { reply, selectedChannel, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary, users, _t } = props;
 
   const history = useHistory();
 
-  const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user, users });
+  const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user, users, _t });
 
   const [lastChatRef, inView, entry] = useInView({
     threshold: THRESHOLD,
@@ -131,7 +138,7 @@ const SystemMessage = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (reply) {
-      let pushLinks = document.querySelectorAll('.push-link[data-has-link="0"]');
+      let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
       pushLinks.forEach((p) => {
         p.addEventListener("click", handleHistoryPushClick);
         p.dataset.hasLink = "1";
@@ -141,9 +148,17 @@ const SystemMessage = forwardRef((props, ref) => {
     }
   }, [reply]);
 
+  const handleMessageClick = () => {
+    if (reply.body.startsWith("UPLOAD_BULK::")) {
+      const data = JSON.parse(reply.body.replace("UPLOAD_BULK::", ""));
+      if (data.files) {
+        chatMessageActions.viewFiles(data.files);
+      }
+    }
+  };
   return (
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent ref={ref} id={`bot-${reply.id}`} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
+      <SystemMessageContent ref={ref} id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">
           {/* <span className="star-wrap">

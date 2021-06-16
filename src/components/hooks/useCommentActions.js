@@ -22,12 +22,19 @@ import {
   setChangeRequestedComment,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useToaster, useTodoActions } from "./index";
+import { useToaster, useTodoActions, useTranslation } from "./index";
 
 const useCommentActions = () => {
   const dispatch = useDispatch();
   const todoActions = useTodoActions();
   const toaster = useToaster();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
+  };
 
   const fetchPostComments = useCallback(
     (payload, callback) => {
@@ -128,14 +135,18 @@ const useCommentActions = () => {
       const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForPostComment(postComment.id, payload, (err, res) => {
           if (err) {
-            toaster.error("An error has occurred try again!");
+            if (err.response && err.response.data && err.response.data.errors) {
+              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+                toaster.error(dictionary.reminderAlreadyExists);
+              } else {
+                toaster.error(dictionary.toasterGeneraError);
+              }
+            } else {
+              toaster.error(dictionary.toasterGeneraError);
+            }
           }
           if (res) {
-            toaster.success(
-              <>
-                You will be reminded about this comment under <b>To-dos & Reminders</b>.
-              </>
-            );
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
           }
           modalCallback(err, res);
           callback(err, res);

@@ -34,7 +34,7 @@ import {
   postFavorite,
   postFollow,
   postMarkDone,
-  postMarkRead,
+  //postMarkRead,
   postToggleRead,
   postUnfollow,
   postVisit,
@@ -61,7 +61,7 @@ import {
   incomingPostListDisconnect,
   postRequired,
 } from "../../redux/actions/postActions";
-import { getUnreadWorkspacePostEntries, updateWorkspacePostCount } from "../../redux/actions/workspaceActions";
+import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
 
@@ -118,6 +118,9 @@ const usePostActions = () => {
     buttonSnooze: _t("BUTTON.SNOOZE", "Snooze"),
     headerSnoozePost: _t("MODAL.SNOOZE_POST", "Snooze post"),
     postArchivedMuted: _t("TOASTER.POST_ARCHIVED_MUTED", "is archived. Comments for this post will be muted for 48 hours."),
+    reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
   };
 
   const fetchPostList = useCallback((payload = {}, callback) => {
@@ -379,6 +382,9 @@ const usePostActions = () => {
           count: count === 0 ? 1 : count,
         };
         if (res) {
+          if (post.recipients.some((r) => r.type === "TOPIC")) {
+            dispatch(getFavoriteWorkspaceCounters());
+          }
           if (showToaster)
             toaster.success(
               <>
@@ -418,6 +424,9 @@ const usePostActions = () => {
         };
 
         if (res) {
+          if (post.recipients.some((r) => r.type === "TOPIC")) {
+            dispatch(getFavoriteWorkspaceCounters());
+          }
           if (showToaster)
             toaster.success(
               <>
@@ -596,6 +605,7 @@ const usePostActions = () => {
             },
             actions: {
               onSubmit: () => {
+                markAsRead(post);
                 if (rewardRef && rewardRef.current) {
                   rewardRef.current.rewardMe();
                 }
@@ -867,6 +877,7 @@ const usePostActions = () => {
       };
 
       dispatch(postRequired(payload));
+      markAsRead(post);
     },
     [dispatch, params]
   );
@@ -890,14 +901,18 @@ const usePostActions = () => {
       const onConfirm = (payload, modalCallback = () => {}) => {
         todoActions.createForPost(post.id, payload, (err, res) => {
           if (err) {
-            toaster.error(`${dictionary.notificationError}`);
+            if (err.response && err.response.data && err.response.data.errors) {
+              if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "ALREADY_CREATED_TODO")) {
+                toaster.error(dictionary.reminderAlreadyExists);
+              } else {
+                toaster.error(dictionary.toasterGeneraError);
+              }
+            } else {
+              toaster.error(dictionary.toasterGeneraError);
+            }
           }
           if (res) {
-            toaster.success(
-              <>
-                {dictionary.notificationReminderPost} <b>{dictionary.todoLinks}</b>.
-              </>
-            );
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
           }
           modalCallback(err, res);
           callback(err, res);

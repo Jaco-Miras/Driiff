@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
 import { useIsMember, useTranslation, useUsers, useWorkspaceActions } from "../../hooks";
-import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSearchPanel, WorkspaceSettingsPanel } from "../workspace";
+import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceRemindersPanel, WorkspaceSettingsPanel } from "../workspace";
 import AllWorkspace from "./AllWorkspace";
 
 const Wrapper = styled.div`
@@ -59,7 +59,7 @@ const WorkspaceContentPanel = (props) => {
 
   const { loggedUser } = useUsers();
   const actions = useWorkspaceActions();
-  const { workspaces, workspacesLoaded, activeTopic: workspace, workspaceTimeline } = useSelector((state) => state.workspaces);
+  const { workspaces, workspacesLoaded, favoriteWorkspacesLoaded, activeTopic: workspace, workspaceTimeline } = useSelector((state) => state.workspaces);
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && workspace && workspaceTimeline[workspace.id]) {
     timeline = workspaceTimeline[workspace.id];
@@ -77,7 +77,7 @@ const WorkspaceContentPanel = (props) => {
 
   return (
     <Wrapper className={`main-content ${className}`}>
-      {!workspacesLoaded ? (
+      {!workspacesLoaded && !favoriteWorkspacesLoaded ? (
         <div className="spinner-container">
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
         </div>
@@ -136,6 +136,10 @@ const WorkspaceContentPanel = (props) => {
                 <Route
                   render={() => <WorkspacePeoplePanel {...props} workspace={workspace} isMember={isMember} />}
                   path={["/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/people/:workspaceId/:workspaceName", "/workspace/people"]}
+                />
+                <Route
+                  render={() => <WorkspaceRemindersPanel {...props} workspace={workspace} isMember={isMember} />}
+                  path={["/workspace/reminders/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/reminders/:workspaceId/:workspaceName", "/workspace/reminders"]}
                 />
                 <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
                 <Redirect

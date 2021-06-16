@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { sessionService } from "redux-react-session";
@@ -15,6 +15,8 @@ export const useUserLogin = (props) => {
 
   const userActions = useUserActions();
 
+  const checkingRef = useRef(null);
+
   useEffect(() => {
     if (history.location.pathname === "/logged-out") {
       userActions.logout();
@@ -22,8 +24,13 @@ export const useUserLogin = (props) => {
     }
 
     //authenticate user login from magic link
-    if (magicLinkMatch !== null) {
+    if (magicLinkMatch !== null && !checkingRef.current) {
+      checkingRef.current = true;
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
+        setTimeout(() => {
+          checkingRef.current = null;
+        }, 3000);
+
         if (res) {
           console.log(res.data);
           if (res.data.additional_data) {

@@ -1,23 +1,34 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
-import { Avatar } from "../../../common";
+import { Avatar, SvgIconFeather } from "../../../common";
 import { useTimeFormat } from "../../../hooks";
 
+const Icon = styled(SvgIconFeather)`
+  width: 12px;
+`;
 const Wrapper = styled.div`
+  cursor: pointer;
+  padding: 1.5em 1.5em 0em 1.5em !important;
+  background: ${(props) => (props.isRead ? "transparent" : props.darkMode === "1" ? "#2a2f31" : "#F9F9F9")};
+
+  border-bottom: ${(props) => (props.darkMode === "1" ? "1px solid #9b9b9b1a" : "1px solid #ebebeb;")};
   .avatar {
     margin-right: 1rem;
   }
   p {
     margin: 0;
   }
-
   h6 {
+    color: ${(props) => (props.darkMode === "1" ? "#afb8bd" : "#000000")};
+    font-family: Inter;
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 15px;
     .text-link {
       color: #828282;
       cursor: hand;
       cursor: pointer;
-
       &:hover {
         color: #000;
       }
@@ -43,10 +54,20 @@ const Wrapper = styled.div`
       visibility: hidden;
     }
   }
+  .badge-danger {
+    background-color: #ff4445;
+  }
+  .badge-success {
+    background-color: #00c851;
+  }
+  :before {
+    display: none !important;
+  }
 `;
 
 export const NotificationTimelineItem = (props) => {
-  const { notification, actions, history, redirect, user, _t } = props;
+  const { notification, actions, history, redirect, user, _t, darkMode } = props;
+
   const { fromNow } = useTimeFormat();
 
   const handleRedirect = (e) => {
@@ -122,6 +143,11 @@ export const NotificationTimelineItem = (props) => {
     sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
     notificationClosedPost: _t("NOTIFICATION.CLOSED_POST", `closed the <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
     addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
+    reminder: _t("NOTIFICATION.REMINDER_ICON", "Reminder"),
+    mustRead: _t("NOTIFICATION.MUST_READ", "Must read"),
+    needsReply: _t("NOTIFICATION.NEEDS_REPLY", "Needs reply"),
+    markAsRead: _t("NOTIFICATION.MARK_AS_READ", "Mark as read"),
+    markAsUnread: _t("NOTIFICATION.MARK_AS_UNREAD", "Mark as unread"),
   };
 
   const renderTitle = useCallback(() => {
@@ -160,6 +186,7 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+
       case "NEW_TODO": {
         return (
           <>
@@ -167,6 +194,7 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+
       case "POST_ACCEPT_APPROVAL": {
         return (
           <>
@@ -219,8 +247,20 @@ export const NotificationTimelineItem = (props) => {
     }
   }, [notification]);
 
+  const getBadgeClass = (data) => {
+    if (data.must_read) return "badge-danger";
+    if (data.must_reply) return "badge-success";
+    return null;
+  };
+
+  const getMustText = (data) => {
+    if (data.must_read) return dictionary.mustRead;
+    if (data.must_reply) return dictionary.needsReply;
+    return null;
+  };
+
   return (
-    <Wrapper className="timeline-item">
+    <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
       <div>
         {notification.author ? (
           <Avatar
@@ -236,12 +276,9 @@ export const NotificationTimelineItem = (props) => {
       <div>
         <div onClick={handleRedirect}>
           <h6 className="d-flex justify-content-between mb-4">
-            <span>{renderTitle()}</span>
-            <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
-          </h6>
-          <span className="notification-body-wrapper">
-            <div className={`notification-body mb-3 border p-3 border-radius-1 d-flex justify-content-between align-items-center mr-4 ${notification.is_read === 0 ? "border-left-active" : ""}`}>
-              <div>
+            <div>
+              <span style={{ fontWeight: "bold" }}>
+                {renderTitle()}:{" "}
                 {notification.type === "NEW_TODO" ? (
                   <>{stripHtml(notification.data.description)}</>
                 ) : notification.type === "POST_CREATE" ||
@@ -250,20 +287,50 @@ export const NotificationTimelineItem = (props) => {
                   notification.type === "POST_REJECT_APPROVAL" ||
                   notification.type === "CLOSED_POST" ||
                   notification.type === "WORKSPACE_ADD_MEMBER" ? (
-                  <>{notification.data && notification.data.title}</>
+                  <span style={{ fontWeight: "normal" }}>{notification.data && notification.data.title}</span>
                 ) : (
-                  <>{stripHtml(notification.data.comment_body)}</>
+                  <span style={{ fontWeight: "normal" }}>{stripHtml(notification.data.comment_body)}</span>
                 )}
-              </div>
-              <div>
-                {notification.is_read === 0 ? (
-                  <i title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer fa fa-circle-o font-size-11" />
-                ) : (
-                  <i title="Mark as unread" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer fa fa-check font-size-11" />
+              </span>
+              <p style={{ fontWeight: "normal", color: "#8B8B8B" }}>
+                {notification.type === "NEW_TODO" && (
+                  <>
+                    <Icon icon="calendar" /> {dictionary.reminder}{" "}
+                  </>
                 )}
-              </div>
+                {notification.data.workspaces && notification.data.workspaces.length > 0 && notification.data.workspaces[0].workspace_name && (
+                  <>
+                    <Icon icon="folder" />
+                    <span style={{ verticalAlign: "middle" }}> {notification.data.workspaces[0].workspace_name} </span>{" "}
+                  </>
+                )}
+                {notification.data.workspaces && notification.data.workspaces.length > 0 && notification.data.workspaces[0].topic_name && (
+                  <>
+                    <Icon icon="compass" />
+                    <span style={{ verticalAlign: "middle" }}> {notification.data.workspaces[0].topic_name} </span>{" "}
+                  </>
+                )}
+              </p>
             </div>
-          </span>
+            <div style={{ textAlign: "right" }}>
+              <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
+              <p style={{ textAlign: "right", lineHeight: "1" }}>
+                {notification.is_read === 0 ? (
+                  <span title={dictionary.markAsRead} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                    ...
+                  </span>
+                ) : (
+                  <span title={dictionary.markAsUnread} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                    ...
+                  </span>
+                )}
+              </p>
+              <p>
+                {" "}
+                <span className={`badge ${getBadgeClass(notification.data)} text-white`}>{getMustText(notification.data)}</span>
+              </p>
+            </div>
+          </h6>
         </div>
       </div>
     </Wrapper>

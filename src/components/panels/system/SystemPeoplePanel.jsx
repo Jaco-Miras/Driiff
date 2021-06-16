@@ -128,6 +128,8 @@ const SystemPeoplePanel = (props) => {
     activateConfirmationText: _t("PEOPLE.ACTIVATE_CONFIRMATION_TEXT", "Are you sure you want to activate this user? This means this user can log in again and see chats and workspaces."),
     activate: _t("PEOPLE.ACTIVATE", "Activate"),
     deactivate: _t("PEOPLE.DEACTIVATE", "Deactivate"),
+    moveToInternal: _t("PEOPLE.MOVE_TO_INTERNAL", "Move to internal"),
+    moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
   };
 
   const handleInviteUsers = () => {
@@ -315,6 +317,7 @@ const SystemPeoplePanel = (props) => {
                   roles={roles}
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}
+                  onChangeUserType={userActions.updateType}
                   showInactive={showInactive}
                 />
               );

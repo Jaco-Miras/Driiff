@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
-import { useTodos, useTranslation } from "../../hooks";
-import { TodosBody, TodosHeader, TodosSidebar } from "./index";
+import { useWorkspaceReminders, useTranslation } from "../../hooks";
+import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 import { throttle } from "lodash";
 
 const Wrapper = styled.div`
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const { getReminders, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
+  const { getWorkspaceReminders, action: todoActions, isLoaded, count, workspaceName } = useWorkspaceReminders();
 
   const { _t } = useTranslation();
 
@@ -116,10 +116,10 @@ const TodosPanel = (props) => {
     setInDexer(Math.floor(Math.random() * newItemsFoundHeader.length));
   }, [filter]);
 
-  const reminders = getReminders({ filter: { status: filter, search: search } });
+  const reminders = getWorkspaceReminders({ filter: { status: filter, search: search } });
 
   return (
-    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`} hasReminders={reminders.length > 0} onScroll={handleScroll}>
       <div className="row app-block">
         <TodosSidebar className="col-lg-3" dictionary={dictionary} todoActions={todoActions} setFilter={handleFilterFile} filter={filter} count={count} />
         <div className="col-lg-9 app-content mb-4">
@@ -133,6 +133,7 @@ const TodosPanel = (props) => {
             todoActions={todoActions}
             filter={filter}
             doneTodoItems={reminders.filter((i) => i.status === "DONE")}
+            workspaceName={workspaceName}
           />
         </div>
       </div>

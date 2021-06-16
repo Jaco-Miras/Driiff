@@ -943,6 +943,7 @@ class ChatMessages extends React.PureComponent {
                                       users={this.props.users}
                                       translate={this.props.translate}
                                       language={this.props.language}
+                                      _t={this.props._t}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
@@ -996,6 +997,7 @@ class ChatMessages extends React.PureComponent {
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                         users={this.props.users}
+                                        _t={this.props._t}
                                       />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl

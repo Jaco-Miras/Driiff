@@ -146,6 +146,7 @@ export default (state = INITIAL_STATE, action) => {
       if (Object.keys(state.users).length) {
         updatedUsers[action.data.id] = {
           ...updatedUsers[action.data.id],
+          ...action.data,
           id: action.data.id,
           first_name: action.data.first_name,
           middle_name: action.data.middle_name,
