@@ -250,3 +250,7 @@ export function updateWorkspaceRemindersCount(payload, callback) {
 export function getFavoriteWorkspaces(payload, callback) {
   return dispatchActionToReducer(getFavoriteWorkspacesService(payload), "GET_FAVORITE_WORKSPACES_START", "GET_FAVORITE_WORKSPACES_SUCCESS", "GET_FAVORITE_WORKSPACES_FAIL", callback);
 }
+
+export function getDoneWorkspaceRemindersCallback(payload, callback) {
+  return SimpleDispatchActionToReducer("GET_DONE_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
+}

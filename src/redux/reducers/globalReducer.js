@@ -43,6 +43,11 @@ const INITIAL_STATE = {
       assigned_to_others: 0,
       added_by_others: 0,
     },
+    done: {
+      hasMore: true,
+      skip: 0,
+      limit: 10,
+    },
     items: {},
     doneRecently: [],
   },
@@ -345,6 +350,48 @@ export default (state = INITIAL_STATE, action) => {
           skip: state.todos.skip + action.data.todos.length,
           items: items,
           doneRecently: recent,
+        },
+      };
+    }
+    case "GET_DONE_TO_DO_SUCCESS": {
+      let items = state.todos.items;
+      action.data.todos.forEach((t) => {
+        items[t.id] = t;
+        switch (t.link_type) {
+          case "CHAT": {
+            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
+            break;
+          }
+          case "POST": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            }
+            break;
+          }
+          case "POST_COMMENT": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            }
+            break;
+          }
+          default:
+            return;
+        }
+      });
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          done: {
+            ...state.todos.done.limit,
+            hasMore: action.data.todos.length === state.todos.done.limit,
+            skip: state.todos.done.skip + action.data.todos.length,
+          },
         },
       };
     }

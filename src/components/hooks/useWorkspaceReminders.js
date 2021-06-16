@@ -21,35 +21,39 @@ const useWorkspaceReminders = () => {
   const loadMore = () => {
     if (isLoaded) {
       let ws = workspaceReminders[params.workspaceId];
-      if (ws && ws.hasMore) {
-        let payload = {
-          skip: ws.skip,
-          limit: 25,
-          topic_id: params.workspaceId,
-        };
-        todoActions.fetchWs(payload, () => {
-          fetchCount();
-        });
+      if (ws) {
+        if (ws.hasMore) {
+          let payload = {
+            skip: ws.skip,
+            limit: 25,
+            topic_id: params.workspaceId,
+            filter: "new",
+          };
+          todoActions.fetchWs(payload, () => {
+            fetchCount();
+          });
+        }
+        if (ws.done.hasMore) {
+          let payload = {
+            skip: ws.done.skip,
+            limit: 10,
+            topic_id: params.workspaceId,
+            filter: "done",
+          };
+          todoActions.fetchWsDone(payload);
+        }
       }
     } else {
       let payload = {
         skip: 0,
         limit: 25,
         topic_id: params.workspaceId,
+        filter: "new",
       };
-      if (workspaceReminders[params.workspaceId]) {
-        payload = {
-          ...payload,
-          skip: workspaceReminders[params.workspaceId].reminderIds.length,
-        };
-        todoActions.fetchWs(payload, () => {
-          fetchCount();
-        });
-      } else {
-        todoActions.fetchWs(payload, () => {
-          fetchCount();
-        });
-      }
+      todoActions.fetchWs(payload, () => {
+        fetchCount();
+      });
+      todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
     }
   };
 

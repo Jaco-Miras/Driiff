@@ -3170,6 +3170,46 @@ export default (state = INITIAL_STATE, action) => {
               skip: action.data.todos.length,
               hasMore: action.data.todos.length === action.data.limit,
               reminderIds: [...action.data.todos.map((t) => t.id)],
+              done: {
+                limit: 10,
+                hasMore: true,
+                skip: 0,
+              },
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_DONE_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              done: {
+                limit: 10,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              done: {
+                limit: 10,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
               count: {
                 all: 0,
                 overdue: 0,
