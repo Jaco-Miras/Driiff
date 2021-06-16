@@ -19,6 +19,7 @@
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "forever": "^4.0.1",
     "hex-to-css-filter": "^2.0.4",
     "highlight-words-core": "^1.2.2",
     "laravel-echo": "^1.7.0",
