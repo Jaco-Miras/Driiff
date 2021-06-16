@@ -37,8 +37,8 @@ const Wrapper = styled.div`
 
       svg {
         position: absolute;
-        top: 3px;
-        left: 2px;
+        // top: 3px;
+        // left: 2px;
         fill: none;
         stroke: #ffffff;
         stroke-width: 2;
@@ -49,6 +49,11 @@ const Wrapper = styled.div`
         transition: all 0.3s ease;
         transition-delay: 0.1s;
         transform: translate3d(0, 0, 0);
+        width: 8px;
+        height: 9px;
+        top: 4px;
+        left: 4px;
+        stroke-width: 3;
       }
     }
   }

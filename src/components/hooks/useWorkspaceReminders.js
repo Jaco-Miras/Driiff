@@ -110,7 +110,8 @@ const useWorkspaceReminders = () => {
         } else {
           return false;
         }
-      });
+      })
+      .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
   useEffect(() => {
