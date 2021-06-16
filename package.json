@@ -96,7 +96,8 @@
     "eslint": "eslint src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "eslint-fix": "eslint --fix src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "prettier": "prettier --check src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
-    "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js"
+    "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
+    "startforever": "forever start -o serverlog/out.log -e serverlog/err.log server.js"
   },
   "eslintConfig": {
     "extends": "react-app"
