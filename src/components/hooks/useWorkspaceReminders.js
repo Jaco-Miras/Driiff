@@ -33,7 +33,7 @@ const useWorkspaceReminders = () => {
             fetchCount();
           });
         }
-        if (ws.done.hasMore) {
+        if (ws.done && ws.done.hasMore) {
           let payload = {
             skip: ws.done.skip,
             limit: 10,
@@ -41,6 +41,15 @@ const useWorkspaceReminders = () => {
             filter: "done",
           };
           todoActions.fetchWsDone(payload);
+        }
+        if (ws.overdue && ws.overdue.hasMore) {
+          let payload = {
+            skip: ws.overdue.skip,
+            limit: 10,
+            topic_id: params.workspaceId,
+            filter: "overdue",
+          };
+          todoActions.fetchWsOverdue(payload);
         }
       }
     } else {
@@ -54,6 +63,7 @@ const useWorkspaceReminders = () => {
         fetchCount();
       });
       todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
+      todoActions.fetchWsOverdue({ ...payload, limit: 25, filter: "overdue" });
     }
   };
 
