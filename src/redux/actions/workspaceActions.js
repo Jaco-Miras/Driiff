@@ -254,3 +254,7 @@ export function getFavoriteWorkspaces(payload, callback) {
 export function getDoneWorkspaceRemindersCallback(payload, callback) {
   return SimpleDispatchActionToReducer("GET_DONE_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
 }
+
+export function getOverdueWorkspaceRemindersCallback(payload, callback) {
+  return SimpleDispatchActionToReducer("GET_OVERDUE_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
+}

@@ -5,7 +5,7 @@ import { useTimeFormat, useTodoActions } from "./index";
 
 let init = false;
 const useTodos = (fetchTodosOnMount = false) => {
-  const { isLoaded, skip, limit, hasMore, items, count, doneRecently, done } = useSelector((state) => state.global.todos);
+  const { isLoaded, skip, limit, hasMore, items, count, doneRecently, done, overdue } = useSelector((state) => state.global.todos);
 
   const { user: loggedUser } = useSelector((state) => state.session);
   const users = useSelector((state) => state.users.users);
@@ -14,6 +14,11 @@ const useTodos = (fetchTodosOnMount = false) => {
   const { localizeDate } = useTimeFormat();
 
   const loadMore = () => {
+    // todoActions.fetch({
+    //   skip: skip,
+    //   limit: 100,
+    //   //filter: "new",
+    // });
     if (hasMore) {
       todoActions.fetch({
         skip: skip,
@@ -26,6 +31,13 @@ const useTodos = (fetchTodosOnMount = false) => {
         skip: done.skip,
         limit: done.limit,
         filter: "done",
+      });
+    }
+    if (overdue.hasMore) {
+      todoActions.fetchOverdue({
+        skip: overdue.skip,
+        limit: overdue.limit,
+        filter: "overdue",
       });
     }
   };
