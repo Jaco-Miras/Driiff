@@ -11,7 +11,7 @@ import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import { useSelector } from "react-redux";
-import { useChatMessageActions, useTimeFormat } from "../../hooks";
+import { useChatMessageActions, useTimeFormat, useTranslation } from "../../hooks";
 
 const ChatList = styled.li`
   position: relative;
@@ -19,6 +19,12 @@ const ChatList = styled.li`
   width: 100%;
   margin-bottom: ${(props) => (props.isLastChat ? "20px" : "5px")};
   text-align: center;
+  .chat-reply-list-item {
+    position: relative;
+    :before {
+      top: 3px;
+    }
+  }
   .chat-actions-container {
     opacity: 0;
 
@@ -358,6 +364,7 @@ let lastReplyUserId = 0;
 const VirtualizedChat = (props) => {
   const { index, reply, lastReply, isLastChatVisible, loadReplies, dictionary } = props;
 
+  const { _t } = useTranslation();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
   const user = useSelector((state) => state.session.user);
@@ -471,6 +478,7 @@ const VirtualizedChat = (props) => {
               isLastChatVisible={isLastChatVisible}
               dictionary={dictionary}
               users={users}
+              _t={_t}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
@@ -510,6 +518,7 @@ const VirtualizedChat = (props) => {
                 isLastChatVisible={isLastChatVisible}
                 dictionary={dictionary}
                 users={users}
+                _t={_t}
               />
               {reply.unfurls.length ? (
                 <ChatUnfurl
