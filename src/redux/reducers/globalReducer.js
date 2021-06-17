@@ -393,7 +393,7 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           done: {
-            ...state.todos.done.limit,
+            limit: 10,
             hasMore: action.data.todos.length === state.todos.done.limit,
             skip: state.todos.done.skip + action.data.todos.length,
           },
