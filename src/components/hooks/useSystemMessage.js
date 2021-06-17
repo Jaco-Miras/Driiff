@@ -3,8 +3,11 @@ import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
 import { useParams } from "react-router-dom";
 import quillHelper from "../../helpers/quillHelper";
+import { useSelector } from "react-redux";
 
-const useSystemMessage = ({ dictionary, reply, recipients, selectedChannel, user, users, _t }) => {
+const useSystemMessage = ({ dictionary, reply, selectedChannel, user, _t }) => {
+  const users = useSelector((state) => state.users.users);
+  const recipients = useSelector((state) => state.global.recipients);
   const params = useParams();
   let parseBody = "";
   if (reply.body.includes("POST_CREATE::")) {

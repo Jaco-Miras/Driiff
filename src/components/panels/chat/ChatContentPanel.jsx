@@ -199,24 +199,7 @@ const ChatContentPanel = (props) => {
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null ? (
         virtualization ? (
-          // <VirtuosoContainer />
-          <>
-            <ChatMessages
-              selectedChannel={selectedChannel}
-              chatMessageActions={chatMessageActions}
-              timeFormat={timeFormat}
-              dictionary={dictionary}
-              unreadCount={unreadCount}
-              teamChannelId={teamChannelId}
-              isIdle={isIdle}
-              // translate={translate}
-              // language={language}
-              _t={_t}
-              translated_channels={translated_channels}
-              chat_language={chat_language}
-            />
-            <ChatTranslateActions selectedChannel={selectedChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />
-          </>
+          <VirtuosoContainer dictionary={dictionary} />
         ) : (
           <>
             <ChatMessages

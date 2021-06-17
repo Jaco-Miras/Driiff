@@ -456,33 +456,33 @@ class ChatMessages extends React.PureComponent {
   //   });
   // };
 
-  attachedClickListenerToChatUrl = () => {
-    document.querySelectorAll(".chat-url").forEach((el) => {
-      const cid = el.dataset.cid;
-      const mid = el.dataset.mid;
-      if (cid) {
-        el.addEventListener("mousedown", (e) => {
-          if (mid) {
-            this.props.history.push(`/chat/${cid}/${mid}`);
-            let messageEl = document.querySelector(`.code-${mid}`);
-            if (messageEl) {
-              setTimeout(() => {
-                messageEl.scrollIntoView(false);
-                messageEl.focus();
-                messageEl.classList.add("bounceIn");
-                setTimeout(() => {
-                  messageEl.classList.remove("bounceIn");
-                }, 200);
-              }, 200);
-            }
-          } else {
-            this.props.history.push(`/chat/${cid}`);
-          }
-        });
-        el.classList.remove("chat-url");
-      }
-    });
-  };
+  // attachedClickListenerToChatUrl = () => {
+  //   document.querySelectorAll(".chat-url").forEach((el) => {
+  //     const cid = el.dataset.cid;
+  //     const mid = el.dataset.mid;
+  //     if (cid) {
+  //       el.addEventListener("mousedown", (e) => {
+  //         if (mid) {
+  //           this.props.history.push(`/chat/${cid}/${mid}`);
+  //           let messageEl = document.querySelector(`.code-${mid}`);
+  //           if (messageEl) {
+  //             setTimeout(() => {
+  //               messageEl.scrollIntoView(false);
+  //               messageEl.focus();
+  //               messageEl.classList.add("bounceIn");
+  //               setTimeout(() => {
+  //                 messageEl.classList.remove("bounceIn");
+  //               }, 200);
+  //             }, 200);
+  //           }
+  //         } else {
+  //           this.props.history.push(`/chat/${cid}`);
+  //         }
+  //       });
+  //       el.classList.remove("chat-url");
+  //     }
+  //   });
+  // };
 
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;

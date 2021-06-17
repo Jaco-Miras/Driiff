@@ -70,45 +70,45 @@ class ChatMessages extends React.PureComponent {
     this.virtuoso = React.createRef();
   }
 
-  attachedImgEventListener = () => {
-    document.querySelectorAll(".anchor-blot").forEach((el) => {
-      const src = el.getAttribute("src");
-      if (src) {
-        el.addEventListener("mousedown", (e) => {
-          window.open(el.getAttribute("src"), "_blank");
-        });
-        el.classList.remove("anchor-blot");
-      }
-    });
-  };
+  // attachedImgEventListener = () => {
+  //   document.querySelectorAll(".anchor-blot").forEach((el) => {
+  //     const src = el.getAttribute("src");
+  //     if (src) {
+  //       el.addEventListener("mousedown", (e) => {
+  //         window.open(el.getAttribute("src"), "_blank");
+  //       });
+  //       el.classList.remove("anchor-blot");
+  //     }
+  //   });
+  // };
 
-  attachedClickListenerToChatUrl = () => {
-    document.querySelectorAll(".chat-url").forEach((el) => {
-      const cid = el.dataset.cid;
-      const mid = el.dataset.mid;
-      if (cid) {
-        el.addEventListener("mousedown", (e) => {
-          if (mid) {
-            this.props.history.push(`/chat/${cid}/${mid}`);
-            let messageEl = document.querySelector(`.code-${mid}`);
-            if (messageEl) {
-              setTimeout(() => {
-                messageEl.scrollIntoView(false);
-                messageEl.focus();
-                messageEl.classList.add("bounceIn");
-                setTimeout(() => {
-                  messageEl.classList.remove("bounceIn");
-                }, 200);
-              }, 200);
-            }
-          } else {
-            this.props.history.push(`/chat/${cid}`);
-          }
-        });
-        el.classList.remove("chat-url");
-      }
-    });
-  };
+  // attachedClickListenerToChatUrl = () => {
+  //   document.querySelectorAll(".chat-url").forEach((el) => {
+  //     const cid = el.dataset.cid;
+  //     const mid = el.dataset.mid;
+  //     if (cid) {
+  //       el.addEventListener("mousedown", (e) => {
+  //         if (mid) {
+  //           this.props.history.push(`/chat/${cid}/${mid}`);
+  //           let messageEl = document.querySelector(`.code-${mid}`);
+  //           if (messageEl) {
+  //             setTimeout(() => {
+  //               messageEl.scrollIntoView(false);
+  //               messageEl.focus();
+  //               messageEl.classList.add("bounceIn");
+  //               setTimeout(() => {
+  //                 messageEl.classList.remove("bounceIn");
+  //               }, 200);
+  //             }, 200);
+  //           }
+  //         } else {
+  //           this.props.history.push(`/chat/${cid}`);
+  //         }
+  //       });
+  //       el.classList.remove("chat-url");
+  //     }
+  //   });
+  // };
 
   loadReplies = () => {
     console.log("load more virtuoso");

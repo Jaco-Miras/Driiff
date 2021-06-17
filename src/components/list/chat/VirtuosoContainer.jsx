@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
+import { Virtuoso } from "react-virtuoso";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 //import { groupBy } from "lodash";
-import { useTimeFormat, useChatMessageActions } from "../../hooks";
+import { useChatMessageActions, useCountUnreadReplies } from "../../hooks";
 import { SvgEmptyState } from "../../common";
+import VirtualiazedChat from "./VirtualizedChat";
 
 const Wrapper = styled.div`
   background: transparent;
@@ -49,7 +50,9 @@ const EmptyState = styled.div`
 `;
 
 const VirtuosoContainer = (props) => {
+  const { dictionary } = props;
   const chatMessageActions = useChatMessageActions();
+  //const unreadCount = useCountUnreadReplies();
   //const timeFormat = useTimeFormat();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   // const groupedMessages = groupBy(
@@ -67,9 +70,7 @@ const VirtuosoContainer = (props) => {
   // );
 
   const loadReplies = () => {
-    console.log("trigger", selectedChannel.isFetching, selectedChannel.hasMore);
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
-      console.log("load more trigger");
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
         skip: 0,
@@ -95,6 +96,17 @@ const VirtuosoContainer = (props) => {
     loadReplies();
   }, [selectedChannel.id]);
 
+  // const handleReadChannel = () => {
+  //   if (unreadCount > 0 || selectedChannel.total_unread > 0) {
+  //     const {
+  //       selectedChannel,
+  //       chatMessageActions: { channelActions },
+  //     } = this.props;
+
+  //     channelActions.markAsRead(selectedChannel);
+  //   }
+  // };
+
   return (
     <Wrapper id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
       {selectedChannel.replies && selectedChannel.replies.length > 0 && (
@@ -105,13 +117,7 @@ const VirtuosoContainer = (props) => {
           data={selectedChannel.replies}
           startReached={loadReplies}
           itemContent={(index, message) => {
-            return (
-              <div>
-                <h4>
-                  {index}. {message.body}
-                </h4>
-              </div>
-            );
+            return <VirtualiazedChat index={index} reply={message} lastReply={selectedChannel.replies[selectedChannel.replies.length - 1]} dictionary={dictionary} />;
           }}
         />
         // <GroupedVirtuoso
