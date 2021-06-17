@@ -198,7 +198,7 @@ const ChatContentPanel = (props) => {
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null ? (
         virtualization ? (
-          <VirtuosoContainer />
+          <VirtuosoContainer dictionary={dictionary} />
         ) : (
           <ChatMessages
             selectedChannel={selectedChannel}

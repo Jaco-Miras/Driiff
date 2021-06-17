@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar, SvgIconFeather } from "../../common";
+import { Avatar } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -10,16 +10,71 @@ import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
+import { useSelector } from "react-redux";
+import { useChatMessageActions, useTimeFormat } from "../../hooks";
 
 const ChatList = styled.li`
   position: relative;
   display: inline-block;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: ${(props) => (props.isLastChat ? "20px" : "5px")};
   text-align: center;
   .chat-actions-container {
     opacity: 0;
+
+    .star-wrap {
+      position: relative;
+      display: flex;
+      &[data-star="true"] {
+        .feather-star {
+          fill: #7a1b8bcc;
+          color: #7a1b8bcc;
+        }
+      }
+      .feather-star {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+      .star-count {
+        font-size: 0.835rem;
+        color: #a7abc3;
+        height: 16px;
+        line-height: 16px;
+        padding: 0 4px;
+      }
+      .star-user-popup {
+        position: absolute;
+        width: 250px;
+        padding: 4px;
+        background-color: #ffffff;
+        top: 100%;
+        z-index: 1;
+        border-top: 1px solid #eeeeee;
+        border-radius: 8px;
+        color: #4d4d4d;
+
+        .dark & {
+          background-color: #25282c;
+          border-top: 1px solid #25282c;
+          border-radius: 8px;
+          color: #c7c7c7;
+        }
+
+        .name {
+          display: block;
+          width: 100%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+
+      display: none;
+      visibility: hidden;
+    }
   }
+
   &:hover {
     .chat-actions-container {
       opacity: 1;
@@ -53,6 +108,7 @@ const TimestampDiv = styled.div`
     padding: 14px 0 10px 0;
   }
 `;
+
 const ChatBubbleContainer = styled.div`
   display: flex;
   width: 100%;
@@ -72,28 +128,54 @@ const ChatBubbleContainer = styled.div`
     ${(props) => props.isAuthor === true && !props.showAvatar && "position: relative; right: 0px;"};
     ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
   }
-  ${(props) =>
-    !props.isEmoticonOnly &&
-    `
-    &:before {
-        ${(props) => props.showAvatar && "content: '';"};
-        border: 10px solid transparent;
-        border-right-color: transparent;
-        border-right-color: #f0f0f0;
-        position: absolute;
-        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "8px")};;
-        left: 20px;
-        z-index: 1;
-        ${(props) =>
-          props.isAuthor === true &&
-          `
+  &:before {
+    ${(props) => props.showAvatar && "content: '';"};
+    border: 10px solid transparent;
+    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? "#FFDB92" : "#f0f0f0")};
+    position: absolute;
+    top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
+    left: 30px;
+    z-index: 1;
+    @media all and (max-width: 620px) {
+      display: none;
+    }
+    ${(props) =>
+      props.isAuthor === true &&
+      `
             left: auto;
-            right: -20px;
-            border-left-color: #7A1B8B;
+            right: -16px;
+            border-left-color:  ${(props) => (props.isImportant ? "#7B68EE" : "#7A1B8B")};
             border-right-color: transparent;
+            @media all and (max-width: 620px) {
+              display: none;
+            }
         `};
-    }`}
+  }
+  .dark & {
+    &:before {
+      ${(props) => props.showAvatar && "content: '';"};
+      border: 10px solid transparent;
+      position: absolute;
+      top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
+      left: 30px;
+      z-index: 1;
+      @media all and (max-width: 620px) {
+        display: none;
+      }
+      ${(props) =>
+        props.isAuthor === true &&
+        `
+            left: auto;
+            right: -16px;            
+            border-right-color: transparent;
+            @media all and (max-width: 620px) {
+              display: none;
+            }
+        `};
+    }
+  }
 `;
+
 const ChatActionsContainer = styled.div`
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
   flex-wrap: wrap;
@@ -110,6 +192,7 @@ const ChatActionsContainer = styled.div`
   margin-top: -2px;
   transition: opacity 0.3s ease;
 `;
+
 const SystemChatActionsContainer = styled.div`
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
   flex-wrap: wrap;
@@ -138,26 +221,43 @@ const MessageOptions = styled(ChatMessageOptions)`
   margin: 5px;
   max-width: 25px;
 
+  @media (max-width: 620px) {
+    margin-right: 0;
+  }
+
   .more-options-tooltip {
     &.orientation-bottom {
       top: calc(100% - 35px);
+      @media (max-width: 620px) {
+        top: 100%;
+      }
     }
 
     &.orientation-top {
+      @media (max-width: 620px) {
+        bottom: 30px;
+      }
     }
 
     &.orientation-right {
       left: calc(100% + 10px);
+      @media (max-width: 620px) {
+        left: 0;
+      }
     }
     &.orientation-left {
+      @media (max-width: 620px) {
+        left: auto;
+        right: 0;
+      }
     }
   }
-  @media (max-width: 620px) {
-    margin-right: 0;
-  }
 `;
+
 const ChatBubbleQuoteDiv = styled.div`
-  max-width: 90%;
+  //width: 100%;
+  //overflow: hidden;
+  max-width: 75%;
   position: relative;
   flex-flow: column;
   display: inherit;
@@ -185,73 +285,14 @@ const ChatBubbleQuoteDiv = styled.div`
   .chat-options {
     visibility: hidden;
   }
-
   .chat-options.active {
     visibility: visible;
   }
-
   :hover {
     .chat-options {
       visibility: visible;
     }
   }
-
-  .star-wrap {
-    position: relative;
-    display: flex;
-
-    &[data-star="true"] {
-      .feather-star {
-        fill: #7a1b8bcc;
-        color: #7a1b8bcc;
-      }
-    }
-
-    .feather-star {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
-    .star-count {
-      font-size: 0.835rem;
-      color: #a7abc3;
-      height: 16px;
-      line-height: 16px;
-      padding: 0 4px;
-    }
-
-    .star-user-popup {
-      position: absolute;
-      width: 250px;
-      padding: 4px;
-      background-color: #ffffff;
-      top: 100%;
-      z-index: 1;
-      border-top: 1px solid #eeeeee;
-      border-radius: 8px;
-      color: #4d4d4d;
-
-      .dark & {
-        background-color: #25282c;
-        border-top: 1px solid #25282c;
-        border-radius: 8px;
-        color: #c7c7c7;
-      }
-
-      .name {
-        display: block;
-        width: 100%;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-
-    display: none;
-    visibility: hidden;
-  }
-
   @media (max-width: 991.99px) {
     max-width: calc(100% - 110px);
   }
@@ -261,6 +302,7 @@ const ChatBubbleQuoteDiv = styled.div`
     ${(props) => !props.isAuthor === true && "margin-left: 0"};
   }
 `;
+
 const SystemMessageContainer = styled.div`
   position: relative;
   display: inline-flex;
@@ -293,29 +335,11 @@ const FailedSpan = styled.span`
   margin: 0 10px;
 `;
 
-const ChatLoader = styled.div`
-  display: flex;
-  justify-content: center;
-  &.initial-load {
-    position: absolute;
-    top: 45%;
-    left: 45%;
-    transform: translate(-45%, -45%);
-  }
-`;
-
-const InfiniteScroll = styled.div`
-  width: 100%;
-  ul {
-    margin: 0;
-  }
-`;
-
 const StyledAvatar = styled(Avatar)`
   align-self: flex-start;
   width: 2rem !important;
   height: 2rem !important;
-  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "3px")};
+  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "0")};
 
   img {
     width: 2rem !important;
@@ -332,9 +356,16 @@ const StyledAvatar = styled(Avatar)`
 let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { index, reply, selectedChannel, chatMessageActions, timeFormat, user, messages, isLastChatVisible, recipients, chatSettings, loadReplies, getLoadRef, chatName } = props;
+  const { index, reply, lastReply, isLastChatVisible, loadReplies, dictionary } = props;
 
-  const lastReply = messages[index - 1];
+  const chatMessageActions = useChatMessageActions();
+  const timeFormat = useTimeFormat();
+  const user = useSelector((state) => state.session.user);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const recipients = useSelector((state) => state.global.recipients);
+  const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const users = useSelector((state) => state.users.users);
+
   const isAuthor = reply && reply.user ? reply.user.id === user.id : false;
 
   let showAvatar = false;
@@ -376,22 +407,33 @@ const VirtualizedChat = (props) => {
     isBot = botCodes.includes(reply.user.code);
   }
 
-  const handleToggleStar = (e) => {
-    const { messageId, star } = e.currentTarget.dataset;
-    e.currentTarget.dataset.star = star ? "false" : "true";
-    chatMessageActions.setStar({
-      message_id: messageId,
-      star: star === "false" ? 1 : 0,
+  const seenMembers = selectedChannel.members
+    .filter((m) => {
+      if (selectedChannel.members.length === 2) {
+        if (selectedChannel.last_reply && selectedChannel.last_reply.user) {
+          if (selectedChannel.last_reply.user.id === user.id) {
+            //own user message
+            return !(user.id === m.id);
+          } else {
+            // other user message
+            return !(selectedChannel.last_reply.user.id === m.id);
+          }
+        } else {
+          return false;
+        }
+      } else {
+        if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === m.id) return false;
+        else if (user.id === m.id) return false;
+        else return true;
+      }
+    })
+    .filter((m) => {
+      if (m.last_visited_at) {
+        return m.last_visited_at.timestamp >= selectedChannel.last_reply.created_at.timestamp;
+      } else {
+        return false;
+      }
     });
-  };
-
-  const handleStarMouseOver = (e) => {
-    const { messageId, loaded } = e.currentTarget.dataset;
-    if (loaded === "false") {
-      e.currentTarget.dataset.loaded = "true";
-      chatMessageActions.getStars(messageId);
-    }
-  };
 
   return (
     <ChatList data-message-id={reply.id} data-code={reply.code} data-timestamp={reply.created_at.timestamp} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp}>
@@ -422,40 +464,22 @@ const VirtualizedChat = (props) => {
               selectedChannel={selectedChannel}
               showGifPlayer={showGifPlayer}
               isAuthor={isAuthor}
-              //addMessageRef={getLoadRef(reply.id)}
-              isLastChat={index + 1 === messages.length ? true : null}
+              isLastChat={lastReply.id === reply.id}
               loadReplies={loadReplies}
               isBot={isBot}
               chatSettings={chatSettings}
               isLastChatVisible={isLastChatVisible}
-              dictionary={props.dictionary}
-              users={props.users}
+              dictionary={dictionary}
+              users={users}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                {/* <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
-                  <SvgIconFeather icon="star" />
-                  {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-                  {reply.star_users && reply.star_users.length > 0 && (
-                    <div className="star-user-popup">
-                      {reply.star_users.map((u) => {
-                        const user = recipients.find((r) => r.type === "USER" && r.type_id === u.id);
-                        return (
-                          <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
-                            <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
-                            <span className="name">{u.name}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </span> */}
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
-                {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} replyData={reply} />}
+                {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} replyData={reply} />}
               </ChatActionsContainer>
             </ChatBubble>
             {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
-            {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && props.filterSeenMembers().length > 0 && (
-              <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers} seenMembers={props.filterSeenMembers()} isPersonal={props.selectedChannel.members.length === 2} />
+            {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && seenMembers.length > 0 && (
+              <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers} seenMembers={seenMembers} isPersonal={selectedChannel.members.length === 2} />
             )}
           </ChatBubbleQuoteDiv>
 
@@ -482,12 +506,10 @@ const VirtualizedChat = (props) => {
                 timeFormat={timeFormat}
                 selectedChannel={selectedChannel}
                 reply={reply}
-                chatName={chatName}
-                //addMessageRef={getLoadRef(reply.id)}
-                isLastChat={index + 1 === messages.length ? true : null}
+                isLastChat={lastReply.id === reply.id}
                 isLastChatVisible={isLastChatVisible}
-                dictionary={props.dictionary}
-                users={props.users}
+                dictionary={dictionary}
+                users={users}
               />
               {reply.unfurls.length ? (
                 <ChatUnfurl
@@ -495,31 +517,14 @@ const VirtualizedChat = (props) => {
                   isAuthor={false}
                   deleteChatUnfurlAction={props.deleteChatUnfurlAction}
                   removeChatUnfurlAction={props.removeChatUnfurlAction}
-                  channelId={props.selectedChannel.id}
+                  channelId={selectedChannel.id}
                   replyId={reply.id}
                   removeUnfurl={chatMessageActions.removeUnfurl}
                 />
               ) : null}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                {/* <span className="star-wrap mr-2" onMouseOver={handleStarMouseOver} onClick={handleToggleStar} data-message-id={reply.id} data-star={reply.i_starred} data-loaded="false">
-                  <SvgIconFeather icon="star" />
-                  {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-                  {reply.star_users && reply.star_users.length > 0 && (
-                    <div className="star-user-popup">
-                      {reply.star_users.map((u) => {
-                        const user = recipients.find((r) => r.type === "USER" && r.type_id === u.id);
-                        return (
-                          <div className="d-flex justify-content-center align-items-center" key={user.type_id}>
-                            <Avatar id={user.type_id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} />
-                            <span className="name">{u.name}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </span> */}
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
-                {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} />}
+                {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} />}
               </SystemChatActionsContainer>
             </SystemMessageContainer>
             {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
