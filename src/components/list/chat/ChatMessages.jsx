@@ -443,18 +443,18 @@ class ChatMessages extends React.PureComponent {
       yDown: React.createRef(null),
     };
   }
-
-  attachedImgEventListener = () => {
-    document.querySelectorAll(".anchor-blot").forEach((el) => {
-      const src = el.getAttribute("src");
-      if (src) {
-        el.addEventListener("mousedown", (e) => {
-          window.open(el.getAttribute("src"), "_blank");
-        });
-        el.classList.remove("anchor-blot");
-      }
-    });
-  };
+  //revisit
+  // attachedImgEventListener = () => {
+  //   document.querySelectorAll(".anchor-blot").forEach((el) => {
+  //     const src = el.getAttribute("src");
+  //     if (src) {
+  //       el.addEventListener("mousedown", (e) => {
+  //         window.open(el.getAttribute("src"), "_blank");
+  //       });
+  //       el.classList.remove("anchor-blot");
+  //     }
+  //   });
+  // };
 
   attachedClickListenerToChatUrl = () => {
     document.querySelectorAll(".chat-url").forEach((el) => {

@@ -537,6 +537,7 @@ const FileViewer = (props) => {
       };
 
       document.addEventListener("keydown", onHandleKeyDowm);
+      return () => document.removeEventListener("keydown", onHandleKeyDowm);
     }
   }, [fileRef]);
 
