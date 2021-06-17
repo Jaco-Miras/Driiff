@@ -519,34 +519,39 @@ const ChatInput = (props) => {
         reactQuillRef.current.focus();
       }
     }
+  }, []);
 
-    const handlePaste = (e) => {
-      let files = [];
+  const handlePaste = (e) => {
+    let files = [];
 
-      if (e.clipboardData.items.length) {
-        for (let i = 0; i < e.clipboardData.items.length; i++) {
-          let item = e.clipboardData.items[i];
-          if (item.kind === "file") {
-            files.push(item.getAsFile(item.type));
-          }
+    if (e.clipboardData.items.length) {
+      for (let i = 0; i < e.clipboardData.items.length; i++) {
+        let item = e.clipboardData.items[i];
+        if (item.kind === "file") {
+          files.push(item.getAsFile(item.type));
         }
       }
-      if (files.length) {
-        dropAction(files);
-      }
-      setTimeout(() => {
-        const editor = reactQuillRef.current.getEditor();
-        reactQuillRef.current.focus();
-        const cursorPosition = editor.getSelection().index;
-        editor.insertText(cursorPosition, " ");
-        editor.setSelection(cursorPosition + 1);
-      }, 100);
-    };
+    }
+    if (files.length) {
+      dropAction(files);
+    }
+    setTimeout(() => {
+      const editor = reactQuillRef.current.getEditor();
+      reactQuillRef.current.focus();
+      const cursorPosition = editor.getSelection().index;
+      editor.insertText(cursorPosition, " ");
+      editor.setSelection(cursorPosition + 1);
+    }, 100);
+  };
+  const modals = useSelector((state) => state.global.modals);
 
-    document.addEventListener("paste", handlePaste, false);
+  useEffect(() => {
+    if (!Object.keys(modals).length) {
+      document.addEventListener("paste", handlePaste, false);
 
-    return () => document.removeEventListener("paste", handlePaste, false);
-  }, []);
+      return () => document.removeEventListener("paste", handlePaste, false);
+    }
+  }, [Object.keys(modals).length, handlePaste]);
 
   //to be converted into hooks
   useEffect(() => {
