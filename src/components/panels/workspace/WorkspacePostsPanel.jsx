@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { usePosts, useTranslation } from "../../hooks";
+import { usePosts, useTranslation, useFetchWsCount } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
@@ -101,6 +101,8 @@ const WorkspacePostsPanel = (props) => {
   const history = useHistory();
 
   const dispatch = useDispatch();
+
+  useFetchWsCount();
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];

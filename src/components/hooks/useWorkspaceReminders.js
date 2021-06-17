@@ -29,9 +29,7 @@ const useWorkspaceReminders = () => {
             topic_id: params.workspaceId,
             filter: "new",
           };
-          todoActions.fetchWs(payload, () => {
-            fetchCount();
-          });
+          todoActions.fetchWs(payload);
         }
         if (ws.done && ws.done.hasMore) {
           let payload = {
@@ -59,9 +57,7 @@ const useWorkspaceReminders = () => {
         topic_id: params.workspaceId,
         filter: "new",
       };
-      todoActions.fetchWs(payload, () => {
-        fetchCount();
-      });
+      todoActions.fetchWs(payload);
       todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
       todoActions.fetchWsOverdue({ ...payload, limit: 25, filter: "overdue" });
     }
@@ -130,7 +126,7 @@ const useWorkspaceReminders = () => {
 
   useEffect(() => {
     loadMore();
-    //fetchCount();
+    fetchCount();
   }, []);
 
   return {

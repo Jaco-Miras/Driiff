@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { useFiles, useTranslation } from "../../hooks";
+import { useFiles, useTranslation, useFetchWsCount } from "../../hooks";
 import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
@@ -25,6 +25,8 @@ const WorkspaceFilesPanel = (props) => {
   const history = useHistory();
   const { _t } = useTranslation();
   const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles(true); // pass true to trigger fetching of files
+
+  useFetchWsCount();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
