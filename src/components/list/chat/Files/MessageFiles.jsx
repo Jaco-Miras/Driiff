@@ -1,8 +1,6 @@
 import React, { forwardRef } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-// import arrowDown from "../../../../assets/icon/arrow/down/r/arrow_down_r_secundary.svg";
-// import arrowRight from "../../../../assets/icon/arrow/right/white-arrow-right.svg";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import FilePill from "./FilePill";
 
@@ -47,11 +45,6 @@ const MessageFiles = forwardRef((props, ref) => {
   const { className = "", files, reply, type = "chat", topic_id = null, ...otherProps } = props;
 
   const dispatch = useDispatch();
-
-  // const [showFiles, setShowFiles] = useState(true);
-  // const handleToggleShowFile = () => {
-  //   setShowFiles(!showFiles);
-  // };
 
   const handlePreviewFile = (e, file) => {
     e.stopPropagation();
