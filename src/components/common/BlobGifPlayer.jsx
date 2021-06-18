@@ -10,7 +10,7 @@ const BlobGifPlayer = (props) => {
 
   const dispatch = useDispatch();
 
-  const gifBlobs = useSelector((state) => state.files).gifBlobs;
+  const gifBlobs = useSelector((state) => state.files.gifBlobs);
 
   const setGifSrc = (payload, callback = () => {}) => {
     dispatch(incomingGifData(payload, callback));
