@@ -1,8 +1,9 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
-import useFileActions from "../../../hooks/useFileActions";
-import { useFiles, useTouchActions, useTranslation } from "../../../hooks";
+import { useTouchActions, useTranslation } from "../../../hooks";
+import { useSelector, useDispatch } from "react-redux";
+import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -102,6 +103,7 @@ const FilePill = forwardRef((props, ref) => {
     file.type = file.mime_type;
   }
 
+  const dispatch = useDispatch();
   //const refImageLoader = useRef();
   const refImage = useRef();
 
@@ -111,12 +113,41 @@ const FilePill = forwardRef((props, ref) => {
     fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
   };
 
-  const {
-    fileThumbnailBlobs,
-    actions: { setFileThumbnailSrc },
-  } = useFiles();
+  const setFileThumbnailSrc = (payload, callback = () => {}) => {
+    dispatch(incomingFileThumbnailData(payload, callback));
+  };
 
-  const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? fileThumbnailBlobs[file.id] : file.view_link);
+  const getFileIcon = (mimeType = "") => {
+    if (mimeType) {
+      if (mimeType === "trashed") {
+        return <i class="fa fa-exclamation-triangle text-danger"></i>;
+      } else if (mimeType.includes("image")) {
+        return <i className="fa fa-file-image-o text-instagram" />;
+      } else if (mimeType.includes("audio")) {
+        return <i className="fa fa-file-audio-o text-dark" />;
+      } else if (mimeType.includes("video")) {
+        return <i className="fa fa-file-video-o text-google" />;
+      } else if (mimeType.includes("pdf")) {
+        return <i className="fa fa-file-pdf-o text-danger" />;
+      } else if (mimeType.includes("zip") || mimeType.includes("archive") || mimeType.includes("x-rar")) {
+        return <i className="fa fa-file-zip-o text-primary" />;
+      } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers") || mimeType.includes("xml")) {
+        return <i className="fa fa-file-excel-o text-success" />;
+      } else if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) {
+        return <i className="fa fa-file-powerpoint-o text-secondary" />;
+      } else if (mimeType.includes("word") || mimeType.includes("document")) {
+        return <i className="fa fa-file-word-o text-info" />;
+      } else if (mimeType.includes("script")) {
+        return <i className="fa fa-file-code-o" />;
+      } else return <i className="fa fa-file-text-o text-warning" />;
+    } else {
+      return <i className="fa fa-file-text-o text-warning" />;
+    }
+  };
+
+  const fileThumbnailBlobs = useSelector((state) => state.files.fileThumbnailBlobs);
+
+  //const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? fileThumbnailBlobs[file.id] : file.view_link);
 
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
@@ -157,8 +188,6 @@ const FilePill = forwardRef((props, ref) => {
     }
   };
 
-  const fileHandler = useFileActions();
-
   let touchActions = false;
   const handleTouchStart = (e) => {
     touchActions = false;
@@ -183,7 +212,7 @@ const FilePill = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    if (!imgSrc) {
+    if (!fileThumbnailBlobs[file.id] && file.type.toLowerCase().includes("image")) {
       fetch(file.thumbnail_link, {
         method: "GET",
         keepalive: true,
@@ -200,7 +229,7 @@ const FilePill = forwardRef((props, ref) => {
         .then(
           function (data) {
             const imgObj = URL.createObjectURL(data);
-            setImgSrc(imgObj);
+            //setImgSrc(imgObj);
             setFileThumbnailSrc({
               id: file.id,
               src: imgObj,
@@ -220,7 +249,7 @@ const FilePill = forwardRef((props, ref) => {
       {isFileRemoved ? (
         <DocFile>
           <div className="card app-file-list">
-            <div className="app-file-icon">{fileHandler.getFileIcon("trashed")}</div>
+            <div className="app-file-icon">{getFileIcon("trashed")}</div>
             <div className="p-2 small">
               <div>{dictionary.fileAutomaticallyRemoved}</div>
             </div>
@@ -228,16 +257,16 @@ const FilePill = forwardRef((props, ref) => {
         </DocFile>
       ) : file.type.toLowerCase() === "image" ? (
         <>
-          <ImgLoader className={imgSrc ? "d-none" : ""}>
+          <ImgLoader className={fileThumbnailBlobs[file.id] ? "d-none" : ""}>
             <ImgLoaderDiv className={"img-loader"} />
           </ImgLoader>
           <FileImage
             ref={refImage}
             data-attempt={0}
-            className={imgSrc ? "" : "d-none"}
+            className={fileThumbnailBlobs[file.id] ? "" : "d-none"}
             onError={handleImageOnError}
             height={150}
-            src={imgSrc}
+            src={fileThumbnailBlobs[file.id] ? fileThumbnailBlobs[file.id] : file.view_link ? file.view_link : ""}
             alt={file.filename ? file.filename : file.search}
             title={file.filename ? file.filename : file.search}
           />
@@ -256,7 +285,7 @@ const FilePill = forwardRef((props, ref) => {
       ) : (
         <DocFile>
           <div className="card app-file-list">
-            <div className="app-file-icon">{fileHandler.getFileIcon(file.type)}</div>
+            <div className="app-file-icon">{getFileIcon(file.type)}</div>
             <div className="p-2 small">
               <div>{file.filename ? file.filename : file.search}</div>
             </div>
