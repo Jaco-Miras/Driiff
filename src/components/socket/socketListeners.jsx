@@ -864,27 +864,27 @@ class SocketListeners extends Component {
             }
             //unfurl link
             let message = { ...e };
-            let urlArray = [...new Set(urlify(e.body))];
-            if (urlArray.length) {
-              this.props.generateUnfurl(
-                {
-                  type: "chat",
-                  message_id: message.id,
-                  link_url: urlArray[0],
-                },
-                (err, res) => {
-                  if (res) {
-                    this.props.generateUnfurlReducer({
-                      unfurls: res.data.unfurls,
-                      channel_id: message.channel_id,
-                      message_id: message.id,
-                    });
-                  } else {
-                    console.log(err);
-                  }
-                }
-              );
-            }
+            // let urlArray = [...new Set(urlify(e.body))];
+            // if (urlArray.length) {
+            //   this.props.generateUnfurl(
+            //     {
+            //       type: "chat",
+            //       message_id: message.id,
+            //       link_url: urlArray[0],
+            //     },
+            //     (err, res) => {
+            //       if (res) {
+            //         this.props.generateUnfurlReducer({
+            //           unfurls: res.data.unfurls,
+            //           channel_id: message.channel_id,
+            //           message_id: message.id,
+            //         });
+            //       } else {
+            //         console.log(err);
+            //       }
+            //     }
+            //   );
+            // }
             if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
               this.props.soundPlay();
             }

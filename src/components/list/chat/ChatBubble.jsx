@@ -3,12 +3,12 @@ import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
-import Skeleton from "react-skeleton-loader";
+//import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
-import Unfurl from "./Unfurl/Unfurl";
+//import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
 
@@ -497,7 +497,6 @@ const ChatBubble = (props) => {
     isLastChat,
     chatMessageActions,
     timeFormat,
-    isBot,
     chatSettings,
     isLastChatVisible,
     dictionary,
@@ -551,7 +550,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -560,7 +559,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -714,10 +713,10 @@ const ChatBubble = (props) => {
                 </span>
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
-              {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
+              {/* {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
                 <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
-              )}
-              {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />}
+              )} */}
+              {/* {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />} */}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
