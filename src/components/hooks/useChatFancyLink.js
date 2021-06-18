@@ -17,9 +17,6 @@ const useChatFancyLink = (props) => {
     return fancyContent !== null ? fancyContent : message.body;
   }
 
-  let result = messageBody;
-  if ((messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy) result = getMessage(message);
-
   function convertFavis(content) {
     return content.replace(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g, function (fullText, beforeLink, anchorContent, href, lnkUrl, linkText, endAnchor) {
       var div = document.createElement("div");
