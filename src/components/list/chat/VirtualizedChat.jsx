@@ -1,17 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar } from "../../common";
-import ChatBubble from "./ChatBubble";
+import ChatBubbleVirtualized from "./ChatBubbleVirtualized";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
 import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
-import SystemMessage from "./SystemMessage";
+import SystemMessageVirtualized from "./SystemMessageVirtualized";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import { useSelector } from "react-redux";
-import { useChatMessageActions, useTimeFormat, useTranslation } from "../../hooks";
 
 const ChatList = styled.li`
   position: relative;
@@ -359,7 +358,7 @@ const StyledAvatar = styled(Avatar)`
   }
 `;
 
-let lastReplyUserId = 0;
+//let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
   const { index, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions } = props;
@@ -400,10 +399,10 @@ const VirtualizedChat = (props) => {
     if (index !== 0 && lastReply && lastReply.user === null) {
       showAvatar = true;
     }
-    if (lastReplyUserId !== reply.user.id) {
-      showAvatar = true;
-      lastReplyUserId = reply.user.id;
-    }
+    // if (lastReplyUserId !== reply.user.id) {
+    //   showAvatar = true;
+    //   lastReplyUserId = reply.user.id;
+    // }
     if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
       showGifPlayer = true;
     }
@@ -458,7 +457,7 @@ const VirtualizedChat = (props) => {
             </FailedSpan>
           ) : null}
           <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-            <ChatBubble
+            <ChatBubbleVirtualized
               chatMessageActions={chatMessageActions}
               timeFormat={timeFormat}
               recipients={recipients}
@@ -481,7 +480,7 @@ const VirtualizedChat = (props) => {
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} replyData={reply} />}
               </ChatActionsContainer>
-            </ChatBubble>
+            </ChatBubbleVirtualized>
             {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
             {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && seenMembers.length > 0 && (
               <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers} seenMembers={seenMembers} isPersonal={selectedChannel.members.length === 2} />
@@ -504,7 +503,7 @@ const VirtualizedChat = (props) => {
         <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} data-message-id={reply.id} isAuthor={false} hasGif={showGifPlayer}>
           <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
             <SystemMessageContainer className="system-message" isAuthor={false}>
-              <SystemMessage
+              <SystemMessageVirtualized
                 recipients={recipients}
                 user={user}
                 chatMessageActions={chatMessageActions}
