@@ -49,6 +49,15 @@ const useWorkspaceReminders = () => {
           };
           todoActions.fetchWsOverdue(payload);
         }
+        if (ws.today && ws.today.hasMore) {
+          let payload = {
+            skip: ws.today.skip,
+            limit: 10,
+            topic_id: params.workspaceId,
+            filter: "today",
+          };
+          todoActions.fetchWsToday(payload);
+        }
       }
     } else {
       let payload = {
@@ -60,6 +69,7 @@ const useWorkspaceReminders = () => {
       todoActions.fetchWs(payload);
       todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
       todoActions.fetchWsOverdue({ ...payload, limit: 25, filter: "overdue" });
+      todoActions.fetchWsToday({ ...payload, limit: 25, filter: "today" });
     }
   };
 

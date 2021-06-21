@@ -3180,6 +3180,11 @@ export default (state = INITIAL_STATE, action) => {
                 hasMore: true,
                 skip: 0,
               },
+              today: {
+                limit: 25,
+                hasMore: true,
+                skip: 0,
+              },
               count: {
                 all: 0,
                 overdue: 0,
@@ -3261,6 +3266,41 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_TODAY_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              today: {
+                limit: 25,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].today.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              today: {
+                limit: 25,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
     case "UPDATE_WORKSPACE_REMINDERS_COUNT": {
       return {
         ...state,
@@ -3286,6 +3326,11 @@ export default (state = INITIAL_STATE, action) => {
                 hasMore: true,
               },
               overdue: {
+                limit: 25,
+                skip: 0,
+                hasMore: true,
+              },
+              today: {
                 limit: 25,
                 skip: 0,
                 hasMore: true,
