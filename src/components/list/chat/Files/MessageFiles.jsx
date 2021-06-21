@@ -42,7 +42,7 @@ const FileWrapper = styled(FilePill)``;
 // `;
 
 const MessageFiles = forwardRef((props, ref) => {
-  const { className = "", files, reply, type = "chat", topic_id = null, ...otherProps } = props;
+  const { className = "", files, reply, type = "chat", topic_id = null, dictionary, ...otherProps } = props;
 
   const dispatch = useDispatch();
 
@@ -70,11 +70,11 @@ const MessageFiles = forwardRef((props, ref) => {
       <FilesContainer>
         {files.map((file, key) => {
           if (files.length === 1 && type === "chat") {
-            return <FileWrapper key={key} cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} />;
+            return <FileWrapper key={key} cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} dictionary={dictionary} />;
           } else {
             return (
               <FilesLink key={file.id}>
-                <FileWrapper cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} />
+                <FileWrapper cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} dictionary={dictionary} />
               </FilesLink>
             );
           }
