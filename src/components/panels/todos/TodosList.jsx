@@ -190,7 +190,7 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
-  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null);
+  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user);
 
   return (
     <>

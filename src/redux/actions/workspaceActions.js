@@ -266,3 +266,7 @@ export function getDoneWorkspaceRemindersCallback(payload, callback) {
 export function getOverdueWorkspaceRemindersCallback(payload, callback) {
   return SimpleDispatchActionToReducer("GET_OVERDUE_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
 }
+
+export function getTodayWorkspaceRemindersCallback(payload, callback) {
+  return SimpleDispatchActionToReducer("GET_TODAY_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
+}

@@ -1,8 +1,16 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addToModals, delRemoveToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
-import { getDoneWorkspaceRemindersCallback, getOverdueWorkspaceRemindersCallback, getWorkspaceReminders, getWorkspaceRemindersCallback, getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../redux/actions/workspaceActions";
+import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
+import {
+  getDoneWorkspaceRemindersCallback,
+  getTodayWorkspaceRemindersCallback,
+  getOverdueWorkspaceRemindersCallback,
+  getWorkspaceReminders,
+  getWorkspaceRemindersCallback,
+  getWorkspaceRemindersCount,
+  updateWorkspaceRemindersCount,
+} from "../../redux/actions/workspaceActions";
 import { useToaster, useTranslationActions } from "./index";
 
 const useTodoActions = () => {
@@ -26,6 +34,10 @@ const useTodoActions = () => {
 
   const fetch = (payload, callback) => {
     dispatch(getToDo(payload, callback));
+  };
+
+  const fetchToday = (payload, callback) => {
+    dispatch(getTodayToDo(payload, callback));
   };
 
   const fetchDone = (payload, callback) => {
@@ -73,6 +85,21 @@ const useTodoActions = () => {
         if (err) return;
         dispatch(
           getOverdueWorkspaceRemindersCallback({
+            ...res.data,
+            topic_id: payload.topic_id,
+          })
+        );
+      })
+    );
+  };
+
+  const fetchWsToday = (payload, callback) => {
+    dispatch(
+      getWorkspaceReminders(payload, (err, res) => {
+        if (callback) callback();
+        if (err) return;
+        dispatch(
+          getTodayWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
           })
@@ -363,6 +390,8 @@ const useTodoActions = () => {
     fetchWsDone,
     fetchOverdue,
     fetchWsOverdue,
+    fetchToday,
+    fetchWsToday,
   };
 };
 

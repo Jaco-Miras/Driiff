@@ -251,3 +251,7 @@ export function getDoneToDo(payload, callback) {
 export function getOverdueToDo(payload, callback) {
   return dispatchActionToReducer(getToDoService(payload), "GET_OVERDUE_TO_DO_START", "GET_OVERDUE_TO_DO_SUCCESS", "GET_OVERDUE_TO_DO_FAILURE", callback);
 }
+
+export function getTodayToDo(payload, callback) {
+  return dispatchActionToReducer(getToDoService(payload), "GET_TODAY_TO_DO_START", "GET_TODAY_TO_DO_SUCCESS", "GET_TODAY_TO_DO_FAILURE", callback);
+}
