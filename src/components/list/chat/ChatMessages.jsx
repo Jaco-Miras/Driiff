@@ -676,19 +676,23 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleLoadMoreRefChange = (inView, entry) => {
-    this.setState({ loadMoreInView: inView });
-  };
-
-  handleMessageRefChange = (inView, entry, id) => {
-    const scrollComponent = this.scrollComponent.current;
+    // console.log(inView);
+    // this.setState({ loadMoreInView: inView });
     if (inView) {
-      if (scrollComponent) {
-        if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
-          this.loadReplies();
-        }
-      }
+      this.loadReplies();
     }
   };
+
+  // handleMessageRefChange = (inView, entry, id) => {
+  //   const scrollComponent = this.scrollComponent.current;
+  //   if (inView) {
+  //     if (scrollComponent) {
+  //       if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
+  //         this.loadReplies();
+  //       }
+  //     }
+  //   }
+  // };
 
   handleShowSeenUsers = () => this.setState({ showSeenUsers: !this.state.showSeenUsers });
 

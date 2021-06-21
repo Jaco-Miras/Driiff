@@ -516,9 +516,9 @@ const ChatBubble = (props) => {
 
   const contentRef = useRef(null);
 
-  const [loadRef, loadInView] = useInView({
-    threshold: 1,
-  });
+  // const [loadRef, loadInView] = useInView({
+  //   threshold: 1,
+  // });
   const [lastChatRef, inView, entry] = useInView({
     threshold: THRESHOLD,
     skip: !isLastChat,
@@ -580,11 +580,11 @@ const ChatBubble = (props) => {
     }
   }, [history.location.state, refs.container.current, contentRef.current]);
 
-  useEffect(() => {
-    if (addMessageRef && loadInView) {
-      props.loadReplies();
-    }
-  }, [addMessageRef, loadInView]);
+  // useEffect(() => {
+  //   if (addMessageRef && loadInView) {
+  //     props.loadReplies();
+  //   }
+  // }, [addMessageRef, loadInView]);
 
   useEffect(() => {
     if (isLastChat && entry) {
@@ -632,7 +632,7 @@ const ChatBubble = (props) => {
               {dictionary.forwardedMessage}
             </ForwardedSpan>
           )}
-          <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
+          <ChatContentClap className="chat-content-clap" isAuthor={isAuthor}>
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
               {!isAuthor && showAvatar && (
                 <>
