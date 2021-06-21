@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import AllWorkspaceSidebar from "./AllWorkspaceSidebar";
 import AllWorkspaceSearch from "./AllWorkspaceSearch";
 import AllWorkspaceBody from "./AllWorkspaceBody";
-import { useTranslation, useWorkspaceSearchActions } from "../../hooks";
+import { useTranslationActions, useWorkspaceSearchActions } from "../../hooks";
 import { throttle } from "lodash";
 
 const Wrapper = styled.div`
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 const AllWorkspace = (props) => {
   const search = useSelector((state) => state.workspaces.search);
   const { hasMore, results, filterBy, value } = search;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const actions = useWorkspaceSearchActions();
 
   const [loadMore, setLoadMore] = useState(false);

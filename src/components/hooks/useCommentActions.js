@@ -22,13 +22,13 @@ import {
   setChangeRequestedComment,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useToaster, useTodoActions, useTranslation } from "./index";
+import { useToaster, useTodoActions, useTranslationActions } from "./index";
 
 const useCommentActions = () => {
   const dispatch = useDispatch();
   const todoActions = useTodoActions();
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),

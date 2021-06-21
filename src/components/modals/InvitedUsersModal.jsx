@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { FormInput } from "../forms";
-//import { useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { SvgIconFeather } from "../common";
 import { EmailRegex } from "../../helpers/stringFormatter";
@@ -26,7 +25,6 @@ const InvitedUsersModal = (props) => {
     message: {},
   });
 
-  //const { _t } = useTranslation();
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);

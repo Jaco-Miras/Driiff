@@ -61,7 +61,6 @@ const ReleaseModal = (props) => {
 
   console.log(props.data);
 
-  //const { _t } = useTranslation();
   const dispatch = useDispatch();
 
   const [modal, setModal] = useState(true);

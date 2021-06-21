@@ -4,7 +4,7 @@ import { Button } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 // import { ModalHeaderSection } from "./index";
 import styled from "styled-components";
-import { useTranslation, useUserActions } from "../hooks";
+import { useTranslationActions, useUserActions } from "../hooks";
 // import { getDriffName } from "../hooks/useDriff";
 import { SvgIconFeather } from "../common";
 
@@ -53,7 +53,7 @@ const DriffUpdateModal = (props) => {
 
   const { logout, processBackendLogout } = useUserActions();
   const dispatch = useDispatch();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   // const refs = {
   //   audio: useRef(null),

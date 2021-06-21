@@ -6,7 +6,7 @@ import Select, { components } from "react-select";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
-import { useTranslation, usePostActions, useSettings } from "../hooks";
+import { useTranslationActions, usePostActions, useSettings } from "../hooks";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { InputFeedback } from "../forms";
 
@@ -64,7 +64,7 @@ const CreateEditPostListModal = (props) => {
     generalSettings: { dark_mode },
   } = useSettings();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     postListInfo: _t("POST.POST_LIST_INFO", "Lists help you to combine post to groups (just for you!) or todo's"),

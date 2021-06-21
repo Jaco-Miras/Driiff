@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { useIsMember, useOutsideClick, useTranslation, useToaster } from "../hooks";
+import { useIsMember, useOutsideClick, useTranslationActions, useToaster } from "../hooks";
 import { SvgIconFeather } from "../common";
 import { addToModals } from "../../redux/actions/globalActions";
 import Tooltip from "react-tooltip-lite";
@@ -57,7 +57,7 @@ const SettingsLink = (props) => {
   const { className = "" } = props;
 
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),

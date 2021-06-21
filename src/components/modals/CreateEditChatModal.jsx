@@ -8,7 +8,7 @@ import { addToChannels, setSelectedChannel } from "../../redux/actions/chatActio
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { FormInput, PeopleSelect } from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import { useChannelActions, useFileActions, useQuillModules, useTimeFormat, useToaster, useTranslation } from "../hooks";
+import { useChannelActions, useFileActions, useQuillModules, useTimeFormat, useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { DropDocument } from "../dropzone/DropDocument";
 import { Avatar, SvgIconFeather } from "../common";
@@ -121,7 +121,7 @@ const CreateEditChatModal = (props) => {
   const reactQuillRef = useRef();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const toaster = useToaster();
   const { searchExisting, create: createChannel, update: updateChannel } = useChannelActions();
   const { localizeDate } = useTimeFormat();

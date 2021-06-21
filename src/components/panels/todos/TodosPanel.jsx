@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
-import { useTodos, useTranslation } from "../../hooks";
+import { useTodos, useTranslationActions } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 import { throttle } from "lodash";
 
@@ -25,7 +25,7 @@ const TodosPanel = (props) => {
 
   const { getReminders, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   var newItemsFoundHeader = [
     _t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for."),

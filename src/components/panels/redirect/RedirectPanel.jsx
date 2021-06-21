@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useUserActions, useChannelActions, useTranslation } from "../../hooks";
+import { useUserActions, useChannelActions, useTranslationActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `;
 
 const RedirectPanel = (props) => {
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     redirecting: _t("REDIRECT.REDIRECTING", "Redirecting..."),
   };

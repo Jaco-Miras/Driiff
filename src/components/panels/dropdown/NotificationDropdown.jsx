@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useNotificationActions, useNotifications, useTranslation } from "../../hooks";
+import { useNotificationActions, useNotifications, useTranslationActions } from "../../hooks";
 import { NotificationLists } from "../../list/notification/item";
 
 const Wrapper = styled.div`
@@ -45,7 +45,7 @@ const NotificationDropdown = (props) => {
     history.push("/notifications");
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     new: _t("NOTIFICATION.NEW", "New"),

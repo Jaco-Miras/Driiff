@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { createWorkspace, deleteWorkspaceFolder, updateWorkspace } from "../../redux/actions/workspaceActions";
 import { CheckBox, InputFeedback } from "../forms";
-import { useToaster, useTranslation } from "../hooks";
+import { useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
 
@@ -19,11 +19,13 @@ const WrapperDiv = styled(InputGroup)`
     border-radius: 5px;
   }
 
-  ${"" /* label {
+  ${
+    "" /* label {
     white-space: wrap;
     margin: 0 20px 0 0;
     min-width: 109px;
-  } */}
+  } */
+  }
 
   .input-feedback {
     margin-left: 130px;
@@ -67,7 +69,7 @@ const CreateWorkspaceFolderModal = (props) => {
   const { type, mode, item = null } = props.data;
 
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     createWorkspaceFolder: _t("WORKSPACE.CREATE_WORKSPACE_FOLDER", "Create folder"),
     updateWorkspaceFolder: _t("WORKSPACE.UPDATE_WORKSPACE_FOLDER", "Update folder"),
@@ -79,8 +81,8 @@ const CreateWorkspaceFolderModal = (props) => {
     description: _t("DESCRIPTION", "Description"),
     remove: _t("WORKSPACE.REMOVE", "Remove"),
     cancel: _t("WORKSPACE.CANCEL", "Cancel"),
-    removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", `Workspaces in`),
-    removeFolderText2: _t("WORKSPACE.REMOVE_FOLDER_TEXT_2", `will move back to the Workspaces sections in your sidebar. <br /><br />The workspaces in this folder will not be removed when you remove this folder.`),
+    removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", "Workspaces in"),
+    removeFolderText2: _t("WORKSPACE.REMOVE_FOLDER_TEXT_2", "will move back to the Workspaces sections in your sidebar. <br /><br />The workspaces in this folder will not be removed when you remove this folder."),
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Private folder"),
     lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),

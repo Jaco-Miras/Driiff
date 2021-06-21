@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { CheckBox } from "../../forms";
 import { SvgIconFeather } from "../../common";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   .input-group {
@@ -13,8 +13,10 @@ const Wrapper = styled.div`
       width: 90%;
       position: relative;
       input {
-        ${"" /* border-top-right-radius: 0;
-        border-bottom-right-radius: 0; */}
+        ${
+          "" /* border-top-right-radius: 0;
+        border-bottom-right-radius: 0; */
+        }
       }
       .btn-cross {
         position: absolute;
@@ -234,7 +236,7 @@ const WorkspaceSearch = (props) => {
     setInputValue(value);
   }, [value]);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     searchWorkspaceSearchPlaceholder: _t("PLACEHOLDER.SEARCH_WORKSPACE", "Search by workspace name or description"),

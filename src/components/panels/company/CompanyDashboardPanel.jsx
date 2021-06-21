@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useCompanyDashboard, useCompanyPosts, useTranslation } from "../../hooks";
+import { useCompanyDashboard, useCompanyPosts, useTranslationActions } from "../../hooks";
 import { CompanyDashboardTeam, CompanyRecentPosts } from "../dashboard";
 import { CompanyTimelinePanel } from "../common";
 
@@ -21,7 +21,7 @@ const CompanyDashboardPanel = (props) => {
   const { className = "", match, actions } = props;
 
   const { params } = match;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const { timelineInit, timelineItems: timeline, recentPostsInit } = useCompanyDashboard();
   const { posts } = useCompanyPosts();
   const width = window.innerWidth;

@@ -5,7 +5,7 @@ import Tooltip from "react-tooltip-lite";
 import { CommonPicker, SvgIconFeather } from "../../../common";
 import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput, FolderSelect } from "../../../forms";
-import { useTranslation, usePostActions } from "../../../hooks";
+import { useTranslationActions, usePostActions } from "../../../hooks";
 import PostInputButtons from "../PostInputButtons";
 import Reward from "react-rewards";
 
@@ -273,7 +273,7 @@ const CompanyPostDetailFooter = (props) => {
     setShowEmojiPicker(false);
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     noReplyAllowed: _t("FOOTER.NO_REPLY_ALLOWED", "No reply allowed"),

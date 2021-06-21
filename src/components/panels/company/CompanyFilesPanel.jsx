@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { useCompanyFiles, useTranslation } from "../../hooks";
+import { useCompanyFiles, useTranslationActions } from "../../hooks";
 import { CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar } from "../files/company";
 
 const Wrapper = styled.div`
@@ -23,7 +23,7 @@ const CompanyFilesPanel = (props) => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const { params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders, loadMore } = useCompanyFiles();
 
   const [filter, setFilter] = useState("");
