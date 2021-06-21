@@ -764,9 +764,9 @@ class ChatMessages extends React.PureComponent {
       .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
-    const { selectedChannel } = this.props;
+    //const { selectedChannel } = this.props;
 
-    let lastReplyUserId = 0;
+    //let lastReplyUserId = 0;
 
     // let groupedMessages = [];
 
@@ -796,20 +796,20 @@ class ChatMessages extends React.PureComponent {
     // }
 
     return (
-      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
-        {selectedChannel.isFetching && selectedChannel.hasMore && selectedChannel.replies.length === 0 && selectedChannel.skip === 0 && (
+      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>
+        {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
           </ChatLoader>
         )}
         <InfiniteScroll ref={this.infiniteScroll} className={"infinite-scroll"} id="infinite-scroll-chat-replies">
-          {selectedChannel.replies && selectedChannel.replies.length >= 20 && (
+          {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length >= 20 && (
             <InView as="div" onChange={(inView, entry) => this.handleLoadMoreRefChange(inView, entry)}>
               <span className="intersection-load-more-ref"></span>
             </InView>
           )}
           <ul>
-            {selectedChannel.replies && selectedChannel.replies.length
+            {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
               ? this.groupedMessages().map((gm, i) => {
                   return (
                     <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
@@ -848,10 +848,10 @@ class ChatMessages extends React.PureComponent {
                             if (k !== 0 && e[k - 1].user === null) {
                               showAvatar = true;
                             }
-                            if (lastReplyUserId !== reply.user.id) {
-                              showAvatar = true;
-                              lastReplyUserId = reply.user.id;
-                            }
+                            // if (lastReplyUserId !== reply.user.id) {
+                            //   showAvatar = true;
+                            //   lastReplyUserId = reply.user.id;
+                            // }
 
                             if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                               showGifPlayer = true;
@@ -875,7 +875,7 @@ class ChatMessages extends React.PureComponent {
                               data-timestamp={reply.created_at.timestamp}
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
                               showTimestamp={showTimestamp}
-                              isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
+                              isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
                             >
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                               {reply.user && (
@@ -905,7 +905,7 @@ class ChatMessages extends React.PureComponent {
                                       showGifPlayer={showGifPlayer}
                                       isAuthor={isAuthor}
                                       addMessageRef={this.getLoadRef(reply.id)}
-                                      isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
+                                      isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
                                       loadReplies={this.loadReplies}
                                       isBot={isBot}
                                       chatSettings={this.props.settings}
@@ -932,7 +932,7 @@ class ChatMessages extends React.PureComponent {
                                       </ChatActionsContainer>
                                     </ChatBubble>
                                     {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
-                                    {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
+                                    {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
                                       <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
                                     )}
                                   </ChatBubbleQuoteDiv>
@@ -964,7 +964,7 @@ class ChatMessages extends React.PureComponent {
                                         reply={reply}
                                         chatName={this.props.chatName}
                                         addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
+                                        isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                         users={this.props.users}
@@ -976,7 +976,7 @@ class ChatMessages extends React.PureComponent {
                                           isAuthor={false}
                                           deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
                                           removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                          channelId={this.props.selectedChannel.id}
+                                          channelId={this.props.this.props.selectedChannel.id}
                                           replyId={reply.id}
                                         />
                                       ) : null} */}
@@ -1007,7 +1007,7 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !selectedChannel.isFetching && selectedChannel.replies && selectedChannel.replies.length < 1 && (
+            {!this.state.initializing && !this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
               <EmptyState className="no-reply-container">
                 <SvgEmptyState icon={3} />
               </EmptyState>

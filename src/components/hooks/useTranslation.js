@@ -34,7 +34,6 @@ export const useTranslation = () => {
   };
 
   useEffect(() => {
-    console.log("test useeffect");
     if (init || !session.checked || (session.authenticated && language === null)) return;
 
     init = true;
@@ -89,7 +88,6 @@ export const useTranslation = () => {
       );
     }
   }, [dispatch, dictFile, dictionaryAPIUrl]);
-  console.log("test");
 
   const translate = (code, default_value, replacement = null) => {
     let translation = default_value;
