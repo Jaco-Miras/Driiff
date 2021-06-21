@@ -2,14 +2,14 @@ import "quill-mention";
 import React, { forwardRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 import MagicUrl from "quill-magic-url";
 import ImageUploader from "quill-image-uploader";
 import QuillPasteSmart from "quill-paste-smart";
 
 const QuillEditor = forwardRef((props, ref) => {
   const { className = "", theme = "snow", placeholder = "", ...otherProps } = props;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const appliedPlaceholder = placeholder !== "" ? placeholder : _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...");
 

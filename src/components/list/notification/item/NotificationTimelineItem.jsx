@@ -129,8 +129,6 @@ export const NotificationTimelineItem = (props) => {
     history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
   };
 
-  //const { _t } = useTranslation();
-
   const dictionary = {
     notificationNewPost: _t("NOTIFICATION.NEW_POST", `shared a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
     notificationComment: _t("NOTIFICATION.COMMENT", `made a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">comment</span> in <span class="text-link">${notification.data.title}`),

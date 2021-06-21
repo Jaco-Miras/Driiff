@@ -33,7 +33,7 @@ import {
   setSidebarSearch as setSidebarSearchReducer,
   setSearchArchivedChannels,
 } from "../../redux/actions/chatActions";
-import { useSettings, useToaster, useTranslation } from "./index";
+import { useSettings, useToaster, useTranslationActions } from "./index";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 
@@ -41,7 +41,7 @@ const useChannelActions = () => {
   const dispatch = useDispatch();
 
   const { chatSettings } = useSettings();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const toaster = useToaster();
   const history = useHistory();
 

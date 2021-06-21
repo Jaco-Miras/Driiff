@@ -27,7 +27,7 @@ import {
   unarchiveUser,
   updateUserType,
 } from "../../redux/actions/userAction";
-import { useDriffActions, useSettings, useToaster, useTranslation } from "./index";
+import { useDriffActions, useSettings, useToaster, useTranslationActions } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
@@ -65,7 +65,7 @@ const useUserActions = () => {
   } = useSettings();
   const { persistor, persistenceOn } = reduxPersist();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   //const { getUserFilter } = useSelector((state) => state.users);
   const getUserFilter = useSelector((state) => state.users.getUserFilter);

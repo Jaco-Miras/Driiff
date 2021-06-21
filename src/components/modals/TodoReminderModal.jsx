@@ -5,7 +5,7 @@ import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useSettings, useTranslation, useToaster, useWindowSize } from "../hooks";
+import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
 //import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
@@ -74,7 +74,7 @@ const TodoReminderModal = (props) => {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
   } = useSettings();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const winSize = useWindowSize();

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import quillHelper from "../../helpers/quillHelper";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { useParams } from "react-router-dom";
-import { useTranslation } from "./useTranslation";
+import useTranslationActions from "./useTranslationActions";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
@@ -43,7 +43,7 @@ const PushLink = styled.a`
 const useSelectQuote = (props) => {
   const params = useParams();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const quotes = useSelector((state) => state.chat.chatQuotes);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const [quote, setQuote] = useState(null);

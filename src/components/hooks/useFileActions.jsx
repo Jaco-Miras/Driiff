@@ -65,7 +65,7 @@ import {
 } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster } from "./index";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const useFileActions = (params = null) => {
   const dispatch = useDispatch();
@@ -74,7 +74,7 @@ const useFileActions = (params = null) => {
 
   const fileName = useRef("");
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const getFileIcon = (mimeType = "") => {
     if (mimeType) {

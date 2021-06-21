@@ -3,7 +3,7 @@ import { Virtuoso } from "react-virtuoso";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 //import { groupBy } from "lodash";
-import { useChatMessageActions, useTranslation, useTimeFormat } from "../../hooks";
+import { useChatMessageActions, useTranslationActions, useTimeFormat } from "../../hooks";
 import { SvgEmptyState } from "../../common";
 import VirtualiazedChat from "./VirtualizedChat";
 
@@ -52,7 +52,7 @@ const EmptyState = styled.div`
 const VirtuosoContainer = (props) => {
   const { dictionary } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
   //const unreadCount = useCountUnreadReplies();

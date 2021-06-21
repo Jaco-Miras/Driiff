@@ -1,10 +1,10 @@
 import React from "react";
-import { useTranslation } from "./index";
+import { useTranslationActions } from "./index";
 import { useDispatch } from "react-redux";
 import { registerGoogleDriveFile } from "../../redux/actions/fileActions";
 
 const useGoogleApis = () => {
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
 
   const addGoogleDriveFile = (payload) => {

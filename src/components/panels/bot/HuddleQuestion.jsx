@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useTranslation, useHuddleChatbot } from "../../hooks";
+import { useTranslationActions, useHuddleChatbot } from "../../hooks";
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 const HuddleQuestion = (props) => {
   const { question, huddle, isFirstQuestion, selectedChannel, user } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const actions = useHuddleChatbot();
 
   const dictionary = {

@@ -23,7 +23,7 @@ import {
   resetTranslatedBody,
   setFancyLink,
 } from "../../redux/actions/chatActions";
-import { useToaster, useTodoActions, useTranslation } from "./index";
+import { useToaster, useTodoActions, useTranslationActions } from "./index";
 import useChannelActions from "./useChannelActions";
 import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
 import { setViewFiles } from "../../redux/actions/fileActions";
@@ -34,7 +34,7 @@ const useChatMessageActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const todoActions = useTodoActions();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),

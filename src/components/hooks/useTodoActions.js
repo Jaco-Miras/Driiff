@@ -3,12 +3,12 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToModals, delRemoveToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
 import { getDoneWorkspaceRemindersCallback, getOverdueWorkspaceRemindersCallback, getWorkspaceReminders, getWorkspaceRemindersCallback, getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../redux/actions/workspaceActions";
-import { useToaster, useTranslation } from "./index";
+import { useToaster, useTranslationActions } from "./index";
 
 const useTodoActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const params = useParams();
 
   const dictionary = {
