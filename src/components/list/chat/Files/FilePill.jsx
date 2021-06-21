@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
-import { useTouchActions, useTranslation } from "../../../hooks";
+import { useTouchActions } from "../../../hooks";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 
@@ -98,7 +98,7 @@ const DocFile = styled.div`
 `;
 
 const FilePill = forwardRef((props, ref) => {
-  let { className = "", file, cbFilePreview, ...otherProps } = props;
+  let { className = "", file, cbFilePreview, dictionary, ...otherProps } = props;
   if (typeof file.type === "undefined") {
     file.type = file.mime_type;
   }
@@ -107,11 +107,11 @@ const FilePill = forwardRef((props, ref) => {
   //const refImageLoader = useRef();
   const refImage = useRef();
 
-  const { _t } = useTranslation();
+  // const { _t } = useTranslation(true);
 
-  const dictionary = {
-    fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
-  };
+  // const dictionary = {
+  //   fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+  // };
 
   const setFileThumbnailSrc = (payload, callback = () => {}) => {
     dispatch(incomingFileThumbnailData(payload, callback));
@@ -251,7 +251,7 @@ const FilePill = forwardRef((props, ref) => {
           <div className="card app-file-list">
             <div className="app-file-icon">{getFileIcon("trashed")}</div>
             <div className="p-2 small">
-              <div>{dictionary.fileAutomaticallyRemoved}</div>
+              <div>{dictionary && dictionary.fileAutomaticallyRemoved}</div>
             </div>
           </div>
         </DocFile>

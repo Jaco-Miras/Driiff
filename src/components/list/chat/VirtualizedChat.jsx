@@ -362,11 +362,8 @@ const StyledAvatar = styled(Avatar)`
 let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { index, reply, lastReply, isLastChatVisible, loadReplies, dictionary } = props;
+  const { index, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions } = props;
 
-  const { _t } = useTranslation();
-  const chatMessageActions = useChatMessageActions();
-  const timeFormat = useTimeFormat();
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const recipients = useSelector((state) => state.global.recipients);

@@ -182,6 +182,7 @@ const ChatContentPanel = (props) => {
     headerArchive: _t("HEADER.ARCHIVE", "Chat archive"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
     clickHereToJoin: _t("CHAT.CLICK_HERE_TO_JOIN", "Click here to join"),
+    fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
