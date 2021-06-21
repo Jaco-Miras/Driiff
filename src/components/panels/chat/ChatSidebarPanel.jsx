@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useChannels, useLoadChannel, useSettings, useTranslation } from "../../hooks";
+import { useChannels, useLoadChannel, useSettings, useTranslationActions } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -184,7 +184,7 @@ const ChatSidebarPanel = (props) => {
     }
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),

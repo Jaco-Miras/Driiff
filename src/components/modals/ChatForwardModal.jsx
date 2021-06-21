@@ -9,7 +9,7 @@ import { SvgIconFeather } from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
 import { ModalHeaderSection } from "./index";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
@@ -172,7 +172,7 @@ const ChatForwardModal = (props) => {
     }
   });
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     recentChannels: _t("CHAT.FORWARD.RECENT_CHANNELS", "Recent channels"),

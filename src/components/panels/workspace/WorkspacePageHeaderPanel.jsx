@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { NavLink } from "../../common";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div``;
@@ -120,7 +120,7 @@ const WorkspacePageHeaderPanel = (props) => {
     pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
   }
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     pageTitleDashboard: _t("PAGE_TITLE.DASHBOARD", "Dashboard"),

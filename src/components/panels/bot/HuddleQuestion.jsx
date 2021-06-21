@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 const HuddleQuestion = (props) => {
   const { question, huddle, isFirstQuestion } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     skip: _t("SKIP", "skip"),

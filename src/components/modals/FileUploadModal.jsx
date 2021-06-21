@@ -8,7 +8,7 @@ import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
 import { uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
-import { useQuillModules, useTranslation } from "../hooks";
+import { useQuillModules, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload, addComment } from "../../redux/actions/postActions";
 import { osName } from "react-device-detect";
@@ -245,7 +245,7 @@ const FileUploadModal = (props) => {
   const progressBar = useRef(0);
   const toaster = useToaster();
   const pickerRef = useRef();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const workspaces = useSelector((state) => state.workspaces.workspaces);

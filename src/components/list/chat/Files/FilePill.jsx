@@ -107,12 +107,6 @@ const FilePill = forwardRef((props, ref) => {
   //const refImageLoader = useRef();
   const refImage = useRef();
 
-  // const { _t } = useTranslation(true);
-
-  // const dictionary = {
-  //   fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
-  // };
-
   const setFileThumbnailSrc = (payload, callback = () => {}) => {
     dispatch(incomingFileThumbnailData(payload, callback));
   };

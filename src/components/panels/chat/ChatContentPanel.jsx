@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
-import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation } from "../../hooks";
+import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
@@ -117,7 +117,7 @@ const ChatContentPanel = (props) => {
     dispatch(addToModals(modal));
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     //remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
@@ -181,6 +181,8 @@ const ChatContentPanel = (props) => {
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
     clickHereToJoin: _t("CHAT.CLICK_HERE_TO_JOIN", "Click here to join"),
     fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+    connectPreview: _t("GOOGLE_DRIVE.CONNECT_TO_PREVIEW", "Connect to preview"),
+    restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
