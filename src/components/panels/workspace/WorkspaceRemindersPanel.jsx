@@ -38,13 +38,13 @@ const TodosPanel = (props) => {
   const [search, setSearch] = useState("");
   const [loadReminders, setLoadReminders] = useState(false);
 
-  var newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_2", "WOO!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", "Queue’s empty, time to dance!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", "No reminders.")];
+  let newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_2", "WOO!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", "Queue’s empty, time to dance!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", "No reminders.")];
 
-  var newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_2", "Nothing here but me… 👻"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", "Job well done!💃🕺"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀")];
+  let newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_2", "Nothing here but me… 👻"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", "Job well done!💃🕺"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀")];
 
   if (search !== "") {
-    newItemsFoundHeader = [...newItemsFoundHeader, _t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for.")];
-    newItemsFoundText = [...newItemsFoundText, _t("REMINDER.NO_ITEMS_FOUND_TEXT_1", "Try something else, Sherlock. 🕵")];
+    newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for.")];
+    newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_1", "Try something else, Sherlock. 🕵")];
   }
   if (search === "" && filter === "OVERDUE") {
     newItemsFoundHeader = [...newItemsFoundHeader, _t("REMINDER.NO_ITEMS_FOUND_HEADER_3", "Nothing is overdue.")];
@@ -92,6 +92,11 @@ const TodosPanel = (props) => {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+    if (e.target.value.trim() === "") {
+      setInDexer(Math.floor(Math.random() * newItemsFoundHeader.length));
+    } else {
+      setInDexer(0);
+    }
   };
 
   const clearSearch = () => {
