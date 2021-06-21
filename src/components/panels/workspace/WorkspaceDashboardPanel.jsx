@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePosts, useTranslation, useFetchWsCount } from "../../hooks";
+import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
@@ -22,7 +22,7 @@ const WorkspaceDashboardPanel = (props) => {
   const { className = "", isExternal, isMember, match, actions, workspaceTimeline, workspace } = props;
 
   const { params } = match;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const { recentPosts } = usePosts();
   const width = window.innerWidth;
 

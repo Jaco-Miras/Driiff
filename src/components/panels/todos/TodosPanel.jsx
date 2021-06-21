@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
-import { useTodos, useTranslation } from "../../hooks";
+import { useTodos, useTranslationActions } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 import { throttle } from "lodash";
 
@@ -31,7 +31,7 @@ const TodosPanel = (props) => {
 
   const { getReminders, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");

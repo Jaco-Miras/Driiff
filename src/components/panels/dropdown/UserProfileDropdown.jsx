@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useTranslation, useUserActions } from "../../hooks";
+import { useTranslationActions, useUserActions } from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -51,7 +51,7 @@ const UserProfileDropdown = (props) => {
     history.push("/settings");
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     profile: _t("PROFILE.PROFILE", "Profile"),

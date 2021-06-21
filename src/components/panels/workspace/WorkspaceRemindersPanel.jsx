@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
-import { useWorkspaceReminders, useTranslation } from "../../hooks";
+import { useWorkspaceReminders, useTranslationActions } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 import { throttle } from "lodash";
 
@@ -32,7 +32,7 @@ const TodosPanel = (props) => {
 
   const { getWorkspaceReminders, action: todoActions, isLoaded, count, workspaceName } = useWorkspaceReminders();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");

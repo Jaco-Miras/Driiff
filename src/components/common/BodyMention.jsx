@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const BodyMentionDiv = styled.div`
   margin: 10px;
@@ -22,7 +22,7 @@ const BodyMentionDiv = styled.div`
 const BodyMention = (props) => {
   const { onAddUsers, onDoNothing, userIds, type = "post", basedOnUserId = false, userMentionOnly = false } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const user = useSelector((state) => state.session.user);
   const isExternalUser = user.type === "external";
   const users = useSelector((state) => state.users.mentions);

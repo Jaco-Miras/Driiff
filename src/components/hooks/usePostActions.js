@@ -64,7 +64,7 @@ import {
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const usePostActions = () => {
   const params = useParams();
   const toaster = useToaster();
   const todoActions = useTodoActions();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const user = useSelector((state) => state.session.user);
 

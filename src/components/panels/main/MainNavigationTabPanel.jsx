@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
-import { useSettings, useTranslation } from "../../hooks";
+import { useSettings, useTranslationActions } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
@@ -199,7 +199,7 @@ const MainNavigationTabPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   // const workspaces = useSelector((state) => state.workspaces.workspaces);
   // const folders = useSelector((state) => state.workspaces.folders);
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const [showButtons, setShowbuttons] = useState(false);
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BodyMention from "../common/BodyMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft, useTranslation } from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -158,7 +158,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),

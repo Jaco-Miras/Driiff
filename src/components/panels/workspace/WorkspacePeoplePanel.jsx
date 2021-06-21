@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useFocusInput, useTranslation, useUserChannels, useFetchWsCount } from "../../hooks";
+import { useFocusInput, useTranslationActions, useUserChannels, useFetchWsCount } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { SvgIconFeather } from "../../common";
@@ -96,7 +96,7 @@ const WorkspacePeoplePanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),

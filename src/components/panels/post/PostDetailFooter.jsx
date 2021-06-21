@@ -6,7 +6,7 @@ import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
-import { useToaster, useTranslation, usePostActions } from "../../hooks";
+import { useToaster, useTranslationActions, usePostActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
 import { FolderSelect } from "../../forms";
@@ -316,7 +316,7 @@ const PostDetailFooter = (props) => {
   };
 
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),

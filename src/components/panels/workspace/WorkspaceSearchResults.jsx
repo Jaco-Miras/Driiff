@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WorkspaceSearchResult from "./WorkspaceSearchResult";
-import { useToaster, useTranslation } from "../../hooks";
+import { useToaster, useTranslationActions } from "../../hooks";
 import { leaveWorkspace, updateWorkspace } from "../../../redux/actions/workspaceActions";
 import { putChannel } from "../../../redux/actions/chatActions";
 
@@ -13,7 +13,7 @@ const WorkspaceSearchResults = (props) => {
 
   const toaster = useToaster();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     labelArchived: _t("LABEL.ARCHIVED", "Archived"),

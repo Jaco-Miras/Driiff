@@ -8,7 +8,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import { useToaster, useTranslation, useUserActions, useUserChannels, useUsers } from "../../hooks";
+import { useToaster, useTranslationActions, useUserActions, useUserChannels, useUsers } from "../../hooks";
 import { FormInput } from "../../forms";
 
 const Wrapper = styled.div`
@@ -137,7 +137,7 @@ const UserProfilePanel = (props) => {
     password: useRef(null),
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),

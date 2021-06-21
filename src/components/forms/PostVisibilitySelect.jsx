@@ -3,7 +3,7 @@ import Select, { components } from "react-select";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
-import { useSettings, useTranslation } from "../hooks";
+import { useSettings, useTranslationActions } from "../hooks";
 
 const StyledSelect = styled(Select)`
   .dark & {
@@ -76,7 +76,7 @@ const Option = (props) => {
 const PostVisibilitySelect = forwardRef((props, ref) => {
   const { className = "", ...otherProps } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     visibleAllInternal: _t("POST.VISIBLE_ALL_INTERNAL", "Visible to all internal members"),

@@ -25,14 +25,14 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, setSelectedChannel, putChannel } from "../../redux/actions/chatActions";
-import { useSettings, useToaster, useTranslation } from "./index";
+import { useSettings, useToaster, useTranslationActions } from "./index";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { setGeneralSetting, loggedUser } = useSettings();
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     notificationError: _t("NOTIFICATION.ERROR", "An error has occurred try again!"),
     errorFetchingChannel: _t("ERROR.CHANNEL_FETCH", "Fetching channel failed"),

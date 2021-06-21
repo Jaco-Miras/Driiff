@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { NotificationListItem } from "./index";
-import { useRedirect, useTranslation } from "../../../hooks";
+import { useRedirect, useTranslationActions } from "../../../hooks";
 import { useSelector } from "react-redux";
 
 const Wrapper = styled.ul`
@@ -19,7 +19,7 @@ const Wrapper = styled.ul`
 const NotificationLists = (props) => {
   const { notifications, actions, history, dictionary, removeOverlay } = props;
   const redirect = useRedirect();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const user = useSelector((state) => state.session.user);
   if (Object.keys(notifications).length === 0) return null;
 

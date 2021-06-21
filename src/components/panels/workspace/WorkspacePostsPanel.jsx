@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { usePosts, useTranslation, useFetchWsCount } from "../../hooks";
+import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
@@ -133,7 +133,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [params.workspaceId]);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),

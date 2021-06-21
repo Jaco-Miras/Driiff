@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { ProgressBar } from "../common";
 import { FolderList, GoogleDrive } from "./index";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
@@ -74,7 +74,7 @@ const FileSidebar = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const handleShowUploadModal = () => {
     if (dropZoneRef.current) {

@@ -5,13 +5,13 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getWorkspaceFitlerCount, getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useToaster, useTranslation } from "./index";
+import { useToaster, useTranslationActions } from "./index";
 
 const useWorkspaceSearchActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const user = useSelector((state) => state.session.user);
 
