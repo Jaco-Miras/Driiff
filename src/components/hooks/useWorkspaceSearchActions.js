@@ -195,7 +195,6 @@ const useWorkspaceSearchActions = () => {
   const fetchWorkspaceAndRedirect = (workspace, post = null) => {
     dispatch(
       getWorkspace({ topic_id: workspace.id }, (err, res) => {
-        console.log(res, err);
         if (err) {
           toaster.warning("This workspace cannot be found or accessed.");
           return;

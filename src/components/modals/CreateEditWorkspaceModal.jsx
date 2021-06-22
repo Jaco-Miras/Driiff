@@ -865,7 +865,6 @@ const CreateEditWorkspaceModal = (props) => {
           createWorkspace(payload, (err, res) => {
             toggle();
             if (err) {
-              console.log(err);
               setLoading(false);
               toaster.warning(
                 <span>

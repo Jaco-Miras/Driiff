@@ -69,7 +69,6 @@ const useCommentActions = () => {
   };
 
   const remove = (comment) => {
-    console.log(comment);
     const onConfirm = () => {
       if (Object.keys(comment.replies).length > 0) {
         let obj = {

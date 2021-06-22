@@ -115,7 +115,7 @@ export const useUserLogin = (props) => {
               /**
                * @todo Add modal
                */
-              console.log(cb);
+
               //this.props.redux.action.openModal(cb);
             }
 

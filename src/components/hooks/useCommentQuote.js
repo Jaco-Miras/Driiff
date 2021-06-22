@@ -20,7 +20,6 @@ const useCommentQuote = (commentId) => {
       if (selectedQuote.length) {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
-        console.log(selectedQuote);
         let selectedQuoteBody = "";
         let div = document.createElement("div");
         div.innerHTML = selectedQuote.body;

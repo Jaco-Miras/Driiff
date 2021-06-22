@@ -563,7 +563,6 @@ const PostInput = forwardRef((props, ref) => {
       recipients: newRecipients,
     };
 
-    console.log(mentions, payload);
     const postRecipientIds = post.recipients.map((pr) => pr.id);
     setMentionUsersPayload(payload);
     setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...mentions.map((u) => u.id)]);

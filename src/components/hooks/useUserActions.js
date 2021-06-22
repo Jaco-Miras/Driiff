@@ -39,7 +39,7 @@ export const userForceLogout = () => {
   if (localStorage.getItem("userAuthToken")) {
     if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
       //alert("error :(");
-      console.log("error");
+      //console.log("error");
     }
   }
   /*localStorage.removeItem("userAuthToken");
@@ -116,9 +116,6 @@ const useUserActions = () => {
 
     dispatch(
       userGoogleLogin(payload, (err, res) => {
-        if (err) {
-          console.log(err);
-        }
         if (res) {
           toaster.notify("Logging in via Google.");
           window.location.href = res.data.google_url;

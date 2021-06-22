@@ -126,8 +126,6 @@ const CreatePersonalLinksModal = (props) => {
   };
 
   useEffect(() => {
-    console.log(item);
-    console.log(mode);
     if (mode === "edit") {
       setForm({
         ...form,

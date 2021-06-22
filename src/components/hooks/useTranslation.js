@@ -64,7 +64,7 @@ export const useTranslation = () => {
           },
           (err, res) => {
             if (err) {
-              console.log(err, dictFile, "error loading dictionary file");
+              //console.log(err, dictFile, "error loading dictionary file");
             }
 
             if (res) {
@@ -134,9 +134,9 @@ export const useTranslation = () => {
             url: dictFile,
           },
           (err, res) => {
-            if (err) {
-              console.log(err);
-            }
+            // if (err) {
+            //   console.log(err);
+            // }
 
             if (res) {
               if (callback) callback();

@@ -18,9 +18,16 @@ const persistConfig = {
 initLogging();
 
 if (isConsoleLogAllowed()) {
-  window.console.log("turn on log");
+  //window.console.log("turn on log");
 } else {
-  window.console.log("turn off log");
+  //window.console.log("turn off log");
+  if (typeof window.console != "undefined") {
+    window.console = {};
+    window.console.log = function () {};
+    window.console.info = function () {};
+    window.console.warn = function () {};
+    window.console.error = function () {};
+  }
 }
 
 let middleware = [ReduxThunk];

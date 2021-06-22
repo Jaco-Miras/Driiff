@@ -394,7 +394,7 @@ const ChatInput = (props) => {
       try {
         reactQuillRef.current.getEditor().setContents([]);
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
     }
     // if (editChatMessage !== null) {

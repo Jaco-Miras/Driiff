@@ -86,7 +86,6 @@ const AllWorkspace = (props) => {
   };
 
   const handleLoadMore = () => {
-    console.log("load more");
     if (!loading && hasMore) {
       actions.search(
         {

@@ -22,18 +22,13 @@ const BlobGifPlayer = (props) => {
         .then(function (response) {
           return response.blob();
         })
-        .then(
-          function (data) {
-            const imgObj = URL.createObjectURL(data);
-            setGifSrc({
-              id: gif.id,
-              src: imgObj,
-            });
-          },
-          function (err) {
-            console.log(err, "error");
-          }
-        );
+        .then(function (data) {
+          const imgObj = URL.createObjectURL(data);
+          setGifSrc({
+            id: gif.id,
+            src: imgObj,
+          });
+        });
     }
   };
 

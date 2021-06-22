@@ -328,7 +328,18 @@ const PostModal = (props) => {
     shared_with_client: false,
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
+  const {
+    options: addressToOptions,
+    getDefaultAddressTo,
+    getAddressTo,
+    responsible_ids,
+    recipient_ids,
+    is_personal,
+    workspace_ids,
+    userOptions,
+    addressIds,
+    actualUsers,
+  } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -835,7 +846,6 @@ const PostModal = (props) => {
         })
       );
     }
-    console.log(mode, params);
   }, []);
 
   const onDragEnter = () => {
@@ -861,7 +871,6 @@ const PostModal = (props) => {
   }, [form.shared_with_client]);
 
   const handleSelectFileUploadOption = (e) => {
-    console.log(e);
     setFileOption(e);
   };
 
