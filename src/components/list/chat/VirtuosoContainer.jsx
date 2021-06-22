@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Virtuoso } from "react-virtuoso";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
@@ -52,29 +52,16 @@ const EmptyState = styled.div`
 const VirtuosoContainer = (props) => {
   const { dictionary } = props;
 
+  const itemsRenderedRef = useRef(null);
+  const virtuoso = useRef(null);
   const { _t } = useTranslationActions();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
   const unreadCount = useCountUnreadReplies();
-  //const timeFormat = useTimeFormat();
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const isIdle = useSelector((state) => state.global.isIdle);
   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
-  // const groupedMessages = groupBy(
-  //   selectedChannel.replies.map((r) => {
-  //     if (r.hasOwnProperty("g_date")) {
-  //       return r;
-  //     } else {
-  //       return {
-  //         ...r,
-  //         g_date: timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-  //       };
-  //     }
-  //   }),
-  //   "g_date"
-  // );
-
   const previousChannel = usePreviousValue(selectedChannel);
 
   const loadReplies = () => {
@@ -107,13 +94,35 @@ const VirtuosoContainer = (props) => {
   };
 
   useEffect(() => {
-    loadReplies();
+    if (selectedChannel.hasMore && selectedChannel.skip === 0) {
+      loadReplies();
+    }
+
+    if (itemsRenderedRef.current && itemsRenderedRef.current[selectedChannel.id]) {
+      if (itemsRenderedRef.current[selectedChannel.id].firstItem && virtuoso.current) {
+        //console.log(itemsRenderedRef.current[selectedChannel.id].firstItem.data.channel_id, selectedChannel.id);
+        virtuoso.current.scrollToIndex({
+          //index: 15,
+          index: itemsRenderedRef.current[selectedChannel.id].firstItem.originalIndex,
+          align: "start",
+          behavior: "instant",
+        });
+      }
+    }
   }, [selectedChannel.id]);
 
-  // const handleEndReached = () => {
-  //   console.log("bottom");
-  //   handleReadChannel();
-  // };
+  const handleItemsRendered = (items) => {
+    if (items.length) {
+      itemsRenderedRef.current = {
+        ...(itemsRenderedRef.current && {
+          ...itemsRenderedRef.current,
+        }),
+        [selectedChannel.id]: {
+          firstItem: items[0],
+        },
+      };
+    }
+  };
 
   const handleBottomVisibilityChange = (isVisible) => {
     if (isVisible) handleReadChannel();
@@ -123,13 +132,18 @@ const VirtuosoContainer = (props) => {
     <Wrapper id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
       {selectedChannel.replies && selectedChannel.replies.length > 0 && (
         <Virtuoso
+          ref={virtuoso}
+          overscan={0}
           //totalCount={selectedChannel.replyCount ? selectedChannel.replyCount : 100}
-          firstItemIndex={selectedChannel.replyCount ? selectedChannel.replyCount - selectedChannel.replies.length : 1000 - selectedChannel.replies.length}
-          //firstItemIndex={selectedChannel.replies.length}
+          firstItemIndex={selectedChannel.replyCount ? selectedChannel.replyCount - selectedChannel.replies.length : 100 - selectedChannel.replies.length}
           initialTopMostItemIndex={selectedChannel.replies.length - 1}
+          // initialTopMostItemIndex={
+          //   itemsRenderedRef.current && itemsRenderedRef.current[selectedChannel.id] && itemsRenderedRef.current[selectedChannel.id].firstItem
+          //     ? itemsRenderedRef.current[selectedChannel.id].firstItem.index
+          //     : selectedChannel.replies.length - 1
+          // }
           data={selectedChannel.replies}
           startReached={loadReplies}
-          //endReached={handleEndReached}
           atBottomStateChange={(atBottom) => handleBottomVisibilityChange(atBottom)}
           followOutput={(isAtBottom) => {
             if (isAtBottom) {
@@ -146,6 +160,7 @@ const VirtuosoContainer = (props) => {
               }
             }
           }}
+          itemsRendered={(items) => handleItemsRendered(items)}
           itemContent={(index, message) => {
             return (
               <VirtualiazedChat
@@ -161,22 +176,6 @@ const VirtuosoContainer = (props) => {
             );
           }}
         />
-        // <GroupedVirtuoso
-        //   firstItemIndex={1}
-        //   initialTopMostItemIndex={selectedChannel.replies.length - 1}
-        //   startReached={loadReplies}
-        //   groupCounts={Object.values(groupedMessages).map((m) => m.length)}
-        //   groupContent={(index) => {
-        //     return <div style={{ backgroundColor: "var(--ifm-background-color)" }}>Group {Object.keys(groupedMessages)[index]}</div>;
-        //   }}
-        //   itemContent={(index, groupIndex) => {
-        //     return (
-        //       <div>
-        //         {index} {selectedChannel.replies[index] && selectedChannel.replies[index].body}
-        //       </div>
-        //     );
-        //   }}
-        // />
       )}
       {selectedChannel.replies && selectedChannel.replies.length === 0 && !selectedChannel.hasMore && (
         <EmptyState className="no-reply-container">
@@ -188,3 +187,34 @@ const VirtuosoContainer = (props) => {
 };
 
 export default VirtuosoContainer;
+
+// const groupedMessages = groupBy(
+//   selectedChannel.replies.map((r) => {
+//     if (r.hasOwnProperty("g_date")) {
+//       return r;
+//     } else {
+//       return {
+//         ...r,
+//         g_date: timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+//       };
+//     }
+//   }),
+//   "g_date"
+// );
+
+// <GroupedVirtuoso
+//   firstItemIndex={1}
+//   initialTopMostItemIndex={selectedChannel.replies.length - 1}
+//   startReached={loadReplies}
+//   groupCounts={Object.values(groupedMessages).map((m) => m.length)}
+//   groupContent={(index) => {
+//     return <div style={{ backgroundColor: "var(--ifm-background-color)" }}>Group {Object.keys(groupedMessages)[index]}</div>;
+//   }}
+//   itemContent={(index, groupIndex) => {
+//     return (
+//       <div>
+//         {index} {selectedChannel.replies[index] && selectedChannel.replies[index].body}
+//       </div>
+//     );
+//   }}
+// />
