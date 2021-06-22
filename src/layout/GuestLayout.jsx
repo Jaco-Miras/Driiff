@@ -1,13 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Route, Switch, useHistory, useLocation, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIcon } from "../components/common";
-import { DriffCreatePanel, ExternalRegisterPanel, LoginPanel, MagicLinkPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel } from "../components/panels";
+//import { DriffCreatePanel, ExternalRegisterPanel, LoginPanel, MagicLinkPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel } from "../components/panels";
 import { useUserLogin } from "../components/hooks/useUserLogin";
 import { useSettings, useTranslation } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
-import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
+//import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
 import { $_GET } from "../helpers/commonFunctions";
+
+const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
+const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
+const LoginPanel = lazy(() => import("../components/panels/LoginPanel"));
+const MagicLinkPanel = lazy(() => import("../components/panels/MagicLinkPanel"));
+const RegisterPanel = lazy(() => import("../components/panels/RegisterPanel"));
+const ResetPasswordPanel = lazy(() => import("../components/panels/ResetPasswordPanel"));
+const UpdatePasswordPanel = lazy(() => import("../components/panels/UpdatePasswordPanel"));
+const ForceLogoutPanel = lazy(() => import("../components/panels/ForceLogoutPanel"));
 
 const Wrapper = styled.div`
   @keyframes blink {
@@ -200,17 +209,18 @@ const GuestLayout = (props) => {
               </>
             )}
           </h5>
-
-          <Switch>
-            <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props} />} />
-            <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props} />} />
-            <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
-            <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props} />} />
-            <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props} />} />
-            <Route path={"/request-form"} render={() => <ExternalRegisterPanel {...props} />} />
-            <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
-            <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
-          </Switch>
+          <Suspense fallback={<div></div>}>
+            <Switch>
+              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
+              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
+              <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
+            </Switch>
+          </Suspense>
         </>
       )}
     </Wrapper>

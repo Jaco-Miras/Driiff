@@ -2,12 +2,12 @@ import React, { Suspense, lazy } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { UserNotificationPanel, UserProfilePanel, UserSearchPanel } from "../user";
+//import { UserNotificationPanel, UserProfilePanel, UserSearchPanel } from "../user";
 //import { SystemPeoplePanel } from "../system";
 //import { TodosPanel } from "../todos";
 //import { HuddlePanel } from "../bot";
 import RedirectPanel from "../redirect/RedirectPanel";
-import { ReleasesPanel } from "../news";
+//import { ReleasesPanel } from "../news";
 const CompanyChatPanel = lazy(() => import("../company/CompanyChatPanel"));
 const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
 const CompanyFilesPanel = lazy(() => import("../company/CompanyFilesPanel"));
@@ -17,6 +17,10 @@ const CompanySettingsPanel = lazy(() => import("../company/CompanySettingsPanel"
 const TodosPanel = lazy(() => import("../todos/TodosPanel"));
 const SystemPeoplePanel = lazy(() => import("../system/SystemPeoplePanel"));
 const HuddlePanel = lazy(() => import("../bot/HuddlePanel"));
+const ReleasesPanel = lazy(() => import("../news/ReleasesPanel"));
+const UserNotificationPanel = lazy(() => import("../user/UserNotificationPanel"));
+const UserProfilePanel = lazy(() => import("../user/UserProfilePanel"));
+const UserSearchPanel = lazy(() => import("../user/UserSearchPanel"));
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};

@@ -1,12 +1,22 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
 import { useIsMember, useTranslationActions, useUsers, useWorkspaceActions } from "../../hooks";
-import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceRemindersPanel, WorkspaceSettingsPanel } from "../workspace";
-import AllWorkspace from "./AllWorkspace";
+//import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceRemindersPanel, WorkspaceSettingsPanel } from "../workspace";
+//import AllWorkspace from "./AllWorkspace";
+
+//import {  WorkspacePostsPanel, WorkspaceRemindersPanel, WorkspaceSettingsPanel } from "../workspace";
+const WorkspaceChatPanel = lazy(() => import("../workspace/WorkspaceChatPanel"));
+const WorkspaceDashboardPanel = lazy(() => import("../workspace/WorkspaceDashboardPanel"));
+const WorkspaceFilesPanel = lazy(() => import("../workspace/WorkspaceFilesPanel"));
+const WorkspacePeoplePanel = lazy(() => import("../workspace/WorkspacePeoplePanel"));
+const WorkspacePostsPanel = lazy(() => import("../workspace/WorkspacePostsPanel"));
+const WorkspaceRemindersPanel = lazy(() => import("../workspace/WorkspaceRemindersPanel"));
+const WorkspaceSettingsPanel = lazy(() => import("../workspace/WorkspaceSettingsPanel"));
+const AllWorkspace = lazy(() => import("./AllWorkspace"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -85,71 +95,73 @@ const WorkspaceContentPanel = (props) => {
         <>
           {Object.keys(workspaces).length >= 1 ? (
             <>
-              <Switch>
-                <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/workspace/search"]} />
-                {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} /> */}
-                <Route
-                  render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline} />}
-                  path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
-                />
-                <Route
-                  exact={true}
-                  render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember} />}
-                  path={[
-                    "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                    "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
-                    "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                    "/workspace/posts/:workspaceId/:workspaceName",
-                    "/workspace/posts",
-                  ]}
-                />
-                <Route
-                  exact={true}
-                  render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
-                  path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]}
-                />
-                {!isExternal && (
+              <Suspense fallback={<div></div>}>
+                <Switch>
+                  <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/workspace/search"]} />
+                  {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} /> */}
+                  <Route
+                    render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline} />}
+                    path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
+                  />
+                  <Route
+                    exact={true}
+                    render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember} />}
+                    path={[
+                      "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                      "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/workspace/posts/:workspaceId/:workspaceName",
+                      "/workspace/posts",
+                    ]}
+                  />
                   <Route
                     exact={true}
                     render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
+                    path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]}
+                  />
+                  {!isExternal && (
+                    <Route
+                      exact={true}
+                      render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
+                      path={[
+                        "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/workspace/chat/:workspaceId/:workspaceName",
+                        "/workspace/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/workspace/team-chat/:workspaceId/:workspaceName",
+                        "/workspace/chat",
+                      ]}
+                    />
+                  )}
+                  <Route
+                    exact={true}
+                    {...props}
+                    render={(props) => <WorkspaceFilesPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
-                      "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/chat/:workspaceId/:workspaceName",
-                      "/workspace/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/team-chat/:workspaceId/:workspaceName",
-                      "/workspace/chat",
+                      "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/workspace/files/:workspaceId/:workspaceName",
+                      "/workspace/files",
                     ]}
                   />
-                )}
-                <Route
-                  exact={true}
-                  {...props}
-                  render={(props) => <WorkspaceFilesPanel {...props} workspace={workspace} isMember={isMember} />}
-                  path={[
-                    "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                    "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                    "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName",
-                    "/workspace/files/:workspaceId/:workspaceName",
-                    "/workspace/files",
-                  ]}
-                />
-                <Route
-                  render={() => <WorkspacePeoplePanel {...props} workspace={workspace} isMember={isMember} />}
-                  path={["/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/people/:workspaceId/:workspaceName", "/workspace/people"]}
-                />
-                <Route
-                  render={() => <WorkspaceRemindersPanel {...props} workspace={workspace} isMember={isMember} />}
-                  path={["/workspace/reminders/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/reminders/:workspaceId/:workspaceName", "/workspace/reminders"]}
-                />
-                <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
-                <Redirect
-                  from="*"
-                  to={{
-                    pathname: "/workspace/chat",
-                    state: { from: props.location },
-                  }}
-                />
-              </Switch>
+                  <Route
+                    render={() => <WorkspacePeoplePanel {...props} workspace={workspace} isMember={isMember} />}
+                    path={["/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/people/:workspaceId/:workspaceName", "/workspace/people"]}
+                  />
+                  <Route
+                    render={() => <WorkspaceRemindersPanel {...props} workspace={workspace} isMember={isMember} />}
+                    path={["/workspace/reminders/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/reminders/:workspaceId/:workspaceName", "/workspace/reminders"]}
+                  />
+                  <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
+                  <Redirect
+                    from="*"
+                    to={{
+                      pathname: "/workspace/chat",
+                      state: { from: props.location },
+                    }}
+                  />
+                </Switch>
+              </Suspense>
             </>
           ) : (
             <EmptyState>
