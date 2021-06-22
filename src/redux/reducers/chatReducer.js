@@ -392,6 +392,7 @@ export default function (state = INITIAL_STATE, action) {
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
         isFetching: false,
+        replyCount: action.data.total,
       };
       return {
         ...state,
@@ -453,6 +454,7 @@ export default function (state = INITIAL_STATE, action) {
         ...channel,
         replies: [...channel.replies, action.data],
         last_reply: action.data,
+        replyCount: channel.replyCount ? channel.replyCount + 1 : 1000,
       };
       return {
         ...state,
@@ -569,6 +571,7 @@ export default function (state = INITIAL_STATE, action) {
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
+          replyCount: (channel.replyCount && action.data.user && action.data.user.id !== state.user.id) || (channel.replyCount && !action.data.user) ? channel.replyCount + 1 : channel.replyCount ? channel.replyCount : 1000,
         };
       }
       return {
