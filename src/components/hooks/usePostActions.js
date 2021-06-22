@@ -635,7 +635,6 @@ const usePostActions = () => {
                 setTimeout(() => {
                   approve({ post_id: post.id, approved: 1 }, (err, res) => {
                     if (err) return;
-
                     if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
                       generateSystemMessage(
                         post,

@@ -276,7 +276,9 @@ const useChannelActions = () => {
   const select = (channel, callback = () => {}) => {
     //if contact doesn't have a chat channel yet
     if (typeof channel === "undefined") {
+      //console.log(channel, "channel not found");
     } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
+      //console.log(channel, "selected user create new channel");
       createByUserChannel({ ...channel, selected: true });
       //if unarchived archived chat
     } else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived) {

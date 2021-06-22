@@ -173,7 +173,7 @@ const useHuddle = (props) => {
   }
 
   if (showToasterRef.current && huddle && huddleRef.current && huddleRef.current !== huddle.id) {
-    console.log("dismiss toaster", huddleRef.current, huddle.id);
+    //console.log("dismiss toaster", huddleRef.current, huddle.id);
     showToasterRef.current = null;
     huddleRef.current = null;
     toast.dismiss();

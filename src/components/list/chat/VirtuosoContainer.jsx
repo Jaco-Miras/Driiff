@@ -3,7 +3,7 @@ import { Virtuoso } from "react-virtuoso";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 //import { groupBy } from "lodash";
-import { useChatMessageActions, useTranslationActions, useTimeFormat, usePreviousValue } from "../../hooks";
+import { useChatMessageActions, useTranslationActions, useTimeFormat, usePreviousValue, useCountUnreadReplies } from "../../hooks";
 import { SvgEmptyState } from "../../common";
 import VirtualiazedChat from "./VirtualizedChat";
 
@@ -55,7 +55,7 @@ const VirtuosoContainer = (props) => {
   const { _t } = useTranslationActions();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
-  //const unreadCount = useCountUnreadReplies();
+  const unreadCount = useCountUnreadReplies();
   //const timeFormat = useTimeFormat();
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -98,31 +98,37 @@ const VirtuosoContainer = (props) => {
     }
   };
 
+  const handleReadChannel = () => {
+    if (unreadCount > 0 || selectedChannel.total_unread > 0) {
+      chatMessageActions.channelActions.markAsRead(selectedChannel);
+    }
+  };
+
   useEffect(() => {
     loadReplies();
   }, [selectedChannel.id]);
 
-  // const handleReadChannel = () => {
-  //   if (unreadCount > 0 || selectedChannel.total_unread > 0) {
-  //     const {
-  //       selectedChannel,
-  //       chatMessageActions: { channelActions },
-  //     } = this.props;
-
-  //     channelActions.markAsRead(selectedChannel);
-  //   }
+  // const handleEndReached = () => {
+  //   console.log("bottom");
+  //   handleReadChannel();
   // };
+
+  const handleBottomVisibilityChange = (isVisible) => {
+    if (isVisible) handleReadChannel();
+  };
 
   return (
     <Wrapper id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
       {selectedChannel.replies && selectedChannel.replies.length > 0 && (
         <Virtuoso
-          //totalCount={selectedChannel.replyCount ? selectedChannel.replyCount : 100}
+          totalCount={selectedChannel.replyCount ? selectedChannel.replyCount : 100}
           firstItemIndex={selectedChannel.replyCount ? selectedChannel.replyCount - selectedChannel.replies.length : 1000 - selectedChannel.replies.length}
           //firstItemIndex={selectedChannel.replies.length}
           initialTopMostItemIndex={selectedChannel.replies.length - 1}
           data={selectedChannel.replies}
           startReached={loadReplies}
+          //endReached={handleEndReached}
+          atBottomStateChange={(atBottom) => handleBottomVisibilityChange(atBottom)}
           followOutput={(isAtBottom) => {
             if (isAtBottom) {
               return true;
