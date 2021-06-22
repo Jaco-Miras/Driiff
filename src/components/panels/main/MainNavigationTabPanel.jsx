@@ -187,6 +187,13 @@ const GiftWrapper = styled.span`
   }
 `;
 
+const BackWrapper = styled.span`
+  cursor: pointer;
+  position: absolute;
+  ${(props) => (props.gift ? "top: 10px;" : "")}
+  right: 10px;
+`;
+
 const GiftIcon = styled(SvgIconFeather)``;
 
 const MainNavigationTabPanel = (props) => {
@@ -250,6 +257,10 @@ const MainNavigationTabPanel = (props) => {
     history.push("/releases");
   };
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
+
   const handleShowModalButtons = () => {
     setShowbuttons((prevState) => !prevState);
   };
@@ -263,6 +274,9 @@ const MainNavigationTabPanel = (props) => {
           </GiftWrapper>
         )}
         <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />
+        <BackWrapper gift={((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) ? true : false}>
+          <GiftIcon icon="chevron-left" color="#fff" onClick={handleBackClick} />
+        </BackWrapper>
       </div>
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
 
