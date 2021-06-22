@@ -486,16 +486,14 @@ class ChatMessages extends React.PureComponent {
 
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
-    console.log("save historical position");
+
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
   }
 
   loadReplies = () => {
-    console.log("load more");
     const { selectedChannel, chatMessageActions } = this.props;
     const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
-      console.log("load more trigger");
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
         skip: 0,
@@ -520,7 +518,7 @@ class ChatMessages extends React.PureComponent {
         if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
           scrollComponent.scrollTop = scrollComponent.scrollHeight;
           let initialScrollHeight = scrollComponent.scrollHeight;
-          console.log("initial load", scrollComponent.scrollHeight);
+
           setTimeout(() => {
             if (initialScrollHeight < scrollComponent.scrollHeight) {
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
@@ -606,7 +604,6 @@ class ChatMessages extends React.PureComponent {
       if (historicalPositions.length) {
         historicalPositions.forEach((hp) => {
           if (hp.channel_id === selectedChannel.id && scrollComponent) {
-            console.log("scroll to this", scrollComponent.scrollHeight - hp.scrollPosition, hp.scrollPosition);
             scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
           }
         });

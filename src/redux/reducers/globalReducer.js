@@ -67,7 +67,6 @@ export default (state = INITIAL_STATE, action) => {
           if (typeof r.name === "string" || r.name instanceof String) {
             return true;
           } else {
-            console.log(r.name);
             return false;
           }
         }),

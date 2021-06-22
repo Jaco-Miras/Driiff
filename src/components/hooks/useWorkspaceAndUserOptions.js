@@ -127,9 +127,6 @@ const useWorkspaceAndUserOptions = (props) => {
     recipient_ids.push(at.id);
 
     if (["DEPARTMENT", "TOPIC", "WORKSPACE"].includes(at.type)) {
-      if (!at.member_ids) {
-        console.log(at);
-      }
       workspace_ids = [...workspace_ids, at.type_id];
       user_ids = [...user_ids, ...at.member_ids];
     }

@@ -125,7 +125,6 @@ const CreateWorkspaceFolderModal = (props) => {
 
   useEffect(() => {
     if (mode === "edit") {
-      console.log(item);
       setForm({
         ...form,
         name: item.name,
@@ -230,7 +229,6 @@ const CreateWorkspaceFolderModal = (props) => {
             setLoading(false);
 
             if (err) {
-              console.log(err);
               toaster.error(
                 <span>
                   Folder update failed.
@@ -278,7 +276,6 @@ const CreateWorkspaceFolderModal = (props) => {
             setLoading(false);
 
             if (err) {
-              console.log(err);
               toaster.error(
                 <span>
                   Folder creation failed.

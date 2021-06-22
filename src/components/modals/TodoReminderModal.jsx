@@ -147,7 +147,6 @@ const TodoReminderModal = (props) => {
        * **/
       if (!itemType && params && workspaces[params.workspaceId]) {
         const ws = { ...workspaces[params.workspaceId] };
-        console.log("set default workspace");
         // set default selected workspace and set the user options using the workspace members
         setSelectedWorkspace({
           ...ws,

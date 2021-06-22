@@ -151,7 +151,6 @@ const FilePill = forwardRef((props, ref) => {
   };
 
   const handleImageOnError = (e) => {
-    console.log(file, "image did not load");
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
       e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
@@ -172,7 +171,6 @@ const FilePill = forwardRef((props, ref) => {
   };
 
   const handleVideoOnError = (e) => {
-    console.log(e, "image did not load");
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
       e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
@@ -220,19 +218,14 @@ const FilePill = forwardRef((props, ref) => {
         .then(function (response) {
           return response.blob();
         })
-        .then(
-          function (data) {
-            const imgObj = URL.createObjectURL(data);
-            //setImgSrc(imgObj);
-            setFileThumbnailSrc({
-              id: file.id,
-              src: imgObj,
-            });
-          },
-          function (err) {
-            console.log(err, "error");
-          }
-        );
+        .then(function (data) {
+          const imgObj = URL.createObjectURL(data);
+          //setImgSrc(imgObj);
+          setFileThumbnailSrc({
+            id: file.id,
+            src: imgObj,
+          });
+        });
     }
   }, []);
 

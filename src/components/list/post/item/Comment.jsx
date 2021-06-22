@@ -386,27 +386,22 @@ const Comment = (props) => {
             .then(function (response) {
               return response.blob();
             })
-            .then(
-              function (data) {
-                const imgObj = URL.createObjectURL(data);
-                setFileSrc({
-                  id: file.id,
-                  src: imgObj,
-                });
-                commentActions.updateCommentImages({
-                  post_id: post.id,
-                  id: comment.id,
-                  parent_id: type === "main" ? null : parentId,
-                  file: {
-                    ...file,
-                    blobUrl: imgObj,
-                  },
-                });
-              },
-              function (err) {
-                console.log(err, "error");
-              }
-            );
+            .then(function (data) {
+              const imgObj = URL.createObjectURL(data);
+              setFileSrc({
+                id: file.id,
+                src: imgObj,
+              });
+              commentActions.updateCommentImages({
+                post_id: post.id,
+                id: comment.id,
+                parent_id: type === "main" ? null : parentId,
+                file: {
+                  ...file,
+                  blobUrl: imgObj,
+                },
+              });
+            });
         }
       });
     }

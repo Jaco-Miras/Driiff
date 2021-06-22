@@ -244,8 +244,6 @@ const CreateEditPostListModal = (props) => {
       </SelectOption>
     );
   };
-  //   console.log(dark_mode);
-  //   console.log(lightTheme, darkTheme);
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
       <ModalHeaderSection toggle={toggle}>{mode === "add" ? dictionary.addToList : mode === "edit" ? dictionary.updateList : dictionary.newList}</ModalHeaderSection>

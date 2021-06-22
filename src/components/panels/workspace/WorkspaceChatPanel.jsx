@@ -42,7 +42,6 @@ const WorkspaceChatPanel = (props) => {
       setActivating(true);
       dispatch(
         createTeamChannel({ id: workspace.id }, (err, res) => {
-          console.log(res, "create team channel");
           setActivating(false);
         })
       );

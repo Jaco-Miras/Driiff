@@ -55,7 +55,6 @@ const Virtualized = (props) => {
   }, []);
 
   const handleRangeChange = (range) => {
-    console.log(range, selectedChannel.id);
     dispatch(setChannelRange({ id: selectedChannel.id, range: range }));
   };
 
@@ -63,7 +62,6 @@ const Virtualized = (props) => {
     if (virtuosoRef) {
       if (previousChannel && selectedChannel.id === previousChannel.id) {
         if (previousChannel && previousChannel.replies.length !== selectedChannel.replies.length && selectedChannel.replies.length - previousChannel.replies.length > 1) {
-          console.log("trigger restore after loading more", channelRange);
           if (channelRange.hasOwnProperty(selectedChannel.id)) {
             virtuosoRef.current.scrollToIndex({ index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start" });
           }

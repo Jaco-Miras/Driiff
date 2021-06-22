@@ -31,7 +31,6 @@ const RedirectPanel = (props) => {
     if (magicLinkMatch !== null) {
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
         if (res) {
-          console.log(res.data);
           if (res.data.additional_data) {
             if (res.data.additional_data.type === "POST") {
               if (res.data.additional_data.data.workspace) {
@@ -47,7 +46,6 @@ const RedirectPanel = (props) => {
                 }
               }
             } else if (res.data.additional_data.type === "CHANNEL") {
-              console.log("redirect to chat");
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
@@ -69,7 +67,6 @@ const RedirectPanel = (props) => {
               }
             }
           } else {
-            console.log("default to workspace chat");
             history.push("/workspace/chat");
           }
         }
