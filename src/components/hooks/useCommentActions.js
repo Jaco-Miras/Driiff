@@ -94,7 +94,6 @@ const useCommentActions = () => {
 
   const remove = useCallback(
     (comment) => {
-      console.log(comment);
       const onConfirm = () => {
         if (Object.keys(comment.replies).length > 0) {
           let obj = {

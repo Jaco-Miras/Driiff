@@ -200,7 +200,6 @@ export const getHttpStatus = (url, async = true) => {
 
     return http.status;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
@@ -216,12 +215,10 @@ export const getGravatar = (email, imgClass = ".gravatar-profile-img-src") => {
       crossDomain: true,
     })
       .then((res) => {
-        console.log(res);
         let elProfPic = document.querySelector(imgClass);
         elProfPic.setAttribute("src", gravatar);
       })
       .catch((err) => {
-        console.log(err);
         let elProfPic = document.querySelector(imgClass);
         elProfPic.setAttribute("src", "https://www.gravatar.com/avatar/" + MD5 + "?d=identicon");
       });

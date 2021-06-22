@@ -282,7 +282,6 @@ const FileUploadModal = (props) => {
 
   const onSelectGif = (e) => {
     // setSelectedGif(e);
-    console.log(e);
     const editor = reactQuillRef.current.getEditor();
     reactQuillRef.current.focus();
     const cursorPosition = editor.getSelection().index;
@@ -613,7 +612,6 @@ const FileUploadModal = (props) => {
   }, [init]);
 
   const handleSelectFileUploadOption = (e) => {
-    console.log(e);
     setFileOption(e);
   };
 

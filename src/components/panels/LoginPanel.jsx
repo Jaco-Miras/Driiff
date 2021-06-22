@@ -156,7 +156,6 @@ const LoginPanel = (props) => {
                 handleResend: this.loginCodeResend,
               },
             };
-            console.log(cb);
             //openModalAction(cb);
           } else {
             const returnUrl =

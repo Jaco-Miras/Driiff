@@ -59,8 +59,6 @@ const ReleaseModal = (props) => {
    */
   const { type, item } = props.data;
 
-  console.log(props.data);
-
   const { _t } = useTranslation();
   const dispatch = useDispatch();
 

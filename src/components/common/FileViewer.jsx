@@ -309,35 +309,30 @@ const FileRender = (props) => {
         .then(function (response) {
           return response.blob();
         })
-        .then(
-          function (data) {
-            const imgObj = URL.createObjectURL(data);
-            setFiles(
-              files.map((f) => {
-                if (f.id === file.id) {
-                  return {
-                    ...f,
-                    imgSrc: imgObj,
-                  };
-                } else {
-                  return f;
-                }
-              })
-            );
-            setFileSrc(
-              {
-                id: file.id,
-                src: imgObj,
-              },
-              () => {
-                setIsLoaded(true);
+        .then(function (data) {
+          const imgObj = URL.createObjectURL(data);
+          setFiles(
+            files.map((f) => {
+              if (f.id === file.id) {
+                return {
+                  ...f,
+                  imgSrc: imgObj,
+                };
+              } else {
+                return f;
               }
-            );
-          },
-          function (err) {
-            console.log(err, "error");
-          }
-        );
+            })
+          );
+          setFileSrc(
+            {
+              id: file.id,
+              src: imgObj,
+            },
+            () => {
+              setIsLoaded(true);
+            }
+          );
+        });
     } else {
       setIsLoaded(true);
     }

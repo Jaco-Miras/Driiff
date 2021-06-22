@@ -64,7 +64,7 @@ export const useTranslation = () => {
           },
           (err, res) => {
             if (err) {
-              console.log(err, dictFile, "error loading dictionary file");
+              //console.log(err, dictFile, "error loading dictionary file");
             }
 
             if (res) {
@@ -94,7 +94,7 @@ export const useTranslation = () => {
     if (i18n !== null && typeof i18n[code] !== "undefined") {
       translation = i18n[code];
     } else if (i18n !== null && typeof i18n[code] === "undefined" && !i18new.hasOwnProperty(code)) {
-      if (session.authenticated && session.user && (["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(session.user.email))) {
+      if (session.authenticated && session.user && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(session.user.email)) {
         const newWords = { ...i18new, [code]: default_value };
         localStorage.setItem("i18new", JSON.stringify(newWords));
       }
@@ -134,9 +134,9 @@ export const useTranslation = () => {
             url: dictFile,
           },
           (err, res) => {
-            if (err) {
-              console.log(err);
-            }
+            // if (err) {
+            //   console.log(err);
+            // }
 
             if (res) {
               if (callback) callback();

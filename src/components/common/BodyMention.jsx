@@ -49,7 +49,6 @@ const BodyMention = (props) => {
       return userIds.some((id) => id === user.id);
     }
   });
-  //console.log(toMention, userIds);
   // const userRecipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   // const mentionedUsers = userRecipients.filter((user) => {
   //   let userFound = false;

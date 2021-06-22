@@ -38,10 +38,8 @@ const WorkspaceSearchResults = (props) => {
       folder_name: item.workspace ? item.workspace.name : null,
     };
     if (workspaces.hasOwnProperty(item.topic.id)) {
-      console.log("to workspace", item);
       redirect.toWorkspace(payload);
     } else {
-      console.log("fetch workspace", item);
       redirect.fetchWorkspaceAndRedirect(payload);
     }
   };

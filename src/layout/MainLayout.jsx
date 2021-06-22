@@ -69,7 +69,6 @@ const MainLayout = (props) => {
             /**
              * @todo need a fallback in case autoplay is not allowed
              **/
-            console.log("error sound play");
           });
       }
     }
@@ -98,12 +97,10 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   const handleOnActive = () => {
-    console.log("on active");
     dispatch(setIdleStatus(false));
   };
 
   const handleOnIdle = () => {
-    console.log("on idle");
     dispatch(setIdleStatus(true));
   };
 
