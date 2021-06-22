@@ -9,7 +9,7 @@ import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-import ChatUnfurl from "./ChatUnfurl";
+//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";

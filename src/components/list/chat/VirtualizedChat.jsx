@@ -21,7 +21,7 @@ const ChatList = styled.li`
   .chat-reply-list-item {
     position: relative;
     :before {
-      top: 3px;
+      top: 7px;
     }
   }
   .chat-actions-container {

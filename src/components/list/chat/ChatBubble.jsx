@@ -674,7 +674,7 @@ const ChatBubble = (props) => {
                   hasFiles={hasFiles}
                   theme={chatSettings.chat_message_theme}
                   onClick={handleQuoteClick}
-                  onTouchEnd={handleQuoteClick}
+                  //onTouchEnd={handleQuoteClick}
                   isAuthor={isAuthor}
                 >
                   {reply.quote.user_id === user.id ? (

@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
-import { useTouchActions } from "../../../hooks";
+//import { useTouchActions } from "../../../hooks";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 
@@ -180,28 +180,28 @@ const FilePill = forwardRef((props, ref) => {
     }
   };
 
-  let touchActions = false;
-  const handleTouchStart = (e) => {
-    touchActions = false;
-  };
-  const handleTouchEnd = (e) => {
-    e.preventDefault();
-    if (!touchActions) handleViewFile(e);
-  };
+  // let touchActions = false;
+  // const handleTouchStart = (e) => {
+  //   touchActions = false;
+  // };
+  // const handleTouchEnd = (e) => {
+  //   e.preventDefault();
+  //   if (!touchActions) handleViewFile(e);
+  // };
 
-  const handleSwipeLeft = (e) => {
-    touchActions = true;
-  };
-  const handleSwipeRight = (e) => {
-    touchActions = true;
-  };
+  // const handleSwipeLeft = (e) => {
+  //   touchActions = true;
+  // };
+  // const handleSwipeRight = (e) => {
+  //   touchActions = true;
+  // };
 
-  const { touchStart, touchMove, touchEnd } = useTouchActions({
-    handleTouchStart,
-    handleTouchEnd,
-    handleSwipeLeft,
-    handleSwipeRight,
-  });
+  // const { touchStart, touchMove, touchEnd } = useTouchActions({
+  //   handleTouchStart,
+  //   handleTouchEnd,
+  //   handleSwipeLeft,
+  //   handleSwipeRight,
+  // });
 
   useEffect(() => {
     if (!fileThumbnailBlobs[file.id] && file.type.toLowerCase().includes("image") && userAuth) {
@@ -232,7 +232,15 @@ const FilePill = forwardRef((props, ref) => {
   const isFileRemoved = file.file_type === "trashed";
 
   return (
-    <FilePillContainer onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchMove={touchMove} onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
+    <FilePillContainer
+      // onTouchStart={touchStart}
+      // onTouchEnd={touchEnd}
+      // onTouchMove={touchMove}
+      onClick={handleViewFile}
+      ref={ref}
+      className={`file-pill ${className}`}
+      {...otherProps}
+    >
       {isFileRemoved ? (
         <DocFile>
           <div className="card app-file-list">
