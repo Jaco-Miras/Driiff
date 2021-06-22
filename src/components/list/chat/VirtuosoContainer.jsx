@@ -3,7 +3,7 @@ import { Virtuoso } from "react-virtuoso";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 //import { groupBy } from "lodash";
-import { useChatMessageActions, useTranslationActions, useTimeFormat } from "../../hooks";
+import { useChatMessageActions, useTranslationActions, useTimeFormat, usePreviousValue } from "../../hooks";
 import { SvgEmptyState } from "../../common";
 import VirtualiazedChat from "./VirtualizedChat";
 
@@ -57,6 +57,7 @@ const VirtuosoContainer = (props) => {
   const timeFormat = useTimeFormat();
   //const unreadCount = useCountUnreadReplies();
   //const timeFormat = useTimeFormat();
+  const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   // const groupedMessages = groupBy(
   //   selectedChannel.replies.map((r) => {
@@ -71,6 +72,8 @@ const VirtuosoContainer = (props) => {
   //   }),
   //   "g_date"
   // );
+
+  const previousChannel = usePreviousValue(selectedChannel);
 
   const loadReplies = () => {
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
@@ -114,13 +117,40 @@ const VirtuosoContainer = (props) => {
     <Wrapper id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
       {selectedChannel.replies && selectedChannel.replies.length > 0 && (
         <Virtuoso
-          totalCount={1000}
-          firstItemIndex={1000 - selectedChannel.replies.length}
+          //totalCount={selectedChannel.replyCount ? selectedChannel.replyCount : 100}
+          firstItemIndex={selectedChannel.replyCount ? selectedChannel.replyCount - selectedChannel.replies.length : 1000 - selectedChannel.replies.length}
+          //firstItemIndex={selectedChannel.replies.length}
           initialTopMostItemIndex={selectedChannel.replies.length - 1}
           data={selectedChannel.replies}
           startReached={loadReplies}
+          followOutput={(isAtBottom) => {
+            if (isAtBottom) {
+              return true;
+            } else {
+              if (previousChannel && selectedChannel.id === previousChannel.id) {
+                if (previousChannel && previousChannel.replies.length !== selectedChannel.replies.length && selectedChannel.replies.length - previousChannel.replies.length > 1) {
+                  //change in replies length due to load more
+                  return false;
+                } else {
+                  //check if lastReply is your own
+                  return selectedChannel.last_reply && selectedChannel.last_reply.user.id === user.id;
+                }
+              }
+            }
+          }}
           itemContent={(index, message) => {
-            return <VirtualiazedChat index={index} reply={message} lastReply={selectedChannel.replies[selectedChannel.replies.length - 1]} dictionary={dictionary} _t={_t} chatMessageActions={chatMessageActions} timeFormat={timeFormat} />;
+            return (
+              <VirtualiazedChat
+                index={index}
+                actualIndex={selectedChannel.replyCount ? selectedChannel.replies.length - (selectedChannel.replyCount - index) : index}
+                reply={message}
+                lastReply={selectedChannel.replies[selectedChannel.replies.length - 1]}
+                dictionary={dictionary}
+                _t={_t}
+                chatMessageActions={chatMessageActions}
+                timeFormat={timeFormat}
+              />
+            );
           }}
         />
         // <GroupedVirtuoso

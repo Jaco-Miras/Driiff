@@ -361,13 +361,14 @@ const StyledAvatar = styled(Avatar)`
 //let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { index, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions } = props;
-
+  const { actualIndex, index, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const recipients = useSelector((state) => state.global.recipients);
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const users = useSelector((state) => state.users.users);
+
+  const previousReply = selectedChannel.replies[actualIndex - 1];
 
   const isAuthor = reply && reply.user ? reply.user.id === user.id : false;
 
@@ -379,24 +380,24 @@ const VirtualizedChat = (props) => {
 
   if (reply && reply.user) {
     if (reply.created_at.timestamp) {
-      if (index === 0) {
+      if (actualIndex === 0) {
         showTimestamp = true;
         showAvatar = true;
       }
-      if (index !== 0 && lastReply && timeFormat.localizeDate(lastReply.created_at.timestamp, "D") !== timeFormat.localizeDate(reply.created_at.timestamp, "D")) {
+      if (actualIndex !== 0 && previousReply && timeFormat.localizeDate(previousReply.created_at.timestamp, "D") !== timeFormat.localizeDate(reply.created_at.timestamp, "D")) {
         showTimestamp = true;
         showAvatar = true;
       }
-      if (index !== 0 && lastReply && reply.created_at.timestamp - lastReply.created_at.timestamp > 600) {
+      if (actualIndex !== 0 && previousReply && reply.created_at.timestamp - previousReply.created_at.timestamp > 600) {
         //600 = 10 minutes
         showAvatar = true;
       }
     }
 
-    if (index !== 0 && lastReply && lastReply.is_read === true && reply.is_read === false) {
+    if (actualIndex !== 0 && previousReply && previousReply.is_read === true && reply.is_read === false) {
       showMessageLine = true;
     }
-    if (index !== 0 && lastReply && lastReply.user === null) {
+    if (actualIndex !== 0 && previousReply && previousReply.user === null) {
       showAvatar = true;
     }
     // if (lastReplyUserId !== reply.user.id) {
