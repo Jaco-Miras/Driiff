@@ -59,6 +59,8 @@ const VirtuosoContainer = (props) => {
   //const timeFormat = useTimeFormat();
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const isIdle = useSelector((state) => state.global.isIdle);
+  const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
   // const groupedMessages = groupBy(
   //   selectedChannel.replies.map((r) => {
   //     if (r.hasOwnProperty("g_date")) {
@@ -121,7 +123,7 @@ const VirtuosoContainer = (props) => {
     <Wrapper id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
       {selectedChannel.replies && selectedChannel.replies.length > 0 && (
         <Virtuoso
-          totalCount={selectedChannel.replyCount ? selectedChannel.replyCount : 100}
+          //totalCount={selectedChannel.replyCount ? selectedChannel.replyCount : 100}
           firstItemIndex={selectedChannel.replyCount ? selectedChannel.replyCount - selectedChannel.replies.length : 1000 - selectedChannel.replies.length}
           //firstItemIndex={selectedChannel.replies.length}
           initialTopMostItemIndex={selectedChannel.replies.length - 1}
@@ -131,7 +133,7 @@ const VirtuosoContainer = (props) => {
           atBottomStateChange={(atBottom) => handleBottomVisibilityChange(atBottom)}
           followOutput={(isAtBottom) => {
             if (isAtBottom) {
-              return true;
+              return !isIdle && isBrowserActive && document.hasFocus();
             } else {
               if (previousChannel && selectedChannel.id === previousChannel.id) {
                 if (previousChannel && previousChannel.replies.length !== selectedChannel.replies.length && selectedChannel.replies.length - previousChannel.replies.length > 1) {

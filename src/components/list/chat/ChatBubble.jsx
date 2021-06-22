@@ -526,7 +526,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -535,7 +535,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -650,7 +650,7 @@ const ChatBubble = (props) => {
                   hasFiles={hasFiles}
                   theme={chatSettings.chat_message_theme}
                   onClick={handleQuoteClick}
-                  onTouchEnd={handleQuoteClick}
+                  //onTouchEnd={handleQuoteClick}
                   isAuthor={isAuthor}
                 >
                   {reply.quote.user_id === user.id ? (
