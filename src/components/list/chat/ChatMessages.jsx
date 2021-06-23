@@ -740,61 +740,61 @@ class ChatMessages extends React.PureComponent {
     return loadMoreRef;
   };
 
-  groupedMessages = () =>
-    Object.entries(
-      groupBy(
-        this.props.selectedChannel.replies.map((r) => {
-          if (r.hasOwnProperty("g_date")) {
-            return r;
-          } else {
-            return {
-              ...r,
-              g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-            };
-          }
-        }),
-        "g_date"
-      )
-    )
-      .map((entries) => {
-        return {
-          key: entries[0],
-          replies: entries[1],
-        };
-      })
-      .sort((a, b) => a.key.localeCompare(b.key));
+  // groupedMessages = () =>
+  //   Object.entries(
+  //     groupBy(
+  //       this.props.selectedChannel.replies.map((r) => {
+  //         if (r.hasOwnProperty("g_date")) {
+  //           return r;
+  //         } else {
+  //           return {
+  //             ...r,
+  //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+  //           };
+  //         }
+  //       }),
+  //       "g_date"
+  //     )
+  //   )
+  //     .map((entries) => {
+  //       return {
+  //         key: entries[0],
+  //         replies: entries[1],
+  //       };
+  //     })
+  //     .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
     //const { selectedChannel } = this.props;
 
-    //let lastReplyUserId = 0;
+    let lastReplyUserId = 0;
 
-    // let groupedMessages = [];
+    let groupedMessages = [];
 
-    // if (selectedChannel.replies && selectedChannel.replies.length) {
-    //   groupedMessages = Object.entries(
-    //     groupBy(
-    //       selectedChannel.replies.map((r) => {
-    //         if (r.hasOwnProperty("g_date")) {
-    //           return r;
-    //         } else {
-    //           return {
-    //             ...r,
-    //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-    //           };
-    //         }
-    //       }),
-    //       "g_date"
-    //     )
-    //   )
-    //     .map((entries) => {
-    //       return {
-    //         key: entries[0],
-    //         replies: entries[1],
-    //       };
-    //     })
-    //     .sort((a, b) => a.key.localeCompare(b.key));
-    // }
+    if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
+      groupedMessages = Object.entries(
+        groupBy(
+          this.props.selectedChannel.replies.map((r) => {
+            if (r.hasOwnProperty("g_date")) {
+              return r;
+            } else {
+              return {
+                ...r,
+                g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+              };
+            }
+          }),
+          "g_date"
+        )
+      )
+        .map((entries) => {
+          return {
+            key: entries[0],
+            replies: entries[1],
+          };
+        })
+        .sort((a, b) => a.key.localeCompare(b.key));
+    }
 
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>
@@ -811,7 +811,7 @@ class ChatMessages extends React.PureComponent {
           )}
           <ul>
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
-              ? this.groupedMessages().map((gm, i) => {
+              ? groupedMessages.map((gm, i) => {
                   return (
                     <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
@@ -849,10 +849,10 @@ class ChatMessages extends React.PureComponent {
                             if (k !== 0 && e[k - 1].user === null) {
                               showAvatar = true;
                             }
-                            // if (lastReplyUserId !== reply.user.id) {
-                            //   showAvatar = true;
-                            //   lastReplyUserId = reply.user.id;
-                            // }
+                            if (lastReplyUserId !== reply.user.id) {
+                              showAvatar = true;
+                              lastReplyUserId = reply.user.id;
+                            }
 
                             if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                               showGifPlayer = true;
