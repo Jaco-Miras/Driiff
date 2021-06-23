@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslation } from "../components/hooks";
+import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslationActions } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
@@ -29,7 +29,7 @@ const MainLayout = (props) => {
   const { path } = useRouteMatch();
   const { displayWelcomeBanner } = useUserActions();
   const uDriff = useDriff();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
@@ -69,7 +69,6 @@ const MainLayout = (props) => {
             /**
              * @todo need a fallback in case autoplay is not allowed
              **/
-            console.log("error sound play");
           });
       }
     }
@@ -98,12 +97,10 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   const handleOnActive = () => {
-    console.log("on active");
     dispatch(setIdleStatus(false));
   };
 
   const handleOnIdle = () => {
-    console.log("on idle");
     dispatch(setIdleStatus(true));
   };
 

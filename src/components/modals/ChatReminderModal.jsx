@@ -4,11 +4,11 @@ import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName } from "../../helpers/dateFormatter";
+import { formatHoursAMPM } from "../../helpers/dateFormatter";
 import { postChatReminder } from "../../redux/actions/chatActions";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useToaster, useTranslation } from "../hooks";
+import { useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 
 const InputContainer = styled.div`
@@ -26,7 +26,7 @@ const ChatReminderModal = (props) => {
    */
   const { type, message } = props.data;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();

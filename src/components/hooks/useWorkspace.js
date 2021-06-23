@@ -95,7 +95,6 @@ const useWorkspace = () => {
               actions.redirectTo(workspaces[activeTopicSettings.id]);
             }
           } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
-            console.log("trigger");
             actions.selectWorkspace(Object.values(workspaces)[0]);
             actions.redirectTo(Object.values(workspaces)[0]);
             localStorage.removeItem("fromRegister");

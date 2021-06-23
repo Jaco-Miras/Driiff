@@ -70,7 +70,6 @@ const ChannelsSidebar = (props) => {
     if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");
       if (scrollComponent) {
-        console.log("set historical");
         actions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
       }
     }

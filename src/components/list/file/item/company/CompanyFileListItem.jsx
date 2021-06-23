@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather, ToolTip } from "../../../../common";
 import { ProgressBar } from "../../../../panels/common";
@@ -54,14 +54,14 @@ const CompanyFileListItem = (props) => {
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
   const [fileName, setFileName] = useState(typeof file.name === "undefined" ? file.search : file.name);
 
-  const handleFileView = useCallback(() => {
+  const handleFileView = () => {
     actions.viewCompanyFiles(file, files);
-  }, [file]);
+  };
 
-  const handleFavorite = useCallback(() => {
+  const handleFavorite = () => {
     setIsFavorite((prevState) => !prevState);
     actions.favorite(file);
-  }, [file, setIsFavorite]);
+  };
 
   useEffect(() => {
     setFileName(typeof file.name === "undefined" ? file.search : file.name);

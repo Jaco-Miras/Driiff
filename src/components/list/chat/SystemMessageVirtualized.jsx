@@ -1,9 +1,6 @@
-import React, { forwardRef, useEffect } from "react";
-//import { useHistory } from "react-router-dom";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
-import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
-//import { SvgIconFeather } from "../../common";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -92,61 +89,13 @@ const ChatTimeStamp = styled.div`
     }
   }
 `;
-const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-const SystemMessage = forwardRef((props, ref) => {
-  const { reply, selectedChannel, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary, users, _t } = props;
+
+const SystemMessageVirtualized = forwardRef((props, ref) => {
+  const { reply, selectedChannel, chatMessageActions, recipients, user, timeFormat, dictionary, users, _t } = props;
 
   //const history = useHistory();
 
   const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user, users, _t });
-
-  const [lastChatRef, inView, entry] = useInView({
-    threshold: THRESHOLD,
-    skip: !isLastChat,
-  });
-
-  useEffect(() => {
-    if (isLastChat && entry) {
-      if (entry.boundingClientRect.height - entry.intersectionRect.height >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
-      } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
-      }
-    }
-  }, [isLastChat, entry, isLastChatVisible, inView]);
-
-  // const handleHistoryPushClick = (e) => {
-  //   e.preventDefault();
-  //   if (e.currentTarget.dataset.ctrl === "1") {
-  //     e.currentTarget.dataset.ctrl = "0";
-  //     let link = document.createElement("a");
-  //     link.href = e.currentTarget.dataset.href;
-  //     link.target = "_blank";
-  //     link.click();
-  //   } else {
-  //     history.push(e.currentTarget.dataset.href);
-  //   }
-  // };
-
-  // const handleHistoryKeyDown = (e) => {
-  //   if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
-  // };
-
-  // const handleHistoryKeyUp = (e) => {
-  //   e.currentTarget.dataset.ctrl = "0";
-  // };
-
-  // useEffect(() => {
-  //   if (reply) {
-  //     let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
-  //     pushLinks.forEach((p) => {
-  //       p.addEventListener("click", handleHistoryPushClick);
-  //       p.dataset.hasLink = "1";
-  //       p.addEventListener("keydown", handleHistoryKeyDown);
-  //       p.addEventListener("keyup", handleHistoryKeyUp);
-  //     });
-  //   }
-  // }, [reply]);
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {
@@ -157,7 +106,7 @@ const SystemMessage = forwardRef((props, ref) => {
     }
   };
   return (
-    <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
+    <SystemMessageContainer>
       <SystemMessageContent ref={ref} id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">
@@ -172,4 +121,4 @@ const SystemMessage = forwardRef((props, ref) => {
   );
 });
 
-export default React.memo(SystemMessage);
+export default React.memo(SystemMessageVirtualized);

@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 //import {useLocation, useHistory, useParams} from "react-router-dom";
@@ -26,185 +25,137 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, setSelectedChannel, putChannel } from "../../redux/actions/chatActions";
-import { useSettings, useToaster, useTranslation } from "./index";
+import { useSettings, useToaster, useTranslationActions } from "./index";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { setGeneralSetting, loggedUser } = useSettings();
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     notificationError: _t("NOTIFICATION.ERROR", "An error has occurred try again!"),
     errorFetchingChannel: _t("ERROR.CHANNEL_FETCH", "Fetching channel failed"),
   };
 
-  const fetchWorkspace = useCallback(
-    (id, callback) => {
-      dispatch(getWorkspace({ topic_id: id }, callback));
-    },
-    [dispatch]
-  );
+  const fetchWorkspace = (id, callback) => {
+    dispatch(getWorkspace({ topic_id: id }, callback));
+  };
 
-  const getDetail = useCallback(
-    (id, callback) => {
-      dispatch(fetchDetail({ topic_id: id }, callback));
-    },
-    [dispatch]
-  );
+  const getDetail = (id, callback) => {
+    dispatch(fetchDetail({ topic_id: id }, callback));
+  };
 
-  const getPrimaryFiles = useCallback(
-    (id, callback) => {
-      dispatch(fetchPrimaryFiles({ topic_id: id }, callback));
-    },
-    [dispatch]
-  );
+  const getPrimaryFiles = (id, callback) => {
+    dispatch(fetchPrimaryFiles({ topic_id: id }, callback));
+  };
 
-  const addPrimaryFilesToWorkspace = useCallback(
-    (files) => {
-      dispatch(addPrimaryFiles(files));
-    },
-    [dispatch]
-  );
+  const addPrimaryFilesToWorkspace = (files) => {
+    dispatch(addPrimaryFiles(files));
+  };
 
-  const getMembers = useCallback(
-    (id, callback) => {
-      dispatch(fetchMembers({ topic_id: id }, callback));
-    },
-    [dispatch]
-  );
+  const getMembers = (id, callback) => {
+    dispatch(fetchMembers({ topic_id: id }, callback));
+  };
 
-  const getTimeline = useCallback(
-    (payload, callback) => {
-      dispatch(fetchTimeline(payload, callback));
-    },
-    [dispatch]
-  );
+  const getTimeline = (payload, callback) => {
+    dispatch(fetchTimeline(payload, callback));
+  };
 
-  const showModal = useCallback(
-    (topic, mode, type = "workspace") => {
-      let payload = {
-        mode: mode,
-        item: topic,
+  const showModal = (topic, mode, type = "workspace") => {
+    let payload = {
+      mode: mode,
+      item: topic,
+    };
+    if (type === "folder") {
+      payload = {
+        ...payload,
+        type: "workspace_folder",
       };
-      if (type === "folder") {
-        payload = {
-          ...payload,
-          type: "workspace_folder",
-        };
-      } else {
-        payload = {
-          ...payload,
-          type: "workspace_create_edit",
-        };
-      }
+    } else {
+      payload = {
+        ...payload,
+        type: "workspace_create_edit",
+      };
+    }
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    dispatch(addToModals(payload));
+  };
 
-  const fetchWorkspaceChannels = useCallback(
-    (payload, callback) => {
-      dispatch(getWorkspaceChannels(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchWorkspaceChannels = (payload, callback) => {
+    dispatch(getWorkspaceChannels(payload, callback));
+  };
 
-  const fetchWorkspaces = useCallback(
-    (payload, callback) => {
-      dispatch(getWorkspaces(payload, callback));
-    },
-    [dispatch]
-  );
+  const fetchWorkspaces = (payload, callback) => {
+    dispatch(getWorkspaces(payload, callback));
+  };
 
-  const fetchChannel = useCallback(
-    (payload, callback) => {
-      dispatch(
-        getChannel(payload, (err, res) => {
-          callback(err, res);
-          if (err) {
-            toaster.error(dictionary.errorFetchingChannel);
-            return;
-          }
-          if (res.data) {
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            dispatch(addToChannels(channel));
-            selectChannel(channel);
-          }
-        })
-      );
-    },
-    [dispatch]
-  );
+  const fetchChannel = (payload, callback) => {
+    dispatch(
+      getChannel(payload, (err, res) => {
+        callback(err, res);
+        if (err) {
+          toaster.error(dictionary.errorFetchingChannel);
+          return;
+        }
+        if (res.data) {
+          let channel = {
+            ...res.data,
+            hasMore: true,
+            skip: 0,
+            replies: [],
+            selected: true,
+            isFetching: false,
+          };
+          dispatch(addToChannels(channel));
+          selectChannel(channel);
+        }
+      })
+    );
+  };
 
-  const selectWorkspace = useCallback(
-    (workspace, callback = () => {}) => {
-      dispatch(
-        setActiveTopic(workspace, (err, res) => {
-          setGeneralSetting({
-            active_topic: workspace,
-          });
-          callback(err, res);
-        })
-      );
-    },
-    [dispatch]
-  );
+  const selectWorkspace = (workspace, callback = () => {}) => {
+    dispatch(
+      setActiveTopic(workspace, (err, res) => {
+        setGeneralSetting({
+          active_topic: workspace,
+        });
+        callback(err, res);
+      })
+    );
+  };
 
-  const selectChannel = useCallback(
-    (channel, callback) => {
-      dispatch(setSelectedChannel(channel, callback));
-    },
-    [dispatch]
-  );
+  const selectChannel = (channel, callback) => {
+    dispatch(setSelectedChannel(channel, callback));
+  };
 
-  const clearChannel = useCallback(() => {
+  const clearChannel = () => {
     dispatch(clearSelectedChannel());
-  }, [dispatch]);
+  };
 
-  const redirectTo = useCallback((workspace) => {
+  const redirectTo = (workspace) => {
     if (workspace.folder_id) {
       history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
     } else {
       history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
     }
-  }, []);
+  };
 
-  const addRole = useCallback(
-    (payload, callback) => {
-      dispatch(postWorkspaceRole(payload, callback));
-    },
-    [dispatch]
-  );
+  const addRole = (payload, callback) => {
+    dispatch(postWorkspaceRole(payload, callback));
+  };
 
-  const deleteRole = useCallback(
-    (payload, callback) => {
-      dispatch(deleteWorkspaceRole(payload, callback));
-    },
-    [dispatch]
-  );
+  const deleteRole = (payload, callback) => {
+    dispatch(deleteWorkspaceRole(payload, callback));
+  };
 
-  const updateTimelinePage = useCallback(
-    (payload) => {
-      dispatch(updateWorkspaceTimelinePage(payload));
-    },
-    [dispatch]
-  );
+  const updateTimelinePage = (payload) => {
+    dispatch(updateWorkspaceTimelinePage(payload));
+  };
 
-  const join = useCallback(
-    (payload, callback) => {
-      dispatch(joinWorkspace(payload, callback));
-    },
-    [dispatch]
-  );
+  const join = (payload, callback) => {
+    dispatch(joinWorkspace(payload, callback));
+  };
 
   const leave = (workspace, member, callback) => {
     if (member.id === loggedUser.id && workspace.is_favourite) {

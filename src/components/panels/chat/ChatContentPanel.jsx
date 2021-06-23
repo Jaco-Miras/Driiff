@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
-import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation } from "../../hooks";
+import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 //import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
+import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -32,7 +33,7 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -116,7 +117,7 @@ const ChatContentPanel = (props) => {
     dispatch(addToModals(modal));
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     //remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
@@ -179,6 +180,9 @@ const ChatContentPanel = (props) => {
     headerArchive: _t("HEADER.ARCHIVE", "Chat archive"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
     clickHereToJoin: _t("CHAT.CLICK_HERE_TO_JOIN", "Click here to join"),
+    fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+    connectPreview: _t("GOOGLE_DRIVE.CONNECT_TO_PREVIEW", "Connect to preview"),
+    restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -195,29 +199,23 @@ const ChatContentPanel = (props) => {
         onCancel={handleHideDropzone}
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
-      {/* {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />} */}
-      {/* {selectedChannel !== null ? (
-        virtualization ? (
-          <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} />
-        ) : (
-          <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} teamChannelId={teamChannelId} isIdle={isIdle} translate={translate} language={language}/>
-        )
-      ) : (
-        <ChatMessagesPlaceholder />
-      )} */}
       {selectedChannel !== null ? (
-        <ChatMessages
-          selectedChannel={selectedChannel}
-          chatMessageActions={chatMessageActions}
-          timeFormat={timeFormat}
-          dictionary={dictionary}
-          unreadCount={unreadCount}
-          teamChannelId={teamChannelId}
-          isIdle={isIdle}
-          translate={translate}
-          language={language}
-          _t={_t}
-        />
+        virtualization ? (
+          <VirtuosoContainer dictionary={dictionary} />
+        ) : (
+          <ChatMessages
+            selectedChannel={selectedChannel}
+            chatMessageActions={chatMessageActions}
+            timeFormat={timeFormat}
+            dictionary={dictionary}
+            unreadCount={unreadCount}
+            teamChannelId={teamChannelId}
+            isIdle={isIdle}
+            translate={translate}
+            language={language}
+            _t={_t}
+          />
+        )
       ) : (
         <ChatMessagesPlaceholder />
       )}

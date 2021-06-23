@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useUserActions, useChannelActions, useTranslation } from "../../hooks";
+import { useUserActions, useChannelActions, useTranslationActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `;
 
 const RedirectPanel = (props) => {
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     redirecting: _t("REDIRECT.REDIRECTING", "Redirecting..."),
   };
@@ -31,7 +31,6 @@ const RedirectPanel = (props) => {
     if (magicLinkMatch !== null) {
       userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
         if (res) {
-          console.log(res.data);
           if (res.data.additional_data) {
             if (res.data.additional_data.type === "POST") {
               if (res.data.additional_data.data.workspace) {
@@ -47,7 +46,6 @@ const RedirectPanel = (props) => {
                 }
               }
             } else if (res.data.additional_data.type === "CHANNEL") {
-              console.log("redirect to chat");
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
@@ -69,7 +67,6 @@ const RedirectPanel = (props) => {
               }
             }
           } else {
-            console.log("default to workspace chat");
             history.push("/workspace/chat");
           }
         }

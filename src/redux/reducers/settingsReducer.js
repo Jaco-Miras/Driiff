@@ -106,7 +106,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
-      console.log(action.data);
       let settings = state.driff.settings;
       let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;

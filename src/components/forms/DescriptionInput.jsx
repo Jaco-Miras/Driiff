@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { InputGroup, Label } from "reactstrap";
 import styled from "styled-components";
 import { BodyMention, CommonPicker, SvgIconFeather } from "../common";
-import { useQuillModules, useTranslation } from "../hooks";
+import { useQuillModules, useTranslationActions } from "../hooks";
 import { InputFeedback } from "./index";
 import QuillEditor from "./QuillEditor";
 
@@ -209,7 +209,7 @@ const DescriptionInput = (props) => {
     ...otherProps
   } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const reactQuillRef = useRef();
   const pickerRef = useRef();
 
@@ -233,7 +233,6 @@ const DescriptionInput = (props) => {
 
   const onSelectGif = (e) => {
     // setSelectedGif(e);
-    console.log(e);
     const editor = reactQuillRef.current.getEditor();
     reactQuillRef.current.focus();
     const cursorPosition = editor.getSelection().index;

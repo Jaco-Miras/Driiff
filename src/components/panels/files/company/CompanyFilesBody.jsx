@@ -198,6 +198,7 @@ const CompanyFilesBody = (props) => {
 
       el.dataset.loaded = "1";
       refs.files.current.addEventListener("scroll", handleScroll, false);
+      return () => refs.files.current.removeEventListener("scroll", handleScroll, false);
     }
   }, [refs.files.current]);
 

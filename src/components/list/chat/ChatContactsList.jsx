@@ -1,10 +1,10 @@
-import React, {useCallback} from "react";
-import {useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import useChannelActions from "../../hooks/useChannelActions";
-import {ChatContactIListItem} from "./item";
+import { ChatContactIListItem } from "./item";
 
 const Wrapper = styled.div`
   .channel-number-new-group-wrapper {
@@ -20,25 +20,21 @@ const Contacts = styled.ul`
 `;
 
 const ChatContactsList = (props) => {
-  const {className = "", channels, selectedChannel, userChannels, search} = props;
+  const { className = "", channels, userChannels, search } = props;
 
   const history = useHistory();
 
   const channelAction = useChannelActions();
 
   const user = useSelector((state) => state.session.user);
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  //const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
-  const handleChannelClick = useCallback(
-
-    (channel) => {
-      channelAction.select(channel, (channel) => {
-        document.body.classList.add("m-chat-channel-closed");
-        history.push(`/chat/${channel.code}`);
-      });
-    },
-    [history, channelAction]
-  );
+  const handleChannelClick = (channel) => {
+    channelAction.select(channel, (channel) => {
+      document.body.classList.add("m-chat-channel-closed");
+      history.push(`/chat/${channel.code}`);
+    });
+  };
 
   let recipients = [];
   const sortedChannels = Object.values(channels)
@@ -73,18 +69,17 @@ const ChatContactsList = (props) => {
       }
 
       if (search !== "") {
-        if (channel.title.toLowerCase().indexOf(search.toLowerCase()) !== -1)
-          return true;
+        if (channel.title.toLowerCase().indexOf(search.toLowerCase()) !== -1) return true;
 
-        return channel.members.filter(m => m.id !== user.id).some(m => {
-          if (m.email.toLowerCase().search(search.toLowerCase()) !== -1)
-            return true;
+        return channel.members
+          .filter((m) => m.id !== user.id)
+          .some((m) => {
+            if (m.email.toLowerCase().search(search.toLowerCase()) !== -1) return true;
 
-          if (m.name.toLowerCase().search(search.toLowerCase()) !== -1)
-            return true;
+            if (m.name.toLowerCase().search(search.toLowerCase()) !== -1) return true;
 
-          return false;
-        })
+            return false;
+          });
       }
 
       return true;
@@ -95,8 +90,7 @@ const ChatContactsList = (props) => {
 
   return (
     <Wrapper className={`chat-lists ${className}`}>
-      <div className="d-flex align-items-center channel-number-new-group-wrapper">
-      </div>
+      <div className="d-flex align-items-center channel-number-new-group-wrapper"></div>
       <Contacts className={"list-group list-group-flush"}>
         {sortedChannels.map((channel) => {
           return <ChatContactIListItem key={channel.id} onChannelClick={handleChannelClick} channel={channel} />;

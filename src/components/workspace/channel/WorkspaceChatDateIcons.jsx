@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { useTimeFormat } from "../../hooks";
@@ -34,7 +34,7 @@ const WorkspaceChatDateIcons = (props) => {
   const { workspace, optionsVisible } = props;
   const { channelPreviewDate } = useTimeFormat();
 
-  const handleNotificationBadges = useCallback(() => {
+  const handleNotificationBadges = () => {
     if (workspace.is_read === 0) {
       return <Badge className={"badge badge-primary badge-pill ml-auto unread"}>0</Badge>;
     } else {
@@ -44,16 +44,15 @@ const WorkspaceChatDateIcons = (props) => {
         return null;
       }
     }
-  }, [workspace]);
+  };
 
   return (
     <Wrapper className="chat-timestamp" optionsVisible={optionsVisible}>
-      <span className={"small text-muted chat-timestamp_text"}
-            dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
+      {/* <span className={"small text-muted chat-timestamp_text"} dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }} /> */}
       {handleNotificationBadges()}
       <ActionContainer>
-        {workspace.is_pinned && <Icon icon="star"/>}
-        {workspace.is_muted && <Icon icon="volume-x" className={`${workspace.is_pinned && "mr-1"}`}/>}
+        {workspace.is_pinned && <Icon icon="star" />}
+        {workspace.is_muted && <Icon icon="volume-x" className={`${workspace.is_pinned && "mr-1"}`} />}
       </ActionContainer>
     </Wrapper>
   );

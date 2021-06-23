@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
@@ -6,7 +6,7 @@ import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../
 import styled from "styled-components";
 //import { lang } from "moment-timezone";
 
-const StyledImageTextLink = styled(ImageTextLink)` 
+const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
   svg,
   polyline,
@@ -17,7 +17,7 @@ const StyledImageTextLink = styled(ImageTextLink)`
 `;
 
 const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translate, language, _t }) => {
-  const parseSystemMessage = useCallback((message) => {
+  const parseSystemMessage = (message) => {
     let newBody = "";
     if (message.startsWith("<div>I started a Google meet: ")) {
       let normalizedTitle = selectedChannel.title
@@ -348,7 +348,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     }
 
     return newBody === "" ? message : newBody;
-  }, []);
+  };
 
   let replyBody = reply.body;
   if (reply.is_deleted) {

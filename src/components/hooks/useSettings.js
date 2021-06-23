@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDriffCompSettings,
@@ -25,78 +25,69 @@ const useSettings = () => {
   const [isCompSettingsIsLoading, setIsCompSettingsLoading] = useState(false);
   const [isUserSettingsIsLoading, setIsUserSettingsLoading] = useState(false);
 
-  const setChatSetting = useCallback(
-    (e) => {
-      dispatch(
-        setUserChatSetting(e, () => {
-          let payload = {
-            disable_sound: "0",
-            chat_settings: {
-              ...userSettings.CHAT_SETTINGS,
-              ...e,
-            },
-            general_settings: {
-              ...userSettings.GENERAL_SETTINGS,
-            },
-          };
-          dispatch(updateUserSettings(payload));
-        })
-      );
-    },
-    [dispatch, userSettings]
-  );
+  const setChatSetting = (e) => {
+    dispatch(
+      setUserChatSetting(e, () => {
+        let payload = {
+          disable_sound: "0",
+          chat_settings: {
+            ...userSettings.CHAT_SETTINGS,
+            ...e,
+          },
+          general_settings: {
+            ...userSettings.GENERAL_SETTINGS,
+          },
+        };
+        dispatch(updateUserSettings(payload));
+      })
+    );
+  };
 
-  const setWorkspaceSetting = useCallback(
-    (e) => {
-      dispatch(
-        setUserWorkspaceSetting(e, () => {
-          let payload = {
-            ...userSettings,
-            general_settings: {
-              ...userSettings.GENERAL_SETTINGS,
-              ...e,
-            },
-            order_channel: {
-              ...e.order_channel,
-            },
-          };
-          dispatch(updateUserSettings(payload));
-        })
-      );
-    },
-    [dispatch, userSettings]
-  );
+  const setWorkspaceSetting = (e) => {
+    dispatch(
+      setUserWorkspaceSetting(e, () => {
+        let payload = {
+          ...userSettings,
+          general_settings: {
+            ...userSettings.GENERAL_SETTINGS,
+            ...e,
+          },
+          order_channel: {
+            ...e.order_channel,
+          },
+        };
+        dispatch(updateUserSettings(payload));
+      })
+    );
+  };
 
-  const setGeneralSetting = useCallback(
-    (e, callback = () => {}) => {
-      dispatch(
-        setUserGeneralSetting(e, () => {
-          let payload = {
-            disable_sound: "0",
-            chat_settings: {
-              ...userSettings.CHAT_SETTINGS,
-            },
-            general_settings: {
-              ...userSettings.GENERAL_SETTINGS,
-              ...e,
-            },
-          };
+  const setGeneralSetting = (e, callback = () => {}) => {
+    dispatch(
+      setUserGeneralSetting(e, () => {
+        let payload = {
+          disable_sound: "0",
+          chat_settings: {
+            ...userSettings.CHAT_SETTINGS,
+          },
+          general_settings: {
+            ...userSettings.GENERAL_SETTINGS,
+            ...e,
+          },
+        };
 
-          if (loggedUser) {
-            dispatch(updateUserSettings(payload, callback));
-          }
-        })
-      );
-    },
-    [dispatch, userSettings]
-  );
+        if (loggedUser) {
+          dispatch(updateUserSettings(payload, callback));
+        }
+      })
+    );
+  };
 
-  const setReadAnnouncement = useCallback(() => {
+  const setReadAnnouncement = () => {
     dispatch(updateUserSettings({ read_announcement: 1 }));
     dispatch(updateReadAnnouncement());
-  }, [dispatch, userSettings]);
+  };
 
-  const fetch = useCallback(() => {
+  const fetch = () => {
     if (!driffSettings.isSettingsLoaded && !isSettingsLoading) {
       setIsSettingsLoading(true);
       dispatch(
@@ -105,9 +96,9 @@ const useSettings = () => {
         })
       );
     }
-  }, [dispatch, driffSettings.isSettingsLoaded, setIsSettingsLoading, isSettingsLoading]);
+  };
 
-  const fetchCompSettings = useCallback(() => {
+  const fetchCompSettings = () => {
     if (!driffSettings.isCompSettingsLoaded && !isCompSettingsIsLoading) {
       setIsCompSettingsLoading(true);
       dispatch(
@@ -116,16 +107,16 @@ const useSettings = () => {
         })
       );
     }
-  }, [dispatch, driffSettings.isCompSettingsLoaded, setIsCompSettingsLoading, isCompSettingsIsLoading]);
+  };
 
-  const fetchUserSettings = useCallback(() => {
+  const fetchUserSettings = () => {
     if (!userSettings.isLoaded && !isUserSettingsIsLoading) {
       setIsUserSettingsLoading(true);
       dispatch(getUserSettings(), () => {
         setIsUserSettingsLoading(false);
       });
     }
-  }, [dispatch, !driffSettings.isSetting, setIsUserSettingsLoading, isUserSettingsIsLoading]);
+  };
 
   const createPersonalLink = (payload, callback = () => {}) => {
     let links = userSettings.GENERAL_SETTINGS.personal_links;
@@ -173,63 +164,60 @@ const useSettings = () => {
     );
   };
 
-  const handleDeleteLink = useCallback((item, options) => {
+  const handleDeleteLink = (item, options) => {
     showModal("personal_link_delete", item, options);
-  }, []);
+  };
 
-  const showModal = useCallback(
-    (mode, item = null, options = {}) => {
-      let payload = {};
+  const showModal = (mode, item = null, options = {}) => {
+    let payload = {};
 
-      switch (mode) {
-        case "personal_link_create": {
-          payload = {
-            type: "personal_link_create_edit",
-            mode: "create",
-            item: item,
-            actions: {
-              create: createPersonalLink,
-            },
-          };
-          break;
-        }
-        case "personal_link_edit": {
-          payload = {
-            type: "personal_link_create_edit",
-            mode: "edit",
-            item: item,
-            actions: {
-              update: updatePersonalLink,
-              delete: handleDeleteLink,
-            },
-          };
-          break;
-        }
-        case "personal_link_delete": {
-          payload = {
-            type: "confirmation",
-            headerText: options.dictionary.removeLink,
-            submitText: options.dictionary.remove,
-            cancelText: options.dictionary.cancel,
-            bodyText: options.dictionary.removeLinkBodyText,
-            actions: {
-              onSubmit: () => {
-                deletePersonalLink(item, options.callback);
-              },
-            },
-          };
-          break;
-        }
-        case "modal":
-        default: {
-          payload = item;
-        }
+    switch (mode) {
+      case "personal_link_create": {
+        payload = {
+          type: "personal_link_create_edit",
+          mode: "create",
+          item: item,
+          actions: {
+            create: createPersonalLink,
+          },
+        };
+        break;
       }
+      case "personal_link_edit": {
+        payload = {
+          type: "personal_link_create_edit",
+          mode: "edit",
+          item: item,
+          actions: {
+            update: updatePersonalLink,
+            delete: handleDeleteLink,
+          },
+        };
+        break;
+      }
+      case "personal_link_delete": {
+        payload = {
+          type: "confirmation",
+          headerText: options.dictionary.removeLink,
+          submitText: options.dictionary.remove,
+          cancelText: options.dictionary.cancel,
+          bodyText: options.dictionary.removeLinkBodyText,
+          actions: {
+            onSubmit: () => {
+              deletePersonalLink(item, options.callback);
+            },
+          },
+        };
+        break;
+      }
+      case "modal":
+      default: {
+        payload = item;
+      }
+    }
 
-      dispatch(addToModals(payload));
-    },
-    [dispatch]
-  );
+    dispatch(addToModals(payload));
+  };
 
   const updateCompanyName = (payload, callback = () => {}) => {
     if (driffSettings.company_name === payload.company_name) {
@@ -253,12 +241,9 @@ const useSettings = () => {
     }
   };
 
-  const setPushSubscription = useCallback(
-    (payload) => {
-      dispatch(setPushNotification(payload));
-    },
-    [dispatch]
-  );
+  const setPushSubscription = (payload) => {
+    dispatch(setPushNotification(payload));
+  };
 
   const init = () => {
     fetchCompSettings();

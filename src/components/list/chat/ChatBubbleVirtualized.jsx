@@ -1,14 +1,11 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
 import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
-import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
-//import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
-//import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
 
@@ -483,9 +480,8 @@ const ChatNameNotAuthor = styled.span`
   }
 `;
 
-const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, chatSettings, isLastChatVisible, dictionary, users, translate, language, _t } = props;
+const ChatBubbleVirtualized = (props) => {
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, chatMessageActions, timeFormat, chatSettings, dictionary, users, translate, language, _t } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -516,17 +512,9 @@ const ChatBubble = (props) => {
 
   const contentRef = useRef(null);
 
-  // const [loadRef, loadInView] = useInView({
-  //   threshold: 1,
-  // });
-  const [lastChatRef, inView, entry] = useInView({
-    threshold: THRESHOLD,
-    skip: !isLastChat,
-  });
-
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -535,7 +523,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -569,7 +557,6 @@ const ChatBubble = (props) => {
     if (typeof history.location.state === "object") {
       if (history.location.state && history.location.state.focusOn === reply.code && refs.container.current && contentRef.current) {
         //chat.scrollIntoView({ behavior: "smooth", block: "center" });
-
         refs.container.current.scrollIntoView({ block: "center" });
         if (contentRef.current) {
           contentRef.current.classList.add("pulse");
@@ -579,22 +566,6 @@ const ChatBubble = (props) => {
       }
     }
   }, [history.location.state, refs.container.current, contentRef.current]);
-
-  // useEffect(() => {
-  //   if (addMessageRef && loadInView) {
-  //     props.loadReplies();
-  //   }
-  // }, [addMessageRef, loadInView]);
-
-  useEffect(() => {
-    if (isLastChat && entry) {
-      if (entry.boundingClientRect.height - entry.intersectionRect.height >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
-      } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
-      }
-    }
-  }, [isLastChat, entry, isLastChatVisible, inView]);
 
   const handleQuoteClick = (e) => {
     if (reply.quote) {
@@ -678,7 +649,7 @@ const ChatBubble = (props) => {
                 />
               )}
               {hasMessage && (
-                <span ref={isLastChat ? lastChatRef : null}>
+                <span>
                   <ReplyContent
                     ref={handleContentRef}
                     hasFiles={hasFiles}
@@ -709,4 +680,4 @@ const ChatBubble = (props) => {
   );
 };
 
-export default React.memo(ChatBubble);
+export default React.memo(ChatBubbleVirtualized);

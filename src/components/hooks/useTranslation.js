@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getHttpStatus } from "../../helpers/commonFunctions";
 import { addToModals, getTranslationObject, postGenerateTranslationRaw } from "../../redux/actions/globalActions";
@@ -64,7 +64,7 @@ export const useTranslation = () => {
           },
           (err, res) => {
             if (err) {
-              console.log(err, dictFile, "error loading dictionary file");
+              //console.log(err, dictFile, "error loading dictionary file");
             }
 
             if (res) {
@@ -89,12 +89,12 @@ export const useTranslation = () => {
     }
   }, [dispatch, dictFile, dictionaryAPIUrl]);
 
-  const translate = useCallback((code, default_value, replacement = null) => {
+  const translate = (code, default_value, replacement = null) => {
     let translation = default_value;
     if (i18n !== null && typeof i18n[code] !== "undefined") {
       translation = i18n[code];
     } else if (i18n !== null && typeof i18n[code] === "undefined" && !i18new.hasOwnProperty(code)) {
-      if (session.authenticated && session.user && (["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(session.user.email))) {
+      if (session.authenticated && session.user && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(session.user.email)) {
         const newWords = { ...i18new, [code]: default_value };
         localStorage.setItem("i18new", JSON.stringify(newWords));
       }
@@ -119,13 +119,13 @@ export const useTranslation = () => {
     } else {
       return translation;
     }
-  });
+  };
 
   const _t = (code, default_value, replacement = null) => {
     return translate(code, default_value, replacement);
   };
 
-  const setLocale = useCallback((lang, callback = null) => {
+  const setLocale = (lang, callback = null) => {
     let dictFile = `${dictionaryAPIUrl}/${lang}`;
     if (getHttpStatus(dictFile, false) !== false) {
       dispatch(
@@ -134,9 +134,9 @@ export const useTranslation = () => {
             url: dictFile,
           },
           (err, res) => {
-            if (err) {
-              console.log(err);
-            }
+            // if (err) {
+            //   console.log(err);
+            // }
 
             if (res) {
               if (callback) callback();
@@ -148,43 +148,40 @@ export const useTranslation = () => {
         language: lang,
       });
     }
-  }, []);
+  };
 
-  const uploadTranslationToServer = useCallback(
-    (callback = () => {}) => {
-      let vocabulary = [];
-      let bodyText = "You are about to add the following words to the dictionary files, continue?";
-      bodyText += "<table>";
-      Object.keys(i18new).forEach((k) => {
-        bodyText += "<tr>";
-        bodyText += `<td>${k}</td>`;
-        bodyText += `<td>${i18new[k]}</td>`;
-        bodyText += "</tr>";
-        vocabulary.push({
-          [k]: i18new[k],
-        });
+  const uploadTranslationToServer = (callback = () => {}) => {
+    let vocabulary = [];
+    let bodyText = "You are about to add the following words to the dictionary files, continue?";
+    bodyText += "<table>";
+    Object.keys(i18new).forEach((k) => {
+      bodyText += "<tr>";
+      bodyText += `<td>${k}</td>`;
+      bodyText += `<td>${i18new[k]}</td>`;
+      bodyText += "</tr>";
+      vocabulary.push({
+        [k]: i18new[k],
       });
-      bodyText += "</table>";
+    });
+    bodyText += "</table>";
 
-      const cb = () => {
-        dispatch(postGenerateTranslationRaw(vocabulary, callback));
-      };
+    const cb = () => {
+      dispatch(postGenerateTranslationRaw(vocabulary, callback));
+    };
 
-      let payload = {
-        type: "confirmation",
-        headerText: "Translation - Add",
-        submitText: "Add",
-        cancelText: "Cancel",
-        bodyText: bodyText,
-        size: "lg",
-        actions: {
-          onSubmit: cb,
-        },
-      };
-      dispatch(addToModals(payload));
-    },
-    [i18n]
-  );
+    let payload = {
+      type: "confirmation",
+      headerText: "Translation - Add",
+      submitText: "Add",
+      cancelText: "Cancel",
+      bodyText: bodyText,
+      size: "lg",
+      actions: {
+        onSubmit: cb,
+      },
+    };
+    dispatch(addToModals(payload));
+  };
 
   /**
    * Save language change to local storage

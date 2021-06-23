@@ -9,7 +9,7 @@ import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-import ChatUnfurl from "./ChatUnfurl";
+//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
@@ -443,59 +443,57 @@ class ChatMessages extends React.PureComponent {
       yDown: React.createRef(null),
     };
   }
+  //revisit
+  // attachedImgEventListener = () => {
+  //   document.querySelectorAll(".anchor-blot").forEach((el) => {
+  //     const src = el.getAttribute("src");
+  //     if (src) {
+  //       el.addEventListener("mousedown", (e) => {
+  //         window.open(el.getAttribute("src"), "_blank");
+  //       });
+  //       el.classList.remove("anchor-blot");
+  //     }
+  //   });
+  // };
 
-  attachedImgEventListener = () => {
-    document.querySelectorAll(".anchor-blot").forEach((el) => {
-      const src = el.getAttribute("src");
-      if (src) {
-        el.addEventListener("mousedown", (e) => {
-          window.open(el.getAttribute("src"), "_blank");
-        });
-        el.classList.remove("anchor-blot");
-      }
-    });
-  };
-
-  attachedClickListenerToChatUrl = () => {
-    document.querySelectorAll(".chat-url").forEach((el) => {
-      const cid = el.dataset.cid;
-      const mid = el.dataset.mid;
-      if (cid) {
-        el.addEventListener("mousedown", (e) => {
-          if (mid) {
-            this.props.history.push(`/chat/${cid}/${mid}`);
-            let messageEl = document.querySelector(`.code-${mid}`);
-            if (messageEl) {
-              setTimeout(() => {
-                messageEl.scrollIntoView(false);
-                messageEl.focus();
-                messageEl.classList.add("bounceIn");
-                setTimeout(() => {
-                  messageEl.classList.remove("bounceIn");
-                }, 200);
-              }, 200);
-            }
-          } else {
-            this.props.history.push(`/chat/${cid}`);
-          }
-        });
-        el.classList.remove("chat-url");
-      }
-    });
-  };
+  // attachedClickListenerToChatUrl = () => {
+  //   document.querySelectorAll(".chat-url").forEach((el) => {
+  //     const cid = el.dataset.cid;
+  //     const mid = el.dataset.mid;
+  //     if (cid) {
+  //       el.addEventListener("mousedown", (e) => {
+  //         if (mid) {
+  //           this.props.history.push(`/chat/${cid}/${mid}`);
+  //           let messageEl = document.querySelector(`.code-${mid}`);
+  //           if (messageEl) {
+  //             setTimeout(() => {
+  //               messageEl.scrollIntoView(false);
+  //               messageEl.focus();
+  //               messageEl.classList.add("bounceIn");
+  //               setTimeout(() => {
+  //                 messageEl.classList.remove("bounceIn");
+  //               }, 200);
+  //             }, 200);
+  //           }
+  //         } else {
+  //           this.props.history.push(`/chat/${cid}`);
+  //         }
+  //       });
+  //       el.classList.remove("chat-url");
+  //     }
+  //   });
+  // };
 
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
-    console.log("save historical position");
+
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
   }
 
   loadReplies = () => {
-    console.log("load more");
     const { selectedChannel, chatMessageActions } = this.props;
     const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
-      console.log("load more trigger");
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
         skip: 0,
@@ -520,7 +518,7 @@ class ChatMessages extends React.PureComponent {
         if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
           scrollComponent.scrollTop = scrollComponent.scrollHeight;
           let initialScrollHeight = scrollComponent.scrollHeight;
-          console.log("initial load", scrollComponent.scrollHeight);
+
           setTimeout(() => {
             if (initialScrollHeight < scrollComponent.scrollHeight) {
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
@@ -606,7 +604,6 @@ class ChatMessages extends React.PureComponent {
       if (historicalPositions.length) {
         historicalPositions.forEach((hp) => {
           if (hp.channel_id === selectedChannel.id && scrollComponent) {
-            console.log("scroll to this", scrollComponent.scrollHeight - hp.scrollPosition, hp.scrollPosition);
             scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
           }
         });
@@ -676,19 +673,23 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleLoadMoreRefChange = (inView, entry) => {
-    this.setState({ loadMoreInView: inView });
-  };
-
-  handleMessageRefChange = (inView, entry, id) => {
-    const scrollComponent = this.scrollComponent.current;
+    // console.log(inView);
+    // this.setState({ loadMoreInView: inView });
     if (inView) {
-      if (scrollComponent) {
-        if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
-          this.loadReplies();
-        }
-      }
+      this.loadReplies();
     }
   };
+
+  // handleMessageRefChange = (inView, entry, id) => {
+  //   const scrollComponent = this.scrollComponent.current;
+  //   if (inView) {
+  //     if (scrollComponent) {
+  //       if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
+  //         this.loadReplies();
+  //       }
+  //     }
+  //   }
+  // };
 
   handleShowSeenUsers = () => this.setState({ showSeenUsers: !this.state.showSeenUsers });
 
@@ -739,97 +740,78 @@ class ChatMessages extends React.PureComponent {
     return loadMoreRef;
   };
 
-  // handleChatListTouchStart = (e) => {
-  //   this.varRefs.timerStart.current = e.timeStamp;
-  //   this.varRefs.xDown.current = e.touches[0].clientX;
-  //   this.varRefs.yDown.current = e.touches[0].clientY;
-  // };
-
-  // handleChatListTouchMove = (e) => {
-  //   this.varRefs.timerStart.current += 2000;
-  // };
-
-  // handleChatListTouchEnd = (e) => {
-  //   if (e.timeStamp - this.varRefs.timerStart.current > 125) {
-  //     this.setState({
-  //       showEmoji: {
-  //         ...this.state.showEmoji,
-  //         [e.currentTarget.dataset.messageId]: !this.state.showEmoji[e.currentTarget.dataset.messageId],
-  //       },
-  //     });
-  //   }
-  // };
-
-  handleToggleStar = (e) => {
-    const { messageId, star } = e.currentTarget.dataset;
-    e.currentTarget.dataset.star = star ? "false" : "true";
-    this.props.chatMessageActions.setStar({
-      message_id: messageId,
-      star: star === "false" ? 1 : 0,
-    });
-  };
-
-  handleStarMouseOver = (e) => {
-    const { messageId, loaded } = e.currentTarget.dataset;
-    if (loaded === "false") {
-      e.currentTarget.dataset.loaded = "true";
-      this.props.chatMessageActions.getStars(messageId);
-    }
-  };
+  groupedMessages = () =>
+    Object.entries(
+      groupBy(
+        this.props.selectedChannel.replies.map((r) => {
+          if (r.hasOwnProperty("g_date")) {
+            return r;
+          } else {
+            return {
+              ...r,
+              g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+            };
+          }
+        }),
+        "g_date"
+      )
+    )
+      .map((entries) => {
+        return {
+          key: entries[0],
+          replies: entries[1],
+        };
+      })
+      .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
-    const { selectedChannel } = this.props;
+    //const { selectedChannel } = this.props;
 
-    let lastReplyUserId = 0;
+    //let lastReplyUserId = 0;
 
-    let groupedMessages = [];
+    // let groupedMessages = [];
 
-    if (selectedChannel.replies && selectedChannel.replies.length) {
-      groupedMessages = Object.entries(
-        groupBy(
-          selectedChannel.replies.map((r) => {
-            if (r.hasOwnProperty("g_date")) {
-              return r;
-            } else {
-              return {
-                ...r,
-                g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-              };
-            }
-          }),
-          "g_date"
-        )
-      )
-        .map((entries) => {
-          return {
-            key: entries[0],
-            replies: entries[1],
-          };
-        })
-        .sort((a, b) => a.key.localeCompare(b.key));
-    }
+    // if (selectedChannel.replies && selectedChannel.replies.length) {
+    //   groupedMessages = Object.entries(
+    //     groupBy(
+    //       selectedChannel.replies.map((r) => {
+    //         if (r.hasOwnProperty("g_date")) {
+    //           return r;
+    //         } else {
+    //           return {
+    //             ...r,
+    //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+    //           };
+    //         }
+    //       }),
+    //       "g_date"
+    //     )
+    //   )
+    //     .map((entries) => {
+    //       return {
+    //         key: entries[0],
+    //         replies: entries[1],
+    //       };
+    //     })
+    //     .sort((a, b) => a.key.localeCompare(b.key));
+    // }
 
     return (
-      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
-        {selectedChannel.isFetching && selectedChannel.hasMore && selectedChannel.replies.length === 0 && selectedChannel.skip === 0 && (
+      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>
+        {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
           </ChatLoader>
         )}
         <InfiniteScroll ref={this.infiniteScroll} className={"infinite-scroll"} id="infinite-scroll-chat-replies">
-          {selectedChannel.replies && selectedChannel.replies.length >= 20 && (
+          {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length >= 20 && (
             <InView as="div" onChange={(inView, entry) => this.handleLoadMoreRefChange(inView, entry)}>
               <span className="intersection-load-more-ref"></span>
             </InView>
           )}
           <ul>
-            {/* {selectedChannel.isFetching && !(selectedChannel.hasMore && selectedChannel.replies.length === 0) && (
-              <ChatLoader>
-                <Loader />
-              </ChatLoader>
-            )} */}
-            {selectedChannel.replies && selectedChannel.replies.length
-              ? groupedMessages.map((gm, i) => {
+            {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
+              ? this.groupedMessages().map((gm, i) => {
                   return (
                     <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
@@ -867,10 +849,10 @@ class ChatMessages extends React.PureComponent {
                             if (k !== 0 && e[k - 1].user === null) {
                               showAvatar = true;
                             }
-                            if (lastReplyUserId !== reply.user.id) {
-                              showAvatar = true;
-                              lastReplyUserId = reply.user.id;
-                            }
+                            // if (lastReplyUserId !== reply.user.id) {
+                            //   showAvatar = true;
+                            //   lastReplyUserId = reply.user.id;
+                            // }
 
                             if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                               showGifPlayer = true;
@@ -886,13 +868,6 @@ class ChatMessages extends React.PureComponent {
                               }
                             }
                           }
-
-                          //let animation = false;
-                          // if (isAuthor && reply.created_at.diff_for_humans) {
-                          //     //animation = true;
-                          // } else if (!isAuthor && !reply.is_read) {
-                          //     //animation = true;
-                          // }
                           return (
                             <ChatList
                               key={reply.id}
@@ -901,10 +876,7 @@ class ChatMessages extends React.PureComponent {
                               data-timestamp={reply.created_at.timestamp}
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
                               showTimestamp={showTimestamp}
-                              // onTouchStart={this.handleChatListTouchStart}
-                              // onTouchMove={this.handleChatListTouchMove}
-                              // onTouchEnd={this.handleChatListTouchEnd}
-                              isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
+                              isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
                             >
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                               {reply.user && (
@@ -934,7 +906,7 @@ class ChatMessages extends React.PureComponent {
                                       showGifPlayer={showGifPlayer}
                                       isAuthor={isAuthor}
                                       addMessageRef={this.getLoadRef(reply.id)}
-                                      isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
+                                      isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
                                       loadReplies={this.loadReplies}
                                       isBot={isBot}
                                       chatSettings={this.props.settings}
@@ -961,7 +933,7 @@ class ChatMessages extends React.PureComponent {
                                       </ChatActionsContainer>
                                     </ChatBubble>
                                     {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
-                                    {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
+                                    {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
                                       <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
                                     )}
                                   </ChatBubbleQuoteDiv>
@@ -993,22 +965,22 @@ class ChatMessages extends React.PureComponent {
                                         reply={reply}
                                         chatName={this.props.chatName}
                                         addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
+                                        isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                         users={this.props.users}
                                         _t={this.props._t}
                                       />
-                                      {reply.unfurls.length ? (
+                                      {/* {reply.unfurls.length ? (
                                         <ChatUnfurl
                                           unfurlData={reply.unfurls}
                                           isAuthor={false}
                                           deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
                                           removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                          channelId={this.props.selectedChannel.id}
+                                          channelId={this.props.this.props.selectedChannel.id}
                                           replyId={reply.id}
                                         />
-                                      ) : null}
+                                      ) : null} */}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
@@ -1036,7 +1008,7 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !selectedChannel.isFetching && selectedChannel.replies && selectedChannel.replies.length < 1 && (
+            {!this.state.initializing && !this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
               <EmptyState className="no-reply-container">
                 <SvgEmptyState icon={3} />
               </EmptyState>

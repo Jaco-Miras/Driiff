@@ -65,3 +65,5 @@ export { default as usePostDraft } from "./usePostDraft";
 export { default as useWorkspaceReminders } from "./useWorkspaceReminders";
 export { default as useCommentDraft } from "./useCommentDraft";
 export { default as useFetchWsCount } from "./useFetchWsCount";
+export { default as useChatMessageActions } from "./useChatMessageActions";
+export { default as useTranslationActions } from "./useTranslationActions";

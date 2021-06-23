@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import useChannelActions from "../../hooks/useChannelActions";
 import { MoreOptions } from "../../panels/common";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   position: relative;
@@ -28,7 +28,7 @@ const ChannelOptions = (props) => {
 
   const scrollEl = document.getElementById("pills-home");
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     mute: _t("CHAT.MUTE", "Mute"),

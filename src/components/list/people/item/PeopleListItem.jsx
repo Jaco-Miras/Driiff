@@ -149,6 +149,7 @@ const PeopleListItem = (props) => {
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     handleResize();
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleArchiveUser = () => {

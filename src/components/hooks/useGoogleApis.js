@@ -1,17 +1,22 @@
 import React from "react";
-import { useFileActions, useTranslation } from "./index";
+import { useTranslationActions } from "./index";
+import { useDispatch } from "react-redux";
+import { registerGoogleDriveFile } from "../../redux/actions/fileActions";
 
 const useGoogleApis = () => {
+  const { _t } = useTranslationActions();
+  const dispatch = useDispatch();
 
-  const { _t } = useTranslation();
-  const { addGoogleDriveFile } = useFileActions();
+  const addGoogleDriveFile = (payload) => {
+    dispatch(registerGoogleDriveFile(payload));
+  };
 
   const CLIENT_ID = process.env.REACT_APP_google_client_id;
   const API_KEY = process.env.REACT_APP_google_key;
 
   const dictionary = {
     connectPreview: _t("GOOGLE_DRIVE.CONNECT_TO_PREVIEW", "Connect to preview"),
-    restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account")
+    restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
   };
 
   const init = (e) => {
@@ -34,10 +39,10 @@ const useGoogleApis = () => {
 
   const updateSigninStatus = (isSignedIn, element, fileId) => {
     if (isSignedIn) {
-      window.gapi.client.load('drive', 'v2', function () {
+      window.gapi.client.load("drive", "v2", function () {
         let file = window.gapi.client.drive.files.get({
           fileId: fileId,
-          includePermissionsForView: 'published',
+          includePermissionsForView: "published",
           supportsAllDrives: true,
         });
         file.execute(function (resp) {
@@ -45,15 +50,15 @@ const useGoogleApis = () => {
             addGoogleDriveFile({
               file_id: fileId,
               metadata: {
-                title: <span className="link">{element.href}</span>
-              }
+                title: <span className="link">{element.href}</span>,
+              },
             });
             element.innerHTML = `<span class="link">${element.href}</span><span className="preview-text"> - ${dictionary.restrictedLink}</span>`;
             element.onclick = attachSignIn;
           } else {
             addGoogleDriveFile({
               file_id: fileId,
-              metadata: resp
+              metadata: resp,
             });
             element.innerHTML = resp.title;
             element.onclick = null;
@@ -63,45 +68,47 @@ const useGoogleApis = () => {
     } else {
       element.onclick = attachSignIn;
     }
-  }
+  };
 
   const getFile = (e, fileId) => {
-    window.gapi.load('client:auth2', async () => {
+    window.gapi.load("client:auth2", async () => {
       window.gapi.client
         .init({
           clientId: CLIENT_ID,
           apiKey: API_KEY,
           scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
-          access_type: "offline"
+          access_type: "offline",
         })
         .then(async () => {
           const auth = await window.gapi.auth2.getAuthInstance();
 
-          window.gapi.auth.authorize({
-            client_id: CLIENT_ID,
-            api_key: API_KEY,
-            scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
-            immediate: true
-          }, (response) => {
-            if (response.access_token) {
-              updateSigninStatus(response.access_token, e, fileId)
-            } else {
-              updateSigninStatus(null, e, fileId)
+          window.gapi.auth.authorize(
+            {
+              client_id: CLIENT_ID,
+              api_key: API_KEY,
+              scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
+              immediate: true,
+            },
+            (response) => {
+              if (response.access_token) {
+                updateSigninStatus(response.access_token, e, fileId);
+              } else {
+                updateSigninStatus(null, e, fileId);
+              }
             }
-          });
+          );
 
           // Listen for sign-in state changes.
           auth.isSignedIn.listen(() => {
-            updateSigninStatus(auth.isSignedIn.get(), e, fileId)
+            updateSigninStatus(auth.isSignedIn.get(), e, fileId);
           });
         });
     });
-  }
-
+  };
 
   return {
     init,
-  }
+  };
 };
 
 export default useGoogleApis;

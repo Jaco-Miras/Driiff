@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { useCompanyPosts, useTranslation } from "../../hooks";
+import { useCompanyPosts, useTranslationActions } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPostsEmptyState, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
 
@@ -106,13 +106,13 @@ const CompanyPostsPanel = (props) => {
   const [activePostListName, setActivePostListName] = useState({});
   const isExternalUser = user.type === "external";
 
-  const handleGoback = useCallback(() => {
+  const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
       history.push("/posts");
     }
-  }, [params, history]);
+  };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
@@ -265,13 +265,13 @@ const CompanyPostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(() => {
+  const handleEditArchivePostList = () => {
     const payload = {
       tag: null,
       filter: "all",
     };
     actions.setCompanyFilterPosts(payload);
-  }, [activePostListName]);
+  };
 
   if (posts === null) return <></>;
   return (

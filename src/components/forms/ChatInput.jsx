@@ -395,7 +395,7 @@ const ChatInput = (props) => {
       try {
         reactQuillRef.current.getEditor().setContents([]);
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
     }
     // if (editChatMessage !== null) {
@@ -512,6 +512,15 @@ const ChatInput = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (reactQuillRef.current) {
+      const width = window.innerWidth;
+      if (width > 620) {
+        reactQuillRef.current.focus();
+      }
+    }
+  }, []);
+
   const handlePaste = (e) => {
     let files = [];
 
@@ -528,24 +537,12 @@ const ChatInput = (props) => {
     }
     setTimeout(() => {
       const editor = reactQuillRef.current.getEditor();
-      if (editor) {
-        reactQuillRef.current.focus();
-        const cursorPosition = editor.getSelection().index;
-        editor.insertText(cursorPosition, " ");
-        editor.setSelection(cursorPosition + 1);
-      }
+      reactQuillRef.current.focus();
+      const cursorPosition = editor.getSelection().index;
+      editor.insertText(cursorPosition, " ");
+      editor.setSelection(cursorPosition + 1);
     }, 100);
   };
-
-  useEffect(() => {
-    if (reactQuillRef.current) {
-      const width = window.innerWidth;
-      if (width > 620) {
-        reactQuillRef.current.focus();
-      }
-    }
-  }, []);
-
   const modals = useSelector((state) => state.global.modals);
 
   useEffect(() => {

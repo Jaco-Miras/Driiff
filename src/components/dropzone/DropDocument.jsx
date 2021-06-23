@@ -3,7 +3,7 @@ import Dropzone from "react-dropzone";
 import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
-import { useToaster, useTranslation } from "../hooks";
+import { useToaster, useTranslationActions } from "../hooks";
 import "./DropDocument.scss";
 
 const Section = styled.section`
@@ -31,7 +31,7 @@ export const DropDocument = forwardRef((props, ref) => {
   const { onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, hide, acceptType = "" } = props;
 
   const toastr = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   let placeholderText = props.placeholderText;
   if (!placeholderText) {

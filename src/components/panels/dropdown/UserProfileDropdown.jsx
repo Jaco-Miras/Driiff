@@ -1,9 +1,9 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useTranslation, useUserActions } from "../../hooks";
+import { useTranslationActions, useUserActions } from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -27,31 +27,31 @@ const UserProfileDropdown = (props) => {
     container: useRef(null),
   };
 
-  const handleEditProfile = useCallback(() => {
+  const handleEditProfile = () => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/edit`);
-  }, [user]);
+  };
 
-  const handleSignOut = useCallback(() => {
+  const handleSignOut = () => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     processBackendLogout();
-  }, []);
+  };
 
-  const handleProfile = useCallback(() => {
+  const handleProfile = () => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
-  }, [user]);
+  };
 
-  const handleSettings = useCallback(() => {
+  const handleSettings = () => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     history.push("/settings");
-  }, []);
+  };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     profile: _t("PROFILE.PROFILE", "Profile"),
