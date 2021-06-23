@@ -1636,7 +1636,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "FETCH_TIMELINE_SUCCESS": {
-      console.log(action.data.timeline);
       return {
         ...state,
         workspaceTimeline: {
@@ -2514,7 +2513,7 @@ export default (state = INITIAL_STATE, action) => {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
-      console.log("allusers agreed", allUsersAgreed, "all uses disagree", allUsersDisagreed);
+
       return {
         ...state,
         workspacePosts: {

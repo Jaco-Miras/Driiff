@@ -104,7 +104,6 @@ const HuddlePanel = (props) => {
   });
 
   const handleSelectChannel = (e) => {
-    console.log(e);
     if (e === null) {
       setChannel([]);
       setForm({
@@ -118,7 +117,6 @@ const HuddlePanel = (props) => {
     } else {
       setChannel(e);
       if (e.huddle) {
-        console.log(e.huddle);
         const publishAtHour = parseInt(e.huddle.publish_at.time.substr(0, 2)) - offSetHour;
         const startAtHour = parseInt(e.huddle.start_at.time.substr(0, 2)) - offSetHour;
         setForm({

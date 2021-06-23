@@ -21,7 +21,6 @@ const useIsUserTyping = (props) => {
     if (channel.id === e.channel_id) {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        console.log("clear", usersTyping);
         setUsersTyping([]);
       }, 3000);
 

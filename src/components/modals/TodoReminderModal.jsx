@@ -7,10 +7,10 @@ import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslation, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import quillHelper from "../../helpers/quillHelper";
+//import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
 import moment from "moment";
-import MessageFiles from "../list/chat/Files/MessageFiles";
+//import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
@@ -148,7 +148,7 @@ const TodoReminderModal = (props) => {
        * **/
       if (!itemType && params && workspaces[params.workspaceId]) {
         const ws = { ...workspaces[params.workspaceId] };
-        console.log("set default workspace");
+
         // set default selected workspace and set the user options using the workspace members
         setSelectedWorkspace({
           ...ws,

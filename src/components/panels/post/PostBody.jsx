@@ -368,26 +368,21 @@ const PostBody = (props) => {
             .then(function (response) {
               return response.blob();
             })
-            .then(
-              function (data) {
-                const imgObj = URL.createObjectURL(data);
-                setFileSrc({
-                  id: file.id,
-                  src: imgObj,
-                });
-                postActions.updatePostImages({
-                  post_id: post.id,
-                  topic_id: workspaceId,
-                  file: {
-                    ...file,
-                    blobUrl: imgObj,
-                  },
-                });
-              },
-              function (err) {
-                console.log(err, "error");
-              }
-            );
+            .then(function (data) {
+              const imgObj = URL.createObjectURL(data);
+              setFileSrc({
+                id: file.id,
+                src: imgObj,
+              });
+              postActions.updatePostImages({
+                post_id: post.id,
+                topic_id: workspaceId,
+                file: {
+                  ...file,
+                  blobUrl: imgObj,
+                },
+              });
+            });
         }
       });
     }
@@ -410,7 +405,7 @@ const PostBody = (props) => {
         break;
       }
       default: {
-        console.log(id, type);
+        //console.log(id, type);
       }
     }
   };

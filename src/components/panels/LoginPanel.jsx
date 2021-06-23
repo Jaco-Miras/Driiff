@@ -143,20 +143,18 @@ const LoginPanel = (props) => {
         if (res) {
           if (res.data.message && res.data.message === "need_verify_via_email") {
             //toaster.success(`Login successful! A code was sent to your email for further verification.`);
-
-            let cb = {
-              key: new Date().getTime(),
-              type: "modal",
-              modal: "modal_login_verification",
-              title: "Two-step verification",
-              children: "",
-              dataSet: res.data,
-              callback: {
-                handleVerify: this.loginCodeVerify,
-                handleResend: this.loginCodeResend,
-              },
-            };
-            console.log(cb);
+            // let cb = {
+            //   key: new Date().getTime(),
+            //   type: "modal",
+            //   modal: "modal_login_verification",
+            //   title: "Two-step verification",
+            //   children: "",
+            //   dataSet: res.data,
+            //   callback: {
+            //     handleVerify: this.loginCodeVerify,
+            //     handleResend: this.loginCodeResend,
+            //   },
+            // };
             //openModalAction(cb);
           } else {
             const returnUrl =

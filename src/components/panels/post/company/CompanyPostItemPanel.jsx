@@ -215,9 +215,7 @@ const CompanyPostItemPanel = (props) => {
         link_id: post.post_list_connect[0].id,
         post_id: post.id,
       };
-      disconnectPostList(payload, (err, res) => {
-        console.log(err, res);
-      });
+      disconnectPostList(payload);
     }
   };
 

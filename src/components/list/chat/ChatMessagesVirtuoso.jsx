@@ -111,10 +111,10 @@ class ChatMessages extends React.PureComponent {
   };
 
   loadReplies = () => {
-    console.log("load more virtuoso");
+    //console.log("load more virtuoso");
     const { selectedChannel, chatMessageActions } = this.props;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
-      console.log("load more trigger virtuoso");
+      //console.log("load more trigger virtuoso");
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
         skip: 0,

@@ -1,19 +1,19 @@
-import React, {useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Link, useHistory, useRouteMatch} from "react-router-dom";
+import React, { useRef, useState } from "react";
+//import { useDispatch } from "react-redux";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {usePageLoader, useToaster, useUserActions} from "../hooks";
-import {FormInput, PasswordInput} from "../forms";
+import { usePageLoader, useUserActions } from "../hooks";
+import { FormInput, PasswordInput } from "../forms";
 
 const Wrapper = styled.form``;
 
 const UpdatePasswordPanel = (props) => {
   const { dictionary } = props;
   const history = useHistory();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const match = useRouteMatch("/resetpassword/:token/:email");
   const userActions = useUserActions();
-  const toaster = useToaster();
+  //const toaster = useToaster();
   const pageLoader = usePageLoader();
 
   const ref = {
@@ -43,14 +43,14 @@ const UpdatePasswordPanel = (props) => {
   };
 
   const _validateForm = () => {
-    setFormMessage({error: "", success: ""});
+    setFormMessage({ error: "", success: "" });
 
     let valid = true;
-    let errorData = {password: "", form: ""};
+    let errorData = { password: "", form: "" };
 
     if (form.password === "") {
       valid = false;
-      errorData = {...errorData, password: dictionary.passwordRequired};
+      errorData = { ...errorData, password: dictionary.passwordRequired };
     }
 
     setError(errorData);
@@ -90,23 +90,21 @@ const UpdatePasswordPanel = (props) => {
 
   return (
     <Wrapper>
-      <FormInput
-        onChange={handleInputChange} name="email" type="email" placeholder="Email" value={form.email}
-        readOnly/>
-      <PasswordInput ref={ref.password} onChange={handleInputChange}/>
+      <FormInput onChange={handleInputChange} name="email" type="email" placeholder="Email" value={form.email} readOnly />
+      <PasswordInput ref={ref.password} onChange={handleInputChange} />
       <button className="btn btn-primary btn-block" onClick={handleUpdatePassword}>
         {dictionary.updatePassword}
       </button>
-      <hr/>
+      <hr />
       <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
         <li className="list-inline-item">
           <span nClick={handleGoogleLogIn} className="btn btn-floating btn-google">
-            <i className="fa fa-google"/>
+            <i className="fa fa-google" />
           </span>
         </li>
       </ul>
-      <hr/>
+      <hr />
       <p className="text-muted">{dictionary.noAccount}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
         {dictionary.registerNow}

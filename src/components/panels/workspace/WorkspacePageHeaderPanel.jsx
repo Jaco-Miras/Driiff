@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { NavLink } from "../../common";
 import { useTranslation } from "../../hooks";
-import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
+//import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div``;
 

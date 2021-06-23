@@ -39,7 +39,6 @@ const useCommentDraft = (callback, type, text, textOnly, draftId, commentId, pos
   };
 
   const removeDraft = (id) => {
-    console.log("delete draft");
     dispatch(
       deleteDraft({ type: "comment", draft_id: id }, (err, res) => {
         if (err) return;
