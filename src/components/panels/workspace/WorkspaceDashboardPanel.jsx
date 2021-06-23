@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePosts, useTranslation } from "../../hooks";
+import { usePosts, useTranslation, useFetchWsCount } from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
@@ -29,6 +29,8 @@ const WorkspaceDashboardPanel = (props) => {
   const handleEditClick = () => {
     actions.showModal(workspace, "edit", "workspace");
   };
+
+  useFetchWsCount();
 
   const dictionary = {
     aboutThisWorkspace: _t("DASHBOARD.ABOUT_THIS_WORKSPACE", "About this workspace"),

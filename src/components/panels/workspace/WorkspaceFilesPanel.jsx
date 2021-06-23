@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useFiles, useTranslation} from "../../hooks";
-import {FilesBody, FilesHeader, FilesSidebar} from "../files";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useFiles, useTranslation, useFetchWsCount } from "../../hooks";
+import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -25,6 +25,8 @@ const WorkspaceFilesPanel = (props) => {
   const history = useHistory();
   const { _t } = useTranslation();
   const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles(true); // pass true to trigger fetching of files
+
+  useFetchWsCount();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -154,14 +156,13 @@ const WorkspaceFilesPanel = (props) => {
       type: "single_input",
       defaultValue: "",
       label: dictionary.folderName,
-      postInputLabel:
-        !folder ? (
-          ""
-        ) : (
-          <CreateFolderLabel>
-            The folder will be created inside <b>#{folder.search}</b>
-          </CreateFolderLabel>
-        ),
+      postInputLabel: !folder ? (
+        ""
+      ) : (
+        <CreateFolderLabel>
+          The folder will be created inside <b>#{folder.search}</b>
+        </CreateFolderLabel>
+      ),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };
