@@ -1,4 +1,5 @@
 function receivePushNotification(event) {
+    //console.log("[Service Worker] Push Received.", event, event.data.json());
   
     const { reference_title, id, channel_code, code, strip_body, user, author, title, body, redirect_link, code_data, workspaces, SOCKET_TYPE } = event.data.json();
     let options = {
@@ -119,7 +120,7 @@ function receivePushNotification(event) {
   
   self.addEventListener("push", receivePushNotification);
   self.addEventListener('notificationclick', event => {
-    //"[Service Worker] Notification click Received.", event.notification.data);
+    //console.log("[Service Worker] Notification click Received.", event.notification.data);
     event.waitUntil(async function() {
       const allClients = await clients.matchAll();
       

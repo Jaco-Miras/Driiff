@@ -249,7 +249,6 @@ class SocketListeners extends Component {
         });
       })
       .listen(".huddle-notification", (e) => {
-        //console.log("huddle notification", e);
         switch (e.SOCKET_TYPE) {
           case "HUDDLE_CREATED": {
             this.props.incomingHuddleBot({
@@ -311,7 +310,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-todo-notification", (e) => {
-        //console.log("workspace todo notification", e);
         if (e.workspace) {
           if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
             this.props.getFavoriteWorkspaceCounters();
@@ -379,7 +377,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".todo-notification", (e) => {
-        //console.log("todo notification", e);
         // if (e.workspace) {
         //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
         //     this.props.getFavoriteWorkspaceCounters();
@@ -1169,9 +1166,9 @@ class SocketListeners extends Component {
             return null;
         }
       })
-      .listen(".user-activated", (e) => {
-        //console.log(e, "new user");
-      })
+      // .listen(".user-activated", (e) => {
+      //   console.log(e, "new user");
+      // })
       .listen(".external-user-notification", (e) => {
         this.props.incomingExternalUser(e);
       })
@@ -1376,9 +1373,6 @@ class SocketListeners extends Component {
         //     return null;
         // }
       })
-      .listen(".post-require-author-notify", (e) => {
-        //console.log(e, ".post-read-require");
-      })
       .listen(".post-read-require", (e) => {
         this.props.incomingMarkAsRead(e);
       })
@@ -1532,7 +1526,6 @@ class SocketListeners extends Component {
         this.props.incomingPostViewer(payload);
       })
       .listen(".updated-post-visitors", (e) => {
-        // console.log(e, "comment post view");
         //this.props.updatePostCommentViewers(e);
       })
       .listen(".move-private-topic-workspace", (e) => {

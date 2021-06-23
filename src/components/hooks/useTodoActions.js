@@ -1,8 +1,16 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addToModals, delRemoveToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
-import { getWorkspaceReminders, getWorkspaceRemindersCallback, getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../redux/actions/workspaceActions";
+import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
+import {
+  getDoneWorkspaceRemindersCallback,
+  getTodayWorkspaceRemindersCallback,
+  getOverdueWorkspaceRemindersCallback,
+  getWorkspaceReminders,
+  getWorkspaceRemindersCallback,
+  getWorkspaceRemindersCount,
+  updateWorkspaceRemindersCount,
+} from "../../redux/actions/workspaceActions";
 import { useToaster, useTranslationActions } from "./index";
 
 const useTodoActions = () => {
@@ -28,6 +36,18 @@ const useTodoActions = () => {
     dispatch(getToDo(payload, callback));
   };
 
+  const fetchToday = (payload, callback) => {
+    dispatch(getTodayToDo(payload, callback));
+  };
+
+  const fetchDone = (payload, callback) => {
+    dispatch(getDoneToDo(payload, callback));
+  };
+
+  const fetchOverdue = (payload, callback) => {
+    dispatch(getOverdueToDo(payload, callback));
+  };
+
   const fetchWs = (payload, callback) => {
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
@@ -35,6 +55,51 @@ const useTodoActions = () => {
         if (err) return;
         dispatch(
           getWorkspaceRemindersCallback({
+            ...res.data,
+            topic_id: payload.topic_id,
+          })
+        );
+      })
+    );
+  };
+
+  const fetchWsDone = (payload, callback) => {
+    dispatch(
+      getWorkspaceReminders(payload, (err, res) => {
+        if (callback) callback();
+        if (err) return;
+        dispatch(
+          getDoneWorkspaceRemindersCallback({
+            ...res.data,
+            topic_id: payload.topic_id,
+          })
+        );
+      })
+    );
+  };
+
+  const fetchWsOverdue = (payload, callback) => {
+    dispatch(
+      getWorkspaceReminders(payload, (err, res) => {
+        if (callback) callback();
+        if (err) return;
+        dispatch(
+          getOverdueWorkspaceRemindersCallback({
+            ...res.data,
+            topic_id: payload.topic_id,
+          })
+        );
+      })
+    );
+  };
+
+  const fetchWsToday = (payload, callback) => {
+    dispatch(
+      getWorkspaceReminders(payload, (err, res) => {
+        if (callback) callback();
+        if (err) return;
+        dispatch(
+          getTodayWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
           })
@@ -321,6 +386,12 @@ const useTodoActions = () => {
     toggleDone,
     remove,
     removeConfirmation,
+    fetchDone,
+    fetchWsDone,
+    fetchOverdue,
+    fetchWsOverdue,
+    fetchToday,
+    fetchWsToday,
   };
 };
 

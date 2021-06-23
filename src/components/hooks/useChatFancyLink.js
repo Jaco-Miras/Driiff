@@ -16,11 +16,6 @@ const useChatFancyLink = (props) => {
       });
     return fancyContent !== null ? fancyContent : message.body;
   }
-  const [fancyContent, setFancyContent] = useState(null);
-  const messageBody = message.body;
-
-  let result = messageBody;
-  if ((messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy) result = getMessage(message);
 
   function convertFavis(content) {
     return content.replace(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g, function (fullText, beforeLink, anchorContent, href, lnkUrl, linkText, endAnchor) {
@@ -31,9 +26,16 @@ const useChatFancyLink = (props) => {
     });
   }
 
+  const [fancyContent, setFancyContent] = useState(null);
+  const messageBody = message.body;
+
   useEffect(() => {
+    let result = messageBody;
+    if ((messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy) result = getMessage(message);
+
     if (fancyContent !== null) {
       let body = convertFavis(result);
+      //console.log({body, result});
       actions.saveFancyContent({ ...message, body: body, is_fancy: true });
     }
   }, [fancyContent]);

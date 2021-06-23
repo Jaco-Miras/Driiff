@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useFocusInput, useTranslationActions, useUserChannels } from "../../hooks";
+import { useFocusInput, useTranslationActions, useUserChannels, useFetchWsCount } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { SvgIconFeather } from "../../common";
@@ -43,6 +43,8 @@ const WorkspacePeoplePanel = (props) => {
   const { activeTopic } = useSelector((state) => state.workspaces);
 
   const history = useHistory();
+
+  useFetchWsCount();
 
   const [search, setSearch] = useState("");
 

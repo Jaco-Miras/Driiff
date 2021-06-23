@@ -99,6 +99,7 @@ const ReminderDescription = styled.div`
 const DateWrapper = styled.div`
   display: flex;
   align-items: center;
+  min-width: 130px;
 `;
 
 const LabelWrapper = styled.div`
@@ -189,7 +190,7 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
-  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null);
+  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user);
 
   return (
     <>
@@ -205,16 +206,17 @@ const TodosList = (props) => {
               <TodoCheckBox checked={isDone} onClick={handleDoneClick} />
             </ToolTip>
           </span>
-          <span className="align-items-center todo-title-description text-truncate mr-3" onClick={handleTitleClick}>
-            <span className={`todo-title ${getTextColorClass(todo)}`}>{todo.title}</span>
-            {todo.description && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
-            {todo.files.map((file) => {
-              return (
-                <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
-                  {getFileIcon(file.mime_type)}
-                </span>
-              );
-            })}
+          <span className={`align-items-center todo-title-description text-truncate mr-3 ${isDone && "text-muted"}`} onClick={handleTitleClick}>
+            <span className={"todo-title"}>{todo.title}</span>
+            {todo.description && !isDone && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {!isDone &&
+              todo.files.map((file) => {
+                return (
+                  <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
+                    {getFileIcon(file.mime_type)}
+                  </span>
+                );
+              })}
           </span>
 
           <HoverButtons className="hover-btns ml-1">
@@ -223,7 +225,7 @@ const TodosList = (props) => {
           </HoverButtons>
 
           <div className="d-flex align-items-center ml-auto">
-            <DateWrapper>
+            <DateWrapper className={`${isDone && "text-muted"}`}>
               <Icon icon="calendar" />
               <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
                 <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
@@ -233,7 +235,7 @@ const TodosList = (props) => {
             </DateWrapper>
             <LabelWrapper>
               {todo.link_type !== null && (
-                <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
+                <span className={`badge mr-3 badge-light todo-type-badge ${isDone && "text-muted"}`} onClick={handleTitleClick}>
                   {getTodoType(todo)}
                 </span>
               )}

@@ -486,7 +486,6 @@ class ChatMessages extends React.PureComponent {
 
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
-
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
   }
 
@@ -518,7 +517,6 @@ class ChatMessages extends React.PureComponent {
         if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
           scrollComponent.scrollTop = scrollComponent.scrollHeight;
           let initialScrollHeight = scrollComponent.scrollHeight;
-
           setTimeout(() => {
             if (initialScrollHeight < scrollComponent.scrollHeight) {
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
