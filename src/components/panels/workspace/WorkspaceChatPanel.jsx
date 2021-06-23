@@ -5,6 +5,7 @@ import { ChatContentPanel } from "../chat";
 import { useRouteMatch } from "react-router-dom";
 import { SvgEmptyState } from "../../common";
 import { createTeamChannel } from "../../../redux/actions/workspaceActions";
+import { useFetchWsCount } from "../../hooks";
 
 const Wrapper = styled.div``;
 
@@ -36,6 +37,7 @@ const WorkspaceChatPanel = (props) => {
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const [activating, setActivating] = useState(false);
+  useFetchWsCount();
 
   const handleActivateTeamChat = () => {
     if (!activating) {
