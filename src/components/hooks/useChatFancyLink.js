@@ -35,7 +35,7 @@ const useChatFancyLink = (props) => {
 
     if (fancyContent !== null) {
       let body = convertFavis(result);
-      console.log({ body, result });
+      //console.log({ body, result });
       actions.saveFancyContent({ ...message, body: body, is_fancy: true });
     }
   }, [fancyContent]);
