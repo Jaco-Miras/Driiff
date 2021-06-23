@@ -189,7 +189,7 @@ const useHuddle = (props) => {
     const interval = setInterval(() => {
       const d = new Date();
       if (d.getDate() !== currentDate.getDate()) {
-        console.log(d.getDate(), currentDate.getDate());
+        //console.log(d.getDate(), currentDate.getDate());
         dispatch(clearHuddleAnswers());
         dispatch(adjustHuddleDate());
         dispatch(clearHasUnpiblishedAnswers());

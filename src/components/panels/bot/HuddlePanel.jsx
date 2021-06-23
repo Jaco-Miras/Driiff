@@ -207,7 +207,7 @@ const HuddlePanel = (props) => {
   };
 
   const handleSelectPublishChannel = (e) => {
-    console.log(e);
+    //console.log(e);
     if (e === null) {
       setPublishChannel([]);
       setForm({
@@ -458,7 +458,7 @@ const HuddlePanel = (props) => {
   };
 
   const handleSelectRepeatMonthly = (e) => {
-    console.log(e);
+    //console.log(e);
     setForm({
       ...form,
       repeat_select_monthly: e.value,
