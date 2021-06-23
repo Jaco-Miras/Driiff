@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect } from "react";
-//import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
@@ -96,7 +96,7 @@ const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = forwardRef((props, ref) => {
   const { reply, selectedChannel, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary, users, _t } = props;
 
-  //const history = useHistory();
+  const history = useHistory();
 
   const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user, users, _t });
 
@@ -115,38 +115,38 @@ const SystemMessage = forwardRef((props, ref) => {
     }
   }, [isLastChat, entry, isLastChatVisible, inView]);
 
-  // const handleHistoryPushClick = (e) => {
-  //   e.preventDefault();
-  //   if (e.currentTarget.dataset.ctrl === "1") {
-  //     e.currentTarget.dataset.ctrl = "0";
-  //     let link = document.createElement("a");
-  //     link.href = e.currentTarget.dataset.href;
-  //     link.target = "_blank";
-  //     link.click();
-  //   } else {
-  //     history.push(e.currentTarget.dataset.href);
-  //   }
-  // };
+  const handleHistoryPushClick = (e) => {
+    e.preventDefault();
+    if (e.currentTarget.dataset.ctrl === "1") {
+      e.currentTarget.dataset.ctrl = "0";
+      let link = document.createElement("a");
+      link.href = e.currentTarget.dataset.href;
+      link.target = "_blank";
+      link.click();
+    } else {
+      history.push(e.currentTarget.dataset.href);
+    }
+  };
 
-  // const handleHistoryKeyDown = (e) => {
-  //   if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
-  // };
+  const handleHistoryKeyDown = (e) => {
+    if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
+  };
 
-  // const handleHistoryKeyUp = (e) => {
-  //   e.currentTarget.dataset.ctrl = "0";
-  // };
+  const handleHistoryKeyUp = (e) => {
+    e.currentTarget.dataset.ctrl = "0";
+  };
 
-  // useEffect(() => {
-  //   if (reply) {
-  //     let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
-  //     pushLinks.forEach((p) => {
-  //       p.addEventListener("click", handleHistoryPushClick);
-  //       p.dataset.hasLink = "1";
-  //       p.addEventListener("keydown", handleHistoryKeyDown);
-  //       p.addEventListener("keyup", handleHistoryKeyUp);
-  //     });
-  //   }
-  // }, [reply]);
+  useEffect(() => {
+    if (reply) {
+      let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
+      pushLinks.forEach((p) => {
+        p.addEventListener("click", handleHistoryPushClick);
+        p.dataset.hasLink = "1";
+        p.addEventListener("keydown", handleHistoryKeyDown);
+        p.addEventListener("keyup", handleHistoryKeyUp);
+      });
+    }
+  }, [reply]);
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {
