@@ -57,9 +57,7 @@ const MoreEmojiLists = (props) => {
       message_id: reply.id,
       react_type: type,
     };
-    chatReactionAction(payload, (err, res) => {
-      //console.log(res, "chat reaction response");
-    });
+    chatReactionAction(payload);
   };
 
   return (

@@ -60,7 +60,6 @@ const useUserChannels = () => {
         let user_ids = [user.id, loggedUser.id];
         let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));
         recipient_ids = uniqByProp(recipient_ids, "type_id");
-
         if (recipient_ids.length && recipient_ids.length === 2 && !searchingRef.current) {
           searchingRef.current = true;
           channelActions.searchExisting(

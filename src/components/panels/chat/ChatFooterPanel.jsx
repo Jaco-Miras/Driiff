@@ -182,7 +182,7 @@ const ChatFooterPanel = (props) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
-  const [active, setActive] = useState(false);
+  //const [active, setActive] = useState(false);
   const [cursor, setCursor] = useState("default");
   const [backgroundSend, setBackgroundSend] = useState(null);
   const [fillSend, setFillSend] = useState("#cacaca");
@@ -213,7 +213,7 @@ const ChatFooterPanel = (props) => {
   };
 
   const onActive = (active) => {
-    setActive(active);
+    //setActive(active);
     let sendButtonValues;
     active ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
     setBackgroundSend(sendButtonValues[0]);

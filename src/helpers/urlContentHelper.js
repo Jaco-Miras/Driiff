@@ -23,8 +23,8 @@ export const getAllLink = (content) => {
     .join("")
     .split("</a>")
     .forEach((element) => {
-      var splitHref = element.split('href="');
-      var link = splitHref.join("").split('"')[0];
+      var splitHref = element.split("href=\"");
+      var link = splitHref.join("").split("\"")[0];
       if (validURL(link)) {
         links.push(link);
       }

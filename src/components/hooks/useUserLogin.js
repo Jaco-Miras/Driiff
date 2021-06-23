@@ -101,16 +101,16 @@ export const useUserLogin = (props) => {
 
             if (localStorage.getItem("promptTrustDevice") === "1") {
               localStorage.removeItem("promptTrustDevice");
-              let cb = {
-                id: new Date().getTime(),
-                type: "modal",
-                modal: "modal_dialog_yes_no",
-                title: "Trust this device?",
-                children: "",
-                callback: {
-                  handleYes: this.handleConfirmationDialogYes,
-                },
-              };
+              // let cb = {
+              //   id: new Date().getTime(),
+              //   type: "modal",
+              //   modal: "modal_dialog_yes_no",
+              //   title: "Trust this device?",
+              //   children: "",
+              //   callback: {
+              //     handleYes: this.handleConfirmationDialogYes,
+              //   },
+              // };
 
               /**
                * @todo Add modal

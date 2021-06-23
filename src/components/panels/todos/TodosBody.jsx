@@ -111,7 +111,7 @@ const StyledListContainer = styled(ListContainer)`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
+  const { className = "", dictionary, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
