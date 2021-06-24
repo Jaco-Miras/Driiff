@@ -238,9 +238,17 @@ const PeopleListItem = (props) => {
                     </h6>
                   ) : (
                     <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
-                      <ToolTip content={user.email}>
-                        <div className="mr-2">{user.name}</div>
-                      </ToolTip>
+                      <div className="mr-2 d-flex">
+                        <ToolTip content={user.email}>
+                          <span>{user.name}</span>
+                        </ToolTip>
+                        {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
+                          <ToolTip content={"This is an administrator account"}>
+                            <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
+                          </ToolTip>
+                        )}
+                      </div>
+
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
@@ -250,6 +258,7 @@ const PeopleListItem = (props) => {
                       </span>
                     </h6>
                   )}
+
                   {user.role && user.type === "internal" && <span className="small text-muted">{user.role.display_name}</span>}
                   {user.external_company_name && user.type === "external" && <span className="small text-muted">{user.external_company_name}</span>}
                 </div>
