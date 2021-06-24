@@ -155,7 +155,7 @@ const VirtuosoContainer = (props) => {
                   return false;
                 } else {
                   //check if lastReply is your own
-                  return selectedChannel.last_reply && selectedChannel.last_reply.user.id === user.id;
+                  return selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === user.id;
                 }
               }
             }

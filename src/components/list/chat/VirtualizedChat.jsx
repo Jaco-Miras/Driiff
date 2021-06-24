@@ -358,10 +358,10 @@ const StyledAvatar = styled(Avatar)`
   }
 `;
 
-//let lastReplyUserId = 0;
+let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { actualIndex, index, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions } = props;
+  const { actualIndex, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const recipients = useSelector((state) => state.global.recipients);
@@ -400,10 +400,10 @@ const VirtualizedChat = (props) => {
     if (actualIndex !== 0 && previousReply && previousReply.user === null) {
       showAvatar = true;
     }
-    // if (lastReplyUserId !== reply.user.id) {
-    //   showAvatar = true;
-    //   lastReplyUserId = reply.user.id;
-    // }
+    if (lastReplyUserId !== reply.user.id) {
+      showAvatar = true;
+      lastReplyUserId = reply.user.id;
+    }
     if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
       showGifPlayer = true;
     }
