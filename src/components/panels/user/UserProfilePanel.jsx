@@ -439,8 +439,8 @@ const UserProfilePanel = (props) => {
   const handleAvatarClick = () => {
     if (!editInformation) {
       setEditInformation(true);
-      refs.dropZoneRef.current.open();
     }
+    refs.dropZoneRef.current.open();
   };
 
   const handleShowDropZone = useCallback(() => {
