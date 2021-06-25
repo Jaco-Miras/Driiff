@@ -35,6 +35,16 @@ const INITIAL_STATE = {
     has_more: true,
     limit: 25,
   },
+  unreadPosts: {
+    skip: 0,
+    has_more: true,
+    limit: 25,
+  },
+  readPosts: {
+    skip: 0,
+    has_more: true,
+    limit: 25,
+  },
   posts: {},
   postsLists: [],
   drafts: [],
@@ -1034,6 +1044,43 @@ export default (state = INITIAL_STATE, action) => {
               return res;
             }, {}),
           },
+        },
+        unreadPosts: {
+          skip: action.data.next_skip,
+          has_more: action.data.posts.length === 25,
+          limit: 25,
+        },
+      };
+    }
+    case "GET_READ_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
+          },
+        },
+        readPosts: {
+          skip: action.data.next_skip,
+          has_more: action.data.posts.length === 25,
+          limit: 25,
         },
       };
     }
