@@ -10,12 +10,28 @@ const useCompanyPosts = () => {
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
   const { flipper, limit, next_skip, has_more, posts, filter, tag, postListTag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
-  const { postsLists } = useSelector((state) => state.posts);
+  const postsLists = useSelector((state) => state.posts.postsLists);
 
   const archived = useSelector((state) => state.posts.archived);
   const favourites = useSelector((state) => state.posts.favourites);
   const myPosts = useSelector((state) => state.posts.myPosts);
+  const unreadPosts = useSelector((state) => state.posts.unreadPosts);
+  //const readPosts = useSelector((state) => state.posts.readPosts);
   const fetchMore = (callback) => {
+    if (unreadPosts.has_more) {
+      actions.fetchUnreadCompanyPosts({
+        skip: unreadPosts.skip,
+        limit: 25,
+        filters: ["green_dot"],
+      });
+    }
+    // if (readPosts.has_more) {
+    //   actions.fetchReadCompanyPosts({
+    //     skip: readPosts.skip,
+    //     limit: 25,
+    //     filters: ["read"],
+    //   });
+    // }
     if (filter === "archive") {
       let payload = {
         skip: archived.skip,
@@ -42,6 +58,14 @@ const useCompanyPosts = () => {
       if (has_more) {
         actions.fetchCompanyPosts(payload, callback);
       }
+      // let payload = {
+      //   skip: next_skip,
+      //   limit: limit,
+      //   filters: ["read"],
+      // };
+      // if (has_more) {
+      //   actions.fetchReadCompanyPosts(payload, callback);
+      // }
     }
   };
 
@@ -56,7 +80,7 @@ const useCompanyPosts = () => {
 
       actions.fetchUnreadCompanyPosts({
         skip: 0,
-        limit: 100,
+        limit: 25,
         filters: ["green_dot"],
       });
     }
