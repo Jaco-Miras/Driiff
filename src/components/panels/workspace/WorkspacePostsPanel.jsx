@@ -294,10 +294,42 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [filter]);
 
+  const loadMoreUnreadPosts = () => {
+    if (filters && filters.unreadPosts && filters.unreadPosts.hasMore) {
+      let payload = {
+        filters: ["green_dot"],
+        topic_id: workspace.id,
+        skip: filters.unreadPosts.skip,
+      };
+      let cb = (err, res) => {
+        if (err) return;
+        let files = res.data.posts.map((p) => p.files);
+        if (files.length) {
+          files = files.flat();
+        }
+        dispatch(
+          addToWorkspacePosts({
+            topic_id: workspace.id,
+            posts: res.data.posts,
+            files,
+            filters: {
+              unreadPosts: {
+                skip: res.data.next_skip,
+                hasMore: res.data.total_take === 25,
+              },
+            },
+          })
+        );
+      };
+      actions.getPosts(payload, cb);
+    }
+  };
+
   const handleLoadMore = () => {
     if (!fetching && search === "" && !post) {
       fetching = true;
       setLoading(true);
+      loadMoreUnreadPosts();
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
