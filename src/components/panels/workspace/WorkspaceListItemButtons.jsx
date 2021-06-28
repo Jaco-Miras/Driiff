@@ -45,7 +45,7 @@ const WorkspaceListItemButtons = (props) => {
   return (
     <Wrapper className="workspace-list-buttons">
       {isMember && !isExternal && <Icon icon="pencil" onClick={handleEdit} />}
-      {isMember && <Icon icon="star" className={`${item.topic.is_favourite && "favorite"}`} onClick={handleFavorite} />}
+      <Icon icon="star" className={`${item.topic.is_favourite && "favorite"}`} onClick={handleFavorite} />
       {isMember && !isExternal && <Icon icon="trash" onClick={handleArchive} />}
       <StyledButton className={`btn ${isMember ? "btn-danger" : "btn-primary"}`} onClick={handleButtonClick}>
         {isMember ? dictionary.buttonLeave : dictionary.buttonJoin}
