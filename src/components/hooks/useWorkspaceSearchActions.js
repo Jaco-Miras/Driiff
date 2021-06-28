@@ -233,8 +233,8 @@ const useWorkspaceSearchActions = () => {
     );
   };
 
-  const getFilterCount = () => {
-    dispatch(getWorkspaceFitlerCount());
+  const getFilterCount = (callback) => {
+    dispatch(getWorkspaceFitlerCount({}, callback));
   };
 
   return {
