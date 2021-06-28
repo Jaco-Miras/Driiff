@@ -146,6 +146,7 @@ const ChatInput = (props) => {
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const users = useSelector((state) => state.users.users);
+  const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -384,7 +385,7 @@ const ChatInput = (props) => {
     }
     handleClearQuillInput();
     props.onSendCallback();
-    setSidebarSearch({ value: "" });
+    if (chatSidebarSearch !== "") setSidebarSearch({ value: "" });
   };
 
   const handleClearQuillInput = () => {
@@ -488,7 +489,7 @@ const ChatInput = (props) => {
       if (e.target.classList.contains("ql-editor")) {
         if (e.target.innerText.trim() === "" && !e.target.contains(document.querySelector(".ql-editor .anchor-blot"))) {
           e.preventDefault();
-          let lastReply = selectedChannel.replies
+          let lastReply = [...selectedChannel.replies]
             .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
             .filter((r) => {
               return !r.is_deleted && r.user && r.user.id === user.id;
