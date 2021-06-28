@@ -20,6 +20,7 @@ const INITIAL_STATE = {
   isLastChatVisible: false,
   lastReceivedMessage: null,
   chatSidebarSearch: "",
+  searchingChannels: false,
   channelRange: {},
   channelDraftsLoaded: false,
   bots: {
@@ -85,6 +86,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         chatSidebarSearch: action.data.value,
+        searchingChannels: action.data.searching,
       };
     }
     case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
@@ -269,6 +271,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: channels,
+        searchingChannels: false,
       };
     }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {

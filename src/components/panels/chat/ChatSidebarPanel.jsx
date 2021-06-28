@@ -152,9 +152,10 @@ const ChatSidebarPanel = (props) => {
     const timeOutId = setTimeout(() => {
       channelActions.setSidebarSearch({
         value: query,
+        searching: query.trim() !== "",
       });
       if (query.trim() !== "") {
-        let payload = { search: query, skip: 0, limit: 50 };
+        let payload = { search: query, skip: 0, limit: 25 };
         if (searchArchivedChannels) {
           payload = {
             ...payload,
