@@ -112,7 +112,7 @@ const TodosList = (props) => {
   const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
-  //const user = useSelector((state) => state.session.user);
+  const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
@@ -251,7 +251,11 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
-  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user);
+  const showAssignedTo =
+    (todo.assigned_to && todo.assigned_to.id !== todo.user) ||
+    (todo.workspace !== null && todo.assigned_to === null) ||
+    (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user) ||
+    (todo.assigned_to && todo.author && todo.assigned_to.id !== todo.author.id);
 
   return (
     <>
