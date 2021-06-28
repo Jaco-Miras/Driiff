@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 //import { groupBy } from "lodash";
 import { useChatMessageActions, useTranslationActions, useTimeFormat, usePreviousValue, useCountUnreadReplies } from "../../hooks";
-import { SvgEmptyState } from "../../common";
+import { SvgEmptyState, Loader } from "../../common";
 import VirtualiazedChat from "./VirtualizedChat";
 
 const Wrapper = styled.div`
@@ -46,6 +46,17 @@ const EmptyState = styled.div`
     width: 100%;
     max-height: 40%;
     margin: auto;
+  }
+`;
+
+const ChatLoader = styled.div`
+  display: flex;
+  justify-content: center;
+  &.initial-load {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    transform: translate(-45%, -45%);
   }
 `;
 
@@ -181,6 +192,11 @@ const VirtuosoContainer = (props) => {
         <EmptyState className="no-reply-container">
           <SvgEmptyState icon={3} />
         </EmptyState>
+      )}
+      {selectedChannel.isFetching && selectedChannel.hasMore && selectedChannel.skip === 0 && (
+        <ChatLoader className={"initial-load"}>
+          <Loader />
+        </ChatLoader>
       )}
     </Wrapper>
   );
