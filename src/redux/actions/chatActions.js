@@ -16,13 +16,14 @@ import {
   getHuddleChatbot as getHuddleChatbotService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
-  //getSearchChannels as getSearchChannelsService,
+  getSearchChannels as getSearchChannelsService,
   getSelectChannel as getSelectChannelService,
   getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,
   getWorkspaceChannels as getWorkspaceChannelsService,
   postChannelMembers as postChannelMembersService,
   postChatMessage as postChatMessageService,
+  postChatMessageTranslate as postChatMessageTranslateService,
   postChatReaction as postChatReactionService,
   postChatReminder as postChatReminderService,
   postCreateChannel as postCreateChannelService,
@@ -432,4 +433,8 @@ export function resetTranslatedBody(payload, callback) {
 
 export function setChannelTranslateState(payload, callback) {
   return SimpleDispatchActionToReducer("SET_CHANNEL_TRANSLATE_STATE", payload, callback);
+}
+
+export function postChatMessageTranslate(payload, callback) {
+  return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }
