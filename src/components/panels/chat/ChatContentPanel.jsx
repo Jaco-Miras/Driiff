@@ -38,6 +38,9 @@ const ChatContentPanel = (props) => {
 
   const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
+  const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
 
   const teamChannelId = useSelector((state) => state.workspaces.isOnClientChat);
@@ -167,6 +170,8 @@ const ChatContentPanel = (props) => {
     replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
     removeOnDownload: _t("CHAT.REMOVE_ON_DOWNLOAD", "Remove on download"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    teamChat: _t("PAGE.TEAM_CHAT", "Team Chat"),
+    clientChat: _t("PAGE.CLIENT_CHAT", "Client Chat"),
     mute: _t("CHAT.MUTE", "Mute"),
     unmute: _t("CHAT.UNMUTE", "Unmute"),
     hide: _t("CHAT.HIDE", "Hide"),
@@ -207,23 +212,20 @@ const ChatContentPanel = (props) => {
             <ChatTranslateActions selectedChannel={selectedChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />
           </>
         ) : (
-          <>
-            <ChatMessages
-              selectedChannel={selectedChannel}
-              chatMessageActions={chatMessageActions}
-              timeFormat={timeFormat}
-              dictionary={dictionary}
-              unreadCount={unreadCount}
-              teamChannelId={teamChannelId}
-              isIdle={isIdle}
-              // translate={translate}
-              // language={language}
-              _t={_t}
-              translated_channels={translated_channels}
-              chat_language={chat_language}
-            />
-            <ChatTranslateActions selectedChannel={selectedChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />
-          </>
+          <ChatMessages
+            selectedChannel={selectedChannel}
+            chatMessageActions={chatMessageActions}
+            timeFormat={timeFormat}
+            dictionary={dictionary}
+            unreadCount={unreadCount}
+            teamChannelId={teamChannelId}
+            isIdle={isIdle}
+            translate={translate}
+            language={language}
+            translated_channels={translated_channels}
+            chat_language={chat_language}
+            _t={_t}
+          />
         )
       ) : (
         <ChatMessagesPlaceholder />

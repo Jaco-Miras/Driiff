@@ -89,8 +89,8 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, order_channel: orderChannel, daily_digest, chat_language },
-    chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language },
+    chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
@@ -119,7 +119,7 @@ const ProfileSettings = (props) => {
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
     dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
-    chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
+    //chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
   };
 
@@ -366,19 +366,19 @@ const ProfileSettings = (props) => {
       ),
     },
     {
-      value: "sk",
+      value: "sl",
       label: (
         <>
-          <Flag countryAbbr="sk" className="mr-2" width="18" />
+          <Flag countryAbbr="sl" className="mr-2" width="18" />
           {_t("LANGUAGE.SLOVENIAN", "Slovenian")}
         </>
       ),
     },
     {
-      value: "sk",
+      value: "sv",
       label: (
         <>
-          <Flag countryAbbr="SV" className="mr-2" width="18" />
+          <Flag countryAbbr="sv" className="mr-2" width="18" />
           {_t("LANGUAGE.SWEDISH", "Swedish")}
         </>
       ),
@@ -465,7 +465,7 @@ const ProfileSettings = (props) => {
 
       setGeneralSetting(
         {
-          [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
+          [name]: checked ? "1" : "0",
         },
         () => {
           if (["log_rocket", "sentry"].includes(name)) {
@@ -515,12 +515,12 @@ const ProfileSettings = (props) => {
     [setGeneralSetting]
   );
 
-  // const handleNotificationSoundChange = (e) => {
-  //   setGeneralSetting({
-  //     notification_sound: e.value,
-  //   });
-  //   toaster.success(<span>You have successfully updated notification sound</span>);
-  // };
+  const handleNotificationSoundChange = (e) => {
+    setGeneralSetting({
+      notification_sound: e.value,
+    });
+    toaster.success(<span>You have successfully updated notification sound</span>);
+  };
 
   const handleSortChannelChange = (e) => {
     setChatSetting({
@@ -768,20 +768,6 @@ const ProfileSettings = (props) => {
                     data-success-message={`${!notifications_on ? "Notifications enabled" : "Notifications disabled"}`}
                     onChange={handleNotificationsSwitchToggle}
                     label={<span>{dictionary.allowNotifications}</span>}
-                  />
-                </div>
-              </div>
-              <div className="row mb-2">
-                <div className="col-12 text-muted">
-                  <CustomInput
-                    className="cursor-pointer text-muted"
-                    checked={daily_digest}
-                    type="switch"
-                    id="daily_digest"
-                    name="daily_digest"
-                    data-success-message={`${!daily_digest ? "Daily digest enabled" : "Daily digest disabled"}`}
-                    onChange={handleGeneralSwitchToggle}
-                    label={<span>{dictionary.dailyDigest}</span>}
                   />
                 </div>
               </div>

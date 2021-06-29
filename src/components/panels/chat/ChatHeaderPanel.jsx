@@ -10,20 +10,29 @@ import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
 import { useSettings, useWorkspaceActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
+import { ChatTranslateActionsMenu } from "./index";
 
 const Wrapper = styled.div`
   position: relative;
   z-index: 3;
   display: flex;
   align-items: center;
+  height: 60px;
+  padding-bottom: 1em;
 
   .chat-header-left {
     display: flex;
   }
 
   .chat-header-title {
-    font-size: 15px;
-    font-weight: 500;
+    height: 17px;
+    color: #000000;
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 17px;
     text-align: center;
     display: flex;
     text-overflow: ellipsis;
@@ -70,13 +79,31 @@ const Wrapper = styled.div`
   .component-user-list-pop-up-container .profile-slider {
     right: 255px !important;
   }
+  .channel-title-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .chat-header-folder {
+    flex: 1 1 100%;
+    height: 12px;
+    color: #8b8b8b;
+    font-family: Arial;
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 12px;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
+const IconFolder = styled(SvgIconFeather)`
+  width: 12px;
+  height: 11px;
+`;
 
 const EyeIcon = styled(SvgIconFeather)`
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 0.7rem;
+  height: 0.7rem;
 `;
 
 const BackButton = styled.div`
@@ -109,18 +136,18 @@ const BackButtonChevron = styled(SvgIconFeather)`
 
 const StyledMoreOptions = styled(MoreOptions)`
   border: 1px solid #fff;
-  border-radius: 8px;
-  width: 40px;
+  border-radius: 4px;
+
   align-items: center;
   justify-content: center;
 
   .dark & {
-    border: 1px solid #25282c;
+    border: 1px solid #25282c !important;
     background: #25282c;
   }
   .feather-more-horizontal {
     width: 25px;
-    height: 36px;
+    font-size: 10px;
   }
   .more-options-tooltip {
     left: auto;
@@ -141,6 +168,14 @@ const StyledMoreOptions = styled(MoreOptions)`
 const StyledBadge = styled.div`
   display: inline-flex;
   align-items: center;
+  ${(props) => props.isTeam && "background:#D1EEFF !important;"}
+  margin-left:5px;
+  height: 18px;
+  padding: 5px !important;
+  color: #363636;
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 12px;
 `;
 
 const ChatHeaderBadgeContainer = styled.div`
@@ -176,6 +211,9 @@ const ChatHeaderPanel = (props) => {
   const chatChannel = useSelector((state) => state.chat.selectedChannel);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+
+  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const chatMessageActions = useChatMessageActions();
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -248,7 +286,8 @@ const ChatHeaderPanel = (props) => {
         if (chatChannel.workspace_folder) {
           return (
             <>
-              {chatChannel.workspace_folder.name}&nbsp;{">"}&nbsp;
+              {/*chatChannel.workspace_folder.name  &nbsp;*/}
+              {/* ">" &nbsp; */}
               <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
                 {chatChannel.title}
               </a>
@@ -258,7 +297,8 @@ const ChatHeaderPanel = (props) => {
           return (
             <>
               <span className="dictionary-label">
-                {dictionary.workspace}&nbsp;{">"}&nbsp;
+                {/* dictionary.workspace &nbsp;*/}
+                {/* ">" &nbsp; */}
               </span>
               <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
                 {chatChannel.title}
@@ -278,6 +318,29 @@ const ChatHeaderPanel = (props) => {
       }
       default: {
         return chatChannel.title;
+      }
+    }
+  };
+
+  const getChannelFolder = () => {
+    switch (chatChannel.type) {
+      case "TOPIC": {
+        if (chatChannel.workspace_folder) {
+          return (
+            <>
+              <IconFolder icon="folder" /> {chatChannel.workspace_folder.name}{" "}
+            </>
+          );
+        } else {
+          return (
+            <>
+              <span className="dictionary-label">{dictionary.workspace}</span>
+            </>
+          );
+        }
+      }
+      default: {
+        return "";
       }
     }
   };
@@ -327,6 +390,8 @@ const ChatHeaderPanel = (props) => {
 
   if (channel === null) return null;
 
+  if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
+
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
@@ -334,24 +399,39 @@ const ChatHeaderPanel = (props) => {
           <BackButtonChevron icon={"chevron-left"} />
           {unreadCounter.chat_message > 0 && <span>{unreadCounter.chat_message.toString()}</span>}
         </BackButton>
-        <ChannelIcon className="chat-header-icon" channel={channel} />
+        <ChannelIcon className="chat-header-icon" channel={channel} width="33px" />
       </div>
-      <div className="chat-header-title">{getChannelTitle()}</div>
-      <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
-      <ChatHeaderBadgeContainer className="chat-header-badge">
-        {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
-          <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
-        )}
-        {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && channel.team === true && (
-          <Icon className={"ml-1"} icon={"eye"} strokeWidth="3" width={12} />
-        )}
-        {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && channel.team === false && (
-          <StyledBadge className={"badge badge-external ml-1"}>
-            <EyeIcon icon="eye" className={"mr-1"} />
-            {dictionary.withClient}
-          </StyledBadge>
-        )}
-      </ChatHeaderBadgeContainer>
+      <div className="channel-title-wrapper">
+        <div className="chat-header-title">{getChannelTitle()}</div>
+        <ChatHeaderBadgeContainer className="chat-header-badge">
+          {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
+            <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
+          )}
+          {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
+            <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
+              <EyeIcon icon="eye" className={"mr-1"} />
+              {channel.team ? dictionary.teamChat : dictionary.clientChat}
+            </StyledBadge>
+          )}
+        </ChatHeaderBadgeContainer>
+        <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
+        <div>
+          <ul className="nav align-items-center justify-content-end">
+            <li className="ml-2" style={{ height: "21px" }}>
+              <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
+                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+                {channel.tyope === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+                <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+                <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+                <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+                {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+                {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
+              </StyledMoreOptions>
+            </li>
+          </ul>
+        </div>
+        <div className="chat-header-folder">{getChannelFolder()}</div>
+      </div>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
@@ -359,16 +439,6 @@ const ChatHeaderPanel = (props) => {
               <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
             </li>
           )}
-          <li className="ml-2">
-            <StyledMoreOptions role="tabList">
-              {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
-              {channel.tyope === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
-              <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
-              <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
-              <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
-              {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
-            </StyledMoreOptions>
-          </li>
         </ul>
       </div>
     </Wrapper>

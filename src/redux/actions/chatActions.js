@@ -17,7 +17,7 @@ import {
   getSkippedAnswers as getSkippedAnswersService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
-  //getSearchChannels as getSearchChannelsService,
+  getSearchChannels as getSearchChannelsService,
   getSelectChannel as getSelectChannelService,
   getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,
@@ -466,4 +466,17 @@ export function getCompanyChannel(payload, callback) {
 
 export function updateCompanyChannel(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMPANY_CHANNEL", payload, callback);
+}
+
+
+export function resetTranslatedBody(payload, callback) {
+  return SimpleDispatchActionToReducer("RESET_TRANSLATED_BODY", payload, callback);
+}
+
+export function setChannelTranslateState(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANNEL_TRANSLATE_STATE", payload, callback);
+}
+
+export function postChatMessageTranslate(payload, callback) {
+  return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }

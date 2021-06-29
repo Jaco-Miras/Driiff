@@ -913,6 +913,8 @@ class ChatMessages extends React.PureComponent {
                                       users={this.props.users}
                                       translate={this.props.translate}
                                       language={this.props.language}
+                                      translated_channels={this.props.translated_channels} 
+                                      chat_language={this.props.chat_language}
                                       _t={this.props._t}
                                       translated_channels={this.props.translated_channels}
                                       chat_language={this.props.chat_language}

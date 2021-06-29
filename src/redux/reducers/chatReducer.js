@@ -427,9 +427,6 @@ export default function (state = INITIAL_STATE, action) {
             is_read: true,
             body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
             channel_id: action.data.channel_id,
-            //translated_body: null,
-            is_fancy: false,
-            //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
           };
         }),
         ...channel.replies,
@@ -604,12 +601,6 @@ export default function (state = INITIAL_STATE, action) {
               }
             : state.channels,
       };
-    }
-
-    case "RESET_TRANSLATED_BODY": {
-      let channel = { ...state.channels[action.data.channel_id] };
-      console.log(channel);
-      return state;
     }
 
     case "INCOMING_CHAT_MESSAGE": {
