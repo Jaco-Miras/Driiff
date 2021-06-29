@@ -367,7 +367,7 @@ const CreateEditWorkspaceModal = (props) => {
     languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
     save: _t("POST.SAVE", "Save"),
     sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
-    sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Send the signup link through Driff"),
+    sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
   };
 
   const _validateName = useCallback(() => {
