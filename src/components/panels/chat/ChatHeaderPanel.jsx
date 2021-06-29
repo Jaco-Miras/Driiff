@@ -10,6 +10,8 @@ import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
 import { useSettings, useWorkspaceActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
+import { ChatTranslateActionsMenu } from "./index";
 
 const Wrapper = styled.div`
   position: relative;
@@ -206,6 +208,9 @@ const ChatHeaderPanel = (props) => {
   const chatChannel = useSelector((state) => state.chat.selectedChannel);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+
+  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const chatMessageActions = useChatMessageActions();
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -416,6 +421,7 @@ const ChatHeaderPanel = (props) => {
                 <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
                 <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
                 {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+                {<ChatTranslateActionsMenu selectedChannel={chatChannel}  translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
               </StyledMoreOptions>
             </li>
           </ul>
