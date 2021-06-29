@@ -7,6 +7,7 @@ import { useChannels, useLoadChannel, useSettings, useTranslationActions } from 
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
+import { useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   z-index: 2;
@@ -129,6 +130,7 @@ const StyledMoreOptions = styled(MoreOptions)`
 const ChatSidebarPanel = (props) => {
   const { className = "" } = props;
 
+  const params = useParams();
   const dispatch = useDispatch();
   const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings, setChatSetting } = useSettings();
@@ -242,6 +244,12 @@ const ChatSidebarPanel = (props) => {
       setSearch(chatSidebarSearch);
     }
   }, [chatSidebarSearch]);
+
+  useEffect(() => {
+    if (params.messageId) {
+      document.body.classList.add("m-chat-channel-closed");
+    }
+  }, []);
 
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
