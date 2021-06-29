@@ -8,7 +8,7 @@ const useQuillInput = (callback, quillRef) => {
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const savedCallback = useRef(callback);
   const previousChannel = usePreviousValue(selectedChannel);
-  const channelFiles = useSelector((state) => state.files.channelFiles);
+  //const channelFiles = useSelector((state) => state.files.channelFiles);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -18,29 +18,6 @@ const useQuillInput = (callback, quillRef) => {
     savedCallback.current();
   };
 
-  // const handleGetChannelFiles = () => {
-  //   if (channelFiles.hasOwnProperty(selectedChannel.id) === false) {
-  //     let payload = {
-  //       channel_id: selectedChannel.id,
-  //       skip: 0,
-  //       limit: 100,
-  //     };
-  //     dispatch(getChannelFiles(payload));
-  //   }
-  // };
-
-  useEffect(() => {
-    // temporarily remove due to issues
-    // const handleReplyBoxKeyDown = (e) => {
-    //     let f = document.querySelector(":focus");
-    //     if (f === null) {
-    //         if (quillRef.current) quillRef.current.focus();
-    //     }
-    // };
-    // document.addEventListener("keydown", handleReplyBoxKeyDown, true);
-    // return () => document.removeEventListener("keydown", handleReplyBoxKeyDown, true);
-  }, []);
-
   useEffect(() => {
     if (previousChannel !== null && selectedChannel !== null) {
       if (previousChannel && previousChannel.id !== selectedChannel.id) {
@@ -49,9 +26,9 @@ const useQuillInput = (callback, quillRef) => {
         //handleGetChannelFiles();
       }
     }
-    if (!previousChannel && selectedChannel !== null) {
-      //handleGetChannelFiles();
-    }
+    // if (!previousChannel && selectedChannel !== null) {
+    //   //handleGetChannelFiles();
+    // }
   }, [selectedChannel, previousChannel]);
 };
 

@@ -155,6 +155,7 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter,
   updateWorkspacePostCount,
+  setActiveTopic,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -218,17 +219,17 @@ class SocketListeners extends Component {
     this.props.getOnlineUsers();
 
     this.props.getLatestReply({}, (err, res) => {
-      console.log(res, "latest");
+      //console.log(res, "latest");
     });
     window.Echo.connector.socket.on("connect", () => {
-      console.log("socket connected");
+      //console.log("socket connected");
     });
     window.Echo.connector.socket.on("disconnect", () => {
-      console.log("socket disconnected");
+      //console.log("socket disconnected");
       this.setState({ disconnectedTimestamp: Math.floor(Date.now() / 1000) });
     });
     window.Echo.connector.socket.on("reconnect", () => {
-      console.log("socket reconnected");
+      //console.log("socket reconnected");
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
       this.refetchOtherMessages();
@@ -237,19 +238,17 @@ class SocketListeners extends Component {
       this.props.getFavoriteWorkspaceCounters();
     });
     window.Echo.connector.socket.on("reconnecting", function () {
-      console.log("socket reconnecting");
+      //console.log("socket reconnecting");
     });
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".unarchive-post-notification", (e) => {
-        console.log(e);
         e.posts.forEach((p) => {
           this.props.getUnarchivePost({ post_id: p.id });
         });
       })
       .listen(".huddle-notification", (e) => {
-        console.log("huddle notification", e);
         switch (e.SOCKET_TYPE) {
           case "HUDDLE_CREATED": {
             this.props.incomingHuddleBot({
@@ -311,7 +310,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-todo-notification", (e) => {
-        console.log("workspace todo notification", e);
         if (e.workspace) {
           if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
             this.props.getFavoriteWorkspaceCounters();
@@ -379,7 +377,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".todo-notification", (e) => {
-        console.log("todo notification", e);
         // if (e.workspace) {
         //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
         //     this.props.getFavoriteWorkspaceCounters();
@@ -448,11 +445,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-role-notification", (e) => {
-        console.log("workspace role", e);
         this.props.incomingWorkspaceRole(e);
       })
       .listen(".google-attachment-notification", (e) => {
-        console.log("google attachment", e);
         switch (e.SOCKET_TYPE) {
           case "GOOGLE_ATTACHMENT_CREATE": {
             if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
@@ -467,7 +462,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-folder-notification", (e) => {
-        console.log(e, "folder");
         switch (e.SOCKET_TYPE) {
           case "FOLDER_CREATE": {
             this.props.incomingFolder(e);
@@ -500,7 +494,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-file-notification", (e) => {
-        console.log(e, "file", "line 170");
         switch (e.SOCKET_TYPE) {
           case "FILE_RESTORE": {
             this.props.incomingRestoreFile(e);
@@ -535,11 +528,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-timeline-notification", (e) => {
-        console.log(e, "timeline");
         this.props.incomingTimeline(e);
       })
       .listen(".upload-bulk-private-workspace-files", (e) => {
-        console.log(e, "files bulk");
         this.props.incomingFiles(e);
         e.channel_messages &&
           e.channel_messages.forEach((m) => {
@@ -560,7 +551,6 @@ class SocketListeners extends Component {
           });
       })
       .listen(".favourite-notification", (e) => {
-        console.log(e, "favourite-notification");
         switch (e.SOCKET_TYPE) {
           case "FAVOURITE_ITEM": {
             this.props.incomingFavouriteItem(e);
@@ -572,11 +562,11 @@ class SocketListeners extends Component {
         }
       })
       .listen(".unread-post", (e) => {
-        console.log(e, "unread-post");
         this.props.incomingReadUnreadReducer(e);
       })
       .listen(".post-notification", (e) => {
-        console.log(e, "post-notif");
+        this.props.getFavoriteWorkspaceCounters();
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost(e);
@@ -636,12 +626,12 @@ class SocketListeners extends Component {
                 }
               }
               //check if post has favorite workspace as recipient
-              if (e.recipients.some((r) => r.type === "TOPIC")) {
-                let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
-                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
-                  this.props.getFavoriteWorkspaceCounters();
-                }
-              }
+              // if (e.recipients.some((r) => r.type === "TOPIC")) {
+              //   let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
+              //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+              //     this.props.getFavoriteWorkspaceCounters();
+              //   }
+              // }
             }
             if (e.show_at !== null && this.props.user.id === e.author.id) {
               this.props.incomingPost({
@@ -654,9 +644,9 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            if (this.props.user.id !== e.author.id) {
-              this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
-            }
+            // if (this.props.user.id !== e.author.id) {
+            //   this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+            // }
 
             e.channel_messages &&
               e.channel_messages.forEach((m) => {
@@ -751,8 +741,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".post-comment-notification", (e) => {
-        console.log(e, "comment-notif");
-
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
             this.props.incomingComment({ ...e, clap_user_ids: [] });
@@ -825,7 +813,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".chat-notification", (e) => {
-        console.log(e, "chat-notification");
         const { user, selectedChannel, isIdle, isBrowserActive } = this.props;
 
         switch (e.SOCKET_TYPE) {
@@ -839,27 +826,27 @@ class SocketListeners extends Component {
             }
             //unfurl link
             let message = { ...e };
-            let urlArray = [...new Set(urlify(e.body))];
-            if (urlArray.length) {
-              this.props.generateUnfurl(
-                {
-                  type: "chat",
-                  message_id: message.id,
-                  link_url: urlArray[0],
-                },
-                (err, res) => {
-                  if (res) {
-                    this.props.generateUnfurlReducer({
-                      unfurls: res.data.unfurls,
-                      channel_id: message.channel_id,
-                      message_id: message.id,
-                    });
-                  } else {
-                    console.log(err);
-                  }
-                }
-              );
-            }
+            // let urlArray = [...new Set(urlify(e.body))];
+            // if (urlArray.length) {
+            //   this.props.generateUnfurl(
+            //     {
+            //       type: "chat",
+            //       message_id: message.id,
+            //       link_url: urlArray[0],
+            //     },
+            //     (err, res) => {
+            //       if (res) {
+            //         this.props.generateUnfurlReducer({
+            //           unfurls: res.data.unfurls,
+            //           channel_id: message.channel_id,
+            //           message_id: message.id,
+            //         });
+            //       } else {
+            //         console.log(err);
+            //       }
+            //     }
+            //   );
+            // }
             if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
               this.props.soundPlay();
             }
@@ -944,7 +931,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".post-list-notification", (e) => {
-        console.log(e, "post-list-notification");
         this.props.getPostList({}, (err, res) => {
           if (err) return;
           let post = {
@@ -968,7 +954,6 @@ class SocketListeners extends Component {
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
       .listen(".remove-file-notification", (e) => {
-        console.log(e, "remove file");
         switch (e.SOCKET_TYPE) {
           case "REMOVE_FILE": {
             this.props.incomingRemoveFileAutomatically(e);
@@ -983,11 +968,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-team-channel", (e) => {
-        console.log(e);
         this.props.incomingTeamChannel(e);
       })
       .listen(".announcement-notification", (e) => {
-        console.log(e);
         switch (e.SOCKET_TYPE) {
           case "ANNOUNCEMENT_UPDATED": {
             this.props.incomingUpdatedAnnouncement(e);
@@ -1006,11 +989,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".users-online-broadcast", (e) => {
-        //console.log(e);
         this.props.incomingOnlineUsers(e);
       })
       .listen(".user-updated", (e) => {
-        console.log("user updated", e);
         switch (e.SOCKET_TYPE) {
           case "ARCHIVED_ACCOUNT": {
             let payload = {
@@ -1052,7 +1033,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".updated-version", (e) => {
-        console.log(e, "version");
         const { version, requirement } = e;
         const socketVersion = parseFloat(version.substr(2));
         const latestVersion = parseFloat(driffData.version.substr(2));
@@ -1079,7 +1059,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".user-role-notification", (e) => {
-        console.log(e, "updated role");
         this.props.incomingUserRole(e);
         if (e.user_id === this.props.user.id) {
           this.props.getUser({ id: this.props.user.id }, (err, res) => {
@@ -1092,7 +1071,6 @@ class SocketListeners extends Component {
         this.props.updateCompanyPostAnnouncement(e);
       })
       .listen(".company-request-form-notification", (e) => {
-        console.log(e, "company-request-form-notification");
         switch (e.SOCKET_TYPE) {
           case "CREATE_REQUEST_FORM": {
             this.props.incomingInternalUser(e);
@@ -1103,7 +1081,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".company-notification", (e) => {
-        console.log(e, "company-notification");
         switch (e.SOCKET_TYPE) {
           case "UPDATE_COMPANY_NAME": {
             this.props.incomingUpdateCompanyName(e);
@@ -1114,7 +1091,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".company-file-notification", (e) => {
-        console.log(e, "company file");
         switch (e.SOCKET_TYPE) {
           case "FILE_EMPTY": {
             this.props.incomingCompanyEmptyTrash(e);
@@ -1145,7 +1121,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".company-folder-notification", (e) => {
-        console.log(e, "company folder");
         switch (e.SOCKET_TYPE) {
           case "FOLDER_CREATE": {
             this.props.incomingCompanyFolder(e);
@@ -1168,15 +1143,12 @@ class SocketListeners extends Component {
         }
       })
       .listen(".delete-workspace", (e) => {
-        console.log("deleted folder", e);
         this.props.incomingDeletedWorkspaceFolder(e);
       })
       .listen(".workspace-role-notification", (e) => {
-        console.log("workspace role", e);
         this.props.incomingWorkspaceRole(e);
       })
       .listen(".google-attachment-notification", (e) => {
-        console.log("google attachment", e);
         switch (e.SOCKET_TYPE) {
           case "ATTACHMENT_CREATE": {
             if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
@@ -1194,15 +1166,13 @@ class SocketListeners extends Component {
             return null;
         }
       })
-      .listen(".user-activated", (e) => {
-        console.log(e, "new user");
-      })
+      // .listen(".user-activated", (e) => {
+      //   console.log(e, "new user");
+      // })
       .listen(".external-user-notification", (e) => {
-        console.log(e, "new external user");
         this.props.incomingExternalUser(e);
       })
       .listen(".user-notification", (e) => {
-        console.log(e, "user notif");
         switch (e.SOCKET_TYPE) {
           case "USER_UPDATE": {
             this.props.incomingUpdatedUser(e);
@@ -1219,7 +1189,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".post-notification", (e) => {
-        console.log(e, "post notif broadcast");
         switch (e.SOCKET_TYPE) {
           case "POST_DELETE_ATTACHMENT": {
             this.props.incomingDeletedPostFile(e);
@@ -1234,11 +1203,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-timeline-notification", (e) => {
-        console.log(e, "timeline");
         this.props.incomingTimeline(e);
       })
       .listen(".upload-bulk-workspace-files", (e) => {
-        console.log(e, "files bulk");
         this.props.incomingFiles(e);
         e.channel_messages &&
           e.channel_messages.forEach((m) => {
@@ -1259,7 +1226,6 @@ class SocketListeners extends Component {
           });
       })
       .listen(".workspace-file-notification", (e) => {
-        console.log(e, "file", "line 506");
         switch (e.SOCKET_TYPE) {
           case "FILE_RESTORE": {
             this.props.incomingRestoreFile(e);
@@ -1294,7 +1260,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".new-workspace", (e) => {
-        console.log(e, "new workspace");
         if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.props.user.id)) {
           return;
         }
@@ -1333,7 +1298,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-workspace", (e) => {
-        console.log(e, "update workspace");
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
@@ -1354,30 +1318,22 @@ class SocketListeners extends Component {
             }
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
-            if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
-              if (this.props.user.type === "external" || e.private === 1) {
-                if (Object.keys(this.props.workspaces).length) {
-                  let workspace = Object.values(this.props.workspaces)[0];
-                  if (workspace.folder_id) {
-                    this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                  } else {
-                    this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                  }
+            if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.props.user.id)) {
+              //redirect to first favorite workspace
+              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              if (favoriteWorkspaces.length) {
+                let workspace = favoriteWorkspaces[0];
+                this.props.setActiveTopic(workspace);
+                if (workspace.folder_id) {
+                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
                 }
-              }
-            }
-            if (this.props.selectedChannel) {
-              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                //redirect to first channel
-                let wsChannels = Object.values(this.props.channels).filter((c) => {
-                  const checkForId = (id) => id === this.props.user.id;
-                  let isMember = c.members.map((m) => m.id).some(checkForId);
-                  return c.type === "TOPIC" && isMember && !c.is_hidden;
-                });
-                if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                  let channel = wsChannels[0];
-                  this.props.setSelectedChannel(channel);
-                  this.props.history.push(`/chat/${channel.code}`);
+                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+                    this.props.history.push(`/chat/${workspace.channel.code}`);
+                  }
                 }
               }
             }
@@ -1403,7 +1359,6 @@ class SocketListeners extends Component {
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
       .listen(".favourite-workspace-notification", (e) => {
-        console.log(e);
         this.props.incomingFavouriteWorkspace(e);
         // switch (e.SOCKET_TYPE) {
         //   case "WORKSPACE_FAVOURITE": {
@@ -1418,15 +1373,10 @@ class SocketListeners extends Component {
         //     return null;
         // }
       })
-      .listen(".post-require-author-notify", (e) => {
-        console.log(e, ".post-read-require");
-      })
       .listen(".post-read-require", (e) => {
-        console.log(e, ".post-read-require");
         this.props.incomingMarkAsRead(e);
       })
       .listen(".new-workspace", (e) => {
-        console.log(e, "new workspace broadcast");
         if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.props.user.id)) {
           return;
         }
@@ -1465,7 +1415,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".new-lock-workspace", (e) => {
-        console.log(e, "new workspace lock");
         if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.props.user.id)) {
           return;
         }
@@ -1504,7 +1453,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-lock-workspace", (e) => {
-        console.log(e, "update lock workspace");
         this.props.incomingUpdatedWorkspaceFolder(e);
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1523,29 +1471,21 @@ class SocketListeners extends Component {
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
-              if (this.props.user.type === "external" || e.private === 1) {
-                if (Object.keys(this.props.workspaces).length) {
-                  let workspace = Object.values(this.props.workspaces)[0];
-                  if (workspace.folder_id) {
-                    this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                  } else {
-                    this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                  }
+              //redirect to first favorite workspace
+              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              if (favoriteWorkspaces.length) {
+                let workspace = favoriteWorkspaces[0];
+                this.props.setActiveTopic(workspace);
+                if (workspace.folder_id) {
+                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
                 }
-              }
-            }
-            if (this.props.selectedChannel) {
-              if (e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                //redirect to first channel
-                let wsChannels = Object.values(this.props.channels).filter((c) => {
-                  const checkForId = (id) => id === this.props.user.id;
-                  let isMember = c.members.map((m) => m.id).some(checkForId);
-                  return c.type === "TOPIC" && isMember && !c.is_hidden;
-                });
-                if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                  let channel = wsChannels[0];
-                  this.props.setSelectedChannel(channel);
-                  this.props.history.push(`/chat/${channel.code}`);
+                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+                    this.props.history.push(`/chat/${workspace.channel.code}`);
+                  }
                 }
               }
             }
@@ -1569,7 +1509,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".users-online", (e) => {
-        console.log(e, "users-online");
         this.props.currentOnlineUsers(
           e.current_users_online.map((u) => {
             return {
@@ -1580,7 +1519,6 @@ class SocketListeners extends Component {
         );
       })
       .listen(".post-view", (e) => {
-        console.log(e, "post view");
         let payload = {
           post_id: e.post_id,
           viewer: e.user,
@@ -1588,15 +1526,12 @@ class SocketListeners extends Component {
         this.props.incomingPostViewer(payload);
       })
       .listen(".updated-post-visitors", (e) => {
-        console.log(e, "comment post view");
         //this.props.updatePostCommentViewers(e);
       })
       .listen(".move-private-topic-workspace", (e) => {
-        console.log(e, "move workspace private");
         this.props.incomingMovedTopic(e);
       })
       .listen(".update-channel-name", (e) => {
-        console.log(e, "updated channel name");
         let data = {
           ...e,
           message: {
@@ -1614,11 +1549,9 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedChannelDetail(data);
       })
       .listen(".member-update-timestamp", (e) => {
-        //console.log("seen member", e);
         this.props.setMemberTimestamp(e);
       })
       .listen(".new-added-member-chat", (e) => {
-        console.log("new chat member", e);
         if (e.id) {
           let data = JSON.parse(e.body.replace("CHANNEL_UPDATE::", ""));
           let message = {
@@ -1691,7 +1624,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".archived-chat-channel", (e) => {
-        console.log(e, "archived chat", this.props);
         if (e.channel_data.topic_detail) {
           if (e.channel_data.timeline) {
             this.props.incomingTimeline({ timeline_data: e.channel_data.timeline, workspace_data: { topic_id: e.channel_data.topic_detail.id } });
@@ -1710,7 +1642,7 @@ class SocketListeners extends Component {
                       return this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.some((id) => id === ws.id);
                     })
                     .sort((a, b) => a.name.localeCompare(b.name));
-                  console.log(otherWorkspaces, "other workspaces");
+
                   if (otherWorkspaces[0].id === this.props.activeTopic.id) {
                     workspace = otherWorkspaces[1];
                   } else {
@@ -1753,7 +1685,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".new-chat-channel", (e) => {
-        console.log(e, "chat channel");
         if (e.channel_data.creator_by.id !== this.props.user.id) {
           this.props.getChannel({ code: e.channel_data.code }, (err, res) => {
             if (err) return;
@@ -1771,11 +1702,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".chat-message-react", (e) => {
-        console.log(e);
         this.props.incomingChatMessageReaction({ ...e, user_name: e.name });
       })
       .listen(".updated-notification-counter", (e) => {
-        console.log(e, "updated counter");
         if (e.entity_group_type === "CHAT") {
           let workspace = Object.values(this.props.workspaces).find((ws) => {
             return ws.is_favourite && (ws.channel.id === parseInt(e.entity_id) || (ws.team_channel && ws.team_channel.id === parseInt(e.entity_id)));
@@ -1977,6 +1906,7 @@ function mapDispatchToProps(dispatch) {
     incomingFavouriteWorkspace: bindActionCreators(incomingFavouriteWorkspace, dispatch),
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
+    setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
   };
 }
 

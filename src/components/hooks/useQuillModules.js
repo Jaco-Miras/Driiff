@@ -302,7 +302,6 @@ const useQuillModules = ({
         ...modules,
         imageUploader: {
           upload: (file) => {
-            console.log(setImageLoading);
             if (!setInlineImages) return;
             if (setImageLoading) setImageLoading(true);
             return new Promise((resolve, reject) => {
@@ -315,7 +314,6 @@ const useQuillModules = ({
                 folder_id: null,
               })
                 .then((result) => {
-                  console.log(result);
                   if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
                   if (setImageLoading) setImageLoading(false);
                   resolve(result.data.thumbnail_link);

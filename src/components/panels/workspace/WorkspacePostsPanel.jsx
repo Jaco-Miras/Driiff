@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { usePosts, useTranslation } from "../../hooks";
+import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
@@ -102,6 +102,8 @@ const WorkspacePostsPanel = (props) => {
 
   const dispatch = useDispatch();
 
+  useFetchWsCount();
+
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
@@ -112,12 +114,12 @@ const WorkspacePostsPanel = (props) => {
 
   const isExternalUser = user.type === "external";
 
-  const handleGoback = useCallback(() => {
+  const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
       let pathname = history.location.pathname.split("/post/")[0];
       history.push(pathname);
     }
-  }, [params, history]);
+  };
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
@@ -131,7 +133,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [params.workspaceId]);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
@@ -402,7 +404,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(() => {
+  const handleEditArchivePostList = () => {
     const payload = {
       topic_id: workspace.id,
       tag: null,
@@ -410,7 +412,7 @@ const WorkspacePostsPanel = (props) => {
       filter: "all",
     };
     dispatch(updateWorkspacePostFilterSort(payload));
-  }, [activePostListName]);
+  };
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;

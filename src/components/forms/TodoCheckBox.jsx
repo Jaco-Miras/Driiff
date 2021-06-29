@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
-  cursor: pointer;
-
+  min-height: 1rem;
+  input {
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  }
   .cci {
     z-index: 1;
     position: absolute;
@@ -35,8 +37,8 @@ const Wrapper = styled.div`
 
       svg {
         position: absolute;
-        top: 3px;
-        left: 2px;
+        // top: 3px;
+        // left: 2px;
         fill: none;
         stroke: #ffffff;
         stroke-width: 2;
@@ -47,6 +49,11 @@ const Wrapper = styled.div`
         transition: all 0.3s ease;
         transition-delay: 0.1s;
         transform: translate3d(0, 0, 0);
+        width: 8px;
+        height: 9px;
+        top: 4px;
+        left: 4px;
+        stroke-width: 3;
       }
     }
   }
@@ -64,7 +71,7 @@ const Wrapper = styled.div`
 `;
 
 const TodoCheckBox = (props) => {
-  const { className = "", type = "", checked = false, name, onClick, children, ...otherProps } = props;
+  const { className = "", type = "", checked = false, name, onClick, children, disabled = false, ...otherProps } = props;
   const [isChecked, setIsChecked] = useState(checked);
 
   let classType = "";
@@ -92,8 +99,8 @@ const TodoCheckBox = (props) => {
   }, [checked, isChecked]);
 
   return (
-    <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={handleClick} style={{ paddingLeft: 0 }}>
-      <input ref={refs.checkbox} name={name} data-name={name} type="checkbox" className={`cci ${isChecked ? "cci-active" : ""}`} checked={isChecked} readOnly {...otherProps} />
+    <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={handleClick} disabled={disabled}>
+      <input ref={refs.checkbox} name={name} data-name={name} type="checkbox" className={`cci ${isChecked ? "cci-active" : ""}`} checked={isChecked} readOnly {...otherProps} disabled={disabled} />
       <label data-name={name} className="ccl">
         <span>
           <svg width="12px" height="10px" viewBox="0 0 12 10">

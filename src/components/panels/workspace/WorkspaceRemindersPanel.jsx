@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
-import { useWorkspaceReminders, useTranslation } from "../../hooks";
+import { useWorkspaceReminders, useTranslationActions } from "../../hooks";
 import { TodosBody, TodosHeader, TodosSidebar } from "../todos";
 import { throttle } from "lodash";
 
@@ -17,6 +17,13 @@ const Wrapper = styled.div`
     overflow: unset !important;
     height: auto;
     // height: ${(props) => (props.hasReminders ? "auto" : "100%")};
+    .app-content .app-action .action-right {
+      margin-left: 0;
+    }
+    .app-content .app-action {
+      padding: 20px;
+    }
+  }
   }
 `;
 
@@ -25,23 +32,24 @@ const TodosPanel = (props) => {
 
   const { getWorkspaceReminders, action: todoActions, isLoaded, count, workspaceName } = useWorkspaceReminders();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
-  var newItemsFoundHeader = [
-    _t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for."),
-    _t("REMINDER.NO_ITEMS_FOUND_HEADER_2", "WOO!"),
-    _t("REMINDER.NO_ITEMS_FOUND_HEADER_3", "Nothing is overdue."),
-    _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", "Queue’s empty, time to dance!"),
-    _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", "No reminders."),
-  ];
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const [loadReminders, setLoadReminders] = useState(false);
 
-  var newItemsFoundText = [
-    _t("REMINDER.NO_ITEMS_FOUND_TEXT_1", "Try something else, Sherlock. 🕵"),
-    _t("REMINDER.NO_ITEMS_FOUND_TEXT_2", "Nothing here but me… 👻"),
-    _t("REMINDER.NO_ITEMS_FOUND_TEXT_3", "You are out of this world! 👨‍🚀"),
-    _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", "Job well done!💃🕺"),
-    _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀"),
-  ];
+  let newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_2", "WOO!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", "Queue’s empty, time to dance!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", "No reminders.")];
+
+  let newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_2", "Nothing here but me… 👻"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", "Job well done!💃🕺"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀")];
+
+  if (search !== "") {
+    newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for.")];
+    newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_1", "Try something else, Sherlock. 🕵")];
+  }
+  if (search === "" && filter === "OVERDUE") {
+    newItemsFoundHeader = [...newItemsFoundHeader, _t("REMINDER.NO_ITEMS_FOUND_HEADER_3", "Nothing is overdue.")];
+    newItemsFoundText = [...newItemsFoundText, _t("REMINDER.NO_ITEMS_FOUND_TEXT_3", "You are out of this world! 👨‍🚀")];
+  }
 
   const [inDexer, setInDexer] = useState(Math.floor(Math.random() * newItemsFoundHeader.length));
 
@@ -77,10 +85,6 @@ const TodosPanel = (props) => {
     addedByOthers: _t("REMINDER.ADDED_BY_OTHERS", "Added by others"),
   };
 
-  const [filter, setFilter] = useState("");
-  const [search, setSearch] = useState("");
-  const [loadReminders, setLoadReminders] = useState(false);
-
   const handleFilterFile = (e) => {
     setFilter(e.target.dataset.filter);
     document.body.classList.remove("mobile-modal-open");
@@ -88,6 +92,11 @@ const TodosPanel = (props) => {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+    if (e.target.value.trim() === "") {
+      setInDexer(Math.floor(Math.random() * newItemsFoundHeader.length));
+    } else {
+      setInDexer(0);
+    }
   };
 
   const clearSearch = () => {

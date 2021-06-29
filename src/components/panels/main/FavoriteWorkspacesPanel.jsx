@@ -163,7 +163,6 @@ const FavoriteWorkspacesPanel = (props) => {
       if (selectedChannel && !virtualization) {
         const scrollComponent = document.getElementById("component-chat-thread");
         if (scrollComponent) {
-          console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, "save this scroll");
           dispatch(
             setChannelHistoricalPosition({
               channel_id: selectedChannel.id,

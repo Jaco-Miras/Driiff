@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useRouteMatch} from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {RecentPostListItem} from "../../list/post/item";
-import {usePostActions} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { RecentPostListItem } from "../../list/post/item";
+import { usePostActions } from "../../hooks";
 
 const Wrapper = styled.div`
   .feather-refresh-ccw {
@@ -60,7 +60,7 @@ const Wrapper = styled.div`
 `;
 
 const CompanyRecentPosts = (props) => {
-  const {className = "", posts, dictionary, disableOptions} = props;
+  const { className = "", posts, dictionary, disableOptions } = props;
 
   const postActions = usePostActions();
   const match = useRouteMatch();
@@ -94,15 +94,14 @@ const CompanyRecentPosts = (props) => {
     <Wrapper className={`recent-posts card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          {dictionary.recentPosts} <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts}/>
+          {dictionary.recentPosts} <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts} />
         </h5>
         {posts && Object.keys(posts).length ? (
           <ul className="list-group list-group-flush">
             {Object.values(posts)
               .sort((a, b) => (b.created_at.timestamp > a.created_at.timestamp ? 1 : -1))
               .map((post) => {
-                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions}
-                                           onOpenPost={handleOpenPost} disableOptions={disableOptions}/>;
+                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions} onOpenPost={handleOpenPost} disableOptions={disableOptions} />;
               })}
           </ul>
         ) : (

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement, deleteReleaseAnnouncement, saveDraft, deleteDraft, updateDraft, incomingDeletedAnnouncement } from "../../redux/actions/globalActions";
-import { useTranslation, useQuillModules } from "../hooks";
+import { useQuillModules } from "../hooks";
 import { ModalHeaderSection } from "./index";
 // import quillHelper from "../../helpers/quillHelper";
 import { FormInput, QuillEditor, CheckBox } from "../forms";
@@ -59,9 +59,6 @@ const ReleaseModal = (props) => {
    */
   const { type, item } = props.data;
 
-  console.log(props.data);
-
-  const { _t } = useTranslation();
   const dispatch = useDispatch();
 
   const [modal, setModal] = useState(true);

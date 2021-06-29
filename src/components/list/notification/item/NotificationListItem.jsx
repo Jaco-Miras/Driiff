@@ -93,8 +93,6 @@ export const NotificationListItem = (props) => {
     actions.remove({ id: notification.id });
   };*/
 
-  // const { _t } = useTranslation();
-
   const dictionary = {
     post: _t("NOTIFICATION.POST_POPUP", "Shared a post"),
     comment: _t("NOTIFICATION.COMMENT_POPUP", "Made a comment in ::title::", { title: "" }),

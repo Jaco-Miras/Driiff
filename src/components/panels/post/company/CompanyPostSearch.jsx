@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { addCompanyPostSearchResult, searchCompanyPosts } from "../../../../redux/actions/postActions";
@@ -29,7 +29,7 @@ const CompanyPostSearch = (props) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(search);
 
-  const handleSearch = useCallback(debounce((value) => {
+  const handleSearch = debounce((value) => {
     dispatch(
       addCompanyPostSearchResult({
         search: value,
@@ -53,7 +53,7 @@ const CompanyPostSearch = (props) => {
         }
       )
     );
-  }, 500), []);
+  }, 500);
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
@@ -63,7 +63,7 @@ const CompanyPostSearch = (props) => {
     //     search_result: [],
     //   })
     // );
-    handleSearch(e.target.value.trim())
+    handleSearch(e.target.value.trim());
   };
 
   const handleClearSearchPosts = () => {

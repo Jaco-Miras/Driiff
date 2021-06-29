@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useFileActions, useTimeFormat, useRedirect } from "../../hooks";
@@ -102,14 +102,16 @@ const StyledListContainer = styled(ListContainer)`
   .list-group-done .custom-checkbox .cci.cci-active + .ccl span:first-child {
     background: #efefef;
     border: 1px solid #9098a9;
+    color: #8b8b8b;
   }
   .list-group-done .custom-checkbox .cci.cci-active + .ccl span:first-child svg {
-    stroke: #191c20;
+    color: #8b8b8b;
+    stroke: #8b8b8b;
   }
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, filter, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
+  const { className = "", dictionary, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
@@ -180,14 +182,14 @@ const TodosBody = (props) => {
     });
   };
 
-  useEffect(() => {
-    setShowList((prevState) => {
-      return {
-        todo: todoItems.length > 0 || doneTodoItems.length === 0 ? true : prevState.todo,
-        done: todoItems.length > 0 ? false : true,
-      };
-    });
-  }, [filter]);
+  // useEffect(() => {
+  //   setShowList((prevState) => {
+  //     return {
+  //       todo: todoItems.length > 0 || doneTodoItems.length === 0 ? true : prevState.todo,
+  //       done: todoItems.length > 0 ? false : true,
+  //     };
+  //   });
+  // }, [filter]);
 
   // useEffect(() => {
   //   // if bot category is set to false then show the to do section

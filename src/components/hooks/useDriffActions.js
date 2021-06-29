@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { patchCheckDriff, patchUpdateDriffVersion, postRegisterDriff } from "../../redux/actions/driffActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -12,45 +11,39 @@ const useDriffActions = () => {
   /**
    * @param {string} driffName
    */
-  const checkUpdateVersion = useCallback(
-    (callback = () => {}) => {
-      if (!localStorage.getItem("site_ver")) {
-        localStorage.setItem("site_ver", driffData.version);
-      } else {
-        const storageVersion = parseFloat(localStorage.getItem("site_ver").substr(2));
-        const latestVersion = parseFloat(driffData.version.substr(2));
-        if (storageVersion < latestVersion) {
-          dispatch(
-            patchUpdateDriffVersion(
-              {
-                version: driffData.version,
-                requirement: driffData.requirement,
-              },
-              (err, res) => {
-                if (res) {
-                  localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
-                }
-                callback(err, res);
+  const checkUpdateVersion = (callback = () => {}) => {
+    if (!localStorage.getItem("site_ver")) {
+      localStorage.setItem("site_ver", driffData.version);
+    } else {
+      const storageVersion = parseFloat(localStorage.getItem("site_ver").substr(2));
+      const latestVersion = parseFloat(driffData.version.substr(2));
+      if (storageVersion < latestVersion) {
+        dispatch(
+          patchUpdateDriffVersion(
+            {
+              version: driffData.version,
+              requirement: driffData.requirement,
+            },
+            (err, res) => {
+              if (res) {
+                localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
               }
-            )
-          );
-        }
+              callback(err, res);
+            }
+          )
+        );
       }
-    },
-    [dispatch]
-  );
+    }
+  };
 
   /**
    * @param {string} driffName
    */
-  const check = useCallback(
-    (driffName, callback = () => {}) => {
-      dispatch(patchCheckDriff(driffName, callback));
-    },
-    [dispatch]
-  );
+  const check = (driffName, callback = () => {}) => {
+    dispatch(patchCheckDriff(driffName, callback));
+  };
 
-  const getBaseUrl = useCallback(() => {
+  const getBaseUrl = () => {
     if (isIPAddress(window.location.hostname)) {
       return `${process.env.REACT_APP_apiProtocol}${window.location.hostname}`;
     }
@@ -60,9 +53,9 @@ const useDriffActions = () => {
     }
 
     return `${process.env.REACT_APP_apiProtocol}${process.env.REACT_APP_localDNSName}`;
-  }, []);
+  };
 
-  const getName = useCallback(() => {
+  const getName = () => {
     let driff = localStorage.getItem("slug");
     if (driff) {
       return driff;
@@ -75,13 +68,13 @@ const useDriffActions = () => {
         return null;
       }
     }
-  }, []);
+  };
 
-  const unStoreName = useCallback(() => {
+  const unStoreName = () => {
     localStorage.removeItem("slug");
-  }, []);
+  };
 
-  const storeName = useCallback((name, force = false) => {
+  const storeName = (name, force = false) => {
     if (force) {
       localStorage.setItem("slug", name);
     } else {
@@ -93,9 +86,9 @@ const useDriffActions = () => {
         }
       });
     }
-  }, []);
+  };
 
-  const getByHostname = useCallback(() => {
+  const getByHostname = () => {
     if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
       return null;
     }
@@ -111,7 +104,7 @@ const useDriffActions = () => {
     } else {
       return false;
     }
-  }, []);
+  };
 
   /**
    * This function will call on the API to process driff registration
@@ -130,23 +123,20 @@ const useDriffActions = () => {
    * @param {string} payload.invited_by
    * @param {number} payload.invited_by_id
    */
-  const create = useCallback(
-    (payload, callback = () => {}) => {
-      dispatch(
-        postRegisterDriff(payload, (err, res) => {
-          if (err) {
-            toaster.error("Something went wrong!");
-          }
+  const create = (payload, callback = () => {}) => {
+    dispatch(
+      postRegisterDriff(payload, (err, res) => {
+        if (err) {
+          toaster.error("Something went wrong!");
+        }
 
-          if (res) {
-            toaster.success("Driff successfully created.");
-          }
-          callback(err, res);
-        })
-      );
-    },
-    [dispatch]
-  );
+        if (res) {
+          toaster.success("Driff successfully created.");
+        }
+        callback(err, res);
+      })
+    );
+  };
 
   return {
     checkUpdateVersion,

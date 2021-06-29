@@ -5,13 +5,13 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getWorkspaceFitlerCount, getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useToaster, useTranslation } from "./index";
+import { useToaster, useTranslationActions } from "./index";
 
 const useWorkspaceSearchActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const user = useSelector((state) => state.session.user);
 
@@ -131,6 +131,7 @@ const useWorkspaceSearchActions = () => {
   };
 
   const leave = (item) => {
+    favourite(item);
     if (item.members.length === 1 && item.topic.is_locked) {
       let archivePayload = {
         id: item.channel.id,
@@ -194,7 +195,6 @@ const useWorkspaceSearchActions = () => {
   const fetchWorkspaceAndRedirect = (workspace, post = null) => {
     dispatch(
       getWorkspace({ topic_id: workspace.id }, (err, res) => {
-        console.log(res, err);
         if (err) {
           toaster.warning("This workspace cannot be found or accessed.");
           return;

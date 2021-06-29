@@ -11,7 +11,7 @@ import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, RadioInput } from "../forms";
-import { useFileActions, useToaster, useTranslation } from "../hooks";
+import { useFileActions, useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getExternalUsers } from "../../redux/actions/userAction";
@@ -207,7 +207,7 @@ const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
   const { uploadFiles } = useFileActions();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const history = useHistory();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -865,7 +865,6 @@ const CreateEditWorkspaceModal = (props) => {
           createWorkspace(payload, (err, res) => {
             toggle();
             if (err) {
-              console.log(err);
               setLoading(false);
               toaster.warning(
                 <span>

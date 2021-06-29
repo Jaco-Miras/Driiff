@@ -394,13 +394,13 @@ export default (state = INITIAL_STATE, action) => {
         if (!action.data.member_ids.some((id) => id === state.user.id)) {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
-            if (Object.values(updatedWorkspaces).length) {
-              if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
-                updatedTopic = Object.values(updatedWorkspaces)[1];
-              } else {
-                updatedTopic = Object.values(updatedWorkspaces)[0];
-              }
-            }
+            // if (Object.values(updatedWorkspaces).length) {
+            //   if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
+            //     updatedTopic = Object.values(updatedWorkspaces)[1];
+            //   } else {
+            //     updatedTopic = Object.values(updatedWorkspaces)[0];
+            //   }
+            // }
             if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
               let isMember = false;
               updatedFolders[action.data.workspace_id].workspace_ids
@@ -707,7 +707,7 @@ export default (state = INITIAL_STATE, action) => {
       let activeTopic = null;
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
-          if (ws.channel.id === action.data.channel_id) {
+          if (ws.channel.id && ws.channel.id === action.data.channel_id) {
             updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, ...action.data.users];
             updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, ...action.data.users.map((u) => u.id)];
             activeTopic = updatedWorkspaces[ws.id];
@@ -1636,7 +1636,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "FETCH_TIMELINE_SUCCESS": {
-      console.log(action.data.timeline);
       return {
         ...state,
         workspaceTimeline: {
@@ -2514,7 +2513,6 @@ export default (state = INITIAL_STATE, action) => {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
-      console.log("allusers agreed", allUsersAgreed, "all uses disagree", allUsersDisagreed);
       return {
         ...state,
         workspacePosts: {
@@ -3170,6 +3168,126 @@ export default (state = INITIAL_STATE, action) => {
               skip: action.data.todos.length,
               hasMore: action.data.todos.length === action.data.limit,
               reminderIds: [...action.data.todos.map((t) => t.id)],
+              done: {
+                limit: 10,
+                hasMore: true,
+                skip: 0,
+              },
+              overdue: {
+                limit: 25,
+                hasMore: true,
+                skip: 0,
+              },
+              today: {
+                limit: 25,
+                hasMore: true,
+                skip: 0,
+              },
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_DONE_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              done: {
+                limit: 10,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].done.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              done: {
+                limit: 10,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_OVERDUE_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              overdue: {
+                limit: 25,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].overdue.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              overdue: {
+                limit: 25,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_TODAY_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              today: {
+                limit: 25,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].today.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              today: {
+                limit: 25,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
               count: {
                 all: 0,
                 overdue: 0,
@@ -3200,6 +3318,21 @@ export default (state = INITIAL_STATE, action) => {
               skip: 0,
               hasMore: true,
               reminderIds: [],
+              done: {
+                limit: 10,
+                skip: 0,
+                hasMore: true,
+              },
+              overdue: {
+                limit: 25,
+                skip: 0,
+                hasMore: true,
+              },
+              today: {
+                limit: 25,
+                skip: 0,
+                hasMore: true,
+              },
               count: action.data.count.reduce((res, c) => {
                 res[c.status.toLowerCase()] = c.count;
                 return res;

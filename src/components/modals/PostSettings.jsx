@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { CheckBox, FolderSelect } from "../forms";
 
@@ -75,44 +75,41 @@ const PostSettings = (props) => {
     });
   };
 
-  const toggleCheck = useCallback(
-    (e) => {
-      const name = e.target.dataset.name;
-      switch (name) {
-        case "no_reply": {
-          setForm((prevState) => ({
-            ...prevState,
-            [name]: !prevState[name],
-            reply_required: !prevState[name] === true ? false : prevState["reply_required"],
-          }));
-          break;
-        }
-        case "reply_required": {
-          setForm((prevState) => ({
-            ...prevState,
-            [name]: !prevState[name],
-            no_reply: !prevState[name] === true ? false : prevState["no_reply"],
-            requiredUsers:
-              prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
-                ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-                : prevState.requiredUsers,
-          }));
-          break;
-        }
-        default: {
-          setForm((prevState) => ({
-            ...prevState,
-            [name]: !prevState[name],
-            requiredUsers:
-              prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
-                ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-                : prevState.requiredUsers,
-          }));
-        }
+  const toggleCheck = (e) => {
+    const name = e.target.dataset.name;
+    switch (name) {
+      case "no_reply": {
+        setForm((prevState) => ({
+          ...prevState,
+          [name]: !prevState[name],
+          reply_required: !prevState[name] === true ? false : prevState["reply_required"],
+        }));
+        break;
       }
-    },
-    [setForm]
-  );
+      case "reply_required": {
+        setForm((prevState) => ({
+          ...prevState,
+          [name]: !prevState[name],
+          no_reply: !prevState[name] === true ? false : prevState["no_reply"],
+          requiredUsers:
+            prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
+              ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+              : prevState.requiredUsers,
+        }));
+        break;
+      }
+      default: {
+        setForm((prevState) => ({
+          ...prevState,
+          [name]: !prevState[name],
+          requiredUsers:
+            prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
+              ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+              : prevState.requiredUsers,
+        }));
+      }
+    }
+  };
 
   const handleSelectShareOption = (e) => {
     setShareOption(e);

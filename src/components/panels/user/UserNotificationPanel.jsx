@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { useNotificationActions, useNotifications, useRedirect, useTranslation, useSettings } from "../../hooks";
+import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings } from "../../hooks";
 import { NotificationTimelineItem } from "../../list/notification/item";
 import { SvgEmptyState } from "../../common";
 import { UserNotificationSidebar } from "./index";
@@ -25,7 +25,7 @@ const UserNotificationPanel = (props) => {
   const history = useHistory();
   const actions = useNotificationActions();
   const { notifications, unreadNotifications } = useNotifications();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const redirect = useRedirect();
 
   const {

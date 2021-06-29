@@ -81,12 +81,12 @@ const Posts = (props) => {
     setCheckedPosts([]);
   };
 
-  const handleShowPosts = (type) => {
-    setShowPosts({
-      ...showPosts,
-      [type]: !showPosts[type],
-    });
-  };
+  // const handleShowPosts = (type) => {
+  //   setShowPosts({
+  //     ...showPosts,
+  //     [type]: !showPosts[type],
+  //   });
+  // };
 
   const handleShowUnread = () => {
     if (showPosts.showUnread) {

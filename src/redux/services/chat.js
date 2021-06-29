@@ -71,7 +71,7 @@ export function getLastVisitedChannel(payload) {
 }
 
 export function getChatMessages(payload) {
-  const { channel_id, skip, limit, topic_id, ...rest } = payload;
+  //const { channel_id, skip, limit, topic_id, ...rest } = payload;
 
   // let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
   // if (payload.is_shared_topic) {
@@ -457,5 +457,14 @@ export function getCompanyChannel(payload) {
   return apiCall({
     method: "GET",
     url: url,
+  });
+}
+
+export function getChatMsgsForFancy(payload) {
+  let url = "/v2/fancy-link";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
   });
 }

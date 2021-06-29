@@ -16,7 +16,7 @@ import {
   getHuddleChatbot as getHuddleChatbotService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
-  getSearchChannels as getSearchChannelsService,
+  //getSearchChannels as getSearchChannelsService,
   getSelectChannel as getSelectChannelService,
   getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,
@@ -411,6 +411,10 @@ export function setSearchArchivedChannels(payload, callback) {
 
 export function setTranslatedBody(payload, callback) {
   return SimpleDispatchActionToReducer("SET_TRANSLATED_BODY", payload, callback);
+}
+
+export function setFancyLink(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_FANCY_LINK", payload, callback);
 }
 
 export function getCompanyChannel(payload, callback) {

@@ -372,6 +372,7 @@ export default function (state = INITIAL_STATE, action) {
             body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
             channel_id: action.data.channel_id,
             translated_body: null,
+            is_fancy: false,
             //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
           };
         }),
@@ -391,6 +392,7 @@ export default function (state = INITIAL_STATE, action) {
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
         isFetching: false,
+        replyCount: action.data.total,
       };
       return {
         ...state,
@@ -452,6 +454,7 @@ export default function (state = INITIAL_STATE, action) {
         ...channel,
         replies: [...channel.replies, action.data],
         last_reply: action.data,
+        replyCount: channel.replyCount ? channel.replyCount + 1 : 1000,
       };
       return {
         ...state,
@@ -470,6 +473,33 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "SET_TRANSLATED_BODY": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          is_hidden: false,
+          last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? action.data : channel.last_reply,
+          replies: channel.replies.map((r) => {
+            if (r.id === action.data.id) {
+              return action.data;
+            } else return r;
+          }),
+        };
+      }
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+      };
+    }
+    case "SET_FANCY_LINK": {
       let channel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };
@@ -541,6 +571,7 @@ export default function (state = INITIAL_STATE, action) {
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
+          replyCount: (channel.replyCount && action.data.user && action.data.user.id !== state.user.id) || (channel.replyCount && !action.data.user) ? channel.replyCount + 1 : channel.replyCount ? channel.replyCount : 1000,
         };
       }
       return {

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import AllWorkspaceSidebar from "./AllWorkspaceSidebar";
 import AllWorkspaceSearch from "./AllWorkspaceSearch";
 import AllWorkspaceBody from "./AllWorkspaceBody";
-import { useTranslation, useWorkspaceSearchActions } from "../../hooks";
+import { useTranslationActions, useWorkspaceSearchActions } from "../../hooks";
 import { throttle } from "lodash";
 
 const Wrapper = styled.div`
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 const AllWorkspace = (props) => {
   const search = useSelector((state) => state.workspaces.search);
   const { hasMore, results, filterBy, value } = search;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const actions = useWorkspaceSearchActions();
 
   const [loadMore, setLoadMore] = useState(false);
@@ -81,10 +81,11 @@ const AllWorkspace = (props) => {
     addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
     favourites: _t("WORKSPACE.FAVOURITES", "Favourites"),
     all: _t("ALL_WORKSPACE.ALL", "All"),
+    workspaceSortOptionsAlpha: _t("WORKSPACE_SORT_OPTIONS.ALPHA", "Sort by Alphabetical Order (A-Z)"),
+    workspaceSortOptionsDate: _t("WORKSPACE_SORT_OPTIONS.DATE", "Sort by Date (New to Old)"),
   };
 
   const handleLoadMore = () => {
-    console.log("load more");
     if (!loading && hasMore) {
       actions.search(
         {

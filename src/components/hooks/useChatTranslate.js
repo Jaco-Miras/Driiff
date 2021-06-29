@@ -37,8 +37,8 @@ const useChatTranslate = (props) => {
           // update the body in the reducer, no need to return the translated body or set the translated body to state
           // will also update the last reply body so useChatTranslatePreview is not need
           actions.saveTranslationBody({ ...message, translated_body: renderToString(data.translations[0].text), body: renderToString(OriginalHtmlRow) });
-        })
-        .catch(console.log);
+        });
+      //.catch(console.log);
     };
     //check if message has translated_body value, if translated_body is undefined or null then trigger deepl api
     if (!isAuthor && message.user && message.user.language !== language && translate && !message.translated_body) fetchTrans(message);

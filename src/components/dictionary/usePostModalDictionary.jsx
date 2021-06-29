@@ -1,10 +1,10 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const usePostModalDictionary = (props) => {
   const { workspace_ids, addressIds } = props;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     createPost: _t("POST.CREATE_POST", "Create post"),
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),

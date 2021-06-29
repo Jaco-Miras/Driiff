@@ -35,7 +35,7 @@ const useFiles = (triggerFetch = false) => {
             setFetchingFiles(false);
           };
           setFetchingFiles(true);
-  
+
           let payload = {
             topic_id: activeTopic.id,
             folder_id: parseInt(params.fileFolderId),
@@ -59,7 +59,7 @@ const useFiles = (triggerFetch = false) => {
       }
     } else {
       fileIds = Object.values(workspaceFiles[activeTopic.id].files)
-        .filter(f => f.folder_id === null)
+        .filter((f) => f.folder_id === null)
         .map((f) => f.id)
         .sort((a, b) => {
           return b > a ? 1 : -1;

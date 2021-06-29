@@ -5,7 +5,7 @@ import { useTimeFormat, useTodoActions } from "./index";
 
 let init = false;
 const useTodos = (fetchTodosOnMount = false) => {
-  const { isLoaded, skip, limit, hasMore, items, count, doneRecently } = useSelector((state) => state.global.todos);
+  const { isLoaded, skip, limit, hasMore, items, count, doneRecently, done, overdue, today } = useSelector((state) => state.global.todos);
 
   const { user: loggedUser } = useSelector((state) => state.session);
   const users = useSelector((state) => state.users.users);
@@ -14,11 +14,39 @@ const useTodos = (fetchTodosOnMount = false) => {
   const { localizeDate } = useTimeFormat();
 
   const loadMore = () => {
-    if (!hasMore) return;
-    todoActions.fetch({
-      skip: skip,
-      limit: limit,
-    });
+    // todoActions.fetch({
+    //   skip: skip,
+    //   limit: 100,
+    //   //filter: "new",
+    // });
+    if (hasMore) {
+      todoActions.fetch({
+        skip: skip,
+        limit: limit,
+        filter: "new",
+      });
+    }
+    if (today.hasMore) {
+      todoActions.fetchToday({
+        skip: today.skip,
+        limit: today.limit,
+        filter: "today",
+      });
+    }
+    if (done.hasMore) {
+      todoActions.fetchDone({
+        skip: done.skip,
+        limit: done.limit,
+        filter: "done",
+      });
+    }
+    if (overdue.hasMore) {
+      todoActions.fetchOverdue({
+        skip: overdue.skip,
+        limit: overdue.limit,
+        filter: "overdue",
+      });
+    }
   };
 
   const getReminders = ({ filter = "" }) => {
@@ -70,7 +98,8 @@ const useTodos = (fetchTodosOnMount = false) => {
           }
         }
         return true;
-      });
+      })
+      .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
   useEffect(() => {

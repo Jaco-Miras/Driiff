@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { WorkspaceSearch, WorkspaceSearchResults } from "./index";
-import { useWorkspaceSearchActions, useRedirect, useTranslation } from "../../hooks";
+import { useWorkspaceSearchActions, useRedirect, useTranslationActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 import ReactPaginate from "react-paginate";
 
@@ -109,7 +109,7 @@ const WorkspaceSearchPanel = (props) => {
     }
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     labelResultsFor: _t("LABEL.RESULTS_FOR", "results found for: "),

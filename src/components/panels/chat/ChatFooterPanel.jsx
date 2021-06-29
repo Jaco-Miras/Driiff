@@ -6,7 +6,7 @@ import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslation, useSelectQuote } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
@@ -181,7 +181,7 @@ const ChatFooterPanel = (props) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
-  const [active, setActive] = useState(false);
+  //const [active, setActive] = useState(false);
   const [cursor, setCursor] = useState("default");
   const [backgroundSend, setBackgroundSend] = useState(null);
   const [fillSend, setFillSend] = useState("#cacaca");
@@ -212,7 +212,7 @@ const ChatFooterPanel = (props) => {
   };
 
   const onActive = (active) => {
-    setActive(active);
+    //setActive(active);
     let sendButtonValues;
     active ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
     setBackgroundSend(sendButtonValues[0]);
@@ -244,7 +244,7 @@ const ChatFooterPanel = (props) => {
     );
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),

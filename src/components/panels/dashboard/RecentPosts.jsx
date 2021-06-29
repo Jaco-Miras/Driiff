@@ -102,7 +102,7 @@ const RecentPosts = (props) => {
             {Object.values(posts)
               .sort((a, b) => (b.created_at.timestamp > a.created_at.timestamp ? 1 : -1))
               .map((post) => {
-                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions} onOpenPost={handleOpenPost} disableOptions={disableOptions}/>;
+                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions} onOpenPost={handleOpenPost} disableOptions={disableOptions} />;
               })}
           </ul>
         ) : (

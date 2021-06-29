@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -56,7 +56,7 @@ const PostSearch = (props) => {
     }
   };
 
-  const handleSearch = useCallback(debounce((value) => {
+  const handleSearch = debounce((value) => {
     dispatch(
       addPostSearchResult({
         topic_id: topic_id,
@@ -83,7 +83,7 @@ const PostSearch = (props) => {
         }
       )
     );
-  }, 500), []);
+  }, 500);
 
   return (
     <Wrapper className="input-group">

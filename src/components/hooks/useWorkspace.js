@@ -95,7 +95,6 @@ const useWorkspace = () => {
               actions.redirectTo(workspaces[activeTopicSettings.id]);
             }
           } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
-            console.log("trigger");
             actions.selectWorkspace(Object.values(workspaces)[0]);
             actions.redirectTo(Object.values(workspaces)[0]);
             localStorage.removeItem("fromRegister");
@@ -183,7 +182,7 @@ const useWorkspace = () => {
   }, [params]);
 
   useEffect(() => {
-    if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/")) {
+    if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/") && activeTopic.members.some((m) => m.id === user.id)) {
       setFetchingPrimary(true);
       const callback = (err, res) => {
         setTimeout(() => {
@@ -199,7 +198,7 @@ const useWorkspace = () => {
       };
       actions.getPrimaryFiles(activeTopic.id, callback);
     }
-  }, [fetchingPrimary, activeTopic, url]);
+  }, [fetchingPrimary, activeTopic, url, user]);
 
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && activeTopic && workspaceTimeline[activeTopic.id]) {

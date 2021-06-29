@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {InputGroup, Label, Modal, ModalBody} from "reactstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
-import {clearModal} from "../../redux/actions/globalActions";
-import {FormInput} from "../forms";
-import {useDriffActions, useTranslation} from "../hooks";
-import {ModalHeaderSection} from "./index";
+import { clearModal } from "../../redux/actions/globalActions";
+import { FormInput } from "../forms";
+import { useDriffActions, useTranslationActions } from "../hooks";
+import { ModalHeaderSection } from "./index";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -21,7 +21,7 @@ const WrapperDiv = styled(InputGroup)`
     margin: 0 20px 0 0;
     min-width: 125px;
   }
-  
+
   .form-group {
     width: calc(100% - 145px);
   }
@@ -39,15 +39,15 @@ const WrapperDiv = styled(InputGroup)`
     margin-top: 40px;
 
     .action-archive-wrapper {
-        display: flex;
-        width: 100%;
+      display: flex;
+      width: 100%;
 
-        .btn-archive {
-          display: flex;
-          margin-left: auto;
-          text-decoration: underline;
-          color: #a7abc3;
-        }
+      .btn-archive {
+        display: flex;
+        margin-left: auto;
+        text-decoration: underline;
+        color: #a7abc3;
+      }
     }
   }
 `;
@@ -58,10 +58,10 @@ const WrapperDiv = styled(InputGroup)`
 // `;
 
 const CreatePersonalLinksModal = (props) => {
-  const {type, mode, item = null, actions} = props.data;
+  const { type, mode, item = null, actions } = props.data;
 
   const driffActions = useDriffActions();
-  const {_t} = useTranslation();
+  const { _t } = useTranslationActions();
 
   let dictionary = {
     linkCreateTitle: _t("SHORTCUT.LINK_CREATE_TITLE", "Add shortcut"),
@@ -79,10 +79,10 @@ const CreatePersonalLinksModal = (props) => {
   if (item) {
     dictionary = {
       ...dictionary,
-      removeLinkBodyText: _t("SHORTCUT.REMOVE_LINK_BODY_TEXT", `Are you sure to remove ::name::?`, {
-        name: `<a href="${item.web_address}" target="_blank">${item.name}</a>`
-      })
-    }
+      removeLinkBodyText: _t("SHORTCUT.REMOVE_LINK_BODY_TEXT", "Are you sure to remove ::name::?", {
+        name: `<a href="${item.web_address}" target="_blank">${item.name}</a>`,
+      }),
+    };
   }
 
   const inputRef = useRef();
@@ -102,38 +102,36 @@ const CreatePersonalLinksModal = (props) => {
 
   const handleInputChange = useCallback((e) => {
     e.persist();
-    setForm(prevState => ({
+    setForm((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
 
-    setFormResponse(prevState => ({
+    setFormResponse((prevState) => ({
       ...prevState,
       valid: {
         ...prevState.valid,
-        [e.target.name]: undefined
+        [e.target.name]: undefined,
       },
       message: {
         ...prevState.message,
-        [e.target.name]: undefined
+        [e.target.name]: undefined,
       },
     }));
   }, []);
 
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({type: type}));
+    dispatch(clearModal({ type: type }));
   };
 
   useEffect(() => {
-    console.log(item);
-    console.log(mode);
     if (mode === "edit") {
       setForm({
         ...form,
         name: item.name,
         web_address: item.web_address,
-        index: item.index
+        index: item.index,
       });
     }
   }, []);
@@ -158,10 +156,10 @@ const CreatePersonalLinksModal = (props) => {
 
     setFormResponse({
       valid: valid,
-      message: message
-    })
+      message: message,
+    });
 
-    return !Object.values(valid).some(v => v === false);
+    return !Object.values(valid).some((v) => v === false);
   };
 
   const handleConfirm = () => {
@@ -176,14 +174,14 @@ const CreatePersonalLinksModal = (props) => {
         actions.create(form, () => {
           setLoading(false);
           toggle();
-        })
+        });
         break;
       }
       case "edit": {
         actions.update(form, () => {
           setLoading(false);
           toggle();
-        })
+        });
         break;
       }
     }
@@ -194,8 +192,8 @@ const CreatePersonalLinksModal = (props) => {
       dictionary: dictionary,
       callback: () => {
         toggle();
-      }
-    })
+      },
+    });
   };
 
   const onOpened = () => {
@@ -214,41 +212,26 @@ const CreatePersonalLinksModal = (props) => {
           <div>
             <Label for="folder">{dictionary.webAddress}</Label>
           </div>
-          <FormInput
-            name="web_address"
-            defaultValue={form.web_address}
-            placeholder={`e.g. ${driffActions.getBaseUrl()}`}
-            onChange={handleInputChange}
-            isValid={formResponse.valid.web_address}
-            feedback={formResponse.message.web_address}/>
+          <FormInput name="web_address" defaultValue={form.web_address} placeholder={`e.g. ${driffActions.getBaseUrl()}`} onChange={handleInputChange} isValid={formResponse.valid.web_address} feedback={formResponse.message.web_address} />
         </WrapperDiv>
         <WrapperDiv>
           <div>
             <Label for="folder">{dictionary.name}</Label>
           </div>
-          <FormInput
-            name="name"
-            defaultValue={form.name}
-            placeholder={`e.g. ${driffActions.getName()} Driff website`}
-            onChange={handleInputChange}
-            isValid={formResponse.valid.name}
-            feedback={formResponse.message.name}/>
+          <FormInput name="name" defaultValue={form.name} placeholder={`e.g. ${driffActions.getName()} Driff website`} onChange={handleInputChange} isValid={formResponse.valid.name} feedback={formResponse.message.name} />
         </WrapperDiv>
-        <WrapperDiv className="action-wrapper" style={{marginTop: "40px"}}>
-          <button className="btn btn-primary"
-                  onClick={handleConfirm}>
-            {loading &&
-            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+        <WrapperDiv className="action-wrapper" style={{ marginTop: "40px" }}>
+          <button className="btn btn-primary" onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateLink : dictionary.createLink}
           </button>
-          {
-            mode === "edit" &&
+          {mode === "edit" && (
             <div className="action-archive-wrapper">
-                  <span onClick={handleShowRemoveConfirmation}
-                        className="btn-archive text-link mt-2 cursor-pointer">{dictionary.removeLink}
-                  </span>
+              <span onClick={handleShowRemoveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
+                {dictionary.removeLink}
+              </span>
             </div>
-          }
+          )}
         </WrapperDiv>
       </ModalBody>
     </Modal>

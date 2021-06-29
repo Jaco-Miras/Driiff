@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 // import { ModalHeaderSection } from "./index";
 import styled from "styled-components";
-import { useTranslation, useUserActions } from "../hooks";
+import { useTranslationActions, useUserActions } from "../hooks";
 // import { getDriffName } from "../hooks/useDriff";
 import { SvgIconFeather } from "../common";
 
@@ -42,22 +42,22 @@ const NotificationBar = styled.div`
   }
 `;
 
-const AudioStyle = styled.audio`
-  display: none;
-  opacity: 0;
-  visibility: hidden;
-`;
+// const AudioStyle = styled.audio`
+//   display: none;
+//   opacity: 0;
+//   visibility: hidden;
+// `;
 
 const DriffUpdateModal = (props) => {
   const { type, requirement, handleReminder } = props.data;
 
   const { logout, processBackendLogout } = useUserActions();
   const dispatch = useDispatch();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
-  const refs = {
-    audio: useRef(null),
-  };
+  // const refs = {
+  //   audio: useRef(null),
+  // };
 
   const dictionary = {
     update: _t("DRIFF.DRIFF_VERSION_UPDATE", "Go!"),

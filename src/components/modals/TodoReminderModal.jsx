@@ -5,12 +5,12 @@ import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useSettings, useTranslation, useToaster, useWindowSize } from "../hooks";
+import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import quillHelper from "../../helpers/quillHelper";
+//import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
 import moment from "moment";
-import MessageFiles from "../list/chat/Files/MessageFiles";
+// import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
@@ -55,6 +55,7 @@ const RadioInputContainer = styled.div`
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
     height: ${(props) => (props.height > 80 ? props.height : 80)}px;
+    max-height: 400px;
   }
 
   label {
@@ -73,7 +74,7 @@ const TodoReminderModal = (props) => {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
   } = useSettings();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const winSize = useWindowSize();
@@ -147,7 +148,6 @@ const TodoReminderModal = (props) => {
        * **/
       if (!itemType && params && workspaces[params.workspaceId]) {
         const ws = { ...workspaces[params.workspaceId] };
-        console.log("set default workspace");
         // set default selected workspace and set the user options using the workspace members
         setSelectedWorkspace({
           ...ws,

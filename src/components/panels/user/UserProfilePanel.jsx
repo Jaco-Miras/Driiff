@@ -8,7 +8,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import { useToaster, useTranslation, useUserActions, useUserChannels, useUsers } from "../../hooks";
+import { useToaster, useTranslationActions, useUserActions, useUserChannels, useUsers } from "../../hooks";
 import { FormInput } from "../../forms";
 
 const Wrapper = styled.div`
@@ -137,7 +137,7 @@ const UserProfilePanel = (props) => {
     password: useRef(null),
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),
@@ -440,7 +440,6 @@ const UserProfilePanel = (props) => {
     if (!editInformation) {
       setEditInformation(true);
     }
-
     refs.dropZoneRef.current.open();
   };
 
@@ -505,6 +504,12 @@ const UserProfilePanel = (props) => {
   const handleEmailClick = useCallback(() => {
     window.location.href = `mailto:${user.email}`;
   }, [user]);
+
+  useEffect(() => {
+    if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
+      history.push(`/profile/${loggedUser.id}/${replaceChar(loggedUser.name)}`);
+    }
+  }, []);
 
   useEffect(() => {
     const selectedUser = users[props.match.params.id] ? users[props.match.params.id] : {};
@@ -573,11 +578,11 @@ const UserProfilePanel = (props) => {
                   Some fields cannot be edited.
                 </ImportWarning>
               )}*/}
-              <div className="avatar-container" onClick={handleAvatarClick}>
+              <div className="avatar-container">
                 {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
                 {(isLoggedUser || isAdmin) && (
                   <span className="btn btn-outline-light btn-sm">
-                    <SvgIconFeather icon="pencil" />
+                    <SvgIconFeather icon="pencil" onClick={handleAvatarClick} />
                   </span>
                 )}
               </div>

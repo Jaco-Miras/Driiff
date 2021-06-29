@@ -102,14 +102,14 @@ const DashboardTeam = (props) => {
     actions.leave(workspace, member, callback);
   };
 
-  const onAddRole = useCallback((member, role) => {
+  const onAddRole = (member, role) => {
     let payload = {
       topic_id: workspace.id,
       user_id: member.id,
       role,
     };
     actions.addRole(payload);
-  }, []);
+  };
 
   return (
     <Wrapper className={`dashboard-team card ${className}`} ref={mainRef}>

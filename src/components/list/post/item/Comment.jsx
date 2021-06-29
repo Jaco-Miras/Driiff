@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote } from "../../../common";
@@ -242,17 +242,14 @@ const Comment = (props) => {
 
   const likers = Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id));
 
-  const handleShowInput = useCallback(
-    (commentId = null) => {
-      if (parentShowInput) {
-        parentShowInput(commentId);
-      } else {
-        setShowInput(typeof commentId !== "number" ? comment.id : commentId);
-      }
-      inputFocus();
-    },
-    [setShowInput]
-  );
+  const handleShowInput = (commentId = null) => {
+    if (parentShowInput) {
+      parentShowInput(commentId);
+    } else {
+      setShowInput(typeof commentId !== "number" ? comment.id : commentId);
+    }
+    inputFocus();
+  };
 
   const handleMentionUser = () => {
     setUserMention(`<p class="mention-data"><span class="mention" data-index="0" data-denotation-char="@" data-id="${comment.author.id}" data-value="${comment.author.name}">
@@ -260,9 +257,9 @@ const Comment = (props) => {
     setShowInput(true);
   };
 
-  const handleClearUserMention = useCallback(() => {
+  const handleClearUserMention = () => {
     setUserMention(null);
-  }, []);
+  };
 
   const handleQuote = () => {
     if (parentShowInput) {
@@ -274,7 +271,7 @@ const Comment = (props) => {
     commentActions.addQuote(comment);
   };
 
-  const inputFocus = useCallback(() => {
+  const inputFocus = () => {
     if (showInput !== null && refs.input.current !== null) {
       refs.input.current.querySelector(".ql-editor").scrollIntoView({
         behavior: "smooth",
@@ -283,7 +280,7 @@ const Comment = (props) => {
       });
       refs.input.current.querySelector(".ql-editor").focus();
     }
-  }, [showInput, refs.input.current]);
+  };
 
   const handleReaction = () => {
     if (disableOptions) return;
@@ -320,11 +317,22 @@ const Comment = (props) => {
   const { fromNow } = useTimeFormat();
 
   const handleInlineImageClick = (e) => {
-    let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-    if (file) {
+    // let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
+    // if (file) {
+    //   dispatch(
+    //     setViewFiles({
+    //       file_id: file.id,
+    //       files: comment.files,
+    //     })
+    //   );
+    // }
+    let id = null;
+    if (e.target.dataset.id) id = e.target.dataset.id;
+
+    if (id) {
       dispatch(
         setViewFiles({
-          file_id: file.id,
+          file_id: parseInt(id),
           files: comment.files,
         })
       );
@@ -348,11 +356,13 @@ const Comment = (props) => {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
           if (imgFile && fileBlobs[imgFile.id]) {
             img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
           }
         }
       });
@@ -376,27 +386,22 @@ const Comment = (props) => {
             .then(function (response) {
               return response.blob();
             })
-            .then(
-              function (data) {
-                const imgObj = URL.createObjectURL(data);
-                setFileSrc({
-                  id: file.id,
-                  src: imgObj,
-                });
-                commentActions.updateCommentImages({
-                  post_id: post.id,
-                  id: comment.id,
-                  parent_id: type === "main" ? null : parentId,
-                  file: {
-                    ...file,
-                    blobUrl: imgObj,
-                  },
-                });
-              },
-              function (err) {
-                console.log(err, "error");
-              }
-            );
+            .then(function (data) {
+              const imgObj = URL.createObjectURL(data);
+              setFileSrc({
+                id: file.id,
+                src: imgObj,
+              });
+              commentActions.updateCommentImages({
+                post_id: post.id,
+                id: comment.id,
+                parent_id: type === "main" ? null : parentId,
+                file: {
+                  ...file,
+                  blobUrl: imgObj,
+                },
+              });
+            });
         }
       });
     }

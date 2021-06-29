@@ -3,7 +3,7 @@ import styled from "styled-components";
 import TimePicker from "react-time-picker";
 import { FolderSelect } from "../../forms";
 import { useDispatch, useSelector } from "react-redux";
-import { useHuddleChatbot, useToaster, useTranslation } from "../../hooks";
+import { useHuddleChatbot, useToaster, useTranslationActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
@@ -38,7 +38,7 @@ const addZeroBefore = (n) => {
 };
 
 const HuddlePanel = (props) => {
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     huddleBot: _t("HUDDLE.Question", "Question"),
@@ -104,7 +104,6 @@ const HuddlePanel = (props) => {
   });
 
   const handleSelectChannel = (e) => {
-    console.log(e);
     if (e === null) {
       setChannel([]);
       setForm({
@@ -118,7 +117,6 @@ const HuddlePanel = (props) => {
     } else {
       setChannel(e);
       if (e.huddle) {
-        console.log(e.huddle);
         const publishAtHour = parseInt(e.huddle.publish_at.time.substr(0, 2)) - offSetHour;
         const startAtHour = parseInt(e.huddle.start_at.time.substr(0, 2)) - offSetHour;
         setForm({

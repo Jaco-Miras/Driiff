@@ -3,7 +3,7 @@ import Select, { components } from "react-select";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
-import { useSettings, useTranslation } from "../hooks";
+import { useSettings, useTranslationActions } from "../hooks";
 
 const StyledSelect = styled(Select)`
   .dark & {
@@ -13,24 +13,24 @@ const StyledSelect = styled(Select)`
         margin: 10px;
         border-radius: 2px;
         color: #fff;
-        
+
         > div {
           color: #c7c7c7;
-          
+
           &[class$="indicatorContainer"] {
-            background: rgb(17, 20, 23);        
+            background: rgb(17, 20, 23);
           }
         }
       }
     }
     [class$="menu"] {
-      > div {        
-        > div {        
+      > div {
+        > div {
           > div {
             //background: rgb(17, 20, 23);
           }
-        }      
-      }        
+        }
+      }
     }
   }
 `;
@@ -64,7 +64,7 @@ const Option = (props) => {
       <components.Option {...props}>
         {props.data && (
           <>
-            <Icon icon={props.data.icon}/>
+            <Icon icon={props.data.icon} />
             {props.children}
           </>
         )}
@@ -73,11 +73,10 @@ const Option = (props) => {
   );
 };
 
-
 const PostVisibilitySelect = forwardRef((props, ref) => {
-  const {className = "", postType = "company", ...otherProps} = props;
+  const { className = "", ...otherProps } = props;
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     visibleAllInternal: _t("POST.VISIBLE_ALL_INTERNAL", "Visible to all internal members"),
@@ -86,26 +85,24 @@ const PostVisibilitySelect = forwardRef((props, ref) => {
   };
 
   const {
-    generalSettings: {dark_mode},
+    generalSettings: { dark_mode },
   } = useSettings();
 
-  let components = {Option};
-  const options = [{
-    icon: "unlock",
-    value: false,
-    label: dictionary.visibleAllWorkspace,
-  }, {
-    icon: "lock",
-    value: true,
-    label: dictionary.responsbileUsers
-  }];
+  let components = { Option };
+  const options = [
+    {
+      icon: "unlock",
+      value: false,
+      label: dictionary.visibleAllWorkspace,
+    },
+    {
+      icon: "lock",
+      value: true,
+      label: dictionary.responsbileUsers,
+    },
+  ];
 
-  return <StyledSelect
-    ref={ref} className={`react-select-container ${className}`}
-    styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={false} isClearable={false}
-    components={components}
-    options={options}
-    {...otherProps} />;
+  return <StyledSelect ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={false} isClearable={false} components={components} options={options} {...otherProps} />;
 });
 
 export default PostVisibilitySelect;

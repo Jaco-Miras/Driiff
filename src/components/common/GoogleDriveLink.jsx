@@ -12,10 +12,11 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  
+  background-color: #F8F8F8;
+  color: #696969 !important;
   a {
     text-decoration: none;
-    
+    color: #696969 !important;
     &.gdrive-link {
       display: flex;
     }
@@ -34,7 +35,7 @@ const Wrapper = styled.div`
       } 
       &.preview-text { 
         font-weight: bold;       
-        color: #828282;
+        color: #696969 !important;
       }     
     }
   }
@@ -56,14 +57,14 @@ const GoogleDriveLink = (props) => {
 
   return (
     <Wrapper className={`google-drive dropdown ${className}`}>
-      <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#fff"
+      <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#696969"
                       opacity=".8"/><a data-google-file-id={fileId} data-google-link-retrieve={retrieve}
                                        href={link} data-href-link={link} target="_blank" className="gdrive-link">
       {
         typeof file !== "undefined" ?
           <>{file.title}</>
           :
-          <><span className="link"/><span className="preview-text"/></>
+          <><span className="preview-text"/></>
       }
     </a>
     </Wrapper>

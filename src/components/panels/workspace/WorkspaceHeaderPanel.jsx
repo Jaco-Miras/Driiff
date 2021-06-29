@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslation } from "../../hooks";
+import { useToaster, useTranslationActions } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
@@ -279,7 +279,7 @@ const WorspaceHeaderPanel = (props) => {
   } = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),

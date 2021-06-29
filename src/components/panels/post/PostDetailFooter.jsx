@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -6,7 +6,7 @@ import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
-import { useToaster, useTranslation, usePostActions } from "../../hooks";
+import { useToaster, useTranslationActions, usePostActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
 import { FolderSelect } from "../../forms";
@@ -265,13 +265,13 @@ const PostDetailFooter = (props) => {
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
   const users = useSelector((state) => state.users.users);
 
-  const handleSend = useCallback(() => {
+  const handleSend = () => {
     setSent(true);
-  }, [setSent]);
+  };
 
-  const handleClearSent = useCallback(() => {
+  const handleClearSent = () => {
     setSent(false);
-  }, [setSent]);
+  };
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -309,7 +309,7 @@ const PostDetailFooter = (props) => {
   };
 
   const toaster = useToaster();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
@@ -587,6 +587,7 @@ const PostDetailFooter = (props) => {
     if (err) return;
     if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
       postActions.markReplyRequirement(post);
+      postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
