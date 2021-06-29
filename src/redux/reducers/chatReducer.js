@@ -371,7 +371,7 @@ export default function (state = INITIAL_STATE, action) {
             is_read: true,
             body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
             channel_id: action.data.channel_id,
-            translated_body: null,
+            //translated_body: null,
             is_fancy: false,
             //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
           };
@@ -526,6 +526,30 @@ export default function (state = INITIAL_STATE, action) {
             : state.channels,
       };
     }
+    case "SET_CHANNEL_TRANSLATE_STATE": {
+      let channel = null;
+   
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.id)) {
+        channel = { ...state.channels[action.data.id] };
+        channel = {
+          ...channel,
+          is_translate: action.data.is_translate 
+        };
+      }
+
+      return {
+        ...state,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.id]: channel,
+              }
+            : state.channels,
+      };
+    }
+    
     case "INCOMING_CHAT_MESSAGE": {
       let haveReference = false;
       let channel = null;

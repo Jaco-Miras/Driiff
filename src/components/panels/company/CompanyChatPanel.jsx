@@ -53,7 +53,10 @@ const Wrapper = styled.div`
 
 const CompanyChatPanel = (props) => {
   const { className = "" } = props;
-
+  if (localStorage.getItem("chat_translate_change") !== null) {
+    localStorage.removeItem("chat_translate_change");
+    window.location.reload();
+  }
   return (
     <Wrapper className={`company-chat ${className}`}>
       <div className="row no-gutters chat-block">

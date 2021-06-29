@@ -359,19 +359,19 @@ const ProfileSettings = (props) => {
       ),
     },
     {
-      value: "sk",
+      value: "sl",
       label: (
         <>
-          <Flag countryAbbr="sk" className="mr-2" width="18" />
+          <Flag countryAbbr="sl" className="mr-2" width="18" />
           {_t("LANGUAGE.SLOVENIAN", "Slovenian")}
         </>
       ),
     },
     {
-      value: "sk",
+      value: "sv",
       label: (
         <>
-          <Flag countryAbbr="SV" className="mr-2" width="18" />
+          <Flag countryAbbr="sv" className="mr-2" width="18" />
           {_t("LANGUAGE.SWEDISH", "Swedish")}
         </>
       ),

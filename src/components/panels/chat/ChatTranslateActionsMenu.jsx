@@ -69,7 +69,7 @@ const ChatTranslateActions = (props) => {
   if (translated_channels.length > 0 && translated_channels.includes(selectedChannel.id) && !selectedChannel.is_translate)
     chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: true });
 
-  ; //(selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
+  //(selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
   return (
     <Wrapper onClick={handleTranslate}>
       {!isTranslate ? dictionary.chatTranslateOn : dictionary.chatTranslateOff}
