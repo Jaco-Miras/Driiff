@@ -262,3 +262,7 @@ export function getOverdueWorkspaceRemindersCallback(payload, callback) {
 export function getTodayWorkspaceRemindersCallback(payload, callback) {
   return SimpleDispatchActionToReducer("GET_TODAY_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
 }
+
+export function setChannelIsTranslate(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANNEL_IS_TRANSLATE", payload, callback);
+}
