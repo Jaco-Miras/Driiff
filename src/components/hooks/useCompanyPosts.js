@@ -115,7 +115,7 @@ const useCompanyPosts = () => {
           if (search !== "") {
             return true;
           } else {
-            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
+            return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
@@ -135,7 +135,7 @@ const useCompanyPosts = () => {
         } else if (tag === "is_read_only") {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         } else if (tag === "is_unread") {
-          return (p.is_unread && !p.hasOwnProperty("draft_type") && !p.is_archived) || (p.unread_count > 0 && !p.is_archived && !p.hasOwnProperty("draft_type"));
+          return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
         } else if (tag === "is_close") {
           return p.is_close && !p.hasOwnProperty("draft_type");
         } else if (!isNaN(parseInt(tag))) {
@@ -167,7 +167,7 @@ const useCompanyPosts = () => {
     return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
   }).length;
   count.is_unread = Object.values(posts).filter((p) => {
-    return (p.is_unread && !p.is_archived && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.is_archived && !p.hasOwnProperty("draft_type"));
+    return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
   }).length;
   count.is_close = Object.values(posts).filter((p) => {
     return p.is_close && !p.hasOwnProperty("draft_type");
