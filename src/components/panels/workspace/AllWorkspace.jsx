@@ -38,8 +38,8 @@ const AllWorkspace = (props) => {
     document.body.classList.add("stretch-layout");
     actions.getFilterCount((err, res) => {
       if (err) return;
-      if (res.data && results.length === 0) {
-        setLoading(true);
+      if (res.data) {
+        if (results.length === 0) setLoading(true);
         const all = res.data.reduce((acc, val) => {
           if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
             acc = acc + val.count;

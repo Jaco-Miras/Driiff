@@ -1466,6 +1466,7 @@ export default (state = INITIAL_STATE, action) => {
                       has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[ws.topic_id].posts[action.data.post_id].has_replied,
                       unread_count:
                         isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
+                      is_unread: isNewComment && action.data.author.id !== state.user.id ? 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].is_unread,
                     },
                   }),
                 },
@@ -2280,7 +2281,7 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
         Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_read = true;
-          workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
+          //workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
           workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
         });
