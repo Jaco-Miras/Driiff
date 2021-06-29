@@ -294,7 +294,7 @@ const CompanyPostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" ? (
+          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
             <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
           ) : (
             <>

@@ -484,7 +484,7 @@ const WorkspacePostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" ? (
+          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
             <PostsEmptyState actions={actions} dictionary={dictionary} disableOptions={disableOptions} isMember={isMember} />
           ) : (
             <>
