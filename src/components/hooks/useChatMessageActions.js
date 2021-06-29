@@ -19,7 +19,8 @@ import {
   setTranslatedBody,
   resetTranslatedBody,
   setFancyLink,
-  postChatMessageTranslate
+  postChatMessageTranslate,
+  setChannelTranslateState,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions, useTranslationActions } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -374,9 +375,19 @@ const useChatMessageActions = () => {
       dispatch(resetTranslatedBody(payload));
     }
 
-  const saveTranslation = 
+  const saveTranslation =
     (payload) => {
       dispatch(postChatMessageTranslate(payload));
+    }
+
+  /**
+ * @param {object} payload
+ * @parm number payload.message_id chat.id
+ * @param {function} [callback]
+ */
+  const saveChannelTranslateState =
+    (payload) => {
+      dispatch(setChannelTranslateState(payload));
     }
 
   return {
@@ -403,7 +414,8 @@ const useChatMessageActions = () => {
     saveFancyContent,
     setTranslationBody,
     resetTranslationBody,
-    saveTranslation
+    saveTranslation,
+    saveChannelTranslateState
   };
 };
 
