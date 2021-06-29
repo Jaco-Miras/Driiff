@@ -2279,7 +2279,7 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
         Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_read = true;
-          workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
+          //workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
           workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
         });
