@@ -131,7 +131,7 @@ const useWorkspaceSearchActions = () => {
   };
 
   const leave = (item) => {
-    favourite(item);
+    // favourite(item);
     if (item.members.length === 1 && item.topic.is_locked) {
       let archivePayload = {
         id: item.channel.id,
