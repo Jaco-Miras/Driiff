@@ -2060,37 +2060,6 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
-    // case "GET_WORKSPACE_SUCCESS": {
-    //   let updatedWorkspaces = { ...state.workspaces };
-    //   let updatedFolders = { ...state.folders };
-    //   if (Object.keys(updatedWorkspaces).length > 0) {
-    //     if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
-    //       return state;
-    //     } else {
-    //       updatedWorkspaces[action.data.topic_id] = {
-    //         ...action.data.workspace_data,
-    //         active: action.data.workspace_data.topic_detail.active,
-    //         channel: action.data.workspace_data.topic_detail.channel,
-    //         unread_chats: action.data.workspace_data.topic_detail.unread_chats,
-    //         unread_count: action.data.workspace_data.topic_detail.unread_count,
-    //         folder_id: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_id : null,
-    //         folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
-    //       };
-    //       delete updatedWorkspaces[action.data.topic_id].topic_detail;
-
-    //       if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
-    //         updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
-    //       }
-    //       return {
-    //         ...state,
-    //         workspaces: updatedWorkspaces,
-    //         folders: updatedFolders,
-    //       };
-    //     }
-    //   } else {
-    //     return state;
-    //   }
-    // }
     case "GET_FOLDER_SUCCESS": {
       let updatedFolders = { ...state.folders };
       updatedFolders[action.data.workspace_id] = {

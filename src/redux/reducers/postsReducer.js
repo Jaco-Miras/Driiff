@@ -468,22 +468,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    // need to review
-    // case "ADD_TO_WORKSPACE_POSTS": {
-    //   let convertedPosts = convertArrayToObject(action.data.posts, "id");
-    //   let postDrafts = [];
-    //   if (state.drafts.length) {
-    //     postDrafts = convertArrayToObject(postDrafts, "post_id");
-    //   }
-    //   return {
-    //     ...state,
-    //     posts: {
-    //       ...state.posts,
-    //       ...convertedPosts,
-    //       ...postDrafts,
-    //     },
-    //   };
-    // }
     case "GET_DRAFTS_SUCCESS": {
       let drafts = action.data
         .filter((d) => d.data.type === "draft_post")
