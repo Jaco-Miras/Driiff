@@ -29,7 +29,7 @@ import {
   postWorkspaceRole as postWorkspaceRoleService,
   updatePostStatus as updatePostStatusService,
   updateWorkspace as updateWorkspaceService,
-  putChannel as putChannelService
+  putChannel as putChannelService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -269,12 +269,4 @@ export function getOverdueWorkspaceRemindersCallback(payload, callback) {
 
 export function getTodayWorkspaceRemindersCallback(payload, callback) {
   return SimpleDispatchActionToReducer("GET_TODAY_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
-}
-
-export function setChannelIsTranslate(payload, callback) {
-  return SimpleDispatchActionToReducer("SET_CHANNEL_IS_TRANSLATE", payload, callback);
-}
-
-export function updateChannelIsTranslate(payload, callback) {
-  return dispatchActionToReducer(putChannelService(payload), "UPDATE_CHANNEL_IS_TRANSLATE", "UPDATE_CHANNEL_IS_TRANSLATE_SUCCESS", "UPDATE_CHANNEL_IS_TRANSLATE_FAILURE", callback);
 }
