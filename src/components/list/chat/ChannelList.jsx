@@ -194,10 +194,10 @@ const ChannelList = (props) => {
         <ChannelTitlePreview className="channel-title-preview">
           {/* <ChannelTitle channel={channel} search={search}/> */}
           {/* <Timestamp className="text-right ml-auto"> */}
-          <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} />
+          <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} dictionary={dictionary}/>
           {/* </Timestamp> */}
         </ChannelTitlePreview>
-        <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} />
+        <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} selectedChannel={selectedChannel}  />
         <div className="d-flex">
           {channel.is_hidden && (
             <>
