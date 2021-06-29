@@ -25,7 +25,7 @@ const ChatTranslateActions = (props) => {
     chatTranslateIsOn: _t("SETTINGS.CHAT_TRANSLATE_TITLE_ON", "You have successfully turned ON chat translate."),
     chatTranslateIsOff: _t("SETTINGS.CHAT_TRANSLATE_TITLE_ON", "You have successfully turned OFF chat translate"),
   };
-  const isTranslate = translated_channels.includes(selectedChannel.id);
+  const isTranslate = (translated_channels.length > 0 && translated_channels.includes(selectedChannel.id)) ? true : false;
 
   const handleTranslate = useCallback(
     (e) => {
@@ -66,10 +66,11 @@ const ChatTranslateActions = (props) => {
     },
   );
 
+  /*
   if (translated_channels.length > 0 && translated_channels.includes(selectedChannel.id) && !selectedChannel.is_translate)
     chatMessageActions.saveChannelTranslateState({ ...selectedChannel, is_translate: true });
-
-  //(selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
+*/
+  ; //(selectedChannel && selectedChannel.is_translate) ? selectedChannel.is_translate : false;
   return (
     <Wrapper onClick={handleTranslate}>
       {!isTranslate ? dictionary.chatTranslateOn : dictionary.chatTranslateOff}

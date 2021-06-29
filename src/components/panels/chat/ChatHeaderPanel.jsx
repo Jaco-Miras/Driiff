@@ -383,6 +383,9 @@ const ChatHeaderPanel = (props) => {
 
   if (channel === null) return null;
 
+  if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate)
+    chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
+
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
@@ -421,7 +424,7 @@ const ChatHeaderPanel = (props) => {
                 <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
                 <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
                 {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
-                {<ChatTranslateActionsMenu selectedChannel={chatChannel}  translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
+                {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
               </StyledMoreOptions>
             </li>
           </ul>

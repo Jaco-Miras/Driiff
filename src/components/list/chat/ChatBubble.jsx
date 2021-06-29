@@ -492,6 +492,8 @@ const ChatBubble = (props) => {
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
+  const isTranslateChannels = translated_channels.includes(selectedChannel.id);
+
   useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, chat_language, actions: chatMessageActions});
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
