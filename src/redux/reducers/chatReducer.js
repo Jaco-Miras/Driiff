@@ -1528,6 +1528,7 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
           isFetching: false,
+          team: channels[action.data.channel_detail.id].team,
         };
         channels[action.data.channel_detail.id] = channel;
       }
