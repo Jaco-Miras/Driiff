@@ -276,6 +276,7 @@ export default (state = INITIAL_STATE, action) => {
         unread_posts: action.data.workspace_data.topic_detail.unread_posts,
         folder_id: action.data.workspace_id,
         folder_name: action.data.workspace_name,
+        is_shared: action.data.workspace_data.topic_detail.is_shared,
       };
       return {
         ...state,
