@@ -1,7 +1,7 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
 import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
-import { useInView } from "react-intersection-observer";
+//import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
 //import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
@@ -81,31 +81,6 @@ const ChatBubbleContainer = styled.div`
     height: 100%;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
-
-    .star-wrap {
-      position: relative;
-      display: flex;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        color: #a7abc3;
-
-        &.active {
-          fill: #7a1b8bcc;
-          color: #7a1b8bcc;
-        }
-      }
-      .star-count {
-        font-size: 0.835rem;
-        color: #a7abc3;
-        height: 16px;
-        line-height: 16px;
-        padding: 0 4px;
-        border-radius: 6px;
-        font-style: normal;
-      }
-    }
   }
   ol {
     text-align: left;

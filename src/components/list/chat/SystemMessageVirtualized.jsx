@@ -1,7 +1,7 @@
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef } from "react";
 //import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useInView } from "react-intersection-observer";
+//import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
 //import { SvgIconFeather } from "../../common";
 
