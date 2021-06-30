@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 //import { groupBy } from "lodash";
 import { useChatMessageActions, useTranslationActions, useTimeFormat, usePreviousValue, useCountUnreadReplies } from "../../hooks";
-import { SvgEmptyState } from "../../common";
+import { SvgEmptyState, Loader } from "../../common";
 import VirtualiazedChat from "./VirtualizedChat";
 
 const Wrapper = styled.div`
@@ -49,6 +49,17 @@ const EmptyState = styled.div`
   }
 `;
 
+const ChatLoader = styled.div`
+  display: flex;
+  justify-content: center;
+  &.initial-load {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    transform: translate(-45%, -45%);
+  }
+`;
+
 const VirtuosoContainer = (props) => {
   const { dictionary } = props;
 
@@ -63,6 +74,9 @@ const VirtuosoContainer = (props) => {
   const isIdle = useSelector((state) => state.global.isIdle);
   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
   const previousChannel = usePreviousValue(selectedChannel);
+  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
+  const { chat_language, translated_channels, language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
   const loadReplies = () => {
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
@@ -172,6 +186,10 @@ const VirtuosoContainer = (props) => {
                 _t={_t}
                 chatMessageActions={chatMessageActions}
                 timeFormat={timeFormat}
+                translate={translate}
+                language={language}
+                translated_channels={translated_channels}
+                chat_language={chat_language}
               />
             );
           }}
@@ -181,6 +199,11 @@ const VirtuosoContainer = (props) => {
         <EmptyState className="no-reply-container">
           <SvgEmptyState icon={3} />
         </EmptyState>
+      )}
+      {selectedChannel.isFetching && selectedChannel.hasMore && selectedChannel.skip === 0 && (
+        <ChatLoader className={"initial-load"}>
+          <Loader />
+        </ChatLoader>
       )}
     </Wrapper>
   );

@@ -93,6 +93,10 @@ const Wrapper = styled.div`
     letter-spacing: 0;
     line-height: 12px;
   }
+  .plus-recipient-component {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;

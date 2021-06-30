@@ -875,7 +875,13 @@ export default function (state = INITIAL_STATE, action) {
                 };
               } else return r;
             })
-            .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+            .sort((a, b) => {
+              if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                return a.id - b.id;
+              } else {
+                return a.created_at.timestamp - b.created_at.timestamp;
+              }
+            }),
           last_reply:
             channel.last_reply && channel.last_reply.id === action.data.id
               ? {
@@ -928,7 +934,13 @@ export default function (state = INITIAL_STATE, action) {
                 return r;
               }
             })
-            .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+            .sort((a, b) => {
+              if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+                return a.id - b.id;
+              } else {
+                return a.created_at.timestamp - b.created_at.timestamp;
+              }
+            }),
           last_reply:
             channel.last_reply.id === action.data.id
               ? {
