@@ -22,7 +22,7 @@ const useFilterAllWorkspaces = (props) => {
         return value !== "" ? ws.topic.name.includes(value) && ws.topic.is_archive : ws.topic.is_archive;
       }
     })
-    .sort((a, b) => b.topic.updated_at.timestamp - a.topic.updated_at.timestamp);
+    .sort((a, b) => b.topic.created_at.timestamp - a.topic.created_at.timestamp);
   return {
     search,
     filteredResults: filterBy === "new" ? filteredResults.slice(0, search.counters.new) : filteredResults,

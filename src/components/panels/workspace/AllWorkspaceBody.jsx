@@ -95,7 +95,7 @@ const AllWorkspaceBody = (props) => {
             })
             .sort(function (a, b) {
               if (sortWorkspaces.activeDate) {
-                return new Date(b.topic.updated_at.date_time) - new Date(a.topic.updated_at.date_time);
+                return new Date(b.topic.created_at.date_time) - new Date(a.topic.created_at.date_time);
               } else {
                 if (a.topic.name.toLowerCase() < b.topic.name.toLowerCase()) return -1;
                 if (a.topic.name.toLowerCase() > b.topic.name.toLowerCase()) return 1;
@@ -132,7 +132,7 @@ const AllWorkspaceBody = (props) => {
             })
             .sort(function (a, b) {
               if (sortWorkspaces.archivedDate) {
-                return new Date(b.topic.updated_at.date_time) - new Date(a.topic.updated_at.date_time);
+                return new Date(b.topic.created_at.date_time) - new Date(a.topic.created_at.date_time);
               } else {
                 if (a.topic.name.toLowerCase() < b.topic.name.toLowerCase()) return -1;
                 if (a.topic.name.toLowerCase() > b.topic.name.toLowerCase()) return 1;
