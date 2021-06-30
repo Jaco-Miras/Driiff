@@ -85,90 +85,82 @@ const ChannelsSidebar = (props) => {
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
       {favoriteChannels.length > 0 && <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />}
       <Channels className={"list-group list-group-flush"}>
-        {searchingChannels && (
+        {/* {searchingChannels && (
           <ChatHeaderContainer>
             <ChatHeader>{`Searching ${chatSidebarSearch}...`} </ChatHeader>
             <CustomInput className="cursor-pointer text-muted" checked={searchArchivedChannels} type="switch" id="show_archive" name="show archive" onChange={handleShowArchiveToggle} label={<span>{dictionary.showArchived}</span>} />
           </ChatHeaderContainer>
-        )}
-        {!searchingChannels &&
-          sortedChannels.map((channel, k, arr) => {
-            let chatHeader = "";
-            let showArchiveButton = false;
+        )} */}
+        {sortedChannels.map((channel, k, arr) => {
+          let chatHeader = "";
+          let showArchiveButton = false;
 
-            if (k !== 0) {
-              let a = arr[k - 1];
-              let b = channel;
+          if (k !== 0) {
+            let a = arr[k - 1];
+            let b = channel;
 
-              /*if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
+            /*if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
               chatHeader = dictionary.chats;
             } else if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
               chatHeader = dictionary.contacts;
             }*/
 
-              if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
-                if (b.is_relevant) chatHeader = dictionary.chats;
-                else chatHeader = dictionary.chats;
-              } else if (a.is_relevant && !b.is_relevant) {
-                if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
-                  chatHeader = dictionary.contacts;
-                } else {
-                  //chatHeader = dictionary.chats;
-                }
-              } else if (!a.is_relevant && !b.is_relevant && !(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
+            if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
+              if (b.is_relevant) chatHeader = dictionary.chats;
+              else chatHeader = dictionary.chats;
+            } else if (a.is_relevant && !b.is_relevant) {
+              if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
                 chatHeader = dictionary.contacts;
+              } else {
+                //chatHeader = dictionary.chats;
               }
-            } else {
-              /*if (channel.type === "PERSONAL_BOT") {
+            } else if (!a.is_relevant && !b.is_relevant && !(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
+              chatHeader = dictionary.contacts;
+            }
+          } else {
+            /*if (channel.type === "PERSONAL_BOT") {
               chatHeader = dictionary.personalBot;
             } else if (channel.add_user || channel.add_open_topic) {
               chatHeader = dictionary.contacts;
             } else {
               chatHeader = dictionary.chats;
             }*/
-              if (channel.type === "PERSONAL_BOT") {
-                chatHeader = dictionary.personalBot;
-              } else if (channel.is_relevant && channel.add_user) {
-                chatHeader = dictionary.chats;
-              } else if (channel.add_user || channel.add_open_topic) {
-                chatHeader = dictionary.contacts;
-              } else {
-                chatHeader = dictionary.chats;
-                showArchiveButton = true;
-              }
+            if (channel.type === "PERSONAL_BOT") {
+              chatHeader = dictionary.personalBot;
+            } else if (channel.is_relevant && channel.add_user) {
+              chatHeader = dictionary.chats;
+            } else if (channel.add_user || channel.add_open_topic) {
+              chatHeader = dictionary.contacts;
+            } else {
+              chatHeader = dictionary.chats;
+              showArchiveButton = true;
             }
+          }
 
-            return (
-              <React.Fragment key={channel.id}>
-                {search !== "" && chatHeader !== "" && (
-                  <ChatHeaderContainer>
-                    <ChatHeader>{searchingChannels ? `Searching ${chatSidebarSearch}...` : chatHeader} </ChatHeader>
-                    {showArchiveButton && (
-                      <CustomInput
-                        className="cursor-pointer text-muted"
-                        checked={searchArchivedChannels}
-                        type="switch"
-                        id="show_archive"
-                        name="show archive"
-                        onChange={handleShowArchiveToggle}
-                        label={<span>{dictionary.showArchived}</span>}
-                      />
-                    )}
-                  </ChatHeaderContainer>
-                )}
-                <ChannelList
-                  channel={channel}
-                  selectedChannel={selectedChannel}
-                  channelDrafts={channelDrafts}
-                  dictionary={dictionary}
-                  search={search}
-                  addLoadRef={search === "" && k > sortedChannels.length - 5}
-                  onLoadMore={handleLoadMore}
-                  onSelectChannel={onSelectChannel}
-                />
-              </React.Fragment>
-            );
-          })}
+          return (
+            <React.Fragment key={channel.id}>
+              {search !== "" && chatHeader !== "" && (
+                <ChatHeaderContainer>
+                  {/* <ChatHeader>{searchingChannels ? `Searching ${chatSidebarSearch}...` : chatHeader} </ChatHeader> */}
+                  <ChatHeader>{chatHeader} </ChatHeader>
+                  {showArchiveButton && (
+                    <CustomInput className="cursor-pointer text-muted" checked={searchArchivedChannels} type="switch" id="show_archive" name="show archive" onChange={handleShowArchiveToggle} label={<span>{dictionary.showArchived}</span>} />
+                  )}
+                </ChatHeaderContainer>
+              )}
+              <ChannelList
+                channel={channel}
+                selectedChannel={selectedChannel}
+                channelDrafts={channelDrafts}
+                dictionary={dictionary}
+                search={search}
+                addLoadRef={search === "" && k > sortedChannels.length - 5}
+                onLoadMore={handleLoadMore}
+                onSelectChannel={onSelectChannel}
+              />
+            </React.Fragment>
+          );
+        })}
         {workspace === true && sortedChannels.length === 0 ? (
           <li>
             <h4>{dictionary.nothingToSeeHere}</h4>

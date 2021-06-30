@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../common";
+import { SvgIconFeather, Loader } from "../common";
 
 const Wrapper = styled.form`
   .btn-cross {
@@ -22,11 +22,14 @@ const Wrapper = styled.form`
     z-index: 9;
     opacity: 1;
   }
+  .loading {
+    height: 1rem;
+    width: 1rem;
+  }
 `;
-const Icon = styled(SvgIconFeather)``;
 
 const SearchForm = forwardRef((props, ref) => {
-  const { className = "", onChange, onClick, placeholder = "Search", value = "", onClickEmpty, closeButton = false, ...otherProps } = props;
+  const { className = "", onChange, onClick, placeholder = "Search", value = "", onClickEmpty, closeButton = false, searching = null, ...otherProps } = props;
   const inputGroup = useRef();
 
   useEffect(() => {
@@ -41,11 +44,10 @@ const SearchForm = forwardRef((props, ref) => {
   return (
     <Wrapper className={`${className}`}>
       <div ref={inputGroup} className="input-group">
-        <input ref={ref} onChange={onChange} value={value} type="text" className="form-control"
-               placeholder={placeholder} {...otherProps} />
+        <input ref={ref} onChange={onChange} value={value} type="text" className="form-control" placeholder={placeholder} {...otherProps} />
         {closeButton && (
           <button onClick={onClickEmpty} className="btn-cross" type="button">
-            <Icon icon="x" />
+            {searching ? <Loader /> : <SvgIconFeather icon="x" />}
           </button>
         )}
         <div className="input-group-append">
