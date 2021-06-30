@@ -1,4 +1,5 @@
 import momentTZ from "moment-timezone";
+import React from "react";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
@@ -60,7 +61,6 @@ const INITIAL_STATE = {
       translate: false,
     },
     GENERAL_SETTINGS: {
-      daily_digest: true,
       notification_sound: "appointed",
       is_new: true,
       timezone: momentTZ.tz.guess(),
@@ -78,6 +78,8 @@ const INITIAL_STATE = {
         order_by: "channel_date_updated",
         sort_by: "DESC",
       },
+      translated_channels:[],
+      chat_language:'en'
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {

@@ -17,7 +17,10 @@ import {
   setLastChatVisibility,
   setEditHuddleAnswers,
   setTranslatedBody,
+  resetTranslatedBody,
   setFancyLink,
+  postChatMessageTranslate,
+  setChannelTranslateState,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions, useTranslationActions } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -57,7 +60,7 @@ const useChatMessageActions = () => {
    * @param {number} [filter.limit=20]
    * @param {function} [callback]
    */
-  const fetch = (channel, { skip = 0, limit = 20 }, callback = () => {}) => {
+  const fetch = (channel, { skip = 0, limit = 20 }, callback = () => { }) => {
     // if (!refs.fetch.current) {
     //   refs.fetch.current = true;
     let payload = {
@@ -90,7 +93,7 @@ const useChatMessageActions = () => {
    * @param {null|Object} [message.quote.files]
    * @param {function} [callback]
    */
-  const create = (channel, message, callback = () => {}) => {
+  const create = (channel, message, callback = () => { }) => {
     let payload = {};
 
     /*let payload = {
@@ -134,7 +137,7 @@ const useChatMessageActions = () => {
    * @param {Object} message
    * @param {function} [callback]
    */
-  const edit = (message, callback = () => {}) => {
+  const edit = (message, callback = () => { }) => {
     dispatch(putChatMessage(message, callback));
   };
 
@@ -143,7 +146,7 @@ const useChatMessageActions = () => {
    * @param {string} reactType
    * @param {function} [callback]
    */
-  const react = (messageId, reactType, callback = () => {}) => {
+  const react = (messageId, reactType, callback = () => { }) => {
     dispatch(
       postChatReaction(
         {
@@ -159,7 +162,7 @@ const useChatMessageActions = () => {
    * @param {number} messageId
    * @param {function} [callback]
    */
-  const remove = (messageId, callback = () => {}) => {
+  const remove = (messageId, callback = () => { }) => {
     dispatch(
       deleteChatMessage(
         {
@@ -175,7 +178,7 @@ const useChatMessageActions = () => {
    * @param {number} messageId
    * @param {function} [callback]
    */
-  const markComplete = (messageId, callback = () => {}) => {
+  const markComplete = (messageId, callback = () => { }) => {
     dispatch(
       putMarkReminderComplete(
         {
@@ -190,7 +193,7 @@ const useChatMessageActions = () => {
    * @param {Object} channel
    * @param {string} body
    */
-  const forward = (channel, body, callback = () => {}) => {
+  const forward = (channel, body, callback = () => { }) => {
     let payload = {
       channel_id: channel.current.id,
       body: body,
@@ -255,8 +258,8 @@ const useChatMessageActions = () => {
     dispatch(setLastChatVisibility(payload));
   };
 
-  const remind = (message, channel, callback = () => {}) => {
-    const onConfirm = (payload, modalCallback = () => {}) => {
+  const remind = (message, channel, callback = () => { }) => {
+    const onConfirm = (payload, modalCallback = () => { }) => {
       todoActions.createForChat(message.id, payload, (err, res) => {
         if (err) {
           if (err.response && err.response.data && err.response.data.errors) {
@@ -293,7 +296,7 @@ const useChatMessageActions = () => {
    * @param {chat} object
    * @param {function} [callback]
    */
-  const markImportant = (chat, callback = () => {}) => {
+  const markImportant = (chat, callback = () => { }) => {
     dispatch(
       putImportantChat(
         {
@@ -309,7 +312,7 @@ const useChatMessageActions = () => {
    * @param number messageId
    * @param {function} [callback]
    */
-  const getStars = (messageId, callback = () => {}) => {
+  const getStars = (messageId, callback = () => { }) => {
     dispatch(
       getChatStar(
         {
@@ -326,7 +329,7 @@ const useChatMessageActions = () => {
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const setStar = (payload, callback = () => {}) => {
+  const setStar = (payload, callback = () => { }) => {
     dispatch(putChatStar(payload, callback));
   };
 
@@ -357,6 +360,36 @@ const useChatMessageActions = () => {
     dispatch(setFancyLink(payload));
   };
 
+  const setTranslationBody =
+    (payload) => {
+      dispatch(setTranslatedBody(payload));
+    }
+
+  /**
+  * @param {object} payload
+  * @parm number payload.message_id chat.id
+  * @param {function} [callback]
+  */
+  const resetTranslationBody =
+    (payload) => {
+      dispatch(resetTranslatedBody(payload));
+    }
+
+  const saveTranslation =
+    (payload) => {
+      dispatch(postChatMessageTranslate(payload));
+    }
+
+  /**
+ * @param {object} payload
+ * @parm number payload.message_id chat.id
+ * @param {function} [callback]
+ */
+  const saveChannelTranslateState =
+    (payload) => {
+      dispatch(setChannelTranslateState(payload));
+    }
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -379,6 +412,10 @@ const useChatMessageActions = () => {
     saveTranslationBody,
     viewFiles,
     saveFancyContent,
+    setTranslationBody,
+    resetTranslationBody,
+    saveTranslation,
+    saveChannelTranslateState
   };
 };
 

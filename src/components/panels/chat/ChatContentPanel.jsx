@@ -35,6 +35,8 @@ const ChatContentPanel = (props) => {
 
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
+  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+
   const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
@@ -165,6 +167,8 @@ const ChatContentPanel = (props) => {
     replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
     removeOnDownload: _t("CHAT.REMOVE_ON_DOWNLOAD", "Remove on download"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    teamChat:_t("PAGE.TEAM_CHAT", "Team Chat"),
+    clientChat:_t("PAGE.CLIENT_CHAT", "Client Chat"),
     mute: _t("CHAT.MUTE", "Mute"),
     unmute: _t("CHAT.UNMUTE", "Unmute"),
     hide: _t("CHAT.HIDE", "Hide"),
@@ -213,6 +217,8 @@ const ChatContentPanel = (props) => {
             isIdle={isIdle}
             translate={translate}
             language={language}
+            translated_channels={translated_channels}
+            chat_language={chat_language}
             _t={_t}
           />
         )

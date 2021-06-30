@@ -468,3 +468,12 @@ export function getChatMsgsForFancy(payload) {
     data: payload,
   });
 }
+
+export function postChatMessageTranslate(payload) {
+  let url = "/v2/post-channel-messages-translate";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload
+  });
+}

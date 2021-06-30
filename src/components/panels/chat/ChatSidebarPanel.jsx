@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useChannels, useLoadChannel, useSettings, useTranslationActions } from "../../hooks";
+import { useChannels, useLoadChannel, useSettings, useTranslation } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -176,15 +176,18 @@ const ChatSidebarPanel = (props) => {
     setTabPill("pills-home");
   };
 
-  const handleTabChange = (e) => {
-    if (tabPill === e.target.getAttribute("aria-controls")) {
-      handleResetFilter();
-    } else {
-      setTabPill(e.target.getAttribute("aria-controls"));
-    }
-  };
+  const handleTabChange = useCallback(
+    (e) => {
+      if (tabPill === e.target.getAttribute("aria-controls")) {
+        handleResetFilter();
+      } else {
+        setTabPill(e.target.getAttribute("aria-controls"));
+      }
+    },
+    [setTabPill, tabPill]
+  );
 
-  const { _t } = useTranslationActions();
+  const { _t } = useTranslation();
 
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),
@@ -206,6 +209,8 @@ const ChatSidebarPanel = (props) => {
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
     you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
+    withTeam:_t("CHANNEL.WITH_TEAM", "Team Chat"),
+    withClient:_t("CHANNEL.WITH_CLIENT", "Client Chat"),
   };
 
   const handleOpenGroupChatModal = () => {
