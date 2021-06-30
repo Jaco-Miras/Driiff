@@ -84,6 +84,10 @@ const NavBarLeft = styled.div`
     right: 165px;
     top: 0;
   }
+  .plus-recipient-component {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
 `;
 
 const NavBar = styled.ul`

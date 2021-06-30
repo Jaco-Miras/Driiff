@@ -49,6 +49,9 @@ const Wrapper = styled.div`
         color: #ffffff !important;
       }
     }
+    .dark & {
+      color: #ffffff !important;
+    }
   }
   .chat-header-right {
     @media (max-width: 414px) {
