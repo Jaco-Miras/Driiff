@@ -276,6 +276,7 @@ export default (state = INITIAL_STATE, action) => {
         unread_posts: action.data.workspace_data.topic_detail.unread_posts,
         folder_id: action.data.workspace_id,
         folder_name: action.data.workspace_name,
+        is_shared: action.data.workspace_data.topic_detail.is_shared,
       };
       return {
         ...state,
@@ -626,12 +627,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      // let convertedPosts = convertArrayToObject(action.data.posts.reduce((arr, obj) => {
-      //   return arr.concat({
-      //     ...obj,
-      //     clap_user_ids: []
-      //   });
-      // }, []), "id");
       let convertedPosts = convertArrayToObject(
         action.data.posts.map((p) => {
           return Object.assign({}, p, { clap_user_ids: [] });
@@ -1471,6 +1466,7 @@ export default (state = INITIAL_STATE, action) => {
                       has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[ws.topic_id].posts[action.data.post_id].has_replied,
                       unread_count:
                         isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
+                      is_unread: isNewComment && action.data.author.id !== state.user.id ? 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].is_unread,
                     },
                   }),
                 },
@@ -2064,37 +2060,6 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
-    // case "GET_WORKSPACE_SUCCESS": {
-    //   let updatedWorkspaces = { ...state.workspaces };
-    //   let updatedFolders = { ...state.folders };
-    //   if (Object.keys(updatedWorkspaces).length > 0) {
-    //     if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
-    //       return state;
-    //     } else {
-    //       updatedWorkspaces[action.data.topic_id] = {
-    //         ...action.data.workspace_data,
-    //         active: action.data.workspace_data.topic_detail.active,
-    //         channel: action.data.workspace_data.topic_detail.channel,
-    //         unread_chats: action.data.workspace_data.topic_detail.unread_chats,
-    //         unread_count: action.data.workspace_data.topic_detail.unread_count,
-    //         folder_id: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_id : null,
-    //         folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
-    //       };
-    //       delete updatedWorkspaces[action.data.topic_id].topic_detail;
-
-    //       if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
-    //         updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
-    //       }
-    //       return {
-    //         ...state,
-    //         workspaces: updatedWorkspaces,
-    //         folders: updatedFolders,
-    //       };
-    //     }
-    //   } else {
-    //     return state;
-    //   }
-    // }
     case "GET_FOLDER_SUCCESS": {
       let updatedFolders = { ...state.folders };
       updatedFolders[action.data.workspace_id] = {
@@ -2285,7 +2250,7 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
         Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_read = true;
-          workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
+          //workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
           workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
         });

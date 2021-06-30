@@ -9,13 +9,29 @@ const useCompanyPosts = () => {
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
-  const { flipper, limit, next_skip, has_more, posts, filter, tag, postListTag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
-  const { postsLists } = useSelector((state) => state.posts);
+  const { flipper, next_skip, posts, filter, tag, postListTag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
+  const postsLists = useSelector((state) => state.posts.postsLists);
 
   const archived = useSelector((state) => state.posts.archived);
   const favourites = useSelector((state) => state.posts.favourites);
   const myPosts = useSelector((state) => state.posts.myPosts);
+  const unreadPosts = useSelector((state) => state.posts.unreadPosts);
+  const readPosts = useSelector((state) => state.posts.readPosts);
   const fetchMore = (callback) => {
+    if (unreadPosts.has_more) {
+      actions.fetchUnreadCompanyPosts({
+        skip: unreadPosts.skip,
+        limit: 25,
+        filters: ["green_dot"],
+      });
+    }
+    if (readPosts.has_more) {
+      actions.fetchReadCompanyPosts({
+        skip: readPosts.skip,
+        limit: 25,
+        filters: ["read_post"],
+      });
+    }
     if (filter === "archive") {
       let payload = {
         skip: archived.skip,
@@ -34,14 +50,6 @@ const useCompanyPosts = () => {
       if (myPosts.has_more) {
         actions.fetchCompanyPosts(payload, callback);
       }
-    } else {
-      let payload = {
-        skip: next_skip,
-        limit: limit,
-      };
-      if (has_more) {
-        actions.fetchCompanyPosts(payload, callback);
-      }
     }
   };
 
@@ -53,12 +61,6 @@ const useCompanyPosts = () => {
       }
       fetchMore();
       actions.fetchPostList();
-
-      actions.fetchUnreadCompanyPosts({
-        skip: 0,
-        limit: 100,
-        filters: ["green_dot"],
-      });
     }
   }, []);
 
@@ -113,7 +115,7 @@ const useCompanyPosts = () => {
           if (search !== "") {
             return true;
           } else {
-            return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
+            return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
@@ -133,7 +135,7 @@ const useCompanyPosts = () => {
         } else if (tag === "is_read_only") {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         } else if (tag === "is_unread") {
-          return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+          return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
         } else if (tag === "is_close") {
           return p.is_close && !p.hasOwnProperty("draft_type");
         } else if (!isNaN(parseInt(tag))) {
@@ -165,7 +167,7 @@ const useCompanyPosts = () => {
     return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
   }).length;
   count.is_unread = Object.values(posts).filter((p) => {
-    return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+    return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
   }).length;
   count.is_close = Object.values(posts).filter((p) => {
     return p.is_close && !p.hasOwnProperty("draft_type");

@@ -58,7 +58,6 @@ const AllWorkspaceBody = (props) => {
     setShowWorkspaces({
       ...showWorkspaces,
       [type]: !showWorkspaces[type],
-
     });
   };
 
@@ -77,9 +76,9 @@ const AllWorkspaceBody = (props) => {
             <SvgIconFeather icon={showWorkspaces.showActive ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
             {dictionary.active}
           </span>
-          <div style={{ 'float': 'right' }}>
+          <div style={{ float: "right" }}>
             <ToolTip content={sortWorkspaces.activeDate ? dictionary.workspaceSortOptionsDate : dictionary.workspaceSortOptionsAlpha}>
-              <span className="badge badge-light" onClick={() => handleSortWorkspaces('activeDate')}>
+              <span className="badge badge-light" onClick={() => handleSortWorkspaces("activeDate")}>
                 <SvgIconFeather icon={sortWorkspaces.activeDate ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
               </span>
             </ToolTip>
@@ -95,11 +94,9 @@ const AllWorkspaceBody = (props) => {
               }
             })
             .sort(function (a, b) {
-
               if (sortWorkspaces.activeDate) {
-                return new Date(b.topic.created_at) - new Date(a.topic.created_at);
-              }
-              else {
+                return new Date(b.topic.created_at.date_time) - new Date(a.topic.created_at.date_time);
+              } else {
                 if (a.topic.name.toLowerCase() < b.topic.name.toLowerCase()) return -1;
                 if (a.topic.name.toLowerCase() > b.topic.name.toLowerCase()) return 1;
               }
@@ -116,9 +113,9 @@ const AllWorkspaceBody = (props) => {
             <SvgIconFeather icon={showWorkspaces.showArchived ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
             {dictionary.archived}
           </span>
-          <div style={{ 'float': 'right' }}>
+          <div style={{ float: "right" }}>
             <ToolTip content={sortWorkspaces.archivedDate ? dictionary.workspaceSortOptionsDate : dictionary.workspaceSortOptionsAlpha}>
-              <span className="badge badge-light" onClick={() => handleSortWorkspaces('archivedDate')}>
+              <span className="badge badge-light" onClick={() => handleSortWorkspaces("archivedDate")}>
                 <SvgIconFeather icon={sortWorkspaces.archivedDate ? "arrow-down" : "arrow-up"} width={16} height={16} className="mr-1" />
               </span>
             </ToolTip>
@@ -132,11 +129,11 @@ const AllWorkspaceBody = (props) => {
               } else {
                 return r.topic.is_archive;
               }
-            }).sort(function (a, b) {
+            })
+            .sort(function (a, b) {
               if (sortWorkspaces.archivedDate) {
-                return new Date(b.topic.created_at) - new Date(a.topic.created_at);
-              }
-              else {
+                return new Date(b.topic.created_at.date_time) - new Date(a.topic.created_at.date_time);
+              } else {
                 if (a.topic.name.toLowerCase() < b.topic.name.toLowerCase()) return -1;
                 if (a.topic.name.toLowerCase() > b.topic.name.toLowerCase()) return 1;
               }

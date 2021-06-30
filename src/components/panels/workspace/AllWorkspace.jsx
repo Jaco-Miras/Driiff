@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import AllWorkspaceSidebar from "./AllWorkspaceSidebar";
 import AllWorkspaceSearch from "./AllWorkspaceSearch";
 import AllWorkspaceBody from "./AllWorkspaceBody";
-import { useTranslationActions, useWorkspaceSearchActions } from "../../hooks";
-import { throttle } from "lodash";
+import { useTranslationActions, useWorkspaceSearchActions, useFilterAllWorkspaces } from "../../hooks";
+//import { throttle } from "lodash";
+import { Loader } from "../../common";
 
 const Wrapper = styled.div`
   overflow: hidden auto;
@@ -17,52 +18,96 @@ const Wrapper = styled.div`
   }
 `;
 
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const AllWorkspace = (props) => {
-  const search = useSelector((state) => state.workspaces.search);
-  const { hasMore, results, filterBy, value } = search;
+  const { search, filteredResults } = useFilterAllWorkspaces();
+  const { loaded, results, filterBy, value } = search;
   const { _t } = useTranslationActions();
   const actions = useWorkspaceSearchActions();
 
-  const [loadMore, setLoadMore] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loadMore, setLoadMore] = useState(false);
+  const [loading, setLoading] = useState(null);
 
   useEffect(() => {
     document.body.classList.add("stretch-layout");
-    actions.getFilterCount();
+    actions.getFilterCount((err, res) => {
+      if (err) return;
+      if (res.data) {
+        if (results.length === 0) setLoading(true);
+        const all = res.data.reduce((acc, val) => {
+          if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
+            acc = acc + val.count;
+          }
+          return acc;
+        }, 0);
+        actions.search(
+          {
+            search: value,
+            skip: 0,
+            limit: all,
+            filter_by: "all",
+          },
+          (err, res) => {
+            setLoading(false);
+            if (err) {
+              actions.updateSearch({
+                searching: false,
+              });
+            } else {
+              actions.updateSearch({
+                filterBy: filterBy,
+                searching: false,
+                count: res.data.total_count,
+                hasMore: res.data.has_more,
+                results: res.data.workspaces,
+                loaded: true,
+                //maxPage: Math.ceil(res.data.total_count / 25),
+              });
+            }
+          }
+        );
+      }
+    });
   }, []);
 
-  useEffect(() => {
-    actions.updateSearch({
-      searching: true,
-      results: [],
-    });
-    setLoading(true);
-    actions.search(
-      {
-        search: value,
-        skip: 0,
-        limit: 25,
-        filter_by: filterBy,
-      },
-      (err, res) => {
-        setLoading(false);
-        if (err) {
-          actions.updateSearch({
-            searching: false,
-          });
-        } else {
-          actions.updateSearch({
-            filterBy: filterBy,
-            searching: false,
-            count: res.data.total_count,
-            hasMore: res.data.has_more,
-            results: res.data.workspaces,
-            maxPage: Math.ceil(res.data.total_count / 25),
-          });
-        }
-      }
-    );
-  }, [filterBy, value]);
+  // useEffect(() => {
+  //   actions.updateSearch({
+  //     searching: true,
+  //     results: [],
+  //   });
+  //   setLoading(true);
+  //   actions.search(
+  //     {
+  //       search: value,
+  //       skip: 0,
+  //       limit: 25,
+  //       filter_by: filterBy,
+  //     },
+  //     (err, res) => {
+  //       setLoading(false);
+  //       if (err) {
+  //         actions.updateSearch({
+  //           searching: false,
+  //         });
+  //       } else {
+  //         actions.updateSearch({
+  //           filterBy: filterBy,
+  //           searching: false,
+  //           count: res.data.total_count,
+  //           hasMore: res.data.has_more,
+  //           results: res.data.workspaces,
+  //           maxPage: Math.ceil(res.data.total_count / 25),
+  //         });
+  //       }
+  //     }
+  //   );
+  // }, [filterBy, value]);
 
   const dictionary = {
     notJoined: _t("ALL_WORKSPACE.NOT_JOINED", "Not joined"),
@@ -85,63 +130,68 @@ const AllWorkspace = (props) => {
     workspaceSortOptionsDate: _t("WORKSPACE_SORT_OPTIONS.DATE", "Sort by Date (New to Old)"),
   };
 
-  const handleLoadMore = () => {
-    if (!loading && hasMore) {
-      actions.search(
-        {
-          search: value,
-          skip: results.length,
-          limit: 25,
-          filter_by: filterBy,
-        },
-        (err, res) => {
-          setLoading(false);
-          setLoadMore(false);
-          if (err) {
-            actions.updateSearch({
-              searching: false,
-            });
-          } else {
-            actions.updateSearch({
-              filterBy: filterBy,
-              searching: false,
-              hasMore: res.data.has_more,
-              count: res.data.total_count,
-              results: [...results, ...res.data.workspaces],
-              maxPage: Math.ceil(res.data.total_count / 25),
-            });
-          }
-        }
-      );
-    }
-  };
+  // const handleLoadMore = () => {
+  //   if (!loading && hasMore) {
+  //     actions.search(
+  //       {
+  //         search: value,
+  //         skip: results.length,
+  //         limit: 25,
+  //         filter_by: filterBy,
+  //       },
+  //       (err, res) => {
+  //         setLoading(false);
+  //         setLoadMore(false);
+  //         if (err) {
+  //           actions.updateSearch({
+  //             searching: false,
+  //           });
+  //         } else {
+  //           actions.updateSearch({
+  //             filterBy: filterBy,
+  //             searching: false,
+  //             hasMore: res.data.has_more,
+  //             count: res.data.total_count,
+  //             results: [...results, ...res.data.workspaces],
+  //             maxPage: Math.ceil(res.data.total_count / 25),
+  //           });
+  //         }
+  //       }
+  //     );
+  //   }
+  // };
 
-  const handleScroll = useMemo(() => {
-    const throttled = throttle((e) => {
-      if (e.target.scrollHeight - e.target.scrollTop < 1500) {
-        setLoadMore(true);
-      }
-    }, 300);
-    return (e) => {
-      e.persist();
-      return throttled(e);
-    };
-  }, []);
+  // const handleScroll = useMemo(() => {
+  //   const throttled = throttle((e) => {
+  //     if (e.target.scrollHeight - e.target.scrollTop < 1500) {
+  //       setLoadMore(true);
+  //     }
+  //   }, 300);
+  //   return (e) => {
+  //     e.persist();
+  //     return throttled(e);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (loadMore) {
-      handleLoadMore();
-    }
-  }, [loadMore]);
+  // useEffect(() => {
+  //   if (loadMore) {
+  //     handleLoadMore();
+  //   }
+  // }, [loadMore]);
 
   return (
-    <Wrapper className={"container-fluid h-100 fadeIn"} onScroll={handleScroll}>
+    <Wrapper className={"container-fluid h-100 fadeIn"}>
       <div className="row app-block">
         <AllWorkspaceSidebar actions={actions} dictionary={dictionary} filterBy={filterBy} counters={search.counters} />
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <AllWorkspaceSearch actions={actions} dictionary={dictionary} search={search} />
-          <AllWorkspaceBody actions={actions} dictionary={dictionary} filterBy={filterBy} results={results} />
+          {loaded && <AllWorkspaceBody actions={actions} dictionary={dictionary} filterBy={filterBy} results={filteredResults} />}
+          {loading && (
+            <LoaderContainer className={"card initial-load"}>
+              <Loader />
+            </LoaderContainer>
+          )}
         </div>
       </div>
     </Wrapper>

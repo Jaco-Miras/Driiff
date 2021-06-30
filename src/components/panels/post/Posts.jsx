@@ -52,8 +52,8 @@ const ReadPostsHeader = styled.li`
 const Posts = (props) => {
   const { actions, dictionary, filter, isExternalUser, loading, posts, search, workspace } = props;
 
-  const readPosts = posts.filter((p) => p.is_unread === 0 && p.unread_count === 0);
-  const unreadPosts = posts.filter((p) => p.is_unread === 1 || p.unread_count > 0);
+  const readPosts = posts.filter((p) => p.is_unread === 0);
+  const unreadPosts = posts.filter((p) => p.is_unread === 1);
 
   const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
   const [checkedPosts, setCheckedPosts] = useState([]);

@@ -439,3 +439,7 @@ export function removeDraftPost(payload, callback) {
 export function removeCommentDraft(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_COMMENT_DRAFT", payload, callback);
 }
+
+export function getReadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_READ_COMPANY_POSTS_START", "GET_READ_COMPANY_POSTS_SUCCESS", "GET_READ_COMPANY_POSTS_FAIL", callback);
+}

@@ -18,6 +18,7 @@ import {
   fetchPosts,
   fetchRecentPosts,
   fetchTagCounter,
+  getReadCompanyPosts,
   getCompanyPosts,
   getUnreadCompanyPosts,
   getPostClapHover,
@@ -774,6 +775,10 @@ const usePostActions = () => {
     dispatch(getCompanyPosts(payload, callback));
   };
 
+  const fetchReadCompanyPosts = (payload, callback) => {
+    dispatch(getReadCompanyPosts(payload, callback));
+  };
+
   const fetchUnreadCompanyPosts = (payload, callback) => {
     dispatch(getUnreadCompanyPosts(payload, callback));
   };
@@ -1030,6 +1035,7 @@ const usePostActions = () => {
     disconnectPostList,
     updatePostListConnect,
     markReplyRequirement,
+    fetchReadCompanyPosts,
   };
 };
 

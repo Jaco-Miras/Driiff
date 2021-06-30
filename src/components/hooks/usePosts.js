@@ -97,6 +97,12 @@ const usePosts = () => {
               posts: res.data.posts,
               filter: res.data.posts,
               files,
+              filters: {
+                unreadPosts: {
+                  skip: res.data.next_skip,
+                  hasMore: res.data.total_take === 25,
+                },
+              },
             })
           );
         };
@@ -106,7 +112,7 @@ const usePosts = () => {
             filters: ["green_dot"],
             topic_id: parseInt(params.workspaceId),
             skip: 0,
-            limit: 100,
+            limit: 25,
           },
           unreadCb
         );
@@ -182,7 +188,7 @@ const usePosts = () => {
             if (search !== "") {
               return true;
             } else {
-              return !(p.hasOwnProperty("draft_type") || p.is_archived === 1 || p.author.id === user.id) || (p.author.id === user.id && p.reply_count > 0 && p.is_archived !== 1);
+              return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
             }
           } else if (activeFilter === "my_posts") {
             if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
@@ -202,7 +208,7 @@ const usePosts = () => {
           } else if (activeTag === "is_read_only") {
             return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
           } else if (tag === "is_unread") {
-            return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+            return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           } else if (tag === "is_close") {
             return p.is_close && !p.hasOwnProperty("draft_type");
           } else if (!isNaN(parseInt(activeTag))) {
@@ -235,7 +241,7 @@ const usePosts = () => {
         return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
       }).length,
       is_unread: Object.values(posts).filter((p) => {
-        return (p.is_unread && !p.hasOwnProperty("draft_type")) || (p.unread_count > 0 && !p.hasOwnProperty("draft_type"));
+        return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
       }).length,
       is_close: Object.values(posts).filter((p) => {
         return p.is_close && !p.hasOwnProperty("draft_type");

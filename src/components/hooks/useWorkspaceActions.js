@@ -8,7 +8,6 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import {
   addPrimaryFiles,
   deleteWorkspaceRole,
-  favouriteWorkspace,
   fetchDetail,
   fetchMembers,
   fetchPrimaryFiles,
@@ -158,9 +157,6 @@ const useWorkspaceActions = () => {
   };
 
   const leave = (workspace, member, callback) => {
-    if (member.id === loggedUser.id && workspace.is_favourite) {
-      favourite(workspace);
-    }
     if (workspace.members.length === 1 && workspace.is_lock === 1) {
       let archivePayload = {
         id: workspace.channel.id,
@@ -202,16 +198,6 @@ const useWorkspaceActions = () => {
 
   const fetchFavoriteWorkspaces = (payload, callback) => {
     dispatch(getFavoriteWorkspaces(payload, callback));
-  };
-
-  const favourite = (workspace) => {
-    let payload = {
-      id: workspace.id,
-      workspace_id: workspace.folder_id ? workspace.folder_id : 0,
-      is_pinned: workspace.is_favourite ? 0 : 1,
-    };
-
-    dispatch(favouriteWorkspace(payload));
   };
 
   return {

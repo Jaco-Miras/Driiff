@@ -56,76 +56,76 @@ const AllWorkspaceSearch = (props) => {
   const handleSearch = () => {
     actions.updateSearch({
       ...search,
-      results: [],
+      //results: [],
       value: inputValue,
       filterBy: filterBy,
       searching: true,
     });
-    actions.search(
-      {
-        search: inputValue,
-        skip: 0,
-        limit: 25,
-        filter_by: filterBy,
-      },
-      (err, res) => {
-        if (err) {
-          actions.updateSearch({
-            ...search,
-            searching: false,
-          });
-        } else {
-          actions.updateSearch({
-            ...search,
-            value: inputValue,
-            filterBy: filterBy,
-            searching: false,
-            count: res.data.total_count,
-            results: res.data.workspaces,
-            maxPage: Math.ceil(res.data.total_count / 25),
-            page: 1,
-          });
-        }
-      }
-    );
+    // actions.search(
+    //   {
+    //     search: inputValue,
+    //     skip: 0,
+    //     limit: 25,
+    //     filter_by: filterBy,
+    //   },
+    //   (err, res) => {
+    //     if (err) {
+    //       actions.updateSearch({
+    //         ...search,
+    //         searching: false,
+    //       });
+    //     } else {
+    //       actions.updateSearch({
+    //         ...search,
+    //         value: inputValue,
+    //         filterBy: filterBy,
+    //         searching: false,
+    //         count: res.data.total_count,
+    //         results: res.data.workspaces,
+    //         maxPage: Math.ceil(res.data.total_count / 25),
+    //         page: 1,
+    //       });
+    //     }
+    //   }
+    // );
   };
 
   const handleClearSearch = () => {
     actions.updateSearch({
-      results: [],
-      searching: true,
+      //results: [],
+      //searching: true,
       value: "",
-      filterBy: "all",
-      page: 1,
-      maxPage: 1,
-      count: 0,
+      //filterBy: "all",
+      // page: 1,
+      // maxPage: 1,
+      // count: 0,
     });
-    actions.search(
-      {
-        search: "",
-        skip: 0,
-        limit: 25,
-        filter_by: "all",
-      },
-      (err, res) => {
-        if (err) {
-          actions.updateSearch({
-            searching: false,
-            value: "",
-            filterBy: "all",
-          });
-        } else {
-          actions.updateSearch({
-            value: "",
-            filterBy: "all",
-            searching: false,
-            count: res.data.total_count,
-            results: res.data.workspaces,
-            maxPage: Math.ceil(res.data.total_count / 25),
-          });
-        }
-      }
-    );
+    // actions.search(
+    //   {
+    //     search: "",
+    //     skip: 0,
+    //     limit: 25,
+    //     filter_by: "all",
+    //   },
+    //   (err, res) => {
+    //     if (err) {
+    //       actions.updateSearch({
+    //         searching: false,
+    //         value: "",
+    //         filterBy: "all",
+    //       });
+    //     } else {
+    //       actions.updateSearch({
+    //         value: "",
+    //         filterBy: "all",
+    //         searching: false,
+    //         count: res.data.total_count,
+    //         results: res.data.workspaces,
+    //         maxPage: Math.ceil(res.data.total_count / 25),
+    //       });
+    //     }
+    //   }
+    // );
     setInputValue("");
   };
 
