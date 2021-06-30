@@ -309,6 +309,7 @@ const WorspaceHeaderPanel = (props) => {
       topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
     }),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
   };
 
   //const actions = useWorkspaceSearchActions();
@@ -420,10 +421,20 @@ const WorspaceHeaderPanel = (props) => {
       is_pinned: activeTopic.is_favourite ? 0 : 1,
     };
 
-    dispatch(favouriteWorkspace(payload));
+    dispatch(
+      favouriteWorkspace(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (payload.is_pinned) {
+          toaster.success(_t("TOASTER.ADDED_TO_FAVORITES", "::title:: added to favorites", { title: activeTopic.name }));
+        } else {
+          toaster.success(_t("TOASTER.REMOVED_FROM_FAVORITES", "::title:: removed from favorites", { title: activeTopic.name }));
+        }
+      })
+    );
   };
-
-  const isMember = activeTopic && user && activeTopic.members.some((m) => m.id === user.id);
 
   return (
     <>
@@ -485,11 +496,9 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
-                      {isMember && (
-                        <li className="nav-item">
-                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
-                        </li>
-                      )}
+                      <li className="nav-item">
+                        <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                      </li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -532,11 +541,11 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
-                      {isMember && (
-                        <li className="nav-item">
-                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
-                        </li>
-                      )}
+
+                      <li className="nav-item">
+                        <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                      </li>
+
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}

@@ -24,6 +24,7 @@ const useWorkspaceSearchActions = () => {
     unArchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Un-archive workspace"),
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
+    somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
   };
 
   const search = (payload, callback) => {
@@ -131,7 +132,7 @@ const useWorkspaceSearchActions = () => {
   };
 
   const leave = (item) => {
-    favourite(item);
+    // favourite(item);
     if (item.members.length === 1 && item.topic.is_locked) {
       let archivePayload = {
         id: item.channel.id,
@@ -227,8 +228,18 @@ const useWorkspaceSearchActions = () => {
 
     dispatch(
       favouriteWorkspace(payload, (err, res) => {
-        if (err) return;
-        getFilterCount();
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (res && res.data) {
+          if (payload.is_pinned) {
+            toaster.success(_t("TOASTER.ADDED_TO_FAVORITES", "::title:: added to favorites", { title: item.topic.name }));
+          } else {
+            toaster.success(_t("TOASTER.REMOVED_FROM_FAVORITES", "::title:: removed from favorites", { title: item.topic.name }));
+          }
+          getFilterCount();
+        }
       })
     );
   };
