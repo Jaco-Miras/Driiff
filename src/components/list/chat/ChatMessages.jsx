@@ -437,11 +437,11 @@ class ChatMessages extends React.PureComponent {
     this.infiniteScroll = React.createRef();
     this.mouseOver = React.createRef(false);
 
-    this.varRefs = {
-      timerStart: React.createRef(0),
-      xDown: React.createRef(null),
-      yDown: React.createRef(null),
-    };
+    // this.varRefs = {
+    //   timerStart: React.createRef(0),
+    //   xDown: React.createRef(null),
+    //   yDown: React.createRef(null),
+    // };
   }
   //revisit
   // attachedImgEventListener = () => {
@@ -793,6 +793,34 @@ class ChatMessages extends React.PureComponent {
         })
         .sort((a, b) => a.key.localeCompare(b.key));
     }
+    let gms = {};
+
+    if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
+      gms = this.props.selectedChannel.replies
+        .map((r) => {
+          if (r.hasOwnProperty("g_date")) {
+            return r;
+          } else {
+            return {
+              ...r,
+              g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+            };
+          }
+        })
+        .reduce((acc, val) => {
+          acc[this.props.timeFormat.localizeDate(val.created_at.timestamp, "YYYY-MM-DD")] = {
+            replies: {
+              ...val,
+              ...(acc[this.props.timeFormat.localizeDate(val.created_at.timestamp, "YYYY-MM-DD")] && {
+                ...acc[this.props.timeFormat.localizeDate(val.created_at.timestamp, "YYYY-MM-DD")].replies,
+              }),
+            },
+          };
+          return acc;
+        }, {});
+    }
+
+    console.log(groupedMessages, gms);
 
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>
@@ -913,7 +941,7 @@ class ChatMessages extends React.PureComponent {
                                       users={this.props.users}
                                       translate={this.props.translate}
                                       language={this.props.language}
-                                      translated_channels={this.props.translated_channels} 
+                                      translated_channels={this.props.translated_channels}
                                       chat_language={this.props.chat_language}
                                       _t={this.props._t}
                                     >

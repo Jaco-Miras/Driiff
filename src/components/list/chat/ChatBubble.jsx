@@ -485,7 +485,28 @@ const ChatNameNotAuthor = styled.span`
 
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, chatSettings, isLastChatVisible, dictionary, users, translated_channels, chat_language, translate, language, _t } = props;
+  const {
+    reply,
+    showAvatar,
+    selectedChannel,
+    showGifPlayer,
+    isAuthor,
+    addMessageRef,
+    user,
+    recipients,
+    isLastChat,
+    chatMessageActions,
+    timeFormat,
+    chatSettings,
+    isLastChatVisible,
+    dictionary,
+    users,
+    translated_channels,
+    chat_language,
+    translate,
+    language,
+    _t,
+  } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -494,7 +515,7 @@ const ChatBubble = (props) => {
 
   const isTranslateChannels = translated_channels.includes(selectedChannel.id);
 
-  useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, chat_language, actions: chatMessageActions});
+  useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
@@ -530,7 +551,7 @@ const ChatBubble = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -539,7 +560,7 @@ const ChatBubble = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
