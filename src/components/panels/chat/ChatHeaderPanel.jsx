@@ -93,6 +93,10 @@ const Wrapper = styled.div`
     letter-spacing: 0;
     line-height: 12px;
   }
+  .plus-recipient-component {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
@@ -409,7 +413,7 @@ const ChatHeaderPanel = (props) => {
           )}
           {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
             <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-              <EyeIcon icon="eye" className={"mr-1"} />
+              <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} />
               {channel.team ? dictionary.teamChat : dictionary.clientChat}
             </StyledBadge>
           )}

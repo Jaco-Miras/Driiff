@@ -1,11 +1,14 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
 import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
+//import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
+//import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply, useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
+//import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
 
@@ -78,31 +81,6 @@ const ChatBubbleContainer = styled.div`
     height: 100%;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
-
-    .star-wrap {
-      position: relative;
-      display: flex;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        color: #a7abc3;
-
-        &.active {
-          fill: #7a1b8bcc;
-          color: #7a1b8bcc;
-        }
-      }
-      .star-count {
-        font-size: 0.835rem;
-        color: #a7abc3;
-        height: 16px;
-        line-height: 16px;
-        padding: 0 4px;
-        border-radius: 6px;
-        font-style: normal;
-      }
-    }
   }
   ol {
     text-align: left;
@@ -481,14 +459,14 @@ const ChatNameNotAuthor = styled.span`
 `;
 
 const ChatBubbleVirtualized = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, chatMessageActions, timeFormat, chatSettings, dictionary, users, translate, language, _t } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, recipients, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language, _t } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
-  useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
+  useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
@@ -500,6 +478,8 @@ const ChatBubbleVirtualized = (props) => {
     users,
     translate,
     language,
+    translated_channels,
+    chat_language,
     _t,
   });
 
@@ -552,20 +532,6 @@ const ChatBubbleVirtualized = (props) => {
       if (lnkChannelMessage) lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
     };
   }, []);
-
-  useEffect(() => {
-    if (typeof history.location.state === "object") {
-      if (history.location.state && history.location.state.focusOn === reply.code && refs.container.current && contentRef.current) {
-        //chat.scrollIntoView({ behavior: "smooth", block: "center" });
-        refs.container.current.scrollIntoView({ block: "center" });
-        if (contentRef.current) {
-          contentRef.current.classList.add("pulse");
-        }
-
-        history.push(history.location.pathname, null);
-      }
-    }
-  }, [history.location.state, refs.container.current, contentRef.current]);
 
   const handleQuoteClick = (e) => {
     if (reply.quote) {

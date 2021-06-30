@@ -104,7 +104,7 @@ const ReplyPreview = (props) => {
       )}
       {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
         <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-          <EyeIcon icon="eye" className={"mr-1"} />
+          <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} />
           {channel.team ? dictionary.withTeam : dictionary.withClient}
         </StyledBadge>
       )}
@@ -113,7 +113,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       let lastReplyBodyHtml = channel.is_translate && channel.last_reply.translated_body ? channel.last_reply.translated_body : channel.last_reply.body;
 

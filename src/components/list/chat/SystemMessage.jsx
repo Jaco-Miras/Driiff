@@ -79,18 +79,6 @@ const ChatTimeStamp = styled.div`
   height: 100%;
   align-items: center;
   white-space: nowrap;
-
-  .star-wrap {
-    .feather-star {
-      width: 16px;
-      height: 16px;
-
-      &.active {
-        fill: #7a1b8bcc;
-        color: #7a1b8bcc;
-      }
-    }
-  }
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = forwardRef((props, ref) => {
@@ -160,13 +148,7 @@ const SystemMessage = forwardRef((props, ref) => {
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
       <SystemMessageContent ref={ref} id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
-        <span className="reply-date created">
-          {/* <span className="star-wrap">
-            <SvgIconFeather className={`mr-1 ${reply.i_starred ? "active" : ""}`} icon="star" />
-            {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-          </span> */}
-          {timeFormat.localizeTime(reply.created_at.timestamp)}
-        </span>
+        <span className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );

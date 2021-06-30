@@ -74,6 +74,9 @@ const VirtuosoContainer = (props) => {
   const isIdle = useSelector((state) => state.global.isIdle);
   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
   const previousChannel = usePreviousValue(selectedChannel);
+  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
+  const { chat_language, translated_channels, language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
   const loadReplies = () => {
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
@@ -183,6 +186,10 @@ const VirtuosoContainer = (props) => {
                 _t={_t}
                 chatMessageActions={chatMessageActions}
                 timeFormat={timeFormat}
+                translate={translate}
+                language={language}
+                translated_channels={translated_channels}
+                chat_language={chat_language}
               />
             );
           }}

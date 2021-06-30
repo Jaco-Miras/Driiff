@@ -10,20 +10,23 @@ const Wrapper = styled.div`
   .chat-timestamp_text {
     margin: 1px 0 3px 0;
   }
-  .title-data-chat-folder { 
+  .title-data-chat-folder {
     display: inline-block;
     height: 12px;
-    color: #8B8B8B;
+    color: #8b8b8b;
     font-family: Arial;
     font-size: 12px;
     letter-spacing: 0;
     line-height: 12px;
     font-weight: normal;
-    margin-left:5px;
+    margin-left: 5px;
   }
 `;
 
-const IconFolder = styled(SvgIconFeather)`width: 12px;height: 10px;`;
+const IconFolder = styled(SvgIconFeather)`
+  width: 12px;
+  height: 10px;
+`;
 
 const ChannelTitleContainer = styled.h6`
   color: #363636;
@@ -87,19 +90,21 @@ const ChatTitleDate = (props) => {
     switch (channel.type) {
       case "TOPIC": {
         if (channel.workspace_folder) {
-          return (<><IconFolder icon="folder" /> {channel.workspace_folder.name}  </>);
+          return (
+            <>
+              <IconFolder icon="folder" /> {channel.workspace_folder.name}{" "}
+            </>
+          );
         } else {
           return (
             <>
-              <span className="dictionary-label">
-                {dictionary.workspace}
-              </span>
+              <span className="dictionary-label">{dictionary.workspace}</span>
             </>
           );
         }
       }
       default: {
-        return '';
+        return "";
       }
     }
   };
@@ -110,7 +115,8 @@ const ChatTitleDate = (props) => {
         <ToolTip direction="up-start" arrow={false} content={channel.title}>
           <span>
             {chatTitle}
-            {/* channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(team chat)" */}{ /* " " */}
+            {/* channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(team chat)" */}
+            {/* " " */}
             {/* !channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && "(client chat)" */}
             <span className="title-data-chat-folder">{getChannelFolder()}</span>
           </span>

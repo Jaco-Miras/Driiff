@@ -34,12 +34,9 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { virtualization, translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
-  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-
-  const { language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const { translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { chat_language, translated_channels, language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
 
