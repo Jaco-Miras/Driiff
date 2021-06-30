@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Avatar, ToolTip } from "../../common";
 import { TodoCheckBox } from "../../forms";
 //import quillHelper from "../../../helpers/quillHelper";
-import { setViewFiles } from "../../../redux/actions/fileActions";
+import { setViewFiles, incomingFileData } from "../../../redux/actions/fileActions";
 import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
+import { sessionService } from "redux-react-session";
 
 const Icon = styled(SvgIconFeather)`
   width: 16px;
@@ -117,6 +118,10 @@ const TodosList = (props) => {
 
   //const bodyDescription = quillHelper.parseEmoji(todo.description);
 
+  const fileBlobs = useSelector((state) => state.files.fileBlobs);
+
+  const descriptionRef = useRef(null);
+
   const handlePreviewFile = (e, files, file) => {
     e.preventDefault();
     e.stopPropagation();
@@ -163,6 +168,62 @@ const TodosList = (props) => {
         return null;
     }
   };
+
+  useEffect(() => {
+    if (descriptionRef.current) {
+      const images = descriptionRef.current.querySelectorAll("img");
+      images.forEach((img) => {
+        const imgSrc = img.getAttribute("src");
+        if (!img.classList.contains("has-listener")) {
+          img.classList.add("has-listener");
+          const imgFile = todo.files.find((f) => imgSrc.includes(f.code));
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
+          }
+        } else {
+          const imgFile = todo.files.find((f) => imgSrc.includes(f.code));
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
+          }
+        }
+      });
+    }
+    const setFileSrc = (payload, callback = () => {}) => {
+      dispatch(incomingFileData(payload, callback));
+    };
+    const imageFiles = todo.files.filter((f) => f.type.includes("image"));
+    if (imageFiles.length) {
+      imageFiles.forEach((file) => {
+        if (!fileBlobs[file.id]) {
+          sessionService.loadSession().then((current) => {
+            let myToken = current.token;
+            fetch(file.view_link, {
+              method: "GET",
+              keepalive: true,
+              headers: {
+                Authorization: myToken,
+                "Access-Control-Allow-Origin": "*",
+                Connection: "keep-alive",
+                crossorigin: true,
+              },
+            })
+              .then(function (response) {
+                return response.blob();
+              })
+              .then(function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+              });
+          });
+        }
+      });
+    }
+  }, [todo.files, todo.description, descriptionRef]);
 
   useEffect(() => {
     if (todo.status === "DONE" && !isDone) {
@@ -212,7 +273,7 @@ const TodosList = (props) => {
           </span>
           <span className={`align-items-center todo-title-description text-truncate mr-3 ${isDone && "text-muted"}`} onClick={handleTitleClick}>
             <span className={"todo-title"}>{todo.title}</span>
-            {todo.description && !isDone && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {todo.description && !isDone && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
             {!isDone &&
               todo.files.map((file) => {
                 return (
