@@ -198,6 +198,12 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const RadioInputWrapper = styled.div`
+  .component-radio-input {
+    font-size: 0.9rem;
+  }
+`;
+
 // const LockIcon = styled(SvgIconFeather)`
 //   width: 1rem;
 //   height: 1rem;
@@ -1475,7 +1481,7 @@ const CreateEditWorkspaceModal = (props) => {
             <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
             <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
             <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
-            <div className="mt-3">
+            <RadioInputWrapper className="mt-3">
               <RadioInput
                 readOnly
                 onClick={(e) => {
@@ -1498,7 +1504,7 @@ const CreateEditWorkspaceModal = (props) => {
               >
                 {dictionary.sendTruDriff}
               </RadioInput>
-            </div>
+            </RadioInputWrapper>
           </ModalBody>
           <ModalFooter>
             <Button className="btn-outline-secondary" onClick={toggleNested}>
