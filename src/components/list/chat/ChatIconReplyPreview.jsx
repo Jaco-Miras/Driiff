@@ -70,15 +70,15 @@ const EyeIcon = styled(SvgIconFeather)`
 `;
 
 const StyledBadge = styled.div`
-display: inline-flex;
-align-items: center;
-${(props) => props.isTeam && 'background:#D1EEFF !important;'}
-height:18px;
-padding: 5px !important;
-color: #363636;
-font-size: 10px;
-letter-spacing: 0;
-line-height: 12px;
+  display: inline-flex;
+  align-items: center;
+  ${(props) => props.isTeam && "background:#D1EEFF !important;"}
+  height:18px;
+  padding: 5px !important;
+  color: #363636;
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 12px;
 `;
 
 const ReplyPreview = (props) => {
@@ -97,22 +97,19 @@ const ReplyPreview = (props) => {
   let previewText = "";
   let lastReplyBody = "";
 
-  const chatHeaderBadgeContainer = renderToString(<ChatHeaderBadgeContainer className="chat-header-badge">
-    {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
-      <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
-    )}
-    {channel.type === "TOPIC" &&
-      !channel.is_archived &&
-      workspaces.hasOwnProperty(channel.entity_id) &&
-      workspaces[channel.entity_id].is_shared &&
-      workspaces[channel.entity_id].active === 1 &&
-      (
+  const chatHeaderBadgeContainer = renderToString(
+    <ChatHeaderBadgeContainer className="chat-header-badge">
+      {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
+        <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
+      )}
+      {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
         <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-          <EyeIcon icon="eye" className={"mr-1"} />
-          { channel.team ? dictionary.withTeam : dictionary.withClient}
+          <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} />
+          {channel.team ? dictionary.withTeam : dictionary.withClient}
         </StyledBadge>
       )}
-  </ChatHeaderBadgeContainer>);
+    </ChatHeaderBadgeContainer>
+  );
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {

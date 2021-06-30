@@ -19,8 +19,8 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   height: 60px;
-    padding-bottom: 1em;
-    
+  padding-bottom: 1em;
+
   .chat-header-left {
     display: flex;
   }
@@ -29,16 +29,16 @@ const Wrapper = styled.div`
     height: 17px;
     color: #000000;
     font-family: Inter;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0;
-  line-height: 17px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 17px;
     text-align: center;
     display: flex;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    
+
     a {
       color: #000 !important;
       text-overflow: ellipsis;
@@ -80,14 +80,14 @@ const Wrapper = styled.div`
     right: 255px !important;
   }
   .channel-title-wrapper {
-    display: flex; 
-    flex-wrap: wrap; 
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
   }
   .chat-header-folder {
     flex: 1 1 100%;
     height: 12px;
-    color: #8B8B8B;
+    color: #8b8b8b;
     font-family: Arial;
     font-size: 12px;
     letter-spacing: 0;
@@ -96,7 +96,10 @@ const Wrapper = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)``;
-const IconFolder = styled(SvgIconFeather)`width: 12px;height: 11px;`;
+const IconFolder = styled(SvgIconFeather)`
+  width: 12px;
+  height: 11px;
+`;
 
 const EyeIcon = styled(SvgIconFeather)`
   width: 0.7rem;
@@ -144,7 +147,7 @@ const StyledMoreOptions = styled(MoreOptions)`
   }
   .feather-more-horizontal {
     width: 25px;
-    font-size:10px;
+    font-size: 10px;
   }
   .more-options-tooltip {
     left: auto;
@@ -165,9 +168,9 @@ const StyledMoreOptions = styled(MoreOptions)`
 const StyledBadge = styled.div`
   display: inline-flex;
   align-items: center;
-  ${(props) => props.isTeam && 'background:#D1EEFF !important;'}
+  ${(props) => props.isTeam && "background:#D1EEFF !important;"}
   margin-left:5px;
-  height:18px;
+  height: 18px;
   padding: 5px !important;
   color: #363636;
   font-size: 10px;
@@ -283,7 +286,8 @@ const ChatHeaderPanel = (props) => {
         if (chatChannel.workspace_folder) {
           return (
             <>
-              {/*chatChannel.workspace_folder.name  &nbsp;*/}{ /* ">" &nbsp; */}
+              {/*chatChannel.workspace_folder.name  &nbsp;*/}
+              {/* ">" &nbsp; */}
               <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
                 {chatChannel.title}
               </a>
@@ -293,7 +297,8 @@ const ChatHeaderPanel = (props) => {
           return (
             <>
               <span className="dictionary-label">
-                { /* dictionary.workspace &nbsp;*/}{ /* ">" &nbsp; */}
+                {/* dictionary.workspace &nbsp;*/}
+                {/* ">" &nbsp; */}
               </span>
               <a onClick={handleWorkspaceLinkClick} data-href={channelActions.getChannelLink(chatChannel)} href={channelActions.getChannelLink(chatChannel)}>
                 {chatChannel.title}
@@ -321,19 +326,21 @@ const ChatHeaderPanel = (props) => {
     switch (chatChannel.type) {
       case "TOPIC": {
         if (chatChannel.workspace_folder) {
-          return (<><IconFolder icon="folder" /> {chatChannel.workspace_folder.name}  </>);
+          return (
+            <>
+              <IconFolder icon="folder" /> {chatChannel.workspace_folder.name}{" "}
+            </>
+          );
         } else {
           return (
             <>
-              <span className="dictionary-label">
-                {dictionary.workspace}
-              </span>
+              <span className="dictionary-label">{dictionary.workspace}</span>
             </>
           );
         }
       }
       default: {
-        return '';
+        return "";
       }
     }
   };
@@ -383,8 +390,7 @@ const ChatHeaderPanel = (props) => {
 
   if (channel === null) return null;
 
-  if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate)
-    chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
+  if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
 
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
@@ -395,28 +401,23 @@ const ChatHeaderPanel = (props) => {
         </BackButton>
         <ChannelIcon className="chat-header-icon" channel={channel} width="33px" />
       </div>
-      <div className='channel-title-wrapper'>
+      <div className="channel-title-wrapper">
         <div className="chat-header-title">{getChannelTitle()}</div>
         <ChatHeaderBadgeContainer className="chat-header-badge">
           {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
             <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
           )}
-          {channel.type === "TOPIC" &&
-            !channel.is_archived &&
-            workspaces.hasOwnProperty(channel.entity_id) &&
-            workspaces[channel.entity_id].is_shared &&
-            workspaces[channel.entity_id].active === 1 &&
-            (
-              <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-                <EyeIcon icon="eye" className={"mr-1"} />
-                { channel.team ? dictionary.teamChat : dictionary.clientChat}
-              </StyledBadge>
-            )}
+          {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
+            <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
+              <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} />
+              {channel.team ? dictionary.teamChat : dictionary.clientChat}
+            </StyledBadge>
+          )}
         </ChatHeaderBadgeContainer>
         <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
         <div>
           <ul className="nav align-items-center justify-content-end">
-            <li className="ml-2" style={{ 'height': '21px' }}>
+            <li className="ml-2" style={{ height: "21px" }}>
               <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
                 {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
                 {channel.tyope === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
