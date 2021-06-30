@@ -60,6 +60,19 @@ const Option = (props) => {
   );
 };
 
+const MultiValueLabel = ({ children, selectProps, ...props }) => {
+  const handleClick = () => {
+    if (!props.data.has_accepted && typeof props.data.id === "string") {
+      selectProps.onEmailClick(props.data);
+    }
+  };
+  return (
+    <div onClick={handleClick} className={!props.data.has_accepted && typeof props.data.id === "string" ? "has-not-accepted" : "has-accepted"}>
+      <components.MultiValueLabel {...props}>{children}</components.MultiValueLabel>
+    </div>
+  );
+};
+
 const MultiValueContainer = ({ children, selectProps, ...props }) => {
   let newChildren = children.map((c, i) => {
     if (i === 0) {
@@ -89,9 +102,10 @@ const PeopleSelect = forwardRef((props, ref) => {
         styles={dark_mode === "0" ? lightTheme : darkTheme}
         isMulti={isMulti}
         isClearable={isClearable}
-        components={{ Option, MultiValueContainer }}
+        components={{ Option, MultiValueLabel }}
         {...otherProps}
         onCreateOption={props.onCreateOption}
+        onEmailClick={props.onEmailClick}
       />
     );
   } else {

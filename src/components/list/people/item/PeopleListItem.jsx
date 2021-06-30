@@ -231,7 +231,7 @@ const PeopleListItem = (props) => {
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
                     <h6 className="user-name mb-1 ">
                       <ToolTip content={user.email}>
-                        <div className="mr-2 people-text-truncate">{user.email}</div>
+                        <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
                       </ToolTip>
                       <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
                       <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />
