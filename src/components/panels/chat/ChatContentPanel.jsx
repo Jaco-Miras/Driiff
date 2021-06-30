@@ -204,10 +204,7 @@ const ChatContentPanel = (props) => {
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null ? (
         virtualization ? (
-          <>
-            <VirtuosoContainer dictionary={dictionary} />
-            <ChatTranslateActions selectedChannel={selectedChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />
-          </>
+          <VirtuosoContainer dictionary={dictionary} />
         ) : (
           <ChatMessages
             selectedChannel={selectedChannel}
