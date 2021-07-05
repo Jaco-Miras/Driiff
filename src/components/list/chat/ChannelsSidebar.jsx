@@ -48,8 +48,8 @@ const ChannelsSidebar = (props) => {
 
   const channels = useSelector((state) => state.chat.channels);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const searchingChannels = useSelector((state) => state.chat.searchingChannels);
-  const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
+  // const searchingChannels = useSelector((state) => state.chat.searchingChannels);
+  // const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   const [fetchingChannels, setFetchingChannels] = useState(false);
   const actions = useChannelActions();
   const { favoriteChannels, sortedChannels, searchArchivedChannels } = useSortChannels(Object.values(channels), search, {}, workspace);

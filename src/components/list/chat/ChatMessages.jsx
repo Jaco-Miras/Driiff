@@ -793,34 +793,6 @@ class ChatMessages extends React.PureComponent {
         })
         .sort((a, b) => a.key.localeCompare(b.key));
     }
-    let gms = {};
-
-    if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
-      gms = this.props.selectedChannel.replies
-        .map((r) => {
-          if (r.hasOwnProperty("g_date")) {
-            return r;
-          } else {
-            return {
-              ...r,
-              g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-            };
-          }
-        })
-        .reduce((acc, val) => {
-          acc[this.props.timeFormat.localizeDate(val.created_at.timestamp, "YYYY-MM-DD")] = {
-            replies: {
-              ...val,
-              ...(acc[this.props.timeFormat.localizeDate(val.created_at.timestamp, "YYYY-MM-DD")] && {
-                ...acc[this.props.timeFormat.localizeDate(val.created_at.timestamp, "YYYY-MM-DD")].replies,
-              }),
-            },
-          };
-          return acc;
-        }, {});
-    }
-
-    console.log(groupedMessages, gms);
 
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>

@@ -548,7 +548,7 @@ const UserProfilePanel = (props) => {
     }
   }, [editInformation, refs.first_name]);
 
-  if (!form.id) {
+  if (!users[props.match.params.id]) {
     return <></>;
   }
 
