@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
-import { useSettings, useTranslationActions } from "../../hooks";
+import { useSettings, useTranslationActions, useChannelActions } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks } from "./index";
 import NewModalButtons from "./NewModalButtons";
+import { useWorkspace } from "../../hooks";
+import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -196,9 +198,18 @@ const BackWrapper = styled.span`
 
 const GiftIcon = styled(SvgIconFeather)``;
 
+const BackWrapper = styled.span`
+  cursor: pointer;
+  position: absolute;
+  ${(props) => (props.gift ? "top: 10px;" : "")}
+  right: 10px;
+`;
+
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
   const history = useHistory();
+  const params = useParams();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const count = useSelector((state) => state.global.todos.count);
@@ -263,6 +274,43 @@ const MainNavigationTabPanel = (props) => {
 
   const handleShowModalButtons = () => {
     setShowbuttons((prevState) => !prevState);
+  };
+
+  const { actions, workspaces } = useWorkspace();
+  const channels = useSelector((state) => state.chat.channels);
+  const channelActions = useChannelActions();
+  const handleBackClick = () => {
+
+    setTimeout(() => {
+      let url = history.location.pathname;
+      let pN = url.split("/").filter(function (el) { return el != ""; });
+      if (pN[0] === 'workspace' && pN[1] === 'chat' && typeof workspaces[pN[4]] !== 'undefined') {
+        const companyWs = workspaces[pN[4]];
+        const scrollComponent = document.getElementById("component-chat-thread");
+        if (scrollComponent) {
+          dispatch(
+            setChannelHistoricalPosition({
+              channel_id: companyWs.channel.id,
+              scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+            })
+          );
+        }
+        actions.selectChannel(channels[companyWs.channel.id]);
+        actions.selectWorkspace(companyWs);
+      }
+      else if (pN[0] === 'chat') {
+        const channel = Object.values(channels).find(function (ch) { return pN[1] == ch.code });
+        if (typeof channel !== 'undefined') {
+          document.body.classList.add("m-chat-channel-closed");
+          let scrollComponent = document.getElementById("component-chat-thread");
+          if (scrollComponent) {
+            channelActions.saveHistoricalPosition(channel, scrollComponent);
+          }
+          channelActions.select({ ...channel, selected: true });
+        }
+      }
+    }, 0);
+    history.goBack();
   };
 
   return (
