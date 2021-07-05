@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   companyChannel: null,
   channels: {},
   selectedChannel: null,
+  selectedChannelId: null,
   startNewChannels: {},
   channelDrafts: {},
   unreadChatCount: 0,
@@ -313,6 +314,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: updatedChannels,
         //lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
         lastVisitedChannel: channel,
+        selectedChannelId: action.data.id,
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
@@ -528,12 +530,12 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "SET_CHANNEL_TRANSLATE_STATE": {
       let channel = null;
-   
+
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.id)) {
         channel = { ...state.channels[action.data.id] };
         channel = {
           ...channel,
-          is_translate: action.data.is_translate 
+          is_translate: action.data.is_translate,
         };
       }
 
@@ -549,7 +551,7 @@ export default function (state = INITIAL_STATE, action) {
             : state.channels,
       };
     }
-    
+
     case "INCOMING_CHAT_MESSAGE": {
       let haveReference = false;
       let channel = null;
@@ -1649,6 +1651,7 @@ export default function (state = INITIAL_STATE, action) {
           channels: channels,
           lastVisitedChannel: channel,
           selectedChannel: channel,
+          selectedChannelId: channel.id ? channel.id : state.selectedChannelId,
         };
       } else {
         return state;
@@ -1674,6 +1677,7 @@ export default function (state = INITIAL_STATE, action) {
           channels: channels,
           lastVisitedChannel: channel,
           selectedChannel: channel,
+          selectedChannelId: channel.id ? channel.id : state.selectedChannelId,
         };
       } else {
         return state;
