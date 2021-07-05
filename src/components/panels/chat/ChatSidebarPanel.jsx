@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
@@ -180,16 +180,13 @@ const ChatSidebarPanel = (props) => {
     setTabPill("pills-home");
   };
 
-  const handleTabChange = useCallback(
-    (e) => {
-      if (tabPill === e.target.getAttribute("aria-controls")) {
-        handleResetFilter();
-      } else {
-        setTabPill(e.target.getAttribute("aria-controls"));
-      }
-    },
-    [setTabPill, tabPill]
-  );
+  const handleTabChange = (e) => {
+    if (tabPill === e.target.getAttribute("aria-controls")) {
+      handleResetFilter();
+    } else {
+      setTabPill(e.target.getAttribute("aria-controls"));
+    }
+  };
 
   const { _t } = useTranslation();
 
@@ -213,8 +210,8 @@ const ChatSidebarPanel = (props) => {
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
     you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
-    withTeam:_t("CHANNEL.WITH_TEAM", "Team Chat"),
-    withClient:_t("CHANNEL.WITH_CLIENT", "Client Chat"),
+    withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
+    withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
   };
 
   const handleOpenGroupChatModal = () => {

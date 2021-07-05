@@ -364,7 +364,6 @@ const VirtualizedChat = (props) => {
   const { actualIndex, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const recipients = useSelector((state) => state.global.recipients);
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const users = useSelector((state) => state.users.users);
 
@@ -461,7 +460,6 @@ const VirtualizedChat = (props) => {
             <ChatBubbleVirtualized
               chatMessageActions={chatMessageActions}
               timeFormat={timeFormat}
-              recipients={recipients}
               user={user}
               reply={reply}
               showAvatar={showAvatar}
@@ -509,7 +507,6 @@ const VirtualizedChat = (props) => {
           <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
             <SystemMessageContainer className="system-message" isAuthor={false}>
               <SystemMessageVirtualized
-                recipients={recipients}
                 user={user}
                 chatMessageActions={chatMessageActions}
                 timeFormat={timeFormat}

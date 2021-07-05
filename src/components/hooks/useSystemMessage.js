@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 const useSystemMessage = ({ dictionary, reply, selectedChannel, user, _t }) => {
   const users = useSelector((state) => state.users.users);
-  const recipients = useSelector((state) => state.global.recipients);
+  //const recipients = useSelector((state) => state.global.recipients);
   const params = useParams();
   let parseBody = "";
   if (reply.body.includes("POST_CREATE::")) {
@@ -46,16 +46,19 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user, _t }) => {
   } else if (reply.body.includes("JOIN_CHANNEL")) {
     let ids = /\d+/g;
     let extractedIds = reply.body.match(ids);
-    let newMembers = recipients
-      .filter((r) => {
-        let userFound = false;
-        extractedIds.forEach((id) => {
-          if (parseInt(id) === r.type_id) {
-            userFound = true;
-          }
-        });
-        return userFound;
-      })
+    // let newMembers = recipients
+    //   .filter((r) => {
+    //     let userFound = false;
+    //     extractedIds.forEach((id) => {
+    //       if (parseInt(id) === r.type_id) {
+    //         userFound = true;
+    //       }
+    //     });
+    //     return userFound;
+    //   })
+    //   .map((user) => user.name);
+    let newMembers = Object.values(users)
+      .filter((u) => extractedIds.some((id) => parseInt(id) === u.id))
       .map((user) => user.name);
     if (selectedChannel.type === "DIRECT") {
       parseBody = `<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${selectedChannel.title}</span></p>`;

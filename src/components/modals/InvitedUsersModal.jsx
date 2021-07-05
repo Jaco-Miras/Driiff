@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -43,21 +43,18 @@ const InvitedUsersModal = (props) => {
     name: _t("INVITE.NAME", "Name"),
   };
 
-  const handleInputChange = useCallback(
-    (e) => {
-      e.persist();
-      const id = e.currentTarget.dataset.id;
-      const name = e.currentTarget.name;
-      setInvitationItems((prevState) => {
-        prevState[id][name] = e.target.value;
-        return prevState;
-      });
-      setBinary((prevState) => !prevState);
-    },
-    [setInvitationItems, setBinary]
-  );
+  const handleInputChange = (e) => {
+    e.persist();
+    const id = e.currentTarget.dataset.id;
+    const name = e.currentTarget.name;
+    setInvitationItems((prevState) => {
+      prevState[id][name] = e.target.value;
+      return prevState;
+    });
+    setBinary((prevState) => !prevState);
+  };
 
-  const handleAddItem = useCallback((e) => {
+  const handleAddItem = (e) => {
     setInvitationItems((prevState) => {
       if (hasLastName) {
         prevState.push({
@@ -74,19 +71,16 @@ const InvitedUsersModal = (props) => {
       return prevState;
     });
     setBinary((prevState) => !prevState);
-  }, []);
+  };
 
-  const handleDeleteItem = useCallback(
-    (e) => {
-      const id = e.currentTarget.dataset.id;
-      setInvitationItems((prevState) => {
-        prevState.splice(id, 1);
-        return prevState;
-      });
-      setBinary((prevState) => !prevState);
-    },
-    [setInvitationItems, setBinary]
-  );
+  const handleDeleteItem = (e) => {
+    const id = e.currentTarget.dataset.id;
+    setInvitationItems((prevState) => {
+      prevState.splice(id, 1);
+      return prevState;
+    });
+    setBinary((prevState) => !prevState);
+  };
 
   const deleteItemByIndex = (index) => {
     setInvitationItems((prevState) => {

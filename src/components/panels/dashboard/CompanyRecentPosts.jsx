@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
@@ -66,13 +66,11 @@ const CompanyRecentPosts = (props) => {
   const match = useRouteMatch();
   const [scrollRef, setScrollRef] = useState(null);
 
-  const assignRef = useCallback((e) => {
+  const assignRef = (e) => {
     if (scrollRef === null) {
       setScrollRef(e);
     }
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const handleOpenPost = (post) => {
     postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"));

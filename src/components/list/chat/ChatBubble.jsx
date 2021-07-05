@@ -3,10 +3,9 @@ import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
-//import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
-import { useChatReply, useGoogleApis } from "../../hooks";
+import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 //import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
@@ -493,7 +492,6 @@ const ChatBubble = (props) => {
     isAuthor,
     addMessageRef,
     user,
-    recipients,
     isLastChat,
     chatMessageActions,
     timeFormat,
@@ -509,7 +507,7 @@ const ChatBubble = (props) => {
   } = props;
 
   const history = useHistory();
-  const googleApis = useGoogleApis();
+  //const googleApis = useGoogleApis();
 
   //useChatTranslate({ message: reply, isAuthor, translate:  selectedChannel.is_translate, language, actions: chatMessageActions,});
   useChatFancyLink({ message: reply, actions: chatMessageActions });
@@ -521,7 +519,6 @@ const ChatBubble = (props) => {
     dictionary,
     isAuthor,
     user,
-    recipients,
     selectedChannel,
     users,
     translate,
@@ -548,23 +545,23 @@ const ChatBubble = (props) => {
     skip: !isLastChat,
   });
 
-  const handleQuoteContentRef = (e) => {
-    if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
-      googleLinks.forEach((gl) => {
-        googleApis.init(gl);
-      });
-    }
-  };
+  // const handleQuoteContentRef = (e) => {
+  //   if (e) {
+  //     const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+  //     googleLinks.forEach((gl) => {
+  //       googleApis.init(gl);
+  //     });
+  //   }
+  // };
 
-  const handleContentRef = (e) => {
-    if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
-      googleLinks.forEach((gl) => {
-        googleApis.init(gl);
-      });
-    }
-  };
+  // const handleContentRef = (e) => {
+  //   if (e) {
+  //     const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+  //     googleLinks.forEach((gl) => {
+  //       googleApis.init(gl);
+  //     });
+  //   }
+  // };
 
   const handleChannelMessageLink = (e) => {
     e.preventDefault();
@@ -686,7 +683,7 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent ref={handleQuoteContentRef} className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {reply.files.length > 0 && !reply.is_deleted && (
@@ -704,7 +701,7 @@ const ChatBubble = (props) => {
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
-                    ref={handleContentRef}
+                    //ref={handleContentRef}
                     hasFiles={hasFiles}
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}

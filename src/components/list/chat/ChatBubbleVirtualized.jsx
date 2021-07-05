@@ -459,7 +459,7 @@ const ChatNameNotAuthor = styled.span`
 `;
 
 const ChatBubbleVirtualized = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, recipients, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language, _t } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language, _t } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -473,7 +473,6 @@ const ChatBubbleVirtualized = (props) => {
     dictionary,
     isAuthor,
     user,
-    recipients,
     selectedChannel,
     users,
     translate,
@@ -494,7 +493,7 @@ const ChatBubbleVirtualized = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -503,7 +502,7 @@ const ChatBubbleVirtualized = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

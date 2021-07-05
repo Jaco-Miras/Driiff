@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { TeamListItem } from "../../list/people/item";
 import { SvgIconFeather } from "../../common";
@@ -66,13 +66,11 @@ const DashboardTeam = (props) => {
 
   const loggedUser = useSelector((state) => state.session.user);
 
-  const assignRef = useCallback((e) => {
+  const assignRef = (e) => {
     if (scrollRef === null) {
       setScrollRef(e);
     }
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const hideOptions = !isMember || workspace.active === 0;
   const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
