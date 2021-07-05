@@ -421,13 +421,13 @@ const EmptyState = styled.div`
   }
 `;
 
-class ChatMessages extends React.PureComponent {
+class ChatMessages extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       hasArrowUpListener: false,
-      initializing: false,
+      //initializing: false,
       loadMoreInView: false,
       fetchingReplies: false,
       showEmoji: {},
@@ -524,7 +524,7 @@ class ChatMessages extends React.PureComponent {
           }, 1000);
         }
 
-        if (this.state.initializing === true) this.setState({ initializing: false });
+        //if (this.state.initializing === true) this.setState({ initializing: false });
       });
     }
   };
@@ -896,7 +896,6 @@ class ChatMessages extends React.PureComponent {
                                     <ChatBubble
                                       chatMessageActions={this.props.chatMessageActions}
                                       timeFormat={this.props.timeFormat}
-                                      recipients={this.props.recipients}
                                       user={this.props.user}
                                       reply={reply}
                                       showAvatar={showAvatar}
@@ -957,7 +956,6 @@ class ChatMessages extends React.PureComponent {
                                   <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                     <SystemMessageContainer className="system-message" isAuthor={false}>
                                       <SystemMessage
-                                        recipients={this.props.recipients}
                                         user={this.props.user}
                                         chatMessageActions={this.props.chatMessageActions}
                                         timeFormat={this.props.timeFormat}
@@ -1008,7 +1006,7 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
+            {!this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
               <EmptyState className="no-reply-container">
                 <SvgEmptyState icon={3} />
               </EmptyState>
@@ -1022,7 +1020,7 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
   const {
-    global: { recipients, isIdle, isBrowserActive },
+    global: { isIdle, isBrowserActive },
     session: { user },
     chat: { historicalPositions, isLastChatVisible },
     users: { users },
@@ -1032,7 +1030,6 @@ function mapStateToProps(state) {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
     historicalPositions,
-    recipients,
     isLastChatVisible,
     users,
     isIdle,

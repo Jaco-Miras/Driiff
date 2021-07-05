@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import { sessionService } from "redux-react-session";
 import { pushBrowserNotification } from "../../helpers/pushHelper";
 import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
-import { urlify } from "../../helpers/urlContentHelper";
+//import { urlify } from "../../helpers/urlContentHelper";
 import {
   addToChannels,
   deletePostNotification,

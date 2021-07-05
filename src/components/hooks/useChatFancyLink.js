@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FancyLink } from "../common";
 import { renderToString } from "react-dom/server";
 import { getChatMsgsForFancy } from "../../redux/services/chat";
 
 const useChatFancyLink = (props) => {
   const { message, actions } = props;
-
+  const componentIsMounted = useRef(true);
   function getMessage(message) {
     getChatMsgsForFancy({ content: message.body })
       .then((res) => {
         return res;
       })
       .then((response) => {
-        setFancyContent(response.data.body);
+        if (componentIsMounted.current) setFancyContent(response.data.body);
       });
     return fancyContent !== null ? fancyContent : message.body;
   }
@@ -27,7 +27,14 @@ const useChatFancyLink = (props) => {
   }
 
   const [fancyContent, setFancyContent] = useState(null);
+
   const messageBody = message.body;
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     let result = messageBody;

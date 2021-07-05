@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { TeamListItem } from "../../list/people/item";
 //import {useUsers} from "../../hooks";
@@ -57,13 +57,11 @@ const CompanyDashboardTeam = (props) => {
 
   const [showMore, setShowMore] = useState(false);
 
-  const assignRef = useCallback((e) => {
+  const assignRef = (e) => {
     if (scrollRef === null) {
       setScrollRef(e);
     }
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const handleToggleShow = () => {
     setShowMore((prevState) => !prevState);

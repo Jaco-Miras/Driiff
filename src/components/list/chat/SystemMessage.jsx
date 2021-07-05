@@ -82,11 +82,11 @@ const ChatTimeStamp = styled.div`
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = forwardRef((props, ref) => {
-  const { reply, selectedChannel, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary, users, _t } = props;
+  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, isLastChatVisible, dictionary, users, _t } = props;
 
   const history = useHistory();
 
-  const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user, users, _t });
+  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users, _t });
 
   const [lastChatRef, inView, entry] = useInView({
     threshold: THRESHOLD,
@@ -126,7 +126,7 @@ const SystemMessage = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (reply) {
-      let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
+      let pushLinks = document.querySelectorAll('.push-link[data-has-link="0"]');
       pushLinks.forEach((p) => {
         p.addEventListener("click", handleHistoryPushClick);
         p.dataset.hasLink = "1";

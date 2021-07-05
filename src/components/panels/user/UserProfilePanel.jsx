@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
@@ -162,24 +162,24 @@ const UserProfilePanel = (props) => {
   //const isAdmin = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
   const isAdmin = loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1;
 
-  const getValidClass = useCallback((valid) => {
+  const getValidClass = (valid) => {
     if (typeof valid !== "boolean") {
     } else {
       return valid ? "is-valid" : "is-invalid";
     }
-  }, []);
+  };
 
-  const togglePasswordUpdate = useCallback(() => {
+  const togglePasswordUpdate = () => {
     setPasswordUpdate((prevState) => !prevState);
-  }, [setPasswordUpdate]);
+  };
 
-  const togglePasswordVisibility = useCallback(() => {
+  const togglePasswordVisibility = () => {
     setPasswordVisibility((prevState) => !prevState);
-  }, [setPasswordVisibility]);
+  };
 
   const handleUserChat = (user) => selectUserChannel(user);
 
-  const toggleEditInformation = useCallback(() => {
+  const toggleEditInformation = () => {
     setEditInformation((prevState) => !prevState);
     setForm({ ...user });
     setFormUpdate({
@@ -188,9 +188,9 @@ const UserProfilePanel = (props) => {
       feedbackText: {},
     });
     setPasswordUpdate(false);
-  }, [user, setForm, setPasswordUpdate, setEditInformation]);
+  };
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     if (e.target !== null) {
       const { name, value } = e.target;
       setForm((prevState) => ({
@@ -198,127 +198,124 @@ const UserProfilePanel = (props) => {
         [name]: value.trim(),
       }));
     }
-  }, []);
+  };
 
-  const handleInputBlur = useCallback(
-    (e) => {
-      if (e.target !== null) {
-        const { name, value } = e.target;
-        if (user[name] === form[name]) {
+  const handleInputBlur = (e) => {
+    if (e.target !== null) {
+      const { name, value } = e.target;
+      if (user[name] === form[name]) {
+        setFormUpdate((prevState) => ({
+          valid: {
+            ...prevState.valid,
+            [name]: undefined,
+          },
+          feedbackState: {
+            ...prevState.feedbackState,
+            [name]: undefined,
+          },
+          feedbackText: {
+            ...prevState.feedbackText,
+            [name]: undefined,
+          },
+        }));
+        return;
+      }
+
+      if (name === "email") {
+        if (requiredFields.includes(name) && value.trim() === "") {
           setFormUpdate((prevState) => ({
             valid: {
               ...prevState.valid,
-              [name]: undefined,
+              [name]: false,
             },
             feedbackState: {
               ...prevState.feedbackState,
-              [name]: undefined,
+              [name]: false,
             },
             feedbackText: {
               ...prevState.feedbackText,
-              [name]: undefined,
+              [name]: "Email is required",
             },
           }));
-          return;
-        }
-
-        if (name === "email") {
-          if (requiredFields.includes(name) && value.trim() === "") {
-            setFormUpdate((prevState) => ({
-              valid: {
-                ...prevState.valid,
-                [name]: false,
-              },
-              feedbackState: {
-                ...prevState.feedbackState,
-                [name]: false,
-              },
-              feedbackText: {
-                ...prevState.feedbackText,
-                [name]: "Email is required",
-              },
-            }));
-          } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
-            setFormUpdate((prevState) => ({
-              valid: {
-                ...prevState.valid,
-                [name]: false,
-              },
-              feedbackState: {
-                ...prevState.feedbackState,
-                [name]: false,
-              },
-              feedbackText: {
-                ...prevState.feedbackText,
-                [name]: "Invalid email format",
-              },
-            }));
-          } else {
-            checkEmail(form.email, (err, res) => {
-              if (res) {
-                if (res.data.status) {
-                  setFormUpdate((prevState) => ({
-                    valid: {
-                      ...prevState.valid,
-                      [name]: false,
-                    },
-                    feedbackState: {
-                      ...prevState.feedbackState,
-                      [name]: false,
-                    },
-                    feedbackText: {
-                      ...prevState.feedbackText,
-                      [name]: "Email is already taken",
-                    },
-                  }));
-                } else {
-                  setFormUpdate((prevState) => ({
-                    valid: {
-                      ...prevState.valid,
-                      [name]: true,
-                    },
-                    feedbackState: {
-                      ...prevState.feedbackState,
-                    },
-                    feedbackText: {
-                      ...prevState.feedbackText,
-                    },
-                  }));
-                }
-              }
-            });
-          }
-        } else if (requiredFields.includes(name)) {
+        } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
           setFormUpdate((prevState) => ({
             valid: {
               ...prevState.valid,
-              [name]: value.trim() !== "",
+              [name]: false,
             },
             feedbackState: {
               ...prevState.feedbackState,
-              [name]: value.trim() !== "",
+              [name]: false,
             },
             feedbackText: {
               ...prevState.feedbackText,
-              [name]: value.trim() === "" ? "Field is required." : "",
+              [name]: "Invalid email format",
             },
           }));
         } else {
-          setFormUpdate((prevState) => ({
-            valid: {
-              ...prevState.valid,
-              [name]: true,
-            },
-            feedbackState: prevState.feedbackState,
-            feedbackText: prevState.feedbackText,
-          }));
+          checkEmail(form.email, (err, res) => {
+            if (res) {
+              if (res.data.status) {
+                setFormUpdate((prevState) => ({
+                  valid: {
+                    ...prevState.valid,
+                    [name]: false,
+                  },
+                  feedbackState: {
+                    ...prevState.feedbackState,
+                    [name]: false,
+                  },
+                  feedbackText: {
+                    ...prevState.feedbackText,
+                    [name]: "Email is already taken",
+                  },
+                }));
+              } else {
+                setFormUpdate((prevState) => ({
+                  valid: {
+                    ...prevState.valid,
+                    [name]: true,
+                  },
+                  feedbackState: {
+                    ...prevState.feedbackState,
+                  },
+                  feedbackText: {
+                    ...prevState.feedbackText,
+                  },
+                }));
+              }
+            }
+          });
         }
+      } else if (requiredFields.includes(name)) {
+        setFormUpdate((prevState) => ({
+          valid: {
+            ...prevState.valid,
+            [name]: value.trim() !== "",
+          },
+          feedbackState: {
+            ...prevState.feedbackState,
+            [name]: value.trim() !== "",
+          },
+          feedbackText: {
+            ...prevState.feedbackText,
+            [name]: value.trim() === "" ? "Field is required." : "",
+          },
+        }));
+      } else {
+        setFormUpdate((prevState) => ({
+          valid: {
+            ...prevState.valid,
+            [name]: true,
+          },
+          feedbackState: prevState.feedbackState,
+          feedbackText: prevState.feedbackText,
+        }));
       }
-    },
-    [user, form, requiredFields]
-  );
+    }
+  };
 
-  const handleSave = useCallback(() => {
+  const handleSave = () => {
     if (Object.values(formUpdate.valid).find((v) => v === false) === false) {
       toaster.error("Some fields require your attention.");
     } else if (Object.values(formUpdate.valid).find((v) => v === true) === true) {
@@ -434,7 +431,7 @@ const UserProfilePanel = (props) => {
 
       setEditInformation(false);
     }
-  }, [form, formUpdate, update, setEditInformation, user, isAdmin]);
+  };
 
   const handleAvatarClick = () => {
     if (!editInformation) {
@@ -443,15 +440,15 @@ const UserProfilePanel = (props) => {
     refs.dropZoneRef.current.open();
   };
 
-  const handleShowDropZone = useCallback(() => {
+  const handleShowDropZone = () => {
     if (!showDropZone) setShowDropZone(true);
-  }, [showDropZone, setShowDropZone]);
+  };
 
-  const handleHideDropzone = useCallback(() => {
+  const handleHideDropzone = () => {
     setShowDropZone(false);
-  }, [setShowDropZone]);
+  };
 
-  const handleUseProfilePic = useCallback((file, fileUrl) => {
+  const handleUseProfilePic = (file, fileUrl) => {
     setForm((prevState) => ({
       ...prevState,
       profile_image_link: fileUrl,
@@ -475,35 +472,32 @@ const UserProfilePanel = (props) => {
         Click the <b>Save Changes</b> button to update your profile image.
       </>
     );
-  }, []);
+  };
 
-  const dropAction = useCallback(
-    (uploadedFiles) => {
-      if (uploadedFiles.length === 0) {
-        toaster.error("File type not allowed. Please use an image file.");
-      } else if (uploadedFiles.length > 1) {
-        toaster.warning("Multiple files detected. First selected image will be used.");
-      }
+  const dropAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toaster.error("File type not allowed. Please use an image file.");
+    } else if (uploadedFiles.length > 1) {
+      toaster.warning("Multiple files detected. First selected image will be used.");
+    }
 
-      let modal = {
-        type: "file_crop_upload",
-        imageFile: uploadedFiles[0],
-        mode: "profile",
-        handleSubmit: handleUseProfilePic,
-      };
+    let modal = {
+      type: "file_crop_upload",
+      imageFile: uploadedFiles[0],
+      mode: "profile",
+      handleSubmit: handleUseProfilePic,
+    };
 
-      dispatch(
-        addToModals(modal, () => {
-          handleHideDropzone();
-        })
-      );
-    },
-    [handleUseProfilePic, handleHideDropzone]
-  );
+    dispatch(
+      addToModals(modal, () => {
+        handleHideDropzone();
+      })
+    );
+  };
 
-  const handleEmailClick = useCallback(() => {
+  const handleEmailClick = () => {
     window.location.href = `mailto:${user.email}`;
-  }, [user]);
+  };
 
   useEffect(() => {
     if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
