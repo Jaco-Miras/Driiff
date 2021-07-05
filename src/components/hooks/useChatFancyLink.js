@@ -7,7 +7,7 @@ const useChatFancyLink = (props) => {
   const { message, actions } = props;
   const componentIsMounted = useRef(true);
   function getMessage(message) {
-    getChatMsgsForFancy({ content: message.body })
+    getChatMsgsForFancy({ message_id: message.id, content: message.body })
       .then((res) => {
         return res;
       })
@@ -30,9 +30,9 @@ const useChatFancyLink = (props) => {
     let result = messageBody;
 
     if (!messageBody.includes('<span class="fancied">') && (messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy) result = getMessage(message);
-    if (fancyContent !== null) 
+    if (fancyContent !== null)
       actions.saveFancyContent({ ...message, body: result, is_fancy: true });
-    
+
   }, [fancyContent]);
 };
 export default useChatFancyLink;

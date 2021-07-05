@@ -49,8 +49,16 @@ const ChatMessageOptions = (props) => {
 
   const handleEditReply = () => {
     let newReplyData = replyData;
-    newReplyData.body = convertFavis(newReplyData.body);
-    chatMessageActions.setEdit(replyData);
+    let body = newReplyData.body
+    var div = document.createElement('div');
+    div.innerHTML = body;
+    var elements = div.getElementsByClassName("fancied");
+    while (elements[0])
+      elements[0].parentNode.removeChild(elements[0])
+    var repl = div.innerHTML;
+
+    newReplyData.body = convertFavis(repl);
+    chatMessageActions.setEdit(newReplyData);
   };
 
   const handleQuoteReply = () => {
