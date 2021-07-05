@@ -58,7 +58,7 @@ const Wrapper = styled.div`
 const DashboardTeam = (props) => {
   const { className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions } = props;
   const mainRef = useRef(null);
-  const [scrollRef, setScrollRef] = useState(null);
+  //const [scrollRef, setScrollRef] = useState(null);
 
   const [showMore, setShowMore] = useState(false);
 
@@ -66,11 +66,11 @@ const DashboardTeam = (props) => {
 
   const loggedUser = useSelector((state) => state.session.user);
 
-  const assignRef = (e) => {
-    if (scrollRef === null) {
-      setScrollRef(e);
-    }
-  };
+  // const assignRef = (e) => {
+  //   if (scrollRef === null) {
+  //     setScrollRef(e);
+  //   }
+  // };
 
   const hideOptions = !isMember || workspace.active === 0;
   const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
@@ -111,7 +111,7 @@ const DashboardTeam = (props) => {
 
   return (
     <Wrapper className={`dashboard-team card ${className}`} ref={mainRef}>
-      <div ref={assignRef} className="card-body">
+      <div className="card-body">
         <h5 className="card-title">
           {dictionary.team} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather onClick={onEditClick} icon="plus" />}
         </h5>
@@ -125,7 +125,7 @@ const DashboardTeam = (props) => {
                 <TeamListItem
                   key={member.id}
                   member={member}
-                  parentRef={scrollRef}
+                  //parentRef={scrollRef}
                   onEditClick={onEditClick}
                   onLeaveWorkspace={onLeaveWorkspace}
                   onAddRole={onAddRole}
@@ -138,7 +138,7 @@ const DashboardTeam = (props) => {
                   toggleShow={handleToggleShow}
                   loggedUser={loggedUser}
                   workspace={workspace}
-                  scrollRef={mainRef.current}
+                  //scrollRef={mainRef.current}
                 />
               );
             })}
