@@ -198,13 +198,6 @@ const BackWrapper = styled.span`
 
 const GiftIcon = styled(SvgIconFeather)``;
 
-const BackWrapper = styled.span`
-  cursor: pointer;
-  position: absolute;
-  ${(props) => (props.gift ? "top: 10px;" : "")}
-  right: 10px;
-`;
-
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
   const history = useHistory();
@@ -268,10 +261,6 @@ const MainNavigationTabPanel = (props) => {
     history.push("/releases");
   };
 
-  const handleBackClick = () => {
-    history.goBack();
-  };
-
   const handleShowModalButtons = () => {
     setShowbuttons((prevState) => !prevState);
   };
@@ -280,11 +269,12 @@ const MainNavigationTabPanel = (props) => {
   const channels = useSelector((state) => state.chat.channels);
   const channelActions = useChannelActions();
   const handleBackClick = () => {
-
     setTimeout(() => {
       let url = history.location.pathname;
-      let pN = url.split("/").filter(function (el) { return el != ""; });
-      if (pN[0] === 'workspace' && pN[1] === 'chat' && typeof workspaces[pN[4]] !== 'undefined') {
+      let pN = url.split("/").filter(function (el) {
+        return el != "";
+      });
+      if (pN[0] === "workspace" && pN[1] === "chat" && typeof workspaces[pN[4]] !== "undefined") {
         const companyWs = workspaces[pN[4]];
         const scrollComponent = document.getElementById("component-chat-thread");
         if (scrollComponent) {
@@ -297,10 +287,11 @@ const MainNavigationTabPanel = (props) => {
         }
         actions.selectChannel(channels[companyWs.channel.id]);
         actions.selectWorkspace(companyWs);
-      }
-      else if (pN[0] === 'chat') {
-        const channel = Object.values(channels).find(function (ch) { return pN[1] == ch.code });
-        if (typeof channel !== 'undefined') {
+      } else if (pN[0] === "chat") {
+        const channel = Object.values(channels).find(function (ch) {
+          return pN[1] == ch.code;
+        });
+        if (typeof channel !== "undefined") {
           document.body.classList.add("m-chat-channel-closed");
           let scrollComponent = document.getElementById("component-chat-thread");
           if (scrollComponent) {
@@ -322,7 +313,13 @@ const MainNavigationTabPanel = (props) => {
           </GiftWrapper>
         )}
         <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />
-        <BackWrapper gift={((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) ? true : false}>
+        <BackWrapper
+          gift={
+            (driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null
+              ? true
+              : false
+          }
+        >
           <GiftIcon icon="chevron-left" color="#fff" onClick={handleBackClick} />
         </BackWrapper>
       </div>
