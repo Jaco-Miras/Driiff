@@ -41,7 +41,15 @@ const ChatMessageOptions = (props) => {
     dispatch(addToModals(payload));
   };
 
+  function convertFavis(content) {
+    return content.replace(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)((?:.(?!\<\/a\>))*.)(<\/a>)/g, function (fullText, beforeLink, anchorContent, href, lnkUrl, linkText, endAnchor) {
+      return href;
+    });
+  }
+
   const handleEditReply = () => {
+    let newReplyData = replyData;
+    newReplyData.body = convertFavis(newReplyData.body);
     chatMessageActions.setEdit(replyData);
   };
 
