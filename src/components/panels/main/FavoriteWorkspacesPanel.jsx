@@ -90,9 +90,9 @@ const FavoriteWorkspacesPanel = (props) => {
   const dispatch = useDispatch();
 
   const { actions, folders, history, orderChannel, workspaces, favoriteWorkspacesLoaded } = useWorkspace();
-  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const channels = useSelector((state) => state.chat.channels);
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const selectedChannelId = useSelector((state) => state.chat.selectedChannelId);
+  const channelIds = useSelector((state) => Object.keys(state.chat.channels));
+  const virtualization = useSelector((state) => state.settings.user.CHAT_SETTINGS.virtualization);
 
   const recipients = useSelector((state) => state.global.recipients);
 
@@ -156,24 +156,24 @@ const FavoriteWorkspacesPanel = (props) => {
   const handleSelectWorkspace = (ws) => {
     if (companyWs && ws.id === companyWs.id && companyChannel) {
       history.push(`/chat/${companyChannel.code}`);
-      actions.selectChannel(channels[companyChannel.id]);
+      actions.selectChannel({ id: companyChannel.id });
     } else {
       document.body.classList.remove("navigation-show");
 
-      if (selectedChannel && !virtualization) {
+      if (selectedChannelId && !virtualization) {
         const scrollComponent = document.getElementById("component-chat-thread");
         if (scrollComponent) {
           dispatch(
             setChannelHistoricalPosition({
-              channel_id: selectedChannel.id,
+              channel_id: selectedChannelId,
               scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
             })
           );
         }
       }
       //if (selected && onWorkspace) return;
-      if (selectedChannel && selectedChannel.id !== ws.channel.id && channels[ws.channel.id]) {
-        actions.selectChannel(channels[ws.channel.id]);
+      if (selectedChannelId && selectedChannelId !== ws.channel.id && channelIds.some((id) => parseInt(id) === ws.channel.id)) {
+        actions.selectChannel({ id: ws.channel.id });
       }
       actions.selectWorkspace(ws);
       actions.redirectTo(ws);

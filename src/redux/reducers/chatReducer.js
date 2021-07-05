@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   companyChannel: null,
   channels: {},
   selectedChannel: null,
+  selectedChannelId: null,
   startNewChannels: {},
   channelDrafts: {},
   unreadChatCount: 0,
@@ -366,6 +367,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: updatedChannels,
         //lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
         lastVisitedChannel: channel,
+        selectedChannelId: action.data.id,
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
@@ -1716,6 +1718,7 @@ export default function (state = INITIAL_STATE, action) {
           channels: channels,
           lastVisitedChannel: channel,
           selectedChannel: channel,
+          selectedChannelId: channel.id ? channel.id : state.selectedChannelId,
         };
       } else {
         return state;
@@ -1741,6 +1744,7 @@ export default function (state = INITIAL_STATE, action) {
           channels: channels,
           lastVisitedChannel: channel,
           selectedChannel: channel,
+          selectedChannelId: channel.id ? channel.id : state.selectedChannelId,
         };
       } else {
         return state;
