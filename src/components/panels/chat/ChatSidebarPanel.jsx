@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useChannels, useLoadChannel, useSettings, useTranslation } from "../../hooks";
+import { useLoadChannel, useSettings, useTranslation, useChannelActions } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -134,7 +134,8 @@ const ChatSidebarPanel = (props) => {
   const dispatch = useDispatch();
   const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings, setChatSetting } = useSettings();
-  const { actions: channelActions, chatSidebarSearch } = useChannels();
+  const channelActions = useChannelActions();
+  const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   useLoadChannel();
   const searchingChannels = useSelector((state) => state.chat.searchingChannels);
 
@@ -287,4 +288,4 @@ const ChatSidebarPanel = (props) => {
   );
 };
 
-export default React.memo(ChatSidebarPanel);
+export default ChatSidebarPanel;

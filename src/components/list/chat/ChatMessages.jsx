@@ -738,41 +738,11 @@ class ChatMessages extends React.Component {
     return loadMoreRef;
   };
 
-  // groupedMessages = () =>
-  //   Object.entries(
-  //     groupBy(
-  //       this.props.selectedChannel.replies.map((r) => {
-  //         if (r.hasOwnProperty("g_date")) {
-  //           return r;
-  //         } else {
-  //           return {
-  //             ...r,
-  //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-  //           };
-  //         }
-  //       }),
-  //       "g_date"
-  //     )
-  //   )
-  //     .map((entries) => {
-  //       return {
-  //         key: entries[0],
-  //         replies: entries[1],
-  //       };
-  //     })
-  //     .sort((a, b) => a.key.localeCompare(b.key));
-
-  render() {
-    //const { selectedChannel } = this.props;
-
-    let lastReplyUserId = 0;
-
-    let groupedMessages = [];
-
-    if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
-      groupedMessages = Object.entries(
-        groupBy(
-          this.props.selectedChannel.replies.map((r) => {
+  groupedMessages = () =>
+    Object.entries(
+      groupBy(
+        this.props.selectedChannel.replies
+          .map((r) => {
             if (r.hasOwnProperty("g_date")) {
               return r;
             } else {
@@ -781,18 +751,56 @@ class ChatMessages extends React.Component {
                 g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
               };
             }
+          })
+          .sort((a, b) => {
+            if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+              return a.id - b.id;
+            } else {
+              return a.created_at.timestamp - b.created_at.timestamp;
+            }
           }),
-          "g_date"
-        )
+        "g_date"
       )
-        .map((entries) => {
-          return {
-            key: entries[0],
-            replies: entries[1],
-          };
-        })
-        .sort((a, b) => a.key.localeCompare(b.key));
-    }
+    )
+      .map((entries) => {
+        return {
+          key: entries[0],
+          replies: entries[1],
+        };
+      })
+      .sort((a, b) => a.key.localeCompare(b.key));
+
+  render() {
+    //const { selectedChannel } = this.props;
+
+    let lastReplyUserId = 0;
+
+    // let groupedMessages = [];
+
+    // if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
+    //   groupedMessages = Object.entries(
+    //     groupBy(
+    //       this.props.selectedChannel.replies.map((r) => {
+    //         if (r.hasOwnProperty("g_date")) {
+    //           return r;
+    //         } else {
+    //           return {
+    //             ...r,
+    //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+    //           };
+    //         }
+    //       }),
+    //       "g_date"
+    //     )
+    //   )
+    //     .map((entries) => {
+    //       return {
+    //         key: entries[0],
+    //         replies: entries[1],
+    //       };
+    //     })
+    //     .sort((a, b) => a.key.localeCompare(b.key));
+    // }
 
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>
@@ -809,7 +817,7 @@ class ChatMessages extends React.Component {
           )}
           <ul>
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
-              ? groupedMessages.map((gm, i) => {
+              ? this.groupedMessages().map((gm, i) => {
                   return (
                     <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
@@ -914,9 +922,6 @@ class ChatMessages extends React.Component {
                                       language={this.props.language}
                                       translated_channels={this.props.translated_channels}
                                       chat_language={this.props.chat_language}
-                                      _t={this.props._t}
-                                      translated_channels={this.props.translated_channels}
-                                      chat_language={this.props.chat_language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
@@ -969,7 +974,6 @@ class ChatMessages extends React.Component {
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                         users={this.props.users}
-                                        _t={this.props._t}
                                       />
                                       {/* {reply.unfurls.length ? (
                                         <ChatUnfurl

@@ -81,4 +81,4 @@ const ChatSidebarContentPanel = (props) => {
   );
 };
 
-export default React.memo(ChatSidebarContentPanel);
+export default ChatSidebarContentPanel;
