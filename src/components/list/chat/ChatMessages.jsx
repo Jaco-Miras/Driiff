@@ -35,17 +35,6 @@ const ChatReplyContainer = styled.div`
   &.is-processed {
     opacity: 0;
   }
-  // .mention {
-  //   background: transparent;
-  //   display: inline-block;
-  //   width: auto;
-  //   height: auto;
-  //   padding: 0;
-  // }
-  // .mention.is-author {
-  //   background: transparent;
-  //   padding: 0;
-  // }
 `;
 
 const ChatList = styled.li`
@@ -56,58 +45,6 @@ const ChatList = styled.li`
   text-align: center;
   .chat-actions-container {
     opacity: 0;
-
-    .star-wrap {
-      position: relative;
-      display: flex;
-      &[data-star="true"] {
-        .feather-star {
-          fill: #7a1b8bcc;
-          color: #7a1b8bcc;
-        }
-      }
-      .feather-star {
-        width: 16px;
-        height: 16px;
-        cursor: pointer;
-      }
-      .star-count {
-        font-size: 0.835rem;
-        color: #a7abc3;
-        height: 16px;
-        line-height: 16px;
-        padding: 0 4px;
-      }
-      .star-user-popup {
-        position: absolute;
-        width: 250px;
-        padding: 4px;
-        background-color: #ffffff;
-        top: 100%;
-        z-index: 1;
-        border-top: 1px solid #eeeeee;
-        border-radius: 8px;
-        color: #4d4d4d;
-
-        .dark & {
-          background-color: #25282c;
-          border-top: 1px solid #25282c;
-          border-radius: 8px;
-          color: #c7c7c7;
-        }
-
-        .name {
-          display: block;
-          width: 100%;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      }
-
-      display: none;
-      visibility: hidden;
-    }
   }
 
   &:hover {
@@ -118,11 +55,7 @@ const ChatList = styled.li`
 `;
 const TimestampDiv = styled.div`
   z-index: 2;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   color: #a7abc3;
-  //padding: 26px 0 14px 0;
   display: inline-block;
   left: 50%;
   position: sticky;
@@ -142,15 +75,11 @@ const TimestampDiv = styled.div`
       display: none;
     }
   }
-  @media (max-width: 620px) {
-    //padding: 14px 0 10px 0;
-  }
 `;
 const ChatBubbleContainer = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
-  //align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   justify-content: flex-end;
   flex-flow: column;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
@@ -297,7 +226,6 @@ const ChatBubbleQuoteDiv = styled.div`
   display: inherit;
   margin-left: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
   > img {
-    // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
     max-height: 300px;
     max-width: 100%;
     width: auto;
@@ -436,53 +364,7 @@ class ChatMessages extends React.Component {
     this.scrollComponent = React.createRef();
     this.infiniteScroll = React.createRef();
     this.mouseOver = React.createRef(false);
-
-    // this.varRefs = {
-    //   timerStart: React.createRef(0),
-    //   xDown: React.createRef(null),
-    //   yDown: React.createRef(null),
-    // };
   }
-  //revisit
-  // attachedImgEventListener = () => {
-  //   document.querySelectorAll(".anchor-blot").forEach((el) => {
-  //     const src = el.getAttribute("src");
-  //     if (src) {
-  //       el.addEventListener("mousedown", (e) => {
-  //         window.open(el.getAttribute("src"), "_blank");
-  //       });
-  //       el.classList.remove("anchor-blot");
-  //     }
-  //   });
-  // };
-
-  // attachedClickListenerToChatUrl = () => {
-  //   document.querySelectorAll(".chat-url").forEach((el) => {
-  //     const cid = el.dataset.cid;
-  //     const mid = el.dataset.mid;
-  //     if (cid) {
-  //       el.addEventListener("mousedown", (e) => {
-  //         if (mid) {
-  //           this.props.history.push(`/chat/${cid}/${mid}`);
-  //           let messageEl = document.querySelector(`.code-${mid}`);
-  //           if (messageEl) {
-  //             setTimeout(() => {
-  //               messageEl.scrollIntoView(false);
-  //               messageEl.focus();
-  //               messageEl.classList.add("bounceIn");
-  //               setTimeout(() => {
-  //                 messageEl.classList.remove("bounceIn");
-  //               }, 200);
-  //             }, 200);
-  //           }
-  //         } else {
-  //           this.props.history.push(`/chat/${cid}`);
-  //         }
-  //       });
-  //       el.classList.remove("chat-url");
-  //     }
-  //   });
-  // };
 
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
@@ -505,9 +387,6 @@ class ChatMessages extends React.Component {
           limit: 20,
         };
       }
-      // if (selectedChannel.skip === 0) {
-      //   scrollComponent.scrollTop = scrollComponent.scrollHeight;
-      // }
       chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
         if (err) {
           chatMessageActions.channelActions.fetchingMessages(selectedChannel, false);
@@ -523,8 +402,6 @@ class ChatMessages extends React.Component {
             }
           }, 1000);
         }
-
-        //if (this.state.initializing === true) this.setState({ initializing: false });
       });
     }
   };
@@ -658,6 +535,7 @@ class ChatMessages extends React.Component {
       }
     });
   };
+
   handleRemoveReply = (reply) => {
     this.props.cbOnRemoveReply(reply);
   };
@@ -671,23 +549,10 @@ class ChatMessages extends React.Component {
   };
 
   handleLoadMoreRefChange = (inView, entry) => {
-    // console.log(inView);
-    // this.setState({ loadMoreInView: inView });
     if (inView) {
       this.loadReplies();
     }
   };
-
-  // handleMessageRefChange = (inView, entry, id) => {
-  //   const scrollComponent = this.scrollComponent.current;
-  //   if (inView) {
-  //     if (scrollComponent) {
-  //       if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
-  //         this.loadReplies();
-  //       }
-  //     }
-  //   }
-  // };
 
   handleShowSeenUsers = () => this.setState({ showSeenUsers: !this.state.showSeenUsers });
 

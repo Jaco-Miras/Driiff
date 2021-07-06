@@ -80,31 +80,6 @@ const ChatBubbleContainer = styled.div`
     height: 100%;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
-
-    .star-wrap {
-      position: relative;
-      display: flex;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        color: #a7abc3;
-
-        &.active {
-          fill: #7a1b8bcc;
-          color: #7a1b8bcc;
-        }
-      }
-      .star-count {
-        font-size: 0.835rem;
-        color: #a7abc3;
-        height: 16px;
-        line-height: 16px;
-        padding: 0 4px;
-        border-radius: 6px;
-        font-style: normal;
-      }
-    }
   }
   ol {
     text-align: left;
@@ -503,6 +478,7 @@ const ChatBubble = (props) => {
     chat_language,
     translate,
     language,
+    loadReplies,
   } = props;
 
   const history = useHistory();
@@ -599,10 +575,10 @@ const ChatBubble = (props) => {
   }, [history.location.state, refs.container.current, contentRef.current]);
 
   useEffect(() => {
-    if (addMessageRef && loadInView) {
-      props.loadReplies();
+    if (addMessageRef && loadInView && loadReplies) {
+      loadReplies();
     }
-  }, [addMessageRef, loadInView]);
+  }, [addMessageRef, loadInView, loadReplies]);
 
   useEffect(() => {
     if (isLastChat && entry) {
