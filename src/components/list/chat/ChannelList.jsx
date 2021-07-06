@@ -136,48 +136,48 @@ const ChannelList = (props) => {
     onSelectChannel(channel);
   };
 
-  let timerStart = 0;
-  let xDown = null;
-  let yDown = null;
-  const handleTouchStartChannel = (e) => {
-    timerStart = e.timeStamp;
-    xDown = e.touches[0].clientX;
-    yDown = e.touches[0].clientY;
-  };
+  // let timerStart = 0;
+  // let xDown = null;
+  // let yDown = null;
+  // const handleTouchStartChannel = (e) => {
+  //   timerStart = e.timeStamp;
+  //   xDown = e.touches[0].clientX;
+  //   yDown = e.touches[0].clientY;
+  // };
 
-  const handleTouchEndChannel = (e) => {
-    if (e.timeStamp - timerStart <= 125) {
-      if (!(e.target && e.target.classList.contains("feather"))) {
-        handleSelectChannel();
-        setTimeout(() => {
-          document.activeElement.blur();
-        }, 300);
-      }
-    }
-  };
+  // const handleTouchEndChannel = (e) => {
+  //   if (e.timeStamp - timerStart <= 125) {
+  //     if (!(e.target && e.target.classList.contains("feather"))) {
+  //       handleSelectChannel();
+  //       setTimeout(() => {
+  //         document.activeElement.blur();
+  //       }, 300);
+  //     }
+  //   }
+  // };
 
-  const handleTouchMoveChannel = (e) => {
-    let xUp = e.touches[0].clientX;
-    let yUp = e.touches[0].clientY;
+  // const handleTouchMoveChannel = (e) => {
+  //   let xUp = e.touches[0].clientX;
+  //   let yUp = e.touches[0].clientY;
 
-    let xDiff = xDown - xUp;
-    let yDiff = yDown - yUp;
+  //   let xDiff = xDown - xUp;
+  //   let yDiff = yDown - yUp;
 
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {
-      /*most significant*/
-      /* left swipe */
-      if (xDiff > 0) {
-        refs.container.current.focus();
-      } else {
-        timerStart += 125;
-      }
-    } else {
-      timerStart -= 125;
-    }
+  //   if (Math.abs(xDiff) > Math.abs(yDiff)) {
+  //     /*most significant*/
+  //     /* left swipe */
+  //     if (xDiff > 0) {
+  //       refs.container.current.focus();
+  //     } else {
+  //       timerStart += 125;
+  //     }
+  //   } else {
+  //     timerStart -= 125;
+  //   }
 
-    xDown = null;
-    yDown = null;
-  };
+  //   xDown = null;
+  //   yDown = null;
+  // };
 
   return (
     <Wrapper
@@ -185,19 +185,19 @@ const ChannelList = (props) => {
       className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
       selected={selectedChannel !== null && channel.id === selectedChannel.id}
       onClick={handleSelectChannel}
-      onTouchStart={handleTouchStartChannel}
-      onTouchEnd={handleTouchEndChannel}
-      onTouchMove={handleTouchMoveChannel}
+      // onTouchStart={handleTouchStartChannel}
+      // onTouchEnd={handleTouchEndChannel}
+      // onTouchMove={handleTouchMoveChannel}
     >
       <ChannelIcon channel={channel} />
       <div className="channel-info" ref={addLoadRef ? loadRef : null}>
         <ChannelTitlePreview className="channel-title-preview">
           {/* <ChannelTitle channel={channel} search={search}/> */}
           {/* <Timestamp className="text-right ml-auto"> */}
-          <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} dictionary={dictionary}/>
+          <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} dictionary={dictionary} />
           {/* </Timestamp> */}
         </ChannelTitlePreview>
-        <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} selectedChannel={selectedChannel}  />
+        <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} selectedChannel={selectedChannel} />
         <div className="d-flex">
           {channel.is_hidden && (
             <>

@@ -65,7 +65,7 @@ const useCompanyPosts = () => {
   }, []);
 
   useEffect(() => {
-    if (archived.skip === 0 && filter === "all") {
+    if (archived.skip === 0 && archived.has_more && filter === "all") {
       actions.fetchCompanyPosts({
         skip: 0,
         limit: 25,
@@ -75,7 +75,7 @@ const useCompanyPosts = () => {
   }, [filter, archived]);
 
   useEffect(() => {
-    if (favourites.skip === 0 && filter === "star") {
+    if (favourites.skip === 0 && favourites.has_more && filter === "star") {
       actions.fetchCompanyPosts({
         skip: 0,
         limit: 25,
@@ -85,7 +85,7 @@ const useCompanyPosts = () => {
   }, [filter, favourites]);
 
   useEffect(() => {
-    if (myPosts.skip === 0 && filter === "my_posts") {
+    if (myPosts.skip === 0 && myPosts.has_more && filter === "my_posts") {
       actions.fetchCompanyPosts({
         skip: 0,
         limit: 25,

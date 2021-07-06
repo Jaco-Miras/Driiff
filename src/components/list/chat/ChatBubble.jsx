@@ -503,7 +503,6 @@ const ChatBubble = (props) => {
     chat_language,
     translate,
     language,
-    _t,
   } = props;
 
   const history = useHistory();
@@ -524,7 +523,6 @@ const ChatBubble = (props) => {
     language,
     translated_channels,
     chat_language,
-    _t,
   });
 
   const hasFiles = reply.files.length > 0;
@@ -729,4 +727,4 @@ const ChatBubble = (props) => {
   );
 };
 
-export default React.memo(ChatBubble);
+export default ChatBubble;
