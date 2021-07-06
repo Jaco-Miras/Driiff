@@ -92,11 +92,11 @@ const ChatTimeStamp = styled.div`
 `;
 
 const SystemMessageVirtualized = forwardRef((props, ref) => {
-  const { reply, selectedChannel, chatMessageActions, user, timeFormat, dictionary, users, _t } = props;
+  const { reply, selectedChannel, chatMessageActions, user, timeFormat, dictionary, users } = props;
 
   const history = useHistory();
 
-  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users, _t });
+  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users });
 
   const handleHistoryPushClick = (e) => {
     e.preventDefault();
@@ -149,4 +149,4 @@ const SystemMessageVirtualized = forwardRef((props, ref) => {
   );
 });
 
-export default React.memo(SystemMessageVirtualized);
+export default SystemMessageVirtualized;

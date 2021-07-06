@@ -459,7 +459,7 @@ const ChatNameNotAuthor = styled.span`
 `;
 
 const ChatBubbleVirtualized = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language, _t } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -479,7 +479,6 @@ const ChatBubbleVirtualized = (props) => {
     language,
     translated_channels,
     chat_language,
-    _t,
   });
 
   const hasFiles = reply.files.length > 0;
@@ -645,4 +644,4 @@ const ChatBubbleVirtualized = (props) => {
   );
 };
 
-export default React.memo(ChatBubbleVirtualized);
+export default ChatBubbleVirtualized;
