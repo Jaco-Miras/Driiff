@@ -361,7 +361,7 @@ const StyledAvatar = styled(Avatar)`
 let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { actualIndex, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
+  const { actualIndex, reply, lastReply, isLastChatVisible, loadReplies, dictionary, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -477,7 +477,6 @@ const VirtualizedChat = (props) => {
               language={language}
               translated_channels={translated_channels}
               chat_language={chat_language}
-              _t={_t}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
@@ -516,7 +515,6 @@ const VirtualizedChat = (props) => {
                 isLastChatVisible={isLastChatVisible}
                 dictionary={dictionary}
                 users={users}
-                _t={_t}
               />
               {reply.unfurls.length ? (
                 <ChatUnfurl
@@ -542,4 +540,4 @@ const VirtualizedChat = (props) => {
   );
 };
 
-export default React.memo(VirtualizedChat);
+export default VirtualizedChat;

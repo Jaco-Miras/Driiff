@@ -156,7 +156,13 @@ const VirtuosoContainer = (props) => {
           //     ? itemsRenderedRef.current[selectedChannel.id].firstItem.index
           //     : selectedChannel.replies.length - 1
           // }
-          data={selectedChannel.replies}
+          data={selectedChannel.replies.sort((a, b) => {
+            if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+              return a.id - b.id;
+            } else {
+              return a.created_at.timestamp - b.created_at.timestamp;
+            }
+          })}
           startReached={loadReplies}
           atBottomStateChange={(atBottom) => handleBottomVisibilityChange(atBottom)}
           followOutput={(isAtBottom) => {
@@ -183,7 +189,6 @@ const VirtuosoContainer = (props) => {
                 reply={message}
                 lastReply={selectedChannel.replies[selectedChannel.replies.length - 1]}
                 dictionary={dictionary}
-                _t={_t}
                 chatMessageActions={chatMessageActions}
                 timeFormat={timeFormat}
                 translate={translate}
