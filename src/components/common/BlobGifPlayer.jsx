@@ -73,4 +73,4 @@ const BlobGifPlayer = (props) => {
   );
 };
 
-export default React.memo(BlobGifPlayer);
+export default BlobGifPlayer;
