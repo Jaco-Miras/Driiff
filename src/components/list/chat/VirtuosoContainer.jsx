@@ -65,7 +65,7 @@ const VirtuosoContainer = (props) => {
 
   const itemsRenderedRef = useRef(null);
   const virtuoso = useRef(null);
-  const { _t } = useTranslationActions();
+  //const { _t } = useTranslationActions();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
   const unreadCount = useCountUnreadReplies();
