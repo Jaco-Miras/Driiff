@@ -19,6 +19,7 @@ const TextWrapper = styled.div`
 
 const useToaster = () => {
   const success = (text, options = {}) => {
+    options = { ...options, containerId: 'A' }
     return toast.success(
       <Wrapper>
         <Icon icon="check" strokeWidth="2" />
@@ -29,6 +30,7 @@ const useToaster = () => {
   };
 
   const error = (text, options = {}) => {
+    options = { ...options, containerId: 'A' }
     return toast.error(
       <Wrapper>
         <Icon icon="alert-x" strokeWidth="2" />
@@ -39,6 +41,7 @@ const useToaster = () => {
   };
 
   const info = (text, options = {}) => {
+    options = { ...options, containerId: 'toastA' }
     return toast.info(
       <Wrapper>
         <Icon icon="info" strokeWidth="2" />
@@ -49,6 +52,7 @@ const useToaster = () => {
   };
 
   const warning = (text, options = {}) => {
+    options = { ...options, containerId: 'toastAA' }
     return toast.warn(
       <Wrapper>
         <Icon icon="warning" strokeWidth="2" />
@@ -59,6 +63,7 @@ const useToaster = () => {
   };
 
   const notify = (text, options = {}) => {
+    options = { ...options, containerId: 'toastAA' }
     return toast(
       <Wrapper>
         <TextWrapper>{text}</TextWrapper>
@@ -68,6 +73,7 @@ const useToaster = () => {
   };
 
   const update = (text, options = {}) => {
+    options = { ...options, containerId: 'toastAA' }
     toast.update(text, options);
   };
 

@@ -6,3 +6,4 @@ export { default as MainNavigationTabPanel } from "./MainNavigationTabPanel";
 export { default as FavoriteWorkspacesPanel } from "./FavoriteWorkspacesPanel";
 export { default as MainSidebarLinks } from "./MainSidebarLinks";
 export { default as NewModalButtons } from "./NewModalButtons";
+export { default as MainSnoozePanel } from "./MainSnoozePanel";

@@ -127,7 +127,7 @@ function App() {
   return (
     <Wrapper className="App">
       {imgAsLogin()}
-      <ToastContainer transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false} />
+      <ToastContainer enableMultiContainer containerId={'toastA'} transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false}  />
       <PreLoader />
       {location.pathname === "/driff" ? (
         <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff} />
