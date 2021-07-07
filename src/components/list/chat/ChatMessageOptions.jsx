@@ -41,8 +41,24 @@ const ChatMessageOptions = (props) => {
     dispatch(addToModals(payload));
   };
 
+  function convertFavis(content) {
+    return content.replace(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)((?:.(?!\<\/a\>))*.)(<\/a>)/g, function (fullText, beforeLink, anchorContent, href, lnkUrl, linkText, endAnchor) {
+      return href;
+    });
+  }
+
   const handleEditReply = () => {
-    chatMessageActions.setEdit(replyData);
+    let newReplyData = replyData;
+    let body = newReplyData.body
+    var div = document.createElement('div');
+    div.innerHTML = body;
+    var elements = div.getElementsByClassName("fancied");
+    while (elements[0])
+      elements[0].parentNode.removeChild(elements[0])
+    var repl = div.innerHTML;
+
+    newReplyData.body = convertFavis(repl);
+    chatMessageActions.setEdit(newReplyData);
   };
 
   const handleQuoteReply = () => {
