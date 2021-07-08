@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar } from "../../common";
-import { useIsUserTyping } from "../../hooks";
+import { useIsUserTyping, useTypingIndicator } from "../../hooks";
 
 const TypingContainer = styled.div`
   display: inline-flex;
@@ -36,7 +36,7 @@ const PlusUsersDiv = styled.div`
 `;
 const TypingIndicator = (props) => {
   const { className = "" } = props;
-  const [usersTyping] = useIsUserTyping();
+  const [usersTyping] = useTypingIndicator();
 
   return (
     <TypingContainer users={usersTyping.length} className={`component-chat-indicator ${className}`}>

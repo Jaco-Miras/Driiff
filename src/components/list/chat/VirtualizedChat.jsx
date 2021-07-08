@@ -5,7 +5,7 @@ import ChatBubbleVirtualized from "./ChatBubbleVirtualized";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-import ChatUnfurl from "./ChatUnfurl";
+//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessageVirtualized from "./SystemMessageVirtualized";
@@ -361,7 +361,7 @@ const StyledAvatar = styled(Avatar)`
 let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { actualIndex, reply, lastReply, isLastChatVisible, loadReplies, dictionary, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
+  const { actualIndex, reply, lastReply, isLastChatVisible, dictionary, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -467,8 +467,6 @@ const VirtualizedChat = (props) => {
               showGifPlayer={showGifPlayer}
               isAuthor={isAuthor}
               isLastChat={lastReply.id === reply.id}
-              loadReplies={loadReplies}
-              isBot={isBot}
               chatSettings={chatSettings}
               isLastChatVisible={isLastChatVisible}
               dictionary={dictionary}
@@ -516,7 +514,7 @@ const VirtualizedChat = (props) => {
                 dictionary={dictionary}
                 users={users}
               />
-              {reply.unfurls.length ? (
+              {/* {reply.unfurls.length ? (
                 <ChatUnfurl
                   unfurlData={reply.unfurls}
                   isAuthor={false}
@@ -526,7 +524,7 @@ const VirtualizedChat = (props) => {
                   replyId={reply.id}
                   removeUnfurl={chatMessageActions.removeUnfurl}
                 />
-              ) : null}
+              ) : null} */}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} />}

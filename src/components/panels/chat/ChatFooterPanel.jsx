@@ -370,7 +370,7 @@ const ChatFooterPanel = (props) => {
 
   return (
     <Wrapper className={`chat-footer ${className}`}>
-      <TypingIndicator />
+      {selectedChannel && <TypingIndicator />}
       <LockedLabel channel={selectedChannel} />
       {isMember && (
         <Dflex className="d-flex align-items-end chat-input-cointainer-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>

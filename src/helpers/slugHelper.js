@@ -22,7 +22,6 @@ export const getCurrentDriffUrl = () => {
 export const imgAsLogin = () => {
   if (localStorage.getItem("atoken") && localStorage.getItem("slug")) {
     return <img style={{ visibility: "hidden", display: "none" }} alt={"login token"} src={`${getAPIUrl({ isDNS: true })}/auth-web/login?token=${localStorage.getItem("atoken")}`} height={1} width={1} />;
-  } else {
   }
 };
 
@@ -86,22 +85,22 @@ export const initLogging = () => {
       localStorage.setItem("logger", logger);
     }
   }
-}
+};
 
 export const isConsoleLogAllowed = () => {
   if (["all", "console"].includes(localStorage.getItem("logger"))) {
     return true;
   }
 
-  return (isIPAddress(window.location.hostname) || window.location.hostname === "localhost");
-}
+  return isIPAddress(window.location.hostname) || window.location.hostname === "localhost";
+};
 
 export const isLoggedAllowed = () => {
   if (["all", "reducer", "axios"].includes(localStorage.getItem("logger"))) {
     return true;
   }
 
-  return (isIPAddress(window.location.hostname) || window.location.hostname === "localhost");
+  return isIPAddress(window.location.hostname) || window.location.hostname === "localhost";
 };
 
 export const isTranslationLogged = () => {
@@ -113,42 +112,42 @@ export const isTranslationLogged = () => {
     return true;
   }
 
-  return (isIPAddress(window.location.hostname) || window.location.hostname === "localhost");
+  return isIPAddress(window.location.hostname) || window.location.hostname === "localhost";
 };
 
-export const processTabActive = () => {
-  let hidden = "hidden";
+// export const processTabActive = () => {
+//   let hidden = "hidden";
 
-  // Standards:
-  if (hidden in document) document.addEventListener("visibilitychange", onchange);
-  else if ((hidden = "mozHidden") in document) document.addEventListener("mozvisibilitychange", onchange);
-  else if ((hidden = "webkitHidden") in document) document.addEventListener("webkitvisibilitychange", onchange);
-  else if ((hidden = "msHidden") in document) document.addEventListener("msvisibilitychange", onchange);
-  // IE 9 and lower:
-  else if ("onfocusin" in document) document.onfocusin = document.onfocusout = onchange;
-  // All others:
-  else window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+//   // Standards:
+//   if (hidden in document) document.addEventListener("visibilitychange", onchange);
+//   else if ((hidden = "mozHidden") in document) document.addEventListener("mozvisibilitychange", onchange);
+//   else if ((hidden = "webkitHidden") in document) document.addEventListener("webkitvisibilitychange", onchange);
+//   else if ((hidden = "msHidden") in document) document.addEventListener("msvisibilitychange", onchange);
+//   // IE 9 and lower:
+//   else if ("onfocusin" in document) document.onfocusin = document.onfocusout = onchange;
+//   // All others:
+//   else window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
 
-  function onchange(evt) {
-    var v = "visible",
-      h = "hidden",
-      evtMap = {
-        focus: v,
-        focusin: v,
-        pageshow: v,
-        blur: h,
-        focusout: h,
-        pagehide: h,
-      };
+//   function onchange(evt) {
+//     var v = "visible",
+//       h = "hidden",
+//       evtMap = {
+//         focus: v,
+//         focusin: v,
+//         pageshow: v,
+//         blur: h,
+//         focusout: h,
+//         pagehide: h,
+//       };
 
-    evt = evt || window.event;
-    if (evt.type in evtMap) document.body.className = evtMap[evt.type];
-    else document.body.className = this[hidden] ? "hidden" : "visible";
-  }
+//     evt = evt || window.event;
+//     if (evt.type in evtMap) document.body.className = evtMap[evt.type];
+//     else document.body.className = this[hidden] ? "hidden" : "visible";
+//   }
 
-  // set the initial state (but only if browser supports the Page Visibility API)
-  if (document[hidden] !== undefined) onchange({ type: document[hidden] ? "blur" : "focus" });
-};
+//   // set the initial state (but only if browser supports the Page Visibility API)
+//   if (document[hidden] !== undefined) onchange({ type: document[hidden] ? "blur" : "focus" });
+// };
 
 export const getTranslationAPIUrl = () => {
   const driffName = getDriffName();
