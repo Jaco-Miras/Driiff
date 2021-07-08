@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { FormInput } from "../forms";
+import { useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { SvgIconFeather } from "../common";
 import { EmailRegex } from "../../helpers/stringFormatter";
@@ -25,10 +26,22 @@ const InvitedUsersModal = (props) => {
     message: {},
   });
 
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const [binary, setBinary] = useState(false);
+  const user = useSelector((state) => state.session.user);
+
+  const dictionary = {
+    closeButton: _t("BUTTON.CLOSE", "Close"),
+    availableToAdmin: _t("TOOLTIP.AVAILABLE_TO_ADMIN", "This option is only available for administrators"),
+    userInvitations: _t("LABEL.USER_INVITATIONS", "User invitations"),
+    firstName: _t("INVITE.FIRST_NAME", "First name"),
+    lastName: _t("INVITE.LAST_NAME", "Last name"),
+    email: _t("INVITE.EMAIL", "Email"),
+    name: _t("INVITE.NAME", "Name"),
+  };
 
   const handleInputChange = (e) => {
     e.persist();
@@ -212,101 +225,117 @@ const InvitedUsersModal = (props) => {
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
-        User invitations
+        {dictionary.userInvitations}
       </ModalHeaderSection>
-      <ModalBody>
-        <table className="table table-responsive">
-          <tr>
-            {hasLastName ? (
-              <>
-                <th>First name</th>
-                <th>Last name</th>
-              </>
-            ) : (
-              <th>Name</th>
-            )}
-            <th>Email</th>
-            <th>
-              <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
-            </th>
-          </tr>
-          {invitationItems.map((item, key) => {
-            return (
-              <tr key={key}>
-                {hasLastName ? (
-                  <>
+      {(user.role.name === "owner" || user.role.name === "admin") && (
+        <ModalBody>
+          <table className="table table-responsive">
+            <tr>
+              {hasLastName ? (
+                <>
+                  <th>{dictionary.firstName}</th>
+                  <th>{dictionary.lastName}</th>
+                </>
+              ) : (
+                <th>{dictionary.name}</th>
+              )}
+              <th>{dictionary.email}</th>
+              <th>
+                <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
+              </th>
+            </tr>
+            {invitationItems.map((item, key) => {
+              return (
+                <tr key={key}>
+                  {hasLastName ? (
+                    <>
+                      <td>
+                        <FormInput
+                          data-id={key}
+                          placeholder={dictionary.firstName}
+                          name="first_name"
+                          value={item.first_name}
+                          isValid={formResponse.valid[key] ? formResponse.valid[key].first_name : null}
+                          feedback={formResponse.message[key] ? formResponse.message[key].first_name : null}
+                          onChange={handleInputChange}
+                        />
+                      </td>
+                      <td>
+                        <FormInput
+                          data-id={key}
+                          placeholder={dictionary.lastName}
+                          name="last_name"
+                          value={item.last_name}
+                          isValid={formResponse.valid[key] ? formResponse.valid[key].last_name : null}
+                          feedback={formResponse.message[key] ? formResponse.message[key].last_name : null}
+                          onChange={handleInputChange}
+                        />
+                      </td>
+                    </>
+                  ) : (
                     <td>
                       <FormInput
                         data-id={key}
-                        placeholder="First name"
-                        name="first_name"
-                        value={item.first_name}
-                        isValid={formResponse.valid[key] ? formResponse.valid[key].first_name : null}
-                        feedback={formResponse.message[key] ? formResponse.message[key].first_name : null}
+                        placeholder={dictionary.name}
+                        name="name"
+                        value={item.name}
+                        isValid={formResponse.valid[key] ? formResponse.valid[key].name : null}
+                        feedback={formResponse.message[key] ? formResponse.message[key].name : null}
                         onChange={handleInputChange}
                       />
                     </td>
-                    <td>
-                      <FormInput
-                        data-id={key}
-                        placeholder="Last name"
-                        name="last_name"
-                        value={item.last_name}
-                        isValid={formResponse.valid[key] ? formResponse.valid[key].last_name : null}
-                        feedback={formResponse.message[key] ? formResponse.message[key].last_name : null}
-                        onChange={handleInputChange}
-                      />
-                    </td>
-                  </>
-                ) : (
+                  )}
                   <td>
                     <FormInput
                       data-id={key}
-                      placeholder="Name"
-                      name="name"
-                      value={item.name}
-                      isValid={formResponse.valid[key] ? formResponse.valid[key].name : null}
-                      feedback={formResponse.message[key] ? formResponse.message[key].name : null}
+                      placeholder={dictionary.email}
+                      name="email"
+                      value={item.email}
+                      type="email"
+                      isValid={formResponse.valid[key] ? formResponse.valid[key].email : null}
+                      feedback={formResponse.message[key] ? formResponse.message[key].email : null}
                       onChange={handleInputChange}
                     />
                   </td>
-                )}
-                <td>
-                  <FormInput
-                    data-id={key}
-                    placeholder="Email"
-                    name="email"
-                    value={item.email}
-                    type="email"
-                    isValid={formResponse.valid[key] ? formResponse.valid[key].email : null}
-                    feedback={formResponse.message[key] ? formResponse.message[key].email : null}
-                    onChange={handleInputChange}
-                  />
-                </td>
-                <td>
-                  <SvgIconFeather data-id={key} className="cursor-pointer" icon="x" onClick={handleDeleteItem} />
-                </td>
-              </tr>
-            );
-          })}
-          <tr>
-            <td>
-              <MoreMemberButton onClick={handleAddItem}>
-                <SvgIconFeather icon="plus" /> <span>Add another</span>
-              </MoreMemberButton>
-            </td>
-          </tr>
-        </table>
-      </ModalBody>
-      <ModalFooter>
-        <Button color="primary" onClick={handleConfirm}>
-          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-          {submitText}
-        </Button>{" "}
-        <Button outline color="secondary" onClick={toggle}>
-          {cancelText}
-        </Button>
-      </ModalFooter>
+                  <td>
+                    <SvgIconFeather data-id={key} className="cursor-pointer" icon="x" onClick={handleDeleteItem} />
+                  </td>
+                </tr>
+              );
+            })}
+            <tr>
+              <td>
+                <MoreMemberButton onClick={handleAddItem}>
+                  <SvgIconFeather icon="plus" /> <span>Add another</span>
+                </MoreMemberButton>
+              </td>
+            </tr>
+          </table>
+        </ModalBody>
+      )}
+      {!(user.role.name === "owner" || user.role.name === "admin") && (
+        <ModalBody>
+          <div>{dictionary.availableToAdmin}</div>
+        </ModalBody>
+      )}
+      {(user.role.name === "owner" || user.role.name === "admin") && (
+        <ModalFooter>
+          <Button color="primary" onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {submitText}
+          </Button>{" "}
+          <Button outline color="secondary" onClick={toggle}>
+            {cancelText}
+          </Button>
+        </ModalFooter>
+      )}
+      {!(user.role.name === "owner" || user.role.name === "admin") && (
+        <ModalFooter>
+          <Button outline color="secondary" onClick={toggle}>
+            {dictionary.closeButton}
+          </Button>
+        </ModalFooter>
+      )}
     </Modal>
   );
 };
