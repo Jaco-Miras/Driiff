@@ -97,7 +97,7 @@ const MoreOptions = forwardRef((props, ref) => {
   const handleMouseLeave = () => {
     timeout = setTimeout(() => {
       setShowMoreOptions(false);
-    }, 600);
+    }, 1000);
   };
 
   const handleMouseEnter = () => {
@@ -106,7 +106,7 @@ const MoreOptions = forwardRef((props, ref) => {
 
   return (
     <Wrapper className={`more-options ${showMoreOptions ? "more-options-active" : ""} ${className}`} onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
-      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} strokeWidth={strokeWidth} fill={fill} height={svgHeight}/>
+      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} strokeWidth={strokeWidth} fill={fill} height={svgHeight} />
       {showMoreOptions && (
         <MoreTooltip
           ref={refs.options}

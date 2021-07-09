@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
-//import { SvgIconFeather } from "../../common";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -67,6 +67,7 @@ const SystemMessageContainer = styled.span`
 const SystemMessageContent = styled.span`
   display: block;
   width: 100%;
+  cursor: ${(props) => (props.isPostNotification ? "pointer" : "auto")};
 `;
 const ChatTimeStamp = styled.div`
   color: #a7abc3;
@@ -85,6 +86,7 @@ const SystemMessage = forwardRef((props, ref) => {
   const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, isLastChatVisible, dictionary, users } = props;
 
   const history = useHistory();
+  const params = useParams();
 
   const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users });
 
@@ -103,44 +105,25 @@ const SystemMessage = forwardRef((props, ref) => {
     }
   }, [isLastChat, entry, isLastChatVisible, inView]);
 
-  const handleHistoryPushClick = (e) => {
-    e.preventDefault();
-    if (e.currentTarget.dataset.ctrl === "1") {
-      e.currentTarget.dataset.ctrl = "0";
-      let link = document.createElement("a");
-      link.href = e.currentTarget.dataset.href;
-      link.target = "_blank";
-      link.click();
-    } else {
-      history.push(e.currentTarget.dataset.href);
-    }
-  };
-
-  const handleHistoryKeyDown = (e) => {
-    if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
-  };
-
-  const handleHistoryKeyUp = (e) => {
-    e.currentTarget.dataset.ctrl = "0";
-  };
-
-  useEffect(() => {
-    if (reply) {
-      let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
-      pushLinks.forEach((p) => {
-        p.addEventListener("click", handleHistoryPushClick);
-        p.dataset.hasLink = "1";
-        p.addEventListener("keydown", handleHistoryKeyDown);
-        p.addEventListener("keyup", handleHistoryKeyUp);
-      });
-    }
-  }, [reply]);
-
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {
       const data = JSON.parse(reply.body.replace("UPLOAD_BULK::", ""));
       if (data.files) {
         chatMessageActions.viewFiles(data.files);
+      }
+    } else if (reply.body.startsWith("POST_CREATE::")) {
+      let parsedData = reply.body.replace("POST_CREATE::", "");
+      if (parsedData.trim() !== "") {
+        let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
+        if (params && params.workspaceId) {
+          if (params.folderId) {
+            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          } else {
+            history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          }
+        } else {
+          history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);
+        }
       }
     }
   };
