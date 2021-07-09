@@ -295,6 +295,15 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "NOTIFICATION_SNOOZE": {
+      let notifications = { ...state.notifications };
+      var today = new Date();
+      notifications[action.data.id].snooze =  today.setSeconds(today.getSeconds() + 15);
+      return {
+        ...state,
+        notifications: notifications,
+      };
+    }
     default:
       return state;
   }
