@@ -273,7 +273,6 @@ export default function (state = INITIAL_STATE, action) {
       //         return ws.topic_detail
       //     }
       // })
-      // console.log(topicChannels.flat());
       return state;
     }
     case "UPDATE_CHANNEL_REDUCER": {
@@ -979,23 +978,26 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "ADD_QUOTE": {
-      let updatedQuotes = state.chatQuotes;
-      if (Object.keys(state.chatQuotes).length > 0 && state.chatQuotes.hasOwnProperty(action.data.channel_id)) {
-        updatedQuotes = { ...state.chatQuotes };
-        delete updatedQuotes[action.data.channel_id];
-        updatedQuotes = {
-          ...updatedQuotes,
-          [action.data.channel_id]: action.data,
-        };
-      } else {
-        updatedQuotes = {
-          ...state.chatQuotes,
-          [action.data.channel_id]: action.data,
-        };
-      }
+      // let updatedQuotes = state.chatQuotes;
+      // if (Object.keys(state.chatQuotes).length > 0 && state.chatQuotes.hasOwnProperty(action.data.channel_id)) {
+      //   updatedQuotes = { ...state.chatQuotes };
+      //   delete updatedQuotes[action.data.channel_id];
+      //   updatedQuotes = {
+      //     ...updatedQuotes,
+      //     [action.data.channel_id]: action.data,
+      //   };
+      // } else {
+      //   updatedQuotes = {
+      //     ...state.chatQuotes,
+      //     [action.data.channel_id]: action.data,
+      //   };
+      // }
       return {
         ...state,
-        chatQuotes: updatedQuotes,
+        chatQuotes: {
+          ...state.chatQuotes,
+          [state.selectedChannel.id]: { ...action.data, channel_id: state.selectedChannel.id },
+        },
       };
     }
     case "CLEAR_QUOTE": {
