@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, Loader } from "../../common";
 import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
@@ -91,6 +91,13 @@ const StyledIcon = styled(SvgIconFeather)`
   &:hover {
     color: #000000;
   }
+`;
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `;
 
 let fetching = false;
@@ -508,6 +515,10 @@ const WorkspacePostsPanel = (props) => {
                     />
                   </PostDetailWrapper>
                 </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
               ) : (
                 <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
               )}

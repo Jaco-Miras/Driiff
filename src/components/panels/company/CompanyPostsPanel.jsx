@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, Loader } from "../../common";
 import { useCompanyPosts, useTranslationActions } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPostsEmptyState, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
@@ -89,6 +89,13 @@ const StyledIcon = styled(SvgIconFeather)`
   &:hover {
     color: #000000;
   }
+`;
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `;
 
 let fetching = false;
@@ -298,7 +305,7 @@ const CompanyPostsPanel = (props) => {
             <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
           ) : (
             <>
-              {post ? (
+              {post && params.hasOwnProperty("postId") ? (
                 <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail
@@ -315,6 +322,10 @@ const CompanyPostsPanel = (props) => {
                     />
                   </PostDetailWrapper>
                 </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
               ) : (
                 <CompanyPosts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} />
               )}

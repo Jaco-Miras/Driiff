@@ -563,6 +563,7 @@ class SocketListeners extends Component {
       })
       .listen(".unread-post", (e) => {
         this.props.incomingReadUnreadReducer(e);
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
         this.props.getFavoriteWorkspaceCounters();
