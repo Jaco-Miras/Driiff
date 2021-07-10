@@ -8,7 +8,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 
 const Wrapper = styled.div`
 .snooze-container {}
-.snooze-container .snooze-body {margin-top:2px;}
+.snooze-container .snooze-body {}
 .snooze-container .snooze-me {font-size: 12px; margin:0 5px; text-decoration: underline;}`;
 
 const Icon = styled(SvgIconFeather)`
@@ -209,15 +209,8 @@ const MainSnooze = (props) => {
     return null;
   };
 
-  const handleSnoozeMe = (n, closeToast, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    actions.snooze(n);
-    closeToast();
-  };
-
-  const CloseButton = ({ closeToast }) => (
-    <IconSnooze icon="x" onClick={closeToast} />
+  const closeButton = ({ closeToast }) => (
+    <span className="snooze-me" onClick={closeToast}>Snooze</span>
   );
 
   /*
@@ -252,22 +245,26 @@ const MainSnooze = (props) => {
             className: 'snooze-container',
             bodyClassName: "snooze-body",
             containerId: 'toastS',
-            toastId: 'snoozeId' + n.id,
+            toastId: 'sn-' + n.id,
           });
         } else {
-          toast.dismiss('snoozeId' + n.id);
+          toast.dismiss('sn-' + n.id);
         }
       });
     }, 1000);
     return () => clearInterval(interval);
   }, [notifications]);
 */
-  const snooze = [];
-  useEffect(() => {
+
+  const processSnooze = () => {
+    const snooze = [];
     if (unreadNotifications > 0) {
       const notif = Object.values(notifications).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+      var today = new Date();
+      var snoozeTime = today.setSeconds(today.getSeconds());
       notif.map((n) => {
-        if (!n.is_read) {
+        if (!n.is_read && (snoozeTime >= n.snooze || typeof n.snooze === 'undefined')) {
+          console.log(n);
           const snoozeContent = ({ closeToast, toastProps }) => (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, closeToast, e)}>
             <div>
               {n.author ? (
@@ -284,44 +281,40 @@ const MainSnooze = (props) => {
             <div style={{ display: 'inline-block', marginTop: '4px' }}>
               {renderContent(n)}
             </div>
-            <div style={{ display: 'inline-block' }}>
-              <span className="snooze-me" onClick={(e) => handleSnoozeMe(n, closeToast, e)}>Snooze</span>
-            </div>
           </NotifWrapper>);
           snooze.push([n.id, snoozeContent]);
-        } else {
-          toast.dismiss('snoozeId' + n.id);
-        }
+        } else
+          if (toast.isActive('sn-' + n.id)) {
+            toast.dismiss('sn-' + n.id);
+            actions.snooze({ ...n, snooze: false });
+          }
       });
       snooze.map((n, i) => {
         toast(n[1], {
           className: 'snooze-container',
           bodyClassName: "snooze-body",
           containerId: 'toastS',
-          toastId: 'snoozeId' + n[0],
-          CloseButton: false
+          toastId: 'sn-' + n[0],
+          onClose: () => actions.snooze({ ...n, snooze: true })
         });
       });
     } else {
       toast.dismiss();
     }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      processSnooze();
+    }, 3000);
+    return () => clearInterval(interval);
   }, [notifications]);
 
   return (
     <Wrapper>
-      <ToastContainer
-        enableMultiContainer
-        containerId={'toastS'}
-        position="bottom-left"
-        autoClose={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        limit={1}
-        CloseButton={false}
-      ></ToastContainer>
+      <ToastContainer enableMultiContainer containerId={'toastS'} position="bottom-left" autoClose={false} newestOnTop={false}
+        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={6} closeButton={closeButton}
+      />
     </Wrapper>
   );
 };
