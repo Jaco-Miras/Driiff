@@ -97,14 +97,15 @@ const MainSnooze = (props) => {
           folder_name: workspace.workspace_name ? workspace.workspace_name : null,
         };
       }
-      if (n.type === "POST_COMMENT" || n.type === "POST_MENTION") {
+      if (n.type === "POST_MENTION") {
         if (n.data.comment_id) {
           focusOnMessage = { focusOnMessage: n.data.comment_id };
         }
       }
       redirect.toPost({ workspace, post }, focusOnMessage);
     }
-    closeToast();
+    //closeToast();
+    actions.snooze({ id: n.id, is_snooze: false }) ;
   };
 
   const renderContent = (n) => {
@@ -177,6 +178,8 @@ const MainSnooze = (props) => {
 
   const handleSnoozeAll = (e) => {
     e.preventDefault();
+  
+    toast.clearWaitingQueue({ containerId: "toastS" });
     toast.dismiss();
     actions.snoozeAll({ is_snooze: true });
   }
@@ -216,7 +219,7 @@ const MainSnooze = (props) => {
           bodyClassName: "snooze-body",
           containerId: 'toastS',
           toastId: 'sn-' + n[0],
-          onClose: () => snooze.length > 0 ? actions.snooze({ id: n[0], is_snooze: true }) : actions.snoozeAll({ is_snooze: true })
+          onClose: () => actions.snooze({ id: n[0], is_snooze: true }) 
         });
       });
     }
@@ -231,12 +234,11 @@ const MainSnooze = (props) => {
     if (unreadNotifications > 0) {
       const notif = notifCLean();
       notif.map((n) => {
-        if (!n.is_read && !n.is_snooze) {
+        if (!n.is_read) {
           snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]);
         } else {
           if (toast.isActive('sn-' + n.id)) {
             toast.dismiss('sn-' + n.id);
-            actions.snooze({ id: n.id, is_snooze: false });
           }
         }
       });
@@ -246,6 +248,7 @@ const MainSnooze = (props) => {
     }
   };
 
+  
   useEffect(() => {
     const interval = setInterval(() => {
       const snooze = [];
@@ -259,7 +262,7 @@ const MainSnooze = (props) => {
         snoozeOpen(snooze);
         actions.snoozeAll({ is_snooze: false });
       }
-    }, 15000);
+    },5000);
     return () => clearInterval(interval);
   }, [notifications]);
 
@@ -270,7 +273,7 @@ const MainSnooze = (props) => {
   return (
     <Wrapper>
       <ToastContainer enableMultiContainer containerId={'toastS'} position="bottom-left" autoClose={false} newestOnTop={false}
-        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={6} closeButton={snoozeMeButton}
+        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={3} closeButton={snoozeMeButton}
       />
     </Wrapper>
   );
