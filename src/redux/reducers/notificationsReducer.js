@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   notifications: {},
   unreadCount: 0,
   hasSubscribed: true,
+  is_snooze: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -307,14 +308,21 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "NOTIFICATION_SNOOZE_ALL": {
+      let notifications = { ...state.notifications };
+      Object.values(notifications).forEach((item, i) =>  item.is_snooze = action.data.is_snooze);
+      return {
+        ...state,
+        is_snooze: action.data.is_snooze,
+      }
+    }
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
       notifications[action.data.id].is_snooze = action.data.is_snooze;
       return {
         ...state,
-        notifications: notifications,
+        notifications: notifications
       };
-
     }
     default:
       return state;
