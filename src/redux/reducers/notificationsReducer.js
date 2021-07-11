@@ -18,6 +18,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
       let results = action.data.notifications;
+      results = results.map(obj => ({ ...obj, is_snooze: false }));
       return {
         ...state,
         notifications: {
@@ -31,6 +32,7 @@ export default (state = INITIAL_STATE, action) => {
       let updatedNotifications = { ...state.notifications };
       Object.values(updatedNotifications).forEach((n) => {
         updatedNotifications[n.id].is_read = 1;
+        updatedNotifications[n.id].is_snooze = false;
       });
       return {
         ...state,
@@ -41,6 +43,7 @@ export default (state = INITIAL_STATE, action) => {
     case "READ_NOTIFICATION_REDUCER": {
       let updatedNotifications = { ...state.notifications };
       updatedNotifications[action.data.id].is_read = 1;
+      updatedNotifications[action.data.id].is_snooze = false;
       return {
         ...state,
         notifications: updatedNotifications,
@@ -50,6 +53,7 @@ export default (state = INITIAL_STATE, action) => {
     case "UNREAD_NOTIFICATION_REDUCER": {
       let updatedNotifications = { ...state.notifications };
       updatedNotifications[action.data.id].is_read = 0;
+      updatedNotifications[action.data.id].is_snooze = false;
       return {
         ...state,
         notifications: updatedNotifications,
@@ -80,6 +84,7 @@ export default (state = INITIAL_STATE, action) => {
               id: action.data.notification_approval.id,
               type: action.data.notification_approval.type,
               is_read: 0,
+              is_snooze: false,
               created_at: action.data.created_at ? action.data.created_at : action.data.user_approved.updated_at,
               author: action.data.user_approved,
               data: {
@@ -111,6 +116,7 @@ export default (state = INITIAL_STATE, action) => {
           id: action.data.notification.id,
           type: "POST_CREATE",
           is_read: 0,
+          is_snooze: false,
           created_at: action.data.created_at,
           author: action.data.author,
           data: {
@@ -129,6 +135,7 @@ export default (state = INITIAL_STATE, action) => {
             id: action.data.notification_approval.id,
             type: action.data.notification_approval.type,
             is_read: 0,
+            is_snooze: false,
             created_at: action.data.created_at,
             author: action.data.author,
             data: {
@@ -164,6 +171,7 @@ export default (state = INITIAL_STATE, action) => {
         id: action.data.notification.id,
         type: action.data.notification.type,
         is_read: 0,
+        is_snooze: false,
         created_at: action.data.created_at,
         author: action.data.author,
         data: {
@@ -195,6 +203,7 @@ export default (state = INITIAL_STATE, action) => {
         let reminderNotification = {
           ...action.data.notification,
           is_read: 0,
+          is_snooze: false,
           author: null,
           created_at: action.data.created_at,
           data: {
@@ -218,6 +227,7 @@ export default (state = INITIAL_STATE, action) => {
         let postNotification = {
           ...action.data.notification,
           is_read: 0,
+          is_snooze: false,
           author: action.data.initiator,
           created_at: { timestamp: Math.round(+new Date() / 1000) },
           data: {
@@ -262,6 +272,7 @@ export default (state = INITIAL_STATE, action) => {
               },
               id: action.data.notification_id[0],
               is_read: 0,
+              is_snooze: false,
               type: "WORKSPACE_ADD_MEMBER",
             },
           },
@@ -290,6 +301,7 @@ export default (state = INITIAL_STATE, action) => {
             },
             id: action.data.notification_id[0],
             is_read: 0,
+            is_snooze: false,
             type: "WORKSPACE_ADD_MEMBER",
           },
         },
@@ -297,10 +309,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
+      notifications[action.data.id].is_snooze = action.data.is_snooze;
       return {
         ...state,
         notifications: notifications,
       };
+
     }
     default:
       return state;

@@ -255,49 +255,53 @@ const MainSnooze = (props) => {
     return () => clearInterval(interval);
   }, [notifications]);
 */
+  const snoozeContent = (n, closeToast) => {
+    return (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, closeToast, e)}>
+      <div>
+        {n.author ? (
+          <Avatar
+            id={n.author.id}
+            name={n.author.name}
+            imageLink={n.author.profile_image_thumbnail_link ? n.author.profile_image_thumbnail_link : n.author.profile_image_link}
+            showSlider={true}
+          />
+        ) : (
+          <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={true} />
+        )}
+      </div>
+      <div style={{ display: 'inline-block', marginTop: '4px' }}>
+        {renderContent(n)}
+      </div>
+    </NotifWrapper>);
+  };
+
+  const snoozeOpen = (snooze) => {
+    snooze.map((n, i) => {
+      toast(n[1], {
+        className: 'snooze-container',
+        bodyClassName: "snooze-body",
+        containerId: 'toastS',
+        toastId: 'sn-' + n[0],
+        onClose: () => actions.snooze({ id: n[0], is_snooze: true })
+      });
+    });
+  }
 
   const processSnooze = () => {
     const snooze = [];
     if (unreadNotifications > 0) {
       const notif = Object.values(notifications).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
-      var today = new Date();
-      var snoozeTime = today.setSeconds(today.getSeconds());
       notif.map((n) => {
-        if (!n.is_read && (snoozeTime >= n.snooze || typeof n.snooze === 'undefined')) {
-          console.log(n);
-          const snoozeContent = ({ closeToast, toastProps }) => (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, closeToast, e)}>
-            <div>
-              {n.author ? (
-                <Avatar
-                  id={n.author.id}
-                  name={n.author.name}
-                  imageLink={n.author.profile_image_thumbnail_link ? n.author.profile_image_thumbnail_link : n.author.profile_image_link}
-                  showSlider={true}
-                />
-              ) : (
-                <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={true} />
-              )}
-            </div>
-            <div style={{ display: 'inline-block', marginTop: '4px' }}>
-              {renderContent(n)}
-            </div>
-          </NotifWrapper>);
-          snooze.push([n.id, snoozeContent]);
-        } else
+        if (!n.is_read && !n.is_snooze) {
+          snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]);
+        } else {
           if (toast.isActive('sn-' + n.id)) {
             toast.dismiss('sn-' + n.id);
-            actions.snooze({ ...n, snooze: false });
+            actions.snooze({ id: n.id, is_snooze: false });
           }
+        }
       });
-      snooze.map((n, i) => {
-        toast(n[1], {
-          className: 'snooze-container',
-          bodyClassName: "snooze-body",
-          containerId: 'toastS',
-          toastId: 'sn-' + n[0],
-          onClose: () => actions.snooze({ ...n, snooze: true })
-        });
-      });
+      snoozeOpen(snooze);
     } else {
       toast.dismiss();
     }
@@ -305,9 +309,22 @@ const MainSnooze = (props) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      processSnooze();
-    }, 3000);
+      const snooze = [];
+      if (unreadNotifications > 0) {
+        const notif = Object.values(notifications).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+        notif.map((n) => {
+          if (!n.is_read && n.is_snooze) {
+            snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]);
+          }
+        });
+        snoozeOpen(snooze);
+      }
+    }, 10000);
     return () => clearInterval(interval);
+  }, [notifications]);
+
+  useEffect(() => {
+    processSnooze();
   }, [notifications]);
 
   return (
