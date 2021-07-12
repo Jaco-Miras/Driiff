@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToWorkspacePosts } from "../../redux/actions/postActions";
@@ -14,6 +14,14 @@ const usePosts = () => {
   const { postsLists } = useSelector((state) => state.posts);
   const [fetchingPost, setFetchingPost] = useState(false);
 
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
   useEffect(() => {
     if (params.workspaceId !== undefined) {
       //actions.getRecentPosts(params.workspaceId);
@@ -23,7 +31,10 @@ const usePosts = () => {
           actions.fetchPostDetail({ post_id: parseInt(params.postId) });
         }
         let cb = (err, res) => {
-          setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
+
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -53,7 +64,9 @@ const usePosts = () => {
         actions.fetchPostList();
 
         let filterCb = (err, res) => {
-          setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -85,7 +98,9 @@ const usePosts = () => {
         );
 
         let unreadCb = (err, res) => {
-          setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {

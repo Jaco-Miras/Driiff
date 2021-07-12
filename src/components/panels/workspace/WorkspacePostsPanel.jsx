@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
@@ -100,7 +100,6 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-let fetching = false;
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -121,6 +120,8 @@ const WorkspacePostsPanel = (props) => {
 
   const isExternalUser = user.type === "external";
 
+  const componentIsMounted = useRef(true);
+
   const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
       let pathname = history.location.pathname.split("/post/")[0];
@@ -132,6 +133,9 @@ const WorkspacePostsPanel = (props) => {
     if (params.hasOwnProperty("workspaceId")) {
       actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
     }
+    return () => {
+      componentIsMounted.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -332,8 +336,7 @@ const WorkspacePostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "" && !post) {
-      fetching = true;
+    if (search === "" && !post) {
       setLoading(true);
       loadMoreUnreadPosts();
       let payload = {
@@ -353,9 +356,10 @@ const WorkspacePostsPanel = (props) => {
       }
 
       let cb = (err, res) => {
-        setLoading(false);
-        fetching = false;
-        setLoadPosts(false);
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
