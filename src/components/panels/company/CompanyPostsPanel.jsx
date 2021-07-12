@@ -248,6 +248,9 @@ const CompanyPostsPanel = (props) => {
   }, [loadPosts]);
 
   useEffect(() => {
+    if (params.postId) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) });
+    }
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     return () => actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
   }, []);
