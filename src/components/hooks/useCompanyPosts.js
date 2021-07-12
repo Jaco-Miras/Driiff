@@ -66,7 +66,7 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     if (archived.skip === 0 && archived.has_more && filter === "all") {
-      actions.fetchCompanyPosts({
+      actions.fetchArchivedCompanyPosts({
         skip: 0,
         limit: 25,
         filters: ["post", "archived"],
@@ -76,7 +76,7 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     if (favourites.skip === 0 && favourites.has_more && filter === "star") {
-      actions.fetchCompanyPosts({
+      actions.fetchStarCompanyPosts({
         skip: 0,
         limit: 25,
         filters: ["post", "favourites"],
@@ -86,7 +86,7 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     if (myPosts.skip === 0 && myPosts.has_more && filter === "my_posts") {
-      actions.fetchCompanyPosts({
+      actions.fetchMyCompanyPosts({
         skip: 0,
         limit: 25,
         filters: ["post", "created_by_me"],
