@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
@@ -6,8 +6,8 @@ import { MoreOptions } from "../../../panels/common";
 const Wrapper = styled.div`
   .avatar {
     cursor: pointer;
-    // height: 2.5rem !important;
-    // width: 2.5rem !important;
+    min-height: 2.7rem;
+    min-width: 2.7rem;
   }
   .user-name {
     display: flex;
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: ${(props) => props.userNameMaxWidth}px;
+    //max-width: ${(props) => props.userNameMaxWidth}px;
   }
   .button-wrapper {
     display: inline-flex;
@@ -96,6 +96,7 @@ const PeopleListItem = (props) => {
     onArchiveUser = null,
     onActivateUser = null,
     onChangeUserType = null,
+    onDeleteUser = null,
     showInactive = false,
     showWorkspaceRole = false,
   } = props;
@@ -123,34 +124,34 @@ const PeopleListItem = (props) => {
     onUpdateRole(payload);
   };
 
-  const handleResize = () => {
-    if (refs.content.current) {
-      let width = refs.content.current.clientWidth - 150;
+  // refactor - should be handled in css
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (refs.content.current) {
+  //       let width = refs.content.current.clientWidth - 150;
 
-      let el = refs.content.current.querySelector(".button-wrapper");
-      if (el) {
-        width -= el.clientWidth;
-      }
+  //       let el = refs.content.current.querySelector(".button-wrapper");
+  //       if (el) {
+  //         width -= el.clientWidth;
+  //       }
 
-      el = refs.content.current.querySelector(".avatar");
-      if (el) {
-        width -= el.clientWidth;
-      }
+  //       el = refs.content.current.querySelector(".avatar");
+  //       if (el) {
+  //         width -= el.clientWidth;
+  //       }
 
-      el = refs.content.current.querySelector(".label-wrapper");
-      if (el) {
-        width -= el.clientWidth;
-      }
+  //       el = refs.content.current.querySelector(".label-wrapper");
+  //       if (el) {
+  //         width -= el.clientWidth;
+  //       }
 
-      setUserNameMaxWidth(width);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  //       setUserNameMaxWidth(width);
+  //     }
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   handleResize();
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   const handleArchiveUser = () => {
     onArchiveUser(user);
@@ -282,6 +283,7 @@ const PeopleListItem = (props) => {
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
                       {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
+                      {user.active && onDeleteUser && <div onClick={() => onDeleteUser(user)}>{dictionary.deleteUser}</div>}
                     </MoreOptions>
                   )}
                 </div>

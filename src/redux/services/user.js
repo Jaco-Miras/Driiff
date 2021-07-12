@@ -585,3 +585,10 @@ export function getArchivedUsers(payload = {}) {
     url: url,
   });
 }
+
+export function deleteUser(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `api/users/${payload.user_id}`,
+  });
+}

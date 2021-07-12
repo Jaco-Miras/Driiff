@@ -5,6 +5,7 @@ import {
   archiveUser as archiveUserService,
   authenticateGoogleLogin as authenticateGoogleLoginService,
   checkDriffUserEmail as checkDriffUserEmailService,
+  deleteUser as deleteUserService,
   getMentions as getMentionsService,
   getOnlineUsers as getOnlineUsersService,
   getUser as getUserService,
@@ -176,4 +177,8 @@ export function incomingOnlineUsers(payload, callback) {
 
 export function updateUserType(payload, callback) {
   return dispatchActionToReducer(updateUserTypeService(payload), "UPDATE_USER_TYPE_START", "UPDATE_USER_TYPE_SUCCESS", "UPDATE_USER_TYPE_FAILURE", callback);
+}
+
+export function deleteUser(payload, callback) {
+  return dispatchActionToReducer(deleteUserService(payload), "DELETE_USER_START", "DELETE_USER_SUCCESS", "DELETE_USER_FAILURE", callback);
 }
