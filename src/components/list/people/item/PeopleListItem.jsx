@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   .user-name {
     display: flex;
     cursor: pointer;
+    flex-flow: row wrap;
   }
   .feather-message-circle {
     cursor: pointer;
@@ -101,7 +102,7 @@ const PeopleListItem = (props) => {
     showWorkspaceRole = false,
   } = props;
 
-  const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
+  //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
 
   const refs = {
     cardBody: useRef(null),
@@ -213,7 +214,7 @@ const PeopleListItem = (props) => {
   };
 
   return (
-    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
+    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
         <div className="card border" key={user.id}>
           <div className="card-body" ref={refs.cardBody}>
@@ -230,7 +231,7 @@ const PeopleListItem = (props) => {
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
-                    <h6 className="user-name mb-1 ">
+                    <h6 className="user-name mb-0">
                       <ToolTip content={user.email}>
                         <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
                       </ToolTip>
@@ -238,7 +239,7 @@ const PeopleListItem = (props) => {
                       <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />
                     </h6>
                   ) : (
-                    <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
+                    <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
                         <ToolTip content={user.email}>
                           <span>{user.name}</span>

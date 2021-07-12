@@ -242,6 +242,10 @@ class SocketListeners extends Component {
       //console.log("socket reconnecting");
     });
 
+    window.Echo.private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
+      console.log(e, "deleted user");
+    });
+
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".unarchive-post-notification", (e) => {

@@ -22,12 +22,14 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+    flex-flow: row wrap;
   }
 
   .people-search {
     flex: 0 0 80%;
     justify-content: flex-start;
     padding-left: 0;
+    flex-flow: row wrap;
   }
 `;
 

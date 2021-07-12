@@ -529,8 +529,8 @@ const useUserActions = () => {
     );
   };
 
-  const deleteUserAccount = (user_id, callback) => {
-    dispatch(deleteUser({ user_id: user_id }, callback));
+  const deleteUserAccount = (payload, callback) => {
+    dispatch(deleteUser(payload, callback));
   };
 
   return {
