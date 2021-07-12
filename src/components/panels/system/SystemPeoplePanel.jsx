@@ -135,6 +135,7 @@ const SystemPeoplePanel = (props) => {
       type: "driff_invite_users",
       hasLastName: true,
       invitations: [],
+      fromRegister: false,
       onPrimaryAction: (invitedUsers, callback, options) => {
         if (invitedUsers.length === 0) {
           options.closeModal();
