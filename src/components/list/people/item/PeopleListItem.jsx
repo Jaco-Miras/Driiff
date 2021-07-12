@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   .user-name {
     display: flex;
     cursor: pointer;
+    flex-flow: row wrap;
   }
   .feather-message-circle {
     cursor: pointer;
@@ -230,7 +231,7 @@ const PeopleListItem = (props) => {
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
-                    <h6 className="user-name mb-1 ">
+                    <h6 className="user-name mb-0">
                       <ToolTip content={user.email}>
                         <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
                       </ToolTip>
@@ -238,7 +239,7 @@ const PeopleListItem = (props) => {
                       <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />
                     </h6>
                   ) : (
-                    <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
+                    <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
                         <ToolTip content={user.email}>
                           <span>{user.name}</span>
