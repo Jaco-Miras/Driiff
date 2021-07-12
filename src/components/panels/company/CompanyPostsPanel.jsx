@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
@@ -98,7 +98,7 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-let fetching = false;
+//let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
 
@@ -112,6 +112,8 @@ const CompanyPostsPanel = (props) => {
   const [loadPosts, setLoadPosts] = useState(false);
   const [activePostListName, setActivePostListName] = useState({});
   const isExternalUser = user.type === "external";
+
+  const componentIsMounted = useRef(true);
 
   const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
@@ -217,14 +219,14 @@ const CompanyPostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (!fetching && search === "" && !post) {
+    if (search === "" && !post) {
       setLoading(true);
-      fetching = true;
 
       fetchMore((err, res) => {
-        setLoading(false);
-        fetching = false;
-        setLoadPosts(false);
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
       });
     }
   };
@@ -252,7 +254,10 @@ const CompanyPostsPanel = (props) => {
       actions.fetchPostDetail({ post_id: parseInt(params.postId) });
     }
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    return () => actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => {
+      actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+      componentIsMounted.current = null;
+    };
   }, []);
 
   useEffect(() => {

@@ -18,6 +18,9 @@ import {
   fetchPosts,
   fetchRecentPosts,
   fetchTagCounter,
+  getArchivedCompanyPosts,
+  getMyCompanyPosts,
+  getStarCompanyPosts,
   getReadCompanyPosts,
   getCompanyPosts,
   getUnreadCompanyPosts,
@@ -776,6 +779,18 @@ const usePostActions = () => {
     dispatch(getCompanyPosts(payload, callback));
   };
 
+  const fetchMyCompanyPosts = (payload, callback) => {
+    dispatch(getMyCompanyPosts(payload, callback));
+  };
+
+  const fetchArchivedCompanyPosts = (payload, callback) => {
+    dispatch(getArchivedCompanyPosts(payload, callback));
+  };
+
+  const fetchStarCompanyPosts = (payload, callback) => {
+    dispatch(getStarCompanyPosts(payload, callback));
+  };
+
   const fetchReadCompanyPosts = (payload, callback) => {
     dispatch(getReadCompanyPosts(payload, callback));
   };
@@ -1042,6 +1057,9 @@ const usePostActions = () => {
     markReplyRequirement,
     setCommentType,
     fetchReadCompanyPosts,
+    fetchMyCompanyPosts,
+    fetchArchivedCompanyPosts,
+    fetchStarCompanyPosts,
   };
 };
 
