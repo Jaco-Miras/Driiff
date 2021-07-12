@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
@@ -101,7 +101,7 @@ const PeopleListItem = (props) => {
     showWorkspaceRole = false,
   } = props;
 
-  const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
+  //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
 
   const refs = {
     cardBody: useRef(null),
@@ -213,7 +213,7 @@ const PeopleListItem = (props) => {
   };
 
   return (
-    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
+    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
         <div className="card border" key={user.id}>
           <div className="card-body" ref={refs.cardBody}>
