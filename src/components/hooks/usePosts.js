@@ -31,7 +31,10 @@ const usePosts = () => {
           actions.fetchPostDetail({ post_id: parseInt(params.postId) });
         }
         let cb = (err, res) => {
-          if (componentIsMounted.current) setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
+
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -61,7 +64,9 @@ const usePosts = () => {
         actions.fetchPostList();
 
         let filterCb = (err, res) => {
-          if (componentIsMounted.current) setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -93,7 +98,9 @@ const usePosts = () => {
         );
 
         let unreadCb = (err, res) => {
-          if (componentIsMounted.current) setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {

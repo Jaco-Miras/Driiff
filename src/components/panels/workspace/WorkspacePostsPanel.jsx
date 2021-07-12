@@ -100,7 +100,6 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-//let fetching = false;
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -358,8 +357,10 @@ const WorkspacePostsPanel = (props) => {
       }
 
       let cb = (err, res) => {
-        setLoading(false);
-        if (componentIsMounted.current) setLoadPosts(false);
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
