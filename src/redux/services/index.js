@@ -56,6 +56,7 @@ export {
   activateUser,
   archiveUser,
   deactivateUser,
+  deleteUser,
   login,
   logout,
   googleLogin,

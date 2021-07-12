@@ -6,6 +6,7 @@ import {
   archiveUser,
   checkDriffUserEmail,
   deactivateUser,
+  deleteUser,
   getRoles,
   getUser,
   getUsers,
@@ -528,6 +529,10 @@ const useUserActions = () => {
     );
   };
 
+  const deleteUserAccount = (user_id, callback) => {
+    dispatch(deleteUser({ user_id: user_id }, callback));
+  };
+
   return {
     checkCredentials,
     login,
@@ -561,6 +566,7 @@ const useUserActions = () => {
     deactivate,
     fetchArchivedUsers,
     updateType,
+    deleteUserAccount,
   };
 };
 

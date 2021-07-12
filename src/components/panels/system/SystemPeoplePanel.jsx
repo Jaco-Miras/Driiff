@@ -128,6 +128,8 @@ const SystemPeoplePanel = (props) => {
     deactivate: _t("PEOPLE.DEACTIVATE", "Deactivate"),
     moveToInternal: _t("PEOPLE.MOVE_TO_INTERNAL", "Move to internal"),
     moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
+    deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
+    deleteConfirmationText: _t("PEOPLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this user? This means this user can't log in anymore."),
   };
 
   const handleInviteUsers = () => {
@@ -276,6 +278,27 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleDeleteUser = (user) => {
+    const handleSubmit = () => {
+      userActions.deleteUserAccount({ user_id: user.id }, (err, res) => {
+        if (err) return;
+        toaster.success(`${user.name} deleted.`);
+      });
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.deleteUser,
+      submitText: dictionary.deleteUser,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.deleteConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -316,6 +339,7 @@ const SystemPeoplePanel = (props) => {
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
+                  onDeleteUser={handleDeleteUser}
                   showInactive={showInactive}
                 />
               );
