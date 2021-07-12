@@ -105,7 +105,7 @@ const MainSnooze = (props) => {
       redirect.toPost({ workspace, post }, focusOnMessage);
     }
     //closeToast();
-    actions.snooze({ id: n.id, is_snooze: false }) ;
+    actions.snooze({ id: n.id, is_snooze: false });
   };
 
   const renderContent = (n) => {
@@ -126,42 +126,7 @@ const MainSnooze = (props) => {
           </>
         );
       }
-      case "NEW_TODO": {
-        return (
-          <>
-            <div style={{ lineHeight: '1' }}>
-              {_t("SNOOZE.REMINDER", "You asked to be reminded about ::title::", { title: n.data.title })}
-            </div>
-          </>
-        );
-      }
-      case "POST_ACCEPT_APPROVAL": {
-        return (
-          <>
-            <div style={{ lineHeight: '1' }}>
-              {n.author.name} {dictionary.hasAcceptedProposal}
-            </div>
-          </>
-        );
-      }
-      case "POST_REJECT_APPROVAL": {
-        return (
-          <>
-            <div style={{ lineHeight: '1' }}>
-              {n.author.name} {dictionary.hasRequestedChange}
-            </div>
-          </>
-        );
-      }
-      case "POST_REQST_APPROVAL": {
-        return (
-          <>
-            <div style={{ lineHeight: '1' }}>
-              {n.author.name} {dictionary.sentProposal}
-            </div>
-          </>
-        );
-      }
+    
       default:
         return null;
     }
@@ -178,7 +143,6 @@ const MainSnooze = (props) => {
 
   const handleSnoozeAll = (e) => {
     e.preventDefault();
-  
     toast.clearWaitingQueue({ containerId: "toastS" });
     toast.dismiss();
     actions.snoozeAll({ is_snooze: true });
@@ -219,14 +183,14 @@ const MainSnooze = (props) => {
           bodyClassName: "snooze-body",
           containerId: 'toastS',
           toastId: 'sn-' + n[0],
-          onClose: () => actions.snooze({ id: n[0], is_snooze: true }) 
+          onClose: () => actions.snooze({ id: n[0], is_snooze: true })
         });
       });
     }
   }
 
   const notifCLean = () => {
-    return Object.values(notifications).filter(n => n.type === 'POST_MENTION' || n.type === 'NEW_TODO' || n.type === 'POST_ACCEPT_APPROVAL' || n.type === 'POST_REJECT_APPROVAL' || n.type === 'POST_REQST_APPROVAL').sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);;
+    return Object.values(notifications).filter(n => n.type === 'POST_MENTION').sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);;
   }
 
   const processSnooze = () => {
@@ -234,13 +198,7 @@ const MainSnooze = (props) => {
     if (unreadNotifications > 0) {
       const notif = notifCLean();
       notif.map((n) => {
-        if (!n.is_read) {
-          snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]);
-        } else {
-          if (toast.isActive('sn-' + n.id)) {
-            toast.dismiss('sn-' + n.id);
-          }
-        }
+        (!n.is_read) ? snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]) : toast.isActive('sn-' + n.id) && toast.dismiss('sn-' + n.id);
       });
       snooze.length ? snoozeOpen(snooze) : toast.dismiss();
     } else {
@@ -248,21 +206,18 @@ const MainSnooze = (props) => {
     }
   };
 
-  
   useEffect(() => {
     const interval = setInterval(() => {
       const snooze = [];
       if (unreadNotifications > 0) {
         const notif = notifCLean();
         notif.map((n) => {
-          if (!n.is_read && n.is_snooze) {
-            snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]);
-          }
+          !n.is_read && n.is_snooze && snooze.push([n.id, ({ closeToast }) => snoozeContent(n, closeToast)]);
         });
         snoozeOpen(snooze);
         actions.snoozeAll({ is_snooze: false });
       }
-    },5000);
+    }, 15000);
     return () => clearInterval(interval);
   }, [notifications]);
 
