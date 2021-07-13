@@ -499,7 +499,17 @@ const CompanyPostDetailFooter = (props) => {
     if (err) return;
     if ((post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) {
       postActions.markReplyRequirement(post);
-      postActions.markAsRead(post);
+      //check if post is also set as must read
+      let triggerRead = true;
+      if (post.is_must_read && post.author.id !== user.id) {
+        if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+          triggerRead = false;
+        }
+        if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+          triggerRead = false;
+        }
+      }
+      if (triggerRead) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
