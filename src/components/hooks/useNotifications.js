@@ -7,7 +7,7 @@ const useNotifications = (props) => {
     notifications,
     unreadCount,
     unreadNotifications: Object.values(notifications).filter((n) => n.is_read === 0).length,
-    is_snooze
+    notificationSnooze:is_snooze
   };
 };
 

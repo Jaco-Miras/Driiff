@@ -60,6 +60,7 @@ const INITIAL_STATE = {
     },
     items: {},
     doneRecently: [],
+    is_snooze: false
   },
   releases: {
     timestamp: null,
@@ -517,8 +518,9 @@ export default (state = INITIAL_STATE, action) => {
           }
           break;
         }
-      }
 
+      }
+      items[action.data.id].is_snooze = false;
       return {
         ...state,
         todos: {
@@ -565,7 +567,7 @@ export default (state = INITIAL_STATE, action) => {
           // count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
-        item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at };
+        item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at, is_snooze: false };
         items[action.data.id] = item;
       }
 
@@ -765,6 +767,35 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isIdle: action.data,
+      };
+    }
+    case "REMINDER_SNOOZE_ALL": {
+      
+      let items = state.todos.items;
+      Object.values(items).forEach((n) => {
+        items[n.id].is_snooze = action.data.is_snooze;
+      });
+     
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          is_snooze: action.data.is_snooze,
+          items: items
+        },
+      };
+
+    }
+    case "REMINDER_SNOOZE": {
+      let items = state.todos.items;
+
+      items[action.data.id].is_snooze = action.data.is_snooze;
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          items: items
+        },
       };
     }
     default:

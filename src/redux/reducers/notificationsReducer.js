@@ -310,13 +310,20 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "NOTIFICATION_SNOOZE_ALL": {
       let notifications = { ...state.notifications };
+      Object.values(notifications).forEach((n) => {
+        notifications[n.id].is_snooze = action.data.is_snooze;
+      });
       return {
         ...state,
-        is_snooze: action.data.is_snooze,
-      }
+        notifications: notifications,
+      };
+
     }
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
+      let x = notifications[action.data.id];
+      let y = action.data;
+      console.log({notifications, x, y });
       notifications[action.data.id].is_snooze = action.data.is_snooze;
       return {
         ...state,
