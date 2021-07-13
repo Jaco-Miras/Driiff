@@ -1,4 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 //import { groupBy } from "lodash";
 
 const INITIAL_STATE = {
@@ -323,6 +324,7 @@ export default (state = INITIAL_STATE, action) => {
             break;
           }
         }
+        items[t.id].is_snooze = action.data.is_snooze;
       });
       let recent = action.data.today_todos.map((t) => {
         if (t.link_type) {
@@ -521,6 +523,7 @@ export default (state = INITIAL_STATE, action) => {
 
       }
       items[action.data.id].is_snooze = false;
+      //items[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         todos: {
@@ -774,6 +777,7 @@ export default (state = INITIAL_STATE, action) => {
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
         items[n.id].is_snooze = action.data.is_snooze;
+       // items[n.id].snooze_time = getCurrentTimestamp();
       });
      
       return {
@@ -788,8 +792,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "REMINDER_SNOOZE": {
       let items = state.todos.items;
-
       items[action.data.id].is_snooze = action.data.is_snooze;
+     // items[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         todos: {

@@ -48,7 +48,7 @@ const NotifWrapper = styled.div`
 
 const MainSnooze = (props) => {
   const { notifications, unreadNotifications, notificationSnooze } = useNotifications();
-  const { getReminders, items } = useTodos();
+  const { getReminders, items } = useTodos(true);
   const todos = useSelector((state) => state.global.todos);
   //const toaster = useToaster();
   const user = useSelector((state) => state.session.user);
@@ -62,16 +62,18 @@ const MainSnooze = (props) => {
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", `mentioned you in`),
     todoReminder: _t("SNOOZE.REMINDER", `A friendly automated reminder`),
+    sentProposal: _t("SNOOZE.SENT_PROPOSAL", "sent a proposal."),
+    notificationNewPost: _t("SNOOZE.NEW_POST", `shared a post`),
+    mustRead: _t("SNOOZE.MUST_READ", "Must read"),
+    needsReply: _t("SNOOZE.NEEDS_REPLY", "Needs reply"),
   };
 
   const notifCLean = () => {
-    return Object.values(notifications).filter(n => n.type === 'POST_MENTION').sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);;
+    return Object.values(notifications).filter(n => n.type === 'POST_MENTION' || n.type === 'POST_REQST_APPROVAL' || (n.type === 'POST_CREATE' && (n.data.must_read || n.data.must_reply))).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   }
 
   const todoCLean = () => {
-    const todos = getReminders({ filter: { status: '', search: '' } });
-    return todos;
-    //return todos.filter((i) => i.status !== "DONE");
+    return getReminders({ filter: { status: '', search: '' } });
   }
 
   const handleRedirect = (n, closeToast, e) => {
@@ -105,11 +107,6 @@ const MainSnooze = (props) => {
     notifActions.snooze({ id: n.id, is_snooze: false });
   };
 
-  const getMustText = (data) => {
-    if (data.must_read) return dictionary.mustRead;
-    if (data.must_reply) return dictionary.needsReply;
-    return null;
-  };
 
   const snoozeMeButton = ({ closeToast }) => (
     <span className="snooze-me" onClick={closeToast}>Snooze</span>
@@ -117,10 +114,12 @@ const MainSnooze = (props) => {
 
   const handleSnoozeAll = (e) => {
     e.preventDefault();
-    toast.clearWaitingQueue({ containerId: "toastS" });
-    toast.dismiss();
     notifActions.snoozeAll({ is_snooze: true });
     todoActions.snoozeAll({ is_snooze: true });
+
+    toast.clearWaitingQueue({ containerId: "toastS" });
+    toast.dismiss();
+
   }
 
   const renderContent = (type, n) => {
@@ -139,6 +138,32 @@ const MainSnooze = (props) => {
               )}
             </div>
             <p style={{ color: '#000' }}> {stripHtml(n.data.comment_body)}</p>
+          </>
+        );
+      } else if (n.type === "POST_CREATE") {
+        return (
+          <>
+            <div style={{ lineHeight: '1' }}>
+              {n.author.name + " " + dictionary.notificationNewPost + " "}
+              {n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
+                <>
+                  <Icon icon="folder" /> {" "}
+                  {n.data.workspaces[0].workspace_name}
+                </>
+              )}
+            </div>
+            <p style={{ color: '#000' }}> {stripHtml(n.data.title)}</p>
+            {n.data.must_read ? (<p><span className="badge badge-danger text-white">{dictionary.mustRead}</span></p>) : ''}
+            {n.data.must_reply ? (<p><span className="badge badge-success text-white">{dictionary.needsReply}</span></p>) : ''}
+          </>
+        );
+      }
+      else if (n.type === "POST_REQST_APPROVAL") {
+        return (
+          <>
+            <div style={{ lineHeight: '1' }}>
+              {n.author.name} {dictionary.sentProposal}
+            </div>
           </>
         );
       }
@@ -200,55 +225,44 @@ const MainSnooze = (props) => {
 
   const processSnooze = () => {
     const snooze = [];
-    //if (snooze.length) {
-    if (unreadNotifications) {
-      const notifs = notifCLean();
-      notifs.map((n) => {
-        let elemId = 'smen-' + n.id;
-        if (!n.is_read && !n.is_snooze)
-          snooze.push([n.id, ({ closeToast }) => snoozeContent('mention', n, closeToast), elemId, 'mention'])
-        else toast.isActive(elemId) && toast.dismiss(elemId);
-      });
-    }
+
+    const notifs = notifCLean();
+    notifs.map((n) => {
+      let elemId = 'smen-' + n.id;
+      (!n.is_read && !n.is_snooze) ? snooze.push([n.id, ({ closeToast }) => snoozeContent('mention', n, closeToast), elemId, 'mention', n.created_at.timestamp ]) :
+        toast.isActive(elemId) && toast.dismiss(elemId);
+    });
 
     const todos = todoCLean();
     todos.map((n) => {
       let elemId = 'stod-' + n.id;
-      if (n.status !== "DONE" && !n.is_snooze)
-        snooze.push([n.id, ({ closeToast }) => snoozeContent('todo', n, closeToast), elemId, 'todo'])
-      else
+      (n.status !== "DONE" && !n.is_snooze) ? snooze.push([n.id, ({ closeToast }) => snoozeContent('todo', n, closeToast), elemId, 'todo', n.created_at.timestamp]) :
         toast.isActive(elemId) && toast.dismiss(elemId);
     });
 
-    snooze.length ? snoozeOpen(snooze) : toast.dismiss();
-    //} else {
-    // toast.dismiss();
-    // }
+    var x = snooze.sort((a, b) => a[4] - b[4]);
+    console.log(x);
+    snooze.length ? snoozeOpen(x) : toast.dismiss();
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
       const snooze = [];
-      if (unreadNotifications > 0) {
-        const notif = notifCLean();
-        notif.map((n) => {
-          let elemId = 'smen-' + n.id;
-          if (!n.is_read && n.is_snooze)
-            snooze.push([n.id, ({ closeToast }) => snoozeContent('mention', n, closeToast), elemId, 'mention']);
-        });
-      }
+
+      const notif = notifCLean();
+      notif.map((n) => {
+        let elemId = 'smen-' + n.id;
+        !n.is_read && n.is_snooze && snooze.push([n.id, ({ closeToast }) => snoozeContent('mention', n, closeToast), elemId, 'mention', n.created_at.timestamp]);
+      });
+      notifActions.snoozeAll({ is_snooze: false });
 
       const todos = todoCLean();
       todos.map((n) => {
         let elemId = 'stod-' + n.id;
-        if (n.status !== "DONE" && n.is_snooze)
-          snooze.push([n.id, ({ closeToast }) => snoozeContent('todo', n, closeToast), elemId, 'todo']);
+        n.status !== "DONE" && n.is_snooze && snooze.push([n.id, ({ closeToast }) => snoozeContent('todo', n, closeToast), elemId, 'todo', n.created_at.timestamp]);
       });
-
-      snoozeOpen(snooze);
       todoActions.snoozeAll({ is_snooze: false });
-      notifActions.snoozeAll({ is_snooze: false });
-
+      snoozeOpen(snooze.sort((a, b) => a[4] - b[4]));
     }, 15000);
     return () => clearInterval(interval);
   }, [notifications, todos]);
@@ -260,7 +274,7 @@ const MainSnooze = (props) => {
   return (
     <Wrapper>
       <ToastContainer enableMultiContainer containerId={'toastS'} position="bottom-left" autoClose={false} newestOnTop={false}
-        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={6} closeButton={snoozeMeButton}
+        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={7} closeButton={snoozeMeButton}
       />
     </Wrapper>
   );

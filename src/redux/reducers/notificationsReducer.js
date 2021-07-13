@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   notifications: {},
   unreadCount: 0,
   hasSubscribed: true,
-  is_snooze: false
+  is_snooze: false,
+  snooze_time: getCurrentTimestamp()
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,6 +35,8 @@ export default (state = INITIAL_STATE, action) => {
       Object.values(updatedNotifications).forEach((n) => {
         updatedNotifications[n.id].is_read = 1;
         updatedNotifications[n.id].is_snooze = false;
+        //updatedNotifications[n.id].snooze_time = getCurrentTimestamp();
+
       });
       return {
         ...state,
@@ -45,6 +48,7 @@ export default (state = INITIAL_STATE, action) => {
       let updatedNotifications = { ...state.notifications };
       updatedNotifications[action.data.id].is_read = 1;
       updatedNotifications[action.data.id].is_snooze = false;
+      updatedNotifications[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         notifications: updatedNotifications,
@@ -55,6 +59,7 @@ export default (state = INITIAL_STATE, action) => {
       let updatedNotifications = { ...state.notifications };
       updatedNotifications[action.data.id].is_read = 0;
       updatedNotifications[action.data.id].is_snooze = false;
+      //updatedNotifications[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         notifications: updatedNotifications,
@@ -86,6 +91,7 @@ export default (state = INITIAL_STATE, action) => {
               type: action.data.notification_approval.type,
               is_read: 0,
               is_snooze: false,
+              //snooze_time: getCurrentTimestamp(),
               created_at: action.data.created_at ? action.data.created_at : action.data.user_approved.updated_at,
               author: action.data.user_approved,
               data: {
@@ -118,6 +124,7 @@ export default (state = INITIAL_STATE, action) => {
           type: "POST_CREATE",
           is_read: 0,
           is_snooze: false,
+          //snooze_time : getCurrentTimestamp(),
           created_at: action.data.created_at,
           author: action.data.author,
           data: {
@@ -137,6 +144,7 @@ export default (state = INITIAL_STATE, action) => {
             type: action.data.notification_approval.type,
             is_read: 0,
             is_snooze: false,
+            //snooze_time : getCurrentTimestamp(),
             created_at: action.data.created_at,
             author: action.data.author,
             data: {
@@ -173,6 +181,7 @@ export default (state = INITIAL_STATE, action) => {
         type: action.data.notification.type,
         is_read: 0,
         is_snooze: false,
+        //snooze_time : getCurrentTimestamp(),
         created_at: action.data.created_at,
         author: action.data.author,
         data: {
@@ -205,6 +214,7 @@ export default (state = INITIAL_STATE, action) => {
           ...action.data.notification,
           is_read: 0,
           is_snooze: false,
+          //snooze_time : getCurrentTimestamp(),
           author: null,
           created_at: action.data.created_at,
           data: {
@@ -229,6 +239,7 @@ export default (state = INITIAL_STATE, action) => {
           ...action.data.notification,
           is_read: 0,
           is_snooze: false,
+          //snooze_time : getCurrentTimestamp(),
           author: action.data.initiator,
           created_at: { timestamp: Math.round(+new Date() / 1000) },
           data: {
@@ -274,6 +285,7 @@ export default (state = INITIAL_STATE, action) => {
               id: action.data.notification_id[0],
               is_read: 0,
               is_snooze: false,
+              //snooze_time : getCurrentTimestamp(),
               type: "WORKSPACE_ADD_MEMBER",
             },
           },
@@ -303,6 +315,7 @@ export default (state = INITIAL_STATE, action) => {
             id: action.data.notification_id[0],
             is_read: 0,
             is_snooze: false,
+            //snooze_time : getCurrentTimestamp(),
             type: "WORKSPACE_ADD_MEMBER",
           },
         },
@@ -312,6 +325,7 @@ export default (state = INITIAL_STATE, action) => {
       let notifications = { ...state.notifications };
       Object.values(notifications).forEach((n) => {
         notifications[n.id].is_snooze = action.data.is_snooze;
+        //notifications[n.id].snooze_time = getCurrentTimestamp();
       });
       return {
         ...state,
@@ -321,10 +335,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
-      let x = notifications[action.data.id];
-      let y = action.data;
-      console.log({notifications, x, y });
       notifications[action.data.id].is_snooze = action.data.is_snooze;
+      //notifications[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         notifications: notifications
