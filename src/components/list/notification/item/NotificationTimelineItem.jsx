@@ -243,14 +243,14 @@ export const NotificationTimelineItem = (props) => {
   };
 
   const getBadgeClass = (data) => {
-    if (data.must_read) return "badge-danger";
-    if (data.must_reply) return "badge-success";
+    if (data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) return "badge-danger";
+    if (data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) return "badge-success";
     return null;
   };
 
   const getMustText = (data) => {
-    if (data.must_read) return dictionary.mustRead;
-    if (data.must_reply) return dictionary.needsReply;
+    if (data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) return dictionary.mustRead;
+    if (data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) return dictionary.needsReply;
     return null;
   };
 

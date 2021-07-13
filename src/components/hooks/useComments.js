@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useCommentActions } from "./index";
 
@@ -10,6 +10,14 @@ const useComments = (post) => {
   const [fetchingComments, setFetchingComments] = useState(false);
   const [fetchingPostReads, setFetchingPostReads] = useState(false);
 
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
   useEffect(() => {
     if (!fetchingComments && !postComments.hasOwnProperty(post.id)) {
       setFetchingComments(true);
@@ -18,7 +26,7 @@ const useComments = (post) => {
         url,
       };
       commentActions.fetchPostComments(payload, (err, res) => {
-        setFetchingComments(false);
+        if (componentIsMounted.current) setFetchingComments(false);
       });
     }
 
@@ -36,7 +44,7 @@ const useComments = (post) => {
           readPosts: [...res.data],
         };
         commentActions.setPostReadComments(payload, () => {
-          setFetchingPostReads(false);
+          if (componentIsMounted.current) setFetchingPostReads(false);
         });
       });
     }
