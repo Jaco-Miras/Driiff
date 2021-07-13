@@ -36,7 +36,6 @@ export default (state = INITIAL_STATE, action) => {
         updatedNotifications[n.id].is_read = 1;
         updatedNotifications[n.id].is_snooze = false;
         //updatedNotifications[n.id].snooze_time = getCurrentTimestamp();
-
       });
       return {
         ...state,

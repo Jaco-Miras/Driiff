@@ -73,17 +73,18 @@ const MainSnooze = (props) => {
   }
 
   const todoCLean = () => {
-    var inMins = getTimestampInMins(15);
+    var inMins = getTimestampInMins(50);
     const todos = getReminders({ filter: { status: '', search: '' } });
     return todos.filter((t) => t.assigned_to && t.assigned_to.id === user.id && t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
   }
 
-  const handleRedirect = (n, closeToast, e) => {
+  const handleRedirect = (n, type, closeToast, e) => {
+    var actions = type === 'mention' ? notifActions : todoActions;
     e.preventDefault();
     if (n.is_read === 0) {
       notifActions.read({ id: n.id });
     }
-    if (n.type === "NEW_TODO") {
+    if (n.type === "NEW_TODO" || type === 'todo') {
       redirect.toTodos();
     } else {
       let post = { id: n.data.post_id, title: n.data.title };
@@ -105,7 +106,7 @@ const MainSnooze = (props) => {
       }
       redirect.toPost({ workspace, post }, focusOnMessage);
     }
-    notifActions.snooze({ id: n.id, is_snooze: false });
+    actions.snooze({ id: n.id, is_snooze: false });
   };
 
   const snoozeMeButton = ({ closeToast }) => (
@@ -179,7 +180,7 @@ const MainSnooze = (props) => {
   };
 
   const snoozeContent = (type, n, closeToast) => {
-    return (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, closeToast, e)}>
+    return (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, type, closeToast, e)}>
       <div>
         {type === 'mention' ? n.author ? (
           <Avatar
