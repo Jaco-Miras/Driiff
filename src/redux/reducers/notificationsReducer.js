@@ -123,6 +123,8 @@ export default (state = INITIAL_STATE, action) => {
             workspaces: action.data.workspaces,
             comment_body: null,
             required_users: action.data.required_users,
+            must_read_users: action.data.must_read_users,
+            must_reply_users: action.data.must_reply_users,
           },
         };
         if (action.data.notification_approval) {
@@ -142,6 +144,8 @@ export default (state = INITIAL_STATE, action) => {
               workspaces: action.data.workspaces,
               comment_body: null,
               required_users: action.data.required_users,
+              must_read_users: action.data.must_read_users,
+              must_reply_users: action.data.must_reply_users,
             },
           };
         }
@@ -307,6 +311,8 @@ export default (state = INITIAL_STATE, action) => {
               data: {
                 ...notif.data,
                 required_users: action.data.required_users,
+                must_read_users: action.data.must_read_users,
+                must_reply_users: action.data.must_reply_users,
               },
             };
           } else {

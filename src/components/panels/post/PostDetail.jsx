@@ -392,8 +392,14 @@ const PostDetail = (props) => {
       if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
         return true;
       }
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+        return true;
+      }
     } else if (post.is_must_reply && post.author.id !== user.id) {
       if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+        return true;
+      }
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
         return true;
       }
     } else if (hasPendingApproval) {
@@ -519,7 +525,8 @@ const PostDetail = (props) => {
           disableMarkAsRead={disableMarkAsRead}
         />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
+            (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
