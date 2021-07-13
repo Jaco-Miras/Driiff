@@ -27,6 +27,8 @@ const useComments = (post) => {
       if (hasPendingApproval) return;
       if (post.is_must_read && post.author.id !== user.id && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) return;
       if (post.is_must_reply && post.author.id !== user.id && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) return;
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return;
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) return;
       commentActions.fetchPostRead(parseInt(post.id), (err, res) => {
         setFetchingPostReads(true);
         const payload = {
