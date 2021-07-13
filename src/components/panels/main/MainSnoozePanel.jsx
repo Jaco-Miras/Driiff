@@ -249,7 +249,7 @@ const MainSnooze = (props) => {
       todoActions.snoozeAll({ is_snooze: false });
 
       snooze.length ? snoozeOpen(snooze.sort((a, b) => a[4] - b[4])) : toast.dismiss();
-    }, 15000);
+    }, 1000 * 60 * 60);
     return () => clearInterval(interval);
   }, [notifications, todos]);
 
