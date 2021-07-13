@@ -819,7 +819,7 @@ const usePostActions = () => {
     };
 
     dispatch(postRequired(payload));
-    markAsRead(post);
+    //markAsRead(post);
   };
 
   const markReplyRequirement = (post) => {

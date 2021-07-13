@@ -361,6 +361,18 @@ const PostDetail = (props) => {
 
   const markRead = () => {
     postActions.markReadRequirement(post);
+    let triggerRead = true;
+    if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+        triggerRead = false;
+      }
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+        triggerRead = false;
+      }
+    }
+    if (triggerRead) {
+      postActions.markAsRead(post);
+    }
   };
 
   const handleReaction = () => {
