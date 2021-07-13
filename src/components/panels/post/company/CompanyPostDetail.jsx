@@ -391,18 +391,19 @@ const CompanyPostDetail = (props) => {
       if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
         return true;
       }
-    } else if (post.is_must_reply && post.author.id !== user.id) {
+    }
+    if (post.is_must_reply && post.author.id !== user.id) {
       if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
         return true;
       }
       if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
         return true;
       }
-    } else if (hasPendingApproval) {
-      return true;
-    } else {
-      return false;
     }
+    if (hasPendingApproval) {
+      return true;
+    }
+    return false;
   };
 
   useEffect(() => {
