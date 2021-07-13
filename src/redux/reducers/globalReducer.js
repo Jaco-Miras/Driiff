@@ -249,10 +249,18 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
+      let items = state.todos.items;
+      Object.values(items).forEach((n) => {
+        if (typeof items[n.id].is_snooze === "undefined")
+          items[n.id].is_snooze = false;
+      });
+
       return {
         ...state,
         todos: {
           ...state.todos,
+          is_snooze: action.data.is_snooze,
+          items: items,
           count: action.data.reduce((res, c) => {
             res[c.status.toLowerCase()] = c.count;
             return res;
@@ -261,6 +269,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_REMINDERS_SUCCESS": {
+
       let items = state.todos.items;
       action.data.todos.forEach((t) => {
         items[t.id] = t;
@@ -544,9 +553,9 @@ export default (state = INITIAL_STATE, action) => {
         //   count[action.data.status.toLowerCase()] += 1;
         //   count[items[action.data.id].status.toLowerCase()] -= 1;
         // }
-
         items[action.data.id] = {
           ...items[action.data.id],
+          is_snooze: false,
           ...action.data,
         };
       }
@@ -773,13 +782,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMINDER_SNOOZE_ALL": {
-      
+
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
         items[n.id].is_snooze = action.data.is_snooze;
-       // items[n.id].snooze_time = getCurrentTimestamp();
+        items[n.id].snooze_time = getCurrentTimestamp();
       });
-     
+
       return {
         ...state,
         todos: {
@@ -793,7 +802,7 @@ export default (state = INITIAL_STATE, action) => {
     case "REMINDER_SNOOZE": {
       let items = state.todos.items;
       items[action.data.id].is_snooze = action.data.is_snooze;
-     // items[action.data.id].snooze_time = getCurrentTimestamp();
+      items[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         todos: {
