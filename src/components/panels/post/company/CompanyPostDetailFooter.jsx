@@ -484,7 +484,7 @@ const CompanyPostDetailFooter = (props) => {
 
   const requestForChangeCallback = (err, res) => {
     if (err) return;
-    if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if ((post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) {
       postActions.markReplyRequirement(post);
       postActions.markAsRead(post);
     }
