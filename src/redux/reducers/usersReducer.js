@@ -13,6 +13,8 @@ const INITIAL_STATE = {
   externalUsers: [],
   archivedUsers: [],
   profileSlider: null,
+  usersWithoutActivity: [],
+  usersWithoutActivityLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -301,6 +303,13 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         profileSlider: action.data.id && state.users[action.data.id] ? state.users[action.data.id] : null,
+      };
+    }
+    case "GET_USERS_WITHOUT_ACTIVITY_SUCCESS": {
+      return {
+        ...state,
+        usersWithoutActivity: action.data,
+        usersWithoutActivityLoaded: true,
       };
     }
     default:

@@ -9,6 +9,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "reactstrap";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -45,6 +46,8 @@ const SystemPeoplePanel = (props) => {
   const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
+  const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -214,6 +217,7 @@ const SystemPeoplePanel = (props) => {
   };
 
   useEffect(() => {
+    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
     refs.search.current.focus();
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
@@ -336,13 +340,14 @@ const SystemPeoplePanel = (props) => {
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
                   onUpdateRole={userActions.updateUserRole}
-                  showOptions={loggedUser.role.name === "admin" || loggedUser.role.name === "owner"}
+                  showOptions={(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && usersWithoutActivityLoaded}
                   roles={roles}
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
                   onDeleteUser={handleDeleteUser}
                   showInactive={showInactive}
+                  usersWithoutActivity={usersWithoutActivity}
                 />
               );
             })}
