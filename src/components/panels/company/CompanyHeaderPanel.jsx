@@ -286,7 +286,7 @@ const CompanyHeaderPanel = () => {
     } else {
       document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
     }
-  }, [match.params.page, dispatch, pageName]);
+  }, [match.params.page, dispatch, pageName, driff.company_name]);
 
   return (
     <Wrapper className={`page-${match.params.page}`}>
