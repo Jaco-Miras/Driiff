@@ -845,7 +845,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.place}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.place)} name="place" disabled={isEditable || !isLoggedUser} onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
+                        <Input className={getValidClass(formUpdate.valid.place)} name="place" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
                         <InputFeedback valid={formUpdate.feedbackState.place}>{formUpdate.feedbackText.place}</InputFeedback>
                       </>
                     )}
@@ -858,15 +858,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput
-                          name="address"
-                          disabled={isEditable || !isLoggedUser}
-                          onChange={handleInputChange}
-                          onBlur={handleInputBlur}
-                          defaultValue={user.address}
-                          isValid={formUpdate.feedbackState.address}
-                          feedback={formUpdate.feedbackText.address}
-                        />
+                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
                       </>
                     )}
                   </div>
@@ -891,7 +883,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" disabled={isEditable || !isLoggedUser} onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
                         <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}
