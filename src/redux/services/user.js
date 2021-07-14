@@ -592,3 +592,10 @@ export function deleteUser(payload) {
     url: `/users/${payload.user_id}`,
   });
 }
+
+export function getUsersWithoutActivity(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/users/inactive",
+  });
+}

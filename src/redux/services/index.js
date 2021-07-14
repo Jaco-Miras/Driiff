@@ -82,6 +82,7 @@ export {
   getArchivedUsers,
   unarchiveUser,
   updateUserType,
+  getUsersWithoutActivity,
 } from "./user";
 
 export {

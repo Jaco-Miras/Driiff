@@ -100,6 +100,7 @@ const PeopleListItem = (props) => {
     onDeleteUser = null,
     showInactive = false,
     showWorkspaceRole = false,
+    usersWithoutActivity = [],
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
@@ -284,7 +285,7 @@ const PeopleListItem = (props) => {
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
                       {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
-                      {user.active && onDeleteUser && <div onClick={() => onDeleteUser(user)}>{dictionary.deleteUser}</div>}
+                      {user.active && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && <div onClick={() => onDeleteUser(user)}>{dictionary.deleteUser}</div>}
                     </MoreOptions>
                   )}
                 </div>
