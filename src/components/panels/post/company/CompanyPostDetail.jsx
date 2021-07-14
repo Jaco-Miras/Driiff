@@ -358,6 +358,7 @@ const CompanyPostDetail = (props) => {
 
   const markRead = () => {
     postActions.markReadRequirement(post);
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     let triggerRead = true;
     if (post.is_must_reply && post.author.id !== user.id) {
       if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
@@ -367,7 +368,7 @@ const CompanyPostDetail = (props) => {
         triggerRead = false;
       }
     }
-    if (triggerRead) {
+    if (triggerRead && !hasPendingApproval) {
       postActions.markAsRead(post);
     }
   };

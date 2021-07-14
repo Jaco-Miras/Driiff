@@ -509,7 +509,8 @@ const CompanyPostDetailFooter = (props) => {
           triggerRead = false;
         }
       }
-      if (triggerRead) postActions.markAsRead(post);
+      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+      if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
