@@ -12,6 +12,8 @@ import {
   removeNotificationReducer,
   unreadNotification,
   unreadNotificationReducer,
+  snoozeNotification,
+  snoozeNotificationAll
 } from "../../redux/actions/notificationActions";
 import { setActiveTopic } from "../../redux/actions/workspaceActions";
 import { useToaster } from "./index";
@@ -74,6 +76,14 @@ const useNotificationActions = (props) => {
     dispatch(setActiveTopic(workspace, callback));
   };
 
+  const snooze = (payload) => {
+    dispatch(snoozeNotification(payload));
+  };
+
+  const snoozeAll = (payload) => {
+    dispatch(snoozeNotificationAll(payload));
+  };
+
   return {
     get,
     read,
@@ -82,6 +92,8 @@ const useNotificationActions = (props) => {
     removeAll,
     selectWorkspace,
     unread,
+    snooze,
+    snoozeAll,
   };
 };
 

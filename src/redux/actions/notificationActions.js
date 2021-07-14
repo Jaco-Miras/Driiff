@@ -32,6 +32,14 @@ export function readNotificationReducer(payload, callback) {
   return SimpleDispatchActionToReducer("READ_NOTIFICATION_REDUCER", payload, callback);
 }
 
+export function snoozeNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("NOTIFICATION_SNOOZE", payload, callback);
+}
+
+export function snoozeNotificationAll(payload, callback) {
+  return SimpleDispatchActionToReducer("NOTIFICATION_SNOOZE_ALL", payload, callback);
+}
+
 export function unreadNotificationReducer(payload, callback) {
   return SimpleDispatchActionToReducer("UNREAD_NOTIFICATION_REDUCER", payload, callback);
 }
