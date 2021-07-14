@@ -55,7 +55,14 @@ const SystemPeoplePanel = (props) => {
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
 
-  const allUsers = [...Object.values(users), ...inactiveUsers];
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 
   const refs = {
     search: useRef(),

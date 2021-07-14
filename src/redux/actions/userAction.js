@@ -187,3 +187,7 @@ export function deleteUser(payload, callback) {
 export function getUsersWithoutActivity(payload, callback) {
   return dispatchActionToReducer(getUsersWithoutActivityService(payload), "GET_USERS_WITHOUT_ACTIVITY_START", "GET_USERS_WITHOUT_ACTIVITY_SUCCESS", "GET_USERS_WITHOUT_ACTIVITY_FAILURE", callback);
 }
+
+export function incomingDeletedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_USER", payload, callback);
+}
