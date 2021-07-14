@@ -135,6 +135,7 @@ import {
   incomingDeactivatedUser,
   incomingActivatedUser,
   incomingOnlineUsers,
+  incomingDeletedUser,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -242,7 +243,7 @@ class SocketListeners extends Component {
     });
 
     window.Echo.private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
-      console.log(e, "deleted user");
+      this.props.incomingDeletedUser(e);
     });
 
     // new socket
@@ -1911,6 +1912,7 @@ function mapDispatchToProps(dispatch) {
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
     setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
+    incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
   };
 }
 

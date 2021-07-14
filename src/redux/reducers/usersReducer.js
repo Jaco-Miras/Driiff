@@ -312,6 +312,17 @@ export default (state = INITIAL_STATE, action) => {
         usersWithoutActivityLoaded: true,
       };
     }
+    case "INCOMING_DELETED_USER": {
+      return {
+        ...state,
+        users: Object.values(state.users).reduce((acc, user) => {
+          if (user.id !== action.data.id) {
+            acc[user.id] = user;
+          }
+          return acc;
+        }, {}),
+      };
+    }
     default:
       return state;
   }
