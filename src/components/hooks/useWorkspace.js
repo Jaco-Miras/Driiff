@@ -101,7 +101,7 @@ const useWorkspace = () => {
             if (url.startsWith("/workspace")) {
               actions.redirectTo(workspaces[activeTopicSettings.id]);
             }
-          } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
+          } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister") && user.type === "external") {
             actions.selectWorkspace(Object.values(workspaces)[0]);
             actions.redirectTo(Object.values(workspaces)[0]);
             localStorage.removeItem("fromRegister");
