@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/static/css/main.96afad14.chunk.css",
-    "main.js": "/static/js/main.360669c2.chunk.js",
-    "runtime-main.js": "/static/js/runtime-main.63d41779.js",
+    "main.js": "/static/js/main.2a28b23e.chunk.js",
+    "runtime-main.js": "/static/js/runtime-main.03d4967f.js",
     "static/css/2.bbe42940.chunk.css": "/static/css/2.bbe42940.chunk.css",
-    "static/js/2.faa77871.chunk.js": "/static/js/2.faa77871.chunk.js",
-    "static/js/3.69ece2a0.chunk.js": "/static/js/3.69ece2a0.chunk.js",
-    "static/js/4.d5631015.chunk.js": "/static/js/4.d5631015.chunk.js",
-    "static/js/5.f1e22970.chunk.js": "/static/js/5.f1e22970.chunk.js",
-    "static/js/6.82b567b1.chunk.js": "/static/js/6.82b567b1.chunk.js",
-    "static/js/7.d86fc5de.chunk.js": "/static/js/7.d86fc5de.chunk.js",
+    "static/js/2.94f68113.chunk.js": "/static/js/2.94f68113.chunk.js",
+    "static/js/3.6b57c563.chunk.js": "/static/js/3.6b57c563.chunk.js",
+    "static/js/4.47953f50.chunk.js": "/static/js/4.47953f50.chunk.js",
+    "static/js/5.4e490a20.chunk.js": "/static/js/5.4e490a20.chunk.js",
+    "static/js/6.0a50d8bc.chunk.js": "/static/js/6.0a50d8bc.chunk.js",
+    "static/js/7.89082e6e.chunk.js": "/static/js/7.89082e6e.chunk.js",
     "static/js/8.89fdf070.chunk.js": "/static/js/8.89fdf070.chunk.js",
     "static/js/9.5038c2d8.chunk.js": "/static/js/9.5038c2d8.chunk.js",
     "index.html": "/index.html",
-    "precache-manifest.bb193392cdfc1563c7855f8885ab8429.js": "/precache-manifest.bb193392cdfc1563c7855f8885ab8429.js",
+    "precache-manifest.a2c865bd478aaa504936c52330cb4410.js": "/precache-manifest.a2c865bd478aaa504936c52330cb4410.js",
     "service-worker.js": "/service-worker.js",
-    "static/js/2.faa77871.chunk.js.LICENSE.txt": "/static/js/2.faa77871.chunk.js.LICENSE.txt",
+    "static/js/2.94f68113.chunk.js.LICENSE.txt": "/static/js/2.94f68113.chunk.js.LICENSE.txt",
     "static/media/app.scss": "/static/media/themify.e23a7dca.ttf",
     "static/media/active.svg": "/static/media/active.ee83a5a4.svg",
     "static/media/appointed.ogg": "/static/media/appointed.4a7182ca.ogg",
@@ -50,10 +50,10 @@
     "static/media/workspace.svg": "/static/media/workspace.1147193a.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.63d41779.js",
+    "static/js/runtime-main.03d4967f.js",
     "static/css/2.bbe42940.chunk.css",
-    "static/js/2.faa77871.chunk.js",
+    "static/js/2.94f68113.chunk.js",
     "static/css/main.96afad14.chunk.css",
-    "static/js/main.360669c2.chunk.js"
+    "static/js/main.2a28b23e.chunk.js"
   ]
 }
