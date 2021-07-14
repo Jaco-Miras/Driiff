@@ -327,11 +327,13 @@ export const NotificationTimelineItem = (props) => {
                   </span>
                 )}
               </p>
-              <p>
-                {" "}
-                <span className={"badge badge-danger text-white"}>{getMustReadText(notification.data)}</span>
-                <span className={"badge badge-success text-white"}>{getMustReplyText(notification.data)}</span>
-              </p>
+              {notification.type === "POST_CREATE" && (
+                <p>
+                  {" "}
+                  <span className={"badge badge-danger text-white"}>{getMustReadText(notification.data)}</span>
+                  <span className={"badge badge-success text-white"}>{getMustReplyText(notification.data)}</span>
+                </p>
+              )}
             </div>
           </h6>
         </div>

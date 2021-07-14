@@ -571,7 +571,24 @@ const usePostActions = () => {
           },
           actions: {
             onSubmit: () => {
-              markAsRead(post);
+              let triggerRead = true;
+              if (post.is_must_read && post.author.id !== user.id) {
+                if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+                  triggerRead = null;
+                }
+                if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+                  triggerRead = null;
+                }
+              }
+              if (post.is_must_reply && post.author.id !== user.id) {
+                if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+                  triggerRead = null;
+                }
+                if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+                  triggerRead = null;
+                }
+              }
+              if (triggerRead) markAsRead(post);
               if (rewardRef && rewardRef.current) {
                 rewardRef.current.rewardMe();
               }
