@@ -90,7 +90,7 @@ const CompanyPageHeaderPanel = (props) => {
           </li>
           <li className="nav-item">
             <MainNavLink to="/todos">
-              {dictionary.pageTitleTodos} <div className="ml-2 badge badge-pill badge badge-danger">{todosCount.all > 0 ? todosCount.all : null}</div>
+              {dictionary.pageTitleTodos} <div className="ml-2 badge badge-pill badge badge-danger">{todosCount.todo_with_date > 0 ? todosCount.todo_with_date : null}</div>
             </MainNavLink>
           </li>
           <li className="nav-item">
