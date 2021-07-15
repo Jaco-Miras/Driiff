@@ -1,14 +1,14 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {FormInput, InputFeedback, PasswordInput} from "../forms";
-import {EmailRegex} from "../../helpers/stringFormatter";
-import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
+import { FormInput, InputFeedback, PasswordInput } from "../forms";
+import { EmailRegex } from "../../helpers/stringFormatter";
+import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import useDriffActions from "../hooks/useDriffActions";
-import {addToModals} from "../../redux/actions/globalActions";
-import {useDispatch} from "react-redux";
+import { addToModals } from "../../redux/actions/globalActions";
+import { useDispatch } from "react-redux";
 import ReactConfetti from "react-confetti";
-import {isIPAddress} from "../../helpers/commonFunctions";
+import { isIPAddress } from "../../helpers/commonFunctions";
 
 const Wrapper = styled.form`
   .btn {
@@ -127,8 +127,7 @@ const DriffCreatePanel = (props) => {
     return !Object.values(valid).some((v) => v === false);
   };
 
-  const handleSetUserInvitation = (e, callback = () => {
-  }, options) => {
+  const handleSetUserInvitation = (e, callback = () => {}, options) => {
     setForm((prevState) => ({
       ...prevState,
       invitations: e,
@@ -145,6 +144,7 @@ const DriffCreatePanel = (props) => {
       type: "driff_invite_users",
       invitations: typeof form.invitations !== "undefined" ? form.invitations : [],
       onPrimaryAction: handleSetUserInvitation,
+      fromRegister: true,
     };
 
     dispatch(addToModals(payload));
@@ -231,7 +231,7 @@ const DriffCreatePanel = (props) => {
       ) : (
         <>
           <FormInput
-            ref={refs.company_name}
+            //ref={refs.company_name}
             onChange={handleInputChange}
             name="company_name"
             isValid={formResponse.valid.company_name}
@@ -249,7 +249,7 @@ const DriffCreatePanel = (props) => {
                 name="slug"
                 type="text"
                 placeholder="Driff"
-                autocapitalize="none"
+                autoCapitalize="none"
                 valid={formResponse.valid.slug}
                 invalid={typeof formResponse.valid.slug !== "undefined" ? !formResponse.valid.slug : formResponse.valid.slug}
                 readOnly={loading}
@@ -264,13 +264,13 @@ const DriffCreatePanel = (props) => {
           </StyledFormGroup>
           <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email" readOnly={loading} />
           <FormInput onChange={handleInputChange} name="user_name" isValid={formResponse.valid.user_name} feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name} readOnly={loading} />
-          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password}/>
+          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
 
           <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
             {typeof form.invitations !== "undefined" ? (
               <>
                 {dictionary.invitedUsers}{" "}
-                <div className={`mr-2 d-sm-inline d-none`}>
+                <div className={"mr-2 d-sm-inline d-none"}>
                   <div className={"badge badge-info text-white"}>{form.invitations.length}</div>
                 </div>
               </>
