@@ -62,8 +62,15 @@ const ChatContentPanel = (props) => {
     setshowDropZone(false);
   };
 
-  const handleshowDropZone = () => {
-    setshowDropZone(true);
+  const handleshowDropZone = (e) => {
+    if (e.dataTransfer.types) {
+      for (var i = 0; i < e.dataTransfer.types.length; i++) {
+        if (e.dataTransfer.types[i] === "Files") {
+          setshowDropZone(true);
+          return;
+        }
+      }
+    }
   };
 
   const dropAction = (acceptedFiles) => {
