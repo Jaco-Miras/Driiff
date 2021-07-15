@@ -240,8 +240,9 @@ const PeopleListItem = (props) => {
                     <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
                         <ToolTip content={user.email}>
-                          <span>{user.name}</span>
+                          <span className="mr-2">{user.name}</span>
                         </ToolTip>
+                        {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
                         {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
                           <ToolTip content={"This is an administrator account"}>
                             <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />

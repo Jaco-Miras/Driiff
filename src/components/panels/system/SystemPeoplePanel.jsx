@@ -49,8 +49,16 @@ const SystemPeoplePanel = (props) => {
 
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
+  const [showInvited, setShowInvited] = useState(false);
 
-  const allUsers = [...Object.values(users), ...inactiveUsers];
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 
   const refs = {
     search: useRef(),
@@ -81,6 +89,8 @@ const SystemPeoplePanel = (props) => {
         if (user.name.trim() === "") {
           return false;
         }
+      } else if (showInvited) {
+        return !user.has_accepted && user.active;
       } else {
         if (user.active !== 1) {
           return false;
@@ -207,6 +217,7 @@ const SystemPeoplePanel = (props) => {
 
       return newState;
     });
+    if (showInvited && !showInactive) setShowInvited(false);
   };
 
   useEffect(() => {
@@ -276,6 +287,21 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleShowInvitedToggle = () => {
+    setShowInvited((prevState) => {
+      const newState = !prevState;
+
+      // if (newState) {
+      //   toaster.success("Showing inactive members");
+      // } else {
+      //   toaster.success("Showing active members only");
+      // }
+
+      return newState;
+    });
+    if (showInactive && !showInvited) setShowInactive(false);
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -292,6 +318,16 @@ const SystemPeoplePanel = (props) => {
                 onChange={handleShowInactiveToggle}
                 data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
                 label={<span>{dictionary.showInactiveMembers}</span>}
+              />
+              <CustomInput
+                className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
+                checked={showInvited}
+                id="show_invited"
+                name="show_invited"
+                type="switch"
+                onChange={handleShowInvitedToggle}
+                //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
+                label={<span>Show invited</span>}
               />
             </div>
             <div>
