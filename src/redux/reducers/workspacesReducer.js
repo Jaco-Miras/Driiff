@@ -1347,11 +1347,35 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      //need recipient ids
+      // let newWorkspacePosts = { ...state.workspacePosts };
+      // //need recipient ids
+      // return {
+      //   ...state,
+      //   workspacePosts: newWorkspacePosts,
+      // };
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipient_ids.reduce((res, rid) => {
+            if (state.workspacePosts[rid]) {
+              res[rid] = {
+                ...state.workspacePosts[rid],
+                ...(state.workspacePosts[rid].posts && {
+                  posts: {
+                    ...Object.keys(state.workspacePosts[rid].posts)
+                      .filter((key) => parseInt(key) !== action.data.id)
+                      .reduce((post, id) => {
+                        post[id] = { ...state.workspacePosts[rid].posts[id] };
+                        return post;
+                      }, {}),
+                  },
+                }),
+              };
+            }
+            return res;
+          }, {}),
+        },
       };
     }
     case "INCOMING_COMMENT": {
