@@ -923,8 +923,8 @@ const usePostActions = () => {
     dispatch(removePostReact(payload, callback));
   };
 
-  const fetchPostDetail = (payload = {}) => {
-    dispatch(fetchDetail(payload));
+  const fetchPostDetail = (payload = {}, callback) => {
+    dispatch(fetchDetail(payload, callback));
   };
 
   const updatePostImages = (payload = {}) => {

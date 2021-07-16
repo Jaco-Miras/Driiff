@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
-import { useCompanyPosts, useTranslationActions } from "../../hooks";
+import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPostsEmptyState, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
 
@@ -104,6 +104,7 @@ const CompanyPostsPanel = (props) => {
 
   const params = useParams();
   const history = useHistory();
+  const toaster = useToaster();
 
   const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
@@ -215,6 +216,7 @@ const CompanyPostsPanel = (props) => {
     remove: _t("BUTTON.REMOVE", "Remove"),
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
+    errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
   };
 
   const handleLoadMore = () => {
@@ -250,7 +252,20 @@ const CompanyPostsPanel = (props) => {
 
   useEffect(() => {
     if (params.postId) {
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) });
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              filter: "all",
+              tag: null,
+            };
+            actions.setCompanyFilterPosts(payload);
+            history.push("/posts");
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
     }
     actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     return () => {

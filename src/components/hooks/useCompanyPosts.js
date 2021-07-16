@@ -52,9 +52,9 @@ const useCompanyPosts = () => {
   };
 
   useEffect(() => {
-    if (params.postId) {
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) });
-    }
+    // if (params.postId) {
+    //   actions.fetchPostDetail({ post_id: parseInt(params.postId) });
+    // }
     fetchMore();
     actions.fetchPostList();
   }, []);
