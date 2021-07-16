@@ -198,10 +198,10 @@ const usePosts = () => {
       .filter((p) => {
         if (activeFilter) {
           if (activeFilter === "all") {
-            return true;
+            return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
             if (search !== "") {
-              return true;
+              return !p.hasOwnProperty("draft_type");
             } else {
               return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
             }
