@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useTranslationActions, useUserActions } from "../../hooks";
+import { useTranslationActions, useUserActions, useOutsideClick } from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const UserProfileDropdown = (props) => {
-  const { className = "", user } = props;
+  const { className = "", user, closeDropdown } = props;
 
   const history = useHistory();
   const { processBackendLogout } = useUserActions();
@@ -58,6 +58,8 @@ const UserProfileDropdown = (props) => {
     settings: _t("PROFILE.SETTINGS", "Settings"),
     signOut: _t("PROFILE.SIGN_OUT", "Sign out!"),
   };
+
+  useOutsideClick(refs.container, closeDropdown, true);
 
   return (
     <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`} x-placement="bottom-end">
