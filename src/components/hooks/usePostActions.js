@@ -491,6 +491,8 @@ const usePostActions = () => {
               removePost({
                 post_id: post.id,
                 topic_id: parseInt(params.workspaceId),
+                recipients: post.recipients,
+                id: post.id,
               })
             );
             if (params.hasOwnProperty("postId")) {
@@ -941,8 +943,8 @@ const usePostActions = () => {
     dispatch(removePostReact(payload, callback));
   };
 
-  const fetchPostDetail = (payload = {}) => {
-    dispatch(fetchDetail(payload));
+  const fetchPostDetail = (payload = {}, callback) => {
+    dispatch(fetchDetail(payload, callback));
   };
 
   const updatePostImages = (payload = {}) => {
