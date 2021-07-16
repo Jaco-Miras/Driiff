@@ -410,7 +410,7 @@ const WorspaceHeaderPanel = (props) => {
         document.title = `${pageName} ‹ ${activeTopic.name} — ${driff.company_name} @ Driff`;
       }
     }
-  }, [match.params.page, dispatch, activeTopic]);
+  }, [match.params.page, dispatch, activeTopic, driff.company_name]);
 
   // useEffect(() => {
   //   if (activeTopic && !activeTopic.members.some((m) => m.id === user.id)) {
