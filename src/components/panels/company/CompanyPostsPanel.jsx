@@ -251,7 +251,15 @@ const CompanyPostsPanel = (props) => {
   }, [loadPosts]);
 
   useEffect(() => {
-    if (params.postId) {
+    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => {
+      actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+      componentIsMounted.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (params.postId && !post) {
       actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
         if (componentIsMounted.current) {
           if (err) {
@@ -267,12 +275,7 @@ const CompanyPostsPanel = (props) => {
         }
       });
     }
-    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    return () => {
-      actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-      componentIsMounted.current = null;
-    };
-  }, []);
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (postListTag) {
