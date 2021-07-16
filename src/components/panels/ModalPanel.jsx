@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import FileViewer from "../common/FileViewer";
@@ -35,13 +35,23 @@ const ModalPanel = () => {
   const [scrollTop, setScrollTop] = useState(0);
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
+  const componentIsMounted = useRef(true);
   useHuddleNotification();
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
   useEffect(() => {
     if (Object.keys(modals).length > 0) {
-      setScrollTop(document.documentElement.scrollTop);
+      if (componentIsMounted.current) setScrollTop(document.documentElement.scrollTop);
     } else {
-      window.scrollTo(0, scrollTop);
-      setScrollTop(0);
+      if (componentIsMounted.current) {
+        window.scrollTo(0, scrollTop);
+        setScrollTop(0);
+      }
     }
     document.body.classList.remove("mobile-modal-open");
   }, [modals]);

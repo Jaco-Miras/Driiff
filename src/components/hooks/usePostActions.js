@@ -495,12 +495,10 @@ const usePostActions = () => {
                 id: post.id,
               })
             );
-            if (params.hasOwnProperty("postId")) {
-              history.goBack();
-            }
           }
         )
       );
+      history.goBack();
     };
 
     let payload = {
