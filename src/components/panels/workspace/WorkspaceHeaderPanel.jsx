@@ -31,6 +31,17 @@ const NavBarLeft = styled.div`
   }
   .nav-item {
     display: flex;
+    .mobile-private {
+      display: none;
+    }
+    @media all and (max-width: 440px) {
+      .badge.badge-danger {
+        display: none !important;
+      }
+      .mobile-private {
+        display: block;
+      }
+    }
   }
   @media (max-width: 991.99px) {
     margin-right: 5px;
@@ -485,6 +496,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
+                          <Icon icon="lock" className="mobile-private ml-1" />
                           <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
@@ -531,6 +543,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
+                          <Icon icon="lock" className="mobile-private ml-1" />
                           <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
