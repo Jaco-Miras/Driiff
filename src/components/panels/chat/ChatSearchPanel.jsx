@@ -103,9 +103,12 @@ background: transparent;
   }
 `;
 
-
+const Mark = styled.span`
+font-weight:600;
+color:#7A1B8B
+`;
 const ChatSearchPanel = (props) => {
-  const { className = "", showSearchPanel, handleSearchChatPanel } = props;
+  const { className = "", showSearchPanel, handleSearchChatPanel, chatListRef, scrollComponent } = props;
 
   const [query, setQuery] = useState("");
 
@@ -114,6 +117,7 @@ const ChatSearchPanel = (props) => {
   const [result, setResult] = useState(initresultState);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+
   const { todoFormat } = useTimeFormat();
 
   const clear = () => {
@@ -125,16 +129,27 @@ const ChatSearchPanel = (props) => {
   const onSearchChange = (e) => {
     var value = e.target.value;
     setSearching(true);
-    if (value.trim() !== "") {
+    if (value.trim() !== "" && value.length > 2) {
       //setTimeout(() => {
-        setResult(filterByQuery(selectedChannel.replies, value));
-        setSearching(false);
+      setResult(filterByQuery(sortedReplies(), value));
+      setSearching(false);
       //}, 3000);
     } else {
       setResult(initresultState);
       setSearching(false);
     }
     setQuery(value);
+  };
+
+  const sortedReplies = () => {
+    return selectedChannel.replies
+      .sort((a, b) => {
+        if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+          return a.id - b.id;
+        } else {
+          return a.created_at.timestamp - b.created_at.timestamp;
+        }
+      });
   };
 
   const handleSearchKeyDown = (e) => {
@@ -157,25 +172,35 @@ const ChatSearchPanel = (props) => {
     return results;
   };
 
-
-  const handleRedirect = (id,handleSearchChatPanel,e) => {
+  const handleRedirect = (id, handleSearchChatPanel, e) => {
     e.preventDefault();
     handleSearchChatPanel();
-    selectedChannel.replies[id].nameRef.focus();
+
+   // let classNs = chatListRef[id].current.className;
+
+    scrollComponent.current.scrollTo({
+      behavior: "smooth",
+      top: chatListRef[id].current.offsetTop - (scrollComponent.current.offsetHeight / 2)
+    });
+    chatListRef[id].current.className = chatListRef[id].current.className + " pulsating";
+    // setTimeout(function () { chatListRef[id].current.className = classNs; }, 2000);
   };
 
   const parseResult = (data) => {
     const array = [];
-    const re = new RegExp(_.escapeRegExp(query), 'g');
+    const re = new RegExp(_.escapeRegExp(query), 'ig');
+    const origData = sortedReplies();
     data.map((item) => {
       let body = item.body;
-      array.push([item.id, todoFormat(item.created_at.timestamp), body.replace(re, '<strong>' + query + '</strong>')]);
+      let id = item.id;
+      let index = Object.keys(origData).find(key => origData[key].id === item.id);
+      array.push([item.id, todoFormat(item.created_at.timestamp), body.replace(re, '<span style="font-weight:600;color:#7A1B8B">$&</span>'), index]);
     })
     return (<ResultWrapper >{array.map((item) => {
-      return <ResultItem key={item[0]}><p className="chat-search-date"> {item[1]}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item[2] }}></div> </ResultItem>
-    })}</ResultWrapper>);
+      return <ResultItem onClick={(e) => handleRedirect(item[3], handleSearchChatPanel, e)} key={item[0]}><p className="chat-search-date"> {item[1]}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item[2] }}></div> </ResultItem>
+    })
+    }</ResultWrapper>);
   };
-
 
   return (
     <Wrapper isActive={showSearchPanel}>
@@ -191,7 +216,7 @@ const ChatSearchPanel = (props) => {
           className="chat-search-chat" />
       </div>
       <div className="justify-content-between align-items-center">
-        {query.trim() !== "" && parseResult(result)}
+        {query.trim() !== "" && query.length > 2 && parseResult(result)}
       </div>
     </Wrapper>
   );

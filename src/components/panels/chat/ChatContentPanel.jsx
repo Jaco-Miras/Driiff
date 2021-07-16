@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
@@ -25,6 +25,7 @@ const ChatMessagesPlaceholder = styled.div`
   flex: 1;
 `;
 
+
 const ChatContentPanel = (props) => {
   const { className = "", isWorkspace = false } = props;
 
@@ -49,10 +50,20 @@ const ChatContentPanel = (props) => {
     dropZoneRef: useRef(),
   };
 
-  // const handleBottomRefChange = (inView) => {
-  //   setBottomRefVisible(inView);
-  // };
+  const [chatListRef, setChatListRef] = useState([]);
 
+  let reps = [];
+  if (selectedChannel !== null && selectedChannel.replies.length > 0)
+    reps = selectedChannel.replies;
+
+  useEffect(() => {
+    // add or remove refs
+    if (reps.length) {
+      setChatListRef(chatListRef => (reps.map((item, i) => chatListRef[item.id] || React.createRef())));
+    }
+  }, [reps.length]);
+
+  const scrollComponent =  React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
@@ -196,7 +207,7 @@ const ChatContentPanel = (props) => {
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
-      
+
       <DropDocument
         hide={!showDropZone}
         ref={refs.dropZoneRef}
@@ -222,13 +233,15 @@ const ChatContentPanel = (props) => {
             language={language}
             translated_channels={translated_channels}
             chat_language={chat_language}
+            chatListRef={chatListRef}
+            scrollComponent= {scrollComponent}
           />
         )
       ) : (
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} />  
+      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} chatListRef={chatListRef} scrollComponent= {scrollComponent}/>
     </Wrapper>
   );
 };
