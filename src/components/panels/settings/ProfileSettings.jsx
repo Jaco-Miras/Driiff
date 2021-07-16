@@ -1,5 +1,5 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Select from "react-select";
@@ -7,11 +7,12 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
   .card {
@@ -429,7 +430,7 @@ const ProfileSettings = (props) => {
     (e) => {
       setGeneralSetting({
         chat_language: e.value,
-        translated_channels: []
+        translated_channels: [],
       });
       setTimeout(function () {
         localStorage.setItem("chat_translate_change", "1");
@@ -792,6 +793,11 @@ const ProfileSettings = (props) => {
       <span className="version-number mb-3">
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
+      {loggedUser && loggedUser.email === "nilo@makedevelopment.com" && (
+        <span>
+          {isMobileSafari && "mobile safari"}, {browserName}, {deviceType}
+        </span>
+      )}
     </Wrapper>
   );
 };
