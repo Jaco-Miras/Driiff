@@ -510,6 +510,7 @@ const WorspaceHeaderPanel = (props) => {
                       {!isExternal && (
                         <>
                           <li className="nav-item nav-item-folder">
+                            <SvgIconFeather icon="folder" className={"mr-1"} />
                             <WorkspaceName>
                               <WorkspaceWrapper>
                                 {activeTopic.folder_name}
