@@ -490,6 +490,8 @@ const usePostActions = () => {
               removePost({
                 post_id: post.id,
                 topic_id: parseInt(params.workspaceId),
+                recipients: post.recipients,
+                id: post.id,
               })
             );
             if (params.hasOwnProperty("postId")) {

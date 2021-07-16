@@ -2744,14 +2744,16 @@ export default (state = INITIAL_STATE, action) => {
               if (state.workspacePosts[ws.id]) {
                 res[ws.id] = {
                   ...state.workspacePosts[ws.id],
-                  posts: {
-                    ...Object.keys(state.workspacePosts[ws.id].posts)
-                      .filter((key) => parseInt(key) !== action.data.id)
-                      .reduce((post, id) => {
-                        post[id] = { ...state.workspacePosts[ws.id].posts[id] };
-                        return post;
-                      }, {}),
-                  },
+                  ...(state.workspacePosts[ws.id].posts && {
+                    posts: {
+                      ...Object.keys(state.workspacePosts[ws.id].posts)
+                        .filter((key) => parseInt(key) !== action.data.id)
+                        .reduce((post, id) => {
+                          post[id] = { ...state.workspacePosts[ws.id].posts[id] };
+                          return post;
+                        }, {}),
+                    },
+                  }),
                 };
               }
               return res;
