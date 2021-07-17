@@ -83,14 +83,15 @@ const useQuillModules = ({
           .map((user, k) => {
             const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
             return Object.assign({}, user, {
-              value: user.first_name,
+              value: user.first_name.trim() !== "" ? user.first_name : user.email,
               id: r ? r.id : user.id,
-              name: user.name,
+              name: user.name.trim() !== "" ? user.name : user.email,
               //id: user.id,
               type: user.type,
               type_id: user.id,
               user_id: user.id,
               class: "user-pic",
+              profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
               link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });
@@ -116,9 +117,9 @@ const useQuillModules = ({
           .map((user, k) => {
             const r = recipients.find((r) => r.type === "USER" && user.id === r.type_id);
             return Object.assign({}, user, {
-              value: user.first_name,
+              value: user.first_name.trim() !== "" ? user.first_name : user.email,
               id: r ? r.id : user.id,
-              name: user.name,
+              name: user.name.trim() !== "" ? user.name : user.email,
               //id: user.id,
               type: user.type,
               type_id: user.id,
