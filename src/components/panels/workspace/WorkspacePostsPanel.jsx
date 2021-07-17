@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
-import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
@@ -105,6 +105,7 @@ const WorkspacePostsPanel = (props) => {
 
   const params = useParams();
   const history = useHistory();
+  const toaster = useToaster();
 
   const dispatch = useDispatch();
 
@@ -236,7 +237,28 @@ const WorkspacePostsPanel = (props) => {
     remove: _t("BUTTON.REMOVE", "Remove"),
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
+    errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
   };
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "all",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            history.push("/posts");
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
