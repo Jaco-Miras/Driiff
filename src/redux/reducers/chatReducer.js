@@ -2648,6 +2648,41 @@ export default function (state = INITIAL_STATE, action) {
           : state.selectedChannel,
       };
     }
+    case "INCOMING_DELETED_POST": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.replies.length && action.data.channel_ids.some((c) => c.channel_id === channel.id)) {
+            acc[channel.id] = {
+              ...channel,
+              replies: channel.replies.filter((reply) => {
+                if (action.data.channel_ids.some((c) => c.message_id === reply.id)) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }),
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && action.data.channel_ids.some((c) => c.channel_id === state.selectedChannel.id)
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.filter((reply) => {
+                  if (action.data.channel_ids.some((c) => c.message_id === reply.id)) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }
