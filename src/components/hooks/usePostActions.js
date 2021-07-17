@@ -498,7 +498,11 @@ const usePostActions = () => {
           }
         )
       );
-      history.goBack();
+      if (params.workspaceId) {
+        history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+      } else {
+        history.push("/posts");
+      }
     };
 
     let payload = {
