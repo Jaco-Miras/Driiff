@@ -6,7 +6,7 @@ import { setParentIdForUpload } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
-import { PostBody, PostComments, PostDetailFooter } from "./index";
+import { PostBody, PostComments, PostDetailFooter, PostUnfollowLabel } from "./index";
 import { MoreOptions } from "../../panels/common";
 import { PostCounters } from "../../list/post/item";
 
@@ -515,15 +515,16 @@ const PostDetail = (props) => {
           workspaceId={workspace.id}
           disableMarkAsRead={disableMarkAsRead}
         />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+        {post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
