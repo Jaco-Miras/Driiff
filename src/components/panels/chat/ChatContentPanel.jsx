@@ -51,19 +51,17 @@ const ChatContentPanel = (props) => {
   };
 
   const [chatListRef, setChatListRef] = useState([]);
-
-  let reps = [];
-  if (selectedChannel !== null && selectedChannel.replies.length > 0)
-    reps = selectedChannel.replies;
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
+  const [pP, setPP] = useState(selectedChannel !== null ? selectedChannel.id : 0);
 
   useEffect(() => {
-    // add or remove refs
-    if (reps.length) {
-      setChatListRef(chatListRef => (reps.map((item, i) => chatListRef[item.id] || React.createRef())));
+    selectedChannel !== null && pP !== selectedChannel.id && setShowSearchPanel(false)
+    if (selectedChannel !== null && selectedChannel.replies.length > 0) {
+      setChatListRef(chatListRef => (selectedChannel.replies.map((item, i) => chatListRef[item.id] || React.createRef())));
     }
-  }, [reps.length]);
+  }, [selectedChannel]);
 
-  const scrollComponent =  React.createRef();
+  const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
@@ -199,7 +197,6 @@ const ChatContentPanel = (props) => {
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
-  const [showSearchPanel, setShowSearchPanel] = useState(false);
 
   const handleSearchChatPanel = () => {
     setShowSearchPanel(!showSearchPanel);
@@ -234,14 +231,14 @@ const ChatContentPanel = (props) => {
             translated_channels={translated_channels}
             chat_language={chat_language}
             chatListRef={chatListRef}
-            scrollComponent= {scrollComponent}
+            scrollComponent={scrollComponent}
           />
         )
       ) : (
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} chatListRef={chatListRef} scrollComponent= {scrollComponent}/>
+      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} chatListRef={chatListRef} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel}/>
     </Wrapper>
   );
 };
