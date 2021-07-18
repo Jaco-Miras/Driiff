@@ -600,6 +600,14 @@ class SocketListeners extends Component {
             this.props.incomingClosePost(e);
             break;
           }
+          case "FOLLOW_POST": {
+            console.log(e, "follow post");
+            break;
+          }
+          case "UNFOLLOW_POST": {
+            console.log(e, "unfollow post");
+            break;
+          }
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
             break;

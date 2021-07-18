@@ -9,6 +9,7 @@ import { useCommentActions, useComments } from "../../../hooks";
 import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
 import { MoreOptions } from "../../common";
 import { PostCounters } from "../../../list/post/item";
+import { PostUnfollowLabel } from "../index";
 
 const MainHeader = styled.div`
   .feather-eye-off {
@@ -512,16 +513,17 @@ const CompanyPostDetail = (props) => {
           onCancel={handleHideDropzone}
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
-            (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+        {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
+          (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (

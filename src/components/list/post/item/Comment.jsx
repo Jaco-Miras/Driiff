@@ -527,6 +527,8 @@ const Comment = (props) => {
     }
   }, [clearApprovingState]);
 
+  const filesWithoutInline = comment.files.filter((f) => !comment.body.includes(f.code));
+
   return (
     <>
       <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={user.id}>
@@ -587,11 +589,11 @@ const Comment = (props) => {
               />
             </Reward>
           )}
-          {comment.files.length >= 1 && (
+          {filesWithoutInline.length >= 1 && (
             <>
               <hr />
               <h6>{dictionary.files}</h6>
-              <FileAttachments attachedFiles={comment.files} type="comment" comment={comment} />
+              <FileAttachments attachedFiles={filesWithoutInline} type="comment" comment={comment} />
             </>
           )}
           {comment.files_trashed && comment.files_trashed.length >= 1 && (
