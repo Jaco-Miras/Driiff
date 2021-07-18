@@ -160,11 +160,12 @@ const usePostActions = () => {
     }
   };
 
-  const starPost = (post) => {
+  const starPost = (post, callback = () => {}) => {
     if (post.type === "draft_post") return;
     let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
     dispatch(
       postFavorite({ type: "post", type_id: post.id }, (err, res) => {
+        callback(err, res);
         //@todo reverse the action/data in the reducer
         if (err) {
           toaster.error(<>{dictionary.notificationActionFailed}</>);
@@ -244,109 +245,75 @@ const usePostActions = () => {
 
   const archivePost = (post, callback = () => {}) => {
     if (post.type === "draft_post") {
-      const onConfirm = () => {
-        dispatch(
-          deleteDraft({
-            draft_id: post.draft_id,
-            type: post.type,
-          })
-        );
-        dispatch(
-          removeDraftPost(
-            {
-              post_id: post.id,
-            },
-            (err, res) => {
-              if (err) {
-                toaster.error(<>{dictionary.notificationActionFailed}</>);
-                return;
-              }
+      dispatch(
+        deleteDraft({
+          draft_id: post.draft_id,
+          type: post.type,
+        })
+      );
+      dispatch(
+        removeDraftPost(
+          {
+            post_id: post.id,
+          },
+          (err, res) => {
+            callback(err, res);
+            if (err) {
+              toaster.error(<>{dictionary.notificationActionFailed}</>);
+              return;
+            }
 
-              if (res) {
+            if (res) {
+              toaster.success(
+                <>
+                  <b>{post.title}</b> {dictionary.notificationRemoved}.
+                </>
+              );
+            }
+          }
+        )
+      );
+    } else {
+      dispatch(
+        postArchive(
+          {
+            post_id: post.id,
+            is_archived: post.is_archived === 1 ? 0 : 1,
+          },
+          (err, res) => {
+            callback(err, res);
+
+            if (err) {
+              toaster.success(<>Action failed.</>);
+              return;
+            }
+
+            if (res) {
+              if (!post.is_archived) {
                 toaster.success(
                   <>
-                    <b>{post.title}</b> {dictionary.notificationRemoved}.
+                    <b>{post.title}</b> {dictionary.postArchivedMuted}
+                  </>
+                );
+              } else {
+                toaster.success(
+                  <>
+                    <b>{post.title}</b> is unarchived.
                   </>
                 );
               }
-              callback(err, res);
+
+              dispatch(
+                archiveReducer({
+                  post_id: post.id,
+                  //topic_id: parseInt(params.workspaceId),
+                  is_archived: post.is_archived === 1 ? 0 : 1,
+                })
+              );
             }
-          )
-        );
-      };
-
-      // let payload = {
-      //   type: "confirmation",
-      //   headerText: dictionary.headerRemoveDraftHeader,
-      //   submitText: dictionary.buttonRemove,
-      //   cancelText: dictionary.buttonCancel,
-      //   bodyText: dictionary.removeThisDraft,
-      //   actions: {
-      //     onSubmit: onConfirm,
-      //   },
-      // };
-
-      // dispatch(addToModals(payload));
-      onConfirm();
-    } else {
-      const onConfirm = () => {
-        dispatch(
-          postArchive(
-            {
-              post_id: post.id,
-              is_archived: post.is_archived === 1 ? 0 : 1,
-            },
-            (err, res) => {
-              if (err) {
-                toaster.success(<>Action failed.</>);
-                return;
-              }
-
-              if (res) {
-                if (!post.is_archived) {
-                  toaster.success(
-                    <>
-                      <b>{post.title}</b> {dictionary.postArchivedMuted}
-                    </>
-                  );
-                } else {
-                  toaster.success(
-                    <>
-                      <b>{post.title}</b> is unarchived.
-                    </>
-                  );
-                }
-
-                dispatch(
-                  archiveReducer({
-                    post_id: post.id,
-                    //topic_id: parseInt(params.workspaceId),
-                    is_archived: post.is_archived === 1 ? 0 : 1,
-                  })
-                );
-                // if (params.hasOwnProperty("postId")) {
-                //   history.goBack();
-                // }
-              }
-              callback(err, res);
-            }
-          )
-        );
-      };
-
-      // let payload = {
-      //   type: "confirmation",
-      //   headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
-      //   submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
-      //   cancelText: dictionary.buttonCancel,
-      //   bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
-      //   actions: {
-      //     onSubmit: onConfirm,
-      //   },
-      // };
-
-      // dispatch(addToModals(payload));
-      onConfirm();
+          }
+        )
+      );
     }
   };
 
