@@ -66,7 +66,7 @@ import {
   postRequired,
   setPostCommentType,
 } from "../../redux/actions/postActions";
-import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters } from "../../redux/actions/workspaceActions";
+import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslationActions } from "../hooks";
 
@@ -126,6 +126,7 @@ const usePostActions = () => {
     reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
+    toasterDeletedPost: _t("TOASTER.DELETED_POST", "Succesfully deleted the post"),
   };
 
   const fetchPostList = (payload = {}, callback) => {
@@ -454,6 +455,11 @@ const usePostActions = () => {
           },
           (err, res) => {
             if (err) return;
+            toaster.success(
+              <>
+                {dictionary.toasterDeletedPost} - {post.title}
+              </>
+            );
             dispatch(
               removePost({
                 post_id: post.id,
@@ -466,8 +472,19 @@ const usePostActions = () => {
         )
       );
       if (params.workspaceId) {
+        let payload = {
+          topic_id: parseInt(params.workspaceId),
+          filter: "inbox",
+          tag: null,
+        };
+        dispatch(updateWorkspacePostFilterSort(payload));
         history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
       } else {
+        let payload = {
+          filter: "inbox",
+          tag: null,
+        };
+        setCompanyFilterPosts(payload);
         history.push("/posts");
       }
     };

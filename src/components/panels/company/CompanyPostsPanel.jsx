@@ -266,7 +266,7 @@ const CompanyPostsPanel = (props) => {
           if (err) {
             // set to all
             let payload = {
-              filter: "all",
+              filter: "inbox",
               tag: null,
             };
             actions.setCompanyFilterPosts(payload);

@@ -8,6 +8,7 @@ import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -249,11 +250,11 @@ const WorkspacePostsPanel = (props) => {
             // set to all
             let payload = {
               topic_id: workspace.id,
-              filter: "all",
+              filter: "inbox",
               tag: null,
             };
             dispatch(updateWorkspacePostFilterSort(payload));
-            history.push("/posts");
+            history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
             toaster.error(dictionary.errorLoadingPost);
           }
         }
