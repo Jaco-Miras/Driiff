@@ -118,7 +118,7 @@ const PostCounters = (props) => {
                 );
               })}
             </span>
-            {post.required_users && post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
+            {/* {post.required_users && post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
             <span className="hover not-read-users-container">
               {post.required_users &&
                 post.required_users.map((u) => {
@@ -128,7 +128,7 @@ const PostCounters = (props) => {
                     </span>
                   );
                 })}
-            </span>
+            </span> */}
           </div>
         )}
         <div className="clap-count-wrapper d-sm-none">
