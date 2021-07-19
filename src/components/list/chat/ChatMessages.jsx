@@ -760,7 +760,6 @@ class ChatMessages extends React.Component {
                         return (
                           <ChatList
                             key={reply.id}
-                            ref={this.props.chatListRef[k]}
                             // data-message-id={reply.id}
                             // data-code={reply.code}
                             // data-timestamp={reply.created_at.timestamp}

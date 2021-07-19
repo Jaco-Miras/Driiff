@@ -109,9 +109,8 @@ const ResultDivWrapper = styled.div`
 `;
 
 const ChatSearchPanel = (props) => {
-
-  const { className = "", showSearchPanel, handleSearchChatPanel, chatListRef, scrollComponent, pP, selectedChannel } = props;
-
+  
+  const { className = "", showSearchPanel, handleSearchChatPanel, scrollComponent, pP, selectedChannel } = props;
   const [query, setQuery] = useState("");
 
   const [searching, setSearching] = useState(false);
@@ -162,6 +161,8 @@ const ChatSearchPanel = (props) => {
     e.keyCode === 27 && clear();
   };
 
+  const user = useSelector((state) => state.session.user);
+
   const filterByQuery = (data, inputValue) => {
     const allTags = new RegExp('(<([^>]+)>)', 'g');
     const keywords = inputValue.split(/\s/);
@@ -175,7 +176,14 @@ const ChatSearchPanel = (props) => {
         || item.body.includes("NEW_ACCOUNT_ACTIVATED")
         || item.body.includes("CHANNEL_UPDATE::"))
         return resp;
-      let body = item.body.replace(allTags, "");
+
+      const isAuthor = item.user && item.user.id === user.id;
+
+      let body = item.body;
+      if (selectedChannel.is_translate)
+        body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
+     
+      body = body.replace(allTags, "");
       let respArr = [];
       for (var i = 0; i < keywords.length; i++) {
         if (keywords[i].trim() !== "" && keywords[i].length > 1)
@@ -185,7 +193,11 @@ const ChatSearchPanel = (props) => {
 
     }).map((item) => {
       const pattern = new RegExp(`(${keywords.join('|')})`, 'ig');
-      item.body = item.body.replace(allTags, "").replace(pattern, match => `<span>${match}</span>`);
+      const isAuthor = item.user && item.user.id === user.id;
+      let body = item.body;
+      if (selectedChannel.is_translate)
+        body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
+      item.body = body.replace(allTags, "").replace(pattern, match => `<span>${match}</span>`);
       return item;
     });
     return results;
@@ -194,23 +206,21 @@ const ChatSearchPanel = (props) => {
   const handleRedirect = (id, handleSearchChatPanel, e) => {
     e.preventDefault();
     handleSearchChatPanel();
-
+    var element = document.getElementsByClassName('chat-list-item-' + id);
     scrollComponent.current.scrollTo({
       behavior: "smooth",
-      top: chatListRef[id].current.offsetTop - (scrollComponent.current.offsetHeight / 2)
+      top: element[0].offsetTop - (scrollComponent.current.offsetHeight / 2)
     });
-    chatListRef[id].current.className = chatListRef[id].current.className + " pulsating";
+    element[0].classList.add("pulsating");
+    setTimeout(function () {  element[0].classList.remove("pulsating")}, 2000);
   };
 
   const parseResult = (data) => {
-    const array = [];
-    const origData = sortedReplies();
+    const items = [];
     data.map((item) => {
-      let index = Object.keys(origData).find(key => origData[key].id === item.id);
-      array.push([item.id, todoFormat(item.created_at.timestamp), item.body, index]);
+      items.push([item.id, todoFormat(item.created_at.timestamp), item.body, item.id]);
     });
-
-    return (<ResultWrapper >{array.map((item) => {
+    return (<ResultWrapper >{items.map((item) => {
       return <ResultItem onClick={(e) => handleRedirect(item[3], handleSearchChatPanel, e)} key={item[0]}><p className="chat-search-date"> {item[1]}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item[2] }}></div> </ResultItem>
     })
     }</ResultWrapper>);

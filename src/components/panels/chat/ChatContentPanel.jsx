@@ -56,9 +56,6 @@ const ChatContentPanel = (props) => {
 
   useEffect(() => {
     selectedChannel !== null && pP !== selectedChannel.id && setShowSearchPanel(false)
-    if (selectedChannel !== null && selectedChannel.replies.length > 0) {
-      setChatListRef(chatListRef => (selectedChannel.replies.map((item, i) => chatListRef[item.id] || React.createRef())));
-    }
   }, [selectedChannel]);
 
   const scrollComponent = React.createRef();
@@ -201,10 +198,8 @@ const ChatContentPanel = (props) => {
   const handleSearchChatPanel = () => {
     setShowSearchPanel(!showSearchPanel);
   };
-
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
-
       <DropDocument
         hide={!showDropZone}
         ref={refs.dropZoneRef}
@@ -230,7 +225,6 @@ const ChatContentPanel = (props) => {
             language={language}
             translated_channels={translated_channels}
             chat_language={chat_language}
-            chatListRef={chatListRef}
             scrollComponent={scrollComponent}
           />
         )
@@ -238,7 +232,7 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} chatListRef={chatListRef} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel}/>
+      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel}/>
     </Wrapper>
   );
 };
