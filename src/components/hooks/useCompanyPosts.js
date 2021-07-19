@@ -105,10 +105,10 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
-          return true;
+          return !p.hasOwnProperty("draft_type");
         } else if (filter === "inbox") {
           if (search !== "") {
-            return true;
+            return !p.hasOwnProperty("draft_type");
           } else {
             return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           }
