@@ -111,10 +111,10 @@ export default (state = INITIAL_STATE, action) => {
             return m;
           }
         });
-        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        //const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
         activeTopic = {
           ...activeTopic,
-          is_shared: action.data.type === "external" ? true : isStillExternal,
+          is_shared: action.data.type === "external" ? true : activeTopic.is_shared,
           members: updatedMembers,
         };
       }
@@ -143,11 +143,12 @@ export default (state = INITIAL_STATE, action) => {
                 }
               })
             : ws.members;
-          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
+          //const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
           res[ws.id] = {
             ...ws,
             members: wsMembers,
-            is_shared: action.data.type === "external" ? true : isStillExternal,
+            //is_shared: action.data.type === "external" ? true : isStillExternal,
+            is_shared: ws.members.some((m) => m.id === action.data.id) && action.data.type === "external" ? true : ws.is_shared,
           };
           return res;
         }, {}),
