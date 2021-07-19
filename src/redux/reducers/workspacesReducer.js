@@ -3336,6 +3336,60 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_FOLLOW_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces.length > 0 && {
+            ...state.workspacePosts,
+            ...action.data.workspaces.reduce((res, ws) => {
+              if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post_id]) {
+                res[ws.topic.id] = {
+                  ...state.workspacePosts[ws.topic.id],
+                  posts: {
+                    ...state.workspacePosts[ws.topic.id].posts,
+                    [action.data.post.id]: {
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
+                      //is_followed: action.data.new_recipient_id === state.user.id ? true : state.workspacePosts[ws.topic.id].posts[action.data.post_id].is_followed,
+                      user_unfollow: state.workspacePosts[ws.topic.id].posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.new_recipient_id),
+                    },
+                  },
+                };
+              }
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
+    case "INCOMING_UNFOLLOW_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces.length > 0 && {
+            ...state.workspacePosts,
+            ...action.data.workspaces.reduce((res, ws) => {
+              if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post_id]) {
+                res[ws.topic.id] = {
+                  ...state.workspacePosts[ws.topic.id],
+                  posts: {
+                    ...state.workspacePosts[ws.topic.id].posts,
+                    [action.data.post.id]: {
+                      ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
+                      //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.workspacePosts[ws.topic.id].posts[action.data.post_id].is_followed,
+                      user_unfollow: [...state.workspacePosts[ws.topic.id].posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+                    },
+                  },
+                };
+              }
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
     default:
       return state;
   }
