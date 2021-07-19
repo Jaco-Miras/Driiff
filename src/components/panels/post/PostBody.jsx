@@ -254,6 +254,8 @@ const PostBody = (props) => {
     body: useRef(null),
   };
 
+  const componentIsMounted = useRef(true);
+
   const {
     fileBlobs,
     actions: { setFileSrc },
@@ -278,15 +280,30 @@ const PostBody = (props) => {
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
   const history = useHistory();
+  const [archivedClicked, setArchivedClicked] = useState(false);
+  const [starClicked, setStarClicked] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   const handleStarPost = () => {
-    if (disableOptions) return;
-    postActions.starPost(post);
-    setStar(!star);
+    if (disableOptions || starClicked) return;
+    setStarClicked(true);
+    postActions.starPost(post, () => {
+      if (componentIsMounted.current) setStarClicked(false);
+    });
+    if (componentIsMounted.current) setStar(!star);
   };
 
   const handleArchivePost = () => {
-    postActions.archivePost(post);
+    if (archivedClicked) return;
+    setArchivedClicked(true);
+    postActions.archivePost(post, () => {
+      if (componentIsMounted.current) setArchivedClicked(false);
+    });
   };
 
   const handleInlineImageClick = (e) => {
@@ -325,7 +342,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -462,7 +479,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });

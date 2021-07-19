@@ -248,6 +248,8 @@ const CompanyPostBody = (props) => {
     body: useRef(null),
   };
 
+  const componentIsMounted = useRef(true);
+
   const {
     fileBlobs,
     actions: { setFileSrc },
@@ -272,15 +274,30 @@ const CompanyPostBody = (props) => {
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
   const history = useHistory();
+  const [archivedClicked, setArchivedClicked] = useState(false);
+  const [starClicked, setStarClicked] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   const handleStarPost = () => {
-    if (disableOptions) return;
-    postActions.starPost(post);
-    setStar(!star);
+    if (disableOptions || starClicked) return;
+    setStarClicked(true);
+    postActions.starPost(post, () => {
+      if (componentIsMounted.current) setStarClicked(false);
+    });
+    if (componentIsMounted.current) setStar(!star);
   };
 
   const handleArchivePost = () => {
-    postActions.archivePost(post);
+    if (archivedClicked) return;
+    setArchivedClicked(true);
+    postActions.archivePost(post, () => {
+      if (componentIsMounted.current) setArchivedClicked(false);
+    });
   };
 
   const handleInlineImageClick = (e) => {
