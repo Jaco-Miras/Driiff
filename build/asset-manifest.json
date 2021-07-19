@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.3a2e42a5.chunk.css",
-    "main.js": "/static/js/main.f9d0dbcc.chunk.js",
+    "main.js": "/static/js/main.9c376b1c.chunk.js",
     "runtime-main.js": "/static/js/runtime-main.97a14a2d.js",
     "static/css/2.bbe42940.chunk.css": "/static/css/2.bbe42940.chunk.css",
     "static/js/2.4a35a41b.chunk.js": "/static/js/2.4a35a41b.chunk.js",
@@ -13,7 +13,7 @@
     "static/js/8.89fdf070.chunk.js": "/static/js/8.89fdf070.chunk.js",
     "static/js/9.5038c2d8.chunk.js": "/static/js/9.5038c2d8.chunk.js",
     "index.html": "/index.html",
-    "precache-manifest.49b958a5222ffcdee18005a75b7107b8.js": "/precache-manifest.49b958a5222ffcdee18005a75b7107b8.js",
+    "precache-manifest.3bfcb5dc14c08d98323636c55a23ed18.js": "/precache-manifest.3bfcb5dc14c08d98323636c55a23ed18.js",
     "service-worker.js": "/service-worker.js",
     "static/js/2.4a35a41b.chunk.js.LICENSE.txt": "/static/js/2.4a35a41b.chunk.js.LICENSE.txt",
     "static/media/app.scss": "/static/media/themify.e23a7dca.ttf",
@@ -54,6 +54,6 @@
     "static/css/2.bbe42940.chunk.css",
     "static/js/2.4a35a41b.chunk.js",
     "static/css/main.3a2e42a5.chunk.css",
-    "static/js/main.f9d0dbcc.chunk.js"
+    "static/js/main.9c376b1c.chunk.js"
   ]
 }
