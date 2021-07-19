@@ -122,6 +122,8 @@ import {
   incomingPostListDisconnect,
   getUnarchivePost,
   incomingPostRequired,
+  incomingFollowPost,
+  incomingUnfollowPost,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -580,10 +582,12 @@ class SocketListeners extends Component {
           }
           case "FOLLOW_POST": {
             console.log(e, "follow post");
+            this.props.incomingFollowPost(e);
             break;
           }
           case "UNFOLLOW_POST": {
             console.log(e, "unfollow post");
+            this.props.incomingUnfollowPost(e);
             break;
           }
           case "POST_APPROVED": {
@@ -1922,6 +1926,8 @@ function mapDispatchToProps(dispatch) {
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
     setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
     incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
+    incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
+    incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
   };
 }
 
