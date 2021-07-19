@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
@@ -7,8 +7,7 @@ import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActi
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 //import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
-import { ChatFooterPanel, ChatHeaderPanel, ChatTranslateActions } from "./index";
-
+import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
 //import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
 import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
@@ -16,9 +15,10 @@ import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
 const Wrapper = styled.div`
   width: 100%;
   z-index: 2;
+  position: relative;
   @media (max-width: 992px) {
     z-index: 1;
-  }
+  } ;
 `;
 
 const ChatMessagesPlaceholder = styled.div`
@@ -50,10 +50,15 @@ const ChatContentPanel = (props) => {
     dropZoneRef: useRef(),
   };
 
-  // const handleBottomRefChange = (inView) => {
-  //   setBottomRefVisible(inView);
-  // };
+  const [chatListRef, setChatListRef] = useState([]);
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
+  const [pP, setPP] = useState(selectedChannel !== null ? selectedChannel.id : 0);
 
+  useEffect(() => {
+    selectedChannel !== null && pP !== selectedChannel.id && setShowSearchPanel(false);
+  }, [selectedChannel]);
+
+  const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
@@ -197,6 +202,10 @@ const ChatContentPanel = (props) => {
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
+
+  const handleSearchChatPanel = () => {
+    setShowSearchPanel(!showSearchPanel);
+  };
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -208,7 +217,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
       {selectedChannel !== null ? (
         virtualization ? (
           <VirtuosoContainer dictionary={dictionary} />
@@ -224,12 +233,14 @@ const ChatContentPanel = (props) => {
             language={language}
             translated_channels={translated_channels}
             chat_language={chat_language}
+            scrollComponent={scrollComponent}
           />
         )
       ) : (
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel} />
     </Wrapper>
   );
 };
