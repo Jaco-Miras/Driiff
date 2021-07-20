@@ -222,7 +222,7 @@ const ChatSearchPanel = (props) => {
   const parseResult = (data) => {
     const items = [];
     data.map((item, i) => {
-      items.push({ 'id': item.id, 'body': item.body, 'created_at': item.created_at });
+      items.push({ 'id': item.id, 'body': item.body, 'created_at': todoFormat(item.created_at) });
     });
     return (<ResultWrapper >{items.map((item) => {
       return <ResultItem onClick={(e) => handleRedirect(item.id, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {item.created_at}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem>
