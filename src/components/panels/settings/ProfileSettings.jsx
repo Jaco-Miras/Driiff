@@ -115,6 +115,7 @@ const ProfileSettings = (props) => {
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
   };
 
   // const notificationSoundOptions = [
