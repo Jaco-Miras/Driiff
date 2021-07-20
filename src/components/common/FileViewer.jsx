@@ -6,6 +6,7 @@ import { setViewFiles, removeFileDownload } from "../../redux/actions/fileAction
 import "../../vendors/lightbox/magnific-popup.css";
 import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
+import { sessionService } from "redux-react-session";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -234,11 +235,6 @@ const FileRender = (props) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   let refFiles = {};
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
-
-  // const handleImageOnLoad = (e) => {
-  //   console.log(e);
-  // };
 
   const handlePdfOnLoad = (e) => {
     //console.log(e.target);
@@ -296,43 +292,46 @@ const FileRender = (props) => {
   useEffect(() => {
     if (!fileBlobs[file.id] && userAuth) {
       setIsLoaded(false);
-      fetch(file.view_link, {
-        method: "GET",
-        keepalive: true,
-        headers: {
-          Authorization: `Bearer ${userAuth.access_token}`,
-          "Access-Control-Allow-Origin": "*",
-          Connection: "keep-alive",
-          crossorigin: true,
-        },
-      })
-        .then(function (response) {
-          return response.blob();
+      sessionService.loadSession().then((current) => {
+        let myToken = current.token;
+        fetch(file.view_link, {
+          method: "GET",
+          keepalive: true,
+          headers: {
+            Authorization: myToken,
+            "Access-Control-Allow-Origin": "*",
+            Connection: "keep-alive",
+            crossorigin: true,
+          },
         })
-        .then(function (data) {
-          const imgObj = URL.createObjectURL(data);
-          setFiles(
-            files.map((f) => {
-              if (f.id === file.id) {
-                return {
-                  ...f,
-                  imgSrc: imgObj,
-                };
-              } else {
-                return f;
+          .then(function (response) {
+            return response.blob();
+          })
+          .then(function (data) {
+            const imgObj = URL.createObjectURL(data);
+            setFiles(
+              files.map((f) => {
+                if (f.id === file.id) {
+                  return {
+                    ...f,
+                    imgSrc: imgObj,
+                  };
+                } else {
+                  return f;
+                }
+              })
+            );
+            setFileSrc(
+              {
+                id: file.id,
+                src: imgObj,
+              },
+              () => {
+                setIsLoaded(true);
               }
-            })
-          );
-          setFileSrc(
-            {
-              id: file.id,
-              src: imgObj,
-            },
-            () => {
-              setIsLoaded(true);
-            }
-          );
-        });
+            );
+          });
+      });
     } else {
       setIsLoaded(true);
     }

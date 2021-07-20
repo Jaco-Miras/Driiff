@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import CommentCounters from "./CommentCounters";
 import Reward from "react-rewards";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -339,11 +340,9 @@ const Comment = (props) => {
     }
   };
 
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
-
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -373,35 +372,38 @@ const Comment = (props) => {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id] && comment.body.includes(file.code)) {
           //setIsLoaded(false);
-          fetch(file.view_link, {
-            method: "GET",
-            keepalive: true,
-            headers: {
-              Authorization: `Bearer ${userAuth.access_token}`,
-              "Access-Control-Allow-Origin": "*",
-              Connection: "keep-alive",
-              crossorigin: true,
-            },
-          })
-            .then(function (response) {
-              return response.blob();
+          sessionService.loadSession().then((current) => {
+            let myToken = current.token;
+            fetch(file.view_link, {
+              method: "GET",
+              keepalive: true,
+              headers: {
+                Authorization: myToken,
+                "Access-Control-Allow-Origin": "*",
+                Connection: "keep-alive",
+                crossorigin: true,
+              },
             })
-            .then(function (data) {
-              const imgObj = URL.createObjectURL(data);
-              setFileSrc({
-                id: file.id,
-                src: imgObj,
+              .then(function (response) {
+                return response.blob();
+              })
+              .then(function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+                commentActions.updateCommentImages({
+                  post_id: post.id,
+                  id: comment.id,
+                  parent_id: type === "main" ? null : parentId,
+                  file: {
+                    ...file,
+                    blobUrl: imgObj,
+                  },
+                });
               });
-              commentActions.updateCommentImages({
-                post_id: post.id,
-                id: comment.id,
-                parent_id: type === "main" ? null : parentId,
-                file: {
-                  ...file,
-                  blobUrl: imgObj,
-                },
-              });
-            });
+          });
         }
       });
     }

@@ -122,6 +122,7 @@ const ProfileSettings = (props) => {
     dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
     //chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
   };
 
   // const notificationSoundOptions = [
@@ -459,32 +460,29 @@ const ProfileSettings = (props) => {
     [setChatSetting]
   );
 
-  const handleGeneralSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, checked, dataset } = e.target;
+  const handleGeneralSwitchToggle = (e) => {
+    e.persist();
+    const { name, checked, dataset } = e.target;
 
-      setGeneralSetting(
-        {
-          [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
-        },
-        () => {
-          if (["log_rocket", "sentry"].includes(name)) {
-            localStorage.setItem(name, checked ? "1" : "0");
-            window.location.reload();
-          } else if (name === "logs") {
-            if (checked) {
-              localStorage.setItem("logger", "all");
-            } else {
-              localStorage.removeItem("logger");
-            }
+    setGeneralSetting(
+      {
+        [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
+      },
+      () => {
+        if (["log_rocket", "sentry"].includes(name)) {
+          localStorage.setItem(name, checked ? "1" : "0");
+          window.location.reload();
+        } else if (name === "logs") {
+          if (checked) {
+            localStorage.setItem("logger", "all");
+          } else {
+            localStorage.removeItem("logger");
           }
         }
-      );
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setChatSetting]
-  );
+      }
+    );
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleNotificationsSwitchToggle = useCallback(
     (e) => {
