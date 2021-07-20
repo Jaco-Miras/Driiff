@@ -3,8 +3,6 @@ import { usePostActions } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-let init = false;
-
 const useCompanyPosts = () => {
   const params = useParams();
   const actions = usePostActions();
@@ -54,14 +52,11 @@ const useCompanyPosts = () => {
   };
 
   useEffect(() => {
-    if (!init) {
-      init = true;
-      if (params.postId) {
-        actions.fetchPostDetail({ post_id: parseInt(params.postId) });
-      }
-      fetchMore();
-      actions.fetchPostList();
-    }
+    // if (params.postId) {
+    //   actions.fetchPostDetail({ post_id: parseInt(params.postId) });
+    // }
+    fetchMore();
+    actions.fetchPostList();
   }, []);
 
   useEffect(() => {
@@ -110,10 +105,10 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
-          return true;
+          return !p.hasOwnProperty("draft_type");
         } else if (filter === "inbox") {
           if (search !== "") {
-            return true;
+            return !p.hasOwnProperty("draft_type");
           } else {
             return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           }

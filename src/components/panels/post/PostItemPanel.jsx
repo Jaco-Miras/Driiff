@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
@@ -187,6 +187,16 @@ const PostItemPanel = (props) => {
 
   const [postBadgeWidth, setPostBadgeWidth] = useState(0);
 
+  const [archivedClicked, setArchivedClicked] = useState(false);
+
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
+
   const handleStarPost = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -197,7 +207,11 @@ const PostItemPanel = (props) => {
   const handleArchivePost = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    archivePost(post);
+    if (archivedClicked) return;
+    setArchivedClicked(true);
+    archivePost(post, () => {
+      if (componentIsMounted.current) setArchivedClicked(false);
+    });
   };
 
   const handleEditPost = (e) => {

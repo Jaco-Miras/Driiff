@@ -275,6 +275,7 @@ const PostModal = (props) => {
   const inputRef = useRef();
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const componentIsMounted = useRef(true);
 
   const user = useSelector((state) => state.session.user);
   const isExternalUser = user.type === "external";
@@ -852,6 +853,9 @@ const PostModal = (props) => {
         })
       );
     }
+    return () => {
+      componentIsMounted.current = null;
+    };
   }, []);
 
   const onDragEnter = () => {
@@ -859,20 +863,22 @@ const PostModal = (props) => {
   };
 
   useEffect(() => {
-    if (form.shared_with_client) {
-      setShareOption({
-        id: "external",
-        value: "external",
-        label: dictionary.internalAndExternalTeamLabel,
-        icon: "eye",
-      });
-    } else {
-      setShareOption({
-        id: "internal",
-        value: "internal",
-        label: dictionary.internalTeamLabel,
-        icon: "eye-off",
-      });
+    if (componentIsMounted.current) {
+      if (form.shared_with_client) {
+        setShareOption({
+          id: "external",
+          value: "external",
+          label: dictionary.internalAndExternalTeamLabel,
+          icon: "eye",
+        });
+      } else {
+        setShareOption({
+          id: "internal",
+          value: "internal",
+          label: dictionary.internalTeamLabel,
+          icon: "eye-off",
+        });
+      }
     }
   }, [form.shared_with_client]);
 

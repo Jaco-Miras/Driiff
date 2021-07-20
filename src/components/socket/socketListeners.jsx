@@ -135,6 +135,7 @@ import {
   incomingDeactivatedUser,
   incomingActivatedUser,
   incomingOnlineUsers,
+  incomingDeletedUser,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -239,6 +240,10 @@ class SocketListeners extends Component {
     });
     window.Echo.connector.socket.on("reconnecting", function () {
       //console.log("socket reconnecting");
+    });
+
+    window.Echo.private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
+      this.props.incomingDeletedUser(e);
     });
 
     // new socket
@@ -563,6 +568,7 @@ class SocketListeners extends Component {
       })
       .listen(".unread-post", (e) => {
         this.props.incomingReadUnreadReducer(e);
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
         this.props.getFavoriteWorkspaceCounters();
@@ -1910,6 +1916,7 @@ function mapDispatchToProps(dispatch) {
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
     setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
+    incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
   };
 }
 

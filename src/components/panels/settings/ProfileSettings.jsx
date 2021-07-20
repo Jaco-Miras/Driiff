@@ -1,5 +1,5 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Select from "react-select";
@@ -7,11 +7,12 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
   .card {
@@ -85,7 +86,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -114,6 +115,7 @@ const ProfileSettings = (props) => {
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
   };
 
   // const notificationSoundOptions = [
@@ -429,7 +431,7 @@ const ProfileSettings = (props) => {
     (e) => {
       setGeneralSetting({
         chat_language: e.value,
-        translated_channels: []
+        translated_channels: [],
       });
       setTimeout(function () {
         localStorage.setItem("chat_translate_change", "1");
@@ -451,32 +453,29 @@ const ProfileSettings = (props) => {
     [setChatSetting]
   );
 
-  const handleGeneralSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, checked, dataset } = e.target;
+  const handleGeneralSwitchToggle = (e) => {
+    e.persist();
+    const { name, checked, dataset } = e.target;
 
-      setGeneralSetting(
-        {
-          [name]: checked ? "1" : "0",
-        },
-        () => {
-          if (["log_rocket", "sentry"].includes(name)) {
-            localStorage.setItem(name, checked ? "1" : "0");
-            window.location.reload();
-          } else if (name === "logs") {
-            if (checked) {
-              localStorage.setItem("logger", "all");
-            } else {
-              localStorage.removeItem("logger");
-            }
+    setGeneralSetting(
+      {
+        [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
+      },
+      () => {
+        if (["log_rocket", "sentry"].includes(name)) {
+          localStorage.setItem(name, checked ? "1" : "0");
+          window.location.reload();
+        } else if (name === "logs") {
+          if (checked) {
+            localStorage.setItem("logger", "all");
+          } else {
+            localStorage.removeItem("logger");
           }
         }
-      );
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setChatSetting]
-  );
+      }
+    );
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleNotificationsSwitchToggle = useCallback(
     (e) => {
@@ -720,6 +719,20 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+              <div className="row mb-2">
+                <div className="col-12 text-muted">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={daily_digest}
+                    type="switch"
+                    id="daily_digest"
+                    name="daily_digest"
+                    data-success-message={`${!daily_digest ? "Daily digest enabled" : "Daily digest disabled"}`}
+                    onChange={handleGeneralSwitchToggle}
+                    label={<span>{dictionary.dailyDigest}</span>}
+                  />
+                </div>
+              </div>
               {/* <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.notificationSound}</div>
                 <div className="col-7">
@@ -792,6 +805,11 @@ const ProfileSettings = (props) => {
       <span className="version-number mb-3">
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
+      {loggedUser && loggedUser.email === "nilo@makedevelopment.com" && (
+        <span>
+          {isMobileSafari && "mobile safari"}, {browserName}, {deviceType}
+        </span>
+      )}
     </Wrapper>
   );
 };

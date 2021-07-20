@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { SvgIconFeather, Loader } from "../../common";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -93,12 +94,19 @@ const StyledIcon = styled(SvgIconFeather)`
   }
 `;
 
-//let fetching = false;
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
   const params = useParams();
   const history = useHistory();
+  const toaster = useToaster();
 
   const dispatch = useDispatch();
 
@@ -230,7 +238,28 @@ const WorkspacePostsPanel = (props) => {
     remove: _t("BUTTON.REMOVE", "Remove"),
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
+    errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
   };
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "inbox",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
@@ -350,8 +379,10 @@ const WorkspacePostsPanel = (props) => {
       }
 
       let cb = (err, res) => {
-        setLoading(false);
-        if (componentIsMounted.current) setLoadPosts(false);
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -511,6 +542,10 @@ const WorkspacePostsPanel = (props) => {
                     />
                   </PostDetailWrapper>
                 </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
               ) : (
                 <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
               )}

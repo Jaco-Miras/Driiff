@@ -111,10 +111,10 @@ export default (state = INITIAL_STATE, action) => {
             return m;
           }
         });
-        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        //const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
         activeTopic = {
           ...activeTopic,
-          is_shared: action.data.type === "external" ? true : isStillExternal,
+          is_shared: action.data.type === "external" ? true : activeTopic.is_shared,
           members: updatedMembers,
         };
       }
@@ -143,11 +143,12 @@ export default (state = INITIAL_STATE, action) => {
                 }
               })
             : ws.members;
-          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
+          //const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
           res[ws.id] = {
             ...ws,
             members: wsMembers,
-            is_shared: action.data.type === "external" ? true : isStillExternal,
+            //is_shared: action.data.type === "external" ? true : isStillExternal,
+            is_shared: ws.members.some((m) => m.id === action.data.id) && action.data.type === "external" ? true : ws.is_shared,
           };
           return res;
         }, {}),
@@ -1347,11 +1348,35 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      //need recipient ids
+      // let newWorkspacePosts = { ...state.workspacePosts };
+      // //need recipient ids
+      // return {
+      //   ...state,
+      //   workspacePosts: newWorkspacePosts,
+      // };
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipient_ids.reduce((res, rid) => {
+            if (state.workspacePosts[rid]) {
+              res[rid] = {
+                ...state.workspacePosts[rid],
+                ...(state.workspacePosts[rid].posts && {
+                  posts: {
+                    ...Object.keys(state.workspacePosts[rid].posts)
+                      .filter((key) => parseInt(key) !== action.data.id)
+                      .reduce((post, id) => {
+                        post[id] = { ...state.workspacePosts[rid].posts[id] };
+                        return post;
+                      }, {}),
+                  },
+                }),
+              };
+            }
+            return res;
+          }, {}),
+        },
       };
     }
     case "INCOMING_COMMENT": {
@@ -2744,14 +2769,16 @@ export default (state = INITIAL_STATE, action) => {
               if (state.workspacePosts[ws.id]) {
                 res[ws.id] = {
                   ...state.workspacePosts[ws.id],
-                  posts: {
-                    ...Object.keys(state.workspacePosts[ws.id].posts)
-                      .filter((key) => parseInt(key) !== action.data.id)
-                      .reduce((post, id) => {
-                        post[id] = { ...state.workspacePosts[ws.id].posts[id] };
-                        return post;
-                      }, {}),
-                  },
+                  ...(state.workspacePosts[ws.id].posts && {
+                    posts: {
+                      ...Object.keys(state.workspacePosts[ws.id].posts)
+                        .filter((key) => parseInt(key) !== action.data.id)
+                        .reduce((post, id) => {
+                          post[id] = { ...state.workspacePosts[ws.id].posts[id] };
+                          return post;
+                        }, {}),
+                    },
+                  }),
                 };
               }
               return res;
