@@ -147,7 +147,7 @@ const useWorkspace = () => {
         if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
           actions.selectChannel({ id: activeTopic.channel.id });
         } else {
-          if (!fetchingChannel) {
+          if (!fetchingChannel && activeTopic.channel.code) {
             setFetchingChannel(true);
             actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
           }
@@ -171,7 +171,7 @@ const useWorkspace = () => {
           if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
             actions.selectChannel({ id: activeTopic.channel.id });
           } else {
-            if (!fetchingChannel) {
+            if (!fetchingChannel && activeTopic.channel.code) {
               setFetchingChannel(true);
               actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
             }
