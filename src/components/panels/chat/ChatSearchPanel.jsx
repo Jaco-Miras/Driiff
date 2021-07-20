@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import SearchForm from "../../forms/SearchForm";
 import { useTimeFormat } from "../../hooks";
+import { stripHtml } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`position: absolute;
 top: 0;
@@ -109,7 +110,7 @@ const ResultDivWrapper = styled.div`
 `;
 
 const ChatSearchPanel = (props) => {
-  
+
   const { className = "", showSearchPanel, handleSearchChatPanel, scrollComponent, pP, selectedChannel } = props;
   const [query, setQuery] = useState("");
 
@@ -164,8 +165,8 @@ const ChatSearchPanel = (props) => {
   const user = useSelector((state) => state.session.user);
 
   const filterByQuery = (data, inputValue) => {
-    const allTags = new RegExp('(<([^>]+)>)', 'g');
     const keywords = inputValue.split(/\s/);
+    let content = [];
     const results = data.filter((item) => {
       let resp = false;
       if (item.body.includes("POST_CREATE::")
@@ -174,7 +175,8 @@ const ChatSearchPanel = (props) => {
         || item.body.includes("MEMBER_REMOVE_CHANNEL")
         || item.body.includes("ACCOUNT_DEACTIVATED")
         || item.body.includes("NEW_ACCOUNT_ACTIVATED")
-        || item.body.includes("CHANNEL_UPDATE::"))
+        || item.body.includes("CHANNEL_UPDATE::")
+        || item.body.includes("CHAT_MESSAGE_DELETED"))
         return resp;
 
       const isAuthor = item.user && item.user.id === user.id;
@@ -182,8 +184,8 @@ const ChatSearchPanel = (props) => {
       let body = item.body;
       if (selectedChannel.is_translate)
         body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
-     
-      body = body.replace(allTags, "");
+
+      body = stripHtml(body);
       let respArr = [];
       for (var i = 0; i < keywords.length; i++) {
         if (keywords[i].trim() !== "" && keywords[i].length > 1)
@@ -197,10 +199,12 @@ const ChatSearchPanel = (props) => {
       let body = item.body;
       if (selectedChannel.is_translate)
         body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
-      item.body = body.replace(allTags, "").replace(pattern, match => `<span>${match}</span>`);
-      return item;
+
+      body = body.replace(pattern, match => `<span>${match}</span>`);
+      content.push({ 'id': item.id, 'body': body, 'created_at': item.created_at.timestamp });
     });
-    return results;
+
+    return content;
   };
 
   const handleRedirect = (id, handleSearchChatPanel, e) => {
@@ -212,16 +216,16 @@ const ChatSearchPanel = (props) => {
       top: element[0].offsetTop - (scrollComponent.current.offsetHeight / 2)
     });
     element[0].classList.add("pulsating");
-    setTimeout(function () {  element[0].classList.remove("pulsating")}, 2000);
+    setTimeout(function () { element[0].classList.remove("pulsating") }, 2000);
   };
 
   const parseResult = (data) => {
     const items = [];
-    data.map((item) => {
-      items.push([item.id, todoFormat(item.created_at.timestamp), item.body, item.id]);
+    data.map((item, i) => {
+      items.push({ 'id': item.id, 'body': item.body, 'created_at': item.created_at });
     });
     return (<ResultWrapper >{items.map((item) => {
-      return <ResultItem onClick={(e) => handleRedirect(item[3], handleSearchChatPanel, e)} key={item[0]}><p className="chat-search-date"> {item[1]}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item[2] }}></div> </ResultItem>
+      return <ResultItem onClick={(e) => handleRedirect(item.id, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {item.created_at}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem>
     })
     }</ResultWrapper>);
   };
