@@ -44,6 +44,12 @@ const Counters = styled.div`
       }
     }
   }
+  .read-users-container {
+    .avatar.avatar-md {
+      min-height: 2.7rem;
+      min-width: 2.7rem;
+    }
+  }
   /* slide enter */
   .slide-enter,
   .slide-appear {
