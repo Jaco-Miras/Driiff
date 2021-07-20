@@ -60,16 +60,21 @@ const MainSnooze = (props) => {
   const redirect = useRedirect();
 
   const dictionary = {
-    notificationMention: _t("SNOOZE.MENTION", `mentioned you in`),
+    notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
     todoReminder: _t("SNOOZE.REMINDER", `A friendly automated reminder`),
     sentProposal: _t("SNOOZE.SENT_PROPOSAL", "sent a proposal."),
     notificationNewPost: _t("SNOOZE.NEW_POST", `shared a post`),
     mustRead: _t("SNOOZE.MUST_READ", "Must read"),
     needsReply: _t("SNOOZE.NEEDS_REPLY", "Needs reply"),
+    hasRequestedChange: _t("SNOOZE.HAS_REQUESTED_CHANGE", "has requested a change."),
   };
 
   const notifCLean = () => {
-    return Object.values(notifications).filter(n => (n.type === 'POST_MENTION' || n.type === 'POST_REQST_APPROVAL' || (n.type === 'POST_CREATE' && (n.data.must_read || n.data.must_reply)))).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+    return Object.values(notifications).filter(n => (n.type === 'POST_MENTION'
+      || n.type === 'POST_REQST_APPROVAL'
+      || n.type === 'POST_REJECT_APPROVAL'
+      ||
+      (n.type === 'POST_CREATE' && (n.data.must_read || n.data.must_reply)))).sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   }
 
   const todoCLean = () => {
@@ -79,7 +84,7 @@ const MainSnooze = (props) => {
   }
 
   const handleRedirect = (n, type, closeToast, e) => {
-    var actions = type === 'mention' ? notifActions : todoActions;
+    var actions = type === 'notification' ? notifActions : todoActions;
     e.preventDefault();
     if (n.is_read === 0) {
       notifActions.read({ id: n.id });
@@ -121,14 +126,27 @@ const MainSnooze = (props) => {
     toast.dismiss();
   }
 
+  const getMustReadText = (data) => {
+    if ((data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) || (data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read)))
+      return dictionary.mustRead;
+    return null;
+  };
+
+
+  const getMustReplyText = (data) => {
+    if ((data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
+      return dictionary.needsReply;
+    return null;
+  };
+
   const renderContent = (type, n) => {
-    const actions = n[0] === 'mention' ? notifActions : todoActions;
-    if (type === 'mention') {
+    const actions = n[0] === 'notification' ? notifActions : todoActions;
+    if (type === 'notification') {
       if (n.type === "POST_MENTION") {
         return (
           <>
             <div style={{ lineHeight: '1' }}>
-              {n.author.name + " " + dictionary.notificationMention}
+              {n.author.name} {" "}  {dictionary.notificationMention}   {" "} {n.data.title} {" "}
               {n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
                 <>
                   <Icon icon="folder" /> {" "}
@@ -152,8 +170,11 @@ const MainSnooze = (props) => {
               )}
             </div>
             <p style={{ color: '#000' }}> {stripHtml(n.data.title)}</p>
-            {n.data.must_read ? (<p><span className="badge badge-danger text-white">{dictionary.mustRead}</span></p>) : ''}
-            {n.data.must_reply ? (<p><span className="badge badge-success text-white">{dictionary.needsReply}</span></p>) : ''}
+            <p>
+              {" "}
+              <span className={"badge badge-danger text-white"}>{getMustReadText(n.data)}</span>
+              <span className={"badge badge-success text-white"}>{getMustReplyText(n.data)}</span>
+            </p>
           </>
         );
       }
@@ -162,6 +183,15 @@ const MainSnooze = (props) => {
           <>
             <div style={{ lineHeight: '1' }}>
               {n.author.name} {dictionary.sentProposal}
+            </div>
+          </>
+        );
+      }
+      else if (n.type === "POST_REJECT_APPROVAL") {
+        return (
+          <>
+            <div style={{ lineHeight: '1' }}>
+              {n.author.name} {dictionary.hasRequestedChange}
             </div>
           </>
         );
@@ -182,7 +212,7 @@ const MainSnooze = (props) => {
   const snoozeContent = (type, n, closeToast) => {
     return (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, type, closeToast, e)}>
       <div>
-        {type === 'mention' ? n.author ? (
+        {type === 'notification' ? n.author ? (
           <Avatar
             id={n.author.id}
             name={n.author.name}
@@ -213,7 +243,7 @@ const MainSnooze = (props) => {
       }
 
       snooze.map((n, i) => {
-        var actions = n[3] === 'mention' ? notifActions : todoActions;
+        var actions = n[3] === 'notification' ? notifActions : todoActions;
         toast(n[1], {
           className: 'snooze-container',
           bodyClassName: "snooze-body",
@@ -230,7 +260,7 @@ const MainSnooze = (props) => {
     items.map((n) => {
       let elemId = type + '__' + n.id;
       let content = [n.id, ({ closeToast }) => snoozeContent(type, n, closeToast), elemId, type, (n.snooze_time) ? n.snooze_time : n.created_at.timestamp];
-      if (type === 'mention') {
+      if (type === 'notification') {
         snoozed && !n.is_read && n.is_snooze ? snooze.push(content) : (!n.is_read && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
       } else {
         snoozed && n.status !== "DONE" && n.is_snooze ? snooze.push(content) : (n.status !== "DONE" && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
@@ -242,7 +272,7 @@ const MainSnooze = (props) => {
   //interval for all snoozed items
   useEffect(() => {
     const interval = setInterval(() => {
-      const items = processSnooze('mention', notifCLean(), true);
+      const items = processSnooze('notification', notifCLean(), true);
       notifActions.snoozeAll({ is_snooze: false });
 
       const snooze = items.concat(processSnooze('todo', todoCLean(), true));
@@ -267,7 +297,7 @@ const MainSnooze = (props) => {
   //handler for all non-snoozed items
   useEffect(() => {
     if (!notificationSnooze && !todos.is_snooze) {
-      const items = processSnooze('mention', notifCLean(), false);
+      const items = processSnooze('notification', notifCLean(), false);
       const snooze = items.concat(processSnooze('todo', todoCLean(), false));
       snooze.length ? snoozeOpen(snooze.sort((a, b) => a[4] - b[4])) : toast.dismiss();
     }

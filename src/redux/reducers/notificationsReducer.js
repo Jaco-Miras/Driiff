@@ -326,6 +326,26 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "NOTIFICATION_SNOOZE_ALL": {
+      let notifications = { ...state.notifications };
+      Object.values(notifications).forEach((n) => {
+        notifications[n.id].is_snooze = action.data.is_snooze;
+        notifications[n.id].snooze_time = getCurrentTimestamp();
+      });
+      return {
+        ...state,
+        notifications: notifications,
+      };
+    }
+    case "NOTIFICATION_SNOOZE": {
+      let notifications = { ...state.notifications };
+      notifications[action.data.id].is_snooze = action.data.is_snooze;
+      notifications[action.data.id].snooze_time = getCurrentTimestamp();
+      return {
+        ...state,
+        notifications: notifications,
+      };
+    }
     case "INCOMING_POST_REQUIRED": {
       return {
         ...state,
@@ -345,26 +365,6 @@ export default (state = INITIAL_STATE, action) => {
           }
           return acc;
         }, {}),
-      };
-    }
-    case "NOTIFICATION_SNOOZE_ALL": {
-      let notifications = { ...state.notifications };
-      Object.values(notifications).forEach((n) => {
-        notifications[n.id].is_snooze = action.data.is_snooze;
-        notifications[n.id].snooze_time = getCurrentTimestamp();
-      });
-      return {
-        ...state,
-        notifications: notifications,
-      };
-    }
-    case "NOTIFICATION_SNOOZE": {
-      let notifications = { ...state.notifications };
-      notifications[action.data.id].is_snooze = action.data.is_snooze;
-      notifications[action.data.id].snooze_time = getCurrentTimestamp();
-      return {
-        ...state,
-        notifications: notifications,
       };
     }
     default:
