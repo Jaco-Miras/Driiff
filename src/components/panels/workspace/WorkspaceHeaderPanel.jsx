@@ -95,6 +95,10 @@ const NavBarLeft = styled.div`
     right: 165px;
     top: 0;
   }
+  .profile-slider svg {
+    margin: 0;
+    color: inherit;
+  }
   .plus-recipient-component {
     width: 2.7rem;
     height: 2.7rem;
