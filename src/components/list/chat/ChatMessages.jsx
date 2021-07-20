@@ -35,17 +35,6 @@ const ChatReplyContainer = styled.div`
   &.is-processed {
     opacity: 0;
   }
-  // .mention {
-  //   background: transparent;
-  //   display: inline-block;
-  //   width: auto;
-  //   height: auto;
-  //   padding: 0;
-  // }
-  // .mention.is-author {
-  //   background: transparent;
-  //   padding: 0;
-  // }
 `;
 
 const ChatList = styled.li`
@@ -56,58 +45,6 @@ const ChatList = styled.li`
   text-align: center;
   .chat-actions-container {
     opacity: 0;
-
-    .star-wrap {
-      position: relative;
-      display: flex;
-      &[data-star="true"] {
-        .feather-star {
-          fill: #7a1b8bcc;
-          color: #7a1b8bcc;
-        }
-      }
-      .feather-star {
-        width: 16px;
-        height: 16px;
-        cursor: pointer;
-      }
-      .star-count {
-        font-size: 0.835rem;
-        color: #a7abc3;
-        height: 16px;
-        line-height: 16px;
-        padding: 0 4px;
-      }
-      .star-user-popup {
-        position: absolute;
-        width: 250px;
-        padding: 4px;
-        background-color: #ffffff;
-        top: 100%;
-        z-index: 1;
-        border-top: 1px solid #eeeeee;
-        border-radius: 8px;
-        color: #4d4d4d;
-
-        .dark & {
-          background-color: #25282c;
-          border-top: 1px solid #25282c;
-          border-radius: 8px;
-          color: #c7c7c7;
-        }
-
-        .name {
-          display: block;
-          width: 100%;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      }
-
-      display: none;
-      visibility: hidden;
-    }
   }
 
   &:hover {
@@ -118,11 +55,7 @@ const ChatList = styled.li`
 `;
 const TimestampDiv = styled.div`
   z-index: 2;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   color: #a7abc3;
-  //padding: 26px 0 14px 0;
   display: inline-block;
   left: 50%;
   position: sticky;
@@ -142,15 +75,11 @@ const TimestampDiv = styled.div`
       display: none;
     }
   }
-  @media (max-width: 620px) {
-    //padding: 14px 0 10px 0;
-  }
 `;
 const ChatBubbleContainer = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
-  //align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   justify-content: flex-end;
   flex-flow: column;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
@@ -297,7 +226,6 @@ const ChatBubbleQuoteDiv = styled.div`
   display: inherit;
   margin-left: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
   > img {
-    // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
     max-height: 300px;
     max-width: 100%;
     width: auto;
@@ -421,13 +349,13 @@ const EmptyState = styled.div`
   }
 `;
 
-class ChatMessages extends React.PureComponent {
+class ChatMessages extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       hasArrowUpListener: false,
-      initializing: false,
+      //initializing: false,
       loadMoreInView: false,
       fetchingReplies: false,
       showEmoji: {},
@@ -436,53 +364,7 @@ class ChatMessages extends React.PureComponent {
     this.scrollComponent = React.createRef();
     this.infiniteScroll = React.createRef();
     this.mouseOver = React.createRef(false);
-
-    // this.varRefs = {
-    //   timerStart: React.createRef(0),
-    //   xDown: React.createRef(null),
-    //   yDown: React.createRef(null),
-    // };
   }
-  //revisit
-  // attachedImgEventListener = () => {
-  //   document.querySelectorAll(".anchor-blot").forEach((el) => {
-  //     const src = el.getAttribute("src");
-  //     if (src) {
-  //       el.addEventListener("mousedown", (e) => {
-  //         window.open(el.getAttribute("src"), "_blank");
-  //       });
-  //       el.classList.remove("anchor-blot");
-  //     }
-  //   });
-  // };
-
-  // attachedClickListenerToChatUrl = () => {
-  //   document.querySelectorAll(".chat-url").forEach((el) => {
-  //     const cid = el.dataset.cid;
-  //     const mid = el.dataset.mid;
-  //     if (cid) {
-  //       el.addEventListener("mousedown", (e) => {
-  //         if (mid) {
-  //           this.props.history.push(`/chat/${cid}/${mid}`);
-  //           let messageEl = document.querySelector(`.code-${mid}`);
-  //           if (messageEl) {
-  //             setTimeout(() => {
-  //               messageEl.scrollIntoView(false);
-  //               messageEl.focus();
-  //               messageEl.classList.add("bounceIn");
-  //               setTimeout(() => {
-  //                 messageEl.classList.remove("bounceIn");
-  //               }, 200);
-  //             }, 200);
-  //           }
-  //         } else {
-  //           this.props.history.push(`/chat/${cid}`);
-  //         }
-  //       });
-  //       el.classList.remove("chat-url");
-  //     }
-  //   });
-  // };
 
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
@@ -505,9 +387,6 @@ class ChatMessages extends React.PureComponent {
           limit: 20,
         };
       }
-      // if (selectedChannel.skip === 0) {
-      //   scrollComponent.scrollTop = scrollComponent.scrollHeight;
-      // }
       chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
         if (err) {
           chatMessageActions.channelActions.fetchingMessages(selectedChannel, false);
@@ -523,8 +402,6 @@ class ChatMessages extends React.PureComponent {
             }
           }, 1000);
         }
-
-        if (this.state.initializing === true) this.setState({ initializing: false });
       });
     }
   };
@@ -585,12 +462,12 @@ class ChatMessages extends React.PureComponent {
     const { selectedChannel, historicalPositions, user } = this.props;
 
     //to be relocated
-    let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
-    if (el.length) {
-      el.forEach((mentionEl) => {
-        mentionEl.classList.add("is-author");
-      });
-    }
+    // let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
+    // if (el.length) {
+    //   el.forEach((mentionEl) => {
+    //     mentionEl.classList.add("is-author");
+    //   });
+    // }
     const scrollComponent = this.scrollComponent.current;
 
     //change channel
@@ -658,6 +535,7 @@ class ChatMessages extends React.PureComponent {
       }
     });
   };
+
   handleRemoveReply = (reply) => {
     this.props.cbOnRemoveReply(reply);
   };
@@ -671,23 +549,10 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleLoadMoreRefChange = (inView, entry) => {
-    // console.log(inView);
-    // this.setState({ loadMoreInView: inView });
     if (inView) {
       this.loadReplies();
     }
   };
-
-  // handleMessageRefChange = (inView, entry, id) => {
-  //   const scrollComponent = this.scrollComponent.current;
-  //   if (inView) {
-  //     if (scrollComponent) {
-  //       if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
-  //         this.loadReplies();
-  //       }
-  //     }
-  //   }
-  // };
 
   handleShowSeenUsers = () => this.setState({ showSeenUsers: !this.state.showSeenUsers });
 
@@ -738,64 +603,82 @@ class ChatMessages extends React.PureComponent {
     return loadMoreRef;
   };
 
-  // groupedMessages = () =>
-  //   Object.entries(
-  //     groupBy(
-  //       this.props.selectedChannel.replies.map((r) => {
-  //         if (r.hasOwnProperty("g_date")) {
-  //           return r;
-  //         } else {
-  //           return {
-  //             ...r,
-  //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-  //           };
-  //         }
-  //       }),
-  //       "g_date"
-  //     )
-  //   )
-  //     .map((entries) => {
-  //       return {
-  //         key: entries[0],
-  //         replies: entries[1],
-  //       };
-  //     })
-  //     .sort((a, b) => a.key.localeCompare(b.key));
+  sortedReplies = () => {
+    return this.props.selectedChannel.replies
+      .map((r) => {
+        if (r.hasOwnProperty("g_date")) {
+          return r;
+        } else {
+          return {
+            ...r,
+            g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+          };
+        }
+      })
+      .sort((a, b) => {
+        if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+          return a.id - b.id;
+        } else {
+          return a.created_at.timestamp - b.created_at.timestamp;
+        }
+      });
+  };
+
+  isLastChat = (reply) => {
+    const sortedReplies = this.sortedReplies();
+    return sortedReplies[this.props.selectedChannel.replies.length - 1].id === reply.id;
+  };
+
+  groupedMessages = () =>
+    Object.entries(groupBy(this.sortedReplies(), "g_date"))
+      .map((entries) => {
+        return {
+          key: entries[0],
+          replies: entries[1],
+        };
+      })
+      .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
     //const { selectedChannel } = this.props;
 
     let lastReplyUserId = 0;
 
-    let groupedMessages = [];
+    // let groupedMessages = [];
 
-    if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
-      groupedMessages = Object.entries(
-        groupBy(
-          this.props.selectedChannel.replies.map((r) => {
-            if (r.hasOwnProperty("g_date")) {
-              return r;
-            } else {
-              return {
-                ...r,
-                g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-              };
-            }
-          }),
-          "g_date"
-        )
-      )
-        .map((entries) => {
-          return {
-            key: entries[0],
-            replies: entries[1],
-          };
-        })
-        .sort((a, b) => a.key.localeCompare(b.key));
-    }
+    // if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
+    //   groupedMessages = Object.entries(
+    //     groupBy(
+    //       this.props.selectedChannel.replies.map((r) => {
+    //         if (r.hasOwnProperty("g_date")) {
+    //           return r;
+    //         } else {
+    //           return {
+    //             ...r,
+    //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+    //           };
+    //         }
+    //       }),
+    //       "g_date"
+    //     )
+    //   )
+    //     .map((entries) => {
+    //       return {
+    //         key: entries[0],
+    //         replies: entries[1],
+    //       };
+    //     })
+    //     .sort((a, b) => a.key.localeCompare(b.key));
+    // }
 
     return (
-      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={this.props.selectedChannel.id}>
+      <ChatReplyContainer
+        ref={this.scrollComponent}
+        id={"component-chat-thread"}
+        className={`component-chat-thread messages ${this.props.className}`}
+        tabIndex="2"
+        //data-init={1} data-channel-id={this.props.selectedChannel.id}
+      >
         {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
@@ -809,9 +692,9 @@ class ChatMessages extends React.PureComponent {
           )}
           <ul>
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
-              ? groupedMessages.map((gm, i) => {
+              ? this.groupedMessages().map((gm, i) => {
                   return (
-                    <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
+                    <div key={`${gm.replies[0].created_at.timestamp}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm.replies
@@ -869,19 +752,19 @@ class ChatMessages extends React.PureComponent {
                           return (
                             <ChatList
                               key={reply.id}
-                              data-message-id={reply.id}
-                              data-code={reply.code}
-                              data-timestamp={reply.created_at.timestamp}
+                              // data-message-id={reply.id}
+                              // data-code={reply.code}
+                              // data-timestamp={reply.created_at.timestamp}
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
                               showTimestamp={showTimestamp}
-                              isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
+                              isLastChat={this.isLastChat(reply)}
                             >
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                               {reply.user && (
                                 <ChatBubbleContainer
                                   isAuthor={isAuthor}
                                   className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
-                                  data-message-id={reply.id}
+                                  //data-message-id={reply.id}
                                   showAvatar={showAvatar}
                                   isBot={isBot}
                                   isImportant={reply.is_important}
@@ -896,7 +779,6 @@ class ChatMessages extends React.PureComponent {
                                     <ChatBubble
                                       chatMessageActions={this.props.chatMessageActions}
                                       timeFormat={this.props.timeFormat}
-                                      recipients={this.props.recipients}
                                       user={this.props.user}
                                       reply={reply}
                                       showAvatar={showAvatar}
@@ -904,9 +786,9 @@ class ChatMessages extends React.PureComponent {
                                       showGifPlayer={showGifPlayer}
                                       isAuthor={isAuthor}
                                       addMessageRef={this.getLoadRef(reply.id)}
-                                      isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
+                                      isLastChat={this.isLastChat(reply)}
                                       loadReplies={this.loadReplies}
-                                      isBot={isBot}
+                                      //isBot={isBot}
                                       chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
@@ -915,7 +797,6 @@ class ChatMessages extends React.PureComponent {
                                       language={this.props.language}
                                       translated_channels={this.props.translated_channels}
                                       chat_language={this.props.chat_language}
-                                      _t={this.props._t}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
@@ -953,34 +834,35 @@ class ChatMessages extends React.PureComponent {
                                 </ChatBubbleContainer>
                               )}
                               {reply.user === null && (
-                                <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} data-message-id={reply.id} isAuthor={false}>
+                                <ChatBubbleContainer
+                                  className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
+                                  //data-message-id={reply.id}
+                                  isAuthor={false}
+                                >
                                   <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                     <SystemMessageContainer className="system-message" isAuthor={false}>
                                       <SystemMessage
-                                        recipients={this.props.recipients}
                                         user={this.props.user}
                                         chatMessageActions={this.props.chatMessageActions}
                                         timeFormat={this.props.timeFormat}
                                         selectedChannel={this.props.selectedChannel}
                                         reply={reply}
-                                        chatName={this.props.chatName}
                                         addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={this.props.selectedChannel.replies[this.props.selectedChannel.replies.length - 1].id === reply.id}
+                                        isLastChat={this.isLastChat(reply)}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                         users={this.props.users}
-                                        _t={this.props._t}
                                       />
                                       {/* {reply.unfurls.length ? (
-                                        <ChatUnfurl
-                                          unfurlData={reply.unfurls}
-                                          isAuthor={false}
-                                          deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
-                                          removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                          channelId={this.props.this.props.selectedChannel.id}
-                                          replyId={reply.id}
-                                        />
-                                      ) : null} */}
+                                          <ChatUnfurl
+                                            unfurlData={reply.unfurls}
+                                            isAuthor={false}
+                                            deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
+                                            removeChatUnfurlAction={this.props.removeChatUnfurlAction}
+                                            channelId={this.props.this.props.selectedChannel.id}
+                                            replyId={reply.id}
+                                          />
+                                        ) : null} */}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
@@ -1008,7 +890,7 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
+            {!this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
               <EmptyState className="no-reply-container">
                 <SvgEmptyState icon={3} />
               </EmptyState>
@@ -1022,9 +904,9 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
   const {
-    global: { recipients, isIdle, isBrowserActive },
+    global: { isIdle, isBrowserActive },
     session: { user },
-    chat: { historicalPositions, isLastChatVisible },
+    chat: { historicalPositions, isLastChatVisible, selectedChannel },
     users: { users },
   } = state;
 
@@ -1032,11 +914,11 @@ function mapStateToProps(state) {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
     historicalPositions,
-    recipients,
     isLastChatVisible,
     users,
     isIdle,
     isBrowserActive,
+    selectedChannel,
   };
 }
 

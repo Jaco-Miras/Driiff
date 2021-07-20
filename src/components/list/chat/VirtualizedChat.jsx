@@ -5,7 +5,7 @@ import ChatBubbleVirtualized from "./ChatBubbleVirtualized";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-import ChatUnfurl from "./ChatUnfurl";
+//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessageVirtualized from "./SystemMessageVirtualized";
@@ -361,10 +361,9 @@ const StyledAvatar = styled(Avatar)`
 let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { actualIndex, reply, lastReply, isLastChatVisible, loadReplies, dictionary, _t, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
+  const { actualIndex, reply, lastReply, isLastChatVisible, dictionary, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const recipients = useSelector((state) => state.global.recipients);
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const users = useSelector((state) => state.users.users);
 
@@ -461,7 +460,6 @@ const VirtualizedChat = (props) => {
             <ChatBubbleVirtualized
               chatMessageActions={chatMessageActions}
               timeFormat={timeFormat}
-              recipients={recipients}
               user={user}
               reply={reply}
               showAvatar={showAvatar}
@@ -469,8 +467,6 @@ const VirtualizedChat = (props) => {
               showGifPlayer={showGifPlayer}
               isAuthor={isAuthor}
               isLastChat={lastReply.id === reply.id}
-              loadReplies={loadReplies}
-              isBot={isBot}
               chatSettings={chatSettings}
               isLastChatVisible={isLastChatVisible}
               dictionary={dictionary}
@@ -479,7 +475,6 @@ const VirtualizedChat = (props) => {
               language={language}
               translated_channels={translated_channels}
               chat_language={chat_language}
-              _t={_t}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
@@ -509,7 +504,6 @@ const VirtualizedChat = (props) => {
           <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
             <SystemMessageContainer className="system-message" isAuthor={false}>
               <SystemMessageVirtualized
-                recipients={recipients}
                 user={user}
                 chatMessageActions={chatMessageActions}
                 timeFormat={timeFormat}
@@ -519,9 +513,8 @@ const VirtualizedChat = (props) => {
                 isLastChatVisible={isLastChatVisible}
                 dictionary={dictionary}
                 users={users}
-                _t={_t}
               />
-              {reply.unfurls.length ? (
+              {/* {reply.unfurls.length ? (
                 <ChatUnfurl
                   unfurlData={reply.unfurls}
                   isAuthor={false}
@@ -531,7 +524,7 @@ const VirtualizedChat = (props) => {
                   replyId={reply.id}
                   removeUnfurl={chatMessageActions.removeUnfurl}
                 />
-              ) : null}
+              ) : null} */}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
                 {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} />}
@@ -545,4 +538,4 @@ const VirtualizedChat = (props) => {
   );
 };
 
-export default React.memo(VirtualizedChat);
+export default VirtualizedChat;

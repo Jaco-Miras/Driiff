@@ -326,6 +326,8 @@ const PostModal = (props) => {
     mention_ids: [],
     requiredUsers: [],
     shared_with_client: false,
+    mustReadUsers: [],
+    mustReplyUsers: [],
   });
 
   const {
@@ -449,14 +451,18 @@ const PostModal = (props) => {
       },
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
-      required_user_ids:
-        (form.must_read || form.reply_required) && form.requiredUsers.find((a) => a.value === "all")
-          ? addressIds.filter((id) => id !== user.id)
-          : form.must_read || form.reply_required
-          ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
-          : [],
+      required_user_ids: [],
+      // required_user_ids:
+      //   (form.must_read || form.reply_required) && form.requiredUsers.find((a) => a.value === "all")
+      //     ? addressIds.filter((id) => id !== user.id)
+      //     : form.must_read || form.reply_required
+      //     ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
+      //     : [],
       shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
       body_mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
+      must_read_user_ids: form.must_read && form.mustReadUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.must_read ? form.mustReadUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
+      must_reply_user_ids:
+        form.reply_required && form.mustReplyUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.reply_required ? form.mustReplyUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
     };
     if (mode === "edit") {
       payload = {

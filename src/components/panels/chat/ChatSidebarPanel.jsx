@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useChannels, useLoadChannel, useSettings, useTranslation } from "../../hooks";
+import { useLoadChannel, useSettings, useTranslation, useChannelActions } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -134,7 +134,8 @@ const ChatSidebarPanel = (props) => {
   const dispatch = useDispatch();
   const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings, setChatSetting } = useSettings();
-  const { actions: channelActions, chatSidebarSearch } = useChannels();
+  const channelActions = useChannelActions();
+  const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   useLoadChannel();
   const searchingChannels = useSelector((state) => state.chat.searchingChannels);
 
@@ -180,16 +181,13 @@ const ChatSidebarPanel = (props) => {
     setTabPill("pills-home");
   };
 
-  const handleTabChange = useCallback(
-    (e) => {
-      if (tabPill === e.target.getAttribute("aria-controls")) {
-        handleResetFilter();
-      } else {
-        setTabPill(e.target.getAttribute("aria-controls"));
-      }
-    },
-    [setTabPill, tabPill]
-  );
+  const handleTabChange = (e) => {
+    if (tabPill === e.target.getAttribute("aria-controls")) {
+      handleResetFilter();
+    } else {
+      setTabPill(e.target.getAttribute("aria-controls"));
+    }
+  };
 
   const { _t } = useTranslation();
 
@@ -213,8 +211,8 @@ const ChatSidebarPanel = (props) => {
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
     you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
-    withTeam:_t("CHANNEL.WITH_TEAM", "Team Chat"),
-    withClient:_t("CHANNEL.WITH_CLIENT", "Client Chat"),
+    withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
+    withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
   };
 
   const handleOpenGroupChatModal = () => {
@@ -290,4 +288,4 @@ const ChatSidebarPanel = (props) => {
   );
 };
 
-export default React.memo(ChatSidebarPanel);
+export default ChatSidebarPanel;

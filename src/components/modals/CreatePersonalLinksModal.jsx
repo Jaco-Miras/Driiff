@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
@@ -100,7 +100,7 @@ const CreatePersonalLinksModal = (props) => {
     message: {},
   });
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     e.persist();
     setForm((prevState) => ({
       ...prevState,
@@ -118,7 +118,7 @@ const CreatePersonalLinksModal = (props) => {
         [e.target.name]: undefined,
       },
     }));
-  }, []);
+  };
 
   const toggle = () => {
     setModal(!modal);

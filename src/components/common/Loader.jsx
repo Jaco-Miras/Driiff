@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const LoaderDiv = styled.div`
@@ -21,10 +21,10 @@ const LoaderDiv = styled.div`
   }
 `;
 
-const Loader = forwardRef((props, ref) => {
+const Loader = (props) => {
   const { className = "" } = props;
 
   return <LoaderDiv className={`loading ${className}`}></LoaderDiv>;
-});
+};
 
 export default React.memo(Loader);

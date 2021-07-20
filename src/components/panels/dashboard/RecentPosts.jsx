@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
@@ -65,15 +65,13 @@ const RecentPosts = (props) => {
 
   const postActions = usePostActions();
   const match = useRouteMatch();
-  const [scrollRef, setScrollRef] = useState(null);
+  //const [scrollRef, setScrollRef] = useState(null);
 
-  const assignRef = useCallback((e) => {
-    if (scrollRef === null) {
-      setScrollRef(e);
-    }
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // const assignRef = (e) => {
+  //   if (scrollRef === null) {
+  //     setScrollRef(e);
+  //   }
+  // };
 
   const handleOpenPost = (post) => {
     postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"));
@@ -93,7 +91,7 @@ const RecentPosts = (props) => {
 
   return (
     <Wrapper className={`recent-posts card ${className}`}>
-      <div ref={assignRef} className="card-body">
+      <div className="card-body">
         <h5 className="card-title">
           {dictionary.recentPosts} <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts} />
         </h5>
@@ -102,7 +100,7 @@ const RecentPosts = (props) => {
             {Object.values(posts)
               .sort((a, b) => (b.created_at.timestamp > a.created_at.timestamp ? 1 : -1))
               .map((post) => {
-                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions} onOpenPost={handleOpenPost} disableOptions={disableOptions} />;
+                return <RecentPostListItem key={post.id} post={post} postActions={postActions} onOpenPost={handleOpenPost} disableOptions={disableOptions} />;
               })}
           </ul>
         ) : (

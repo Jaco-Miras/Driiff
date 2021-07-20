@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToWorkspacePosts } from "../../redux/actions/postActions";
@@ -14,6 +14,14 @@ const usePosts = () => {
   const { postsLists } = useSelector((state) => state.posts);
   const [fetchingPost, setFetchingPost] = useState(false);
 
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
   useEffect(() => {
     if (params.workspaceId !== undefined) {
       //actions.getRecentPosts(params.workspaceId);
@@ -23,7 +31,7 @@ const usePosts = () => {
           actions.fetchPostDetail({ post_id: parseInt(params.postId) });
         }
         let cb = (err, res) => {
-          setFetchingPost(false);
+          if (componentIsMounted.current) setFetchingPost(false);
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -53,7 +61,7 @@ const usePosts = () => {
         actions.fetchPostList();
 
         let filterCb = (err, res) => {
-          setFetchingPost(false);
+          if (componentIsMounted.current) setFetchingPost(false);
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -85,7 +93,7 @@ const usePosts = () => {
         );
 
         let unreadCb = (err, res) => {
-          setFetchingPost(false);
+          if (componentIsMounted.current) setFetchingPost(false);
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -202,9 +210,17 @@ const usePosts = () => {
           }
         } else if (activeTag) {
           if (activeTag === "is_must_reply") {
-            return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
+            return (
+              (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) ||
+              (p.author.id === user.id && p.is_must_reply) ||
+              (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply))
+            );
           } else if (activeTag === "is_must_read") {
-            return (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_read);
+            return (
+              (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) ||
+              (p.author.id === user.id && p.is_must_read) ||
+              (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read))
+            );
           } else if (activeTag === "is_read_only") {
             return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
           } else if (tag === "is_unread") {
@@ -232,10 +248,18 @@ const usePosts = () => {
 
     count = {
       is_must_reply: Object.values(posts).filter((p) => {
-        return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
+        return (
+          (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) ||
+          (p.author.id === user.id && p.is_must_reply) ||
+          (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply))
+        );
       }).length,
       is_must_read: Object.values(posts).filter((p) => {
-        return (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_read);
+        return (
+          (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) ||
+          (p.author.id === user.id && p.is_must_read) ||
+          (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read))
+        );
       }).length,
       is_read_only: Object.values(posts).filter((p) => {
         return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");

@@ -205,7 +205,6 @@ const ChatContentPanel = (props) => {
           <VirtuosoContainer dictionary={dictionary} />
         ) : (
           <ChatMessages
-            selectedChannel={selectedChannel}
             chatMessageActions={chatMessageActions}
             timeFormat={timeFormat}
             dictionary={dictionary}
@@ -216,7 +215,6 @@ const ChatContentPanel = (props) => {
             language={language}
             translated_channels={translated_channels}
             chat_language={chat_language}
-            _t={_t}
           />
         )
       ) : (
@@ -227,4 +225,4 @@ const ChatContentPanel = (props) => {
   );
 };
 
-export default React.memo(ChatContentPanel);
+export default ChatContentPanel;

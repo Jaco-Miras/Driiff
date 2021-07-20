@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { TeamListItem } from "../../list/people/item";
 //import {useUsers} from "../../hooks";
@@ -51,19 +51,17 @@ const Wrapper = styled.div`
 const CompanyDashboardTeam = (props) => {
   const { className = "", onEditClick, dictionary, actions } = props;
   const mainRef = useRef(null);
-  const [scrollRef, setScrollRef] = useState(null);
+  //const [scrollRef, setScrollRef] = useState(null);
   const users = useSelector((state) => state.users.users);
   const loggedUser = useSelector((state) => state.session.user);
 
   const [showMore, setShowMore] = useState(false);
 
-  const assignRef = useCallback((e) => {
-    if (scrollRef === null) {
-      setScrollRef(e);
-    }
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // const assignRef = (e) => {
+  //   if (scrollRef === null) {
+  //     setScrollRef(e);
+  //   }
+  // };
 
   const handleToggleShow = () => {
     setShowMore((prevState) => !prevState);
@@ -83,7 +81,7 @@ const CompanyDashboardTeam = (props) => {
 
   return (
     <Wrapper className={`dashboard-team card ${className}`} ref={mainRef}>
-      <div ref={assignRef} className="card-body">
+      <div className="card-body">
         <h5 className="card-title">{dictionary.team}</h5>
         <ul className="list-group list-group-flush">
           {slicedUsers().map((member, i) => {
@@ -92,7 +90,7 @@ const CompanyDashboardTeam = (props) => {
                 key={member.id}
                 member={member}
                 hideOptions={true}
-                parentRef={scrollRef}
+                //parentRef={scrollRef}
                 onEditClick={onEditClick}
                 actions={actions}
                 dictionary={dictionary}
@@ -101,7 +99,7 @@ const CompanyDashboardTeam = (props) => {
                 showMore={showMore}
                 toggleShow={handleToggleShow}
                 loggedUser={loggedUser}
-                scrollRef={mainRef.current}
+                //scrollRef={mainRef.current}
               />
             );
           })}

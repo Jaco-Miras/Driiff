@@ -242,15 +242,22 @@ export const NotificationTimelineItem = (props) => {
     }
   };
 
-  const getBadgeClass = (data) => {
-    if (data.must_read) return "badge-danger";
-    if (data.must_reply) return "badge-success";
+  // const getBadgeClass = (data) => {
+  //   if ((data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) || (data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read))) return "badge-danger";
+  //   if ((data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
+  //     return "badge-success";
+  //   return null;
+  // };
+
+  const getMustReadText = (data) => {
+    if ((data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) || (data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read)))
+      return dictionary.mustRead;
     return null;
   };
 
-  const getMustText = (data) => {
-    if (data.must_read) return dictionary.mustRead;
-    if (data.must_reply) return dictionary.needsReply;
+  const getMustReplyText = (data) => {
+    if ((data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
+      return dictionary.needsReply;
     return null;
   };
 
@@ -320,10 +327,13 @@ export const NotificationTimelineItem = (props) => {
                   </span>
                 )}
               </p>
-              <p>
-                {" "}
-                <span className={`badge ${getBadgeClass(notification.data)} text-white`}>{getMustText(notification.data)}</span>
-              </p>
+              {notification.type === "POST_CREATE" && (
+                <p>
+                  {" "}
+                  <span className={"badge badge-danger text-white"}>{getMustReadText(notification.data)}</span>
+                  <span className={"badge badge-success text-white"}>{getMustReplyText(notification.data)}</span>
+                </p>
+              )}
             </div>
           </h6>
         </div>

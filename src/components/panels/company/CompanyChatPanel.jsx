@@ -67,4 +67,4 @@ const CompanyChatPanel = (props) => {
   );
 };
 
-export default React.memo(CompanyChatPanel);
+export default CompanyChatPanel;

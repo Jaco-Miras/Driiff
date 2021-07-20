@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import { sessionService } from "redux-react-session";
 import { pushBrowserNotification } from "../../helpers/pushHelper";
 import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
-import { urlify } from "../../helpers/urlContentHelper";
+//import { urlify } from "../../helpers/urlContentHelper";
 import {
   addToChannels,
   deletePostNotification,
@@ -616,13 +616,12 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CREATE": {
-            e.clap_user_ids = [];
-            let post = { ...e };
+            let post = { ...e, clap_user_ids: [] };
             const isApprover = post.users_approval.some((ua) => ua.id === this.props.user.id);
-            if (this.props.user.id !== e.author.id) {
+            if (this.props.user.id !== post.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
-                  pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+                  pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
                 }
               }
               //check if post has favorite workspace as recipient
@@ -633,7 +632,7 @@ class SocketListeners extends Component {
               //   }
               // }
             }
-            if (e.show_at !== null && this.props.user.id === e.author.id) {
+            if (post.show_at !== null && this.props.user.id === post.author.id) {
               this.props.incomingPost({
                 ...post,
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
@@ -648,21 +647,25 @@ class SocketListeners extends Component {
             //   this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
             // }
 
-            e.channel_messages &&
-              e.channel_messages.forEach((m) => {
-                m.system_message.files = [];
-                m.system_message.editable = false;
-                m.system_message.unfurls = [];
-                m.system_message.reactions = [];
-                m.system_message.is_deleted = false;
-                m.system_message.todo_reminder = null;
-                m.system_message.is_read = false;
-                m.system_message.is_completed = false;
-                m.system_message.user = null;
-                m.system_message.new_post = true;
-                m.system_message.topic = m.topic;
-                m.system_message.shared_with_client = e.shared_with_client;
-                this.props.incomingPostNotificationMessage(m.system_message);
+            post.channel_messages &&
+              post.channel_messages.forEach((m) => {
+                const message = {
+                  ...m.system_message,
+                  files: [],
+                  editable: false,
+                  unfurls: [],
+                  reactions: [],
+                  is_deleted: false,
+                  todo_reminder: null,
+                  is_read: false,
+                  is_completed: false,
+                  user: null,
+                  new_post: true,
+                  topic: m.topic,
+                  shared_with_client: e.shared_with_client,
+                };
+
+                this.props.incomingPostNotificationMessage(message);
               });
             break;
           }

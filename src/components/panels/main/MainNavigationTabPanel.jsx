@@ -5,8 +5,10 @@ import styled from "styled-components";
 import { setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import { useSettings, useTranslationActions } from "../../hooks";
-import { FavoriteWorkspacesPanel, MainSidebarLinks } from "./index";
+import { FavoriteWorkspacesPanel, MainSidebarLinks, MainBackButton } from "./index";
 import NewModalButtons from "./NewModalButtons";
+// import { useWorkspace } from "../../hooks";
+// import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -189,9 +191,18 @@ const GiftWrapper = styled.span`
 
 const GiftIcon = styled(SvgIconFeather)``;
 
+// const BackWrapper = styled.span`
+//   cursor: pointer;
+//   position: absolute;
+//   ${(props) => (props.gift ? "top: 10px;" : "")}
+//   right: 10px;
+// `;
+
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
   const history = useHistory();
+  // const params = useParams();
+  // const location = useLocation();
   const dispatch = useDispatch();
 
   const count = useSelector((state) => state.global.todos.count);
@@ -254,6 +265,45 @@ const MainNavigationTabPanel = (props) => {
     setShowbuttons((prevState) => !prevState);
   };
 
+  // const { actions, workspaces } = useWorkspace();
+  // const channels = useSelector((state) => state.chat.channels);
+  // const channelActions = useChannelActions();
+  // const handleBackClick = () => {
+  //   setTimeout(() => {
+  //     let url = history.location.pathname;
+  //     let pN = url.split("/").filter(function (el) {
+  //       return el != "";
+  //     });
+  //     if (pN[0] === "workspace" && pN[1] === "chat" && typeof workspaces[pN[4]] !== "undefined") {
+  //       const companyWs = workspaces[pN[4]];
+  //       const scrollComponent = document.getElementById("component-chat-thread");
+  //       if (scrollComponent) {
+  //         dispatch(
+  //           setChannelHistoricalPosition({
+  //             channel_id: companyWs.channel.id,
+  //             scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+  //           })
+  //         );
+  //       }
+  //       actions.selectChannel(channels[companyWs.channel.id]);
+  //       actions.selectWorkspace(companyWs);
+  //     } else if (pN[0] === "chat") {
+  //       const channel = Object.values(channels).find(function (ch) {
+  //         return pN[1] == ch.code;
+  //       });
+  //       if (typeof channel !== "undefined") {
+  //         document.body.classList.add("m-chat-channel-closed");
+  //         let scrollComponent = document.getElementById("component-chat-thread");
+  //         if (scrollComponent) {
+  //           channelActions.saveHistoricalPosition(channel, scrollComponent);
+  //         }
+  //         channelActions.select({ ...channel, selected: true });
+  //       }
+  //     }
+  //   }, 0);
+  //   history.goBack();
+  // };
+
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
@@ -263,6 +313,17 @@ const MainNavigationTabPanel = (props) => {
           </GiftWrapper>
         )}
         <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />
+        <MainBackButton />
+
+        {/* <BackWrapper
+          gift={
+            (driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null
+              ? true
+              : false
+          }
+        >
+          <GiftIcon icon="chevron-left" color="#fff" onClick={handleBackClick} />
+        </BackWrapper> */}
       </div>
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
 
