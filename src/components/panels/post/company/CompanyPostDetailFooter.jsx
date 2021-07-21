@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -7,7 +7,8 @@ import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput, FolderSelect } from "../../../forms";
 import { useTranslationActions, usePostActions } from "../../../hooks";
 import PostInputButtons from "../PostInputButtons";
-import Reward from "react-rewards";
+
+const Reward = lazy(() => import("../../../common/lazy/Reward"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -649,20 +650,22 @@ const CompanyPostDetailFooter = (props) => {
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <button className="btn btn-primary" onClick={handleApprove}>
-                {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-              </button>
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <button className="btn btn-primary" onClick={handleApprove}>
+                  {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+                </button>
+              </Reward>
+            </Suspense>
           </div>
         </Dflex>
       )}

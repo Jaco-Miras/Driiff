@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote } from "../../../common";
@@ -11,7 +11,8 @@ import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import CommentCounters from "./CommentCounters";
-import Reward from "react-rewards";
+
+const Reward = lazy(() => import("../../../common/Reward"));
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -343,7 +344,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -559,28 +560,30 @@ const Comment = (props) => {
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <PostChangeAccept
-                approving={approving}
-                fromNow={fromNow}
-                usersApproval={comment.users_approval}
-                user={user}
-                handleApprove={handleApprove}
-                handleRequestChange={handleRequestChange}
-                post={post}
-                isMultipleApprovers={comment.users_approval.length > 1}
-                isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
-              />
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <PostChangeAccept
+                  approving={approving}
+                  fromNow={fromNow}
+                  usersApproval={comment.users_approval}
+                  user={user}
+                  handleApprove={handleApprove}
+                  handleRequestChange={handleRequestChange}
+                  post={post}
+                  isMultipleApprovers={comment.users_approval.length > 1}
+                  isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
+                />
+              </Reward>
+            </Suspense>
           )}
           {comment.files.length >= 1 && (
             <>
