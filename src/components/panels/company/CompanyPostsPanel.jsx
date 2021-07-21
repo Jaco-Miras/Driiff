@@ -107,7 +107,6 @@ const CompanyPostsPanel = (props) => {
   const toaster = useToaster();
 
   const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters } = useCompanyPosts();
-  const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -168,14 +167,6 @@ const CompanyPostsPanel = (props) => {
     star: _t("POST.STAR", "Mark with star"),
     unStar: _t("POST.UNSTAR", "Unmark star"),
     alreadyReadThis: _t("POST.ALREADY_READ_THIS", "I've read this"),
-    readByNumberofUsers:
-      readByUsers === 1
-        ? _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
-            user_name: readByUsers[0].first_name,
-          })
-        : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
-            user_count: readByUsers.length,
-          }),
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
@@ -335,18 +326,7 @@ const CompanyPostsPanel = (props) => {
               {post && params.hasOwnProperty("postId") ? (
                 <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail
-                      readByUsers={readByUsers}
-                      post={post}
-                      posts={posts}
-                      filter={filter}
-                      postActions={actions}
-                      user={user}
-                      history={history}
-                      onGoBack={handleGoback}
-                      dictionary={dictionary}
-                      isExternalUser={isExternalUser}
-                    />
+                    <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
                   </PostDetailWrapper>
                 </div>
               ) : !post && params.hasOwnProperty("postId") ? (

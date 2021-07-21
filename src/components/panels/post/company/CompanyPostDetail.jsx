@@ -261,7 +261,7 @@ const PostFilesTrashedContainer = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { post, posts, filter, postActions, user, onGoBack, dictionary } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -271,8 +271,6 @@ const CompanyPostDetail = (props) => {
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const hasRead = readByUsers.some((u) => u.id === user.id);
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
@@ -525,7 +523,7 @@ const CompanyPostDetail = (props) => {
         )}
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
