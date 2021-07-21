@@ -13,7 +13,7 @@ import { FolderSelect } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import PostInputButtons from "./PostInputButtons";
 
-const Reward = lazy(() => import("../../common/lazy/Reward"));
+const Reward = lazy(() => import("../../lazy/Reward"));
 
 const Wrapper = styled.div`
   position: relative;

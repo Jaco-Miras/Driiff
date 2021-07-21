@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import CommentCounters from "./CommentCounters";
 
-const Reward = lazy(() => import("../../../common/Reward"));
+const Reward = lazy(() => import("../../../lazy/Reward"));
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
