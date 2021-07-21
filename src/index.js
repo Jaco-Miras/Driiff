@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import LogRocket from "logrocket";
 
 import App from "./App";
-import "toasted-notes/src/styles.css";
+//import "toasted-notes/src/styles.css";
 import "./assets/style/app.scss";
 import store from "./redux/store/configStore";
 //import * as serviceWorker from "./serviceWorker";
@@ -17,9 +17,7 @@ const { REACT_APP_sentry_dsn } = process.env;
 if (localStorage.getItem("sentry") === "1") {
   Sentry.init({
     dsn: REACT_APP_sentry_dsn,
-    integrations: [
-      new Integrations.BrowserTracing(),
-    ],
+    integrations: [new Integrations.BrowserTracing()],
 
     // We recommend adjusting this value in production, or using tracesSampler
     // for finer control
@@ -28,15 +26,15 @@ if (localStorage.getItem("sentry") === "1") {
 }
 
 if (localStorage.getItem("log_rocket") === "1") {
-  LogRocket.init('z1ni7v/driff', {
+  LogRocket.init("z1ni7v/driff", {
     dom: {
       textSanitizer: true,
       inputSanitizer: true,
-    }
+    },
   });
 
-  LogRocket.getSessionURL(sessionURL => {
-    Sentry.configureScope(scope => {
+  LogRocket.getSessionURL((sessionURL) => {
+    Sentry.configureScope((scope) => {
       scope.setExtra("sessionURL", sessionURL);
     });
   });
@@ -45,7 +43,7 @@ if (localStorage.getItem("log_rocket") === "1") {
 const wrapApp = (reduxStore) => (
   <Provider store={reduxStore}>
     <BrowserRouter>
-      <App/>
+      <App />
     </BrowserRouter>
   </Provider>
 );
