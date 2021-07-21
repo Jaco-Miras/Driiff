@@ -54,10 +54,11 @@ const ChatContentPanel = (props) => {
   const [showSearchPanel, setShowSearchPanel] = useState(false);
   const [pP, setPP] = useState(selectedChannel !== null ? selectedChannel.id : 0);
 
+  /*
   useEffect(() => {
     selectedChannel !== null && pP !== selectedChannel.id && setShowSearchPanel(false)
   }, [selectedChannel]);
-
+*/
   const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
@@ -232,7 +233,7 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel}/>
+      <ChatSearchPanel chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel}/>
     </Wrapper>
   );
 };

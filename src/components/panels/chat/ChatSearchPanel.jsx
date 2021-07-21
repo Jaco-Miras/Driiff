@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import SearchForm from "../../forms/SearchForm";
-import { useTimeFormat } from "../../hooks";
+import { useTimeFormat, useTranslationActions } from "../../hooks";
 import { stripHtml } from "../../../helpers/stringFormatter";
-
+import { getChatMsgsSearch } from "../../../redux/services/chat";
 const Wrapper = styled.div`position: absolute;
 top: 0;
 bottom: 0;
@@ -109,6 +109,31 @@ const ResultDivWrapper = styled.div`
   height: calc(100% - 43px);
 `;
 
+const EmptyState = styled.div`
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 5rem;
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
+  h3 {
+    font-size: 16px;
+  }
+  h5 {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+  button {
+    width: auto !important;
+    margin: 2rem auto;
+  }
+  color: #363636;
+`;
+
 const ChatSearchPanel = (props) => {
 
   const { className = "", showSearchPanel, handleSearchChatPanel, scrollComponent, pP, selectedChannel } = props;
@@ -116,31 +141,59 @@ const ChatSearchPanel = (props) => {
 
   const [searching, setSearching] = useState(false);
   const initresultState = [];
-  const [result, setResult] = useState(initresultState);
+
 
   const { todoFormat } = useTimeFormat();
+  const { _t } = useTranslationActions();
 
   const clear = () => {
-    setResult(initresultState);
+    setResults(initresultState);
     setQuery("");
     setSearching(false);
   };
 
+
+
+  /*
   useEffect(() => {
-    selectedChannel !== null && pP !== selectedChannel.id && clear()
+    selectedChannel !== null && pP !== selectedChannel.id && clear();
   }, [selectedChannel]);
+*/
+
+  const [results, setResults] = useState(null);
+
+  function getChatMsgs(query) {
+
+    setTimeout(() => {
+      getChatMsgsSearch({ channel_id: selectedChannel.id, search: query })
+        .then((res) => {
+          return res;
+        })
+        .then((response) => {
+          setResults(response.data.results);
+        });
+      setSearching(false);
+    }, 1000);
+
+  }
+
+  useEffect(() => {
+    if (selectedChannel !== null && query.trim() !== "" && query.length > 2) {
+      if (results !== null)
+        filterByQuery2(results);
+    }
+  }, [query]);
 
   const onSearchChange = (e) => {
     var value = e.target.value;
     setSearching(true);
+    setQuery(value);
     if (value.trim() !== "" && value.length > 2) {
-      setResult(filterByQuery(sortedReplies(), value));
-      setSearching(false);
+      getChatMsgs(value);
     } else {
-      setResult(initresultState);
+      setResults(initresultState);
       setSearching(false);
     }
-    setQuery(value);
   };
 
   const sortedReplies = () => {
@@ -164,43 +217,14 @@ const ChatSearchPanel = (props) => {
 
   const user = useSelector((state) => state.session.user);
 
-  const filterByQuery = (data, inputValue) => {
-    const keywords = inputValue.split(/\s/);
+  const filterByQuery2 = (data) => {
     let content = [];
-    const results = data.filter((item) => {
-      let resp = false;
-      if (item.body.includes("POST_CREATE::")
-        || item.body.startsWith("ZAP_SUBMIT::")
-        || item.body.includes("JOIN_CHANNEL")
-        || item.body.includes("MEMBER_REMOVE_CHANNEL")
-        || item.body.includes("ACCOUNT_DEACTIVATED")
-        || item.body.includes("NEW_ACCOUNT_ACTIVATED")
-        || item.body.includes("CHANNEL_UPDATE::")
-        || item.body.includes("CHAT_MESSAGE_DELETED"))
-        return resp;
-
-      const isAuthor = item.user && item.user.id === user.id;
-
-      let body = item.body;
-      if (selectedChannel.is_translate)
-        body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
-
-      body = stripHtml(body);
-      let respArr = [];
-      for (var i = 0; i < keywords.length; i++) {
-        if (keywords[i].trim() !== "" && keywords[i].length > 1)
-          respArr.push(new RegExp(keywords[i], 'ig').test(body));
-      }
-      return respArr.includes(true);
-
-    }).map((item) => {
-      const pattern = new RegExp(`(${keywords.join('|')})`, 'ig');
+    data.map((item) => {
       const isAuthor = item.user && item.user.id === user.id;
       let body = item.body;
       if (selectedChannel.is_translate)
         body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
 
-      body = body.replace(pattern, match => `<span>${match}</span>`);
       content.push({ 'id': item.id, 'body': body, 'created_at': item.created_at.timestamp });
     });
 
@@ -219,17 +243,26 @@ const ChatSearchPanel = (props) => {
     setTimeout(function () { element[0].classList.remove("pulsating") }, 2000);
   };
 
+  const dictionary = {
+    noItemsFoundHeader: _t("CHATSEARCH.NO_ITEMS_FOUND_HEADER", "WOO!"),
+    noItemsFoundText: _t("CHATSEARCH.NO_ITEMS_FOUND_TEXT", "Nothing here but me… 👻"),
+  };
+
   const parseResult = (data) => {
     const items = [];
     data.map((item, i) => {
-      items.push({ 'id': item.id, 'body': item.body, 'created_at': todoFormat(item.created_at) });
+      items.push({ 'id': item.id, 'body': item.body, 'created_at': todoFormat(item.created_at.timestamp) });
     });
-    return (<ResultWrapper >{items.map((item) => {
+    return (items.length) ? (<ResultWrapper >{items.map((item) => {
       return <ResultItem onClick={(e) => handleRedirect(item.id, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {item.created_at}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem>
     })
-    }</ResultWrapper>);
+    }</ResultWrapper>)
+      : (<EmptyState>
+        <h3>{dictionary.noItemsFoundHeader}</h3>
+        <h5>{dictionary.noItemsFoundText} </h5>
+      </EmptyState>
+      )
   };
-
   return (
     <Wrapper isActive={showSearchPanel}>
       <div className="d-flex justify-content-between align-items-flex-start align-items-center mb-2">
@@ -244,7 +277,7 @@ const ChatSearchPanel = (props) => {
           className="chat-search-chat" />
       </div>
       <ResultDivWrapper className="justify-content-between align-items-center">
-        {query.trim() !== "" && query.length > 2 && parseResult(result)}
+        {results !== null && parseResult(results)}
       </ResultDivWrapper>
     </Wrapper>
   );
