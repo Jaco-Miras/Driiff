@@ -780,7 +780,7 @@ const PostModal = (props) => {
       });
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
-      let requiredUserIds = item.post.recipients
+      let allUserIds = item.post.recipients
         .map((ad) => {
           if (ad.type === "USER") {
             return ad.type_id;
@@ -789,9 +789,13 @@ const PostModal = (props) => {
           }
         })
         .flat();
+      allUserIds = [...new Set(allUserIds)].filter((id) => id !== user.id);
 
-      requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
-      const isAllSelected = requiredUserIds.length === item.post.required_users.length;
+      // requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
+      // const isAllSelected = requiredUserIds.length === item.post.required_users.length;
+
+      const isAllSelectedMustRead = allUserIds.length === item.post.must_read_users.length;
+      const isAllSelectedMustReply = allUserIds.length === item.post.must_reply_users.length;
       setForm({
         ...form,
         body: item.post.body,
@@ -821,19 +825,19 @@ const PostModal = (props) => {
                 };
               })
             : [],
-        requiredUsers:
-          item.post.required_users.length > 0
-            ? isAllSelected
+        mustReadUsers:
+          item.post.must_read_users.length > 0
+            ? isAllSelectedMustRead
               ? [
                   {
                     id: "all",
                     value: "all",
                     label: "All users",
                     icon: "users",
-                    all_ids: requiredUserIds,
+                    all_ids: allUserIds,
                   },
                 ]
-              : item.post.required_users.map((u) => {
+              : item.post.must_read_users.map((u) => {
                   return {
                     ...u,
                     icon: "user-avatar",
@@ -843,6 +847,50 @@ const PostModal = (props) => {
                   };
                 })
             : [],
+        mustReplyUsers:
+          item.post.must_reply_users.length > 0
+            ? isAllSelectedMustReply
+              ? [
+                  {
+                    id: "all",
+                    value: "all",
+                    label: "All users",
+                    icon: "users",
+                    all_ids: allUserIds,
+                  },
+                ]
+              : item.post.must_reply_users.map((u) => {
+                  return {
+                    ...u,
+                    icon: "user-avatar",
+                    value: u.id,
+                    label: u.name,
+                    type: "USER",
+                  };
+                })
+            : [],
+        // requiredUsers:
+        //   item.post.required_users.length > 0
+        //     ? isAllSelected
+        //       ? [
+        //           {
+        //             id: "all",
+        //             value: "all",
+        //             label: "All users",
+        //             icon: "users",
+        //             all_ids: requiredUserIds,
+        //           },
+        //         ]
+        //       : item.post.required_users.map((u) => {
+        //           return {
+        //             ...u,
+        //             icon: "user-avatar",
+        //             value: u.id,
+        //             label: u.name,
+        //             type: "USER",
+        //           };
+        //         })
+        //     : [],
       });
       setUploadedFiles(
         item.post.files.map((f) => {
