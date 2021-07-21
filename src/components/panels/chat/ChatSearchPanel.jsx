@@ -165,7 +165,7 @@ const ChatSearchPanel = (props) => {
   function getChatMsgs(query) {
 
     setTimeout(() => {
-      getChatMsgsSearch({ channel_id: selectedChannel.id, search: query })
+      getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: query })
         .then((res) => {
           return res;
         })
