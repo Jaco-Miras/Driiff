@@ -780,7 +780,7 @@ const PostModal = (props) => {
       });
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
-      let allUserIds = item.post.recipients
+      let allUserIds = getAddressTo(item.post.recipients)
         .map((ad) => {
           if (ad.type === "USER") {
             return ad.type_id;
