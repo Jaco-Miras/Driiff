@@ -113,7 +113,6 @@ const WorkspacePostsPanel = (props) => {
   useFetchWsCount();
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
-  const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
 
@@ -190,14 +189,6 @@ const WorkspacePostsPanel = (props) => {
     star: _t("POST.STAR", "Mark with star"),
     unStar: _t("POST.UNSTAR", "Unmark star"),
     alreadyReadThis: _t("POST.ALREADY_READ_THIS", "I've read this"),
-    readByNumberofUsers:
-      readByUsers === 1
-        ? _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
-            user_name: readByUsers[0].first_name,
-          })
-        : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
-            user_count: readByUsers.length,
-          }),
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
@@ -526,7 +517,6 @@ const WorkspacePostsPanel = (props) => {
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
                     <PostDetail
-                      readByUsers={readByUsers}
                       post={post}
                       posts={posts}
                       filter={filter}
