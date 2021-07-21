@@ -1,11 +1,12 @@
 import "cropperjs/dist/cropper.css";
-import React, { useRef, useState } from "react";
-import Cropper from "react-cropper";
+import React, { useRef, useState, lazy, Suspense } from "react";
+//import Cropper from "react-cropper";
 import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
+const Cropper = lazy(() => import("../lazy/Cropper"));
 
 const Wrapper = styled(Modal)`
   &.modal-dialog {
@@ -60,21 +61,22 @@ const FileCropUploadModal = (props) => {
   };
 
   return (
-      <Wrapper isOpen={modal} toggle={toggle} size={"lg"} centered>
-        <ModalHeaderSection toggle={toggle}>Crop Image</ModalHeaderSection>
-        <ModalBody style={{padding: 0}}>
-          <Cropper style={{height: window.innerHeight - 300, width: "100%"}} aspectRatio={1} guides={false}
-                   src={URL.createObjectURL(imageFile)} ref={refs.cropper}/>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={handleCropImage}>
-            Save
-          </Button>
-          <Button color="secondary" onClick={toggle}>
-            Discard
-          </Button>
-        </ModalFooter>
-      </Wrapper>
+    <Wrapper isOpen={modal} toggle={toggle} size={"lg"} centered>
+      <ModalHeaderSection toggle={toggle}>Crop Image</ModalHeaderSection>
+      <ModalBody style={{ padding: 0 }}>
+        <Suspense fallback={<></>}>
+          <Cropper style={{ height: window.innerHeight - 300, width: "100%" }} aspectRatio={1} guides={false} src={URL.createObjectURL(imageFile)} ref={refs.cropper} />
+        </Suspense>
+      </ModalBody>
+      <ModalFooter>
+        <Button color="primary" onClick={handleCropImage}>
+          Save
+        </Button>
+        <Button color="secondary" onClick={toggle}>
+          Discard
+        </Button>
+      </ModalFooter>
+    </Wrapper>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { FormInput, InputFeedback, PasswordInput } from "../forms";
@@ -7,8 +7,9 @@ import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText } from "r
 import useDriffActions from "../hooks/useDriffActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useDispatch } from "react-redux";
-import ReactConfetti from "react-confetti";
+//import ReactConfetti from "react-confetti";
 import { isIPAddress } from "../../helpers/commonFunctions";
+const ReactConfetti = lazy(() => import("../lazy/ReactConfetti"));
 
 const Wrapper = styled.form`
   .btn {
@@ -226,7 +227,9 @@ const DriffCreatePanel = (props) => {
           <a href={loginLink} className={"btn btn-outline-light btn-sm"}>
             {dictionary.signIn}
           </a>
-          <ReactConfetti recycle={false} />
+          <Suspense fallback={<></>}>
+            <ReactConfetti recycle={false} />
+          </Suspense>
         </>
       ) : (
         <>

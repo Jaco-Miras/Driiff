@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import DatePicker from "react-date-picker";
+import React, { useEffect, useRef, lazy, Suspense } from "react";
+//import DatePicker from "react-date-picker";
+const DatePicker = lazy(() => import("../lazy/ReactDatePicker"));
 
 const DatePickerComponent = (props) => {
   const { className = "", calendarIcon = null, clearIcon = null, dayPlaceholder = "dd", monthPlaceholder = "mm", yearPlaceholder = "yy" } = props;
@@ -20,16 +21,18 @@ const DatePickerComponent = (props) => {
   });
 
   return (
-    <DatePicker
-      className={`react-datetime-picker ${className}`}
-      ref={pickerRef}
-      calendarIcon={calendarIcon}
-      clearIcon={clearIcon}
-      dayPlaceholder={dayPlaceholder}
-      monthPlaceholder={monthPlaceholder}
-      yearPlaceholder={yearPlaceholder}
-      {...props}
-    />
+    <Suspense fallback={<></>}>
+      <DatePicker
+        className={`react-datetime-picker ${className}`}
+        ref={pickerRef}
+        calendarIcon={calendarIcon}
+        clearIcon={clearIcon}
+        dayPlaceholder={dayPlaceholder}
+        monthPlaceholder={monthPlaceholder}
+        yearPlaceholder={yearPlaceholder}
+        {...props}
+      />
+    </Suspense>
   );
 };
 
