@@ -706,7 +706,7 @@ class SocketListeners extends Component {
                 let companyChannel = Object.values(this.props.channels).filter((c) => c.type === "COMPANY");
                 if (companyChannel.length) {
                   let companyId = companyChannel[0].id;
-                  let postNotifMessages = [...e.channel.messages];
+                  let postNotifMessages = [...e.channel_messages];
                   postNotifMessages = postNotifMessages.filter((m) => {
                     if (m.channel.id !== companyId) {
                       return true;
