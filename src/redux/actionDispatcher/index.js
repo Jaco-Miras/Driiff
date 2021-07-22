@@ -7,8 +7,7 @@
  * @returns {function()}
  * @constructor
  */
-import React from "react";
-import { toastr } from "react-redux-toastr";
+//import React from "react";
 import { userForceLogout } from "../../components/hooks/useUserActions";
 
 export default function DispatchActionToReducer(service, actionTypeStart, actionTypeSuccess, actionTypeFailure, callback) {
@@ -34,20 +33,20 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
       .catch((error) => {
         if (error.response) {
           if (error.response.status === 422 || error.response.status === 403) {
-            let errorEntries = Object.entries(error.response.data.errors);
-            let errorStringTitle = "Something went wrong";
-            let errorString = "";
-            for (let i = 0, l = errorEntries.length; i < l; i++) {
-              let currentError = errorEntries[i];
-              for (let j = 0, l = currentError[1].length; j < l; j++) {
-                let currentParseError = currentError[1][j];
-                errorString += `${currentParseError}`;
-              }
-            }
-            // this error for validation or not authorized user.
-            toastr.warning(errorStringTitle, {
-              component: () => <div dangerouslySetInnerHTML={{ __html: errorString }} />,
-            });
+            // let errorEntries = Object.entries(error.response.data.errors);
+            // let errorStringTitle = "Something went wrong";
+            // let errorString = "";
+            // for (let i = 0, l = errorEntries.length; i < l; i++) {
+            //   let currentError = errorEntries[i];
+            //   for (let j = 0, l = currentError[1].length; j < l; j++) {
+            //     let currentParseError = currentError[1][j];
+            //     errorString += `${currentParseError}`;
+            //   }
+            // }
+            // // this error for validation or not authorized user.
+            // toastr.warning(errorStringTitle, {
+            //   component: () => <div dangerouslySetInnerHTML={{ __html: errorString }} />,
+            // });
           }
           // not authenticated user.
           if (error.response.status === 401) {

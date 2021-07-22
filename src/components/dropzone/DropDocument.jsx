@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import Dropzone from "react-dropzone";
-//import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
 import { useToaster, useTranslationActions } from "../hooks";
