@@ -290,7 +290,7 @@ const FileRender = (props) => {
   };
 
   useEffect(() => {
-    if (!fileBlobs[file.id]) {
+    if (!fileBlobs[file.id] && userAuth) {
       setIsLoaded(false);
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
