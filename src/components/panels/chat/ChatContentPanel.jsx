@@ -219,11 +219,11 @@ const ChatContentPanel = (props) => {
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
       {selectedChannel !== null ? (
         virtualization ? (
-          <Suspense fallback={<></>}>
+          <Suspense fallback={<ChatMessagesPlaceholder />}>
             <VirtuosoContainer dictionary={dictionary} />
           </Suspense>
         ) : (
-          <Suspense fallback={<></>}>
+          <Suspense fallback={<ChatMessagesPlaceholder />}>
             <ChatMessages
               chatMessageActions={chatMessageActions}
               timeFormat={timeFormat}
