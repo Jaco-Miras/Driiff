@@ -44,12 +44,16 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = (props) => {
-  const { className = "", search, channels, selectedChannel, workspace, dictionary } = props;
+  const { className = "", search, workspace, dictionary } = props;
 
+  const channels = useSelector((state) => state.chat.channels);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  // const searchingChannels = useSelector((state) => state.chat.searchingChannels);
+  // const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   const [fetchingChannels, setFetchingChannels] = useState(false);
   const actions = useChannelActions();
-  const { favoriteChannels, sortedChannels, searchArchivedChannels } = useSortChannels(channels, search, {}, workspace);
-  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { favoriteChannels, sortedChannels, searchArchivedChannels } = useSortChannels(Object.values(channels), search, {}, workspace);
+  const virtualization = useSelector((state) => state.settings.user.CHAT_SETTINGS.virtualization);
   const history = useHistory();
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
@@ -70,7 +74,6 @@ const ChannelsSidebar = (props) => {
     if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");
       if (scrollComponent) {
-        console.log("set historical");
         actions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
       }
     }
@@ -82,6 +85,12 @@ const ChannelsSidebar = (props) => {
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
       {favoriteChannels.length > 0 && <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />}
       <Channels className={"list-group list-group-flush"}>
+        {/* {searchingChannels && (
+          <ChatHeaderContainer>
+            <ChatHeader>{`Searching ${chatSidebarSearch}...`} </ChatHeader>
+            <CustomInput className="cursor-pointer text-muted" checked={searchArchivedChannels} type="switch" id="show_archive" name="show archive" onChange={handleShowArchiveToggle} label={<span>{dictionary.showArchived}</span>} />
+          </ChatHeaderContainer>
+        )} */}
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
           let showArchiveButton = false;
@@ -116,7 +125,6 @@ const ChannelsSidebar = (props) => {
             } else {
               chatHeader = dictionary.chats;
             }*/
-
             if (channel.type === "PERSONAL_BOT") {
               chatHeader = dictionary.personalBot;
             } else if (channel.is_relevant && channel.add_user) {
@@ -133,6 +141,7 @@ const ChannelsSidebar = (props) => {
             <React.Fragment key={channel.id}>
               {search !== "" && chatHeader !== "" && (
                 <ChatHeaderContainer>
+                  {/* <ChatHeader>{searchingChannels ? `Searching ${chatSidebarSearch}...` : chatHeader} </ChatHeader> */}
                   <ChatHeader>{chatHeader} </ChatHeader>
                   {showArchiveButton && (
                     <CustomInput className="cursor-pointer text-muted" checked={searchArchivedChannels} type="switch" id="show_archive" name="show archive" onChange={handleShowArchiveToggle} label={<span>{dictionary.showArchived}</span>} />

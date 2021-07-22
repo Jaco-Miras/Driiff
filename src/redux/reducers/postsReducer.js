@@ -35,6 +35,16 @@ const INITIAL_STATE = {
     has_more: true,
     limit: 25,
   },
+  unreadPosts: {
+    skip: 0,
+    has_more: true,
+    limit: 25,
+  },
+  readPosts: {
+    skip: 0,
+    has_more: true,
+    limit: 25,
+  },
   posts: {},
   postsLists: [],
   drafts: [],
@@ -105,43 +115,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_COMPANY_POSTS_SUCCESS": {
-      let isArchived = action.data.posts.filter((p) => p.is_archived === 1).length > 0 && action.data.posts.filter((p) => p.is_archived === 1).length === action.data.posts.length;
-      let isFavourites = action.data.posts.filter((p) => p.is_favourite).length === action.data.posts.length;
-      let isMyPosts = action.data.posts.filter((p) => p.author && p.author.id === state.user.id).length === action.data.posts.length;
       return {
         ...state,
-        archived: {
-          ...state.archived,
-          ...(isArchived && {
-            limit: 25,
-            skip: action.data.next_skip,
-            has_more: action.data.total_take === state.archived.limit,
-          }),
-        },
-        favourites: {
-          ...state.favourites,
-          ...(isFavourites && {
-            limit: 25,
-            skip: action.data.next_skip,
-            has_more: action.data.total_take === state.favourites.limit,
-          }),
-        },
-        myPosts: {
-          ...state.myPosts,
-          ...(isMyPosts && {
-            limit: 25,
-            skip: action.data.next_skip,
-            has_more: action.data.total_take === state.myPosts.limit,
-          }),
-        },
         companyPosts: {
           ...state.companyPosts,
-          ...(!isArchived && {
-            prev_skip: action.data.prev_skip,
-            next_skip: action.data.next_skip,
-            total_take: action.data.total_take,
-            has_more: action.data.total_take === state.companyPosts.limit,
-          }),
+          prev_skip: action.data.prev_skip,
+          next_skip: action.data.next_skip,
+          total_take: action.data.total_take,
+          has_more: action.data.total_take === state.companyPosts.limit,
           posts: {
             ...state.companyPosts.posts,
             ...action.data.posts.reduce((res, obj) => {
@@ -457,22 +438,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    // need to review
-    // case "ADD_TO_WORKSPACE_POSTS": {
-    //   let convertedPosts = convertArrayToObject(action.data.posts, "id");
-    //   let postDrafts = [];
-    //   if (state.drafts.length) {
-    //     postDrafts = convertArrayToObject(postDrafts, "post_id");
-    //   }
-    //   return {
-    //     ...state,
-    //     posts: {
-    //       ...state.posts,
-    //       ...convertedPosts,
-    //       ...postDrafts,
-    //     },
-    //   };
-    // }
     case "GET_DRAFTS_SUCCESS": {
       let drafts = action.data
         .filter((d) => d.data.type === "draft_post")
@@ -687,6 +652,7 @@ export default (state = INITIAL_STATE, action) => {
                   // is_archived: 0,
                   //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
+                  is_unread: action.data.author.id !== state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].is_unread,
                   updated_at: action.data.updated_at,
                   reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
                   has_replied: action.data.author.id === state.user.id ? true : false,
@@ -731,7 +697,7 @@ export default (state = INITIAL_STATE, action) => {
       if (Object.keys(companyPosts.posts).length) {
         Object.values(companyPosts.posts).forEach((p) => {
           companyPosts.posts[p.id].is_read = true;
-          companyPosts.posts[p.id].is_updated = true;
+          //companyPosts.posts[p.id].is_updated = true;
           companyPosts.posts[p.id].unread_count = 0;
           companyPosts.posts[p.id].is_unread = 0;
         });
@@ -1034,6 +1000,43 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           },
         },
+        unreadPosts: {
+          skip: action.data.next_skip,
+          has_more: action.data.posts.length === 25,
+          limit: 25,
+        },
+      };
+    }
+    case "GET_READ_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
+          },
+        },
+        readPosts: {
+          skip: action.data.next_skip,
+          has_more: action.data.posts.length === 25,
+          limit: 25,
+        },
       };
     }
     case "POST_LIST_SUCCESS": {
@@ -1171,6 +1174,102 @@ export default (state = INITIAL_STATE, action) => {
             ...Object.values(state.companyPosts.posts).reduce((res, post) => {
               if (post.id !== action.data.post_id) {
                 res[post.id] = { ...state.companyPosts.posts[post.id] };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "GET_ARCHIVED_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        archived: {
+          ...state.archived,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.archived.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "GET_MY_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        myPosts: {
+          ...state.myPosts,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.myPosts.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "GET_STAR_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        favourites: {
+          ...state.favourites,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.favourites.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
               }
               return res;
             }, {}),

@@ -275,6 +275,7 @@ const PostModal = (props) => {
   const inputRef = useRef();
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const componentIsMounted = useRef(true);
 
   const user = useSelector((state) => state.session.user);
   const isExternalUser = user.type === "external";
@@ -328,7 +329,18 @@ const PostModal = (props) => {
     shared_with_client: false,
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
+  const {
+    options: addressToOptions,
+    getDefaultAddressTo,
+    getAddressTo,
+    responsible_ids,
+    recipient_ids,
+    is_personal,
+    workspace_ids,
+    userOptions,
+    addressIds,
+    actualUsers,
+  } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -835,7 +847,9 @@ const PostModal = (props) => {
         })
       );
     }
-    console.log(mode, params);
+    return () => {
+      componentIsMounted.current = null;
+    };
   }, []);
 
   const onDragEnter = () => {
@@ -843,25 +857,26 @@ const PostModal = (props) => {
   };
 
   useEffect(() => {
-    if (form.shared_with_client) {
-      setShareOption({
-        id: "external",
-        value: "external",
-        label: dictionary.internalAndExternalTeamLabel,
-        icon: "eye",
-      });
-    } else {
-      setShareOption({
-        id: "internal",
-        value: "internal",
-        label: dictionary.internalTeamLabel,
-        icon: "eye-off",
-      });
+    if (componentIsMounted.current) {
+      if (form.shared_with_client) {
+        setShareOption({
+          id: "external",
+          value: "external",
+          label: dictionary.internalAndExternalTeamLabel,
+          icon: "eye",
+        });
+      } else {
+        setShareOption({
+          id: "internal",
+          value: "internal",
+          label: dictionary.internalTeamLabel,
+          icon: "eye-off",
+        });
+      }
     }
   }, [form.shared_with_client]);
 
   const handleSelectFileUploadOption = (e) => {
-    console.log(e);
     setFileOption(e);
   };
 

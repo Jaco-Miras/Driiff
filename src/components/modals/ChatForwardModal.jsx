@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Modal, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { postChatMessage, setSelectedChannel } from "../../redux/actions/chatActions";
+import { postChatMessage, setSelectedChannel, searchChannels } from "../../redux/actions/chatActions";
 import { clearModal } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
 import { ModalHeaderSection } from "./index";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
@@ -96,6 +96,7 @@ const ChatForwardModal = (props) => {
   const channels = useSelector((state) => state.chat.channels);
   const [inputValue, setInputValue] = useState("");
   const [chosenChannel, setChosenChannel] = useState(null);
+  const [searching, setSearching] = useState(null);
 
   const [modal, setModal] = useState(true);
   const toggle = () => {
@@ -125,8 +126,6 @@ const ChatForwardModal = (props) => {
     dispatch(postChatMessage(payload, cb));
     toggle();
   };
-
-  const handleSearch = () => {};
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -172,7 +171,7 @@ const ChatForwardModal = (props) => {
     }
   });
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     recentChannels: _t("CHAT.FORWARD.RECENT_CHANNELS", "Recent channels"),
@@ -180,11 +179,46 @@ const ChatForwardModal = (props) => {
     searchChannelPlaceholder: _t("CHAT.FORWARD.SEARCH_CHANNEL_PLACEHOLDER", "Search channel"),
   };
 
+  const emptySearchInput = () => {
+    setInputValue("");
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      return false;
+    }
+    if (e.keyCode === 27) {
+      emptySearchInput();
+    }
+  };
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      if (inputValue.trim() !== "") {
+        setSearching(true);
+        let payload = { search: inputValue, skip: 0, limit: 25 };
+        dispatch(searchChannels(payload, () => setSearching(false)));
+      }
+    }, 300);
+    return () => clearTimeout(timeOutId);
+  }, [inputValue]);
+
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.transferMessageTo}</ModalHeaderSection>
       <PopUpBody>
-        <Search onChange={handleInputChange} value={inputValue} onClick={handleSearch} placeholder={dictionary.searchChannelPlaceholder} />
+        <Search
+          onChange={handleInputChange}
+          onKeyDown={handleSearchKeyDown}
+          value={inputValue}
+          onClickEmpty={emptySearchInput}
+          closeButton="true"
+          searching={searching}
+          className="chat-search"
+          placeholder={dictionary.searchChatPlaceholder}
+        />
+        {/* <Search onChange={handleInputChange} value={inputValue} onClick={handleSearch} placeholder={dictionary.searchChannelPlaceholder} /> */}
         <ChannelsContainer>
           <label>{dictionary.recentChannels}</label>
           {Object.keys(channels).length > 0 && (

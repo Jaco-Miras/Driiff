@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { sessionService } from "redux-react-session";
@@ -11,7 +11,7 @@ const useUserLogout = () => {
   const history = useHistory();
   const { path } = useRouteMatch();
 
-  const logout = useCallback(() => {
+  const logout = () => {
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, () => {
@@ -27,7 +27,7 @@ const useUserLogout = () => {
           });
       })
     );
-  }, [dispatch]);
+  };
 
   useEffect(() => {
     //log-out from the backend

@@ -5,13 +5,13 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getWorkspaceFitlerCount, getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useToaster, useTranslation } from "./index";
+import { useToaster, useTranslationActions } from "./index";
 
 const useWorkspaceSearchActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const user = useSelector((state) => state.session.user);
 
@@ -24,6 +24,7 @@ const useWorkspaceSearchActions = () => {
     unArchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Un-archive workspace"),
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
+    somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
   };
 
   const search = (payload, callback) => {
@@ -131,7 +132,7 @@ const useWorkspaceSearchActions = () => {
   };
 
   const leave = (item) => {
-    favourite(item);
+    // favourite(item);
     if (item.members.length === 1 && item.topic.is_locked) {
       let archivePayload = {
         id: item.channel.id,
@@ -195,7 +196,6 @@ const useWorkspaceSearchActions = () => {
   const fetchWorkspaceAndRedirect = (workspace, post = null) => {
     dispatch(
       getWorkspace({ topic_id: workspace.id }, (err, res) => {
-        console.log(res, err);
         if (err) {
           toaster.warning("This workspace cannot be found or accessed.");
           return;
@@ -228,14 +228,24 @@ const useWorkspaceSearchActions = () => {
 
     dispatch(
       favouriteWorkspace(payload, (err, res) => {
-        if (err) return;
-        getFilterCount();
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (res && res.data) {
+          if (payload.is_pinned) {
+            toaster.success(_t("TOASTER.ADDED_TO_FAVORITES", "::title:: added to favorites", { title: item.topic.name }));
+          } else {
+            toaster.success(_t("TOASTER.REMOVED_FROM_FAVORITES", "::title:: removed from favorites", { title: item.topic.name }));
+          }
+          getFilterCount();
+        }
       })
     );
   };
 
-  const getFilterCount = () => {
-    dispatch(getWorkspaceFitlerCount());
+  const getFilterCount = (callback) => {
+    dispatch(getWorkspaceFitlerCount({}, callback));
   };
 
   return {

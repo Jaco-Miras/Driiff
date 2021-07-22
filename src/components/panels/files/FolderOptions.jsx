@@ -64,7 +64,6 @@ const FolderOptions = (props) => {
   };
 
   const handleRestore = () => {
-    console.log(folder);
     actions.restoreWorkspaceFolder(
       folder,
       (err, res) => {

@@ -1,5 +1,5 @@
 import lodash from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when, offset = {}) => {
   const { horizontal: horizontalOffset = 0 } = offset;
@@ -10,7 +10,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
     clientHeight: null,
   });
 
-  const verticalOrientation = useCallback(() => {
+  const verticalOrientation = () => {
     if (!mainRef) {
       return null;
     }
@@ -42,9 +42,9 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
     // } else {
     //   return "top";
     // }
-  }, [mainRef, scrollEl, tooltipRef]);
+  };
 
-  const horizontalOrientation = useCallback(() => {
+  const horizontalOrientation = () => {
     if (!mainRef) {
       return null;
     }
@@ -64,7 +64,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
     } else {
       return "left";
     }
-  }, [mainRef, scrollEl]);
+  };
 
   const calculatePosition = lodash.debounce(() => {
     if (tooltipRef.current) {

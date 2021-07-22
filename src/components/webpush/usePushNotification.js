@@ -1,14 +1,8 @@
-import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getPushNotification, subscribePushNotifications} from "../../redux/actions/globalActions";
-import {
-  askUserPermission,
-  createNotificationSubscription,
-  getUserSubscription,
-  isPushNotificationSupported,
-  registerServiceWorker
-} from "./pushFunctions";
-import {setPushNotification} from "../../redux/actions/notificationActions";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getPushNotification, subscribePushNotifications } from "../../redux/actions/globalActions";
+import { askUserPermission, createNotificationSubscription, getUserSubscription, isPushNotificationSupported, registerServiceWorker } from "./pushFunctions";
+import { setPushNotification } from "../../redux/actions/notificationActions";
 //import all the function created to manage the push notifications
 
 const pushNotificationSupported = isPushNotificationSupported();
@@ -51,9 +45,9 @@ export default function usePushNotification() {
           message: "You denied the consent to receive notifications",
           code: 0,
         });
-        setUserSubscription(false)
+        setUserSubscription(false);
       } else {
-        onClickSubscribeToPushNotification()
+        onClickSubscribeToPushNotification();
       }
       setLoading(false);
     });
@@ -68,11 +62,9 @@ export default function usePushNotification() {
     setSubsubscribing(true);
     createNotificationSubscription()
       .then(function (subscription) {
-        //console.log(subscription);
         setUserSubscription(subscription);
         dispatch(
           subscribePushNotifications(subscription, (err, res) => {
-            console.log('subscribed', res)
             if (err) {
               setSubsubscribing(false);
               setLoading(false);
@@ -80,8 +72,6 @@ export default function usePushNotification() {
               return;
             }
             setSubsubscribing(false);
-
-            //console.log(res, "subscribe response");
             setPushServerSubscriptionId(res.data.id);
           })
         );
@@ -108,7 +98,6 @@ export default function usePushNotification() {
           setError(err);
           return;
         }
-        //console.log(res, "subscribe response");
         setPushServerSubscriptionId(res.data.id);
       })
     );
@@ -122,7 +111,6 @@ export default function usePushNotification() {
     setError(false);
     dispatch(
       getPushNotification({ sub_id: pushServerSubscriptionId }, (err, res) => {
-        //console.log(res, "get notification");
         setLoading(false);
         if (err) setError(err);
       })
@@ -131,7 +119,6 @@ export default function usePushNotification() {
 
   useEffect(() => {
     if (pushNotificationSupported) {
-      //console.log("register worker");
       setLoading(true);
       setError(false);
       registerServiceWorker().then(() => {
@@ -149,7 +136,6 @@ export default function usePushNotification() {
     setFetchingSubscription(true);
     const getExistingSubscription = async () => {
       const existingSubscription = await getUserSubscription();
-      console.log(existingSubscription, "existing subscription");
       if (existingSubscription) {
         dispatch(setPushNotification(true));
       } else {
@@ -164,28 +150,20 @@ export default function usePushNotification() {
   //Retrieve if there is any push notification subscription for the registered service worker
   // this use effect runs only in the first render
 
-  
   /**
-     * define a click handler that creates a push notification subscription.
-     * Once the subscription is created, it uses the setUserSubscription hook
-     */
-  
-  
+   * define a click handler that creates a push notification subscription.
+   * Once the subscription is created, it uses the setUserSubscription hook
+   */
   useEffect(() => {
-    //console.log(subscribing, fetchingSubscription);
-
     if (userSubscription === null && subscribing === null && fetchingSubscription === false) {
       onClickSubscribeToPushNotification();
     }
   }, [userSubscription, subscribing, fetchingSubscription, dispatch]);
 
   useEffect(() => {
-    console.log(pushNotificationSupported, hasSubscribed)
     if (pushNotificationSupported && hasSubscribed === null) {
-      console.log('trigger resubscribe')
       registerServiceWorker().then(() => {
         if (userConsent === "granted") {
-          console.log('resubscribed')
           dispatch(setPushNotification(true));
           onClickSubscribeToPushNotification();
         }
@@ -195,9 +173,9 @@ export default function usePushNotification() {
 
   const onClickRemindLater = () => {
     // ask again tomorrow 86400 seconds = 1 day
-    let time = Math.floor(Date.now() / 1000) + 86400
+    let time = Math.floor(Date.now() / 1000) + 86400;
     localStorage.setItem("remindNotification", time);
-    setReminderTime(time)
+    setReminderTime(time);
   };
   /**
    * returns all the stuff needed by a Component
@@ -214,7 +192,7 @@ export default function usePushNotification() {
     userSubscription,
     error,
     loading,
-    showNotificationBar: userConsent === "default" && userSubscription === null && (reminderTime === null || (reminderTime < Math.floor(Date.now() / 1000))),
-    mounted: didMount
+    showNotificationBar: userConsent === "default" && userSubscription === null && (reminderTime === null || reminderTime < Math.floor(Date.now() / 1000)),
+    mounted: didMount,
   };
 }

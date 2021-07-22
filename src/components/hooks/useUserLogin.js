@@ -35,7 +35,6 @@ export const useUserLogin = (props) => {
         }, 3000);
 
         if (res) {
-          console.log(res.data);
           if (res.data.additional_data) {
             if (res.data.additional_data.type === "POST") {
               if (res.data.additional_data.data.workspace) {
@@ -51,7 +50,6 @@ export const useUserLogin = (props) => {
                 }
               }
             } else if (res.data.additional_data.type === "CHANNEL") {
-              console.log("redirect to chat");
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
@@ -70,7 +68,6 @@ export const useUserLogin = (props) => {
               }
             }
           } else {
-            console.log("default to workspace chat");
             userActions.login(res.data, "/workspace/chat");
           }
         }
@@ -104,21 +101,21 @@ export const useUserLogin = (props) => {
 
             if (localStorage.getItem("promptTrustDevice") === "1") {
               localStorage.removeItem("promptTrustDevice");
-              let cb = {
-                id: new Date().getTime(),
-                type: "modal",
-                modal: "modal_dialog_yes_no",
-                title: "Trust this device?",
-                children: "",
-                callback: {
-                  handleYes: this.handleConfirmationDialogYes,
-                },
-              };
+              // let cb = {
+              //   id: new Date().getTime(),
+              //   type: "modal",
+              //   modal: "modal_dialog_yes_no",
+              //   title: "Trust this device?",
+              //   children: "",
+              //   callback: {
+              //     handleYes: this.handleConfirmationDialogYes,
+              //   },
+              // };
 
               /**
                * @todo Add modal
                */
-              console.log(cb);
+
               //this.props.redux.action.openModal(cb);
             }
 
@@ -171,8 +168,6 @@ export const useUserLogin = (props) => {
       const payload = getUrlParams(window.location.href);
       dispatch(
         authenticateGoogleLogin(payload, (err, res) => {
-          console.log(err);
-
           if (res) {
             userActions.login(res.data, "/workspace/chat");
           }

@@ -1,5 +1,5 @@
 import lodash from "lodash";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { InputGroup, Label, Modal, ModalBody } from "reactstrap";
@@ -8,7 +8,7 @@ import { addToChannels, setSelectedChannel } from "../../redux/actions/chatActio
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { FormInput, PeopleSelect } from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import { useChannelActions, useFileActions, useQuillModules, useTimeFormat, useToaster, useTranslation } from "../hooks";
+import { useChannelActions, useFileActions, useQuillModules, useTimeFormat, useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { DropDocument } from "../dropzone/DropDocument";
 import { Avatar, SvgIconFeather } from "../common";
@@ -121,7 +121,7 @@ const CreateEditChatModal = (props) => {
   const reactQuillRef = useRef();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const toaster = useToaster();
   const { searchExisting, create: createChannel, update: updateChannel } = useChannelActions();
   const { localizeDate } = useTimeFormat();
@@ -539,7 +539,7 @@ const CreateEditChatModal = (props) => {
     setShowIconDropzone(false);
   };
 
-  const handleUseGroupIcon = useCallback((file, fileUrl) => {
+  const handleUseGroupIcon = (file, fileUrl) => {
     setForm((prevState) => ({
       ...prevState,
       icon: {
@@ -548,31 +548,28 @@ const CreateEditChatModal = (props) => {
         value: fileUrl,
       },
     }));
-  }, []);
+  };
 
-  const dropIconAction = useCallback(
-    (uploadedFiles) => {
-      if (uploadedFiles.length === 0) {
-        toaster.error("File type not allowed. Please use an image file.");
-      } else if (uploadedFiles.length > 1) {
-        toaster.warning("Multiple files detected. First selected image will be used.");
-      }
+  const dropIconAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toaster.error("File type not allowed. Please use an image file.");
+    } else if (uploadedFiles.length > 1) {
+      toaster.warning("Multiple files detected. First selected image will be used.");
+    }
 
-      let modal = {
-        type: "file_crop_upload",
-        imageFile: uploadedFiles[0],
-        mode: "profile",
-        handleSubmit: handleUseGroupIcon,
-      };
+    let modal = {
+      type: "file_crop_upload",
+      imageFile: uploadedFiles[0],
+      mode: "profile",
+      handleSubmit: handleUseGroupIcon,
+    };
 
-      dispatch(
-        addToModals(modal, () => {
-          handleHideIconDropzone();
-        })
-      );
-    },
-    [handleUseGroupIcon, handleHideIconDropzone]
-  );
+    dispatch(
+      addToModals(modal, () => {
+        handleHideIconDropzone();
+      })
+    );
+  };
 
   const refs = {
     iconDropZone: useRef(null),

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { CompanyPageHeaderPanel } from "../company";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 //import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
 import { favouriteWorkspace } from "../../../redux/actions/workspaceActions";
 
@@ -134,7 +134,7 @@ const CompanyHeaderPanel = () => {
 
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyChannel = useSelector((state) => Object.values(state.workspaces.workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id));
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     pageTitleDashboard: _t("PAGE_TITLE.DASHBOARD", "Dashboard"),
@@ -286,7 +286,7 @@ const CompanyHeaderPanel = () => {
     } else {
       document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
     }
-  }, [match.params.page, dispatch, pageName]);
+  }, [match.params.page, dispatch, pageName, driff.company_name]);
 
   return (
     <Wrapper className={`page-${match.params.page}`}>

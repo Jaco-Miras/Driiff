@@ -411,7 +411,7 @@ const PostDetail = (props) => {
       });
     }
 
-    if (post.is_unread === 1 || post.unread_count > 0 || !post.is_updated) {
+    if (post.is_unread === 1 || post.unread_count > 0) {
       if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
 

@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {SvgIconFeather} from "../../common";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { SvgIconFeather } from "../../common";
 import SubFolderList from "./SubFolderList";
 
 const Wrapper = styled.li`
@@ -28,7 +28,7 @@ const Wrapper = styled.li`
     transform: rotate(0deg);
     margin-right: 2px;
     margin-left: 10px;
-    
+
     &.ti-minus {
       margin-left: 6px;
     }
@@ -59,10 +59,10 @@ const FolderNav = styled.ul`
   }
 `;
 
-const Icon = styled(SvgIconFeather)`
-  margin-right: 10px;
-  width: 10px;
-`;
+// const Icon = styled(SvgIconFeather)`
+//   margin-right: 10px;
+//   width: 10px;
+// `;
 
 const FolderList = (props) => {
   const { className = "", folder, folders, activeFolder, clearFilter } = props;
@@ -77,7 +77,7 @@ const FolderList = (props) => {
 
   const [showFolders, setShowFolders] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
-  const [active, setActive] = useState(false);
+  //const [active, setActive] = useState(false);
 
   const handleSelectFolder = () => {
     if (folder.hasOwnProperty("payload")) {
@@ -94,15 +94,15 @@ const FolderList = (props) => {
     }
   };
 
-  const handleSelectSubFolder = (f) => {
-    clearFilter();
-    if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-      let pathname = url.split("/folder/")[0];
-      history.push(pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
-    } else {
-      history.push(history.location.pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
-    }
-  };
+  // const handleSelectSubFolder = (f) => {
+  //   clearFilter();
+  //   if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+  //     let pathname = url.split("/folder/")[0];
+  //     history.push(pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
+  //   } else {
+  //     history.push(history.location.pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
+  //   }
+  // };
 
   useEffect(() => {
     if (ref.nav.current !== null) {
@@ -130,19 +130,16 @@ const FolderList = (props) => {
         setShowFolders(true);
       }
     }
-  }, [params, setActive, activeFolder]);
+  }, [params, activeFolder]);
 
   return (
     <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`} selected={activeFolder ? activeFolder.id == folder.id : false}>
       <a onClick={handleSelectFolder}>
         {folder.search}
-        {folder.hasOwnProperty("payload") &&
-        <SvgIconFeather className={"ml-2"} icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000"
-                        opacity=".8"/>}
+        {folder.hasOwnProperty("payload") && <SvgIconFeather className={"ml-2"} icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8" />}
         {Object.values(folders).filter((f) => {
           return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
-        }).length > 0 &&
-        <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>}
+        }).length > 0 && <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`} />}
       </a>
       {Object.values(folders).filter((f) => {
         return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;

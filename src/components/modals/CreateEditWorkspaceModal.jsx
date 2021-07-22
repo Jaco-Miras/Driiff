@@ -1,20 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
 import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
 import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
 import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
+import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
-import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
-import { useFileActions, useToaster, useTranslation } from "../hooks";
+import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, RadioInput } from "../forms";
+import { useFileActions, useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getExternalUsers } from "../../redux/actions/userAction";
 import { debounce } from "lodash";
+import Select from "react-select";
+import { darkTheme, lightTheme } from "../../helpers/selectTheme";
+import { copyTextToClipboard } from "../../helpers/commonFunctions";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -162,6 +166,10 @@ const SelectPeople = styled(PeopleSelect)`
     border-color: #7a1b8b !important;
     box-shadow: none;
   }
+  .has-not-accepted .react-select__multi-value__label {
+    background: #33b5e5;
+    color: #fff;
+  }
   @media all and (max-width: 480px) {
     width: 100%;
   }
@@ -190,20 +198,28 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-const LockIcon = styled(SvgIconFeather)`
-  width: 1rem;
-  height: 1rem;
+const RadioInputWrapper = styled.div`
+  .component-radio-input {
+    font-size: 0.9rem;
+  }
 `;
+
+// const LockIcon = styled(SvgIconFeather)`
+//   width: 1rem;
+//   height: 1rem;
+// `;
 
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
   const { uploadFiles } = useFileActions();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const history = useHistory();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const [modal, setModal] = useState(true);
+  const [showNestedModal, setShowNestedModal] = useState(false);
+  const userSettings = useSelector((state) => state.settings.user);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const externalUsers = useSelector((state) => state.users.externalUsers);
@@ -213,7 +229,7 @@ const CreateEditWorkspaceModal = (props) => {
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [invitedEmails, setInvitedEmails] = useState([]);
+  //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
   const [form, setForm] = useState({
     is_private: false,
@@ -267,11 +283,44 @@ const CreateEditWorkspaceModal = (props) => {
     workspace_name: useRef(null),
     dropZone: useRef(null),
     iconDropZone: useRef(null),
+    first_name: useRef(null),
   };
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+  const [invitedExternals, setInvitedExternals] = useState([]);
+  const [invitedExternal, setInvitedExternal] = useState({
+    email: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    company: "",
+    language: "en",
+    send_by_email: true,
+  });
+  const [inactiveMembers, setInactiveMembers] = useState([]);
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
+
+  const languageOptions = [
+    {
+      value: "en",
+      label: (
+        <>
+          <Flag countryAbbr="en" className="mr-2" width="18" />
+          {_t("LANGUAGE.ENGLISH", "English")}
+        </>
+      ),
+    },
+    {
+      value: "nl",
+      label: (
+        <>
+          <Flag countryAbbr="nl" className="mr-2" width="18" />
+          {_t("LANGUAGE.DUTCH", "Dutch")}
+        </>
+      ),
+    },
+  ];
 
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
@@ -313,6 +362,18 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
     emailExists: _t("WORKSPACE.EMAIL_EXISTS", "Email already used"),
     invalidEmail: _t("WORKSPACE.INVALID_EMAIL", "Invalid email"),
+    newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (#::email::#). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
+      email: invitedExternal.email,
+    }),
+    newExternalUser: _t("WORKSPACE.NEW_EXTERNAL_USER", "New external user"),
+    firstName: _t("REGISTER.FIRST_NAME", "First name"),
+    middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
+    lastName: _t("REGISTER.LAST_NAME", "Last name"),
+    companyName: _t("DRIFF.COMPANY_NAME", "Company name"),
+    languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
+    save: _t("POST.SAVE", "Save"),
+    sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
+    sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
   };
 
   const _validateName = useCallback(() => {
@@ -402,12 +463,26 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleSelectExternalUser = (e) => {
+    if (e && e.some((data) => data.label.startsWith("Add ") && !data.hasOwnProperty("id"))) {
+      setShowNestedModal(true);
+      const email = e.find((d) => d.label.startsWith("Add "));
+      setInvitedExternal({
+        email: email.value,
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        company: "",
+        language: "en",
+        send_by_email: true,
+      });
+    }
     if (e === null) {
       setForm((prevState) => ({
         ...prevState,
         selectedExternals: [],
       }));
-      setInvitedEmails([]);
+      //setInvitedEmails([]);
+      setInvitedExternals([]);
     } else {
       const externals = e.map((e) => {
         if (e.id) {
@@ -429,7 +504,8 @@ const CreateEditWorkspaceModal = (props) => {
         ...prevState,
         selectedExternals: externals,
       }));
-      setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
+      //setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
+      setInvitedExternals(invitedExternals.filter((ex) => e.some((e) => e.email === ex.email)));
     }
   };
 
@@ -438,7 +514,10 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleCreateOption = (inputValue) => {
-    setInvitedEmails((prevState) => [...prevState, inputValue]);
+    const external = invitedExternals.find((ex) => ex.email === inputValue);
+    if (external) setInvitedExternal(external);
+    else setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    toggleNested(true);
     setForm((prevState) => ({
       ...prevState,
       selectedExternals: [
@@ -621,17 +700,52 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     //const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    if (invitedEmails.length && form.has_externals) {
+    // if (invitedEmails.length && form.has_externals) {
+    //   if (mode === "edit") {
+    //     payload = {
+    //       ...payload,
+    //       new_external_emails: invitedEmails,
+    //       is_external: 1,
+    //     };
+    //   } else {
+    //     payload = {
+    //       ...payload,
+    //       external_emails: invitedEmails,
+    //       is_external: 1,
+    //     };
+    //   }
+    // }
+    if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
           ...payload,
-          new_external_emails: invitedEmails,
+          new_externals: invitedExternals
+            .filter((ex) => form.selectedExternals.some((e) => e.email === ex.email))
+            .map((ex) => {
+              return {
+                ...ex,
+                first_name: ex.first_name.trim(),
+                middle_name: ex.middle_name.trim(),
+                last_name: ex.last_name.trim(),
+                company: ex.company.trim(),
+              };
+            }),
           is_external: 1,
         };
       } else {
         payload = {
           ...payload,
-          external_emails: invitedEmails,
+          external_emails: invitedExternals
+            .filter((ex) => form.selectedExternals.some((e) => e.email === ex.email))
+            .map((ex) => {
+              return {
+                ...ex,
+                first_name: ex.first_name.trim(),
+                middle_name: ex.middle_name.trim(),
+                last_name: ex.last_name.trim(),
+                company: ex.company.trim(),
+              };
+            }),
           is_external: 1,
         };
       }
@@ -653,7 +767,7 @@ const CreateEditWorkspaceModal = (props) => {
         remove_member_ids: removed_members.map((m) => m.id),
         new_member_ids: added_members,
       };
-      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r)).length || item.name !== form.name) {
+      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length || item.name !== form.name) {
         payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
           author: {
             id: user.id,
@@ -663,7 +777,7 @@ const CreateEditWorkspaceModal = (props) => {
             profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           },
           title: form.name === item.name ? "" : form.name,
-          added_members: added_members.filter((r) => !invitedIds.some((id) => id === r)),
+          added_members: added_members.filter((mid) => !invitedIds.some((id) => id === mid) && !inactiveMembers.some((m) => m.id === mid)),
           removed_members: removed_members.filter((rm) => rm.has_accepted).map((m) => m.id),
         })}`;
       }
@@ -677,6 +791,17 @@ const CreateEditWorkspaceModal = (props) => {
 
           if (form.icon) {
             handleUpdateWorkspaceIcon(payload, form.icon);
+          }
+
+          if (res.data) {
+            const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
+            if (sendByMyselfEmail) {
+              const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
+              if (member && member.invite_link) {
+                //copy to clipboard invite link
+                copyTextToClipboard(toaster, member.invite_link);
+              }
+            }
           }
 
           handleDeleteFileAttachements();
@@ -746,7 +871,6 @@ const CreateEditWorkspaceModal = (props) => {
           createWorkspace(payload, (err, res) => {
             toggle();
             if (err) {
-              console.log(err);
               setLoading(false);
               toaster.warning(
                 <span>
@@ -814,6 +938,15 @@ const CreateEditWorkspaceModal = (props) => {
                 updated_at: res.data.topic.created_at,
                 is_shared: form.has_externals,
               };
+
+              const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
+              if (sendByMyselfEmail) {
+                const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
+                if (member && member.invite_link) {
+                  //copy to clipboard invite link
+                  copyTextToClipboard(toaster, member.invite_link);
+                }
+              }
 
               dispatch(setActiveTopic(newWorkspace));
               if (form.icon) {
@@ -955,9 +1088,9 @@ const CreateEditWorkspaceModal = (props) => {
     setShowIconDropzone(false);
   };
 
-  const handleShowIconDropzone = () => {
-    setShowIconDropzone(true);
-  };
+  // const handleShowIconDropzone = () => {
+  //   setShowIconDropzone(true);
+  // };
 
   const dropAction = (acceptedFiles) => {
     let selectedFiles = [];
@@ -1125,7 +1258,7 @@ const CreateEditWorkspaceModal = (props) => {
           .map((m) => {
             return {
               value: m.id,
-              label: m.name,
+              label: m.name !== "" ? m.name : m.first_name !== "" ? m.first_name : m.email,
               name: m.name,
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
@@ -1135,6 +1268,7 @@ const CreateEditWorkspaceModal = (props) => {
               has_accepted: m.has_accepted,
             };
           });
+        setInactiveMembers(item.members.filter((m) => m.active === 0 && m.has_accepted));
       }
       setForm({
         ...form,
@@ -1271,10 +1405,116 @@ const CreateEditWorkspaceModal = (props) => {
     refs.iconDropZone.current.open();
   };
 
+  const toggleNested = () => {
+    setShowNestedModal((prevState) => !prevState);
+  };
+
+  const handleSaveExternalFields = () => {
+    toggleNested();
+    if (invitedExternals.some((ex) => ex.email === invitedExternal.email)) {
+      setInvitedExternals(
+        invitedExternals.map((ex) => {
+          if (ex.email === invitedExternal.email) {
+            return invitedExternal;
+          } else return ex;
+        })
+      );
+    } else {
+      setInvitedExternals([...invitedExternals, invitedExternal]);
+    }
+    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+  };
+
+  const handleExternalFieldChange = (e) => {
+    e.persist();
+    setInvitedExternal((prevState) => {
+      return {
+        ...prevState,
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
+
+  const handleLanguageChange = (e) => {
+    setInvitedExternal((prevState) => {
+      return {
+        ...prevState,
+        language: e.value,
+      };
+    });
+  };
+
+  const handleSetSignupLink = (e, type) => {
+    setInvitedExternal({
+      ...invitedExternal,
+      send_by_email: type === "myself" ? false : true,
+    });
+  };
+
+  const handleEmailClick = (data) => {
+    const external = invitedExternals.find((ex) => ex.email === data.email);
+    if (external) setInvitedExternal(external);
+    toggleNested(true);
+  };
+
+  const onOpenedNested = () => {
+    if (refs.first_name && refs.first_name.current) {
+      refs.first_name.current.focus();
+    }
+  };
+
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
       <ModalBody onDragOver={handleShowDropzone}>
+        <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
+          <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
+          <ModalBody>
+            <Label className={"modal-info mb-3"}>{dictionary.newExternalInfo}</Label>
+            <Label className={"modal-label"}>{dictionary.firstName}</Label>
+            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
+            <Label className={"modal-label"}>{dictionary.middleName}</Label>
+            <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>{dictionary.lastName}</Label>
+            <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>{dictionary.companyName}</Label>
+            <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
+            <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
+            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
+            <RadioInputWrapper className="mt-3">
+              <RadioInput
+                readOnly
+                onClick={(e) => {
+                  handleSetSignupLink(e, "myself");
+                }}
+                checked={!invitedExternal.send_by_email}
+                value={"myself"}
+                name={"myself"}
+              >
+                {dictionary.sendMyself}
+              </RadioInput>
+              <RadioInput
+                readOnly
+                onClick={(e) => {
+                  handleSetSignupLink(e, "driff");
+                }}
+                checked={invitedExternal.send_by_email}
+                value={"driff"}
+                name={"driff"}
+              >
+                {dictionary.sendTruDriff}
+              </RadioInput>
+            </RadioInputWrapper>
+          </ModalBody>
+          <ModalFooter>
+            <Button className="btn-outline-secondary" onClick={toggleNested}>
+              {dictionary.cancel}
+            </Button>
+            <Button color="primary" onClick={handleSaveExternalFields}>
+              {dictionary.save}
+            </Button>
+          </ModalFooter>
+        </Modal>
         <DropDocument
           hide={!showDropzone}
           ref={refs.dropZone}
@@ -1380,6 +1620,7 @@ const CreateEditWorkspaceModal = (props) => {
               isSearchable
               classNamePrefix="react-select"
               onMenuClose={handleMenuClose}
+              onEmailClick={handleEmailClick}
             />
           </WrapperDiv>
         )}

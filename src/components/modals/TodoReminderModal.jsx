@@ -5,12 +5,12 @@ import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useSettings, useTranslation, useToaster, useWindowSize } from "../hooks";
+import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import quillHelper from "../../helpers/quillHelper";
+//import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
 import moment from "moment";
-import MessageFiles from "../list/chat/Files/MessageFiles";
+// import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
@@ -55,6 +55,7 @@ const RadioInputContainer = styled.div`
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
     height: ${(props) => (props.height > 80 ? props.height : 80)}px;
+    max-height: 400px;
   }
 
   label {
@@ -73,7 +74,7 @@ const TodoReminderModal = (props) => {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
   } = useSettings();
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const winSize = useWindowSize();
@@ -147,7 +148,6 @@ const TodoReminderModal = (props) => {
        * **/
       if (!itemType && params && workspaces[params.workspaceId]) {
         const ws = { ...workspaces[params.workspaceId] };
-        console.log("set default workspace");
         // set default selected workspace and set the user options using the workspace members
         setSelectedWorkspace({
           ...ws,
@@ -356,12 +356,13 @@ const TodoReminderModal = (props) => {
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
   };
 
-  if (itemType === null) {
-    dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER", "New reminder");
+  if (mode === "edit") {
+    dictionary.chatReminder = _t("TODO.EDIT", "Edit todo");
   } else {
-    dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER_FOR_THIS_TYPE", "Set a reminder for this ::type::", {
-      type: itemType.toLowerCase().replace("_", " "),
-    });
+    dictionary.chatReminder = _t("TODO.NEW", "New todo");
+    // dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER_FOR_THIS_TYPE", "Set a reminder for this ::type::", {
+    //   type: itemType.toLowerCase().replace("_", " "),
+    // });
   }
 
   const toggle = () => {
@@ -382,7 +383,7 @@ const TodoReminderModal = (props) => {
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
-    if (textOnly.trim() !== "") {
+    if (textOnly.trim() !== "" || inlineImages.length > 0) {
       setForm((prevState) => ({
         ...prevState,
         description: {
@@ -452,7 +453,7 @@ const TodoReminderModal = (props) => {
       .some((f) => f === false);
   };
 
-  const handleSnooze = () => {
+  const handleRemind = () => {
     if (loading || !isFormValid() || imageLoading) return;
 
     setLoading(true);
@@ -625,10 +626,16 @@ const TodoReminderModal = (props) => {
     }
   };
 
+  const dismissToaster = () => {
+    setTimeout(() => {
+      if (toasterRef.curent) toaster.dismiss(toasterRef.current);
+    }, 500);
+  };
+
   const handleNetWorkError = () => {
     if (toasterRef.curent !== null) {
       setLoading(false);
-      toaster.dismiss(toasterRef.current);
+      dismissToaster();
       toaster.error(<div>{dictionary.unsuccessful}.</div>);
       toasterRef.current = null;
     }
@@ -657,7 +664,7 @@ const TodoReminderModal = (props) => {
           ...payload,
           file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
         };
-        actions.onSubmit(payload, () => toaster.dismiss(toasterRef.current));
+        actions.onSubmit(payload, dismissToaster);
         //setLoading(false);
         //toggle();
       })
@@ -974,7 +981,7 @@ const TodoReminderModal = (props) => {
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
-        <Button color="primary" onClick={handleSnooze}>
+        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === ""}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.snooze}
         </Button>{" "}

@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   display: inline-flex;
   position: relative;
   width: 25px;
-
+  border-color: #e1e1e1 !important;
   svg {
     cursor: pointer;
     width: 100%;
@@ -73,7 +73,7 @@ const MoreTooltip = styled.div`
 `;
 
 const MoreOptions = forwardRef((props, ref) => {
-  const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, scrollRef = null, onClick, ...rest } = props;
+  const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, strokeWidth = 2, fill = "none", svgHeight = "20", scrollRef = null, onClick, ...rest } = props;
 
   const refs = {
     options: useRef(),
@@ -97,7 +97,7 @@ const MoreOptions = forwardRef((props, ref) => {
   const handleMouseLeave = () => {
     timeout = setTimeout(() => {
       setShowMoreOptions(false);
-    }, 600);
+    }, 1000);
   };
 
   const handleMouseEnter = () => {
@@ -106,7 +106,7 @@ const MoreOptions = forwardRef((props, ref) => {
 
   return (
     <Wrapper className={`more-options ${showMoreOptions ? "more-options-active" : ""} ${className}`} onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
-      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} />
+      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} strokeWidth={strokeWidth} fill={fill} height={svgHeight} />
       {showMoreOptions && (
         <MoreTooltip
           ref={refs.options}

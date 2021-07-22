@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useTranslation, useUserChannels } from "../../hooks";
+import { useTranslationActions, useUserChannels } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
 
@@ -53,12 +53,9 @@ const CompanyPeoplePanel = (props) => {
     setSearch("");
   };
 
-  const handleUserNameClick = useCallback(
-    (user) => {
-      history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
-    },
-    [history]
-  );
+  const handleUserNameClick = (user) => {
+    history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
+  };
 
   const handleUserChat = (user) => selectUserChannel(user);
 
@@ -83,7 +80,7 @@ const CompanyPeoplePanel = (props) => {
       return true;
     });
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),

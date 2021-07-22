@@ -60,10 +60,10 @@ function App() {
   const history = useHistory();
   const { profileSlider: userProfile } = useSelector((state) => state.users);
 
-  const session = useSelector((state) => state.session);
+  //const session = useSelector((state) => state.session);
   // const [initUserSnap, setInitUserSnap] = useState(null);
 
-  useTranslation(session);
+  useTranslation();
 
   // const userSnap = () => {
   //   setInitUserSnap(session.authenticated);

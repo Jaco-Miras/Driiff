@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
@@ -19,7 +19,7 @@ const EyeIcon = styled(SvgIconFeather)`
 const LockedLabel = (props) => {
   const { className = "", channel } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const user = useSelector((state) => state.session.user);

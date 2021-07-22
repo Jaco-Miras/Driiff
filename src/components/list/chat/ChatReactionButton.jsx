@@ -83,7 +83,7 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 `;
 
 const ChatReactionButton = (props) => {
-  const { reply, scrollRef = null, showEmojiSwitcher = null } = props;
+  const { reply, showEmojiSwitcher = null } = props;
   let timeout = null;
 
   const chatMessageAction = useChatMessageActions();

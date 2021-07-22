@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslation } from "../../hooks";
+import { useToaster, useTranslationActions } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
@@ -31,6 +31,17 @@ const NavBarLeft = styled.div`
   }
   .nav-item {
     display: flex;
+    .mobile-private {
+      display: none;
+    }
+    @media all and (max-width: 440px) {
+      .badge.badge-danger {
+        display: none !important;
+      }
+      .mobile-private {
+        display: block;
+      }
+    }
   }
   @media (max-width: 991.99px) {
     margin-right: 5px;
@@ -83,6 +94,10 @@ const NavBarLeft = styled.div`
   .component-user-list-pop-up-container .profile-slider {
     right: 165px;
     top: 0;
+  }
+  .plus-recipient-component {
+    width: 2.7rem;
+    height: 2.7rem;
   }
 `;
 
@@ -279,7 +294,7 @@ const WorspaceHeaderPanel = (props) => {
   } = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -309,6 +324,7 @@ const WorspaceHeaderPanel = (props) => {
       topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
     }),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
   };
 
   //const actions = useWorkspaceSearchActions();
@@ -405,7 +421,7 @@ const WorspaceHeaderPanel = (props) => {
         document.title = `${pageName} ‹ ${activeTopic.name} — ${driff.company_name} @ Driff`;
       }
     }
-  }, [match.params.page, dispatch, activeTopic]);
+  }, [match.params.page, dispatch, activeTopic, driff.company_name]);
 
   // useEffect(() => {
   //   if (activeTopic && !activeTopic.members.some((m) => m.id === user.id)) {
@@ -420,10 +436,20 @@ const WorspaceHeaderPanel = (props) => {
       is_pinned: activeTopic.is_favourite ? 0 : 1,
     };
 
-    dispatch(favouriteWorkspace(payload));
+    dispatch(
+      favouriteWorkspace(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (payload.is_pinned) {
+          toaster.success(_t("TOASTER.ADDED_TO_FAVORITES", "::title:: added to favorites", { title: activeTopic.name }));
+        } else {
+          toaster.success(_t("TOASTER.REMOVED_FROM_FAVORITES", "::title:: removed from favorites", { title: activeTopic.name }));
+        }
+      })
+    );
   };
-
-  const isMember = activeTopic && user && activeTopic.members.some((m) => m.id === user.id);
 
   return (
     <>
@@ -470,6 +496,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
+                          <Icon icon="lock" className="mobile-private ml-1" />
                           <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
@@ -485,11 +512,9 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
-                      {isMember && (
-                        <li className="nav-item">
-                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
-                        </li>
-                      )}
+                      <li className="nav-item">
+                        <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                      </li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   ) : (
@@ -497,6 +522,7 @@ const WorspaceHeaderPanel = (props) => {
                       {!isExternal && (
                         <>
                           <li className="nav-item nav-item-folder">
+                            <SvgIconFeather icon="folder" className={"mr-1"} />
                             <WorkspaceName>
                               <WorkspaceWrapper>
                                 {activeTopic.folder_name}
@@ -517,6 +543,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
+                          <Icon icon="lock" className="mobile-private ml-1" />
                           <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
@@ -532,11 +559,11 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
-                      {isMember && (
-                        <li className="nav-item">
-                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
-                        </li>
-                      )}
+
+                      <li className="nav-item">
+                        <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                      </li>
+
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import {useTranslation} from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   .btn-cross {
@@ -73,7 +73,7 @@ const MainSearch = (props) => {
     setInputValue(value);
   }, [value]);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     searchGlobalPlaceholder: _t("PLACEHOLDER.SEARCH_GLOBAL", "Search for anything in this Driff"),

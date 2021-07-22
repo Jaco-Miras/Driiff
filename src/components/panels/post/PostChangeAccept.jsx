@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { useTranslation } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 import { Avatar } from "../../common";
 
 const Wrapper = styled.div``;
@@ -47,7 +47,7 @@ const PostChangeAccept = (props) => {
   const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers, isBotMessage = false } = props;
 
   const users = useSelector((state) => state.users.users);
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     comment: _t("NOTIFICATION.COMMENT_POPUP", "Made a comment in ::title::", { title: "" }),
     requestChange: _t("POST.REQUEST_CHANGE", "Request for change"),

@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useToaster, useTranslation, useUserChannels } from "../../hooks";
+import { useToaster, useTranslationActions, useUserChannels } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "reactstrap";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -22,12 +23,14 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+    flex-flow: row wrap;
   }
 
   .people-search {
     flex: 0 0 80%;
     justify-content: flex-start;
     padding-left: 0;
+    flex-flow: row wrap;
   }
 `;
 
@@ -43,6 +46,8 @@ const SystemPeoplePanel = (props) => {
   const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
+  const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -50,7 +55,14 @@ const SystemPeoplePanel = (props) => {
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
 
-  const allUsers = [...Object.values(users), ...inactiveUsers];
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 
   const refs = {
     search: useRef(),
@@ -64,12 +76,9 @@ const SystemPeoplePanel = (props) => {
     setSearch("");
   };
 
-  const handleUserNameClick = useCallback(
-    (user) => {
-      history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
-    },
-    [history]
-  );
+  const handleUserNameClick = (user) => {
+    history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
+  };
 
   const handleUserChat = (user) => selectUserChannel(user);
 
@@ -91,7 +100,8 @@ const SystemPeoplePanel = (props) => {
       }
 
       if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) === -1 && user.email.toLowerCase().search(search.toLowerCase()) === -1) return false;
+        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
+        else return false;
       }
 
       return true;
@@ -100,7 +110,7 @@ const SystemPeoplePanel = (props) => {
       return a.name.localeCompare(b.name);
     });
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
@@ -130,6 +140,8 @@ const SystemPeoplePanel = (props) => {
     deactivate: _t("PEOPLE.DEACTIVATE", "Deactivate"),
     moveToInternal: _t("PEOPLE.MOVE_TO_INTERNAL", "Move to internal"),
     moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
+    deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
+    deleteConfirmationText: _t("PEOPLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this user? This means this user can't log in anymore."),
   };
 
   const handleInviteUsers = () => {
@@ -137,6 +149,7 @@ const SystemPeoplePanel = (props) => {
       type: "driff_invite_users",
       hasLastName: true,
       invitations: [],
+      fromRegister: false,
       onPrimaryAction: (invitedUsers, callback, options) => {
         if (invitedUsers.length === 0) {
           options.closeModal();
@@ -212,6 +225,7 @@ const SystemPeoplePanel = (props) => {
   };
 
   useEffect(() => {
+    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
     refs.search.current.focus();
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
@@ -278,6 +292,27 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleDeleteUser = (user) => {
+    const handleSubmit = () => {
+      userActions.deleteUserAccount({ user_id: user.id }, (err, res) => {
+        if (err) return;
+        toaster.success(`${user.name} deleted.`);
+      });
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.deleteUser,
+      submitText: dictionary.deleteUser,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.deleteConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -313,12 +348,14 @@ const SystemPeoplePanel = (props) => {
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
                   onUpdateRole={userActions.updateUserRole}
-                  showOptions={loggedUser.role.name === "admin" || loggedUser.role.name === "owner"}
+                  showOptions={(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && usersWithoutActivityLoaded}
                   roles={roles}
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
+                  onDeleteUser={handleDeleteUser}
                   showInactive={showInactive}
+                  usersWithoutActivity={usersWithoutActivity}
                 />
               );
             })}

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePosts, useTranslation } from "../../hooks";
+import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
@@ -22,13 +22,15 @@ const WorkspaceDashboardPanel = (props) => {
   const { className = "", isExternal, isMember, match, actions, workspaceTimeline, workspace } = props;
 
   const { params } = match;
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const { recentPosts } = usePosts();
   const width = window.innerWidth;
 
   const handleEditClick = () => {
     actions.showModal(workspace, "edit", "workspace");
   };
+
+  useFetchWsCount();
 
   const dictionary = {
     aboutThisWorkspace: _t("DASHBOARD.ABOUT_THIS_WORKSPACE", "About this workspace"),
@@ -100,6 +102,7 @@ const WorkspaceDashboardPanel = (props) => {
     roleTechnicalAdvisor: _t("ROLE.TECHNICAL_ADVISOR", "Technical advisor"),
     roleTechnicalLead: _t("ROLE.TECHNICAL_LEAD", "Technical lead"),
     roleWatcher: _t("ROLE.WATCHER", "Watcher"),
+    sendInviteManually: _t("TEAM.SEND_INVITE_MANUALLY", "Send invite manually"),
   };
 
   let disableOptions = false;

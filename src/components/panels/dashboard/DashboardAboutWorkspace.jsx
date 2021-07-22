@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {FileAttachments, SvgIconFeather} from "../../common";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   border-left: 5px solid #822492;
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
     transition: all 0.3s ease;
     background: linear-gradient(0deg, rgba(252, 252, 252, 1) 0%, rgba(252, 252, 252, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
     opacity: 0;
-  
+
     .dark & {
       background: none;
     }
@@ -96,7 +96,7 @@ const DashboardDescription = styled.div`
 `;
 
 const DashboardAboutWorkspace = (props) => {
-  const {className = "", onEditClick, workspace, isMember, isExternal, dictionary} = props;
+  const { className = "", onEditClick, workspace, isMember, isExternal, dictionary } = props;
 
   const [prevWorkspaceDescription, setPrevWorkspaceDescription] = useState("");
   const [showMore, setShowMore] = useState(null);
@@ -119,13 +119,10 @@ const DashboardAboutWorkspace = (props) => {
     }
   };
 
-  const toggleShowMore = useCallback(
-    (e) => {
-      e.preventDefault();
-      setShowMore((state) => !state);
-    },
-    [setShowMore]
-  );
+  const toggleShowMore = (e) => {
+    e.preventDefault();
+    setShowMore((state) => !state);
+  };
 
   useEffect(() => {
     if (refs.description.current) {
@@ -149,11 +146,11 @@ const DashboardAboutWorkspace = (props) => {
 
   return (
     <Wrapper className={`dashboard-about-workspace card ${className}`}>
-      <div className={`bg-overlay ${showMore === null ? "" : showMore === true ? "show" : "hide"}`}/>
+      <div className={`bg-overlay ${showMore === null ? "" : showMore === true ? "show" : "hide"}`} />
       <div className="card-body">
-        <h5
-          className="card-title">{dictionary.aboutThisWorkspace} {isMember === true && !isExternal && workspace.active === 1 &&
-        <SvgIconFeather icon="edit" onClick={onEditClick}/>}</h5>
+        <h5 className="card-title">
+          {dictionary.aboutThisWorkspace} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather icon="edit" onClick={onEditClick} />}
+        </h5>
         {workspace && (
           <>
             <DashboardDescriptionContainer className={showMore === null ? "" : showMore === true ? "show" : "hide"}>
@@ -161,7 +158,7 @@ const DashboardAboutWorkspace = (props) => {
                 ref={refDescription}
                 height={descriptionHeight}
                 className={`dashboard-description ${showMore === null ? "" : showMore === true ? "show" : "hide"}`}
-                dangerouslySetInnerHTML={{__html: workspace.description}}
+                dangerouslySetInnerHTML={{ __html: workspace.description }}
               />
               {showMore !== null && (
                 <div onClick={toggleShowMore} className="btn-toggle-show cursor-pointer mt-2">

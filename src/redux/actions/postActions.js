@@ -439,3 +439,19 @@ export function removeDraftPost(payload, callback) {
 export function removeCommentDraft(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_COMMENT_DRAFT", payload, callback);
 }
+
+export function getReadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_READ_COMPANY_POSTS_START", "GET_READ_COMPANY_POSTS_SUCCESS", "GET_READ_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getArchivedCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_ARCHIVED_OMPANY_POSTS_START", "GET_ARCHIVED_COMPANY_POSTS_SUCCESS", "GET_ARCHIVED_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getMyCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_MY_COMPANY_POSTS_START", "GET_MY_COMPANY_POSTS_SUCCESS", "GET_MY_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getStarCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_STAR_COMPANY_POSTS_START", "GET_STAR_COMPANY_POSTS_SUCCESS", "GET_STAR_COMPANY_POSTS_FAIL", callback);
+}

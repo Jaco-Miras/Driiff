@@ -1,4 +1,5 @@
 import momentTZ from "moment-timezone";
+//import React from "react";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
@@ -7,7 +8,7 @@ const INITIAL_STATE = {
     i18n: 1605864545,
     isSettingsLoaded: false,
     isCompSettingsLoaded: false,
-    company_name: "ZUID Creatives",
+    company_name: "Driff communication",
     settings: {
       maintenance_mode: false,
       google_login: true,
@@ -78,6 +79,8 @@ const INITIAL_STATE = {
         order_by: "channel_date_updated",
         sort_by: "DESC",
       },
+      translated_channels: [],
+      chat_language: "en",
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {
@@ -106,7 +109,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
-      console.log(action.data);
       let settings = state.driff.settings;
       let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;

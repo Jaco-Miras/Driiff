@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useChannels, useLoadChannel, useSettings, useTranslation } from "../../hooks";
+import { useLoadChannel, useSettings, useTranslation, useChannelActions } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
+import { useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   z-index: 2;
@@ -129,11 +130,14 @@ const StyledMoreOptions = styled(MoreOptions)`
 const ChatSidebarPanel = (props) => {
   const { className = "" } = props;
 
+  const params = useParams();
   const dispatch = useDispatch();
   const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings, setChatSetting } = useSettings();
-  const { actions: channelActions, chatSidebarSearch } = useChannels();
+  const channelActions = useChannelActions();
+  const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   useLoadChannel();
+  const searchingChannels = useSelector((state) => state.chat.searchingChannels);
 
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
@@ -152,9 +156,10 @@ const ChatSidebarPanel = (props) => {
     const timeOutId = setTimeout(() => {
       channelActions.setSidebarSearch({
         value: query,
+        searching: query.trim() !== "",
       });
       if (query.trim() !== "") {
-        let payload = { search: query, skip: 0, limit: 50 };
+        let payload = { search: query, skip: 0, limit: 25 };
         if (searchArchivedChannels) {
           payload = {
             ...payload,
@@ -176,16 +181,13 @@ const ChatSidebarPanel = (props) => {
     setTabPill("pills-home");
   };
 
-  const handleTabChange = useCallback(
-    (e) => {
-      if (tabPill === e.target.getAttribute("aria-controls")) {
-        handleResetFilter();
-      } else {
-        setTabPill(e.target.getAttribute("aria-controls"));
-      }
-    },
-    [setTabPill, tabPill]
-  );
+  const handleTabChange = (e) => {
+    if (tabPill === e.target.getAttribute("aria-controls")) {
+      handleResetFilter();
+    } else {
+      setTabPill(e.target.getAttribute("aria-controls"));
+    }
+  };
 
   const { _t } = useTranslation();
 
@@ -209,6 +211,8 @@ const ChatSidebarPanel = (props) => {
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
     you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
+    withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
+    withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
   };
 
   const handleOpenGroupChatModal = () => {
@@ -246,10 +250,25 @@ const ChatSidebarPanel = (props) => {
     }
   }, [chatSidebarSearch]);
 
+  useEffect(() => {
+    if (params.messageId) {
+      document.body.classList.add("m-chat-channel-closed");
+    }
+  }, []);
+
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start align-items-center">
-        <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} />
+        <Search
+          onChange={onSearchChange}
+          onKeyDown={handleSearchKeyDown}
+          value={query}
+          onClickEmpty={emptySearchInput}
+          closeButton="true"
+          searching={searchingChannels}
+          className="chat-search"
+          placeholder={dictionary.searchChatPlaceholder}
+        />
         <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
           <StyledMoreOptions ref={refs.navTab} role="tabList">
             <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
@@ -269,4 +288,4 @@ const ChatSidebarPanel = (props) => {
   );
 };
 
-export default React.memo(ChatSidebarPanel);
+export default ChatSidebarPanel;

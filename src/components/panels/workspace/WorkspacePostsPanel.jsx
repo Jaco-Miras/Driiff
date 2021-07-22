@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { usePosts, useTranslation } from "../../hooks";
+import { SvgIconFeather, Loader } from "../../common";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -93,14 +94,23 @@ const StyledIcon = styled(SvgIconFeather)`
   }
 `;
 
-let fetching = false;
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
   const params = useParams();
   const history = useHistory();
+  const toaster = useToaster();
 
   const dispatch = useDispatch();
+
+  useFetchWsCount();
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
@@ -112,17 +122,22 @@ const WorkspacePostsPanel = (props) => {
 
   const isExternalUser = user.type === "external";
 
-  const handleGoback = useCallback(() => {
+  const componentIsMounted = useRef(true);
+
+  const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
       let pathname = history.location.pathname.split("/post/")[0];
       history.push(pathname);
     }
-  }, [params, history]);
+  };
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
       actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
     }
+    return () => {
+      componentIsMounted.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -131,7 +146,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [params.workspaceId]);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
@@ -223,7 +238,28 @@ const WorkspacePostsPanel = (props) => {
     remove: _t("BUTTON.REMOVE", "Remove"),
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
+    errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
   };
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "inbox",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
@@ -291,10 +327,41 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [filter]);
 
+  const loadMoreUnreadPosts = () => {
+    if (filters && filters.unreadPosts && filters.unreadPosts.hasMore) {
+      let payload = {
+        filters: ["green_dot"],
+        topic_id: workspace.id,
+        skip: filters.unreadPosts.skip,
+      };
+      let cb = (err, res) => {
+        if (err) return;
+        let files = res.data.posts.map((p) => p.files);
+        if (files.length) {
+          files = files.flat();
+        }
+        dispatch(
+          addToWorkspacePosts({
+            topic_id: workspace.id,
+            posts: res.data.posts,
+            files,
+            filters: {
+              unreadPosts: {
+                skip: res.data.next_skip,
+                hasMore: res.data.total_take === 25,
+              },
+            },
+          })
+        );
+      };
+      actions.getPosts(payload, cb);
+    }
+  };
+
   const handleLoadMore = () => {
-    if (!fetching && search === "" && !post) {
-      fetching = true;
+    if (search === "" && !post) {
       setLoading(true);
+      loadMoreUnreadPosts();
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
@@ -312,9 +379,10 @@ const WorkspacePostsPanel = (props) => {
       }
 
       let cb = (err, res) => {
-        setLoading(false);
-        fetching = false;
-        setLoadPosts(false);
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -402,7 +470,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [postListTag, postLists]);
 
-  const handleEditArchivePostList = useCallback(() => {
+  const handleEditArchivePostList = () => {
     const payload = {
       topic_id: workspace.id,
       tag: null,
@@ -410,7 +478,7 @@ const WorkspacePostsPanel = (props) => {
       filter: "all",
     };
     dispatch(updateWorkspacePostFilterSort(payload));
-  }, [activePostListName]);
+  };
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
@@ -450,7 +518,7 @@ const WorkspacePostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" ? (
+          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
             <PostsEmptyState actions={actions} dictionary={dictionary} disableOptions={disableOptions} isMember={isMember} />
           ) : (
             <>
@@ -474,6 +542,10 @@ const WorkspacePostsPanel = (props) => {
                     />
                   </PostDetailWrapper>
                 </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
               ) : (
                 <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
               )}

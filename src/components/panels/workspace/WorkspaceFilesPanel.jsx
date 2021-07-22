@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useFiles, useTranslation} from "../../hooks";
-import {FilesBody, FilesHeader, FilesSidebar} from "../files";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useFiles, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -23,8 +23,10 @@ const WorkspaceFilesPanel = (props) => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
   const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles(true); // pass true to trigger fetching of files
+
+  useFetchWsCount();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -45,13 +47,10 @@ const WorkspaceFilesPanel = (props) => {
     document.body.classList.remove("mobile-modal-open");
   };
 
-  const handleSearchChange = useCallback(
-    (e) => {
-      if (e.target.value === "") clearSearch();
-      setSearch(e.target.value);
-    },
-    [setSearch]
-  );
+  const handleSearchChange = (e) => {
+    if (e.target.value === "") clearSearch();
+    setSearch(e.target.value);
+  };
 
   const handleSearch = () => {
     actions.search(search);
@@ -62,14 +61,11 @@ const WorkspaceFilesPanel = (props) => {
     actions.clearSearch();
   };
 
-  const handleEnter = useCallback(
-    (e) => {
-      if (e.key === "Enter") {
-        handleSearch();
-      }
-    },
-    [handleSearch]
-  );
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   const dictionary = {
     createFolder: _t("CREATE_FOLDER", "Create folder"),
@@ -154,14 +150,13 @@ const WorkspaceFilesPanel = (props) => {
       type: "single_input",
       defaultValue: "",
       label: dictionary.folderName,
-      postInputLabel:
-        !folder ? (
-          ""
-        ) : (
-          <CreateFolderLabel>
-            The folder will be created inside <b>#{folder.search}</b>
-          </CreateFolderLabel>
-        ),
+      postInputLabel: !folder ? (
+        ""
+      ) : (
+        <CreateFolderLabel>
+          The folder will be created inside <b>#{folder.search}</b>
+        </CreateFolderLabel>
+      ),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };
@@ -188,9 +183,9 @@ const WorkspaceFilesPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const clearFilter = useCallback(() => {
+  const clearFilter = () => {
     setFilter("");
-  }, [setFilter]);
+  };
 
   useEffect(() => {
     if (folder && folder.is_archived && filter !== "removed") {

@@ -12,6 +12,7 @@ import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
   .card {
@@ -85,7 +86,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, daily_digest },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -113,7 +114,7 @@ const ProfileSettings = (props) => {
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
-    liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
+    chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
     dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
   };
 
@@ -169,6 +170,225 @@ const ProfileSettings = (props) => {
     },
   ];
 
+  const ChatLanguageOptions = [
+    {
+      value: "en",
+      label: (
+        <>
+          <Flag countryAbbr="en" className="mr-2" width="18" />
+          {_t("LANGUAGE.ENGLISH", "English")}
+        </>
+      ),
+    },
+    {
+      value: "bg",
+      label: (
+        <>
+          <Flag countryAbbr="bg" className="mr-2" width="18" />
+          {_t("LANGUAGE.BULGARIAN", "Bulgarian")}
+        </>
+      ),
+    },
+    {
+      value: "cs",
+      label: (
+        <>
+          <Flag countryAbbr="cs" className="mr-2" width="18" />
+          {_t("LANGUAGE.CZECH", "Czech")}
+        </>
+      ),
+    },
+    {
+      value: "da",
+      label: (
+        <>
+          <Flag countryAbbr="da" className="mr-2" width="18" />
+          {_t("LANGUAGE.DANISH", "Danish")}
+        </>
+      ),
+    },
+    {
+      value: "de",
+      label: (
+        <>
+          <Flag countryAbbr="de" className="mr-2" width="18" />
+          {_t("LANGUAGE.GERMAN", "German")}
+        </>
+      ),
+    },
+    {
+      value: "el",
+      label: (
+        <>
+          <Flag countryAbbr="el" className="mr-2" width="18" />
+          {_t("LANGUAGE.GREEK", "Greek")}
+        </>
+      ),
+    },
+    {
+      value: "es",
+      label: (
+        <>
+          <Flag countryAbbr="es" className="mr-2" width="18" />
+          {_t("LANGUAGE.SPANISH", "Spanish")}
+        </>
+      ),
+    },
+    {
+      value: "et",
+      label: (
+        <>
+          <Flag countryAbbr="et" className="mr-2" width="18" />
+          {_t("LANGUAGE.ESTONIAN", "Estonian")}
+        </>
+      ),
+    },
+    {
+      value: "fi",
+      label: (
+        <>
+          <Flag countryAbbr="fi" className="mr-2" width="18" />
+          {_t("LANGUAGE.FINNISH", "Finnish")}
+        </>
+      ),
+    },
+    {
+      value: "fr",
+      label: (
+        <>
+          <Flag countryAbbr="fi" className="mr-2" width="18" />
+          {_t("LANGUAGE.FRENCH", "French")}
+        </>
+      ),
+    },
+    {
+      value: "hu",
+      label: (
+        <>
+          <Flag countryAbbr="fi" className="mr-2" width="18" />
+          {_t("LANGUAGE.HUNGARAIN", "Hungarian")}
+        </>
+      ),
+    },
+    {
+      value: "it",
+      label: (
+        <>
+          <Flag countryAbbr="it" className="mr-2" width="18" />
+          {_t("LANGUAGE.ITALIAN", "Italian")}
+        </>
+      ),
+    },
+    {
+      value: "ja",
+      label: (
+        <>
+          <Flag countryAbbr="ja" className="mr-2" width="18" />
+          {_t("LANGUAGE.JAPANESE", "Japanese")}
+        </>
+      ),
+    },
+    {
+      value: "lt",
+      label: (
+        <>
+          <Flag countryAbbr="lt" className="mr-2" width="18" />
+          {_t("LANGUAGE.LITHUANIAN", "Lithuanian")}
+        </>
+      ),
+    },
+    {
+      value: "lv",
+      label: (
+        <>
+          <Flag countryAbbr="lv" className="mr-2" width="18" />
+          {_t("LANGUAGE.LATVIAN", "Latvian")}
+        </>
+      ),
+    },
+    {
+      value: "nl",
+      label: (
+        <>
+          <Flag countryAbbr="nl" className="mr-2" width="18" />
+          {_t("LANGUAGE.DUTCH", "Dutch")}
+        </>
+      ),
+    },
+    {
+      value: "pl",
+      label: (
+        <>
+          <Flag countryAbbr="pl" className="mr-2" width="18" />
+          {_t("LANGUAGE.POLISH", "Polish")}
+        </>
+      ),
+    },
+    {
+      value: "pt",
+      label: (
+        <>
+          <Flag countryAbbr="pt" className="mr-2" width="18" />
+          {_t("LANGUAGE.PORTUGUESE", "Portuguese")}
+        </>
+      ),
+    },
+    {
+      value: "ro",
+      label: (
+        <>
+          <Flag countryAbbr="ro" className="mr-2" width="18" />
+          {_t("LANGUAGE.ROMANIAN", "Romanian")}
+        </>
+      ),
+    },
+    {
+      value: "ru",
+      label: (
+        <>
+          <Flag countryAbbr="ru" className="mr-2" width="18" />
+          {_t("LANGUAGE.RUSSIAN", "Russian")}
+        </>
+      ),
+    },
+    {
+      value: "sk",
+      label: (
+        <>
+          <Flag countryAbbr="sk" className="mr-2" width="18" />
+          {_t("LANGUAGE.SLOVAK", "Slovak")}
+        </>
+      ),
+    },
+    {
+      value: "sl",
+      label: (
+        <>
+          <Flag countryAbbr="sl" className="mr-2" width="18" />
+          {_t("LANGUAGE.SLOVENIAN", "Slovenian")}
+        </>
+      ),
+    },
+    {
+      value: "sv",
+      label: (
+        <>
+          <Flag countryAbbr="sv" className="mr-2" width="18" />
+          {_t("LANGUAGE.SWEDISH", "Swedish")}
+        </>
+      ),
+    },
+    {
+      value: "zh",
+      label: (
+        <>
+          <Flag countryAbbr="zh" className="mr-2" width="18" />
+          {_t("LANGUAGE.CHINESE", "Chinese")}
+        </>
+      ),
+    },
+  ];
+
   const TimezoneOptions = momentTZ.tz.names().map((tz) => {
     return {
       value: tz,
@@ -207,6 +427,20 @@ const ProfileSettings = (props) => {
     toaster.success(<span>You have successfully updated Language</span>);
   };
 
+  const handleChatLanguageChange = useCallback(
+    (e) => {
+      setGeneralSetting({
+        chat_language: e.value,
+        translated_channels: [],
+      });
+      setTimeout(function () {
+        localStorage.setItem("chat_translate_change", "1");
+      }, 1000);
+      toaster.success(<span>You have successfully updated chat target language</span>);
+    },
+    [setGeneralSetting]
+  );
+
   const handleChatSwitchToggle = useCallback(
     (e) => {
       e.persist();
@@ -219,32 +453,29 @@ const ProfileSettings = (props) => {
     [setChatSetting]
   );
 
-  const handleGeneralSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, checked, dataset } = e.target;
+  const handleGeneralSwitchToggle = (e) => {
+    e.persist();
+    const { name, checked, dataset } = e.target;
 
-      setGeneralSetting(
-        {
-          [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
-        },
-        () => {
-          if (["log_rocket", "sentry"].includes(name)) {
-            localStorage.setItem(name, checked ? "1" : "0");
-            window.location.reload();
-          } else if (name === "logs") {
-            if (checked) {
-              localStorage.setItem("logger", "all");
-            } else {
-              localStorage.removeItem("logger");
-            }
+    setGeneralSetting(
+      {
+        [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
+      },
+      () => {
+        if (["log_rocket", "sentry"].includes(name)) {
+          localStorage.setItem(name, checked ? "1" : "0");
+          window.location.reload();
+        } else if (name === "logs") {
+          if (checked) {
+            localStorage.setItem("logger", "all");
+          } else {
+            localStorage.removeItem("logger");
           }
         }
-      );
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setChatSetting]
-  );
+      }
+    );
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleNotificationsSwitchToggle = useCallback(
     (e) => {
@@ -376,6 +607,7 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+
               <div className="row mb-3">
                 <div className="col-12">
                   <CustomInput
@@ -390,6 +622,7 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+
               {
                 <div className="row mb-3">
                   <div className="col-12">
@@ -406,22 +639,13 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               }
-              {
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={translate}
-                      type="switch"
-                      id="translate_chat"
-                      name="translate"
-                      onChange={handleChatSwitchToggle}
-                      data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
-                      label={<span>{dictionary.liveTranslation}</span>}
-                    />
-                  </div>
+              <div className="row mb-2">
+                <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
+                <div className="col-7">
+                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={ChatLanguageOptions.find((o) => o.value === chat_language)} onChange={handleChatLanguageChange} options={ChatLanguageOptions} />
                 </div>
-              }
+              </div>
+
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
                 <div className="col-7">
@@ -581,6 +805,11 @@ const ProfileSettings = (props) => {
       <span className="version-number mb-3">
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
+      {loggedUser && loggedUser.email === "nilo@makedevelopment.com" && (
+        <span>
+          {isMobileSafari && "mobile safari"}, {browserName}, {deviceType}
+        </span>
+      )}
     </Wrapper>
   );
 };

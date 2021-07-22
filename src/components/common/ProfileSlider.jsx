@@ -3,8 +3,8 @@ import styled from "styled-components";
 //import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
 import { SvgIconFeather } from "./SvgIcon";
-import Badge from "./Badge";
-import { useOutsideClick, useUserChannels, useTranslation } from "../hooks";
+//import Badge from "./Badge";
+import { useOutsideClick, useUserChannels, useTranslationActions } from "../hooks";
 
 const ProfileWrapper = styled.div``;
 const Icon = styled(SvgIconFeather)`
@@ -19,7 +19,7 @@ const ProfileSlider = (props) => {
 
   const sliderRef = useRef(null);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),

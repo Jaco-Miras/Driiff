@@ -12,8 +12,8 @@ const useChatTranslatePreview = (message, user, translate, language, basicMessag
           let spanName = firstName + ":";
           let InnerHTML = <span className="last-reply-name" dangerouslySetInnerHTML={{ __html: spanName }}></span>;
           transSet(renderToString(InnerHTML) + " " + data.translations[0].text);
-        })
-        .catch(console.log);
+        });
+      //.catch(console.log);
     }
     // if(!isAuthor && user.language !== language && translate)
     if (user && translate && basicMessageFlag) fetchTrans(message);

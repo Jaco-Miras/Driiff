@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Avatar, ToolTip } from "../../common";
 import { TodoCheckBox } from "../../forms";
 //import quillHelper from "../../../helpers/quillHelper";
-import { setViewFiles } from "../../../redux/actions/fileActions";
+import { setViewFiles, incomingFileData } from "../../../redux/actions/fileActions";
 import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
+import { sessionService } from "redux-react-session";
 
 const Icon = styled(SvgIconFeather)`
   width: 16px;
@@ -84,6 +85,9 @@ const ItemList = styled.li`
     .reminder-content {
       flex-wrap: wrap;
     }
+    .avatars-container {
+      min-width: 40px;
+    }
   }
 `;
 
@@ -99,22 +103,36 @@ const ReminderDescription = styled.div`
 const DateWrapper = styled.div`
   display: flex;
   align-items: center;
+  min-width: 130px;
 `;
 
 const LabelWrapper = styled.div`
   min-width: 142px;
   text-align: right;
+  @media all and (max-width: 480px) {
+    min-width: 70px;
+  }
+`;
+
+const RightSectionWrapper = styled.div`
+  @media all and (max-width: 480px) {
+    flex-flow: row wrap;
+  }
 `;
 
 const TodosList = (props) => {
   const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.session.user);
+  //const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
   //const bodyDescription = quillHelper.parseEmoji(todo.description);
+
+  const fileBlobs = useSelector((state) => state.files.fileBlobs);
+
+  const descriptionRef = useRef(null);
 
   const handlePreviewFile = (e, files, file) => {
     e.preventDefault();
@@ -164,6 +182,62 @@ const TodosList = (props) => {
   };
 
   useEffect(() => {
+    if (descriptionRef.current) {
+      const images = descriptionRef.current.querySelectorAll("img");
+      images.forEach((img) => {
+        const imgSrc = img.getAttribute("src");
+        if (!img.classList.contains("has-listener")) {
+          img.classList.add("has-listener");
+          const imgFile = todo.files.find((f) => imgSrc.includes(f.code));
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
+          }
+        } else {
+          const imgFile = todo.files.find((f) => imgSrc.includes(f.code));
+          if (imgFile && fileBlobs[imgFile.id]) {
+            img.setAttribute("src", fileBlobs[imgFile.id]);
+            img.setAttribute("data-id", imgFile.id);
+          }
+        }
+      });
+    }
+    const setFileSrc = (payload, callback = () => {}) => {
+      dispatch(incomingFileData(payload, callback));
+    };
+    const imageFiles = todo.files.filter((f) => f.type.includes("image"));
+    if (imageFiles.length) {
+      imageFiles.forEach((file) => {
+        if (!fileBlobs[file.id]) {
+          sessionService.loadSession().then((current) => {
+            let myToken = current.token;
+            fetch(file.view_link, {
+              method: "GET",
+              keepalive: true,
+              headers: {
+                Authorization: myToken,
+                "Access-Control-Allow-Origin": "*",
+                Connection: "keep-alive",
+                crossorigin: true,
+              },
+            })
+              .then(function (response) {
+                return response.blob();
+              })
+              .then(function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+              });
+          });
+        }
+      });
+    }
+  }, [todo.files, todo.description, descriptionRef]);
+
+  useEffect(() => {
     if (todo.status === "DONE" && !isDone) {
       todoActions.markUnDone(todo);
     } else if (todo.status !== "DONE" && isDone) {
@@ -189,7 +263,11 @@ const TodosList = (props) => {
     else todoActions.updateFromModal(todo);
   };
 
-  const showAssignedTo = (todo.assigned_to && todo.assigned_to.id !== todo.user) || (todo.workspace !== null && todo.assigned_to === null) || (todo.workspace === null && todo.assigned_to !== null);
+  const showAssignedTo =
+    (todo.assigned_to && todo.assigned_to.id !== todo.user) ||
+    (todo.workspace !== null && todo.assigned_to === null) ||
+    (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user) ||
+    (todo.assigned_to && todo.author && todo.assigned_to.id !== todo.author.id);
 
   return (
     <>
@@ -205,16 +283,17 @@ const TodosList = (props) => {
               <TodoCheckBox checked={isDone} onClick={handleDoneClick} />
             </ToolTip>
           </span>
-          <span className="align-items-center todo-title-description text-truncate mr-3" onClick={handleTitleClick}>
-            <span className={`todo-title ${getTextColorClass(todo)}`}>{todo.title}</span>
-            {todo.description && <ReminderDescription className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
-            {todo.files.map((file) => {
-              return (
-                <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
-                  {getFileIcon(file.mime_type)}
-                </span>
-              );
-            })}
+          <span className={`align-items-center todo-title-description text-truncate mr-3 ${isDone && "text-muted"}`} onClick={handleTitleClick}>
+            <span className={"todo-title"}>{todo.title}</span>
+            {todo.description && !isDone && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {!isDone &&
+              todo.files.map((file) => {
+                return (
+                  <span key={`${todo.id}${file.file_id}`} onClick={(e) => handlePreviewFile(e, todo.files, file)}>
+                    {getFileIcon(file.mime_type)}
+                  </span>
+                );
+              })}
           </span>
 
           <HoverButtons className="hover-btns ml-1">
@@ -222,8 +301,8 @@ const TodosList = (props) => {
             <Icon icon="trash" onClick={handleRemove} />
           </HoverButtons>
 
-          <div className="d-flex align-items-center ml-auto">
-            <DateWrapper>
+          <RightSectionWrapper className="d-flex align-items-center ml-auto">
+            <DateWrapper className={`${isDone && "text-muted"}`}>
               <Icon icon="calendar" />
               <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
                 <span className={`badge mr-3 reminder-date ${getTextColorClass(todo)}`} onClick={handleEdit}>
@@ -233,7 +312,7 @@ const TodosList = (props) => {
             </DateWrapper>
             <LabelWrapper>
               {todo.link_type !== null && (
-                <span className={"badge mr-3 badge-light todo-type-badge"} onClick={handleTitleClick}>
+                <span className={`badge mr-3 badge-light todo-type-badge ${isDone && "text-muted"}`} onClick={handleTitleClick}>
                   {getTodoType(todo)}
                 </span>
               )}
@@ -256,7 +335,7 @@ const TodosList = (props) => {
                 </>
               )}
             </div>
-          </div>
+          </RightSectionWrapper>
         </div>
       </ItemList>
     </>

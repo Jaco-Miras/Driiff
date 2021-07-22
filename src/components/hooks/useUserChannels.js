@@ -60,7 +60,6 @@ const useUserChannels = () => {
         let user_ids = [user.id, loggedUser.id];
         let recipient_ids = recipients.filter((r) => r.type === "USER" && user_ids.some((id) => r.type_id === id));
         recipient_ids = uniqByProp(recipient_ids, "type_id");
-        console.log(recipient_ids, "select user channel - search");
         if (recipient_ids.length && recipient_ids.length === 2 && !searchingRef.current) {
           searchingRef.current = true;
           channelActions.searchExisting(
@@ -71,12 +70,6 @@ const useUserChannels = () => {
         }
       }
     }
-    // try {
-    //   console.log(userChannels, "try");
-    //   //channelActions.select(channels[userChannels.current[user.id]], callback);
-    // } catch (e) {
-    //   console.log("no channel from selected user");
-    // }
   };
 
   useEffect(() => {

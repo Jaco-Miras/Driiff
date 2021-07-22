@@ -111,10 +111,10 @@ export default (state = INITIAL_STATE, action) => {
             return m;
           }
         });
-        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        //const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
         activeTopic = {
           ...activeTopic,
-          is_shared: action.data.type === "external" ? true : isStillExternal,
+          is_shared: action.data.type === "external" ? true : activeTopic.is_shared,
           members: updatedMembers,
         };
       }
@@ -143,11 +143,12 @@ export default (state = INITIAL_STATE, action) => {
                 }
               })
             : ws.members;
-          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
+          //const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
           res[ws.id] = {
             ...ws,
             members: wsMembers,
-            is_shared: action.data.type === "external" ? true : isStillExternal,
+            //is_shared: action.data.type === "external" ? true : isStillExternal,
+            is_shared: ws.members.some((m) => m.id === action.data.id) && action.data.type === "external" ? true : ws.is_shared,
           };
           return res;
         }, {}),
@@ -276,6 +277,7 @@ export default (state = INITIAL_STATE, action) => {
         unread_posts: action.data.workspace_data.topic_detail.unread_posts,
         folder_id: action.data.workspace_id,
         folder_name: action.data.workspace_name,
+        is_shared: action.data.workspace_data.topic_detail.is_shared,
       };
       return {
         ...state,
@@ -626,12 +628,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      // let convertedPosts = convertArrayToObject(action.data.posts.reduce((arr, obj) => {
-      //   return arr.concat({
-      //     ...obj,
-      //     clap_user_ids: []
-      //   });
-      // }, []), "id");
       let convertedPosts = convertArrayToObject(
         action.data.posts.map((p) => {
           return Object.assign({}, p, { clap_user_ids: [] });
@@ -1352,11 +1348,35 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      //need recipient ids
+      // let newWorkspacePosts = { ...state.workspacePosts };
+      // //need recipient ids
+      // return {
+      //   ...state,
+      //   workspacePosts: newWorkspacePosts,
+      // };
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipient_ids.reduce((res, rid) => {
+            if (state.workspacePosts[rid]) {
+              res[rid] = {
+                ...state.workspacePosts[rid],
+                ...(state.workspacePosts[rid].posts && {
+                  posts: {
+                    ...Object.keys(state.workspacePosts[rid].posts)
+                      .filter((key) => parseInt(key) !== action.data.id)
+                      .reduce((post, id) => {
+                        post[id] = { ...state.workspacePosts[rid].posts[id] };
+                        return post;
+                      }, {}),
+                  },
+                }),
+              };
+            }
+            return res;
+          }, {}),
+        },
       };
     }
     case "INCOMING_COMMENT": {
@@ -1471,6 +1491,7 @@ export default (state = INITIAL_STATE, action) => {
                       has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[ws.topic_id].posts[action.data.post_id].has_replied,
                       unread_count:
                         isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
+                      is_unread: isNewComment && action.data.author.id !== state.user.id ? 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].is_unread,
                     },
                   }),
                 },
@@ -1636,7 +1657,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "FETCH_TIMELINE_SUCCESS": {
-      console.log(action.data.timeline);
       return {
         ...state,
         workspaceTimeline: {
@@ -2065,37 +2085,6 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
-    // case "GET_WORKSPACE_SUCCESS": {
-    //   let updatedWorkspaces = { ...state.workspaces };
-    //   let updatedFolders = { ...state.folders };
-    //   if (Object.keys(updatedWorkspaces).length > 0) {
-    //     if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
-    //       return state;
-    //     } else {
-    //       updatedWorkspaces[action.data.topic_id] = {
-    //         ...action.data.workspace_data,
-    //         active: action.data.workspace_data.topic_detail.active,
-    //         channel: action.data.workspace_data.topic_detail.channel,
-    //         unread_chats: action.data.workspace_data.topic_detail.unread_chats,
-    //         unread_count: action.data.workspace_data.topic_detail.unread_count,
-    //         folder_id: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_id : null,
-    //         folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
-    //       };
-    //       delete updatedWorkspaces[action.data.topic_id].topic_detail;
-
-    //       if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
-    //         updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
-    //       }
-    //       return {
-    //         ...state,
-    //         workspaces: updatedWorkspaces,
-    //         folders: updatedFolders,
-    //       };
-    //     }
-    //   } else {
-    //     return state;
-    //   }
-    // }
     case "GET_FOLDER_SUCCESS": {
       let updatedFolders = { ...state.folders };
       updatedFolders[action.data.workspace_id] = {
@@ -2286,7 +2275,7 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
         Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
           workspacePosts[action.data.topic_id].posts[p.id].is_read = true;
-          workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
+          //workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
           workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
           workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
         });
@@ -2514,7 +2503,6 @@ export default (state = INITIAL_STATE, action) => {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
-      console.log("allusers agreed", allUsersAgreed, "all uses disagree", allUsersDisagreed);
       return {
         ...state,
         workspacePosts: {
@@ -2781,14 +2769,16 @@ export default (state = INITIAL_STATE, action) => {
               if (state.workspacePosts[ws.id]) {
                 res[ws.id] = {
                   ...state.workspacePosts[ws.id],
-                  posts: {
-                    ...Object.keys(state.workspacePosts[ws.id].posts)
-                      .filter((key) => parseInt(key) !== action.data.id)
-                      .reduce((post, id) => {
-                        post[id] = { ...state.workspacePosts[ws.id].posts[id] };
-                        return post;
-                      }, {}),
-                  },
+                  ...(state.workspacePosts[ws.id].posts && {
+                    posts: {
+                      ...Object.keys(state.workspacePosts[ws.id].posts)
+                        .filter((key) => parseInt(key) !== action.data.id)
+                        .reduce((post, id) => {
+                          post[id] = { ...state.workspacePosts[ws.id].posts[id] };
+                          return post;
+                        }, {}),
+                    },
+                  }),
                 };
               }
               return res;
@@ -3170,6 +3160,126 @@ export default (state = INITIAL_STATE, action) => {
               skip: action.data.todos.length,
               hasMore: action.data.todos.length === action.data.limit,
               reminderIds: [...action.data.todos.map((t) => t.id)],
+              done: {
+                limit: 10,
+                hasMore: true,
+                skip: 0,
+              },
+              overdue: {
+                limit: 25,
+                hasMore: true,
+                skip: 0,
+              },
+              today: {
+                limit: 25,
+                hasMore: true,
+                skip: 0,
+              },
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_DONE_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              done: {
+                limit: 10,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].done.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              done: {
+                limit: 10,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_OVERDUE_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              overdue: {
+                limit: 25,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].overdue.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              overdue: {
+                limit: 25,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
+              count: {
+                all: 0,
+                overdue: 0,
+                today: 0,
+                new: 0,
+              },
+            }),
+          },
+        },
+      };
+    }
+    case "GET_TODAY_WORKSPACE_REMINDERS_CALLBACK": {
+      return {
+        ...state,
+        workspaceReminders: {
+          ...state.workspaceReminders,
+          [action.data.topic_id]: {
+            ...(state.workspaceReminders[action.data.topic_id] && {
+              ...state.workspaceReminders[action.data.topic_id],
+              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+              today: {
+                limit: 25,
+                hasMore: action.data.todos.length === action.data.limit,
+                skip: state.workspaceReminders[action.data.topic_id].today.skip + action.data.todos.length,
+              },
+            }),
+            ...(!state.workspaceReminders[action.data.topic_id] && {
+              hasMore: true,
+              skip: 0,
+              today: {
+                limit: 25,
+                skip: action.data.todos.length,
+                hasMore: action.data.todos.length === action.data.limit,
+              },
+              reminderIds: [...action.data.todos.map((t) => t.id)],
               count: {
                 all: 0,
                 overdue: 0,
@@ -3200,6 +3310,21 @@ export default (state = INITIAL_STATE, action) => {
               skip: 0,
               hasMore: true,
               reminderIds: [],
+              done: {
+                limit: 10,
+                skip: 0,
+                hasMore: true,
+              },
+              overdue: {
+                limit: 25,
+                skip: 0,
+                hasMore: true,
+              },
+              today: {
+                limit: 25,
+                skip: 0,
+                hasMore: true,
+              },
               count: action.data.count.reduce((res, c) => {
                 res[c.status.toLowerCase()] = c.count;
                 return res;

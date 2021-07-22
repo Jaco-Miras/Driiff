@@ -585,3 +585,17 @@ export function getArchivedUsers(payload = {}) {
     url: url,
   });
 }
+
+export function deleteUser(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/users/${payload.user_id}`,
+  });
+}
+
+export function getUsersWithoutActivity(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/users/inactive",
+  });
+}

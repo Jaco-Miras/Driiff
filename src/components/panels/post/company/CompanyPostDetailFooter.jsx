@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { CommonPicker, SvgIconFeather } from "../../../common";
 import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput, FolderSelect } from "../../../forms";
-import { useTranslation, usePostActions } from "../../../hooks";
+import { useTranslationActions, usePostActions } from "../../../hooks";
 import PostInputButtons from "../PostInputButtons";
 import Reward from "react-rewards";
 
@@ -224,13 +224,13 @@ const CompanyPostDetailFooter = (props) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
 
-  const handleSend = useCallback(() => {
+  const handleSend = () => {
     setSent(true);
-  }, [setSent]);
+  };
 
-  const handleClearSent = useCallback(() => {
+  const handleClearSent = () => {
     setSent(false);
-  }, [setSent]);
+  };
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -273,7 +273,7 @@ const CompanyPostDetailFooter = (props) => {
     setShowEmojiPicker(false);
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     noReplyAllowed: _t("FOOTER.NO_REPLY_ALLOWED", "No reply allowed"),

@@ -3,7 +3,8 @@ import styled from "styled-components";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 //import ChatContactsList from "../../list/chat/ChatContactsList";
 import { SvgIconFeather } from "../../common";
-import { useUserChannels } from "../../hooks";
+//import { useUserChannels } from "../../hooks";
+//import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   // overflow: auto !important;
@@ -51,8 +52,6 @@ const Wrapper = styled.div`
 const ChatSidebarContentPanel = (props) => {
   const { className = "", pill = "pills-home", search, dictionary, resetFilter } = props;
 
-  const { channels, selectedChannel } = useUserChannels();
-
   return (
     <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
       <div className="tab-content pt-2" id="pills-tabContent">
@@ -63,7 +62,7 @@ const ChatSidebarContentPanel = (props) => {
         )}
         {pill === "pills-home" && (
           <div className={`tab-panel fade ${pill === "pills-home" && "show active"}`} id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-            <ChannelsSidebar search={search} workspace={null} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary} />
+            <ChannelsSidebar search={search} workspace={null} dictionary={dictionary} />
           </div>
         )}
         {/* <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
@@ -74,7 +73,7 @@ const ChatSidebarContentPanel = (props) => {
         </div> */}
         {pill === "pills-workspace" && (
           <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace" && "show active"}`} id="pills-workspace" role="tabpanel" aria-labelledby="pills-workspace-tab">
-            <ChannelsSidebar search={search} workspace={true} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary} />
+            <ChannelsSidebar search={search} workspace={true} dictionary={dictionary} />
           </div>
         )}
       </div>
@@ -82,4 +81,4 @@ const ChatSidebarContentPanel = (props) => {
   );
 };
 
-export default React.memo(ChatSidebarContentPanel);
+export default ChatSidebarContentPanel;

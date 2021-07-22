@@ -1,14 +1,13 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
-import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
-import { useChatReply, useGoogleApis } from "../../hooks";
+import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
-import Unfurl from "./Unfurl/Unfurl";
+//import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
 
@@ -81,31 +80,6 @@ const ChatBubbleContainer = styled.div`
     height: 100%;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
-
-    .star-wrap {
-      position: relative;
-      display: flex;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        color: #a7abc3;
-
-        &.active {
-          fill: #7a1b8bcc;
-          color: #7a1b8bcc;
-        }
-      }
-      .star-count {
-        font-size: 0.835rem;
-        color: #a7abc3;
-        height: 16px;
-        line-height: 16px;
-        padding: 0 4px;
-        border-radius: 6px;
-        font-style: normal;
-      }
-    }
   }
   ol {
     text-align: left;
@@ -493,38 +467,38 @@ const ChatBubble = (props) => {
     isAuthor,
     addMessageRef,
     user,
-    recipients,
     isLastChat,
     chatMessageActions,
     timeFormat,
-    isBot,
     chatSettings,
     isLastChatVisible,
     dictionary,
     users,
+    translated_channels,
+    chat_language,
     translate,
     language,
-    _t,
+    loadReplies,
   } = props;
 
   const history = useHistory();
-  const googleApis = useGoogleApis();
+  //const googleApis = useGoogleApis();
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
-  useChatTranslate({ message: reply, isAuthor, translate, language, actions: chatMessageActions });
+  useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
     dictionary,
     isAuthor,
     user,
-    recipients,
     selectedChannel,
     users,
     translate,
     language,
-    _t,
+    translated_channels,
+    chat_language,
   });
 
   const hasFiles = reply.files.length > 0;
@@ -544,23 +518,23 @@ const ChatBubble = (props) => {
     skip: !isLastChat,
   });
 
-  const handleQuoteContentRef = (e) => {
-    if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
-      googleLinks.forEach((gl) => {
-        googleApis.init(gl);
-      });
-    }
-  };
+  // const handleQuoteContentRef = (e) => {
+  //   if (e) {
+  //     const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+  //     googleLinks.forEach((gl) => {
+  //       googleApis.init(gl);
+  //     });
+  //   }
+  // };
 
-  const handleContentRef = (e) => {
-    if (e) {
-      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
-      googleLinks.forEach((gl) => {
-        googleApis.init(gl);
-      });
-    }
-  };
+  // const handleContentRef = (e) => {
+  //   if (e) {
+  //     const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+  //     googleLinks.forEach((gl) => {
+  //       googleApis.init(gl);
+  //     });
+  //   }
+  // };
 
   const handleChannelMessageLink = (e) => {
     e.preventDefault();
@@ -589,7 +563,7 @@ const ChatBubble = (props) => {
     if (typeof history.location.state === "object") {
       if (history.location.state && history.location.state.focusOn === reply.code && refs.container.current && contentRef.current) {
         //chat.scrollIntoView({ behavior: "smooth", block: "center" });
-        console.log(history.location.state, refs.container.current);
+
         refs.container.current.scrollIntoView({ block: "center" });
         if (contentRef.current) {
           contentRef.current.classList.add("pulse");
@@ -601,10 +575,10 @@ const ChatBubble = (props) => {
   }, [history.location.state, refs.container.current, contentRef.current]);
 
   useEffect(() => {
-    if (addMessageRef && loadInView) {
-      props.loadReplies();
+    if (addMessageRef && loadInView && loadReplies) {
+      loadReplies();
     }
-  }, [addMessageRef, loadInView]);
+  }, [addMessageRef, loadInView, loadReplies]);
 
   useEffect(() => {
     if (isLastChat && entry) {
@@ -616,21 +590,18 @@ const ChatBubble = (props) => {
     }
   }, [isLastChat, entry, isLastChatVisible, inView]);
 
-  const handleQuoteClick = useCallback(
-    (e) => {
-      if (reply.quote) {
-        let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
-        if (el) {
-          el.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center",
-          });
-        }
+  const handleQuoteClick = (e) => {
+    if (reply.quote) {
+      let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
+      if (el) {
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
       }
-    },
-    [reply]
-  );
+    }
+  };
 
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
 
@@ -673,7 +644,7 @@ const ChatBubble = (props) => {
                   hasFiles={hasFiles}
                   theme={chatSettings.chat_message_theme}
                   onClick={handleQuoteClick}
-                  onTouchEnd={handleQuoteClick}
+                  //onTouchEnd={handleQuoteClick}
                   isAuthor={isAuthor}
                 >
                   {reply.quote.user_id === user.id ? (
@@ -685,11 +656,12 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent ref={handleQuoteContentRef} className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {reply.files.length > 0 && !reply.is_deleted && (
                 <ChatMessageFiles
+                  dictionary={dictionary}
                   hasMessage={hasMessage}
                   isAuthor={isAuthor}
                   theme={chatSettings.chat_message_theme}
@@ -702,7 +674,7 @@ const ChatBubble = (props) => {
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
-                    ref={handleContentRef}
+                    //ref={handleContentRef}
                     hasFiles={hasFiles}
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
@@ -712,10 +684,10 @@ const ChatBubble = (props) => {
                 </span>
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
-              {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
+              {/* {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
                 <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
-              )}
-              {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />}
+              )} */}
+              {/* {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />} */}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
@@ -731,4 +703,4 @@ const ChatBubble = (props) => {
   );
 };
 
-export default React.memo(ChatBubble);
+export default ChatBubble;

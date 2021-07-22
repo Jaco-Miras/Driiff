@@ -1,14 +1,14 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import GooglePicker from "react-google-picker";
-import {SvgIconFeather} from "../../common";
-import {useTranslation} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   cursor: pointer;
   padding: 0.75rem 1.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-  opacity: ${props => props.disabled ? ".5" : "1"};
+  opacity: ${(props) => (props.disabled ? ".5" : "1")};
   .dropdown-menu {
     width: 90%;
     left: 5%;
@@ -20,10 +20,9 @@ const Wrapper = styled.div`
 `;
 
 const CompanyGoogleDrive = (props) => {
+  const { className = "", onChange, disableOptions } = props;
 
-  const {className = "", onChange, disableOptions} = props;
-
-  const {_t} = useTranslation();
+  const { _t } = useTranslationActions();
   const [show, setShow] = useState(false);
   const toggle = () => {
     if (disableOptions) return;
@@ -31,7 +30,6 @@ const CompanyGoogleDrive = (props) => {
   };
 
   const handleAuthenticate = (token) => {
-    console.log("oauth token:", token);
     if (localStorage.getItem("gdrive") === null) {
       localStorage.setItem("gdrive", token);
     }
@@ -40,14 +38,12 @@ const CompanyGoogleDrive = (props) => {
   let dictionary = {
     linkGoogleDrive: _t("FILE.LINK_GOOGLE_DRIVE", "Link your Google Drive first"),
     gDriveAttachFile: _t("FILE.ATTACH_GOOGLE_DRIVE_FILE", "Attach a file"),
-    gDriveAttachFolder: _t("FILE.ATTACH_GOOGLE_DRIVE_FOLDER", "Attach a folder")
+    gDriveAttachFolder: _t("FILE.ATTACH_GOOGLE_DRIVE_FOLDER", "Attach a folder"),
   };
 
   return (
     <Wrapper className={`google-drive dropdown ${className}`} onClick={toggle} disabled={disableOptions}>
-      <SvgIconFeather
-        className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000"
-        opacity=".8"/> Google Drive
+      <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8" /> Google Drive
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
         {localStorage.getItem("gdrive") === null ? (
           <GooglePicker
@@ -56,7 +52,7 @@ const CompanyGoogleDrive = (props) => {
             scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
             onChange={(data) => onChange(data)}
             onAuthenticate={(token) => handleAuthenticate(token)}
-            onAuthFailed={(data) => console.log("on auth failed:", data)}
+            //onAuthFailed={(data) => console.log("on auth failed:", data)}
             multiselect={true}
             navHidden={true}
             authImmediate={false}
@@ -72,7 +68,7 @@ const CompanyGoogleDrive = (props) => {
               scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               onChange={(data) => onChange(data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
-              onAuthFailed={(data) => console.log("on auth failed:", data)}
+              //onAuthFailed={(data) => console.log("on auth failed:", data)}
               multiselect={true}
               navHidden={true}
               authImmediate={localStorage.getItem("gdrive") === null ? false : true}
@@ -84,9 +80,9 @@ const CompanyGoogleDrive = (props) => {
               clientId={process.env.REACT_APP_google_client_id}
               developerKey={process.env.REACT_APP_google_key}
               scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
-              onChange={(data) => console.log("on change:", data)}
+              //onChange={(data) => console.log("on change:", data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
-              onAuthFailed={(data) => console.log("on auth failed:", data)}
+              //onAuthFailed={(data) => console.log("on auth failed:", data)}
               multiselect={true}
               navHidden={true}
               authImmediate={localStorage.getItem("gdrive") === null ? false : true}
@@ -95,14 +91,12 @@ const CompanyGoogleDrive = (props) => {
                 const googleViewId = google.picker.ViewId.FOLDERS;
                 const docsView = new google.picker.DocsView(googleViewId).setIncludeFolders(true).setMimeTypes("application/vnd.google-apps.folder").setSelectFolderEnabled(true);
 
-                console.log(process.env.REACT_APP_google_key)
                 const picker = new window.google.picker.PickerBuilder()
                   .addView(docsView)
                   .setOAuthToken(oauthToken)
                   .setDeveloperKey(process.env.REACT_APP_google_key)
                   .setCallback((data) => {
                     onChange(data);
-                    console.log("Custom picker is ready!", data);
                   });
 
                 picker.build().setVisible(true);

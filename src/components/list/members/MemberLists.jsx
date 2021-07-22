@@ -10,8 +10,8 @@ const MembersListContainer = styled.div`
 `;
 
 const StyledAvatar = styled(Avatar)`
-  height: 2rem !important;
-  width: 2rem !important;
+  height: 2.7rem !important;
+  width: 2.7rem !important;
   margin-left: ${(props) => (props.firstUser ? "0" : "-0.5rem")};
 `;
 

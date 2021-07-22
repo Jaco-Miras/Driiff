@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useFileActions } from "../hooks";
@@ -14,8 +14,8 @@ const useFiles = () => {
   const { init: initFavoriteFiles, has_more: hasMoreFavoriteFiles, skip: skipFavoriteFiles, limit: limitFavoriteFiles, items: itemsFavoriteFiles } = useSelector((state) => state.files.companyFiles.favorite_files);
   const { init: initPopularFiles, has_more: hasMorePopularFiles, skip: skipPopularFiles, limit: limitPopularFiles, items: itemsPopularFiles } = useSelector((state) => state.files.companyFiles.popular_files);
   const { init: initTrashFiles, has_more: hasMoreTrashFiles, skip: skipTrashFiles, limit: limitTrashFiles, items: itemsTrashFiles } = useSelector((state) => state.files.companyFiles.trash_files);
-  const { init: initGoogleFiles, has_more: hasMoreGoogleFiles, skip: skipGoogleFiles, limit: limitGoogleFiles, items: itemsGoogleFiles } = useSelector((state) => state.files.companyFiles.google_files);
-  const { init: initGoogleFolders, has_more: hasMoreGoogleFolders, skip: skipGoogleFolders, limit: limitGoogleFolders, items: itemsGoogleFolders } = useSelector((state) => state.files.companyFolders.google_folders);
+  const { init: initGoogleFiles, has_more: hasMoreGoogleFiles, skip: skipGoogleFiles, limit: limitGoogleFiles } = useSelector((state) => state.files.companyFiles.google_files);
+  const { init: initGoogleFolders, skip: skipGoogleFolders, limit: limitGoogleFolders } = useSelector((state) => state.files.companyFolders.google_folders);
 
   const googleDriveApiFiles = useSelector((state) => state.files.googleDriveApiFiles);
 
@@ -60,7 +60,7 @@ const useFiles = () => {
     }
   };
 
-  const loadMoreFolderFiles = useCallback(() => {
+  const loadMoreFolderFiles = () => {
     if (!folder || fetchingFolderFiles) return;
 
     setFetchingFolderFiles(true);
@@ -78,7 +78,7 @@ const useFiles = () => {
         }
       );
     }
-  }, [folder, setFetchingFolderFiles]);
+  };
 
   const loadMoreRecentEditedFiles = () => {
     if (!fetchingRecentlyEditedFiles && hasMoreRecentlyEdited) {
