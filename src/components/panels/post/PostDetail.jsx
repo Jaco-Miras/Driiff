@@ -259,7 +259,7 @@ const PostFilesTrashedContainer = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
+  const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -270,8 +270,6 @@ const PostDetail = (props) => {
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const hasRead = readByUsers.some((u) => u.id === user.id);
 
   // const [react, setReact] = useState({
   //   user_clap_count: post.user_clap_count,
@@ -361,6 +359,19 @@ const PostDetail = (props) => {
 
   const markRead = () => {
     postActions.markReadRequirement(post);
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    let triggerRead = true;
+    if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+        triggerRead = false;
+      }
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+        triggerRead = false;
+      }
+    }
+    if (triggerRead && !hasPendingApproval) {
+      postActions.markAsRead(post);
+    }
   };
 
   const handleReaction = () => {
@@ -389,15 +400,22 @@ const PostDetail = (props) => {
       if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
         return true;
       }
-    } else if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+        return true;
+      }
+    }
+    if (post.is_must_reply && post.author.id !== user.id) {
       if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
         return true;
       }
-    } else if (hasPendingApproval) {
-      return true;
-    } else {
-      return false;
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+        return true;
+      }
     }
+    if (hasPendingApproval) {
+      return true;
+    }
+    return false;
   };
 
   //const isMember = post.users_responsible.some((u) => u.id === user.id);
@@ -516,7 +534,8 @@ const PostDetail = (props) => {
           disableMarkAsRead={disableMarkAsRead}
         />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
+            (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
@@ -525,7 +544,7 @@ const PostDetail = (props) => {
           )}
         </div>
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
