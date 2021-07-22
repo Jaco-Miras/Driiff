@@ -6,7 +6,11 @@ import { SvgIconFeather } from "./SvgIcon";
 //import Badge from "./Badge";
 import { useOutsideClick, useUserChannels, useTranslationActions } from "../hooks";
 
-const ProfileWrapper = styled.div``;
+const ProfileWrapper = styled.div`
+  .info-details span {
+    min-height: 14px;
+  }
+`;
 const Icon = styled(SvgIconFeather)`
   opacity: ${(props) => (props.loading ? "0" : "1")};
   width: ${(props) => (props.loading ? "1px !important" : "1rem")};
