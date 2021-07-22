@@ -14,6 +14,10 @@ const NotificationBadge = (props) => {
       return dictionary.needsReply;
     return null;
   };
+  /*
+  POST_REQST_APPROVAL only visible to users who are selected in the approval
+  POST_REQST_APPROVAL badge to be removed if the user has requested change or accepted the proposal
+   */
   return (
     <>
       {notification.type === "POST_CREATE" ? (
@@ -23,7 +27,7 @@ const NotificationBadge = (props) => {
           <span className={"badge badge-success text-white"}>{getMustReplyText(notification.data)}</span>
         </p>
       ) : notification.type === "POST_REQST_APPROVAL" ? (
-        <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
+        <span className={"badge badge-primary text-white"}>{dictionary.acstionNeeded}</span>
       ) : notification.type === "POST_ACCEPT_APPROVAL" ? (
         <span className={"badge badge-success text-white"}>{dictionary.accepted}</span>
       ) : notification.type === "POST_REJECT_APPROVAL" ? (
