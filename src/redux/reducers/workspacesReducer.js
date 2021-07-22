@@ -2515,28 +2515,30 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[ws.topic.id],
                   posts: {
                     ...state.workspacePosts[ws.topic.id].posts,
-                    [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
-                      post_approval_label: allUsersAgreed
-                        ? "ACCEPTED"
-                        : allUsersDisagreed
-                        ? "REQUEST_UPDATE"
-                        : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
-                        ? "SPLIT"
-                        : action.data.user_approved.id === state.user.id
-                        ? null
-                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
-                      users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
-                        if (u.id === action.data.user_approved.id) {
-                          return {
-                            ...u,
-                            ...action.data.user_approved,
-                          };
-                        } else {
-                          return u;
-                        }
-                      }),
-                    },
+                    ...(state.workspacePosts[ws.topic.id].posts[action.data.post.id] && {
+                      [action.data.post.id]: {
+                        ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                        post_approval_label: allUsersAgreed
+                          ? "ACCEPTED"
+                          : allUsersDisagreed
+                          ? "REQUEST_UPDATE"
+                          : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                          ? "SPLIT"
+                          : action.data.user_approved.id === state.user.id
+                          ? null
+                          : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
+                        users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
+                          if (u.id === action.data.user_approved.id) {
+                            return {
+                              ...u,
+                              ...action.data.user_approved,
+                            };
+                          } else {
+                            return u;
+                          }
+                        }),
+                      },
+                    }),
                   },
                 };
               }
