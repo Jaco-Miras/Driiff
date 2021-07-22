@@ -8,7 +8,6 @@
  * @constructor
  */
 //import React from "react";
-//import { toastr } from "react-redux-toastr";
 import { userForceLogout } from "../../components/hooks/useUserActions";
 
 export default function DispatchActionToReducer(service, actionTypeStart, actionTypeSuccess, actionTypeFailure, callback) {

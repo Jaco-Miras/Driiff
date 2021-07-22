@@ -7,7 +7,6 @@ import { BrowserRouter } from "react-router-dom";
 import LogRocket from "logrocket";
 
 import App from "./App";
-//import "toasted-notes/src/styles.css";
 import "./assets/style/app.scss";
 // orig store import
 //import store from "./redux/store/configStore";
