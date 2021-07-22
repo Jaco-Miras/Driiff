@@ -1,16 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
-import ChatMessages from "../../list/chat/ChatMessages";
-//import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
-//import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
-import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
+
+const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
+const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer"));
 
 const Wrapper = styled.div`
   width: 100%;
@@ -209,20 +208,24 @@ const ChatContentPanel = (props) => {
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null ? (
         virtualization ? (
-          <VirtuosoContainer dictionary={dictionary} />
+          <Suspense fallback={<></>}>
+            <VirtuosoContainer dictionary={dictionary} />
+          </Suspense>
         ) : (
-          <ChatMessages
-            chatMessageActions={chatMessageActions}
-            timeFormat={timeFormat}
-            dictionary={dictionary}
-            unreadCount={unreadCount}
-            teamChannelId={teamChannelId}
-            isIdle={isIdle}
-            translate={translate}
-            language={language}
-            translated_channels={translated_channels}
-            chat_language={chat_language}
-          />
+          <Suspense fallback={<></>}>
+            <ChatMessages
+              chatMessageActions={chatMessageActions}
+              timeFormat={timeFormat}
+              dictionary={dictionary}
+              unreadCount={unreadCount}
+              teamChannelId={teamChannelId}
+              isIdle={isIdle}
+              translate={translate}
+              language={language}
+              translated_channels={translated_channels}
+              chat_language={chat_language}
+            />
+          </Suspense>
         )
       ) : (
         <ChatMessagesPlaceholder />
