@@ -27,7 +27,7 @@ const NotificationBadge = (props) => {
           <span className={"badge badge-success text-white"}>{getMustReplyText(notification.data)}</span>
         </p>
       ) : notification.type === "POST_REQST_APPROVAL" ? (
-        <span className={"badge badge-primary text-white"}>{dictionary.acstionNeeded}</span>
+        <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
       ) : notification.type === "POST_ACCEPT_APPROVAL" ? (
         <span className={"badge badge-success text-white"}>{dictionary.accepted}</span>
       ) : notification.type === "POST_REJECT_APPROVAL" ? (
