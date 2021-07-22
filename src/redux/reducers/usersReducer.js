@@ -95,8 +95,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_EXTERNAL_USERS_SUCCESS": {
+      let users = { ...state.users };
+      let mentions = { ...state.mentions };
+      action.data.users.forEach((item) => {
+        users[item.id] = {
+          ...users[item.id],
+          ...item,
+          name: item.name.toString(),
+        };
+        mentions[item.id] = {
+          ...mentions[item.id],
+          ...item,
+        };
+      });
+
       return {
         ...state,
+        users: users,
+        mentions: mentions,
         externalUsers: action.data.users,
       };
     }
