@@ -1,17 +1,20 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { sessionService } from "redux-react-session";
 import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
-import { authenticateGoogleLogin } from "../../redux/actions/userAction";
+import { authenticateGoogleLogin, getUser } from "../../redux/actions/userAction";
 import { useUserActions } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
+import { getAPIUrl, getBaseUrl } from "../../helpers/slugHelper";
+//import { sessionService } from "redux-react-session";
 
 export const useUserLogin = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const authMatch = useRouteMatch("/authenticate/:token/:returnUrl?");
   const magicLinkMatch = useRouteMatch("/magic-link/:token");
+  const params = useParams();
 
   const userActions = useUserActions();
 
@@ -122,7 +125,44 @@ export const useUserLogin = (props) => {
           });
       }
     }
+    if (history.location.pathname.startsWith("/authenticate-ios/") && !checkingRef.current) {
+      const data = getUrlParams(`${getBaseUrl()}/authenticate-ios?auth_token=${params.tokens}`);
 
+      checkingRef.current = true;
+      if (data.id && data.auth_token && data.redirect_url) {
+        fetch(`${getAPIUrl()}/users/${data.id}`, {
+          method: "GET",
+          keepalive: true,
+          headers: {
+            Authorization: `Bearer ${data.auth_token}`,
+            "Access-Control-Allow-Origin": "*",
+            Connection: "keep-alive",
+            crossorigin: true,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            setTimeout(() => {
+              checkingRef.current = null;
+            }, 3000);
+            sessionService
+              .saveSession({
+                token: `Bearer ${data.auth_token}`,
+                xsrf_token: `XSRF-TOKEN=${data.auth_token}`,
+                access_broadcast_token: `${data.access_broadcast_token}`,
+                download_token: `${data.download_token}`,
+              })
+              .then(() => {
+                sessionService.saveUser({
+                  ...res,
+                });
+                //history.push("/chat");
+                window.location.href = data.redirect_url;
+              });
+          });
+      }
+    }
     //process google login
     if ($_GET("code") && $_GET("state")) {
       const payload = getUrlParams(window.location.href);
@@ -134,5 +174,5 @@ export const useUserLogin = (props) => {
         })
       );
     }
-  }, [authMatch, dispatch, history, props]);
+  }, [authMatch, dispatch, history, props, params]);
 };

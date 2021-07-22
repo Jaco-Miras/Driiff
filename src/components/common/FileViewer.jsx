@@ -294,7 +294,7 @@ const FileRender = (props) => {
   };
 
   useEffect(() => {
-    if (!fileBlobs[file.id]) {
+    if (!fileBlobs[file.id] && userAuth) {
       setIsLoaded(false);
       fetch(file.view_link, {
         method: "GET",
