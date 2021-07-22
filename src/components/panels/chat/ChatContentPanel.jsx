@@ -1,11 +1,11 @@
-import React, { useRef, useState, lazy, Suspense } from "react";
+import React, { useRef, useState, lazy, Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
-import { ChatFooterPanel, ChatHeaderPanel } from "./index";
+import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
 import { useIdleTimer } from "react-idle-timer";
 
 const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
