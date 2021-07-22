@@ -214,6 +214,7 @@ const WorkspaceFilesPanel = (props) => {
               activeFolder={folder}
               dictionary={dictionary}
               disableOptions={disableOptions}
+              workspace={workspace}
             />
             <div className="col-md-9 app-content mb-4">
               <div className="app-content-overlay" />

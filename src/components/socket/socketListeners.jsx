@@ -34,6 +34,7 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  incomingHuddleSkip,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -122,6 +123,8 @@ import {
   incomingPostListDisconnect,
   getUnarchivePost,
   incomingPostRequired,
+  incomingFollowPost,
+  incomingUnfollowPost,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -135,6 +138,7 @@ import {
   incomingDeactivatedUser,
   incomingActivatedUser,
   incomingOnlineUsers,
+  incomingDeletedUser,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -241,6 +245,10 @@ class SocketListeners extends Component {
       //console.log("socket reconnecting");
     });
 
+    window.Echo.private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
+      this.props.incomingDeletedUser(e);
+    });
+
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".unarchive-post-notification", (e) => {
@@ -303,6 +311,27 @@ class SocketListeners extends Component {
               ...e.message,
               huddle_log: e.huddle_log,
             });
+            // const huddleAnswered = localStorage.getItem("huddle");
+            // if (huddleAnswered) {
+            //   const { channels, day } = JSON.parse(huddleAnswered);
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            // } else {
+            //   const currentDate = new Date();
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            // }
+            break;
+          }
+          case "HUDDLE_SKIP": {
+            this.props.incomingHuddleSkip(e);
+            // const huddleAnswered = localStorage.getItem("huddle");
+
+            // if (huddleAnswered) {
+            //   const { channels, day } = JSON.parse(huddleAnswered);
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            // } else {
+            //   const currentDate = new Date();
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            // }
             break;
           }
           default:
@@ -563,6 +592,7 @@ class SocketListeners extends Component {
       })
       .listen(".unread-post", (e) => {
         this.props.incomingReadUnreadReducer(e);
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
         this.props.getFavoriteWorkspaceCounters();
@@ -570,6 +600,16 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost(e);
+            break;
+          }
+          case "FOLLOW_POST": {
+            console.log(e, "follow post");
+            this.props.incomingFollowPost(e);
+            break;
+          }
+          case "UNFOLLOW_POST": {
+            console.log(e, "unfollow post");
+            this.props.incomingUnfollowPost(e);
             break;
           }
           case "POST_APPROVED": {
@@ -700,7 +740,7 @@ class SocketListeners extends Component {
                 let companyChannel = Object.values(this.props.channels).filter((c) => c.type === "COMPANY");
                 if (companyChannel.length) {
                   let companyId = companyChannel[0].id;
-                  let postNotifMessages = [...e.channel.messages];
+                  let postNotifMessages = [...e.channel_messages];
                   postNotifMessages = postNotifMessages.filter((m) => {
                     if (m.channel.id !== companyId) {
                       return true;
@@ -1894,6 +1934,7 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
+    incomingHuddleSkip: bindActionCreators(incomingHuddleSkip, dispatch),
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
     incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
     incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
@@ -1910,6 +1951,9 @@ function mapDispatchToProps(dispatch) {
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
     setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
+    incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
+    incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
+    incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
   };
 }
 

@@ -10,3 +10,7 @@ export { default as FolderOptions } from "./FolderOptions";
 export { default as FolderList } from "./FolderList";
 export { default as GoogleDrive } from "./GoogleDrive";
 export { default as FilesBreadcrumb } from "./FilesBreadcrumb";
+export { default as TeamChatFiles } from "./TeamChatFiles";
+export { default as ClientChatFiles } from "./ClientChatFiles";
+export { default as PrivatePostFiles } from "./PrivatePostFiles";
+export { default as ClientPostFiles } from "./ClientPostFiles";

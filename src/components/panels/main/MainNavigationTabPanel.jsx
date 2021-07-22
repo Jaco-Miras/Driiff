@@ -191,13 +191,6 @@ const GiftWrapper = styled.span`
 
 const GiftIcon = styled(SvgIconFeather)``;
 
-// const BackWrapper = styled.span`
-//   cursor: pointer;
-//   position: absolute;
-//   ${(props) => (props.gift ? "top: 10px;" : "")}
-//   right: 10px;
-// `;
-
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
   const history = useHistory();

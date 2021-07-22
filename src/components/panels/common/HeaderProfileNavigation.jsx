@@ -24,6 +24,7 @@ const Wrapper = styled.ul`
         position: relative;
         padding: 0 !important;
         margin-left: 10px;
+        cursor: pointer;
         .avatar-overlay {
           position: absolute;
           width: 45px;
@@ -127,6 +128,7 @@ const HomeProfileNavigation = (props) => {
   const [currentPopUp, setCurrentPopUp] = useState(null);
   const [form, setForm] = useState({});
   const [dropDown, setDropDown] = useState({});
+  const [showUserProfileDropdown, setShowUserProfileDropdown] = useState(false);
 
   const refs = {
     container: useRef(null),
@@ -188,6 +190,10 @@ const HomeProfileNavigation = (props) => {
     history.push("/notifications");
   };
 
+  const toggleShowProfileDropdown = () => {
+    setShowUserProfileDropdown((prevState) => !prevState);
+  };
+
   const location = useLocation();
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
@@ -220,14 +226,14 @@ const HomeProfileNavigation = (props) => {
           </ToolTip>
         </a>
       </li>
-      <li className="nav-item dropdown">
-        <a href="/" className="nav-link profile-button" data-toggle="profile" onClick={toggleDropdown}>
+      <li className="nav-item dropdown" onClick={toggleShowProfileDropdown}>
+        <span className="nav-link profile-button">
           <ToolTip content={loggedUser.name}>
             <div className="avatar-overlay" />
             <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link} noDefaultClick={true} />
           </ToolTip>
-        </a>
-        {dropDown.name === "profile" && dropDown.value && <UserProfileDropDown user={loggedUser} />}
+        </span>
+        {showUserProfileDropdown && <UserProfileDropDown user={loggedUser} closeDropdown={toggleShowProfileDropdown} />}
       </li>
     </Wrapper>
   );

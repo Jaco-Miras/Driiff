@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { PostItemPanel } from "./index";
@@ -51,6 +51,8 @@ const ReadPostsHeader = styled.li`
 
 const Posts = (props) => {
   const { actions, dictionary, filter, isExternalUser, loading, posts, search, workspace } = props;
+
+  const componentIsMounted = useRef(true);
 
   const readPosts = posts.filter((p) => p.is_unread === 0);
   const unreadPosts = posts.filter((p) => p.is_unread === 1);
@@ -134,26 +136,34 @@ const Posts = (props) => {
   };
 
   useEffect(() => {
-    setCheckedPosts([]);
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (componentIsMounted.current) setCheckedPosts([]);
   }, [filter]);
 
   useEffect(() => {
     // if bot category is set to false then show the category with posts
-    if (!showPosts.showUnread && !showPosts.showRead) {
-      if (unreadPosts.length) {
-        setShowPosts((prevState) => {
-          return {
-            ...prevState,
-            showUnread: true,
-          };
-        });
-      } else if (readPosts.length) {
-        setShowPosts((prevState) => {
-          return {
-            ...prevState,
-            showRead: true,
-          };
-        });
+    if (componentIsMounted.current) {
+      if (!showPosts.showUnread && !showPosts.showRead) {
+        if (unreadPosts.length) {
+          setShowPosts((prevState) => {
+            return {
+              ...prevState,
+              showUnread: true,
+            };
+          });
+        } else if (readPosts.length) {
+          setShowPosts((prevState) => {
+            return {
+              ...prevState,
+              showRead: true,
+            };
+          });
+        }
       }
     }
   }, [showPosts, readPosts, unreadPosts]);

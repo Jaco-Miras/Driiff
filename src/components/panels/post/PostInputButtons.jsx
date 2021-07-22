@@ -56,7 +56,7 @@ const ApproveCheckBox = styled(CheckBox)`
 `;
 
 const PostInputButtons = (props) => {
-  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput } = props;
+  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput, disableButtons, commentType } = props;
   const dispatch = useDispatch();
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
@@ -74,6 +74,10 @@ const PostInputButtons = (props) => {
     });
   };
 
+  const handleShowFileDialog = () => {
+    if (!disableButtons) onShowFileDialog(parentId, commentType);
+  };
+
   return (
     <Wrapper editMode={editPostComment !== null} showButtons={showButtons}>
       {editPostComment && mainInput && (
@@ -85,7 +89,7 @@ const PostInputButtons = (props) => {
       )}
       <IconWrapper className="btn-approver">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Select approver">
-          <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
+          <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover} disabled={disableButtons}></ApproveCheckBox>
         </Tooltip>
       </IconWrapper>
 
@@ -101,7 +105,7 @@ const PostInputButtons = (props) => {
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
-          <SvgIconFeather onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
+          <SvgIconFeather onClick={handleShowFileDialog} icon="paperclip" />
         </Tooltip>
       </IconWrapper>
       <IconWrapper className={"chat-buttons"}>

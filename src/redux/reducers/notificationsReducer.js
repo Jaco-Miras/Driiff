@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   unreadCount: 0,
   hasSubscribed: true,
   is_snooze: false,
-  snooze_time: getCurrentTimestamp()
+  snooze_time: getCurrentTimestamp(),
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -20,7 +20,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
       let results = action.data.notifications;
-      results = results.map(obj => ({ ...obj, is_snooze: false }));
+      results = results.map((obj) => ({ ...obj, is_snooze: false }));
       return {
         ...state,
         notifications: {
@@ -336,7 +336,6 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         notifications: notifications,
       };
-
     }
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
@@ -344,8 +343,8 @@ export default (state = INITIAL_STATE, action) => {
       notifications[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
-        notifications: notifications
-      }
+        notifications: notifications,
+      };
     }
     case "INCOMING_POST_REQUIRED": {
       return {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote } from "../../../common";
@@ -11,7 +11,9 @@ import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import CommentCounters from "./CommentCounters";
-import Reward from "react-rewards";
+import { sessionService } from "redux-react-session";
+
+const Reward = lazy(() => import("../../../lazy/Reward"));
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -339,8 +341,6 @@ const Comment = (props) => {
     }
   };
 
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
-
   useEffect(() => {
     if (refs.content.current) {
       const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
@@ -373,35 +373,38 @@ const Comment = (props) => {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id] && comment.body.includes(file.code)) {
           //setIsLoaded(false);
-          fetch(file.view_link, {
-            method: "GET",
-            keepalive: true,
-            headers: {
-              Authorization: `Bearer ${userAuth.access_token}`,
-              "Access-Control-Allow-Origin": "*",
-              Connection: "keep-alive",
-              crossorigin: true,
-            },
-          })
-            .then(function (response) {
-              return response.blob();
+          sessionService.loadSession().then((current) => {
+            let myToken = current.token;
+            fetch(file.view_link, {
+              method: "GET",
+              keepalive: true,
+              headers: {
+                Authorization: myToken,
+                "Access-Control-Allow-Origin": "*",
+                Connection: "keep-alive",
+                crossorigin: true,
+              },
             })
-            .then(function (data) {
-              const imgObj = URL.createObjectURL(data);
-              setFileSrc({
-                id: file.id,
-                src: imgObj,
+              .then(function (response) {
+                return response.blob();
+              })
+              .then(function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+                commentActions.updateCommentImages({
+                  post_id: post.id,
+                  id: comment.id,
+                  parent_id: type === "main" ? null : parentId,
+                  file: {
+                    ...file,
+                    blobUrl: imgObj,
+                  },
+                });
               });
-              commentActions.updateCommentImages({
-                post_id: post.id,
-                id: comment.id,
-                parent_id: type === "main" ? null : parentId,
-                file: {
-                  ...file,
-                  blobUrl: imgObj,
-                },
-              });
-            });
+          });
         }
       });
     }
@@ -527,6 +530,8 @@ const Comment = (props) => {
     }
   }, [clearApprovingState]);
 
+  const filesWithoutInline = comment.files.filter((f) => !comment.body.includes(f.code));
+
   return (
     <>
       <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={user.id}>
@@ -556,37 +561,44 @@ const Comment = (props) => {
               </MoreOptions>
             )}
           </CommentHeader>
+          {!comment.shared_with_client && post.shared_with_client && (
+            <span>
+              <i>{dictionary.internalComment}</i>
+            </span>
+          )}
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <PostChangeAccept
-                approving={approving}
-                fromNow={fromNow}
-                usersApproval={comment.users_approval}
-                user={user}
-                handleApprove={handleApprove}
-                handleRequestChange={handleRequestChange}
-                post={post}
-                isMultipleApprovers={comment.users_approval.length > 1}
-                isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
-              />
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <PostChangeAccept
+                  approving={approving}
+                  fromNow={fromNow}
+                  usersApproval={comment.users_approval}
+                  user={user}
+                  handleApprove={handleApprove}
+                  handleRequestChange={handleRequestChange}
+                  post={post}
+                  isMultipleApprovers={comment.users_approval.length > 1}
+                  isBotMessage={comment.body.startsWith("COMMENT_APPROVAL::")}
+                />
+              </Reward>
+            </Suspense>
           )}
-          {comment.files.length >= 1 && (
+          {filesWithoutInline.length >= 1 && (
             <>
               <hr />
               <h6>{dictionary.files}</h6>
-              <FileAttachments attachedFiles={comment.files} type="comment" comment={comment} />
+              <FileAttachments attachedFiles={filesWithoutInline} type="comment" comment={comment} />
             </>
           )}
           {comment.files_trashed && comment.files_trashed.length >= 1 && (

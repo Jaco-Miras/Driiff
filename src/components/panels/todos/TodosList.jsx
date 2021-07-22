@@ -85,6 +85,9 @@ const ItemList = styled.li`
     .reminder-content {
       flex-wrap: wrap;
     }
+    .avatars-container {
+      min-width: 40px;
+    }
   }
 `;
 
@@ -106,13 +109,22 @@ const DateWrapper = styled.div`
 const LabelWrapper = styled.div`
   min-width: 142px;
   text-align: right;
+  @media all and (max-width: 480px) {
+    min-width: 70px;
+  }
+`;
+
+const RightSectionWrapper = styled.div`
+  @media all and (max-width: 480px) {
+    flex-flow: row wrap;
+  }
 `;
 
 const TodosList = (props) => {
   const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.session.user);
+  //const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
@@ -289,7 +301,7 @@ const TodosList = (props) => {
             <Icon icon="trash" onClick={handleRemove} />
           </HoverButtons>
 
-          <div className="d-flex align-items-center ml-auto">
+          <RightSectionWrapper className="d-flex align-items-center ml-auto">
             <DateWrapper className={`${isDone && "text-muted"}`}>
               <Icon icon="calendar" />
               <ToolTip content={todo.remind_at ? todoFormat(todo.remind_at.timestamp) : dictionary.addDate}>
@@ -323,7 +335,7 @@ const TodosList = (props) => {
                 </>
               )}
             </div>
-          </div>
+          </RightSectionWrapper>
         </div>
       </ItemList>
     </>

@@ -27,11 +27,14 @@ const usePosts = () => {
       //actions.getRecentPosts(params.workspaceId);
       if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
         setFetchingPost(true);
-        if (params.postId) {
-          actions.fetchPostDetail({ post_id: parseInt(params.postId) });
-        }
+        // if (params.postId) {
+        //   actions.fetchPostDetail({ post_id: parseInt(params.postId) });
+        // }
         let cb = (err, res) => {
-          if (componentIsMounted.current) setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
+
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -61,7 +64,9 @@ const usePosts = () => {
         actions.fetchPostList();
 
         let filterCb = (err, res) => {
-          if (componentIsMounted.current) setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -93,7 +98,9 @@ const usePosts = () => {
         );
 
         let unreadCb = (err, res) => {
-          if (componentIsMounted.current) setFetchingPost(false);
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
           if (err) return;
           let files = res.data.posts.map((p) => p.files);
           if (files.length) {
@@ -191,10 +198,10 @@ const usePosts = () => {
       .filter((p) => {
         if (activeFilter) {
           if (activeFilter === "all") {
-            return true;
+            return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
             if (search !== "") {
-              return true;
+              return !p.hasOwnProperty("draft_type");
             } else {
               return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
             }

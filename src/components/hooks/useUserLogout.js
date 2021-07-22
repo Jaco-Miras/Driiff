@@ -5,16 +5,22 @@ import { sessionService } from "redux-react-session";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { userLogout } from "../../redux/actions/userAction";
+import reduxPersist from "../../redux/store/configStore";
 
 const useUserLogout = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { path } = useRouteMatch();
+  const { persistor, persistenceOn } = reduxPersist();
 
   const logout = () => {
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, () => {
+        if (persistenceOn) {
+          persistor.purge();
+          localStorage.removeItem("persist:root");
+        }
         localStorage.removeItem("userAuthToken");
         localStorage.removeItem("token");
         localStorage.removeItem("atoken");

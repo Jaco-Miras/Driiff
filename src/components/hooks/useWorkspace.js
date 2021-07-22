@@ -101,7 +101,7 @@ const useWorkspace = () => {
             if (url.startsWith("/workspace")) {
               actions.redirectTo(workspaces[activeTopicSettings.id]);
             }
-          } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
+          } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister") && user.type === "external") {
             actions.selectWorkspace(Object.values(workspaces)[0]);
             actions.redirectTo(Object.values(workspaces)[0]);
             localStorage.removeItem("fromRegister");
@@ -147,7 +147,7 @@ const useWorkspace = () => {
         if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
           actions.selectChannel({ id: activeTopic.channel.id });
         } else {
-          if (!fetchingChannel) {
+          if (!fetchingChannel && activeTopic.channel.code) {
             setFetchingChannel(true);
             actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
           }
@@ -171,7 +171,7 @@ const useWorkspace = () => {
           if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
             actions.selectChannel({ id: activeTopic.channel.id });
           } else {
-            if (!fetchingChannel) {
+            if (!fetchingChannel && activeTopic.channel.code) {
               setFetchingChannel(true);
               actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
             }

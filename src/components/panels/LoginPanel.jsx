@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -7,6 +7,7 @@ import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { CheckBox, FormInput, PasswordInput } from "../forms";
 import { useSettings, useUserActions } from "../hooks";
+import reduxPersist from "../../redux/store/configStore";
 
 const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 
@@ -27,6 +28,8 @@ const LoginPanel = (props) => {
   const { driffSettings } = useSettings();
 
   const userActions = useUserActions();
+
+  const { persistor, persistenceOn } = reduxPersist();
 
   const refs = {
     email: useRef(),
@@ -171,6 +174,13 @@ const LoginPanel = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("persist:root")) {
+      persistor.purge();
+      localStorage.removeItem("persist:root");
+    }
+  });
 
   if ($_GET("code") && $_GET("state")) {
     return <Wrapper className="fadeIn"></Wrapper>;

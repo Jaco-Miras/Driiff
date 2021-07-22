@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -7,7 +7,8 @@ import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput, FolderSelect } from "../../../forms";
 import { useTranslationActions, usePostActions } from "../../../hooks";
 import PostInputButtons from "../PostInputButtons";
-import Reward from "react-rewards";
+
+const Reward = lazy(() => import("../../../lazy/Reward"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -49,11 +50,15 @@ const ChatInputContainer = styled.div`
   .feather-smile {
     border-radius: 4px;
     cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
     &.active {
       color: #7a1b8b;
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => (props.disableButtons ? "inherit" : "#7a1b8b")};
     }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
@@ -66,7 +71,7 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => (props.disableButtons ? "inherit" : "#7a1b8b")};
     }
   }
 `;
@@ -199,12 +204,18 @@ const OverviewNextLink = styled.span`
 
 const CompanyPostDetailFooter = (props) => {
   const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
-
+  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
   const postActions = usePostActions();
   const ref = {
     picker: useRef(),
     postInput: useRef(null),
   };
+
+  const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.users);
+  const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
+
   const rewardRef = useRef();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -217,15 +228,12 @@ const CompanyPostDetailFooter = (props) => {
   const [showApprover, setShowApprover] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approving, setApproving] = useState({ approve: false, change: false });
+  const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client && user.type === "internal" ? true : false);
+  const [commentType, setCommentType] = useState(!post.shared_with_client ? "internal" : null);
   const [imageLoading, setImageLoading] = useState(null);
 
-  const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.users.users);
-  const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
-
   const handleSend = () => {
-    setSent(true);
+    if (!disableButtons) setSent(true);
   };
 
   const handleClearSent = () => {
@@ -233,7 +241,7 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const handleShowEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker);
+    if (!disableButtons) setShowEmojiPicker(!showEmojiPicker);
   };
 
   const onSelectEmoji = (e) => {
@@ -298,14 +306,14 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const handleQuillImage = () => {
-    if (ref.postInput) {
+    if (ref.postInput && !disableButtons) {
       const imgBtn = ref.postInput.current.parentNode.querySelector("button.ql-image");
       if (imgBtn) imgBtn.click();
     }
   };
 
   const toggleApprover = () => {
-    setShowApprover((prevState) => !prevState);
+    if (!disableButtons) setShowApprover((prevState) => !prevState);
   };
 
   // const privateWsOnly = post.recipients.filter((r) => {
@@ -399,6 +407,12 @@ const CompanyPostDetailFooter = (props) => {
             };
           })
         );
+      }
+      setDisableButtons(false);
+      if (!editPostComment.shared_with_client) {
+        setCommentType("internal");
+      } else {
+        setCommentType("external");
       }
     }
   }, [editPostComment]);
@@ -559,6 +573,12 @@ const CompanyPostDetailFooter = (props) => {
     postActions.close(post);
   };
 
+  const handleCommentType = (type) => {
+    if (type) setDisableButtons(false);
+    else setDisableButtons(true);
+    setCommentType(type);
+  };
+
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
@@ -607,7 +627,7 @@ const CompanyPostDetailFooter = (props) => {
       )}
       {!post.is_close && !post.is_read_only && (
         <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
-          <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
+          <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" disableButtons={disableButtons}>
             <CompanyPostInput
               handleClearSent={handleClearSent}
               sent={sent}
@@ -632,6 +652,9 @@ const CompanyPostDetailFooter = (props) => {
               onSubmitCallback={requestForChangeCallback}
               isApprover={approving.change && hasPendingAproval}
               mainInput={mainInput}
+              readOnly={disableButtons}
+              onToggleCommentType={handleCommentType}
+              commentType={commentType}
               imageLoading={imageLoading}
               setImageLoading={setImageLoading}
             />
@@ -644,6 +667,8 @@ const CompanyPostDetailFooter = (props) => {
               toggleApprover={toggleApprover}
               editPostComment={editPostComment}
               mainInput={mainInput}
+              disableButtons={disableButtons}
+              commentType={commentType}
             />
           </ChatInputContainer>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
@@ -660,20 +685,22 @@ const CompanyPostDetailFooter = (props) => {
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <button className="btn btn-primary" onClick={handleApprove}>
-                {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-              </button>
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <button className="btn btn-primary" onClick={handleApprove}>
+                  {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+                </button>
+              </Reward>
+            </Suspense>
           </div>
         </Dflex>
       )}

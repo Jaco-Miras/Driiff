@@ -275,6 +275,7 @@ const PostModal = (props) => {
   const inputRef = useRef();
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const componentIsMounted = useRef(true);
 
   const user = useSelector((state) => state.session.user);
   const isExternalUser = user.type === "external";
@@ -779,7 +780,7 @@ const PostModal = (props) => {
       });
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       const hasRequestedChange = item.post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
-      let requiredUserIds = item.post.recipients
+      let allUserIds = getAddressTo(item.post.recipients)
         .map((ad) => {
           if (ad.type === "USER") {
             return ad.type_id;
@@ -788,9 +789,13 @@ const PostModal = (props) => {
           }
         })
         .flat();
+      allUserIds = [...new Set(allUserIds)].filter((id) => id !== user.id);
 
-      requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
-      const isAllSelected = requiredUserIds.length === item.post.required_users.length;
+      // requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
+      // const isAllSelected = requiredUserIds.length === item.post.required_users.length;
+
+      const isAllSelectedMustRead = allUserIds.length === item.post.must_read_users.length;
+      const isAllSelectedMustReply = allUserIds.length === item.post.must_reply_users.length;
       setForm({
         ...form,
         body: item.post.body,
@@ -820,19 +825,19 @@ const PostModal = (props) => {
                 };
               })
             : [],
-        requiredUsers:
-          item.post.required_users.length > 0
-            ? isAllSelected
+        mustReadUsers:
+          item.post.must_read_users.length > 0
+            ? isAllSelectedMustRead
               ? [
                   {
                     id: "all",
                     value: "all",
                     label: "All users",
                     icon: "users",
-                    all_ids: requiredUserIds,
+                    all_ids: allUserIds,
                   },
                 ]
-              : item.post.required_users.map((u) => {
+              : item.post.must_read_users.map((u) => {
                   return {
                     ...u,
                     icon: "user-avatar",
@@ -842,6 +847,50 @@ const PostModal = (props) => {
                   };
                 })
             : [],
+        mustReplyUsers:
+          item.post.must_reply_users.length > 0
+            ? isAllSelectedMustReply
+              ? [
+                  {
+                    id: "all",
+                    value: "all",
+                    label: "All users",
+                    icon: "users",
+                    all_ids: allUserIds,
+                  },
+                ]
+              : item.post.must_reply_users.map((u) => {
+                  return {
+                    ...u,
+                    icon: "user-avatar",
+                    value: u.id,
+                    label: u.name,
+                    type: "USER",
+                  };
+                })
+            : [],
+        // requiredUsers:
+        //   item.post.required_users.length > 0
+        //     ? isAllSelected
+        //       ? [
+        //           {
+        //             id: "all",
+        //             value: "all",
+        //             label: "All users",
+        //             icon: "users",
+        //             all_ids: requiredUserIds,
+        //           },
+        //         ]
+        //       : item.post.required_users.map((u) => {
+        //           return {
+        //             ...u,
+        //             icon: "user-avatar",
+        //             value: u.id,
+        //             label: u.name,
+        //             type: "USER",
+        //           };
+        //         })
+        //     : [],
       });
       setUploadedFiles(
         item.post.files.map((f) => {
@@ -852,6 +901,9 @@ const PostModal = (props) => {
         })
       );
     }
+    return () => {
+      componentIsMounted.current = null;
+    };
   }, []);
 
   const onDragEnter = () => {
@@ -859,20 +911,22 @@ const PostModal = (props) => {
   };
 
   useEffect(() => {
-    if (form.shared_with_client) {
-      setShareOption({
-        id: "external",
-        value: "external",
-        label: dictionary.internalAndExternalTeamLabel,
-        icon: "eye",
-      });
-    } else {
-      setShareOption({
-        id: "internal",
-        value: "internal",
-        label: dictionary.internalTeamLabel,
-        icon: "eye-off",
-      });
+    if (componentIsMounted.current) {
+      if (form.shared_with_client) {
+        setShareOption({
+          id: "external",
+          value: "external",
+          label: dictionary.internalAndExternalTeamLabel,
+          icon: "eye",
+        });
+      } else {
+        setShareOption({
+          id: "internal",
+          value: "internal",
+          label: dictionary.internalTeamLabel,
+          icon: "eye-off",
+        });
+      }
     }
   }, [form.shared_with_client]);
 
@@ -943,14 +997,12 @@ const PostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           disableBodyMention={isExternalUser}
-          prioMentionIds={addressIds.filter((id) => id !== user.id)}
+          prioMentionIds={addressIds}
           members={Object.values(actualUsers).filter((u) => {
             if (user.type === "external") {
               return addressIds.some((id) => u.id === id);
             } else {
-              if (u.id === user.id) {
-                return false;
-              } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+              if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
                 return true;
               } else {
                 return false;

@@ -139,12 +139,12 @@ const ChatInput = (props) => {
   const { setSidebarSearch, create, fetchChannelLastReply } = useChannelActions();
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  //const slugs = useSelector((state) => state.global.slugs);
   const recipients = useSelector((state) => state.global.recipients);
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const skipIds = useSelector((state) => state.chat.skipIds);
   const users = useSelector((state) => state.users.users);
   const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
 
@@ -165,7 +165,7 @@ const ChatInput = (props) => {
 
   const toaster = useToaster();
 
-  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
+  const { huddle, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
 
   //const setEditedAnswerId = useRef(null);
 
@@ -185,7 +185,8 @@ const ChatInput = (props) => {
     if (text.includes('<span class="image-uploading">')) return;
     if (showQuestions) {
       if (question.isLastQuestion) {
-        const currentDate = new Date();
+        //const currentDate = new Date();
+        const skipId = skipIds.find((s) => s.channel_id === selectedChannel.id);
         let payload = {
           huddle_id: huddle.id,
           answers: huddle.questions.map((q) => {
@@ -195,6 +196,7 @@ const ChatInput = (props) => {
               answer: q.isLastQuestion ? textOnly : q.answer,
             };
           }),
+          skip_message_ids: skipId ? [skipId.id] : [],
         };
         const closingMessage = huddle.closing_message ? huddle.closing_message : "Huddle submitted";
         let cb = (err, res) => {
@@ -202,12 +204,12 @@ const ChatInput = (props) => {
             toaster.error("Error huddle");
             return;
           }
-          if (huddleAnswered) {
-            const { channels } = JSON.parse(huddleAnswered);
-            localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
-          } else {
-            localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
-          }
+          // if (huddleAnswered) {
+          //   const { channels } = JSON.parse(huddleAnswered);
+          //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
+          // } else {
+          //   localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
+          // }
           toaster.success(closingMessage);
         };
         if (editHuddle) {
@@ -303,9 +305,6 @@ const ChatInput = (props) => {
       reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-      // token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-      // slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
-      //test_case: "web_push"
     };
 
     if (quote) {
@@ -725,17 +724,15 @@ const ChatInput = (props) => {
     quillRef: reactQuillRef,
     members:
       user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted)
+        ? selectedChannel.members
         : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
               return true;
             } else {
               return false;
             }
           }),
-    prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted).map((m) => m.id),
+    prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id).map((m) => m.id),
   });
 
   //to be converted into hooks
@@ -750,7 +747,7 @@ const ChatInput = (props) => {
 
   return (
     <div className="chat-input-wrapper">
-      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
+      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
       {mentionedUserIds.length > 0 && (
         <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} basedOnUserId={true} userMentionOnly={true} />
       )}

@@ -1,19 +1,22 @@
 import { groupBy } from "lodash";
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Loader, SvgEmptyState } from "../../common";
-import ChatBubble from "./ChatBubble";
+//import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
 //import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
-import SystemMessage from "./SystemMessage";
+//import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
+
+const ChatBubble = lazy(() => import("./ChatBubble"));
+const SystemMessage = lazy(() => import("./SystemMessage"));
 
 const ChatReplyContainer = styled.div`
   background: transparent;
@@ -50,6 +53,14 @@ const ChatList = styled.li`
   &:hover {
     .chat-actions-container {
       opacity: 1;
+    }
+  }
+  &.pulsating div.chat-bubble {
+    animation: blinker 2s linear forwards;
+    @keyframes blinker {
+      50% {
+        opacity: 0.5;
+      }
     }
   }
 `;
@@ -361,19 +372,19 @@ class ChatMessages extends React.Component {
       showEmoji: {},
     };
 
-    this.scrollComponent = React.createRef();
+    //this.props.scrollComponent = React.createRef();
     this.infiniteScroll = React.createRef();
     this.mouseOver = React.createRef(false);
   }
 
   componentWillUnmount() {
-    const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = this.props.scrollComponent.current;
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
   }
 
   loadReplies = () => {
     const { selectedChannel, chatMessageActions } = this.props;
-    const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = this.props.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
@@ -420,7 +431,7 @@ class ChatMessages extends React.Component {
   componentDidMount() {
     const { selectedChannel, historicalPositions } = this.props;
 
-    const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = this.props.scrollComponent.current;
 
     if (typeof this.props.history.location.state !== "object") {
       if (historicalPositions.length) {
@@ -445,7 +456,7 @@ class ChatMessages extends React.Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     const { selectedChannel } = this.props;
-    const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = this.props.scrollComponent.current;
     if (prevProps.selectedChannel) {
       if (prevProps.selectedChannel && prevProps.selectedChannel.replies && selectedChannel.replies && scrollComponent) {
         if ((selectedChannel.replies.length > 20) & (prevProps.selectedChannel.replies.length < selectedChannel.replies.length)) {
@@ -468,7 +479,7 @@ class ChatMessages extends React.Component {
     //     mentionEl.classList.add("is-author");
     //   });
     // }
-    const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = this.props.scrollComponent.current;
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
@@ -673,7 +684,7 @@ class ChatMessages extends React.Component {
 
     return (
       <ChatReplyContainer
-        ref={this.scrollComponent}
+        ref={this.props.scrollComponent}
         id={"component-chat-thread"}
         className={`component-chat-thread messages ${this.props.className}`}
         tabIndex="2"
@@ -755,7 +766,7 @@ class ChatMessages extends React.Component {
                               // data-message-id={reply.id}
                               // data-code={reply.code}
                               // data-timestamp={reply.created_at.timestamp}
-                              className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
+                              className={`chat-list chat-list-item-${reply.id} code-${reply.code} `}
                               showTimestamp={showTimestamp}
                               isLastChat={this.isLastChat(reply)}
                             >
@@ -776,43 +787,45 @@ class ChatMessages extends React.Component {
                                     </FailedSpan>
                                   ) : null}
                                   <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-                                    <ChatBubble
-                                      chatMessageActions={this.props.chatMessageActions}
-                                      timeFormat={this.props.timeFormat}
-                                      user={this.props.user}
-                                      reply={reply}
-                                      showAvatar={showAvatar}
-                                      selectedChannel={this.props.selectedChannel}
-                                      showGifPlayer={showGifPlayer}
-                                      isAuthor={isAuthor}
-                                      addMessageRef={this.getLoadRef(reply.id)}
-                                      isLastChat={this.isLastChat(reply)}
-                                      loadReplies={this.loadReplies}
-                                      //isBot={isBot}
-                                      chatSettings={this.props.settings}
-                                      isLastChatVisible={this.props.isLastChatVisible}
-                                      dictionary={this.props.dictionary}
-                                      users={this.props.users}
-                                      translate={this.props.translate}
-                                      language={this.props.language}
-                                      translated_channels={this.props.translated_channels}
-                                      chat_language={this.props.chat_language}
-                                    >
-                                      <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
-                                        {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions
-                                            dictionary={this.props.dictionary}
-                                            className={"chat-message-options"}
-                                            selectedChannel={this.props.selectedChannel}
-                                            isAuthor={isAuthor}
-                                            replyData={reply}
-                                            teamChannelId={this.props.teamChannelId}
-                                            isExternalUser={this.props.user.type === "external"}
-                                          />
-                                        )}
-                                      </ChatActionsContainer>
-                                    </ChatBubble>
+                                    <Suspense fallback={<div></div>}>
+                                      <ChatBubble
+                                        chatMessageActions={this.props.chatMessageActions}
+                                        timeFormat={this.props.timeFormat}
+                                        user={this.props.user}
+                                        reply={reply}
+                                        showAvatar={showAvatar}
+                                        selectedChannel={this.props.selectedChannel}
+                                        showGifPlayer={showGifPlayer}
+                                        isAuthor={isAuthor}
+                                        addMessageRef={this.getLoadRef(reply.id)}
+                                        isLastChat={this.isLastChat(reply)}
+                                        loadReplies={this.loadReplies}
+                                        //isBot={isBot}
+                                        chatSettings={this.props.settings}
+                                        isLastChatVisible={this.props.isLastChatVisible}
+                                        dictionary={this.props.dictionary}
+                                        users={this.props.users}
+                                        translate={this.props.translate}
+                                        language={this.props.language}
+                                        translated_channels={this.props.translated_channels}
+                                        chat_language={this.props.chat_language}
+                                      >
+                                        <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                          {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
+                                          {!isNaN(reply.id) && !reply.is_deleted && (
+                                            <MessageOptions
+                                              dictionary={this.props.dictionary}
+                                              className={"chat-message-options"}
+                                              selectedChannel={this.props.selectedChannel}
+                                              isAuthor={isAuthor}
+                                              replyData={reply}
+                                              teamChannelId={this.props.teamChannelId}
+                                              isExternalUser={this.props.user.type === "external"}
+                                            />
+                                          )}
+                                        </ChatActionsContainer>
+                                      </ChatBubble>
+                                    </Suspense>
                                     {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
                                     {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
                                       <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
@@ -841,18 +854,20 @@ class ChatMessages extends React.Component {
                                 >
                                   <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                     <SystemMessageContainer className="system-message" isAuthor={false}>
-                                      <SystemMessage
-                                        user={this.props.user}
-                                        chatMessageActions={this.props.chatMessageActions}
-                                        timeFormat={this.props.timeFormat}
-                                        selectedChannel={this.props.selectedChannel}
-                                        reply={reply}
-                                        addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={this.isLastChat(reply)}
-                                        isLastChatVisible={this.props.isLastChatVisible}
-                                        dictionary={this.props.dictionary}
-                                        users={this.props.users}
-                                      />
+                                      <Suspense fallback={<div></div>}>
+                                        <SystemMessage
+                                          user={this.props.user}
+                                          chatMessageActions={this.props.chatMessageActions}
+                                          timeFormat={this.props.timeFormat}
+                                          selectedChannel={this.props.selectedChannel}
+                                          reply={reply}
+                                          addMessageRef={this.getLoadRef(reply.id)}
+                                          isLastChat={this.isLastChat(reply)}
+                                          isLastChatVisible={this.props.isLastChatVisible}
+                                          dictionary={this.props.dictionary}
+                                          users={this.props.users}
+                                        />
+                                      </Suspense>
                                       {/* {reply.unfurls.length ? (
                                           <ChatUnfurl
                                             unfurlData={reply.unfurls}
@@ -868,7 +883,7 @@ class ChatMessages extends React.Component {
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions
                                             dictionary={this.props.dictionary}
-                                            scrollRef={this.scrollComponent}
+                                            scrollRef={this.props.scrollComponent}
                                             replyData={reply}
                                             className={"chat-message-options"}
                                             selectedChannel={this.props.selectedChannel}

@@ -4,6 +4,7 @@ import { SvgIconFeather } from "../../common";
 import { ProgressBar } from "../common";
 import { FolderList, GoogleDrive } from "./index";
 import { useTranslationActions } from "../../hooks";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -69,8 +70,10 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const FileSidebar = (props) => {
-  const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, wsFiles, folders, activeFolder, clearFilter, params, disableOptions } = props;
+  const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, wsFiles, folders, activeFolder, clearFilter, params, disableOptions, workspace } = props;
 
+  const user = useSelector((state) => state.session.user);
+  const isExternal = user.type === "external";
   const { _t } = useTranslationActions();
 
   const handleShowUploadModal = () => {
@@ -99,6 +102,10 @@ const FileSidebar = (props) => {
     storageStatus: _t("FILES.STORAGE_STATUS", "Storage Status"),
     usedOf: _t("FILE.USED_OF", "used of"),
     gigabyte: _t("FILE.GIGABYTE", "GB"),
+    teamChat: _t("FILES_SIDEBAR.TEAM_CHAT", "Team chat"),
+    clientChat: _t("FILES_SIDEBAR.CLIENT_CHAT", "Client chat"),
+    privatePost: _t("FILES_SIDEBAR.PRIVATE_POST", "Private post"),
+    postWithClient: _t("FILES_SIDEBAR.POST_WITH_CLIENT", "Post with client"),
   };
 
   const closeMobileModal = () => {
@@ -140,6 +147,27 @@ const FileSidebar = (props) => {
               </Filter>
             )}
             <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} />
+            {!isExternal && workspace && workspace.team_channel && workspace.team_channel.code && (
+              <>
+                <Filter onClick={filterFile} data-filter="team" active={filter === "team"} className="list-group-item d-flex align-items-center">
+                  <Icon className="mr-2" icon="eye-off" />
+                  {dictionary.teamChat}
+                </Filter>
+                <Filter onClick={filterFile} data-filter="client" active={filter === "client"} className="list-group-item d-flex align-items-center">
+                  <Icon className="mr-2" icon="eye" />
+                  {dictionary.clientChat}
+                </Filter>
+                <Filter onClick={filterFile} data-filter="privatePost" active={filter === "privatePost"} className="list-group-item d-flex align-items-center">
+                  <Icon className="mr-2" icon="eye-off" />
+                  {dictionary.privatePost}
+                </Filter>
+                <Filter onClick={filterFile} data-filter="clientPost" active={filter === "clientPost"} className="list-group-item d-flex align-items-center">
+                  <Icon className="mr-2" icon="eye" />
+                  {dictionary.postWithClient}
+                </Filter>
+              </>
+            )}
+
             <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"} className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="monitor" />
               {dictionary.recentlyEdited}

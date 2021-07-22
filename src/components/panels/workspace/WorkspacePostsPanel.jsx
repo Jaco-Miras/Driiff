@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { SvgIconFeather, Loader } from "../../common";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -93,19 +94,25 @@ const StyledIcon = styled(SvgIconFeather)`
   }
 `;
 
-//let fetching = false;
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
   const params = useParams();
   const history = useHistory();
+  const toaster = useToaster();
 
   const dispatch = useDispatch();
 
   useFetchWsCount();
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
-  const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
 
@@ -182,14 +189,6 @@ const WorkspacePostsPanel = (props) => {
     star: _t("POST.STAR", "Mark with star"),
     unStar: _t("POST.UNSTAR", "Unmark star"),
     alreadyReadThis: _t("POST.ALREADY_READ_THIS", "I've read this"),
-    readByNumberofUsers:
-      readByUsers === 1
-        ? _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
-            user_name: readByUsers[0].first_name,
-          })
-        : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
-            user_count: readByUsers.length,
-          }),
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
@@ -226,11 +225,33 @@ const WorkspacePostsPanel = (props) => {
     allOthers: _t("POST.ALL_OTHERS", "All others"),
     sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
-    selectAll: _t("BUTTON.SELECT_ALL", "Select all"),
-    remove: _t("BUTTON.REMOVE", "Remove"),
+    internalComment: _t("COMMENT.INTERNAL_COMMENT", "Internal comment"),
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
+    selectAll: _t("BUTTON.SELECT_ALL", "Select all"),
+    remove: _t("BUTTON.REMOVE", "Remove"),
+    errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
   };
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "inbox",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
@@ -350,8 +371,10 @@ const WorkspacePostsPanel = (props) => {
       }
 
       let cb = (err, res) => {
-        setLoading(false);
-        if (componentIsMounted.current) setLoadPosts(false);
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -495,7 +518,6 @@ const WorkspacePostsPanel = (props) => {
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
                     <PostDetail
-                      readByUsers={readByUsers}
                       post={post}
                       posts={posts}
                       filter={filter}
@@ -511,6 +533,10 @@ const WorkspacePostsPanel = (props) => {
                     />
                   </PostDetailWrapper>
                 </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
               ) : (
                 <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
               )}

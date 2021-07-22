@@ -6,7 +6,7 @@ import { setParentIdForUpload } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
-import { PostBody, PostComments, PostDetailFooter } from "./index";
+import { PostBody, PostComments, PostDetailFooter, PostUnfollowLabel } from "./index";
 import { MoreOptions } from "../../panels/common";
 import { PostCounters } from "../../list/post/item";
 
@@ -259,7 +259,7 @@ const PostFilesTrashedContainer = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
+  const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -270,8 +270,6 @@ const PostDetail = (props) => {
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const hasRead = readByUsers.some((u) => u.id === user.id);
 
   // const [react, setReact] = useState({
   //   user_clap_count: post.user_clap_count,
@@ -293,8 +291,9 @@ const PostDetail = (props) => {
     dropZoneRef: useRef(null),
   };
 
-  const handleOpenFileDialog = (parentId) => {
+  const handleOpenFileDialog = (parentId, commentType = null) => {
     dispatch(setParentIdForUpload(parentId));
+    postActions.setCommentType(commentType);
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
     }
@@ -347,13 +346,15 @@ const PostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
       members: workspace ? workspace.members : [],
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? workspace.team_channel.id : null,
     };
 
     dispatch(addToModals(modal));
@@ -535,18 +536,19 @@ const PostDetail = (props) => {
           workspaceId={workspace.id}
           disableMarkAsRead={disableMarkAsRead}
         />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
-            (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+        {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
+          (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">

@@ -9,6 +9,7 @@ import { useCommentActions, useComments } from "../../../hooks";
 import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
 import { MoreOptions } from "../../common";
 import { PostCounters } from "../../../list/post/item";
+import { PostUnfollowLabel } from "../index";
 
 const MainHeader = styled.div`
   .feather-eye-off {
@@ -260,7 +261,7 @@ const PostFilesTrashedContainer = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { post, posts, filter, postActions, user, onGoBack, dictionary } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -270,8 +271,6 @@ const CompanyPostDetail = (props) => {
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const hasRead = readByUsers.some((u) => u.id === user.id);
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
@@ -287,8 +286,9 @@ const CompanyPostDetail = (props) => {
     dropZoneRef: useRef(null),
   };
 
-  const handleOpenFileDialog = (parentId) => {
+  const handleOpenFileDialog = (parentId, commentType = null) => {
     dispatch(setParentIdForUpload(parentId));
+    postActions.setCommentType(commentType);
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
     }
@@ -341,12 +341,15 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
+    // const externalWorkspace = post.recipients.find((r) => r.type === "TOPIC" && r.is_shared);
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? externalWorkspace.id : null,
     };
 
     dispatch(addToModals(modal));
@@ -508,18 +511,19 @@ const CompanyPostDetail = (props) => {
           onCancel={handleHideDropzone}
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
-            (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+        {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
+          (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">

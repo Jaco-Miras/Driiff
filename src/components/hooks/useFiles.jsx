@@ -8,6 +8,7 @@ const useFiles = (triggerFetch = false) => {
   const fileActions = useFileActions(params);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const user = useSelector((state) => state.session.user);
   const { workspaceFiles, googleDriveApiFiles, gifBlobs, fileBlobs, fileThumbnailBlobs } = useSelector((state) => state.files);
 
   const [fetchingFiles, setFetchingFiles] = useState(false);
@@ -25,6 +26,12 @@ const useFiles = (triggerFetch = false) => {
           fileActions.getTrashFiles(activeTopic.id);
           fileActions.getGoogleDriveFiles(activeTopic.id);
           fileActions.getGoogleDriveFolders(activeTopic.id);
+          if (user.type === "internal" && activeTopic && activeTopic.team_channel && activeTopic.team_channel.code) {
+            fileActions.fetchClientChatFiles({ topic_id: activeTopic.id, filter_by: "client" });
+            fileActions.fetchTeamChatFiles({ topic_id: activeTopic.id, filter_by: "team" });
+            fileActions.fetchPrivatePostFiles({ topic_id: activeTopic.id, filter_by: "privatePost" });
+            fileActions.fetchClientPostFiles({ topic_id: activeTopic.id, filter_by: "clientPost" });
+          }
         };
         setFetchingFiles(true);
         fileActions.getFiles({ topic_id: activeTopic.id }, cb);

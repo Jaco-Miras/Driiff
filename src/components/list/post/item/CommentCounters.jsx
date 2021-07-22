@@ -52,7 +52,13 @@ const CommentCounters = (props) => {
   const userReadPost = () => {
     let filter_post_read = [];
     if (post.post_reads) {
-      return post.post_reads.filter((u) => u.last_read_timestamp >= comment.updated_at.timestamp);
+      return post.post_reads.filter((u) => {
+        if (!comment.shared_with_client) {
+          return u.type === "internal" && u.last_read_timestamp >= comment.updated_at.timestamp;
+        } else {
+          return u.last_read_timestamp >= comment.updated_at.timestamp;
+        }
+      });
     }
     return filter_post_read;
   };

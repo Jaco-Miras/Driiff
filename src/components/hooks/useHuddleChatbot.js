@@ -11,6 +11,7 @@ import {
   updateHuddleAnswer,
   clearEditHuddle,
   putUnpublishedAnswers,
+  postSkipHuddle,
 } from "../../redux/actions/chatActions";
 
 const useHuddleChatbot = () => {
@@ -60,6 +61,10 @@ const useHuddleChatbot = () => {
     dispatch(putUnpublishedAnswers(payload, callback));
   };
 
+  const skipHuddle = (payload, callback = () => {}) => {
+    dispatch(postSkipHuddle(payload, callback));
+  };
+
   return {
     fetch,
     create,
@@ -72,6 +77,7 @@ const useHuddleChatbot = () => {
     updateAnswer,
     clearHuddle,
     updateUnpublishedAnswers,
+    skipHuddle,
   };
 };
 

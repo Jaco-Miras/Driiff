@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, ToolTip } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
@@ -206,11 +206,18 @@ const StarIcon = styled(SvgIconFeather)`
     }`}
 `;
 
+const SearchIcon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  min-width: 14px;
+  margin-left: 5px;
+  cursor: pointer;
+`;
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel} = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -399,6 +406,7 @@ const ChatHeaderPanel = (props) => {
 
   if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
 
+
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
@@ -437,13 +445,14 @@ const ChatHeaderPanel = (props) => {
             </li>
           </ul>
         </div>
+        <SearchIcon icon="search" onClick={handleSearchChatPanel} />
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li>
-              <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
+              <MemberLists members={channel.members} />
             </li>
           )}
         </ul>

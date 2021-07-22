@@ -8,20 +8,85 @@ const useHuddle = (props) => {
   const currentTime = currentDate.getTime();
   //const currentUTCDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
   const actions = useHuddleChatbot();
-  const loggedUser = useSelector((state) => state.session.user);
+  //const loggedUser = useSelector((state) => state.session.user);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const editHuddle = useSelector((state) => state.chat.editHuddle);
+  const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
 
-  const isOwner = loggedUser.role && loggedUser.role.name === "owner";
-
+  //const isOwner = loggedUser.role && loggedUser.role.name === "owner";
+  const weekDays = [
+    { day: "M", value: 1 },
+    { day: "T", value: 2 },
+    { day: "W", value: 3 },
+    { day: "TH", value: 4 },
+    { day: "F", value: 5 },
+  ];
   const huddleAnswered = localStorage.getItem("huddle");
   const huddleBots = useSelector((state) => state.chat.huddleBots);
-  const huddle = huddleBots.find((h) => selectedChannel && h.channel.id === selectedChannel.id);
+  const huddle = huddleBots.find((h) => {
+    if (selectedChannel && h.channel.id === selectedChannel.id) {
+      if (h.end_type === "NEVER") {
+        if (h.repeat_type === "DAILY") {
+          return true;
+        } else if (h.repeat_type === "WEEKLY") {
+          if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (h.repeat_type === "MONTHLY") {
+          return h.showToday;
+        } else if (h.repeat_type === "YEARLY") {
+          // same day and month
+          return h.showToday;
+        }
+      } else if (h.end_type === "END_ON") {
+        const endDate = new Date(h.end_select_on.substr(0, 4), parseInt(h.end_select_on.substr(5, 2)) - 1, h.end_select_on.substr(8, 2));
+        if (currentDate.getTime() < endDate.getTime()) {
+          if (h.repeat_type === "DAILY") {
+            return true;
+          } else if (h.repeat_type === "WEEKLY") {
+            if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+              return true;
+            } else {
+              return false;
+            }
+          } else if (h.repeat_type === "MONTHLY") {
+            return h.showToday;
+          } else if (h.repeat_type === "YEARLY") {
+            // same day and month
+            return h.showToday;
+          }
+        } else {
+          return false;
+        }
+      } else if (h.end_type === "END_AFTER_REPEAT") {
+        if (h.repeat_count < h.end_select_after) {
+          if (h.repeat_type === "DAILY") {
+            return true;
+          } else if (h.repeat_type === "WEEKLY") {
+            if (h.repeat_select_weekly && weekDays.find((d) => d.day === h.repeat_select_weekly).value === currentDate.getDay()) {
+              return true;
+            } else {
+              return false;
+            }
+          } else if (h.repeat_type === "MONTHLY") {
+            return h.showToday;
+          } else if (h.repeat_type === "YEARLY") {
+            // same day and month
+            return h.showToday;
+          }
+        }
+      }
+    } else {
+      return false;
+    }
+  });
 
-  let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
+  //let answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
+  let answeredChannels = [...hasUnpublishedAnswers];
   let inTimeRange = false;
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-
   if (huddle) {
     const startAtHour = parseInt(huddle.start_at.time.substr(0, 2));
     const startAtMinutes = parseInt(huddle.start_at.time.substr(3, 2));
@@ -34,8 +99,6 @@ const useHuddle = (props) => {
     publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
     publishAtDate.setDate(currentDate.getDate());
     inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
-    // console.log(huddle, inTimeRange, answeredChannels, "huddle");
-    // console.log(currentDate, startAtDate, publishAtDate, "huddle dates");
   }
 
   return {

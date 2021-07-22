@@ -4,7 +4,6 @@ import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
-//import { lang } from "moment-timezone";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
@@ -77,6 +76,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       }
 
       return newBody;
+    } else if (message.includes("HUDDLE_SKIP::")) {
+      newBody = "You skipped today";
     } else if (message.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(message.replace("CHANNEL_UPDATE::", ""));
       let author = {
@@ -436,7 +437,6 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern()) && !hasCurrencySymbol(emoji)) {
     isEmoticonOnly = true;
   }
-
   if (selectedChannel.is_translate && reply.is_translated && translated_channels.length > 0 && translated_channels.includes(selectedChannel.id)) {
     // check if the channel is_translate is on and reply is already translated
     let OriginalHtmlRow = (

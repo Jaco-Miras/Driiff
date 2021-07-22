@@ -7,11 +7,13 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import reduxPersist from "../../../redux/store/configStore";
+import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
   .card {
@@ -76,6 +78,9 @@ const ReleaseLink = styled.span`
 
 const ProfileSettings = (props) => {
   const { className = "" } = props;
+  let persistenceOn = localStorage.getItem("persistence") ? true : false;
+  const { persistor } = reduxPersist();
+  const [persist, setPersist] = useState(persistenceOn);
 
   const history = useHistory();
   const { localizeDate } = useTimeFormat();
@@ -85,7 +90,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -113,7 +118,11 @@ const ProfileSettings = (props) => {
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
+    liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
+    //chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
   };
 
   // const notificationSoundOptions = [
@@ -429,7 +438,7 @@ const ProfileSettings = (props) => {
     (e) => {
       setGeneralSetting({
         chat_language: e.value,
-        translated_channels: []
+        translated_channels: [],
       });
       setTimeout(function () {
         localStorage.setItem("chat_translate_change", "1");
@@ -451,32 +460,29 @@ const ProfileSettings = (props) => {
     [setChatSetting]
   );
 
-  const handleGeneralSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, checked, dataset } = e.target;
+  const handleGeneralSwitchToggle = (e) => {
+    e.persist();
+    const { name, checked, dataset } = e.target;
 
-      setGeneralSetting(
-        {
-          [name]: checked ? "1" : "0",
-        },
-        () => {
-          if (["log_rocket", "sentry"].includes(name)) {
-            localStorage.setItem(name, checked ? "1" : "0");
-            window.location.reload();
-          } else if (name === "logs") {
-            if (checked) {
-              localStorage.setItem("logger", "all");
-            } else {
-              localStorage.removeItem("logger");
-            }
+    setGeneralSetting(
+      {
+        [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
+      },
+      () => {
+        if (["log_rocket", "sentry"].includes(name)) {
+          localStorage.setItem(name, checked ? "1" : "0");
+          window.location.reload();
+        } else if (name === "logs") {
+          if (checked) {
+            localStorage.setItem("logger", "all");
+          } else {
+            localStorage.removeItem("logger");
           }
         }
-      );
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setChatSetting]
-  );
+      }
+    );
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleNotificationsSwitchToggle = useCallback(
     (e) => {
@@ -574,6 +580,22 @@ const ProfileSettings = (props) => {
     });
   };
 
+  const handleTogglePersist = (e) => {
+    e.persist();
+    const { checked, dataset } = e.target;
+    setPersist(checked);
+    if (checked) {
+      localStorage.setItem("persistence", true);
+    } else {
+      if (persistenceOn) {
+        persistor.purge();
+        localStorage.removeItem("persist:root");
+      }
+      localStorage.removeItem("persistence");
+    }
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
+
   const handleViewReleasePage = () => {
     history.push("/releases");
   };
@@ -624,22 +646,50 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              {
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={virtualization}
-                      type="switch"
-                      id="chat_virtualization"
-                      name="virtualization"
-                      onChange={handleChatSwitchToggle}
-                      data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
-                      label={<span>Virtualized chat</span>}
-                    />
-                  </div>
+              <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={virtualization}
+                    type="switch"
+                    id="chat_virtualization"
+                    name="virtualization"
+                    onChange={handleChatSwitchToggle}
+                    data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
+                    label={<span>Virtualized chat</span>}
+                  />
                 </div>
-              }
+              </div>
+
+              <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={persist}
+                    type="switch"
+                    id="redux_persist"
+                    name="persistence"
+                    onChange={handleTogglePersist}
+                    data-success-message={`You have turn ${persist ? "OFF" : "ON"} data persistence in chat!`}
+                    label={<span>Persisted data</span>}
+                  />
+                </div>
+              </div>
+
+              {/* <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={translate}
+                    type="switch"
+                    id="translate_chat"
+                    name="translate"
+                    onChange={handleChatSwitchToggle}
+                    data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
+                    label={<span>{dictionary.chatTranslateTitle}</span>}
+                  />
+                </div>
+              </div> */}
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
                 <div className="col-7">
@@ -720,6 +770,20 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+              <div className="row mb-2">
+                <div className="col-12 text-muted">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={daily_digest}
+                    type="switch"
+                    id="daily_digest"
+                    name="daily_digest"
+                    data-success-message={`${!daily_digest ? "Daily digest enabled" : "Daily digest disabled"}`}
+                    onChange={handleGeneralSwitchToggle}
+                    label={<span>{dictionary.dailyDigest}</span>}
+                  />
+                </div>
+              </div>
               {/* <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.notificationSound}</div>
                 <div className="col-7">
@@ -792,6 +856,11 @@ const ProfileSettings = (props) => {
       <span className="version-number mb-3">
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
+      {loggedUser && loggedUser.email === "nilo@makedevelopment.com" && (
+        <span>
+          {isMobileSafari && "mobile safari"}, {browserName}, {deviceType}
+        </span>
+      )}
     </Wrapper>
   );
 };

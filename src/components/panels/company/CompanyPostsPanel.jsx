@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { useCompanyPosts, useTranslationActions } from "../../hooks";
+import { SvgIconFeather, Loader } from "../../common";
+import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPostsEmptyState, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
 
@@ -91,15 +91,22 @@ const StyledIcon = styled(SvgIconFeather)`
   }
 `;
 
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 //let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
 
   const params = useParams();
   const history = useHistory();
+  const toaster = useToaster();
 
   const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters } = useCompanyPosts();
-  const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -160,14 +167,6 @@ const CompanyPostsPanel = (props) => {
     star: _t("POST.STAR", "Mark with star"),
     unStar: _t("POST.UNSTAR", "Unmark star"),
     alreadyReadThis: _t("POST.ALREADY_READ_THIS", "I've read this"),
-    readByNumberofUsers:
-      readByUsers === 1
-        ? _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
-            user_name: readByUsers[0].first_name,
-          })
-        : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
-            user_count: readByUsers.length,
-          }),
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
@@ -204,10 +203,12 @@ const CompanyPostsPanel = (props) => {
     allOthers: _t("POST.ALL_OTHERS", "All others"),
     sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
-    selectAll: _t("BUTTON.SELECT_ALL", "Select all"),
-    remove: _t("BUTTON.REMOVE", "Remove"),
+    internalComment: _t("COMMENT.INTERNAL_COMMENT", "Internal comment"),
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
+    selectAll: _t("BUTTON.SELECT_ALL", "Select all"),
+    remove: _t("BUTTON.REMOVE", "Remove"),
+    errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
   };
 
   const handleLoadMore = () => {
@@ -248,6 +249,25 @@ const CompanyPostsPanel = (props) => {
       componentIsMounted.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              filter: "inbox",
+              tag: null,
+            };
+            actions.setCompanyFilterPosts(payload);
+            history.push("/posts");
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (postListTag) {
@@ -303,23 +323,16 @@ const CompanyPostsPanel = (props) => {
             <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
           ) : (
             <>
-              {post ? (
+              {post && params.hasOwnProperty("postId") ? (
                 <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail
-                      readByUsers={readByUsers}
-                      post={post}
-                      posts={posts}
-                      filter={filter}
-                      postActions={actions}
-                      user={user}
-                      history={history}
-                      onGoBack={handleGoback}
-                      dictionary={dictionary}
-                      isExternalUser={isExternalUser}
-                    />
+                    <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
                   </PostDetailWrapper>
                 </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
               ) : (
                 <CompanyPosts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} />
               )}

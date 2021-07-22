@@ -10,7 +10,7 @@ import { uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { postComment, putComment, setEditComment, setParentIdForUpload, addComment } from "../../redux/actions/postActions";
+import { postComment, putComment, setEditComment, setParentIdForUpload, addComment, setPostCommentType } from "../../redux/actions/postActions";
 import { osName } from "react-device-detect";
 import { FolderSelect } from "../forms";
 
@@ -240,7 +240,7 @@ const fileOptions = [
 ];
 
 const FileUploadModal = (props) => {
-  const { type, mode, droppedFiles, post = null, members = [] } = props.data;
+  const { type, mode, droppedFiles, post = null, members = [], team_channel } = props.data;
 
   const progressBar = useRef(0);
   const toaster = useToaster();
@@ -253,6 +253,7 @@ const FileUploadModal = (props) => {
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const savedInput = useSelector((state) => state.global.dataFromInput);
+  const commentType = useSelector((state) => state.posts.commentType);
   const { parentId, editPostComment } = useSelector((state) => state.posts);
 
   const [modal, setModal] = useState(true);
@@ -488,10 +489,12 @@ const FileUploadModal = (props) => {
         personalized_for_id: null,
         parent_id: parentId,
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
+        shared_with_client: commentType && commentType === "internal" ? false : true,
       };
       //setUploadedFiles([]);
       dispatch(setParentIdForUpload(null));
       dispatch(saveInputData({ sent: true }));
+      dispatch(setPostCommentType(null));
       if (editPostComment) {
         payload = {
           ...payload,

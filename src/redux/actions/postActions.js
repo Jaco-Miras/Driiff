@@ -432,6 +432,10 @@ export function incomingPostRequired(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_REQUIRED", payload, callback);
 }
 
+export function setPostCommentType(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_POST_COMMENT_TYPE", payload, callback);
+}
+
 export function removeDraftPost(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_DRAFT_POST", payload, callback);
 }
@@ -454,4 +458,12 @@ export function getMyCompanyPosts(payload, callback) {
 
 export function getStarCompanyPosts(payload, callback) {
   return dispatchActionToReducer(getCompanyPostsService(payload), "GET_STAR_COMPANY_POSTS_START", "GET_STAR_COMPANY_POSTS_SUCCESS", "GET_STAR_COMPANY_POSTS_FAIL", callback);
+}
+
+export function incomingFollowPost(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_FOLLOW_POST", payload, callback);
+}
+
+export function incomingUnfollowPost(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UNFOLLOW_POST", payload, callback);
 }

@@ -14,6 +14,7 @@ import {
   getCompanyChannel as getCompanyChannelService,
   getGlobalRecipients as getGlobalRecipientsService,
   getHuddleChatbot as getHuddleChatbotService,
+  getSkippedAnswers as getSkippedAnswersService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
   getSearchChannels as getSearchChannelsService,
@@ -30,6 +31,7 @@ import {
   postHuddleAnswer as postHuddleAnswerService,
   postHuddleChatbot as postHuddleChatbotService,
   postSearchExistingChannels as postSearchExistingChannelsService,
+  postSkipHuddle as postSkipHuddleService,
   postUserBots as postUserBotsService,
   putChannel as putChannelService,
   putChannelUpdate as putChannelUpdateService,
@@ -101,6 +103,10 @@ export function addChatMessage(payload, callback) {
 
 export function postChatMessage(payload, callback) {
   return dispatchActionToReducer(postChatMessageService(payload), "CREATE_CHAT_MESSAGE_START", "CREATE_CHAT_MESSAGE_SUCCESS", "CREATE_CHAT_MESSAGE_FAILURE", callback);
+}
+
+export function postChatMessageTranslate(payload, callback) {
+  return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }
 
 export function putChatMessage(payload, callback) {
@@ -406,12 +412,48 @@ export function searchChannels(payload, callback) {
   return dispatchActionToReducer(getChannelsService(payload), "SEARCH_CHANNELS_START", "SEARCH_CHANNELS_SUCCESS", "SEARCH_CHANNELS_FAIL", callback);
 }
 
+export function postSkipHuddle(payload, callback) {
+  return dispatchActionToReducer(postSkipHuddleService(payload), "POST_SKIP_HUDDLE_START", "POST_SKIP_HUDDLE_SUCCESS", "POST_SKIP_HUDDLE_FAIL", callback);
+}
+
+export function incomingHuddleSkip(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_HUDDLE_SKIP", payload, callback);
+}
+
+export function addSkipId(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_SKIP_ID", payload, callback);
+}
+
+export function adjustHuddleDate(payload, callback) {
+  return SimpleDispatchActionToReducer("ADJUST_HUDDLE_DATE", payload, callback);
+}
+
+export function getSkippedAnswers(payload, callback) {
+  return dispatchActionToReducer(getSkippedAnswersService(payload), "GET_SKIPPED_ANSWERS_START", "GET_SKIPPED_ANSWERS_SUCCESS", "GET_SKIPPED_ANSWERS_FAIL", callback);
+}
+
+export function clearHasUnpiblishedAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_HAS_UNPUBLISHED_ANSWERS", payload, callback);
+}
+
+export function addHasUnpublishedAnswers(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_HAS_UNPUBLISHED_ANSWERS", payload, callback);
+}
+
 export function setSearchArchivedChannels(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SEARCH_ARCHIVED_CHANNELS", payload, callback);
 }
 
 export function setTranslatedBody(payload, callback) {
   return SimpleDispatchActionToReducer("SET_TRANSLATED_BODY", payload, callback);
+}
+
+export function resetTranslatedBody(payload, callback) {
+  return SimpleDispatchActionToReducer("RESET_TRANSLATED_BODY", payload, callback);
+}
+
+export function setChannelTranslateState(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANNEL_TRANSLATE_STATE", payload, callback);
 }
 
 export function setFancyLink(payload, callback) {
@@ -424,17 +466,4 @@ export function getCompanyChannel(payload, callback) {
 
 export function updateCompanyChannel(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMPANY_CHANNEL", payload, callback);
-}
-
-
-export function resetTranslatedBody(payload, callback) {
-  return SimpleDispatchActionToReducer("RESET_TRANSLATED_BODY", payload, callback);
-}
-
-export function setChannelTranslateState(payload, callback) {
-  return SimpleDispatchActionToReducer("SET_CHANNEL_TRANSLATE_STATE", payload, callback);
-}
-
-export function postChatMessageTranslate(payload, callback) {
-  return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }

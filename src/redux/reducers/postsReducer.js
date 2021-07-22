@@ -56,6 +56,7 @@ const INITIAL_STATE = {
   recentPosts: {},
   clearApprovingState: null,
   changeRequestedComment: null,
+  commentType: null,
   commentDrafts: [],
 };
 
@@ -601,7 +602,6 @@ export default (state = INITIAL_STATE, action) => {
         ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
           companyPosts: {
             ...state.companyPosts,
-            flipper: !state.flipper,
             posts: {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
@@ -1277,6 +1277,42 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           },
         },
+      };
+    }
+    case "INCOMING_FOLLOW_POST": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
+                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.new_recipient_id),
+              },
+            },
+          },
+        }),
+      };
+    }
+    case "INCOMING_UNFOLLOW_POST": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+              },
+            },
+          },
+        }),
       };
     }
     default:

@@ -11,27 +11,10 @@ object-assign
       */
 
 /*!
-  Copyright (c) 2017 Jed Watson.
+  Copyright (c) 2018 Jed Watson.
   Licensed under the MIT License (MIT), see
   http://jedwatson.github.io/classnames
 */
-
-/*!
- * Cropper.js v1.5.9
- * https://fengyuanchen.github.io/cropperjs
- *
- * Copyright 2015-present Chen Fengyuan
- * Released under the MIT license
- *
- * Date: 2020-09-10T13:16:26.743Z
- */
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
 
 /*!
  * JavaScript Cookie v2.2.0
@@ -67,15 +50,6 @@ object-assign
  *
  * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
- */
-
-/*!
- * UAParser.js v0.7.22
- * Lightweight JavaScript-based User-Agent string parser
- * https://github.com/faisalman/ua-parser-js
- *
- * Copyright © 2012-2019 Faisal Salman <f@faisalman.com>
- * Licensed under MIT License
  */
 
 /*!
@@ -119,13 +93,23 @@ PERFORMANCE OF THIS SOFTWARE.
 
 /*! ./LogRocket */
 
+/*! ./arrayLikeToArray.js */
+
+/*! ./arrayWithoutHoles.js */
+
 /*! ./createEnhancer */
 
 /*! ./createMiddleware */
 
 /*! ./fetchIntercept */
 
+/*! ./iterableToArray.js */
+
 /*! ./makeLogRocket */
+
+/*! ./nonIterableSpread.js */
+
+/*! ./objectWithoutPropertiesLoose.js */
 
 /*! ./raven/raven */
 
@@ -135,11 +119,15 @@ PERFORMANCE OF THIS SOFTWARE.
 
 /*! ./registerFetch */
 
+/*! ./registerNetworkInformation */
+
 /*! ./registerXHR */
 
 /*! ./setup */
 
 /*! ./stackTraceFromError */
+
+/*! ./unsupportedIterableToArray.js */
 
 /*! /root/project/packages/logrocket/src/module-npm.js */
 
@@ -153,13 +141,39 @@ PERFORMANCE OF THIS SOFTWARE.
 
 /*! @apphub/logrocket-utils/src/TraceKit */
 
+/*! @apphub/logrocket-utils/src/constants/nps */
+
 /*! @apphub/logrocket-utils/src/enhanceFunc */
 
 /*! @apphub/logrocket-utils/src/mapValues */
 
+/*! @apphub/logrocket-utils/src/startsWith */
+
 /*! @apphub/now */
 
+/*! @babel/runtime/helpers/classCallCheck */
+
+/*! @babel/runtime/helpers/createClass */
+
+/*! @babel/runtime/helpers/defineProperty */
+
+/*! @babel/runtime/helpers/interopRequireDefault */
+
+/*! @babel/runtime/helpers/interopRequireWildcard */
+
+/*! @babel/runtime/helpers/objectWithoutProperties */
+
+/*! @babel/runtime/helpers/toConsumableArray */
+
+/*! @babel/runtime/helpers/typeof */
+
+/*! @license DOMPurify | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/2.0.8/LICENSE */
+
+/*! https://mths.be/punycode v1.4.1 by @mathias */
+
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
 /*! no static exports found */
 
@@ -192,6 +206,10 @@ PERFORMANCE OF THIS SOFTWARE.
         \****************************************************/
 
 /*!*******************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
+        \*******************************************************/
+
+/*!*******************************************************!*\
         !*** ./packages/@apphub:logrocket-redux/src/index.js ***!
         \*******************************************************/
 
@@ -212,7 +230,15 @@ PERFORMANCE OF THIS SOFTWARE.
         \***********************************************************/
 
 /*!************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/createClass.js ***!
+        \************************************************************/
+
+/*!************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/index.js ***!
+        \************************************************************/
+
+/*!************************************************************!*\
+        !*** ./packages/@apphub:logrocket-utils/src/startsWith.js ***!
         \************************************************************/
 
 /*!*************************************************************!*\
@@ -224,16 +250,48 @@ PERFORMANCE OF THIS SOFTWARE.
         \**************************************************************/
 
 /*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/classCallCheck.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/defineProperty.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
         !*** ./packages/@apphub:logrocket-network/src/registerXHR.js ***!
         \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./packages/@apphub:logrocket-utils/src/constants/nps.js ***!
+        \***************************************************************/
+
+/*!****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/iterableToArray.js ***!
+        \****************************************************************/
 
 /*!****************************************************************!*\
         !*** ./packages/@apphub:logrocket-redux/src/createEnhancer.js ***!
         \****************************************************************/
 
 /*!*****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayLikeToArray.js ***!
+        \*****************************************************************/
+
+/*!*****************************************************************!*\
         !*** ./packages/@apphub:logrocket-network/src/registerFetch.js ***!
         \*****************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js ***!
+        \******************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/nonIterableSpread.js ***!
+        \******************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/toConsumableArray.js ***!
+        \******************************************************************/
 
 /*!******************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/raven/raven.js ***!
@@ -251,6 +309,18 @@ PERFORMANCE OF THIS SOFTWARE.
         !*** ./packages/@apphub:logrocket-console/src/registerConsole.js ***!
         \*******************************************************************/
 
+/*!**********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
+        \**********************************************************************/
+
+/*!***********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/interopRequireWildcard.js ***!
+        \***********************************************************************/
+
+/*!************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/objectWithoutProperties.js ***!
+        \************************************************************************/
+
 /*!*************************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/registerExceptions.js ***!
         \*************************************************************************/
@@ -258,6 +328,27 @@ PERFORMANCE OF THIS SOFTWARE.
 /*!**************************************************************************!*\
         !*** ./packages/@apphub:logrocket-exceptions/src/stackTraceFromError.js ***!
         \**************************************************************************/
+
+/*!***************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js ***!
+        \***************************************************************************/
+
+/*!*****************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js ***!
+        \*****************************************************************************/
+
+/*!******************************************************************************!*\
+        !*** ./packages/@apphub:logrocket-network/src/registerNetworkInformation.js ***!
+        \******************************************************************************/
+
+/*!@license
+ * UAParser.js v0.7.28
+ * Lightweight JavaScript-based User-Agent string parser
+ * https://github.com/faisalman/ua-parser-js
+ *
+ * Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
+ * Licensed under MIT License
+ */
 
 /**
  *
@@ -271,44 +362,6 @@ PERFORMANCE OF THIS SOFTWARE.
  * @author      Alexey Gordeyev IK <aleksej@gordejev.lv>
  * @link        http://www.gordejev.lv
  *
- */
-
-/**
- * @license
- *
- * Push v1.0.9
- * =========
- * A compact, cross-browser solution for the JavaScript Notifications API
- *
- * Credits
- * -------
- * Tsvetan Tsvetkov (ttsvetko)
- * Alex Gibson (alexgibson)
- *
- * License
- * -------
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2015-2017 Tyler Nickerson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
  */
 
 /**
@@ -330,24 +383,6 @@ PERFORMANCE OF THIS SOFTWARE.
  */
 
 /** @license React v16.13.1
- * react-dom-server.browser.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/** @license React v16.13.1
- * react-dom.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/** @license React v16.13.1
  * react-is.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -356,7 +391,25 @@ PERFORMANCE OF THIS SOFTWARE.
  * LICENSE file in the root directory of this source tree.
  */
 
-/** @license React v16.13.1
+/** @license React v16.14.0
+ * react-dom-server.browser.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v16.14.0
+ * react-dom.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v16.14.0
  * react.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
