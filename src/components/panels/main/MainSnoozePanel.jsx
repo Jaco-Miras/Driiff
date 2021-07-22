@@ -8,7 +8,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 
 const Wrapper = styled.div`
-.snooze-container {}
+.snooze-container {margin-bottom:8px !important;}
 .snooze-container .snooze-body {}
 .snooze-container .snooze-me {font-size: 12px; margin:0 5px; text-decoration: underline;}
 .snooze-all-container {background: transparent;
@@ -59,6 +59,7 @@ const MainSnooze = (props) => {
   const { generalSettings: { dark_mode }, } = useSettings();
   const redirect = useRedirect();
 
+  const onSnooze = [];
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
     todoReminder: _t("SNOOZE.REMINDER", `A friendly automated reminder`),
@@ -142,11 +143,13 @@ const MainSnooze = (props) => {
   const renderContent = (type, n) => {
     const actions = n[0] === 'notification' ? notifActions : todoActions;
     if (type === 'notification') {
+      var name = n.author.name;
+      var firstName = name.split(' ').slice(0, -1).join(' ');
       if (n.type === "POST_MENTION") {
         return (
           <>
             <div style={{ lineHeight: '1' }}>
-              {n.author.name} {" "}  {dictionary.notificationMention}   {" "} {n.data.title} {" "}
+              {firstName} {" "}  {dictionary.notificationMention}   {" "} {n.data.title} {" "}
               {n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
                 <>
                   <Icon icon="folder" /> {" "}
@@ -161,7 +164,7 @@ const MainSnooze = (props) => {
         return (
           <>
             <div style={{ lineHeight: '1' }}>
-              {n.author.name + " " + dictionary.notificationNewPost + " "}
+              {firstName} {" "} {dictionary.notificationNewPost} {" "}
               {n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
                 <>
                   <Icon icon="folder" /> {" "}
@@ -182,7 +185,7 @@ const MainSnooze = (props) => {
         return (
           <>
             <div style={{ lineHeight: '1' }}>
-              {n.author.name} {dictionary.sentProposal}
+              {firstName}{" "} {dictionary.sentProposal}
             </div>
           </>
         );
@@ -191,7 +194,7 @@ const MainSnooze = (props) => {
         return (
           <>
             <div style={{ lineHeight: '1' }}>
-              {n.author.name} {dictionary.hasRequestedChange}
+              {firstName}{" "} {dictionary.hasRequestedChange}
             </div>
           </>
         );
@@ -232,7 +235,7 @@ const MainSnooze = (props) => {
   const snoozeOpen = (snooze) => {
 
     if (snooze.length > 0) {
-      if (!toast.isActive('btnSnoozeAll')) {
+      if (!toast.isActive('btnSnoozeAll'))
         toast(<span className="snooze-all" onClick={(e) => handleSnoozeAll(e)}>Snooze All</span>, {
           className: 'snooze-all-container',
           bodyClassName: "snooze-all-body",
@@ -240,10 +243,11 @@ const MainSnooze = (props) => {
           toastId: 'btnSnoozeAll',
           closeButton: false,
         });
-      }
+
 
       snooze.map((n, i) => {
         var actions = n[3] === 'notification' ? notifActions : todoActions;
+
         toast(n[1], {
           className: 'snooze-container',
           bodyClassName: "snooze-body",
@@ -297,16 +301,18 @@ const MainSnooze = (props) => {
   //handler for all non-snoozed items
   useEffect(() => {
     if (!notificationSnooze && !todos.is_snooze) {
+      console.log(notifCLean());
       const items = processSnooze('notification', notifCLean(), false);
       const snooze = items.concat(processSnooze('todo', todoCLean(), false));
-      snooze.length ? snoozeOpen(snooze.sort((a, b) => a[4] - b[4])) : toast.dismiss();
+
+      snooze.length ? snoozeOpen(snooze.sort((a, b) => b[4] - a[4]).slice(0, 5)) : toast.dismiss();
     }
   }, [notifications, todos]);
 
   return (
     <Wrapper>
       <ToastContainer enableMultiContainer containerId={'toastS'} position="bottom-left" autoClose={false} newestOnTop={false}
-        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={7} closeButton={snoozeMeButton}
+        closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable={false} limit={5} closeButton={snoozeMeButton}
       />
     </Wrapper>
   );
