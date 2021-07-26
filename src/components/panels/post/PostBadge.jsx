@@ -64,16 +64,12 @@ const PostBadge = (props) => {
               <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
             </div>
           )}
-          {((post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
-            (post.author.id === user.id && post.is_must_read) ||
-            (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+          {((post.author.id === user.id && post.is_must_read) || (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
             <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}
-          {((post.is_must_reply && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) ||
-            (post.author.id === user.id && post.is_must_reply) ||
-            (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) && (
+          {((post.author.id === user.id && post.is_must_reply) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) && (
             <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>

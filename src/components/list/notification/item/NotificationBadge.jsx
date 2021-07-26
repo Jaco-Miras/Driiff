@@ -4,14 +4,12 @@ const NotificationBadge = (props) => {
   const { notification, dictionary, user } = props;
 
   const getMustReadText = (data) => {
-    if ((data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) || (data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read)))
-      return dictionary.mustRead;
+    if (data.must_read && data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read)) return dictionary.mustRead;
     return null;
   };
 
   const getMustReplyText = (data) => {
-    if ((data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
-      return dictionary.needsReply;
+    if (data.must_reply && data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return dictionary.needsReply;
     return null;
   };
   /*

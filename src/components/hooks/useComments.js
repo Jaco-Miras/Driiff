@@ -33,8 +33,6 @@ const useComments = (post) => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     if (!fetchingPostReads && !post.hasOwnProperty("post_reads")) {
       if (hasPendingApproval) return;
-      if (post.is_must_read && post.author.id !== user.id && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) return;
-      if (post.is_must_reply && post.author.id !== user.id && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) return;
       if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return;
       if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) return;
       commentActions.fetchPostRead(parseInt(post.id), (err, res) => {

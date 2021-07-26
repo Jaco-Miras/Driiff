@@ -124,17 +124,9 @@ const useCompanyPosts = () => {
         }
       } else if (tag) {
         if (tag === "is_must_reply") {
-          return (
-            (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) ||
-            (p.author.id === user.id && p.is_must_reply) ||
-            (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply))
-          );
+          return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
         } else if (tag === "is_must_read") {
-          return (
-            (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) ||
-            (p.author.id === user.id && p.is_must_read) ||
-            (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read))
-          );
+          return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
         } else if (tag === "is_read_only") {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         } else if (tag === "is_unread") {
@@ -161,18 +153,10 @@ const useCompanyPosts = () => {
     });
 
   count.is_must_reply = Object.values(posts).filter((p) => {
-    return (
-      (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) ||
-      (p.author.id === user.id && p.is_must_reply) ||
-      (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply))
-    );
+    return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
   }).length;
   count.is_must_read = Object.values(posts).filter((p) => {
-    return (
-      (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) ||
-      (p.author.id === user.id && p.is_must_read) ||
-      (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read))
-    );
+    return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
   }).length;
   count.is_read_only = Object.values(posts).filter((p) => {
     return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
