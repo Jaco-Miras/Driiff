@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { SvgIcon } from "../components/common";
 //import { DriffCreatePanel, ExternalRegisterPanel, LoginPanel, MagicLinkPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel } from "../components/panels";
 import { useUserLogin } from "../components/hooks/useUserLogin";
-import { useSettings, useTranslation } from "../components/hooks";
+import { useSettings, useTranslationActions } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 //import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
 import { $_GET } from "../helpers/commonFunctions";
@@ -93,7 +93,7 @@ const GuestLayout = (props) => {
   const location = useLocation();
   const { driffSettings } = useSettings();
   const driffActions = useDriffActions();
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const { setRegisteredDriff } = props;
 

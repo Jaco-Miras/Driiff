@@ -1,5 +1,5 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Select from "react-select";
@@ -7,10 +7,10 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation } from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslationActions } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
-import { deletePushSubscription } from "../../../redux/actions/globalActions";
+import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
@@ -95,7 +95,45 @@ const ProfileSettings = (props) => {
     setPushSubscription,
   } = useSettings();
 
-  const { _t, setLocale, uploadTranslationToServer } = useTranslation();
+  const [triggerRender, setTriggerRender] = useState(false);
+
+  const { _t } = useTranslationActions();
+
+  const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
+
+  const uploadTranslationToServer = (callback = () => {}) => {
+    let vocabulary = [];
+    let bodyText = "You are about to add the following words to the dictionary files, continue?";
+    bodyText += "<table>";
+    Object.keys(i18new).forEach((k) => {
+      bodyText += "<tr>";
+      bodyText += `<td>${k}</td>`;
+      bodyText += `<td>${i18new[k]}</td>`;
+      bodyText += "</tr>";
+      vocabulary.push({
+        [k]: i18new[k],
+      });
+    });
+    bodyText += "</table>";
+
+    const cb = () => {
+      dispatch(postGenerateTranslationRaw(vocabulary, callback));
+    };
+
+    let payload = {
+      type: "confirmation",
+      headerText: "Translation - Add",
+      submitText: "Add",
+      cancelText: "Cancel",
+      bodyText: bodyText,
+      size: "lg",
+      actions: {
+        onSubmit: cb,
+      },
+    };
+    dispatch(addToModals(payload));
+  };
+
   const dictionary = {
     chatSettingsTitle: _t("SETTINGS.CHAT_TITLE", "Chat Settings"),
     soundLabel: _t("SETTINGS.SOUND_LABEL", "Play a sound when receiving a new chat message"),
@@ -423,7 +461,17 @@ const ProfileSettings = (props) => {
   ];
 
   const handleLanguageChange = (e) => {
-    setLocale(e.value);
+    setGeneralSetting(
+      {
+        language: e.value,
+      },
+      () => {
+        setTimeout(() => {
+          setTriggerRender((prevState) => !prevState);
+        }, 300);
+      }
+    );
+
     toaster.success(<span>You have successfully updated Language</span>);
   };
 
