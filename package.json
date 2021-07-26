@@ -29,7 +29,7 @@
     "push.js": "^1.0.12",
     "quill-image-uploader": "^1.2.2",
     "quill-magic-url": "^2.0.2",
-    "quill-mention": "^2.2.5",
+    "quill-mention": "3.0.4",
     "quill-paste-smart": "^1.2.1",
     "react": "^16.13.1",
     "react-confetti": "^6.0.0",
