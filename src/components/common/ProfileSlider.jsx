@@ -47,7 +47,7 @@ const ProfileSlider = (props) => {
     position: _t("PROFILE.POSITION", "Position:"),
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
-    phone: _t("PROFILE.Phone", "Phone:"),
+    phone: _t("PROFILE.PHONE", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     external: _t("PROFILE.EXTERNAL", "External"),
   };

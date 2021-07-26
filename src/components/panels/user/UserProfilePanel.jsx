@@ -150,11 +150,11 @@ const UserProfilePanel = (props) => {
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
     zip_code: _t("PROFILE.ZIP_POST_CODE", "ZIP/POST code:"),
-    phone: _t("PROFILE.Phone", "Phone:"),
+    phone: _t("PROFILE.PHONE", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     edit: _t("BUTTON.EDIT", "Edit"),
     saveChanges: _t("BUTTON.SAVE_CHANGES", "Save changes"),
-    cancel: _t("BUTTON.Cancel", "Cancel"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
     clickToChangePassword: _t("PROFILE.CLICK_TO_CHANGE_PASSWORD", "Click to change your password"),
     external: _t("PROFILE.EXTERNAL", "External"),
   };
