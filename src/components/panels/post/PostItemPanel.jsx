@@ -177,7 +177,6 @@ const PostItemPanel = (props) => {
     toggleCheckbox,
     checked,
     workspace,
-    hasUnread,
     postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList, updatePostListConnect },
   } = props;
 
@@ -253,8 +252,10 @@ const PostItemPanel = (props) => {
     }
   };
 
+  const isUnread = post.is_unread === 1;
+
   return (
-    <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className} pl-3`} onClick={() => openPost(post)}>
+    <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`} onClick={() => openPost(post)}>
       <PostRecipients post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
       <PostContent>
         <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)} disabled={disableCheckbox()} />
@@ -268,7 +269,7 @@ const PostItemPanel = (props) => {
           />
         </Author>
         <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
-          <div className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
+          <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>
             <div className="text-truncate d-flex">
               <span className="text-truncate">
                 {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}

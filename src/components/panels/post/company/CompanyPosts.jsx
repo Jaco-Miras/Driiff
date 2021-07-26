@@ -162,18 +162,7 @@ const CompanyPosts = (props) => {
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
-                  return (
-                    <CompanyPostItemPanel
-                      key={p.id}
-                      post={p}
-                      postActions={actions}
-                      dictionary={dictionary}
-                      toggleCheckbox={handleToggleCheckbox}
-                      checked={checkedPosts.some((id) => id === p.id)}
-                      hasUnread={true}
-                      isExternalUser={isExternalUser}
-                    />
-                  );
+                  return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
                 })}
               </div>
             </ul>
@@ -192,18 +181,7 @@ const CompanyPosts = (props) => {
               {unreadPosts.length > 0 && (
                 <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                   {unreadPosts.map((p) => {
-                    return (
-                      <CompanyPostItemPanel
-                        key={p.id}
-                        post={p}
-                        postActions={actions}
-                        dictionary={dictionary}
-                        toggleCheckbox={handleToggleCheckbox}
-                        checked={checkedPosts.some((id) => id === p.id)}
-                        hasUnread={true}
-                        isExternalUser={isExternalUser}
-                      />
-                    );
+                    return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
                   })}
                 </UnreadPostsContainer>
               )}
@@ -218,18 +196,7 @@ const CompanyPosts = (props) => {
               {readPosts.length > 0 && (
                 <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
                   {readPosts.map((p) => {
-                    return (
-                      <CompanyPostItemPanel
-                        key={p.id}
-                        post={p}
-                        postActions={actions}
-                        dictionary={dictionary}
-                        toggleCheckbox={handleToggleCheckbox}
-                        checked={checkedPosts.some((id) => id === p.id)}
-                        hasUnread={false}
-                        isExternalUser={isExternalUser}
-                      />
-                    );
+                    return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
                   })}
                 </ReadPostsContainer>
               )}
