@@ -12,6 +12,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
 import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate, clearHasUnpiblishedAnswers } from "../../../redux/actions/chatActions";
+import { CompanyPostList } from "../post/company";
 const Wrapper = styled.div`
 .snooze-container {margin-bottom:8px !important;}
 .snooze-container .snooze-body {}
@@ -107,13 +108,14 @@ const MainSnooze = (props) => {
   }
 
   const todoCLean = () => {
-    var inMins = getTimestampInMins(50);
+    var inMins = getTimestampInMins(59);
     const todos = getReminders({ filter: { status: '', search: '' } });
     return todos.filter((t) => t.assigned_to && t.assigned_to.id === user.id && t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
   }
 
   const huddleClean = () => {
-    return huddleBots.find((h) => {
+
+    const data = huddleBots.find((h) => {
       if (h.questions.filter((q) => q.answer === null).length > 0) {
         let inTimeRange = false;
         const startAtHour = parseInt(h.start_at.time.substr(0, 2));
@@ -127,7 +129,8 @@ const MainSnooze = (props) => {
         publishAtDate.setUTCHours(publishAtHour, publishAtMinutes, 0);
         publishAtDate.setDate(currentDate.getDate());
         inTimeRange = currentTime > startAtDate.getTime() && publishAtDate.getTime() > currentTime;
-        if (selectedChannel && h.channel.id !== selectedChannel.id && inTimeRange) {
+      //  if (selectedChannel && h.channel.id !== selectedChannel.id && inTimeRange) {
+        if (inTimeRange) {
           if (h.end_type === "NEVER") {
             if (h.repeat_type === "DAILY") {
               return true;
@@ -188,10 +191,11 @@ const MainSnooze = (props) => {
         return false;
       }
     });
+    return data;
   }
 
   const handleRedirect = (n, type, closeToast, e) => {
-    var actions = type === 'notification' ? notifActions : n[3] === 'todo' ? todoActions : huddleActions;
+    var actions = type === 'notification' ? notifActions : n.type === 'todo' ? todoActions : huddleActions;
     e.preventDefault();
     if (n.is_read === 0) {
       notifActions.read({ id: n.id });
@@ -243,7 +247,7 @@ const MainSnooze = (props) => {
   }
 
   const renderContent = (type, n) => {
-    const actions = n[3] === 'notification' ? notifActions : n[3] === 'todo' ? todoActions : huddleActions;
+    const actions = n.type === 'notification' ? notifActions : n.type === 'todo' ? todoActions : huddleActions;
     if (type === 'notification') {
       var name = n.author.name;
       var firstName = name.split(' ').slice(0, -1).join(' ');
@@ -341,7 +345,10 @@ const MainSnooze = (props) => {
     </NotifWrapper>);
   };
 
+  const [totalCount, setTotalCount] = useState(0);
+
   const snoozeOpen = (snooze) => {
+    console.log(totalCount);
     if (snooze.length > 0) {
       const count = snooze.length;
       if (!toast.isActive('btnSnoozeAll'))
@@ -358,21 +365,22 @@ const MainSnooze = (props) => {
           containerId: 'toastS',
         });
       }
-
-      snooze.slice(0, 4).map((n, i) => {
-        var actions = n[3] === 'notification' ? notifActions : n[3] === 'todo' ? todoActions : huddleActions;
-        if (!toast.isActive(n[2]))
-          toast(n[1], {
+      snooze.slice(0, 4).map((n) => {
+        var actions = n.type === 'notification' ? notifActions : n.type === 'todo' ? todoActions : huddleActions;
+        if (!toast.isActive(n.element))
+          toast(n.content, {
             className: 'snooze-container',
             bodyClassName: "snooze-body",
             containerId: 'toastS',
-            toastId: n[2],
+            toastId: n.element,
             onClose: () => {
-              if (!notifications[n[0]].is_read)
-                actions.snooze({ id: n[0], is_snooze: true });
+              if (n.type === 'notification' && !notifications[n.id].is_read)
+                actions.snooze({ id: n.id, is_snooze: true });
+              else if (n.type === 'todo' && !todos.items[n.id].status !== "DONE")
+                actions.snooze({ id: n.id, is_snooze: true });
             }
             /*
-            onClose: () => n[3] === 'huddle' ? actions.skipHuddle({
+            onClose: () => n.type === 'huddle' ? actions.skipHuddle({
               channel_id: n.channel.id,
               huddle_id: n.id,
               body: `HUDDLE_SKIP::${JSON.stringify({
@@ -385,7 +393,7 @@ const MainSnooze = (props) => {
                 },
                 user_bot: n.user_bot,
               })}`,
-            }) : actions.snooze({ id: n[0], is_snooze: true })
+            }) : actions.snooze({ id: n.id, is_snooze: true })
             */
           });
       });
@@ -395,21 +403,20 @@ const MainSnooze = (props) => {
   }
 
   const processSnooze = (type, items, snoozed) => {
-
     const snooze = [];
     items.map((n) => {
       let elemId = type + '__' + n.id;
-
       if (type === 'notification') {
-        let content = [n.id, ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), elemId, type, (n.snooze_time) ? n.snooze_time : n.created_at.timestamp];
+        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.created_at.timestamp };
         snoozed && !n.is_read && n.is_snooze ? snooze.push(content) : (!n.is_read && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
       } else if (type === 'todo') {
-        let content = [n.id, ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), elemId, type, (n.snooze_time) ? n.snooze_time : n.created_at.timestamp];
+        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.created_at.timestamp };
         snoozed && n.status !== "DONE" && n.is_snooze ? snooze.push(content) : (n.status !== "DONE" && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
       }
-      /*else {
+      else {
+        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.created_at.timestamp };
         snooze.push(content);
-      }*/
+      }
     });
     return snooze;
   };
@@ -419,9 +426,7 @@ const MainSnooze = (props) => {
   useEffect(() => {
     const interval = setInterval(() => {
       const items = [];
-      let todos = [];
-      let notifs = [];
-      let huddles = [];
+      let todos = [], notifs = [], huddles = [];
 
       todos = processSnooze('todo', todoCLean(), true);
       notifs = processSnooze('notification', notifCLean(), true);
@@ -436,6 +441,7 @@ const MainSnooze = (props) => {
         huddles = processSnooze('notification', huddle, false);
       */
       const snooze = items.concat(todos, notifs, huddles);
+
       snooze.length ? snoozeOpen(snooze) : toast.dismiss();
 
       notifActions.snoozeAll({ is_snooze: false });
@@ -452,22 +458,40 @@ const MainSnooze = (props) => {
       }
       */
       // 1000 * 60 * 60
-    }, 15000);
+    }, 1000 * 60 * 60);
     return () => clearInterval(interval);
   }, [notifications, todos, toggleInterval]);
 
   //interval for all expiring todos
+
   /*
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!todos.is_snooze) {
-        const snooze = processSnooze('todo', todoCLean(), false);
-        snoozeOpen(snooze);
+      const items = [];
+      let todos = [], notifs = [], huddles = [];
+
+      //if (!isSnoozedAll) {
+      if (!notificationSnooze && !todos.is_snooze) {
+        todos = processSnooze('todo', todoCLean(), false);
+        notifs = processSnooze('notification', notifCLean(), false);
       }
-    }, 15000);
-    return () => clearInterval(interval);
-  }, [todos]);
-*/
+
+      /*
+          const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+          const answeredChannels = [...hasUnpublishedAnswers];
+          const huddle = huddleClean();
+          const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
+          if (showToaster)
+            huddles = processSnooze('notification', huddle, false);
+          */
+  /*
+        const snooze = items.concat(todos, notifs, huddles);
+        snooze.length ? snoozeOpen(snooze) : toast.dismiss('btnSnoozeAll');
+  
+      }, 15000);
+      return () => clearInterval(interval);
+    }, [todos]);
+  */
   //handler for all non-snoozed items
   useEffect(() => {
 
@@ -479,14 +503,20 @@ const MainSnooze = (props) => {
       todos = processSnooze('todo', todoCLean(), false);
       notifs = processSnooze('notification', notifCLean(), false);
     }
-    /*
-        const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-        const answeredChannels = [...hasUnpublishedAnswers];
-        const huddle = huddleClean();
-        const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
-        if (showToaster)
-          huddles = processSnooze('notification', huddle, false);
-        */
+
+
+    const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+    const answeredChannels = [...hasUnpublishedAnswers];
+    const huddle = huddleClean();
+
+    console.log(huddle);
+    const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
+   
+    if (showToaster)
+      huddles = processSnooze('huddle', huddle, false);
+
+
+
     const snooze = items.concat(todos, notifs, huddles);
     snooze.length ? snoozeOpen(snooze) : toast.dismiss('btnSnoozeAll');
 
