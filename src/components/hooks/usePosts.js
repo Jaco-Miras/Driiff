@@ -24,12 +24,8 @@ const usePosts = () => {
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
-      //actions.getRecentPosts(params.workspaceId);
       if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
         setFetchingPost(true);
-        // if (params.postId) {
-        //   actions.fetchPostDetail({ post_id: parseInt(params.postId) });
-        // }
         let cb = (err, res) => {
           if (componentIsMounted.current) {
             setFetchingPost(false);
@@ -137,7 +133,6 @@ const usePosts = () => {
 
   let rPosts = null;
   let filteredPosts = [];
-  //let posts = null;
   let activeFilter = null;
   let activeTag = null;
   let activePostListTag = null;
@@ -269,10 +264,7 @@ const usePosts = () => {
         );
       }).length,
       is_read_only: Object.values(posts).filter((p) => {
-        return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
-      }).length,
-      is_unread: Object.values(posts).filter((p) => {
-        return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
+        return p.is_read_only && !p.is_archived && !p.is_unread === 1 && p.hasOwnProperty("draft_type");
       }).length,
       is_close: Object.values(posts).filter((p) => {
         return p.is_close && !p.hasOwnProperty("draft_type");
