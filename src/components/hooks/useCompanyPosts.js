@@ -104,11 +104,12 @@ const useCompanyPosts = () => {
         if (filter === "all") {
           return !p.hasOwnProperty("draft_type");
         } else if (filter === "inbox") {
-          if (search !== "") {
-            return !p.hasOwnProperty("draft_type");
-          } else {
-            return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
-          }
+          return !p.hasOwnProperty("draft_type");
+          // if (search !== "") {
+          //   return !p.hasOwnProperty("draft_type");
+          // } else {
+          //   return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
+          // }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
           else return false;

@@ -53,9 +53,7 @@ const CompanyPosts = (props) => {
   const { actions, dictionary, filter, isExternalUser, loading, posts, search } = props;
 
   const readPosts = posts.filter((p) => p.is_unread === 0);
-  const unreadPosts = posts.filter((p) => p.is_unread === 1);
-
-  console.log(posts, readPosts, unreadPosts);
+  const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1);
 
   //const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
   const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
@@ -158,7 +156,7 @@ const CompanyPosts = (props) => {
               )}
             </>
           )}
-          {filter !== "all" && (
+          {filter !== "inbox" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
@@ -167,7 +165,7 @@ const CompanyPosts = (props) => {
               </div>
             </ul>
           )}
-          {filter === "all" && search === "" && (
+          {filter === "inbox" && search === "" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
