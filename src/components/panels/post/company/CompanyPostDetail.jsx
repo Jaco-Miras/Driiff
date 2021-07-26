@@ -360,9 +360,6 @@ const CompanyPostDetail = (props) => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     let triggerRead = true;
     if (post.is_must_reply && post.author.id !== user.id) {
-      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
-        triggerRead = false;
-      }
       if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
         triggerRead = false;
       }
@@ -397,17 +394,11 @@ const CompanyPostDetail = (props) => {
   const disableMarkAsRead = () => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     if (post.is_must_read && post.author.id !== user.id) {
-      if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
-        return true;
-      }
       if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
         return true;
       }
     }
     if (post.is_must_reply && post.author.id !== user.id) {
-      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
-        return true;
-      }
       if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
         return true;
       }
@@ -437,12 +428,6 @@ const CompanyPostDetail = (props) => {
     return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     // postActions.getUnreadPostsCount();
   }, []);
-
-  // const privateWsOnly = post.recipients.filter((r) => {
-  //   return r.type === "TOPIC" && r.private === 1;
-  // });
-
-  //const hasNotReadUsers = post.required_users.filter((u) => !u.must_read);
 
   return (
     <>
@@ -511,8 +496,8 @@ const CompanyPostDetail = (props) => {
           onCancel={handleHideDropzone}
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
-        {((post.author.id !== user.id && post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) ||
-          (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+
+        {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
           <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>

@@ -113,7 +113,7 @@ const WorkspacePostsPanel = (props) => {
   useFetchWsCount();
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
-  const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
+  //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
 
   const [loadPosts, setLoadPosts] = useState(false);
@@ -219,9 +219,9 @@ const WorkspacePostsPanel = (props) => {
     createNewList: _t("POST.CREATE_NEW_LIST", "New List"),
     addToList: _t("POST.ADD_TO_LIST", "Add to list"),
     removeToList: _t("POST.REMOVE_TO_LIST", "Remove to list"),
-    ofNumberOfUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
-      user_count: ofNumberOfUsers.length,
-    }),
+    // ofNumberOfUsers: _t("POST.OF_NUMBER_OF_USERS", "of ::user_count:: user/s", {
+    //   user_count: ofNumberOfUsers.length,
+    // }),
     allOthers: _t("POST.ALL_OTHERS", "All others"),
     sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
