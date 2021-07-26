@@ -115,7 +115,9 @@ const MainSnooze = (props) => {
 
   const huddleClean = () => {
 
-    const data = huddleBots.find((h) => {
+    console.log({huddleBots});
+
+    return huddleBots.find((h) => {
       if (h.questions.filter((q) => q.answer === null).length > 0) {
         let inTimeRange = false;
         const startAtHour = parseInt(h.start_at.time.substr(0, 2));
@@ -191,7 +193,7 @@ const MainSnooze = (props) => {
         return false;
       }
     });
-    return data;
+  
   }
 
   const handleRedirect = (n, type, closeToast, e) => {
@@ -345,10 +347,8 @@ const MainSnooze = (props) => {
     </NotifWrapper>);
   };
 
-  const [totalCount, setTotalCount] = useState(0);
-
   const snoozeOpen = (snooze) => {
-    console.log(totalCount);
+   
     if (snooze.length > 0) {
       const count = snooze.length;
       if (!toast.isActive('btnSnoozeAll'))
@@ -414,7 +414,7 @@ const MainSnooze = (props) => {
         snoozed && n.status !== "DONE" && n.is_snooze ? snooze.push(content) : (n.status !== "DONE" && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
       }
       else {
-        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.created_at.timestamp };
+        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.start_at.timestamp };
         snooze.push(content);
       }
     });
@@ -431,6 +431,7 @@ const MainSnooze = (props) => {
       todos = processSnooze('todo', todoCLean(), true);
       notifs = processSnooze('notification', notifCLean(), true);
 
+      //console.log(huddleClean());
       /*
       const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
       const answeredChannels = [...hasUnpublishedAnswers];
@@ -504,19 +505,16 @@ const MainSnooze = (props) => {
       notifs = processSnooze('notification', notifCLean(), false);
     }
 
-
     const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
     const answeredChannels = [...hasUnpublishedAnswers];
     const huddle = huddleClean();
 
-    console.log(huddle);
-    const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
+    //const showToaster = huddle !== undefined && !answeredChannels.some((id) => huddle && huddle.channel.id === id) && !isWeekend;
+    
    
-    if (showToaster)
-      huddles = processSnooze('huddle', huddle, false);
-
-
-
+    if (huddle !== undefined && !isWeekend)
+      huddles = processSnooze('huddle', [huddle], false);
+   
     const snooze = items.concat(todos, notifs, huddles);
     snooze.length ? snoozeOpen(snooze) : toast.dismiss('btnSnoozeAll');
 
