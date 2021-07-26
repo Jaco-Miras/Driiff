@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useToaster, useUserActions, useTranslation } from "../hooks";
+import { useToaster, useUserActions, useTranslationActions } from "../hooks";
 import { useHistory } from "react-router-dom";
 import { FormInput, PasswordInput } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
@@ -49,7 +49,7 @@ const ExternalRegisterPanel = (props) => {
 
   const [languageLoaded, setLanguageLoaded] = useState(false);
 
-  const { _t, setLocale } = useTranslation();
+  const { _t, setLocale } = useTranslationActions();
 
   const dictionary = {
     magicLink: _t("LOGIN.MAGIC_LINK", "Magic link"),

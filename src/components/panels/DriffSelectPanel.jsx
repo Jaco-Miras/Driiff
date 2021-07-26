@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import { Form } from "reactstrap";
 import styled from "styled-components";
 import { SvgIcon } from "../common";
-import { useTranslation } from "../hooks";
+import { useTranslationActions } from "../hooks";
 
 const Wrapper = styled.div`
   body & {
@@ -116,7 +116,7 @@ const Wrapper = styled.div`
 const DriffSelectPanel = (props) => {
   const { className = "" } = props;
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     setupDriffHeader: _t("DRIFF.SETUP_DRIFF_HEADER", "Setup a new Driff"),
@@ -124,7 +124,7 @@ const DriffSelectPanel = (props) => {
     setupDriffButton: _t("DRIFF.SETUP_DRIFF_BUTTON", "+ Create a Driff"),
     signInDriffHeader: _t("DRIFF.SIGIN_DRIFF_HEADER", "Is your team already using Driff?"),
     signInDriffBody: _t("DRIFF.SIGIN_DRIFF_BODY", "Find and sign in to your team's Driff and start collaborating."),
-    signInDriffButton: _t("DRIFF.SIGIN_DRIFF_BUTTON", "Sign in to Driff")
+    signInDriffButton: _t("DRIFF.SIGIN_DRIFF_BUTTON", "Sign in to Driff"),
   };
 
   useEffect(() => {

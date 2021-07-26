@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getHttpStatus } from "../../helpers/commonFunctions";
-import { addToModals, getTranslationObject, postGenerateTranslationRaw } from "../../redux/actions/globalActions";
+import { getTranslationObject } from "../../redux/actions/globalActions";
 import { useDriff, useSettings } from "./index";
 import { isTranslationLogged } from "../../helpers/slugHelper";
 
@@ -24,7 +24,7 @@ export const useTranslation = () => {
   const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
   const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
 
-  const [dictFile, setDictFile] = useState("");
+  //const [dictFile, setDictFile] = useState("");
   const { REACT_APP_dictionary_file } = process.env;
   const dictionaryAPIUrl = registeredDriff ? REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff) : REACT_APP_dictionary_file.replace("{{driffName}}.", "");
 
@@ -48,46 +48,79 @@ export const useTranslation = () => {
       localStorage.setItem(cookieName.name, cookieName.ver);
     }
 
-    if (language) {
-      setDictFile(`${dictionaryAPIUrl}/${language}`);
-    } else {
-      setDictFile(`${dictionaryAPIUrl}/${browserLang.exact}`);
-    }
+    // if (language) {
+    //   setDictFile(`${dictionaryAPIUrl}/${language}`);
+    // } else {
+    //   setDictFile(`${dictionaryAPIUrl}/${browserLang.exact}`);
+    // }
   });
 
   useEffect(() => {
-    if (dictFile) {
-      dispatch(
-        getTranslationObject(
-          {
-            url: dictFile,
-          },
-          (err, res) => {
-            if (err) {
-              //console.log(err, dictFile, "error loading dictionary file");
-            }
-
-            if (res) {
-              if (res.data.length === 0) {
-                //exact browser language
-                if (dictFile === `${dictionaryAPIUrl}/${browserLang.exact}`) {
-                  setDictFile(`${dictionaryAPIUrl}/${browserLang.main}`);
-
-                  //country browser language or language setting
-                } else if (dictFile === `${dictionaryAPIUrl}/${browserLang.main}`) {
-                  setDictFile(`${dictionaryAPIUrl}/en`);
-                }
-              } else {
-                setGeneralSetting({
-                  language: dictFile.split("/").pop(),
-                });
-              }
-            }
+    dispatch(
+      getTranslationObject(
+        {
+          url: language ? `https://driff.io/api/lang/${language}` : `https://driff.io/api/lang/${browserLang.main}`,
+        },
+        (err, res) => {
+          if (err) {
+            //console.log(err, dictFile, "error loading dictionary file");
           }
-        )
-      );
-    }
-  }, [dispatch, dictFile, dictionaryAPIUrl]);
+
+          // if (res) {
+          //   if (res.data.length === 0) {
+          //     //exact browser language
+          //     if (dictFile === `${dictionaryAPIUrl}/${browserLang.exact}`) {
+          //       setDictFile(`${dictionaryAPIUrl}/${browserLang.main}`);
+
+          //       //country browser language or language setting
+          //     } else if (dictFile === `${dictionaryAPIUrl}/${browserLang.main}`) {
+          //       setDictFile(`${dictionaryAPIUrl}/en`);
+          //     }
+          //   } else {
+          //     setGeneralSetting({
+          //       language: dictFile.split("/").pop(),
+          //     });
+          //   }
+          // }
+        }
+      )
+    );
+    localStorage.setItem(cookieName.lang, language);
+  }, [language]);
+
+  // useEffect(() => {
+  //   if (dictFile) {
+  //     dispatch(
+  //       getTranslationObject(
+  //         {
+  //           url: dictFile,
+  //         },
+  //         (err, res) => {
+  //           if (err) {
+  //             //console.log(err, dictFile, "error loading dictionary file");
+  //           }
+
+  //           if (res) {
+  //             if (res.data.length === 0) {
+  //               //exact browser language
+  //               if (dictFile === `${dictionaryAPIUrl}/${browserLang.exact}`) {
+  //                 setDictFile(`${dictionaryAPIUrl}/${browserLang.main}`);
+
+  //                 //country browser language or language setting
+  //               } else if (dictFile === `${dictionaryAPIUrl}/${browserLang.main}`) {
+  //                 setDictFile(`${dictionaryAPIUrl}/en`);
+  //               }
+  //             } else {
+  //               setGeneralSetting({
+  //                 language: dictFile.split("/").pop(),
+  //               });
+  //             }
+  //           }
+  //         }
+  //       )
+  //     );
+  //   }
+  // }, [dispatch, dictFile, dictionaryAPIUrl]);
 
   const translate = (code, default_value, replacement = null) => {
     let translation = default_value;
@@ -150,51 +183,10 @@ export const useTranslation = () => {
     }
   };
 
-  const uploadTranslationToServer = (callback = () => {}) => {
-    let vocabulary = [];
-    let bodyText = "You are about to add the following words to the dictionary files, continue?";
-    bodyText += "<table>";
-    Object.keys(i18new).forEach((k) => {
-      bodyText += "<tr>";
-      bodyText += `<td>${k}</td>`;
-      bodyText += `<td>${i18new[k]}</td>`;
-      bodyText += "</tr>";
-      vocabulary.push({
-        [k]: i18new[k],
-      });
-    });
-    bodyText += "</table>";
-
-    const cb = () => {
-      dispatch(postGenerateTranslationRaw(vocabulary, callback));
-    };
-
-    let payload = {
-      type: "confirmation",
-      headerText: "Translation - Add",
-      submitText: "Add",
-      cancelText: "Cancel",
-      bodyText: bodyText,
-      size: "lg",
-      actions: {
-        onSubmit: cb,
-      },
-    };
-    dispatch(addToModals(payload));
-  };
-
-  /**
-   * Save language change to local storage
-   */
-  useEffect(() => {
-    localStorage.setItem(cookieName.lang, language);
-  }, [language]);
-
   return {
     init,
     _t,
     setLocale,
-    uploadTranslationToServer,
   };
 };
 

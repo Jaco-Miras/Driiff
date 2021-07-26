@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { SvgIcon } from "../common";
 import { InputFeedback } from "../forms";
-import { useDriffActions, useTranslation } from "../hooks";
+import { useDriffActions, useTranslationActions } from "../hooks";
 
 const Wrapper = styled.div`
   margin: 50px auto;
@@ -134,7 +134,7 @@ const DriffRegisterPanel = (props) => {
     refs.name.current.focus();
   }, []);
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     continue: _t("REGISTER.CONTINUE", "Continue"),

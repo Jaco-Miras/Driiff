@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
-import { useSettings, useToaster, useTranslation } from "../../hooks/";
+import { useSettings, useToaster, useTranslationActions } from "../../hooks/";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setChannelIsTranslate, updateChannelIsTranslate } from "../../../redux/actions/workspaceActions";
@@ -32,7 +32,7 @@ const ChatTranslateActions = (props) => {
   const toaster = useToaster();
   const { setGeneralSetting } = useSettings();
 
-  const { _t, setLocale, uploadTranslationToServer } = useTranslation();
+  const { _t } = useTranslationActions();
   const dictionary = {
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE_TITLE", "Live translation"),
     chatTranslateTitleExtra: _t("SETTINGS.CHAT_TRANSLATE_TITLE_EXTRA", "Talk in your own language"),
