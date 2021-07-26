@@ -52,9 +52,6 @@ const useCompanyPosts = () => {
   };
 
   useEffect(() => {
-    // if (params.postId) {
-    //   actions.fetchPostDetail({ post_id: parseInt(params.postId) });
-    // }
     fetchMore();
     actions.fetchPostList();
   }, []);
@@ -175,10 +172,7 @@ const useCompanyPosts = () => {
     );
   }).length;
   count.is_read_only = Object.values(posts).filter((p) => {
-    return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
-  }).length;
-  count.is_unread = Object.values(posts).filter((p) => {
-    return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
+    return p.is_read_only === 1 && !p.is_archived && p.is_unread === 1 && !p.hasOwnProperty("draft_type");
   }).length;
   count.is_close = Object.values(posts).filter((p) => {
     return p.is_close && !p.hasOwnProperty("draft_type");

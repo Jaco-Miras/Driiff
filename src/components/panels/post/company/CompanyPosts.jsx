@@ -55,7 +55,10 @@ const CompanyPosts = (props) => {
   const readPosts = posts.filter((p) => p.is_unread === 0);
   const unreadPosts = posts.filter((p) => p.is_unread === 1);
 
-  const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
+  console.log(posts, readPosts, unreadPosts);
+
+  //const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
+  const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
   const handleToggleCheckbox = (postId) => {
@@ -80,35 +83,21 @@ const CompanyPosts = (props) => {
   };
 
   const handleShowUnread = () => {
-    if (showPosts.showUnread) {
-      // to false
-      setShowPosts({
-        showUnread: readPosts.length > 0 ? false : true,
-        showRead: readPosts.length > 0 ? true : false,
-      });
-    } else {
-      // to true
-      setShowPosts({
-        showUnread: true,
-        showRead: showPosts.showRead,
-      });
-    }
+    setShowPosts((prevState) => {
+      return {
+        ...prevState,
+        showUnread: !showPosts.showUnread,
+      };
+    });
   };
 
   const handleShowRead = () => {
-    if (showPosts.showRead) {
-      // to false
-      setShowPosts({
-        showUnread: unreadPosts.length > 0 ? true : false,
-        showRead: unreadPosts.length > 0 ? false : true,
-      });
-    } else {
-      // to true
-      setShowPosts({
-        showUnread: unreadPosts.length > 0 ? true : false,
-        showRead: readPosts.length > 0 ? true : false,
-      });
-    }
+    setShowPosts((prevState) => {
+      return {
+        ...prevState,
+        showRead: !showPosts.showRead,
+      };
+    });
   };
 
   const handleSelectAllDraft = () => {
@@ -127,27 +116,6 @@ const CompanyPosts = (props) => {
   useEffect(() => {
     setCheckedPosts([]);
   }, [filter]);
-
-  useEffect(() => {
-    // if bot category is set to false then show the category with posts
-    if (!showPosts.showUnread && !showPosts.showRead) {
-      if (unreadPosts.length) {
-        setShowPosts((prevState) => {
-          return {
-            ...prevState,
-            showUnread: true,
-          };
-        });
-      } else if (readPosts.length) {
-        setShowPosts((prevState) => {
-          return {
-            ...prevState,
-            showRead: true,
-          };
-        });
-      }
-    }
-  }, [showPosts, readPosts, unreadPosts]);
 
   return (
     <>
@@ -190,7 +158,7 @@ const CompanyPosts = (props) => {
               )}
             </>
           )}
-          {filter === "draft" && (
+          {filter !== "all" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
@@ -210,20 +178,19 @@ const CompanyPosts = (props) => {
               </div>
             </ul>
           )}
-          {filter !== "draft" && (
+          {filter === "all" && search === "" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
-              {search === "" && (
-                <div>
-                  <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
-                    <span className="badge badge-light">
-                      <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                      {dictionary.unread}
-                    </span>
-                  </UnreadPostsHeader>
-                </div>
-              )}
+              <div>
+                <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
+                  <span className="badge badge-light">
+                    <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                    {dictionary.unread}
+                  </span>
+                </UnreadPostsHeader>
+              </div>
+
               {unreadPosts.length > 0 && (
-                <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread || search !== "" ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
+                <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                   {unreadPosts.map((p) => {
                     return (
                       <CompanyPostItemPanel
@@ -240,18 +207,16 @@ const CompanyPosts = (props) => {
                   })}
                 </UnreadPostsContainer>
               )}
-              {search === "" && (
-                <div>
-                  <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
-                    <span className="badge badge-light">
-                      <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                      {dictionary.allOthers}
-                    </span>
-                  </ReadPostsHeader>
-                </div>
-              )}
+              <div>
+                <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
+                  <span className="badge badge-light">
+                    <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                    {dictionary.allOthers}
+                  </span>
+                </ReadPostsHeader>
+              </div>
               {readPosts.length > 0 && (
-                <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead || search !== "" ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
+                <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
                   {readPosts.map((p) => {
                     return (
                       <CompanyPostItemPanel

@@ -82,7 +82,7 @@ export const AppRoute = ({ children, ...props }) => {
         <Route
           {...props}
           component={GuestLayout}
-          path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token"]}
+          path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token", "/authenticate-ios/:tokens"]}
           exact
         >
           {children}
