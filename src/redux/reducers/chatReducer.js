@@ -390,11 +390,11 @@ export default function (state = INITIAL_STATE, action) {
           replies:
             action.data.member_id === state.user.id && channel.replies
               ? channel.replies.map((r) => {
-                  return {
-                    ...r,
-                    is_read: true,
-                  };
-                })
+                return {
+                  ...r,
+                  is_read: true,
+                };
+              })
               : channel.replies,
         };
       }
@@ -403,9 +403,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel: state.selectedChannel && state.selectedChannel.id === parseInt(action.data.channel_id) ? channel : state.selectedChannel,
       };
@@ -457,8 +457,8 @@ export default function (state = INITIAL_STATE, action) {
         },
         ...(channel &&
           state.selectedChannel && {
-            selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
-          }),
+          selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+        }),
       };
     }
     case "MARK_ALL_MESSAGES_AS_READ": {
@@ -480,15 +480,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -520,10 +520,10 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel:
           state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.selectedChannel,
-                replies: [...state.selectedChannel.replies, action.data],
-                last_reply: action.data,
-              }
+              ...state.selectedChannel,
+              replies: [...state.selectedChannel.replies, action.data],
+              last_reply: action.data,
+            }
             : state.selectedChannel,
       };
     }
@@ -548,9 +548,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
       };
     }
@@ -575,9 +575,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
       };
     }
@@ -598,9 +598,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.id]: channel,
-              }
+              ...state.channels,
+              [action.data.id]: channel,
+            }
             : state.channels,
       };
     }
@@ -618,28 +618,28 @@ export default function (state = INITIAL_STATE, action) {
           is_hidden: false,
           replies: haveReference
             ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  return {
-                    ...r,
-                    id: action.data.id,
-                    created_at: action.data.created_at,
-                    updated_at: action.data.created_at,
-                  };
-                } else {
-                  return {
-                    ...r,
-                    is_read: true,
-                  };
-                }
-              })
+              if (r.id === action.data.reference_id) {
+                return {
+                  ...r,
+                  id: action.data.id,
+                  created_at: action.data.created_at,
+                  updated_at: action.data.created_at,
+                };
+              } else {
+                return {
+                  ...r,
+                  is_read: true,
+                };
+              }
+            })
             : // .sort((a, b) => {
-              //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-              //     return a.id - b.id;
-              //   } else {
-              //     return a.created_at.timestamp - b.created_at.timestamp;
-              //   }
-              // })
-              [...channel.replies, action.data],
+            //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+            //     return a.id - b.id;
+            //   } else {
+            //     return a.created_at.timestamp - b.created_at.timestamp;
+            //   }
+            // })
+            [...channel.replies, action.data],
           // .sort((a, b) => {
           //     if (a.created_at.timestamp - b.created_at.timestamp === 0) {
           //       return a.id - b.id;
@@ -660,9 +660,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
       };
     }
@@ -683,17 +683,17 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.reply.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.reply.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id && state.selectedChannel.replies
             ? {
-                ...state.selectedChannel,
-                replies: [...state.selectedChannel.replies, action.data.reply],
-                last_reply: action.data.last_reply ? action.data.last_reply : state.selectedChannel.last_reply,
-              }
+              ...state.selectedChannel,
+              replies: [...state.selectedChannel.replies, action.data.reply],
+              last_reply: action.data.last_reply ? action.data.last_reply : state.selectedChannel.last_reply,
+            }
             : state.selectedChannel,
       };
     }
@@ -722,26 +722,26 @@ export default function (state = INITIAL_STATE, action) {
           selectedChannel:
             state.selectedChannel && state.selectedChannel.id === action.data.channel_id
               ? {
-                  ...state.selectedChannel,
-                  replies: state.selectedChannel.replies.map((r) => {
-                    if (r.id === action.data.message_id) {
-                      return {
-                        ...r,
-                        unfurls: action.data.unfurls,
-                        unfurl_loading: false,
-                      };
-                    } else {
-                      return r;
-                    }
-                  }),
-                }
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.map((r) => {
+                  if (r.id === action.data.message_id) {
+                    return {
+                      ...r,
+                      unfurls: action.data.unfurls,
+                      unfurl_loading: false,
+                    };
+                  } else {
+                    return r;
+                  }
+                }),
+              }
               : state.selectedChannel,
           channels:
             channel !== null
               ? {
-                  ...state.channels,
-                  [action.data.channel_id]: channel,
-                }
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
               : state.channels,
         };
       } else {
@@ -762,16 +762,16 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.selectedChannel,
-                is_archived: action.data.status === "ARCHIVED" ? true : false,
-              }
+              ...state.selectedChannel,
+              is_archived: action.data.status === "ARCHIVED" ? true : false,
+            }
             : state.selectedChannel,
       };
     }
@@ -814,15 +814,15 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel:
           state.selectedChannel && action.data.topic_detail && action.data.topic_detail.id === state.selectedChannel.entity_id
             ? {
-                ...state.selectedChannel,
-                is_archived: action.data.status === "ARCHIVED" ? true : false,
-              }
+              ...state.selectedChannel,
+              is_archived: action.data.status === "ARCHIVED" ? true : false,
+            }
             : state.selectedChannel && state.selectedChannel.id === action.data.channel_id
-            ? {
+              ? {
                 ...state.selectedChannel,
                 is_archived: action.data.status === "ARCHIVED" ? true : false,
               }
-            : state.selectedChannel,
+              : state.selectedChannel,
       };
     }
     case "UNARCHIVE_REDUCER": {
@@ -839,16 +839,16 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.selectedChannel,
-                is_archived: action.data.status === "UNARCHIVED" ? false : true,
-              }
+              ...state.selectedChannel,
+              is_archived: action.data.status === "UNARCHIVED" ? false : true,
+            }
             : state.selectedChannel,
       };
     }
@@ -875,15 +875,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -942,9 +942,9 @@ export default function (state = INITIAL_STATE, action) {
           last_reply:
             channel.last_reply && channel.last_reply.id === action.data.id
               ? {
-                  ...channel.last_reply,
-                  body: action.data.body,
-                }
+                ...channel.last_reply,
+                body: action.data.body,
+              }
               : channel.last_reply,
         };
       }
@@ -953,15 +953,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -1000,10 +1000,10 @@ export default function (state = INITIAL_STATE, action) {
           last_reply:
             channel.last_reply.id === action.data.id
               ? {
-                  ...channel.last_reply,
-                  body: "The chat message has been deleted",
-                  is_deleted: true,
-                }
+                ...channel.last_reply,
+                body: "The chat message has been deleted",
+                is_deleted: true,
+              }
               : channel.last_reply,
         };
       }
@@ -1012,15 +1012,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -1138,15 +1138,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.id]: channel,
-              }
+              ...state.channels,
+              [action.data.id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -1197,15 +1197,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -1224,15 +1224,15 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...channel,
-              }
+              ...channel,
+            }
             : state.selectedChannel,
       };
     }
@@ -1301,9 +1301,9 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.selectedChannel,
-                is_read: false,
-              }
+              ...state.selectedChannel,
+              is_read: false,
+            }
             : state.selectedChannel,
       };
     }
@@ -1337,71 +1337,10 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           ...(action.data.type === "WORKSPACE" &&
             state.channels[action.data.channel.id] && {
-              [action.data.channel.id]: {
-                ...state.channels[action.data.channel.id],
-                ...(action.data.system_message && {
-                  // remove internal post in client chat
-                  replies: [
-                    ...state.channels[action.data.channel.id].replies.filter((r) => {
-                      if (r.body.startsWith("POST_CREATE::") && action.data.is_shared && !r.shared_with_client) {
-                        return false;
-                      } else {
-                        return true;
-                      }
-                    }),
-                    {
-                      ...action.data.system_message,
-                      created_at: action.data.updated_at,
-                      editable: false,
-                      is_read: true,
-                      is_deleted: false,
-                      files: [],
-                      reactions: [],
-                      unfurls: [],
-                    },
-                    ...teamPostNotif,
-                  ],
-                }),
-                icon_link: action.data.channel.icon_link,
-                title: action.data.name,
-                members: action.data.members.map((m) => {
-                  return {
-                    ...m,
-                    bot_profile_image_link: null,
-                    last_visited_at: null,
-                  };
-                }),
-              },
-            }),
-          ...(action.data.type === "WORKSPACE" &&
-            action.data.team_channel &&
-            state.channels[action.data.team_channel.id] && {
-              [action.data.team_channel.id]: {
-                //transfer the internal post notification here
-                ...state.channels[action.data.team_channel.id],
-                replies:
-                  action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
-                    ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                    : state.channels[action.data.team_channel.id].replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-                icon_link: action.data.channel.icon_link,
-                title: action.data.name,
-                members: action.data.members
-                  .filter((m) => m.type !== "external")
-                  .map((m) => {
-                    return {
-                      ...m,
-                      bot_profile_image_link: null,
-                      last_visited_at: null,
-                    };
-                  }),
-              },
-            }),
-        },
-        ...(state.selectedChannel &&
-          state.selectedChannel.id === action.data.channel.id && {
-            selectedChannel: {
-              ...state.selectedChannel,
+            [action.data.channel.id]: {
+              ...state.channels[action.data.channel.id],
               ...(action.data.system_message && {
+                // remove internal post in client chat
                 replies: [
                   ...state.channels[action.data.channel.id].replies.filter((r) => {
                     if (r.body.startsWith("POST_CREATE::") && action.data.is_shared && !r.shared_with_client) {
@@ -1434,15 +1373,16 @@ export default function (state = INITIAL_STATE, action) {
               }),
             },
           }),
-        ...(state.selectedChannel &&
-          action.data.team_channel &&
-          state.selectedChannel.id === action.data.team_channel.id && {
-            selectedChannel: {
-              ...state.selectedChannel,
+          ...(action.data.type === "WORKSPACE" &&
+            action.data.team_channel &&
+            state.channels[action.data.team_channel.id] && {
+            [action.data.team_channel.id]: {
+              //transfer the internal post notification here
+              ...state.channels[action.data.team_channel.id],
               replies:
                 action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
-                  ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                  : state.selectedChannel.replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
+                  ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
+                  : state.channels[action.data.team_channel.id].replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
               members: action.data.members
@@ -1456,6 +1396,66 @@ export default function (state = INITIAL_STATE, action) {
                 }),
             },
           }),
+        },
+        ...(state.selectedChannel &&
+          state.selectedChannel.id === action.data.channel.id && {
+          selectedChannel: {
+            ...state.selectedChannel,
+            ...(action.data.system_message && {
+              replies: [
+                ...state.channels[action.data.channel.id].replies.filter((r) => {
+                  if (r.body.startsWith("POST_CREATE::") && action.data.is_shared && !r.shared_with_client) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                }),
+                {
+                  ...action.data.system_message,
+                  created_at: action.data.updated_at,
+                  editable: false,
+                  is_read: true,
+                  is_deleted: false,
+                  files: [],
+                  reactions: [],
+                  unfurls: [],
+                },
+                ...teamPostNotif,
+              ],
+            }),
+            icon_link: action.data.channel.icon_link,
+            title: action.data.name,
+            members: action.data.members.map((m) => {
+              return {
+                ...m,
+                bot_profile_image_link: null,
+                last_visited_at: null,
+              };
+            }),
+          },
+        }),
+        ...(state.selectedChannel &&
+          action.data.team_channel &&
+          state.selectedChannel.id === action.data.team_channel.id && {
+          selectedChannel: {
+            ...state.selectedChannel,
+            replies:
+              action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
+                ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
+                : state.selectedChannel.replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
+            icon_link: action.data.channel.icon_link,
+            title: action.data.name,
+            members: action.data.members
+              .filter((m) => m.type !== "external")
+              .map((m) => {
+                return {
+                  ...m,
+                  bot_profile_image_link: null,
+                  last_visited_at: null,
+                };
+              }),
+          },
+        }),
       };
     }
     case "REMOVE_UNFURL": {
@@ -1494,9 +1494,9 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.selectedChannel,
-                members: state.selectedChannel.members.filter((m) => m.id !== state.user.id),
-              }
+              ...state.selectedChannel,
+              members: state.selectedChannel.members.filter((m) => m.id !== state.user.id),
+            }
             : state.selectedChannel,
       };
     }
@@ -1536,9 +1536,9 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.id
             ? {
-                ...state.selectedChannel,
-                isFetching: action.data.status,
-              }
+              ...state.selectedChannel,
+              isFetching: action.data.status,
+            }
             : state.selectedChannel,
       };
     }
@@ -1584,12 +1584,12 @@ export default function (state = INITIAL_STATE, action) {
                   last_reply: action.data,
                   replies: channel.replies.some((r) => r.id === action.data.id)
                     ? channel.replies.map((r) => {
-                        if (r.id === action.data.id) {
-                          return action.data;
-                        } else {
-                          return r;
-                        }
-                      })
+                      if (r.id === action.data.id) {
+                        return action.data;
+                      } else {
+                        return r;
+                      }
+                    })
                     : [...channel.replies, action.data],
                 };
               } else if (!action.data.new_post && action.data.topic) {
@@ -1687,9 +1687,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         lastReceivedMessage: action.data.latest_reply
           ? {
-              id: action.data.latest_reply.reply_id,
-              channel_id: action.data.latest_reply.channel_id,
-            }
+            id: action.data.latest_reply.reply_id,
+            channel_id: action.data.latest_reply.channel_id,
+          }
           : state.lastReceivedMessage,
       };
     }
@@ -1758,20 +1758,20 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         ...(state.selectedChannel &&
           state.selectedChannel.id === action.data.channel.id && {
-            selectedChannel: {
-              ...state.selectedChannel,
-              replies: state.selectedChannel.replies.map((r) => {
-                if (r.id === action.data.chat_message.id) {
-                  return {
-                    ...r,
-                    ...action.data.chat_message,
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            },
-          }),
+          selectedChannel: {
+            ...state.selectedChannel,
+            replies: state.selectedChannel.replies.map((r) => {
+              if (r.id === action.data.chat_message.id) {
+                return {
+                  ...r,
+                  ...action.data.chat_message,
+                };
+              } else {
+                return r;
+              }
+            }),
+          },
+        }),
         ...(typeof state.channels[action.data.channel.id] !== "undefined" && {
           channels: {
             ...state.channels,
@@ -1797,20 +1797,20 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         ...(state.selectedChannel &&
           state.selectedChannel.replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1 && {
-            selectedChannel: {
-              ...state.selectedChannel,
-              replies: state.selectedChannel.replies.map((r) => {
-                if (r.id === action.data.chat_message_id) {
-                  return {
-                    ...r,
-                    star_users: action.data.users,
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            },
-          }),
+          selectedChannel: {
+            ...state.selectedChannel,
+            replies: state.selectedChannel.replies.map((r) => {
+              if (r.id === action.data.chat_message_id) {
+                return {
+                  ...r,
+                  star_users: action.data.users,
+                };
+              } else {
+                return r;
+              }
+            }),
+          },
+        }),
         channels: {
           ...Object.values(state.channels)
             .map((channel) => {
@@ -1844,28 +1844,28 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         ...(state.selectedChannel &&
           state.selectedChannel.id === action.data.channel.id && {
-            selectedChannel: {
-              ...state.selectedChannel,
-              replies: state.selectedChannel.replies.map((r) => {
-                if (r.id === action.data.chat.id) {
-                  return {
-                    ...r,
-                    ...(state.user.id === action.data.author.id && { i_starred: action.data.star === 1 ? true : false }),
-                    star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
-                    ...(typeof state.star_users === "undefined"
-                      ? {
-                          ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
-                        }
-                      : {
-                          ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
-                        }),
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            },
-          }),
+          selectedChannel: {
+            ...state.selectedChannel,
+            replies: state.selectedChannel.replies.map((r) => {
+              if (r.id === action.data.chat.id) {
+                return {
+                  ...r,
+                  ...(state.user.id === action.data.author.id && { i_starred: action.data.star === 1 ? true : false }),
+                  star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
+                  ...(typeof state.star_users === "undefined"
+                    ? {
+                      ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
+                    }
+                    : {
+                      ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
+                    }),
+                };
+              } else {
+                return r;
+              }
+            }),
+          },
+        }),
         ...(typeof state.channels[action.data.channel.id] !== "undefined" && {
           channels: {
             ...state.channels,
@@ -1879,11 +1879,11 @@ export default function (state = INITIAL_STATE, action) {
                     star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
                     ...(typeof state.star_users === "undefined"
                       ? {
-                          ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
-                        }
+                        ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
+                      }
                       : {
-                          ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
-                        }),
+                        ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
+                      }),
                   };
                 } else {
                   return r;
@@ -1960,6 +1960,8 @@ export default function (state = INITIAL_STATE, action) {
         huddleBots: action.data.map((h) => {
           return {
             ...h,
+            is_snooze: false,
+            snooze_time: getCurrentTimestamp(),
             showToday: false,
             questions: h.questions
               .sort((a, b) => a.id - b.id)
@@ -2029,9 +2031,9 @@ export default function (state = INITIAL_STATE, action) {
                 ...c,
                 huddle: c.huddle
                   ? {
-                      ...c.huddle,
-                      ...action.data,
-                    }
+                    ...c.huddle,
+                    ...action.data,
+                  }
                   : action.data,
               };
             } else {
@@ -2142,9 +2144,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel.id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel.id]: channel,
+            }
             : state.channels,
         huddleBots: state.huddleBots.map((h) => {
           if (h.channel.id === action.data.channel.id) {
@@ -2199,9 +2201,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel_id]: channel,
+            }
             : state.channels,
         huddleBots: state.huddleBots.map((h) => {
           if (h.channel.id === action.data.channel_id) {
@@ -2233,15 +2235,15 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         editHuddle: huddle
           ? {
-              ...huddle,
-              // huddle_log: action.data.huddle_log,
-              questions: huddle.questions.map((q) => {
-                return {
-                  ...q,
-                  answer: null,
-                };
-              }),
-            }
+            ...huddle,
+            // huddle_log: action.data.huddle_log,
+            questions: huddle.questions.map((q) => {
+              return {
+                ...q,
+                answer: null,
+              };
+            }),
+          }
           : null,
       };
     }
@@ -2317,9 +2319,9 @@ export default function (state = INITIAL_STATE, action) {
         channels:
           channel !== null
             ? {
-                ...state.channels,
-                [action.data.channel.id]: channel,
-              }
+              ...state.channels,
+              [action.data.channel.id]: channel,
+            }
             : state.channels,
       };
     }
@@ -2565,28 +2567,28 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel:
           state.selectedChannel && action.data.files.some((f) => f.channel_id === state.selectedChannel.id)
             ? {
-                ...state.selectedChannel,
-                replies: state.selectedChannel.replies.map((r) => {
-                  if (r.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
-                    return {
-                      ...r,
-                      files: r.files.map((file) => {
-                        if (action.data.files.some((f) => file.file_id === f.file_id)) {
-                          return {
-                            ...file,
-                            deleted_at: { timestamp: getCurrentTimestamp() },
-                            file_type: "trashed",
-                          };
-                        } else {
-                          return file;
-                        }
-                      }),
-                    };
-                  } else {
-                    return r;
-                  }
-                }),
-              }
+              ...state.selectedChannel,
+              replies: state.selectedChannel.replies.map((r) => {
+                if (r.files.some((f) => action.data.files.some((file) => file.file_id === f.file_id))) {
+                  return {
+                    ...r,
+                    files: r.files.map((file) => {
+                      if (action.data.files.some((f) => file.file_id === f.file_id)) {
+                        return {
+                          ...file,
+                          deleted_at: { timestamp: getCurrentTimestamp() },
+                          file_type: "trashed",
+                        };
+                      } else {
+                        return file;
+                      }
+                    }),
+                  };
+                } else {
+                  return r;
+                }
+              }),
+            }
             : state.selectedChannel,
       };
     }
@@ -2623,29 +2625,76 @@ export default function (state = INITIAL_STATE, action) {
         },
         selectedChannel: state.selectedChannel
           ? {
-              ...state.selectedChannel,
-              replies: state.selectedChannel.replies.map((r) => {
-                if (r.files.some((f) => f.file_id === action.data.file_id)) {
-                  return {
-                    ...r,
-                    files: r.files.map((file) => {
-                      if (file.file_id === action.data.file_id) {
-                        return {
-                          ...file,
-                          deleted_at: { timestamp: getCurrentTimestamp() },
-                          file_type: "trashed",
-                        };
-                      } else {
-                        return file;
-                      }
-                    }),
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            }
+            ...state.selectedChannel,
+            replies: state.selectedChannel.replies.map((r) => {
+              if (r.files.some((f) => f.file_id === action.data.file_id)) {
+                return {
+                  ...r,
+                  files: r.files.map((file) => {
+                    if (file.file_id === action.data.file_id) {
+                      return {
+                        ...file,
+                        deleted_at: { timestamp: getCurrentTimestamp() },
+                        file_type: "trashed",
+                      };
+                    } else {
+                      return file;
+                    }
+                  }),
+                };
+              } else {
+                return r;
+              }
+            }),
+          }
           : state.selectedChannel,
+      };
+    }
+
+    case "SET_EDIT_HUDDLE_ANSWERS": {
+      let huddle = state.huddleBots.find((h) => h.channel.id === action.data.channel_id);
+      return {
+        ...state,
+        editHuddle: huddle
+          ? {
+            ...huddle,
+            // huddle_log: action.data.huddle_log,
+            questions: huddle.questions.map((q) => {
+              return {
+                ...q,
+                answer: null,
+              };
+            }),
+          }
+          : null,
+      };
+    }
+
+    case "HUDDLE_SNOOZE": {
+
+  
+      let huddleBots =  Object.values(state.huddleBots ).map((r) => {
+        if (r.id === action.data.id) {
+          return {
+            ...r,
+            is_snooze: action.data.is_snooze,
+            snooze_time: getCurrentTimestamp()
+          };
+        }
+        return {
+          ...r
+        };
+      })
+
+      console.log({huddleBots});
+      /*
+      console.log( huddleBots);
+      huddleBots[action.data.channel_id].is_snooze = action.data.is_snooze;
+      huddleBots[action.data.channel_id].snooze_time = getCurrentTimestamp();
+      */
+      return {
+        ...state,
+        huddleBots: huddleBots,
       };
     }
     // case "INCOMING_DELETED_POST": {

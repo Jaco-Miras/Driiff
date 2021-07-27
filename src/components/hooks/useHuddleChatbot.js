@@ -12,6 +12,8 @@ import {
   clearEditHuddle,
   putUnpublishedAnswers,
   postSkipHuddle,
+  snoozeHuddle,
+  snoozeHuddleAll
 } from "../../redux/actions/chatActions";
 
 const useHuddleChatbot = () => {
@@ -65,6 +67,14 @@ const useHuddleChatbot = () => {
     dispatch(postSkipHuddle(payload, callback));
   };
 
+  const snooze = (payload) => {
+    dispatch(snoozeHuddle(payload));
+  };
+
+  const snoozeAll = (payload) => {
+    dispatch(snoozeHuddleAll(payload));
+  };
+
   return {
     fetch,
     create,
@@ -78,6 +88,8 @@ const useHuddleChatbot = () => {
     clearHuddle,
     updateUnpublishedAnswers,
     skipHuddle,
+    snooze,
+    snoozeAll
   };
 };
 

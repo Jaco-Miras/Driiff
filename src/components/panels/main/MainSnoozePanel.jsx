@@ -314,26 +314,8 @@ const MainSnooze = (props) => {
     } else if (type === 'huddle') {
       return (
         <>
-          <div style={{ lineHeight: '1', width: '100%', margin: '0px' }}>
-            <span className="snooze-me pull-right" onClick={(e) => {
-              e.stopPropagation();
-              const huddle = huddleClean();
-              huddleActions.skipHuddle({
-                channel_id: huddle.channel.id,
-                huddle_id: huddle.id,
-                body: `HUDDLE_SKIP::${JSON.stringify({
-                  huddle_id: huddle.id,
-                  author: {
-                    name: user.name,
-                    first_name: user.first_name,
-                    id: user.id,
-                    profile_image_link: user.profile_image_link,
-                  },
-                  user_bot: huddle.user_bot,
-                })}`,
-              });
-              console.log(huddleClean());
-            }}>Skip</span>
+          <div style={{ lineHeight: '1' }}>
+            {" "}
           </div>
           <p style={{ color: '#000' }}> {stripHtml(`Huddle time at ${n.channel.name}`)}</p>
         </>
@@ -381,39 +363,40 @@ const MainSnooze = (props) => {
       }
       snooze.slice(0, 4).map((n) => {
         var actions = n.type === 'notification' ? notifActions : n.type === 'todo' ? todoActions : huddleActions;
-        // if (!toast.isActive(n.element))
-        toast(n.content, {
-          className: 'snooze-container',
-          bodyClassName: "snooze-body",
-          containerId: 'toastS',
-          toastId: n.element,
-          //closeButton: (n.type === 'huddle') ? snoozeSkipMeButtons : snoozeMeButton,
-          onClose: () => {
-            if (n.type === 'notification' && !notifications[n.id].is_read)
-              actions.snooze({ id: n.id, is_snooze: true });
-            else if (n.type === 'todo' && !todos.items[n.id].status !== "DONE")
-              actions.snooze({ id: n.id, is_snooze: true });
-            /*
-          else if (n.type === 'huddle') {
-            actions.skipHuddle({
-              channel_id: n.channel.id,
-              huddle_id: n.id,
-              body: `HUDDLE_SKIP::${JSON.stringify({
-                huddle_id: n.id,
-                author: {
-                  name: user.name,
-                  first_name: user.first_name,
-                  id: user.id,
-                  profile_image_link: user.profile_image_link,
-                },
-                user_bot: n.user_bot,
-              })}`,
-            })
-          }
-          */
-          }
-        });
-        // else toast.dismiss(n.element)
+        if (!toast.isActive(n.element))
+          toast(n.content, {
+            className: 'snooze-container',
+            bodyClassName: "snooze-body",
+            containerId: 'toastS',
+            toastId: n.element,
+            onClose: () => {
+              if (n.type === 'notification' && !notifications[n.id].is_read)
+                actions.snooze({ id: n.id, is_snooze: true });
+              else if (n.type === 'todo' && !todos.items[n.id].status !== "DONE")
+                actions.snooze({ id: n.id, is_snooze: true });
+              else if (n.type === 'huddle') {
+                var huddle = n.huddle
+               // if (!huddle.is_snooze) {
+                  actions.skipHuddle({
+                    channel_id: huddle.channel.id,
+                    huddle_id: huddle.id,
+                    body: `HUDDLE_SKIP::${JSON.stringify({
+                      huddle_id: n.id,
+                      author: {
+                        name: user.name,
+                        first_name: user.first_name,
+                        id: user.id,
+                        profile_image_link: user.profile_image_link,
+                      },
+                      user_bot: huddle.user_bot,
+                    })}`,
+                  })
+                  actions.snooze({ id: n.id, is_snooze: true });
+                //}
+              }
+
+            }
+          });
       });
     } else {
       toast.dismiss('btnSnoozeAll');
@@ -432,8 +415,8 @@ const MainSnooze = (props) => {
         snoozed && n.status !== "DONE" && n.is_snooze ? snooze.push(content) : (n.status !== "DONE" && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
       }
       else {
-        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.start_at.timestamp };
-        snooze.push(content);
+        let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.start_at.timestamp, 'huddle': n };
+        snoozed && n.is_snooze ? snooze.push(content) : (!n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
       }
     });
     return snooze;
@@ -454,7 +437,6 @@ const MainSnooze = (props) => {
     if (huddle !== undefined && !isWeekend)
       huddles = processSnooze('huddle', [huddle], is_snoozed);
 
-    console.log(huddle);
     const snooze = items.concat(todos, notifs, huddles);
     snooze.length ? snoozeOpen(snooze) : toast.dismiss('btnSnoozeAll');
   };
