@@ -1289,7 +1289,7 @@ export default (state = INITIAL_STATE, action) => {
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
                 //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
-                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.new_recipient_id),
+                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
               },
             },
           },
