@@ -250,7 +250,15 @@ class SocketListeners extends Component {
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".unarchive-post-notification", (e) => {
         e.posts.forEach((p) => {
-          this.props.getUnarchivePost({ post_id: p.id });
+          this.props.fetchPost({ post_id: p.id }, (err, res) => {
+            if (err) return;
+            let post = {
+              ...res.data,
+              clap_user_ids: [],
+              is_unread: 1,
+            };
+            this.props.incomingPost(post);
+          });
         });
       })
       .listen(".huddle-notification", (e) => {
