@@ -66,7 +66,7 @@ function App() {
   const { profileSlider: userProfile } = useSelector((state) => state.users);
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
-  useHuddleNotification();
+  //useHuddleNotification();
 
   useTranslation();
 
