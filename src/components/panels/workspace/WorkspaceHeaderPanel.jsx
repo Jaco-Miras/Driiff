@@ -412,11 +412,11 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
 
-    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
-      body.classList.remove("stretch-layout");
-    } else {
-      body.classList.add("stretch-layout");
-    }
+    // if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
+    //   body.classList.remove("stretch-layout");
+    // } else {
+    //   body.classList.add("stretch-layout");
+    // }
 
     if (activeTopic) {
       if (activeTopic.unread_chats >= 1 || activeTopic.unread_posts > 0) {
