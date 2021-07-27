@@ -160,7 +160,7 @@ const MainSidebarLinks = (props) => {
           </NavIconContainer>
         </li>
         {user.type === "internal" && (
-          <li>
+          <li onClick={closeLeftNav}>
             <NavIconContainer to={"/system/people"} active={["/system/people"].includes(location.pathname)}>
               <NavIcon icon={"user"} />
               <div>{dictionary.people}</div>

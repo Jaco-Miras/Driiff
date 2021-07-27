@@ -200,7 +200,7 @@ const ChatContentPanel = (props) => {
     restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
   };
 
-  useFocusInput(document.querySelector(".chat-footer .ql-editor"));
+  //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
   const handleSearchChatPanel = () => {
     setShowSearchPanel(!showSearchPanel);
