@@ -251,11 +251,9 @@ class SocketListeners extends Component {
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".post-follow", (e) => {
-        console.log(e, "new socket post follow");
         this.props.incomingFollowPost(e);
       })
       .listen(".post-unfollow", (e) => {
-        console.log(e, "new socket post unfollow");
         this.props.incomingUnfollowPost(e);
       })
       .listen(".unarchive-post-notification", (e) => {
