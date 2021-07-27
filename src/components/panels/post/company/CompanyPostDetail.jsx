@@ -506,6 +506,7 @@ const CompanyPostDetail = (props) => {
             </MarkAsRead>
           </div>
         )}
+
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
