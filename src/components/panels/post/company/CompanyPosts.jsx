@@ -55,8 +55,8 @@ const CompanyPosts = (props) => {
   const readPosts = posts.filter((p) => p.is_unread === 0);
   const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1);
 
-  //const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
-  const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
+  const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
+  //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
   const handleToggleCheckbox = (postId) => {
@@ -84,6 +84,7 @@ const CompanyPosts = (props) => {
     setShowPosts((prevState) => {
       return {
         ...prevState,
+        showRead: !showPosts.showRead,
         showUnread: !showPosts.showUnread,
       };
     });
@@ -94,6 +95,7 @@ const CompanyPosts = (props) => {
       return {
         ...prevState,
         showRead: !showPosts.showRead,
+        showUnread: !showPosts.showUnread,
       };
     });
   };
