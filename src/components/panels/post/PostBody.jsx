@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../redux/actions/fileActions";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { renderToString } from "react-dom/server";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.div`
   position: relative;
@@ -254,6 +255,8 @@ const PostBody = (props) => {
     body: useRef(null),
   };
 
+  const componentIsMounted = useRef(true);
+
   const {
     fileBlobs,
     actions: { setFileSrc },
@@ -278,15 +281,30 @@ const PostBody = (props) => {
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
   const history = useHistory();
+  const [archivedClicked, setArchivedClicked] = useState(false);
+  const [starClicked, setStarClicked] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   const handleStarPost = () => {
-    if (disableOptions) return;
-    postActions.starPost(post);
-    setStar(!star);
+    if (disableOptions || starClicked) return;
+    setStarClicked(true);
+    postActions.starPost(post, () => {
+      if (componentIsMounted.current) setStarClicked(false);
+    });
+    if (componentIsMounted.current) setStar(!star);
   };
 
   const handleArchivePost = () => {
-    postActions.archivePost(post);
+    if (archivedClicked) return;
+    setArchivedClicked(true);
+    postActions.archivePost(post, () => {
+      if (componentIsMounted.current) setArchivedClicked(false);
+    });
   };
 
   const handleInlineImageClick = (e) => {
@@ -321,7 +339,6 @@ const PostBody = (props) => {
   //     console.log(images, 'post body images')
   //   }
   // };
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   useEffect(() => {
     if (refs.body.current) {
@@ -355,34 +372,37 @@ const PostBody = (props) => {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id] && post.body.includes(file.code)) {
           //setIsLoaded(false);
-          fetch(file.view_link, {
-            method: "GET",
-            keepalive: true,
-            headers: {
-              Authorization: `Bearer ${userAuth.access_token}`,
-              "Access-Control-Allow-Origin": "*",
-              Connection: "keep-alive",
-              crossorigin: true,
-            },
-          })
-            .then(function (response) {
-              return response.blob();
+          sessionService.loadSession().then((current) => {
+            let myToken = current.token;
+            fetch(file.view_link, {
+              method: "GET",
+              keepalive: true,
+              headers: {
+                Authorization: myToken,
+                "Access-Control-Allow-Origin": "*",
+                Connection: "keep-alive",
+                crossorigin: true,
+              },
             })
-            .then(function (data) {
-              const imgObj = URL.createObjectURL(data);
-              setFileSrc({
-                id: file.id,
-                src: imgObj,
+              .then(function (response) {
+                return response.blob();
+              })
+              .then(function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+                postActions.updatePostImages({
+                  post_id: post.id,
+                  topic_id: workspaceId,
+                  file: {
+                    ...file,
+                    blobUrl: imgObj,
+                  },
+                });
               });
-              postActions.updatePostImages({
-                post_id: post.id,
-                topic_id: workspaceId,
-                file: {
-                  ...file,
-                  blobUrl: imgObj,
-                },
-              });
-            });
+          });
         }
       });
     }

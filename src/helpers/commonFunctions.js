@@ -1,6 +1,6 @@
-import axios from "axios";
+//import axios from "axios";
 import { DeviceUUID } from "device-uuid";
-import md5 from "md5";
+//import md5 from "md5";
 import React from "react";
 import { browserName, isMobile, mobileModel, mobileVendor, osName, osVersion } from "react-device-detect";
 import ReactDOM from "react-dom";
@@ -204,26 +204,26 @@ export const getHttpStatus = (url, async = true) => {
   }
 };
 
-export const getGravatar = (email, imgClass = ".gravatar-profile-img-src") => {
-  if (email !== "") {
-    let MD5 = md5(email);
-    let gravatar = "https://gravatar.com/avatar/" + MD5 + "?d=404";
+// export const getGravatar = (email, imgClass = ".gravatar-profile-img-src") => {
+//   if (email !== "") {
+//     let MD5 = md5(email);
+//     let gravatar = "https://gravatar.com/avatar/" + MD5 + "?d=404";
 
-    axios({
-      url: gravatar,
-      type: "HEAD",
-      crossDomain: true,
-    })
-      .then((res) => {
-        let elProfPic = document.querySelector(imgClass);
-        elProfPic.setAttribute("src", gravatar);
-      })
-      .catch((err) => {
-        let elProfPic = document.querySelector(imgClass);
-        elProfPic.setAttribute("src", "https://www.gravatar.com/avatar/" + MD5 + "?d=identicon");
-      });
-  }
-};
+//     axios({
+//       url: gravatar,
+//       type: "HEAD",
+//       crossDomain: true,
+//     })
+//       .then((res) => {
+//         let elProfPic = document.querySelector(imgClass);
+//         elProfPic.setAttribute("src", gravatar);
+//       })
+//       .catch((err) => {
+//         let elProfPic = document.querySelector(imgClass);
+//         elProfPic.setAttribute("src", "https://www.gravatar.com/avatar/" + MD5 + "?d=identicon");
+//       });
+//   }
+// };
 
 export const objToUrlParams = (obj, options = {}) => {
   if (options.encode === false) {

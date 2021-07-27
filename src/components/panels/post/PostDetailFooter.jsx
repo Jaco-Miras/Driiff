@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -12,7 +12,8 @@ import { putChannel } from "../../../redux/actions/chatActions";
 import { FolderSelect } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import PostInputButtons from "./PostInputButtons";
-import Reward from "react-rewards";
+
+const Reward = lazy(() => import("../../lazy/Reward"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -585,9 +586,20 @@ const PostDetailFooter = (props) => {
 
   const requestForChangeCallback = (err, res) => {
     if (err) return;
-    if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if ((post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) {
       postActions.markReplyRequirement(post);
-      postActions.markAsRead(post);
+      //check if post is also set as must read
+      let triggerRead = true;
+      if (post.is_must_read && post.author.id !== user.id) {
+        if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+          triggerRead = false;
+        }
+        if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+          triggerRead = false;
+        }
+      }
+      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+      if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
@@ -763,20 +775,22 @@ const PostDetailFooter = (props) => {
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <button className="btn btn-primary" onClick={handleApprove}>
-                {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-              </button>
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <button className="btn btn-primary" onClick={handleApprove}>
+                  {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+                </button>
+              </Reward>
+            </Suspense>
           </div>
         </Dflex>
       )}

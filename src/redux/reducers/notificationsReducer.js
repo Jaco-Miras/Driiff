@@ -122,6 +122,9 @@ export default (state = INITIAL_STATE, action) => {
             title: action.data.title,
             workspaces: action.data.workspaces,
             comment_body: null,
+            required_users: action.data.required_users,
+            must_read_users: action.data.must_read_users,
+            must_reply_users: action.data.must_reply_users,
           },
         };
         if (action.data.notification_approval) {
@@ -140,6 +143,9 @@ export default (state = INITIAL_STATE, action) => {
               title: action.data.title,
               workspaces: action.data.workspaces,
               comment_body: null,
+              required_users: action.data.required_users,
+              must_read_users: action.data.must_read_users,
+              must_reply_users: action.data.must_reply_users,
             },
           };
         }
@@ -293,6 +299,27 @@ export default (state = INITIAL_STATE, action) => {
             type: "WORKSPACE_ADD_MEMBER",
           },
         },
+      };
+    }
+    case "INCOMING_POST_REQUIRED": {
+      return {
+        ...state,
+        notifications: Object.values(state.notifications).reduce((acc, notif) => {
+          if (notif.type === "POST_CREATE" && action.data.post.id === notif.data.post_id) {
+            acc[notif.id] = {
+              ...notif,
+              data: {
+                ...notif.data,
+                required_users: action.data.required_users,
+                must_read_users: action.data.must_read_users,
+                must_reply_users: action.data.must_reply_users,
+              },
+            };
+          } else {
+            acc[notif.id] = { ...notif };
+          }
+          return acc;
+        }, {}),
       };
     }
     default:

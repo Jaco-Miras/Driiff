@@ -109,9 +109,11 @@ const CompanyFilesHeader = (props) => {
           <li className="list-inline-item mb-0">
             <ButtonDropdown dropdown={addDropDown} />
           </li>
-          <li className="list-inline-item mb-0">
-            <ButtonDropdown dropdown={folderDropDown} />
-          </li>
+          {Object.values(folders).filter((f) => !f.is_archived).length >= 1 && (
+            <li className="list-inline-item mb-0">
+              <ButtonDropdown dropdown={folderDropDown} />
+            </li>
+          )}
         </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
           <SvgIconFeather icon="menu" />
