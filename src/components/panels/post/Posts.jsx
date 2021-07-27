@@ -57,8 +57,8 @@ const Posts = (props) => {
   const readPosts = posts.filter((p) => p.is_unread === 0);
   const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1);
 
-  //const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
-  const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
+  const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
+  //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
   const handleToggleCheckbox = (postId) => {
@@ -95,6 +95,7 @@ const Posts = (props) => {
     setShowPosts((prevState) => {
       return {
         ...prevState,
+        showRead: !showPosts.showRead,
         showUnread: !showPosts.showUnread,
       };
     });
@@ -105,6 +106,7 @@ const Posts = (props) => {
       return {
         ...prevState,
         showRead: !showPosts.showRead,
+        showUnread: !showPosts.showUnread,
       };
     });
   };
