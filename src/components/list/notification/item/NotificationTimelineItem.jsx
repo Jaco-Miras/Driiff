@@ -246,13 +246,6 @@ export const NotificationTimelineItem = (props) => {
     }
   };
 
-  // const getBadgeClass = (data) => {
-  //   if ((data.must_read && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_read)) || (data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read))) return "badge-danger";
-  //   if ((data.must_reply && data.required_users && data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
-  //     return "badge-success";
-  //   return null;
-  // };
-
   return (
     <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
       <div>
