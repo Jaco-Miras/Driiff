@@ -124,7 +124,8 @@ const ReplyPreview = (props) => {
 
       lastReplyBody = div.innerHTML;
       //strip gif to prevent refetching of gif
-      lastReplyBody = quillHelper.parseEmoji(stripImgTag(lastReplyBody));
+      lastReplyBody = stripImgTag(channel.last_reply.body);
+      //lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
       lastReplyBody = renderToString(<LastReplyContent className="last-reply-content" dangerouslySetInnerHTML={{ __html: lastReplyBody }} />);
 
       //strip html tags and replace it with space

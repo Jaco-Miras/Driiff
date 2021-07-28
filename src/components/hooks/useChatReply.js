@@ -361,7 +361,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
     }
   }
 
-  replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
+  // replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
+  replyBody = parseSystemMessage(stripGif(replyBody));
 
   let quoteAuthor = "";
   let quoteBody = "";
@@ -423,7 +424,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       });
     }
 
-    quoteBody += quillHelper.parseEmoji(reply.quote.body);
+    //quoteBody += quillHelper.parseEmoji(reply.quote.body);
     quoteBody = parseSystemMessage(quoteBody);
   }
 
