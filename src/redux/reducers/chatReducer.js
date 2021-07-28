@@ -368,7 +368,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_CHAT_MESSAGES_SUCCESS": {
       let channel = { ...state.channels[action.data.channel_id] };
-      let messsages = [
+      let messages = [
         ...action.data.results.map((r) => {
           return {
             ...r,
@@ -379,17 +379,10 @@ export default function (state = INITIAL_STATE, action) {
         }),
         ...channel.replies,
       ];
-      let uniqMessages = uniqByProp(messsages, "id");
+      let uniqMessages = uniqByProp(messages, "id");
       channel = {
         ...channel,
         replies: uniqMessages,
-        // replies: uniqMessages.sort((a, b) => {
-        //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-        //     return a.id - b.id;
-        //   } else {
-        //     return a.created_at.timestamp - b.created_at.timestamp;
-        //   }
-        // }),
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
