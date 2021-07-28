@@ -250,7 +250,15 @@ class SocketListeners extends Component {
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".unarchive-post-notification", (e) => {
         e.posts.forEach((p) => {
-          this.props.getUnarchivePost({ post_id: p.id });
+          this.props.fetchPost({ post_id: p.id }, (err, res) => {
+            if (err) return;
+            let post = {
+              ...res.data,
+              clap_user_ids: [],
+              is_unread: 1,
+            };
+            this.props.incomingPost(post);
+          });
         });
       })
       .listen(".huddle-notification", (e) => {
@@ -630,13 +638,6 @@ class SocketListeners extends Component {
                   pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
                 }
               }
-              //check if post has favorite workspace as recipient
-              // if (e.recipients.some((r) => r.type === "TOPIC")) {
-              //   let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
-              //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
-              //     this.props.getFavoriteWorkspaceCounters();
-              //   }
-              // }
             }
             if (post.show_at !== null && this.props.user.id === post.author.id) {
               this.props.incomingPost({
@@ -649,9 +650,6 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            // if (this.props.user.id !== e.author.id) {
-            //   this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
-            // }
 
             post.channel_messages &&
               post.channel_messages.forEach((m) => {
@@ -767,6 +765,19 @@ class SocketListeners extends Component {
               }
             }
             if (e.author.id !== this.props.user.id) {
+              // check if posts exists, if not then fetch post
+              if (!this.props.posts[e.post_id]) {
+                console.log("fetch post");
+                this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
+                  if (err) return;
+                  let post = {
+                    ...res.data,
+                    clap_user_ids: [],
+                    is_unread: 1,
+                  };
+                  this.props.incomingPost(post);
+                });
+              }
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   let link = "";
@@ -1749,6 +1760,9 @@ function mapStateToProps({
   workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
   global: { unreadCounter, todos, recipients, isIdle, isBrowserActive },
   users: { mentions, users },
+  posts: {
+    companyPosts: { posts },
+  },
 }) {
   return {
     user,
@@ -1770,6 +1784,7 @@ function mapStateToProps({
     postComments,
     isIdle,
     isBrowserActive,
+    posts,
   };
 }
 
