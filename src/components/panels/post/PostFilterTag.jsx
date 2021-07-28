@@ -8,7 +8,7 @@ const Wrapper = styled.div`
     cursor: pointer;
   }
   .list-group-item:last-child {
-    border-bottom-width: thin!important;
+    border-bottom-width: thin !important;
   }
 `;
 const PostFilterTag = (props) => {
@@ -51,11 +51,11 @@ const PostFilterTag = (props) => {
         {dictionary.noReplies}
         <span className="small ml-auto">{count && count.is_read_only > 0 && count.is_read_only}</span>
       </a>
-      <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_unread" ? "active" : ""}`} data-value="is_unread" onClick={handleClickFilter}>
+      {/* <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_unread" ? "active" : ""}`} data-value="is_unread" onClick={handleClickFilter}>
         <span className="text-success fa fa-circle mr-2" />
         {dictionary.unread}
         <span className="small ml-auto">{count && count.is_unread > 0 && count.is_unread}</span>
-      </a>
+      </a> */}
       <a className={`list-group-item d-flex align-items-center ${tag && tag === "is_close" ? "active" : ""}`} data-value="is_close" onClick={handleClickFilter}>
         <span className="text-closed fa fa-circle mr-2" />
         {dictionary.closed}
