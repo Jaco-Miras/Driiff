@@ -1,4 +1,4 @@
-import { groupBy } from "lodash";
+//import { groupBy } from "lodash";
 import React, { lazy, Suspense } from "react";
 import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
@@ -9,11 +9,11 @@ import { Avatar, Loader, SvgEmptyState } from "../../common";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 //import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
+import memoizeOne from "memoize-one";
 
 const ChatBubble = lazy(() => import("./ChatBubble"));
 const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -604,46 +604,73 @@ class ChatMessages extends React.PureComponent {
     return loadMoreRef;
   };
 
-  sortedReplies = () => {
-    return this.props.selectedChannel.replies
-      .sort((a, b) => {
-        if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-          return a.id - b.id;
-        } else {
-          return a.created_at.timestamp - b.created_at.timestamp;
-        }
-      })
-      .map((r, i) => {
-        if (r.hasOwnProperty("g_date")) {
-          return {
-            ...r,
-            isLastChat: i === this.props.selectedChannel.replies.length - 1,
-          };
-        } else {
-          return {
-            ...r,
-            g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-            isLastChat: i === this.props.selectedChannel.replies.length - 1,
-          };
-        }
-      });
-  };
-
-  // isLastChat = (reply) => {
-  //   const sortedReplies = this.sortedReplies();
-  //   return sortedReplies[this.props.selectedChannel.replies.length - 1].id === reply.id;
+  // sortedReplies = () => {
+  //   return this.props.selectedChannel.replies
+  //     .sort((a, b) => {
+  //       if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+  //         return a.id - b.id;
+  //       } else {
+  //         return a.created_at.timestamp - b.created_at.timestamp;
+  //       }
+  //     })
+  //     .map((r, i) => {
+  //       if (r.hasOwnProperty("g_date")) {
+  //         return {
+  //           ...r,
+  //           isLastChat: i === this.props.selectedChannel.replies.length - 1,
+  //         };
+  //       } else {
+  //         return {
+  //           ...r,
+  //           g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+  //           isLastChat: i === this.props.selectedChannel.replies.length - 1,
+  //         };
+  //       }
+  //     });
   // };
 
-  groupedMessages2 = () =>
-    Object.entries(
-      this.sortedReplies().reduce((groups, item) => {
-        const val = item["g_date"];
-        groups[val] = groups[val] || [];
-        groups[val].push(item);
-        return groups;
-      }, {})
-    );
+  // groupedMessages2 = () =>
+  //   Object.entries(
+  //     this.sortedReplies().reduce((groups, item) => {
+  //       const val = item["g_date"];
+  //       groups[val] = groups[val] || [];
+  //       groups[val].push(item);
+  //       return groups;
+  //     }, {})
+  //   );
 
+  gMessages = memoizeOne((replies) =>
+    Object.entries(
+      replies
+        .sort((a, b) => {
+          if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+            return a.id - b.id;
+          } else {
+            return a.created_at.timestamp - b.created_at.timestamp;
+          }
+        })
+        .map((r, i) => {
+          if (r.hasOwnProperty("g_date")) {
+            return {
+              ...r,
+              isLastChat: i === this.props.selectedChannel.replies.length - 1,
+            };
+          } else {
+            return {
+              ...r,
+              g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+              isLastChat: i === this.props.selectedChannel.replies.length - 1,
+            };
+          }
+        })
+        .reduce((groups, item) => {
+          const val = item["g_date"];
+          groups[val] = groups[val] || [];
+          groups[val].push(item);
+          return groups;
+        }, {})
+    )
+  );
   // groupedMessages = () =>
   //   Object.entries(groupBy(this.sortedReplies(), "g_date"))
   //     .map((entries) => {
@@ -658,6 +685,8 @@ class ChatMessages extends React.PureComponent {
     //const { selectedChannel } = this.props;
 
     let lastReplyUserId = 0;
+
+    const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
 
     // let groupedMessages = [];
 
@@ -707,7 +736,7 @@ class ChatMessages extends React.PureComponent {
           )}
           <ul>
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
-              ? this.groupedMessages2().map((gm, i) => {
+              ? groupedMessages.map((gm, i) => {
                   return (
                     <div key={`${gm[0]}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
