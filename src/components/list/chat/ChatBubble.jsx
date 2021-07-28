@@ -343,6 +343,7 @@ const ChatContent = styled.div`
     clear: both;
     width: 100%;
     display: block;
+    z-index: 1;
 
     p {
       overflow: hidden;
