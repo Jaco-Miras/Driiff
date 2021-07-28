@@ -188,8 +188,8 @@ const ChatFooterPanel = (props) => {
   const [cursor, setCursor] = useState("default");
   const [backgroundSend, setBackgroundSend] = useState(null);
   const [fillSend, setFillSend] = useState("#cacaca");
-
-  const { editChatMessage, selectedChannel } = useSelector((state) => state.chat);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const user = useSelector((state) => state.session.user);
 
   const [quote] = useSelectQuote();

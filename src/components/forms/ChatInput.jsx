@@ -387,15 +387,6 @@ const ChatInput = (props) => {
 
     const textOnly = editor.getText(content);
 
-    // if (textOnly.trim() === "" && editMode) {
-    //   setEditMode(false);
-    //   setEditMessage(null);
-    //   //edit message in redux
-    //   if (editChatMessage !== null) {
-    //     dispatch(setEditChatMessage(null));
-    //   }
-    // }
-
     setText(content);
     setTextOnly(textOnly);
     setQuillContents(editor.getContents());
@@ -412,6 +403,7 @@ const ChatInput = (props) => {
     }
 
     let channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
+
     channel.whisper("typing", {
       user: {
         id: user.id,
@@ -736,4 +728,4 @@ const ChatInput = (props) => {
   );
 };
 
-export default ChatInput;
+export default React.memo(ChatInput);

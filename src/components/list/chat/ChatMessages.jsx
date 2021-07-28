@@ -360,7 +360,7 @@ const EmptyState = styled.div`
   }
 `;
 
-class ChatMessages extends React.Component {
+class ChatMessages extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -470,7 +470,7 @@ class ChatMessages extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { selectedChannel, historicalPositions, user } = this.props;
+    const { selectedChannel, historicalPositions } = this.props;
 
     //to be relocated
     // let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
@@ -602,8 +602,6 @@ class ChatMessages extends React.Component {
     let loadMoreRef = false;
     const isEqual = (reply) => reply.id === id;
     if (selectedChannel.replies.length && !selectedChannel.isFetching) {
-      //let sortedReplies = [...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)];
-      //let index = sortedReplies.findIndex(isEqual);
       let index = selectedChannel.replies.findIndex(isEqual);
       if (index < Math.round(selectedChannel.replies.length / 2)) {
         if (index % 2 === 0) {
@@ -616,39 +614,53 @@ class ChatMessages extends React.Component {
 
   sortedReplies = () => {
     return this.props.selectedChannel.replies
-      .map((r) => {
-        if (r.hasOwnProperty("g_date")) {
-          return r;
-        } else {
-          return {
-            ...r,
-            g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-          };
-        }
-      })
       .sort((a, b) => {
         if (a.created_at.timestamp - b.created_at.timestamp === 0) {
           return a.id - b.id;
         } else {
           return a.created_at.timestamp - b.created_at.timestamp;
         }
+      })
+      .map((r, i) => {
+        if (r.hasOwnProperty("g_date")) {
+          return {
+            ...r,
+            isLastChat: i === this.props.selectedChannel.replies.length - 1,
+          };
+        } else {
+          return {
+            ...r,
+            g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+            isLastChat: i === this.props.selectedChannel.replies.length - 1,
+          };
+        }
       });
   };
 
-  isLastChat = (reply) => {
-    const sortedReplies = this.sortedReplies();
-    return sortedReplies[this.props.selectedChannel.replies.length - 1].id === reply.id;
-  };
+  // isLastChat = (reply) => {
+  //   const sortedReplies = this.sortedReplies();
+  //   return sortedReplies[this.props.selectedChannel.replies.length - 1].id === reply.id;
+  // };
 
-  groupedMessages = () =>
-    Object.entries(groupBy(this.sortedReplies(), "g_date"))
-      .map((entries) => {
-        return {
-          key: entries[0],
-          replies: entries[1],
-        };
-      })
-      .sort((a, b) => a.key.localeCompare(b.key));
+  groupedMessages2 = () =>
+    Object.entries(
+      this.sortedReplies().reduce((groups, item) => {
+        const val = item["g_date"];
+        groups[val] = groups[val] || [];
+        groups[val].push(item);
+        return groups;
+      }, {})
+    );
+
+  // groupedMessages = () =>
+  //   Object.entries(groupBy(this.sortedReplies(), "g_date"))
+  //     .map((entries) => {
+  //       return {
+  //         key: entries[0],
+  //         replies: entries[1],
+  //       };
+  //     })
+  //     .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
     //const { selectedChannel } = this.props;
@@ -703,12 +715,12 @@ class ChatMessages extends React.Component {
           )}
           <ul>
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
-              ? this.groupedMessages().map((gm, i) => {
+              ? this.groupedMessages2().map((gm, i) => {
                   return (
-                    <div key={`${gm.replies[0].created_at.timestamp}`}>
-                      <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
+                    <div key={`${gm[0]}`}>
+                      <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
-                      {gm.replies
+                      {gm[1]
                         // .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
                         .map((reply, k, e) => {
                           const isAuthor = reply.user && reply.user.id === this.props.user.id;
@@ -751,14 +763,6 @@ class ChatMessages extends React.Component {
                             }
                             let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
                             isBot = botCodes.includes(reply.user.code);
-                          } else {
-                            //remove duplicate messages from bot
-                            if (k !== 0) {
-                              let prevReply = gm.replies[k - 1];
-                              if (prevReply.body === reply.body) {
-                                if (Math.abs(reply.created_at.timestamp - prevReply.created_at.timestamp) <= 10) return <></>;
-                              }
-                            }
                           }
                           return (
                             <ChatList
@@ -768,7 +772,7 @@ class ChatMessages extends React.Component {
                               // data-timestamp={reply.created_at.timestamp}
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code} `}
                               showTimestamp={showTimestamp}
-                              isLastChat={this.isLastChat(reply)}
+                              isLastChat={reply.isLastChat}
                             >
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                               {reply.user && (
@@ -798,7 +802,7 @@ class ChatMessages extends React.Component {
                                         showGifPlayer={showGifPlayer}
                                         isAuthor={isAuthor}
                                         addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={this.isLastChat(reply)}
+                                        isLastChat={reply.isLastChat}
                                         loadReplies={this.loadReplies}
                                         //isBot={isBot}
                                         chatSettings={this.props.settings}
@@ -862,22 +866,12 @@ class ChatMessages extends React.Component {
                                           selectedChannel={this.props.selectedChannel}
                                           reply={reply}
                                           addMessageRef={this.getLoadRef(reply.id)}
-                                          isLastChat={this.isLastChat(reply)}
+                                          isLastChat={reply.isLastChat}
                                           isLastChatVisible={this.props.isLastChatVisible}
                                           dictionary={this.props.dictionary}
                                           users={this.props.users}
                                         />
                                       </Suspense>
-                                      {/* {reply.unfurls.length ? (
-                                          <ChatUnfurl
-                                            unfurlData={reply.unfurls}
-                                            isAuthor={false}
-                                            deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
-                                            removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                            channelId={this.props.this.props.selectedChannel.id}
-                                            replyId={reply.id}
-                                          />
-                                        ) : null} */}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
