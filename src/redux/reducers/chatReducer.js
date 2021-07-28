@@ -1,6 +1,6 @@
 //import {uniqBy} from "lodash";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
-import { uniqByProp } from "../../helpers/arrayHelper";
+//import { uniqByProp } from "../../helpers/arrayHelper";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -379,7 +379,7 @@ export default function (state = INITIAL_STATE, action) {
         }),
         ...channel.replies,
       ];
-      let uniqMessages = uniqByProp(messages, "id");
+      let uniqMessages = [...new Map(messages.map((item) => [item["id"], item])).values()];
       channel = {
         ...channel,
         replies: uniqMessages,
@@ -1557,7 +1557,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...action.data.channel_detail,
           icon_link: channels[action.data.channel_detail.id].icon_link,
-          replies: uniqByProp(messages, "id"),
+          replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
           //.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1581,7 +1581,7 @@ export default function (state = INITIAL_STATE, action) {
             return { ...m, channel_id: c.channel_id };
           });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
-          channels[c.channel_id].replies = uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
           // channels[c.channel_id].last_reply = newMessages[0];
         }
       });
