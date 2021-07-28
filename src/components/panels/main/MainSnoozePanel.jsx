@@ -471,7 +471,7 @@ const MainSnooze = (props) => {
       notifActions.snoozeAll({ is_snooze: false });
       todoActions.snoozeAll({ is_snooze: false });
       huddleActions.snoozeAll({ is_snooze: false });
-      if (chats.channels.length > 0)
+      if (Object.keys(chats.channels).length  > 0)
         snoozeUs(true);
     }, 1000 * 60 * 60);
     return () => clearInterval(interval);
@@ -480,7 +480,7 @@ const MainSnooze = (props) => {
   //interval for all expiring todos
   useEffect(() => {
     const interval = setInterval(() => {
-      if (chats.channels.length > 0)
+      if (Object.keys(chats.channels).length  > 0)
         snoozeUs(false);
     }, 1000 * 60 * 15);
     return () => clearInterval(interval);
@@ -488,7 +488,7 @@ const MainSnooze = (props) => {
 
   //handler for all non-snoozed items
   useEffect(() => {
-    if (chats.channels.length > 0)
+    if (Object.keys(chats.channels).length  > 0)
       snoozeUs(false);
   }, [notifications, todos, huddleBots]);
 
