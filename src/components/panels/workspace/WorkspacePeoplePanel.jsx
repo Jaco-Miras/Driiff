@@ -19,8 +19,9 @@ const Wrapper = styled.div`
 
   .people-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 1rem;
+    flex-flow: row wrap;
   }
 `;
 
