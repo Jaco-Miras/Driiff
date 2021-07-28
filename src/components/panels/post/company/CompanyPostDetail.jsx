@@ -9,6 +9,7 @@ import { useCommentActions, useComments } from "../../../hooks";
 import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
 import { MoreOptions } from "../../common";
 import { PostCounters } from "../../../list/post/item";
+import { PostUnfollowLabel } from "../index";
 
 const MainHeader = styled.div`
   .feather-eye-off {
@@ -500,6 +501,7 @@ const CompanyPostDetail = (props) => {
             </MarkAsRead>
           )}
         </div>
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (

@@ -6,7 +6,7 @@ import { setParentIdForUpload } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
-import { PostBody, PostComments, PostDetailFooter } from "./index";
+import { PostBody, PostComments, PostDetailFooter, PostUnfollowLabel } from "./index";
 import { MoreOptions } from "../../panels/common";
 import { PostCounters } from "../../list/post/item";
 
@@ -531,6 +531,7 @@ const PostDetail = (props) => {
             </MarkAsRead>
           )}
         </div>
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (

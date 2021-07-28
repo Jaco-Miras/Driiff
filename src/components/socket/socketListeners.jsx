@@ -122,6 +122,8 @@ import {
   incomingPostListDisconnect,
   getUnarchivePost,
   incomingPostRequired,
+  incomingFollowPost,
+  incomingUnfollowPost,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -248,6 +250,12 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".post-follow", (e) => {
+        this.props.incomingFollowPost(e);
+      })
+      .listen(".post-unfollow", (e) => {
+        this.props.incomingUnfollowPost(e);
+      })
       .listen(".unarchive-post-notification", (e) => {
         e.posts.forEach((p) => {
           this.props.fetchPost({ post_id: p.id }, (err, res) => {
@@ -586,6 +594,16 @@ class SocketListeners extends Component {
             this.props.incomingClosePost(e);
             break;
           }
+          // case "FOLLOW_POST": {
+          //   console.log(e, "follow post");
+          //   this.props.incomingFollowPost(e);
+          //   break;
+          // }
+          // case "UNFOLLOW_POST": {
+          //   console.log(e, "unfollow post");
+          //   this.props.incomingUnfollowPost(e);
+          //   break;
+          // }
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
             break;
@@ -1932,6 +1950,8 @@ function mapDispatchToProps(dispatch) {
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
     setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
     incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
+    incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
+    incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
   };
 }
 
