@@ -1961,6 +1961,7 @@ export default function (state = INITIAL_STATE, action) {
           return {
             ...h,
             is_snooze: false,
+            is_skip: false,
             snooze_time: getCurrentTimestamp(),
             showToday: false,
             questions: h.questions
@@ -2671,9 +2672,7 @@ export default function (state = INITIAL_STATE, action) {
     }
 
     case "HUDDLE_SNOOZE": {
-
-  
-      let huddleBots =  Object.values(state.huddleBots ).map((r) => {
+      let huddleBots = Object.values(state.huddleBots).map((r) => {
         if (r.id === action.data.id) {
           return {
             ...r,
@@ -2686,17 +2685,46 @@ export default function (state = INITIAL_STATE, action) {
         };
       })
 
-      console.log({huddleBots});
-      /*
-      console.log( huddleBots);
-      huddleBots[action.data.channel_id].is_snooze = action.data.is_snooze;
-      huddleBots[action.data.channel_id].snooze_time = getCurrentTimestamp();
-      */
       return {
         ...state,
         huddleBots: huddleBots,
       };
     }
+
+    case "HUDDLE_SNOOZE_SKIP": {
+      let huddleBots = Object.values(state.huddleBots).map((r) => {
+        if (r.id === action.data.id) {
+          return {
+            ...r,
+            is_skip: action.data.is_skip,
+            is_snooze: false,
+          };
+        }
+        return {
+          ...r
+        };
+      })
+      return {
+        ...state,
+        huddleBots: huddleBots,
+      };
+    }
+
+    case "HUDDLE_SNOOZE_ALL": {
+      let huddleBots = Object.values(state.huddleBots).map((r) => {
+        return {
+          ...r,
+          is_snooze: action.data.is_snooze,
+          snooze_time: getCurrentTimestamp()
+        };
+
+      })
+      return {
+        ...state,
+        huddleBots: huddleBots,
+      };
+    }
+
     // case "INCOMING_DELETED_POST": {
     //   return {
     //     ...state,

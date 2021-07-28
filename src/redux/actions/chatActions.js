@@ -472,6 +472,11 @@ export function snoozeHuddle(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE", payload, callback);
 }
 
+export function snoozeSkipHuddle(payload, callback) {
+  return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_SKIP", payload, callback);
+}
+
+
 export function snoozeHuddleAll(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_ALL", payload, callback);
 }
