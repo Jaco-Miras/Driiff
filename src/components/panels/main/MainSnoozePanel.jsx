@@ -5,14 +5,14 @@ import { useHistory } from "react-router-dom";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import {
   useNotificationActions, useNotifications, useRedirect, useTranslationActions,
-  useSettings, useTimeFormat, useTodos, useTodoActions, useHuddleChatbot
+  useSettings, useTodos, useTodoActions, useHuddleChatbot
 } from "../../hooks";
 import { Avatar, SvgIconFeather } from "../../common";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
-import { setSelectedChannel, clearHuddleAnswers, adjustHuddleDate, clearHasUnpiblishedAnswers } from "../../../redux/actions/chatActions";
-import { CompanyPostList } from "../post/company";
+import { setSelectedChannel} from "../../../redux/actions/chatActions";
+
 import ChannelIcon from "../../list/chat/ChannelIcon";
 const Wrapper = styled.div`
 .snooze-container {margin-bottom:8px !important;}
@@ -126,7 +126,7 @@ const MainSnooze = (props) => {
   }
 
   const todoCLean = () => {
-    var inMins = getTimestampInMins(50);
+    var inMins = getTimestampInMins(15);
     const todos = getReminders({ filter: { status: '', search: '' } });
     return todos.filter((t) => t.assigned_to && t.assigned_to.id === user.id && t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
   }
@@ -359,7 +359,6 @@ const MainSnooze = (props) => {
   };
 
   const snoozeContent = (type, n, closeToast) => {
-
     return (<NotifWrapper className="timeline-item timeline-item-no-line d-flex" isRead={n.is_read} darkMode={null} onClick={(e) => handleRedirect(n, type, closeToast, e)}>
       <div>
         {type === 'notification' ? n.author ? (
