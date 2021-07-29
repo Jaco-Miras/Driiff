@@ -11,13 +11,13 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
-import { setSelectedChannel} from "../../../redux/actions/chatActions";
+import { setSelectedChannel } from "../../../redux/actions/chatActions";
 
 import ChannelIcon from "../../list/chat/ChannelIcon";
 const Wrapper = styled.div`
 .snooze-container {margin-bottom:8px !important;}
 .snooze-container .snooze-body {}
-.snooze-container .snooze-me {font-size: 12px; margin:0 5px; text-decoration: underline;}
+.snooze-container .snooze-me {font-size: 11px; margin:0 5px; text-decoration: underline;}
 .snooze-all-container {background: transparent;
   box-shadow: none;
   margin: 0;
@@ -65,9 +65,12 @@ const NotifWrapper = styled.div`
     overflow: hidden !important;
     text-overflow: ellipsis;
     color: #000;
-    line-height: 1
+    line-height: 1,
+    font-size: 14px;
   }
   .chat-header-icon {padding:0px !important;}
+
+  .badge-grey-ghost { background-color: white !important ; color: grey !important; border: 1px solid grey !important;}
 `;
 
 const MainSnooze = (props) => {
@@ -90,8 +93,10 @@ const MainSnooze = (props) => {
   const currentTime = currentDate.getTime();
   const dispatch = useDispatch();
 
-  const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
+  const users = useSelector((state) => state.users);
   const chats = useSelector((state) => state.chat);
+
+  const hasUnpublishedAnswers = chats.hasUnpublishedAnswers;
   const huddleBots = chats.huddleBots;
   const channels = chats.channels;
   const weekDays = [
@@ -263,8 +268,7 @@ const MainSnooze = (props) => {
   const renderContent = (type, n) => {
     const actions = n.type === 'notification' ? notifActions : n.type === 'todo' ? todoActions : huddleActions;
     if (type === 'notification') {
-      var name = n.author.name;
-      var firstName = name.split(' ').slice(0, -1).join(' ');
+      var firstName = users.users[n.author.id].first_name;
       if (n.type === "POST_MENTION") {
         return (
           <>
@@ -292,7 +296,6 @@ const MainSnooze = (props) => {
                 </>
               )}
             </div>
-            <p className="snooze-body "> {stripHtml(n.data.title)}</p>
             <NotificationBadge notification={n} dictionary={dictionary} user={user} />
           </>
         );
@@ -332,8 +335,7 @@ const MainSnooze = (props) => {
           <div className="snooze-header ">
             {dictionary.timeTOHuddle}{" "}{user.first_name}
           </div>
-          <p className="snooze-body "> {stripHtml(`${n.introduction_message}`)}</p>
-          <span className={"badge badge-info text-white"} onClick={(e) => {
+          <span className={"badge badge-info badge-grey-ghost"} onClick={(e) => {
             e.stopPropagation();
             huddleActions.skipHuddle({
               channel_id: n.channel.id,
@@ -471,7 +473,7 @@ const MainSnooze = (props) => {
       notifActions.snoozeAll({ is_snooze: false });
       todoActions.snoozeAll({ is_snooze: false });
       huddleActions.snoozeAll({ is_snooze: false });
-      if (Object.keys(chats.channels).length  > 0)
+      if (Object.keys(chats.channels).length > 0)
         snoozeUs(true);
     }, 1000 * 60 * 60);
     return () => clearInterval(interval);
@@ -480,7 +482,7 @@ const MainSnooze = (props) => {
   //interval for all expiring todos
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Object.keys(chats.channels).length  > 0)
+      if (Object.keys(chats.channels).length > 0)
         snoozeUs(false);
     }, 1000 * 60 * 15);
     return () => clearInterval(interval);
@@ -488,7 +490,7 @@ const MainSnooze = (props) => {
 
   //handler for all non-snoozed items
   useEffect(() => {
-    if (Object.keys(chats.channels).length  > 0)
+    if (Object.keys(chats.channels).length > 0)
       snoozeUs(false);
   }, [notifications, todos, huddleBots]);
 
