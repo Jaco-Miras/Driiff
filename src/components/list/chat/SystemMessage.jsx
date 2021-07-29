@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
@@ -82,7 +82,7 @@ const ChatTimeStamp = styled.div`
   white-space: nowrap;
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-const SystemMessage = forwardRef((props, ref) => {
+const SystemMessage = (props) => {
   const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, isLastChatVisible, dictionary, users } = props;
 
   const history = useHistory();
@@ -129,12 +129,12 @@ const SystemMessage = forwardRef((props, ref) => {
   };
   return (
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent ref={ref} id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
+      <SystemMessageContent id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );
-});
+};
 
-export default SystemMessage;
+export default React.memo(SystemMessage);

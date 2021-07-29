@@ -150,4 +150,4 @@ const UserListPopUp = (props) => {
   );
 };
 
-export default UserListPopUp;
+export default React.memo(UserListPopUp);

@@ -7,11 +7,11 @@ import useUserChannels from "../../hooks/useUserChannels";
 import { MoreOptions } from "../../panels/common";
 
 const ChatMessageOptions = (props) => {
-  const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250, teamChannelId = null, isExternalUser } = props;
+  const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250, teamChannelId = null, isExternalUser, scrollComponent } = props;
   //const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const dispatch = useDispatch();
-  const scrollEl = document.getElementById("component-chat-thread");
+  //onst scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
   const { selectUserChannel, loggedUser, users, channels, history, match } = useUserChannels();
@@ -118,7 +118,7 @@ const ChatMessageOptions = (props) => {
   const hasDeletedFile = replyData.files.some((f) => f.file_type === "trashed");
 
   return (
-    <MoreOptions width={width} className={className} scrollRef={scrollEl}>
+    <MoreOptions width={width} className={className} scrollRef={scrollComponent}>
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={() => chatMessageActions.remind(replyData, selectedChannel)}>{dictionary.remindMeAboutThis}</div>}
       {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred && <div onClick={handleEditReply}>{dictionary.edit}</div>}
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleQuoteReply}>{dictionary.quote}</div>}
