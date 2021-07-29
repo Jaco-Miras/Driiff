@@ -154,6 +154,9 @@ const ProfileSettings = (props) => {
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
     dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
+    notifications: _t("NOTIFICATIONS", "Notifications"),
+    extraSettings: _t("SETTINGS.EXTRA_SETTINGS", "Extra settings"),
+    darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
   };
 
   // const notificationSoundOptions = [
@@ -752,7 +755,7 @@ const ProfileSettings = (props) => {
 
           <div className="card">
             <div className="card-body">
-              <h6 className="card-title d-flex justify-content-between align-items-center">Notifications</h6>
+              <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.notifications}</h6>
               <div className="row mb-2">
                 <div className="col-12 text-muted">
                   <CustomInput
@@ -792,7 +795,7 @@ const ProfileSettings = (props) => {
 
           <div className="card">
             <div className="card-body">
-              <h6 className="card-title d-flex justify-content-between align-items-center">Extra settings</h6>
+              <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.extraSettings}</h6>
 
               <div className="row mb-3">
                 <div className="col-12 text-muted">
@@ -804,7 +807,7 @@ const ProfileSettings = (props) => {
                     name="dark_mode"
                     data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
                     onChange={handleGeneralSwitchToggle}
-                    label={<span>Dark mode</span>}
+                    label={<span>{dictionary.darkMode}</span>}
                   />
                 </div>
                 <div className="col-12 text-muted">
