@@ -35,6 +35,46 @@ const ChatReplyContainer = styled.div`
   .chat-message-options svg {
     fill: currentColor;
   }
+  .chat-message-options {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    margin: 5px;
+    max-width: 25px;
+
+    @media (max-width: 620px) {
+      margin-right: 0;
+    }
+
+    .more-options-tooltip {
+      &.orientation-bottom {
+        top: calc(100% - 35px);
+        @media (max-width: 620px) {
+          top: 100%;
+        }
+      }
+
+      &.orientation-top {
+        @media (max-width: 620px) {
+          bottom: 30px;
+        }
+      }
+
+      &.orientation-right {
+        left: calc(100% + 10px);
+        @media (max-width: 620px) {
+          left: 0;
+        }
+      }
+      &.orientation-left {
+        @media (max-width: 620px) {
+          left: auto;
+          right: 0;
+        }
+      }
+    }
+  }
   &.is-processed {
     opacity: 0;
   }
@@ -188,46 +228,7 @@ const SystemChatActionsContainer = styled.div`
   }
 `;
 
-const MessageOptions = styled(ChatMessageOptions)`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-  margin: 5px;
-  max-width: 25px;
-
-  @media (max-width: 620px) {
-    margin-right: 0;
-  }
-
-  .more-options-tooltip {
-    &.orientation-bottom {
-      top: calc(100% - 35px);
-      @media (max-width: 620px) {
-        top: 100%;
-      }
-    }
-
-    &.orientation-top {
-      @media (max-width: 620px) {
-        bottom: 30px;
-      }
-    }
-
-    &.orientation-right {
-      left: calc(100% + 10px);
-      @media (max-width: 620px) {
-        left: 0;
-      }
-    }
-    &.orientation-left {
-      @media (max-width: 620px) {
-        left: auto;
-        right: 0;
-      }
-    }
-  }
-`;
+//const MessageOptions = styled(ChatMessageOptions)``;
 const ChatBubbleQuoteDiv = styled.div`
   //width: 100%;
   //overflow: hidden;
@@ -690,47 +691,12 @@ class ChatMessages extends React.PureComponent {
   //     .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
-    //const { selectedChannel } = this.props;
-
     let lastReplyUserId = 0;
 
     const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
 
-    // let groupedMessages = [];
-
-    // if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
-    //   groupedMessages = Object.entries(
-    //     groupBy(
-    //       this.props.selectedChannel.replies.map((r) => {
-    //         if (r.hasOwnProperty("g_date")) {
-    //           return r;
-    //         } else {
-    //           return {
-    //             ...r,
-    //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-    //           };
-    //         }
-    //       }),
-    //       "g_date"
-    //     )
-    //   )
-    //     .map((entries) => {
-    //       return {
-    //         key: entries[0],
-    //         replies: entries[1],
-    //       };
-    //     })
-    //     .sort((a, b) => a.key.localeCompare(b.key));
-    // }
-
     return (
-      <ChatReplyContainer
-        ref={this.props.scrollComponent}
-        id={"component-chat-thread"}
-        className={`component-chat-thread messages ${this.props.className}`}
-        tabIndex="2"
-        //data-init={1} data-channel-id={this.props.selectedChannel.id}
-      >
+      <ChatReplyContainer ref={this.props.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2">
         {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
@@ -794,15 +760,7 @@ class ChatMessages extends React.PureComponent {
                             isBot = botCodes.includes(reply.user.code);
                           }
                           return (
-                            <ChatList
-                              key={reply.id}
-                              // data-message-id={reply.id}
-                              // data-code={reply.code}
-                              // data-timestamp={reply.created_at.timestamp}
-                              className={`chat-list chat-list-item-${reply.id} code-${reply.code} `}
-                              showTimestamp={showTimestamp}
-                              isLastChat={reply.isLastChat}
-                            >
+                            <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                               {reply.user && (
                                 <ChatBubbleContainer
@@ -832,7 +790,6 @@ class ChatMessages extends React.PureComponent {
                                       addMessageRef={this.getLoadRef(reply.id)}
                                       isLastChat={reply.isLastChat}
                                       loadReplies={this.loadReplies}
-                                      //isBot={isBot}
                                       chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
@@ -843,12 +800,13 @@ class ChatMessages extends React.PureComponent {
                                       chat_language={this.props.chat_language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
+                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} scrollComponent={this.props.scrollComponent.current} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions
+                                          <ChatMessageOptions
                                             dictionary={this.props.dictionary}
                                             className={"chat-message-options"}
                                             selectedChannel={this.props.selectedChannel}
+                                            scrollComponent={this.props.scrollComponent.current}
                                             isAuthor={isAuthor}
                                             replyData={reply}
                                             teamChannelId={this.props.teamChannelId}
@@ -899,11 +857,11 @@ class ChatMessages extends React.PureComponent {
                                         users={this.props.users}
                                       />
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
+                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} scrollComponent={this.scrollComponent.current} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions
+                                          <ChatMessageOptions
                                             dictionary={this.props.dictionary}
-                                            scrollRef={this.props.scrollComponent}
+                                            scrollComponent={this.props.scrollComponent.current}
                                             replyData={reply}
                                             className={"chat-message-options"}
                                             selectedChannel={this.props.selectedChannel}

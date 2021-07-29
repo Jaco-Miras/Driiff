@@ -83,11 +83,11 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 `;
 
 const ChatReactionButton = (props) => {
-  const { reply, showEmojiSwitcher = null } = props;
+  const { reply, showEmojiSwitcher = null, scrollComponent } = props;
   let timeout = null;
 
   const chatMessageAction = useChatMessageActions();
-  const scrollEl = document.getElementById("component-chat-thread");
+  //const scrollEl = document.getElementById("component-chat-thread");
   const refs = {
     container: useRef(null),
     picker: useRef(null),
@@ -112,7 +112,7 @@ const ChatReactionButton = (props) => {
     }, 1000);
   };
 
-  const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollEl, showEmojiPicker);
+  const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollComponent, showEmojiPicker);
 
   useEffect(() => {
     if (showEmojiSwitcher !== null) {
@@ -146,4 +146,4 @@ const ChatReactionButton = (props) => {
   );
 };
 
-export default ChatReactionButton;
+export default React.memo(ChatReactionButton);

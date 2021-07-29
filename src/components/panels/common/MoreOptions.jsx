@@ -72,7 +72,7 @@ const MoreTooltip = styled.div`
   }
 `;
 
-const MoreOptions = forwardRef((props, ref) => {
+const MoreOptions = (props) => {
   const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, strokeWidth = 2, fill = "none", svgHeight = "20", scrollRef = null, onClick, ...rest } = props;
 
   const refs = {
@@ -121,6 +121,6 @@ const MoreOptions = forwardRef((props, ref) => {
       )}
     </Wrapper>
   );
-});
+};
 
 export default React.memo(MoreOptions);
