@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 //import { useSelector } from "react-redux";
 import AllWorkspaceSidebar from "./AllWorkspaceSidebar";
@@ -27,19 +27,21 @@ const LoaderContainer = styled.div`
 
 const AllWorkspace = (props) => {
   const { search, filteredResults } = useFilterAllWorkspaces();
-  const { loaded, results, filterBy, value } = search;
+  const { loaded, results, filterBy } = search;
   const { _t } = useTranslationActions();
   const actions = useWorkspaceSearchActions();
 
   // const [loadMore, setLoadMore] = useState(false);
   const [loading, setLoading] = useState(null);
 
+  const componentIsMounted = useRef(true);
+
   useEffect(() => {
     document.body.classList.add("stretch-layout");
     actions.getFilterCount((err, res) => {
       if (err) return;
       if (res.data) {
-        if (results.length === 0) setLoading(true);
+        if (results.length === 0 && componentIsMounted.current) setLoading(true);
         const all = res.data.reduce((acc, val) => {
           if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
             acc = acc + val.count;
@@ -48,13 +50,14 @@ const AllWorkspace = (props) => {
         }, 0);
         actions.search(
           {
-            search: value,
+            //search: value,
+            search: "",
             skip: 0,
             limit: all,
             filter_by: "all",
           },
           (err, res) => {
-            setLoading(false);
+            if (componentIsMounted.current) setLoading(false);
             if (err) {
               actions.updateSearch({
                 searching: false,
@@ -74,6 +77,9 @@ const AllWorkspace = (props) => {
         );
       }
     });
+    return () => {
+      componentIsMounted.current = false;
+    };
   }, []);
 
   // useEffect(() => {

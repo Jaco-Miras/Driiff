@@ -231,13 +231,13 @@ const CompanyHeaderPanel = () => {
   };
 
   useEffect(() => {
-    const body = document.body;
-
-    if (["people", "workspace", "notifications"].includes(match.params.page)) {
-      body.classList.remove("stretch-layout");
-    } else {
-      body.classList.add("stretch-layout");
-    }
+    // const body = document.body;
+    // body.classList.add("stretch-layout");
+    // if (["people", "workspace", "notifications"].includes(match.params.page)) {
+    //   body.classList.remove("stretch-layout");
+    // } else {
+    //   body.classList.add("stretch-layout");
+    // }
 
     switch (match.params.page) {
       case "posts": {
@@ -286,7 +286,7 @@ const CompanyHeaderPanel = () => {
     } else {
       document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
     }
-  }, [match.params.page, dispatch, pageName]);
+  }, [match.params.page, dispatch, pageName, driff.company_name]);
 
   return (
     <Wrapper className={`page-${match.params.page}`}>

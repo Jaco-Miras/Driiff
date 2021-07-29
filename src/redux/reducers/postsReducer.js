@@ -115,43 +115,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_COMPANY_POSTS_SUCCESS": {
-      let isArchived = action.data.posts.filter((p) => p.is_archived === 1).length > 0 && action.data.posts.filter((p) => p.is_archived === 1).length === action.data.posts.length;
-      let isFavourites = action.data.posts.filter((p) => p.is_favourite).length === action.data.posts.length;
-      let isMyPosts = action.data.posts.filter((p) => p.author && p.author.id === state.user.id).length === action.data.posts.length;
       return {
         ...state,
-        archived: {
-          ...state.archived,
-          ...(isArchived && {
-            limit: 25,
-            skip: action.data.next_skip,
-            has_more: action.data.total_take === state.archived.limit,
-          }),
-        },
-        favourites: {
-          ...state.favourites,
-          ...(isFavourites && {
-            limit: 25,
-            skip: action.data.next_skip,
-            has_more: action.data.total_take === state.favourites.limit,
-          }),
-        },
-        myPosts: {
-          ...state.myPosts,
-          ...(isMyPosts && {
-            limit: 25,
-            skip: action.data.next_skip,
-            has_more: action.data.total_take === state.myPosts.limit,
-          }),
-        },
         companyPosts: {
           ...state.companyPosts,
-          ...(!isArchived && {
-            prev_skip: action.data.prev_skip,
-            next_skip: action.data.next_skip,
-            total_take: action.data.total_take,
-            has_more: action.data.total_take === state.companyPosts.limit,
-          }),
+          prev_skip: action.data.prev_skip,
+          next_skip: action.data.next_skip,
+          total_take: action.data.total_take,
+          has_more: action.data.total_take === state.companyPosts.limit,
           posts: {
             ...state.companyPosts.posts,
             ...action.data.posts.reduce((res, obj) => {
@@ -630,7 +601,6 @@ export default (state = INITIAL_STATE, action) => {
         ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
           companyPosts: {
             ...state.companyPosts,
-            flipper: !state.flipper,
             posts: {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
@@ -1134,6 +1104,8 @@ export default (state = INITIAL_STATE, action) => {
                 ...state.companyPosts.posts[action.data.post.id],
                 required_users: action.data.required_users,
                 user_reads: action.data.user_reads,
+                must_read_users: action.data.must_read_users,
+                must_reply_users: action.data.must_reply_users,
               },
             }),
           },
@@ -1208,6 +1180,138 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           },
         },
+      };
+    }
+    case "GET_ARCHIVED_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        archived: {
+          ...state.archived,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.archived.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "GET_MY_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        myPosts: {
+          ...state.myPosts,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.myPosts.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "GET_STAR_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        favourites: {
+          ...state.favourites,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.favourites.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "INCOMING_FOLLOW_POST": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
+                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+              },
+            },
+          },
+        }),
+      };
+    }
+    case "INCOMING_UNFOLLOW_POST": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+              },
+            },
+          },
+        }),
       };
     }
     default:

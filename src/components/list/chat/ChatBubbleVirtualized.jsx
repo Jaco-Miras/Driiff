@@ -344,6 +344,7 @@ const ChatContent = styled.div`
     clear: both;
     width: 100%;
     display: block;
+    z-index: 1;
 
     p {
       overflow: hidden;
@@ -459,7 +460,7 @@ const ChatNameNotAuthor = styled.span`
 `;
 
 const ChatBubbleVirtualized = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, recipients, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language, _t } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, user, chatMessageActions, timeFormat, chatSettings, dictionary, users, translated_channels, chat_language, translate, language } = props;
 
   const history = useHistory();
   const googleApis = useGoogleApis();
@@ -473,14 +474,12 @@ const ChatBubbleVirtualized = (props) => {
     dictionary,
     isAuthor,
     user,
-    recipients,
     selectedChannel,
     users,
     translate,
     language,
     translated_channels,
     chat_language,
-    _t,
   });
 
   const hasFiles = reply.files.length > 0;
@@ -646,4 +645,4 @@ const ChatBubbleVirtualized = (props) => {
   );
 };
 
-export default React.memo(ChatBubbleVirtualized);
+export default ChatBubbleVirtualized;

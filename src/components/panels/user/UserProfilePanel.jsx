@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
@@ -150,36 +150,36 @@ const UserProfilePanel = (props) => {
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
     zip_code: _t("PROFILE.ZIP_POST_CODE", "ZIP/POST code:"),
-    phone: _t("PROFILE.Phone", "Phone:"),
+    phone: _t("PROFILE.PHONE", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     edit: _t("BUTTON.EDIT", "Edit"),
     saveChanges: _t("BUTTON.SAVE_CHANGES", "Save changes"),
-    cancel: _t("BUTTON.Cancel", "Cancel"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
     clickToChangePassword: _t("PROFILE.CLICK_TO_CHANGE_PASSWORD", "Click to change your password"),
     external: _t("PROFILE.EXTERNAL", "External"),
   };
 
-  //const isAdmin = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
-  const isAdmin = loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1;
+  //const isEditable = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
+  const isEditable = (loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1) || (loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner"));
 
-  const getValidClass = useCallback((valid) => {
+  const getValidClass = (valid) => {
     if (typeof valid !== "boolean") {
     } else {
       return valid ? "is-valid" : "is-invalid";
     }
-  }, []);
+  };
 
-  const togglePasswordUpdate = useCallback(() => {
+  const togglePasswordUpdate = () => {
     setPasswordUpdate((prevState) => !prevState);
-  }, [setPasswordUpdate]);
+  };
 
-  const togglePasswordVisibility = useCallback(() => {
+  const togglePasswordVisibility = () => {
     setPasswordVisibility((prevState) => !prevState);
-  }, [setPasswordVisibility]);
+  };
 
   const handleUserChat = (user) => selectUserChannel(user);
 
-  const toggleEditInformation = useCallback(() => {
+  const toggleEditInformation = () => {
     setEditInformation((prevState) => !prevState);
     setForm({ ...user });
     setFormUpdate({
@@ -188,9 +188,9 @@ const UserProfilePanel = (props) => {
       feedbackText: {},
     });
     setPasswordUpdate(false);
-  }, [user, setForm, setPasswordUpdate, setEditInformation]);
+  };
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     if (e.target !== null) {
       const { name, value } = e.target;
       setForm((prevState) => ({
@@ -198,127 +198,124 @@ const UserProfilePanel = (props) => {
         [name]: value.trim(),
       }));
     }
-  }, []);
+  };
 
-  const handleInputBlur = useCallback(
-    (e) => {
-      if (e.target !== null) {
-        const { name, value } = e.target;
-        if (user[name] === form[name]) {
+  const handleInputBlur = (e) => {
+    if (e.target !== null) {
+      const { name, value } = e.target;
+      if (user[name] === form[name]) {
+        setFormUpdate((prevState) => ({
+          valid: {
+            ...prevState.valid,
+            [name]: undefined,
+          },
+          feedbackState: {
+            ...prevState.feedbackState,
+            [name]: undefined,
+          },
+          feedbackText: {
+            ...prevState.feedbackText,
+            [name]: undefined,
+          },
+        }));
+        return;
+      }
+
+      if (name === "email") {
+        if (requiredFields.includes(name) && value.trim() === "") {
           setFormUpdate((prevState) => ({
             valid: {
               ...prevState.valid,
-              [name]: undefined,
+              [name]: false,
             },
             feedbackState: {
               ...prevState.feedbackState,
-              [name]: undefined,
+              [name]: false,
             },
             feedbackText: {
               ...prevState.feedbackText,
-              [name]: undefined,
+              [name]: "Email is required",
             },
           }));
-          return;
-        }
-
-        if (name === "email") {
-          if (requiredFields.includes(name) && value.trim() === "") {
-            setFormUpdate((prevState) => ({
-              valid: {
-                ...prevState.valid,
-                [name]: false,
-              },
-              feedbackState: {
-                ...prevState.feedbackState,
-                [name]: false,
-              },
-              feedbackText: {
-                ...prevState.feedbackText,
-                [name]: "Email is required",
-              },
-            }));
-          } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
-            setFormUpdate((prevState) => ({
-              valid: {
-                ...prevState.valid,
-                [name]: false,
-              },
-              feedbackState: {
-                ...prevState.feedbackState,
-                [name]: false,
-              },
-              feedbackText: {
-                ...prevState.feedbackText,
-                [name]: "Invalid email format",
-              },
-            }));
-          } else {
-            checkEmail(form.email, (err, res) => {
-              if (res) {
-                if (res.data.status) {
-                  setFormUpdate((prevState) => ({
-                    valid: {
-                      ...prevState.valid,
-                      [name]: false,
-                    },
-                    feedbackState: {
-                      ...prevState.feedbackState,
-                      [name]: false,
-                    },
-                    feedbackText: {
-                      ...prevState.feedbackText,
-                      [name]: "Email is already taken",
-                    },
-                  }));
-                } else {
-                  setFormUpdate((prevState) => ({
-                    valid: {
-                      ...prevState.valid,
-                      [name]: true,
-                    },
-                    feedbackState: {
-                      ...prevState.feedbackState,
-                    },
-                    feedbackText: {
-                      ...prevState.feedbackText,
-                    },
-                  }));
-                }
-              }
-            });
-          }
-        } else if (requiredFields.includes(name)) {
+        } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
           setFormUpdate((prevState) => ({
             valid: {
               ...prevState.valid,
-              [name]: value.trim() !== "",
+              [name]: false,
             },
             feedbackState: {
               ...prevState.feedbackState,
-              [name]: value.trim() !== "",
+              [name]: false,
             },
             feedbackText: {
               ...prevState.feedbackText,
-              [name]: value.trim() === "" ? "Field is required." : "",
+              [name]: "Invalid email format",
             },
           }));
         } else {
-          setFormUpdate((prevState) => ({
-            valid: {
-              ...prevState.valid,
-              [name]: true,
-            },
-            feedbackState: prevState.feedbackState,
-            feedbackText: prevState.feedbackText,
-          }));
+          checkEmail(form.email, (err, res) => {
+            if (res) {
+              if (res.data.status) {
+                setFormUpdate((prevState) => ({
+                  valid: {
+                    ...prevState.valid,
+                    [name]: false,
+                  },
+                  feedbackState: {
+                    ...prevState.feedbackState,
+                    [name]: false,
+                  },
+                  feedbackText: {
+                    ...prevState.feedbackText,
+                    [name]: "Email is already taken",
+                  },
+                }));
+              } else {
+                setFormUpdate((prevState) => ({
+                  valid: {
+                    ...prevState.valid,
+                    [name]: true,
+                  },
+                  feedbackState: {
+                    ...prevState.feedbackState,
+                  },
+                  feedbackText: {
+                    ...prevState.feedbackText,
+                  },
+                }));
+              }
+            }
+          });
         }
+      } else if (requiredFields.includes(name)) {
+        setFormUpdate((prevState) => ({
+          valid: {
+            ...prevState.valid,
+            [name]: value.trim() !== "",
+          },
+          feedbackState: {
+            ...prevState.feedbackState,
+            [name]: value.trim() !== "",
+          },
+          feedbackText: {
+            ...prevState.feedbackText,
+            [name]: value.trim() === "" ? "Field is required." : "",
+          },
+        }));
+      } else {
+        setFormUpdate((prevState) => ({
+          valid: {
+            ...prevState.valid,
+            [name]: true,
+          },
+          feedbackState: prevState.feedbackState,
+          feedbackText: prevState.feedbackText,
+        }));
       }
-    },
-    [user, form, requiredFields]
-  );
+    }
+  };
 
-  const handleSave = useCallback(() => {
+  const handleSave = () => {
     if (Object.values(formUpdate.valid).find((v) => v === false) === false) {
       toaster.error("Some fields require your attention.");
     } else if (Object.values(formUpdate.valid).find((v) => v === true) === true) {
@@ -329,7 +326,7 @@ const UserProfilePanel = (props) => {
           }
         });
       } else {
-        if (isAdmin) {
+        if (isEditable) {
           if (user.email !== form.email) {
             update({ ...form, change_email: 1 }, (err, res) => {
               if (res) {
@@ -403,7 +400,7 @@ const UserProfilePanel = (props) => {
                   },
                 }));
               } else {
-                if (isAdmin) {
+                if (isEditable) {
                   if (user.email !== form.email) {
                     update({ ...form, change_email: 1 }, (err, res) => {
                       if (res) {
@@ -434,7 +431,7 @@ const UserProfilePanel = (props) => {
 
       setEditInformation(false);
     }
-  }, [form, formUpdate, update, setEditInformation, user, isAdmin]);
+  };
 
   const handleAvatarClick = () => {
     if (!editInformation) {
@@ -443,15 +440,15 @@ const UserProfilePanel = (props) => {
     refs.dropZoneRef.current.open();
   };
 
-  const handleShowDropZone = useCallback(() => {
+  const handleShowDropZone = () => {
     if (!showDropZone) setShowDropZone(true);
-  }, [showDropZone, setShowDropZone]);
+  };
 
-  const handleHideDropzone = useCallback(() => {
+  const handleHideDropzone = () => {
     setShowDropZone(false);
-  }, [setShowDropZone]);
+  };
 
-  const handleUseProfilePic = useCallback((file, fileUrl) => {
+  const handleUseProfilePic = (file, fileUrl) => {
     setForm((prevState) => ({
       ...prevState,
       profile_image_link: fileUrl,
@@ -475,35 +472,32 @@ const UserProfilePanel = (props) => {
         Click the <b>Save Changes</b> button to update your profile image.
       </>
     );
-  }, []);
+  };
 
-  const dropAction = useCallback(
-    (uploadedFiles) => {
-      if (uploadedFiles.length === 0) {
-        toaster.error("File type not allowed. Please use an image file.");
-      } else if (uploadedFiles.length > 1) {
-        toaster.warning("Multiple files detected. First selected image will be used.");
-      }
+  const dropAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toaster.error("File type not allowed. Please use an image file.");
+    } else if (uploadedFiles.length > 1) {
+      toaster.warning("Multiple files detected. First selected image will be used.");
+    }
 
-      let modal = {
-        type: "file_crop_upload",
-        imageFile: uploadedFiles[0],
-        mode: "profile",
-        handleSubmit: handleUseProfilePic,
-      };
+    let modal = {
+      type: "file_crop_upload",
+      imageFile: uploadedFiles[0],
+      mode: "profile",
+      handleSubmit: handleUseProfilePic,
+    };
 
-      dispatch(
-        addToModals(modal, () => {
-          handleHideDropzone();
-        })
-      );
-    },
-    [handleUseProfilePic, handleHideDropzone]
-  );
+    dispatch(
+      addToModals(modal, () => {
+        handleHideDropzone();
+      })
+    );
+  };
 
-  const handleEmailClick = useCallback(() => {
+  const handleEmailClick = () => {
     window.location.href = `mailto:${user.email}`;
-  }, [user]);
+  };
 
   useEffect(() => {
     if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
@@ -558,7 +552,7 @@ const UserProfilePanel = (props) => {
         <div className="col-12 col-lg-5 col-xl-6">
           <div className="card">
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
-              {(isLoggedUser || isAdmin) && (
+              {(isLoggedUser || isEditable) && (
                 <DropDocument
                   acceptType="imageOnly"
                   hide={!showDropZone}
@@ -580,7 +574,7 @@ const UserProfilePanel = (props) => {
               )}*/}
               <div className="avatar-container">
                 {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
-                {(isLoggedUser || isAdmin) && (
+                {(isLoggedUser || isEditable) && (
                   <span className="btn btn-outline-light btn-sm">
                     <SvgIconFeather icon="pencil" onClick={handleAvatarClick} />
                   </span>
@@ -655,7 +649,7 @@ const UserProfilePanel = (props) => {
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
                   {dictionary.information}
-                  {isLoggedUser || isAdmin ? (
+                  {isLoggedUser || isEditable ? (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                       <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
@@ -792,7 +786,7 @@ const UserProfilePanel = (props) => {
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.password}</div>
                   <div className="col col-form">
-                    {readOnlyFields.includes("password") || isAdmin ? (
+                    {readOnlyFields.includes("password") || isEditable ? (
                       <Label>*****</Label>
                     ) : (
                       <>
@@ -833,7 +827,7 @@ const UserProfilePanel = (props) => {
                           <Input
                             className={getValidClass(true)}
                             name="company_name"
-                            disabled={isAdmin || !isLoggedUser}
+                            disabled={isEditable || !isLoggedUser}
                             onChange={handleInputChange}
                             onBlur={handleInputBlur}
                             defaultValue={user.external_company_name ? user.external_company_name : ""}
@@ -851,7 +845,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.place}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.place)} name="place" disabled={isAdmin || !isLoggedUser} onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
+                        <Input className={getValidClass(formUpdate.valid.place)} name="place" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
                         <InputFeedback valid={formUpdate.feedbackState.place}>{formUpdate.feedbackText.place}</InputFeedback>
                       </>
                     )}
@@ -864,15 +858,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput
-                          name="address"
-                          disabled={isAdmin || !isLoggedUser}
-                          onChange={handleInputChange}
-                          onBlur={handleInputBlur}
-                          defaultValue={user.address}
-                          isValid={formUpdate.feedbackState.address}
-                          feedback={formUpdate.feedbackText.address}
-                        />
+                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
                       </>
                     )}
                   </div>
@@ -897,7 +883,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" disabled={isAdmin || !isLoggedUser} onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
                         <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}

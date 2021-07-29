@@ -1,9 +1,5 @@
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-//import {useLocation, useHistory, useParams} from "react-router-dom";
-// import toaster from "toasted-notes";
-// import {copyTextToClipboard} from "../../helpers/commonFunctions";
-// import {getBaseUrl} from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
 import {
   addPrimaryFiles,

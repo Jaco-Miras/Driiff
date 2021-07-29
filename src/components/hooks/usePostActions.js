@@ -18,6 +18,9 @@ import {
   fetchPosts,
   fetchRecentPosts,
   fetchTagCounter,
+  getArchivedCompanyPosts,
+  getMyCompanyPosts,
+  getStarCompanyPosts,
   getReadCompanyPosts,
   getCompanyPosts,
   getUnreadCompanyPosts,
@@ -62,7 +65,7 @@ import {
   incomingPostListDisconnect,
   postRequired,
 } from "../../redux/actions/postActions";
-import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters } from "../../redux/actions/workspaceActions";
+import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslationActions } from "../hooks";
 
@@ -122,6 +125,7 @@ const usePostActions = () => {
     reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", "You will be reminded about this comment under <b>Reminders</b>."),
+    toasterDeletedPost: _t("TOASTER.DELETED_POST", "Succesfully deleted the post"),
   };
 
   const fetchPostList = (payload = {}, callback) => {
@@ -156,11 +160,12 @@ const usePostActions = () => {
     }
   };
 
-  const starPost = (post) => {
+  const starPost = (post, callback = () => {}) => {
     if (post.type === "draft_post") return;
     let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
     dispatch(
       postFavorite({ type: "post", type_id: post.id }, (err, res) => {
+        callback(err, res);
         //@todo reverse the action/data in the reducer
         if (err) {
           toaster.error(<>{dictionary.notificationActionFailed}</>);
@@ -240,109 +245,75 @@ const usePostActions = () => {
 
   const archivePost = (post, callback = () => {}) => {
     if (post.type === "draft_post") {
-      const onConfirm = () => {
-        dispatch(
-          deleteDraft({
-            draft_id: post.draft_id,
-            type: post.type,
-          })
-        );
-        dispatch(
-          removeDraftPost(
-            {
-              post_id: post.id,
-            },
-            (err, res) => {
-              if (err) {
-                toaster.error(<>{dictionary.notificationActionFailed}</>);
-                return;
-              }
+      dispatch(
+        deleteDraft({
+          draft_id: post.draft_id,
+          type: post.type,
+        })
+      );
+      dispatch(
+        removeDraftPost(
+          {
+            post_id: post.id,
+          },
+          (err, res) => {
+            callback(err, res);
+            if (err) {
+              toaster.error(<>{dictionary.notificationActionFailed}</>);
+              return;
+            }
 
-              if (res) {
+            if (res) {
+              toaster.success(
+                <>
+                  <b>{post.title}</b> {dictionary.notificationRemoved}.
+                </>
+              );
+            }
+          }
+        )
+      );
+    } else {
+      dispatch(
+        postArchive(
+          {
+            post_id: post.id,
+            is_archived: post.is_archived === 1 ? 0 : 1,
+          },
+          (err, res) => {
+            callback(err, res);
+
+            if (err) {
+              toaster.success(<>Action failed.</>);
+              return;
+            }
+
+            if (res) {
+              if (!post.is_archived) {
                 toaster.success(
                   <>
-                    <b>{post.title}</b> {dictionary.notificationRemoved}.
+                    <b>{post.title}</b> {dictionary.postArchivedMuted}
+                  </>
+                );
+              } else {
+                toaster.success(
+                  <>
+                    <b>{post.title}</b> is unarchived.
                   </>
                 );
               }
-              callback(err, res);
+
+              dispatch(
+                archiveReducer({
+                  post_id: post.id,
+                  //topic_id: parseInt(params.workspaceId),
+                  is_archived: post.is_archived === 1 ? 0 : 1,
+                })
+              );
             }
-          )
-        );
-      };
-
-      // let payload = {
-      //   type: "confirmation",
-      //   headerText: dictionary.headerRemoveDraftHeader,
-      //   submitText: dictionary.buttonRemove,
-      //   cancelText: dictionary.buttonCancel,
-      //   bodyText: dictionary.removeThisDraft,
-      //   actions: {
-      //     onSubmit: onConfirm,
-      //   },
-      // };
-
-      // dispatch(addToModals(payload));
-      onConfirm();
-    } else {
-      const onConfirm = () => {
-        dispatch(
-          postArchive(
-            {
-              post_id: post.id,
-              is_archived: post.is_archived === 1 ? 0 : 1,
-            },
-            (err, res) => {
-              if (err) {
-                toaster.success(<>Action failed.</>);
-                return;
-              }
-
-              if (res) {
-                if (!post.is_archived) {
-                  toaster.success(
-                    <>
-                      <b>{post.title}</b> {dictionary.postArchivedMuted}
-                    </>
-                  );
-                } else {
-                  toaster.success(
-                    <>
-                      <b>{post.title}</b> is unarchived.
-                    </>
-                  );
-                }
-
-                dispatch(
-                  archiveReducer({
-                    post_id: post.id,
-                    //topic_id: parseInt(params.workspaceId),
-                    is_archived: post.is_archived === 1 ? 0 : 1,
-                  })
-                );
-                // if (params.hasOwnProperty("postId")) {
-                //   history.goBack();
-                // }
-              }
-              callback(err, res);
-            }
-          )
-        );
-      };
-
-      // let payload = {
-      //   type: "confirmation",
-      //   headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
-      //   submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
-      //   cancelText: dictionary.buttonCancel,
-      //   bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
-      //   actions: {
-      //     onSubmit: onConfirm,
-      //   },
-      // };
-
-      // dispatch(addToModals(payload));
-      onConfirm();
+          }
+        )
+      );
     }
   };
 
@@ -483,18 +454,38 @@ const usePostActions = () => {
           },
           (err, res) => {
             if (err) return;
+            toaster.success(
+              <>
+                {dictionary.toasterDeletedPost} - {post.title}
+              </>
+            );
             dispatch(
               removePost({
                 post_id: post.id,
                 topic_id: parseInt(params.workspaceId),
+                recipients: post.recipients,
+                id: post.id,
               })
             );
-            if (params.hasOwnProperty("postId")) {
-              history.goBack();
-            }
           }
         )
       );
+      if (params.workspaceId) {
+        let payload = {
+          topic_id: parseInt(params.workspaceId),
+          filter: "inbox",
+          tag: null,
+        };
+        dispatch(updateWorkspacePostFilterSort(payload));
+        history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+      } else {
+        let payload = {
+          filter: "inbox",
+          tag: null,
+        };
+        setCompanyFilterPosts(payload);
+        history.push("/posts");
+      }
     };
 
     let payload = {
@@ -568,7 +559,18 @@ const usePostActions = () => {
           },
           actions: {
             onSubmit: () => {
-              markAsRead(post);
+              let triggerRead = true;
+              if (post.is_must_read && post.author.id !== user.id) {
+                if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+                  triggerRead = null;
+                }
+              }
+              if (post.is_must_reply && post.author.id !== user.id) {
+                if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+                  triggerRead = null;
+                }
+              }
+              if (triggerRead) markAsRead(post);
               if (rewardRef && rewardRef.current) {
                 rewardRef.current.rewardMe();
               }
@@ -775,6 +777,18 @@ const usePostActions = () => {
     dispatch(getCompanyPosts(payload, callback));
   };
 
+  const fetchMyCompanyPosts = (payload, callback) => {
+    dispatch(getMyCompanyPosts(payload, callback));
+  };
+
+  const fetchArchivedCompanyPosts = (payload, callback) => {
+    dispatch(getArchivedCompanyPosts(payload, callback));
+  };
+
+  const fetchStarCompanyPosts = (payload, callback) => {
+    dispatch(getStarCompanyPosts(payload, callback));
+  };
+
   const fetchReadCompanyPosts = (payload, callback) => {
     dispatch(getReadCompanyPosts(payload, callback));
   };
@@ -804,7 +818,7 @@ const usePostActions = () => {
     };
 
     dispatch(postRequired(payload));
-    markAsRead(post);
+    //markAsRead(post);
   };
 
   const markReplyRequirement = (post) => {
@@ -908,8 +922,8 @@ const usePostActions = () => {
     dispatch(removePostReact(payload, callback));
   };
 
-  const fetchPostDetail = (payload = {}) => {
-    dispatch(fetchDetail(payload));
+  const fetchPostDetail = (payload = {}, callback) => {
+    dispatch(fetchDetail(payload, callback));
   };
 
   const updatePostImages = (payload = {}) => {
@@ -1036,6 +1050,9 @@ const usePostActions = () => {
     updatePostListConnect,
     markReplyRequirement,
     fetchReadCompanyPosts,
+    fetchMyCompanyPosts,
+    fetchArchivedCompanyPosts,
+    fetchStarCompanyPosts,
   };
 };
 

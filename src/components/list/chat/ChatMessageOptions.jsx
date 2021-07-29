@@ -8,7 +8,7 @@ import { MoreOptions } from "../../panels/common";
 
 const ChatMessageOptions = (props) => {
   const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250, teamChannelId = null, isExternalUser } = props;
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
+  //const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const dispatch = useDispatch();
   const scrollEl = document.getElementById("component-chat-thread");
@@ -65,10 +65,9 @@ const ChatMessageOptions = (props) => {
     chatMessageActions.setQuote(replyData);
   };
 
-  const handleCopyLink = (e) => {
-    e.stopPropagation();
+  const handleCopyLink = () => {
     chatMessageActions.clipboardLink(selectedChannel, replyData);
-    setShowMoreOptions(!showMoreOptions);
+    //setShowMoreOptions(!showMoreOptions);
   };
 
   const handleForwardMessage = () => {
@@ -95,7 +94,7 @@ const ChatMessageOptions = (props) => {
       };
       setRedirecting(true);
       selectUserChannel(replyData.user, callback);
-      setShowMoreOptions(!showMoreOptions);
+      //setShowMoreOptions(!showMoreOptions);
       //chatMessageActions.setQuote(replyData);
     }
   };
@@ -126,7 +125,7 @@ const ChatMessageOptions = (props) => {
           chatMessageActions.channelActions.select({ ...res.data, selected: true, hasMore: false, isFetching: false, skip: 0, replies: [] });
         });
       }
-      setShowMoreOptions(!showMoreOptions);
+      //setShowMoreOptions(!showMoreOptions);
       //chatMessageActions.setQuote(replyData);
     }
   };

@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
-//import { useTouchActions } from "../../../hooks";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
+import { sessionService } from "redux-react-session";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -48,16 +48,6 @@ const FileImage = styled.img`
     padding: 2.8rem 3rem;
   }
 `;
-
-// const FileVideoOverlay = styled.div`
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   z-index: 1;
-//   cursor: pointer;
-// `;
 
 const FileVideo = styled.video`
   max-height: 150px;
@@ -141,10 +131,6 @@ const FilePill = forwardRef((props, ref) => {
 
   const fileThumbnailBlobs = useSelector((state) => state.files.fileThumbnailBlobs);
 
-  //const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? fileThumbnailBlobs[file.id] : file.view_link);
-
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
-
   const handleViewFile = (e) => {
     if (file.type === "trashed") return;
     cbFilePreview(e, file);
@@ -180,67 +166,39 @@ const FilePill = forwardRef((props, ref) => {
     }
   };
 
-  // let touchActions = false;
-  // const handleTouchStart = (e) => {
-  //   touchActions = false;
-  // };
-  // const handleTouchEnd = (e) => {
-  //   e.preventDefault();
-  //   if (!touchActions) handleViewFile(e);
-  // };
-
-  // const handleSwipeLeft = (e) => {
-  //   touchActions = true;
-  // };
-  // const handleSwipeRight = (e) => {
-  //   touchActions = true;
-  // };
-
-  // const { touchStart, touchMove, touchEnd } = useTouchActions({
-  //   handleTouchStart,
-  //   handleTouchEnd,
-  //   handleSwipeLeft,
-  //   handleSwipeRight,
-  // });
-
   useEffect(() => {
     if (!fileThumbnailBlobs[file.id] && file.type.toLowerCase().includes("image")) {
-      fetch(file.thumbnail_link, {
-        method: "GET",
-        keepalive: true,
-        headers: {
-          Authorization: `Bearer ${userAuth.access_token}`,
-          "Access-Control-Allow-Origin": "*",
-          Connection: "keep-alive",
-          crossorigin: true,
-        },
-      })
-        .then(function (response) {
-          return response.blob();
+      sessionService.loadSession().then((current) => {
+        let myToken = current.token;
+        fetch(file.thumbnail_link, {
+          method: "GET",
+          keepalive: true,
+          headers: {
+            Authorization: myToken,
+            "Access-Control-Allow-Origin": "*",
+            Connection: "keep-alive",
+            crossorigin: true,
+          },
         })
-        .then(function (data) {
-          const imgObj = URL.createObjectURL(data);
-          //setImgSrc(imgObj);
-          setFileThumbnailSrc({
-            id: file.id,
-            src: imgObj,
+          .then(function (response) {
+            return response.blob();
+          })
+          .then(function (data) {
+            const imgObj = URL.createObjectURL(data);
+            //setImgSrc(imgObj);
+            setFileThumbnailSrc({
+              id: file.id,
+              src: imgObj,
+            });
           });
-        });
+      });
     }
   }, []);
 
   const isFileRemoved = file.file_type === "trashed";
 
   return (
-    <FilePillContainer
-      // onTouchStart={touchStart}
-      // onTouchEnd={touchEnd}
-      // onTouchMove={touchMove}
-      onClick={handleViewFile}
-      ref={ref}
-      className={`file-pill ${className}`}
-      {...otherProps}
-    >
+    <FilePillContainer onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
       {isFileRemoved ? (
         <DocFile>
           <div className="card app-file-list">
@@ -268,10 +226,6 @@ const FilePill = forwardRef((props, ref) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          {/* <ImgLoader ref={refVideoLoader}>
-            <ImgLoaderDiv className={"img-loader"} />
-          </ImgLoader> */}
-          {/* <FileVideoOverlay onClick={handleViewFile} /> */}
           <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
             <source src={file.view_link} type={file.type} />
             Your browser does not support the video tag.

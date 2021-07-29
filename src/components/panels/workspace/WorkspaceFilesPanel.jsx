@@ -12,6 +12,9 @@ const Wrapper = styled.div`
     overflow: hidden;
     outline: currentcolor none medium;
   }
+  .row.app-block {
+    overflow: auto;
+  }
 `;
 
 const CreateFolderLabel = styled.div`

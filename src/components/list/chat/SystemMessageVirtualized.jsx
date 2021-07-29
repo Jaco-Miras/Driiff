@@ -1,9 +1,8 @@
 import React, { forwardRef } from "react";
-//import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-//import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
-//import { SvgIconFeather } from "../../common";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -94,44 +93,12 @@ const ChatTimeStamp = styled.div`
 `;
 
 const SystemMessageVirtualized = forwardRef((props, ref) => {
-  const { reply, selectedChannel, chatMessageActions, recipients, user, timeFormat, dictionary, users, _t } = props;
+  const { reply, selectedChannel, chatMessageActions, user, timeFormat, dictionary, users } = props;
 
-  //const history = useHistory();
+  const history = useHistory();
+  const params = useParams();
 
-  const { parseBody } = useSystemMessage({ dictionary, reply, recipients, selectedChannel, user, users, _t });
-
-  // const handleHistoryPushClick = (e) => {
-  //   e.preventDefault();
-  //   if (e.currentTarget.dataset.ctrl === "1") {
-  //     e.currentTarget.dataset.ctrl = "0";
-  //     let link = document.createElement("a");
-  //     link.href = e.currentTarget.dataset.href;
-  //     link.target = "_blank";
-  //     link.click();
-  //   } else {
-  //     history.push(e.currentTarget.dataset.href);
-  //   }
-  // };
-
-  // const handleHistoryKeyDown = (e) => {
-  //   if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
-  // };
-
-  // const handleHistoryKeyUp = (e) => {
-  //   e.currentTarget.dataset.ctrl = "0";
-  // };
-
-  // useEffect(() => {
-  //   if (reply) {
-  //     let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
-  //     pushLinks.forEach((p) => {
-  //       p.addEventListener("click", handleHistoryPushClick);
-  //       p.dataset.hasLink = "1";
-  //       p.addEventListener("keydown", handleHistoryKeyDown);
-  //       p.addEventListener("keyup", handleHistoryKeyUp);
-  //     });
-  //   }
-  // }, [reply]);
+  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users });
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {
@@ -139,22 +106,30 @@ const SystemMessageVirtualized = forwardRef((props, ref) => {
       if (data.files) {
         chatMessageActions.viewFiles(data.files);
       }
+    } else if (reply.body.startsWith("POST_CREATE::")) {
+      let parsedData = reply.body.replace("POST_CREATE::", "");
+      if (parsedData.trim() !== "") {
+        let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
+        if (params && params.workspaceId) {
+          if (params.folderId) {
+            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          } else {
+            history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          }
+        } else {
+          history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);
+        }
+      }
     }
   };
   return (
     <SystemMessageContainer>
       <SystemMessageContent ref={ref} id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
-        <span className="reply-date created">
-          {/* <span className="star-wrap">
-            <SvgIconFeather className={`mr-1 ${reply.i_starred ? "active" : ""}`} icon="star" />
-            {reply.star_count > 0 && <span className="star-count">{reply.star_count}</span>}
-          </span> */}
-          {timeFormat.localizeTime(reply.created_at.timestamp)}
-        </span>
+        <span className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );
 });
 
-export default React.memo(SystemMessageVirtualized);
+export default SystemMessageVirtualized;

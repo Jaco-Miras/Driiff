@@ -10,6 +10,7 @@ import { setViewFiles } from "../../../../redux/actions/fileActions";
 import { PostBadge, PostVideos, PostChangeAccept } from "../index";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { renderToString } from "react-dom/server";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.div`
   position: relative;
@@ -248,6 +249,8 @@ const CompanyPostBody = (props) => {
     body: useRef(null),
   };
 
+  const componentIsMounted = useRef(true);
+
   const {
     fileBlobs,
     actions: { setFileSrc },
@@ -272,15 +275,30 @@ const CompanyPostBody = (props) => {
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
   const history = useHistory();
+  const [archivedClicked, setArchivedClicked] = useState(false);
+  const [starClicked, setStarClicked] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   const handleStarPost = () => {
-    if (disableOptions) return;
-    postActions.starPost(post);
-    setStar(!star);
+    if (disableOptions || starClicked) return;
+    setStarClicked(true);
+    postActions.starPost(post, () => {
+      if (componentIsMounted.current) setStarClicked(false);
+    });
+    if (componentIsMounted.current) setStar(!star);
   };
 
   const handleArchivePost = () => {
-    postActions.archivePost(post);
+    if (archivedClicked) return;
+    setArchivedClicked(true);
+    postActions.archivePost(post, () => {
+      if (componentIsMounted.current) setArchivedClicked(false);
+    });
   };
 
   const handleInlineImageClick = (e) => {
@@ -302,11 +320,9 @@ const CompanyPostBody = (props) => {
     }
   };
 
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
-
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -335,34 +351,37 @@ const CompanyPostBody = (props) => {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id]) {
           //setIsLoaded(false);
-          fetch(file.view_link, {
-            method: "GET",
-            keepalive: true,
-            headers: {
-              Authorization: `Bearer ${userAuth.access_token}`,
-              "Access-Control-Allow-Origin": "*",
-              Connection: "keep-alive",
-              crossorigin: true,
-            },
-          })
-            .then(function (response) {
-              return response.blob();
+          sessionService.loadSession().then((current) => {
+            let myToken = current.token;
+            fetch(file.view_link, {
+              method: "GET",
+              keepalive: true,
+              headers: {
+                Authorization: myToken,
+                "Access-Control-Allow-Origin": "*",
+                Connection: "keep-alive",
+                crossorigin: true,
+              },
             })
-            .then(function (data) {
-              const imgObj = URL.createObjectURL(data);
-              setFileSrc({
-                id: file.id,
-                src: imgObj,
+              .then(function (response) {
+                return response.blob();
+              })
+              .then(function (data) {
+                const imgObj = URL.createObjectURL(data);
+                setFileSrc({
+                  id: file.id,
+                  src: imgObj,
+                });
+                postActions.updatePostImages({
+                  post_id: post.id,
+                  topic_id: null,
+                  file: {
+                    ...file,
+                    blobUrl: imgObj,
+                  },
+                });
               });
-              postActions.updatePostImages({
-                post_id: post.id,
-                topic_id: null,
-                file: {
-                  ...file,
-                  blobUrl: imgObj,
-                },
-              });
-            });
+          });
         }
       });
     }
@@ -442,7 +461,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });

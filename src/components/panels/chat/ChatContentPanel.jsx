@@ -1,16 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
-import ChatMessages from "../../list/chat/ChatMessages";
-//import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
-//import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
-import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
+
+const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
+const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer"));
 
 const Wrapper = styled.div`
   width: 100%;
@@ -62,8 +61,15 @@ const ChatContentPanel = (props) => {
     setshowDropZone(false);
   };
 
-  const handleshowDropZone = () => {
-    setshowDropZone(true);
+  const handleshowDropZone = (e) => {
+    if (e.dataTransfer.types) {
+      for (var i = 0; i < e.dataTransfer.types.length; i++) {
+        if (e.dataTransfer.types[i] === "Files") {
+          setshowDropZone(true);
+          return;
+        }
+      }
+    }
   };
 
   const dropAction = (acceptedFiles) => {
@@ -186,7 +192,7 @@ const ChatContentPanel = (props) => {
     restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
   };
 
-  useFocusInput(document.querySelector(".chat-footer .ql-editor"));
+  //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
@@ -202,22 +208,24 @@ const ChatContentPanel = (props) => {
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null ? (
         virtualization ? (
-          <VirtuosoContainer dictionary={dictionary} />
+          <Suspense fallback={<ChatMessagesPlaceholder />}>
+            <VirtuosoContainer dictionary={dictionary} />
+          </Suspense>
         ) : (
-          <ChatMessages
-            selectedChannel={selectedChannel}
-            chatMessageActions={chatMessageActions}
-            timeFormat={timeFormat}
-            dictionary={dictionary}
-            unreadCount={unreadCount}
-            teamChannelId={teamChannelId}
-            isIdle={isIdle}
-            translate={translate}
-            language={language}
-            translated_channels={translated_channels}
-            chat_language={chat_language}
-            _t={_t}
-          />
+          <Suspense fallback={<ChatMessagesPlaceholder />}>
+            <ChatMessages
+              chatMessageActions={chatMessageActions}
+              timeFormat={timeFormat}
+              dictionary={dictionary}
+              unreadCount={unreadCount}
+              teamChannelId={teamChannelId}
+              isIdle={isIdle}
+              translate={translate}
+              language={language}
+              translated_channels={translated_channels}
+              chat_language={chat_language}
+            />
+          </Suspense>
         )
       ) : (
         <ChatMessagesPlaceholder />
@@ -227,4 +235,4 @@ const ChatContentPanel = (props) => {
   );
 };
 
-export default React.memo(ChatContentPanel);
+export default ChatContentPanel;

@@ -87,27 +87,6 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
-// const CloseButton = styled(SvgIconFeather)`
-//   position: absolute;
-//   top: 0;
-//   right: 70px;
-//   margin: 4px;
-//   height: calc(100% - 8px);
-//   background: white;
-//   border: 1px solid white;
-//   border-radius: 4px;
-//   width: 40px;
-//   padding: 9px;
-//   cursor: pointer;
-//   z-index: 9;
-//   color: #cacaca;
-//   transition: color 0.15s ease-in-out;
-
-//   &:hover {
-//     color: #7a1b8b;
-//   }
-// `;
-
 const FileIcon = styled(SvgIconFeather)`
   position: absolute;
   top: 0;
@@ -725,7 +704,7 @@ const ChatInput = (props) => {
     quillRef: reactQuillRef,
     members:
       user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted)
+        ? selectedChannel.members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
             if (u.id === user.id) {
               return false;
@@ -735,7 +714,7 @@ const ChatInput = (props) => {
               return false;
             }
           }),
-    prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id && m.has_accepted).map((m) => m.id),
+    prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id).map((m) => m.id),
   });
 
   //to be converted into hooks
@@ -755,7 +734,6 @@ const ChatInput = (props) => {
         <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} basedOnUserId={true} userMentionOnly={true} />
       )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
-      {/* {editMode && <CloseButton className="close-button" icon="x" onClick={handleEditReplyClose} />} */}
       {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file" />}
     </div>
   );

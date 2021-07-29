@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
@@ -35,22 +35,14 @@ const OriginalHtml = styled.div`
   overflow: hidden;
 `;
 
-const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedChannel, users, translated_channels, language }) => {
-  const parseSystemMessage = useCallback((message) => {
+const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, users, translated_channels }) => {
+  const parseSystemMessage = (message) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
       let extractedIds = message.match(ids);
-      let newMembers = recipients
-        .filter((r) => {
-          let userFound = false;
-          extractedIds.forEach((id) => {
-            if (parseInt(id) === r.type_id) {
-              userFound = true;
-            }
-          });
-          return userFound;
-        })
+      let newMembers = Object.values(users)
+        .filter((u) => extractedIds.some((id) => parseInt(id) === u.id))
         .map((user) => user.name);
       if (selectedChannel.type === "DIRECT") {
         newBody = `<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${selectedChannel.title}</span></p>`;
@@ -323,7 +315,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -357,7 +349,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     }
 
     return newBody === "" ? message : newBody;
-  }, []);
+  };
 
   let replyBody = reply.body;
   if (reply.is_deleted) {

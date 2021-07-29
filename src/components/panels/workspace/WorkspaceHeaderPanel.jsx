@@ -31,6 +31,17 @@ const NavBarLeft = styled.div`
   }
   .nav-item {
     display: flex;
+    .mobile-private {
+      display: none;
+    }
+    @media all and (max-width: 440px) {
+      .badge.badge-danger {
+        display: none !important;
+      }
+      .mobile-private {
+        display: block;
+      }
+    }
   }
   @media (max-width: 991.99px) {
     margin-right: 5px;
@@ -83,6 +94,10 @@ const NavBarLeft = styled.div`
   .component-user-list-pop-up-container .profile-slider {
     right: 165px;
     top: 0;
+  }
+  .profile-slider svg {
+    margin: 0;
+    color: inherit;
   }
   .plus-recipient-component {
     width: 2.7rem;
@@ -397,11 +412,11 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
 
-    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
-      body.classList.remove("stretch-layout");
-    } else {
-      body.classList.add("stretch-layout");
-    }
+    // if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
+    //   body.classList.remove("stretch-layout");
+    // } else {
+    //   body.classList.add("stretch-layout");
+    // }
 
     if (activeTopic) {
       if (activeTopic.unread_chats >= 1 || activeTopic.unread_posts > 0) {
@@ -410,7 +425,7 @@ const WorspaceHeaderPanel = (props) => {
         document.title = `${pageName} ‹ ${activeTopic.name} — ${driff.company_name} @ Driff`;
       }
     }
-  }, [match.params.page, dispatch, activeTopic]);
+  }, [match.params.page, dispatch, activeTopic, driff.company_name]);
 
   // useEffect(() => {
   //   if (activeTopic && !activeTopic.members.some((m) => m.id === user.id)) {
@@ -485,6 +500,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
+                          <Icon icon="lock" className="mobile-private ml-1" />
                           <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
@@ -510,6 +526,7 @@ const WorspaceHeaderPanel = (props) => {
                       {!isExternal && (
                         <>
                           <li className="nav-item nav-item-folder">
+                            <SvgIconFeather icon="folder" className={"mr-1"} />
                             <WorkspaceName>
                               <WorkspaceWrapper>
                                 {activeTopic.folder_name}
@@ -530,6 +547,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
+                          <Icon icon="lock" className="mobile-private ml-1" />
                           <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
