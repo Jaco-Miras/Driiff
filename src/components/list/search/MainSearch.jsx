@@ -77,6 +77,7 @@ const MainSearch = (props) => {
 
   const dictionary = {
     searchGlobalPlaceholder: _t("PLACEHOLDER.SEARCH_GLOBAL", "Search for anything in this Driff"),
+    whatDoYouWantToFind: _t("SEARCH.WHAT_DO_YOU_WANT_TO_FIND", "What do you want to find?"),
   };
 
   return (
@@ -84,7 +85,7 @@ const MainSearch = (props) => {
       <div className="container">
         <div className="row d-flex justify-content-center">
           <div>
-            <h2 className="mb-4 text-center">What do you want to find?</h2>
+            <h2 className="mb-4 text-center">{dictionary.whatDoYouWantToFind}</h2>
             <div className="input-group">
               <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder={dictionary.searchGlobalPlaceholder} aria-describedby="button-addon1" autoFocus value={inputValue} />
               {inputValue.trim() !== "" && (
