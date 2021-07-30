@@ -1,5 +1,5 @@
 //import {uniqBy} from "lodash";
-import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { getCurrentTimestamp, getTimestampInMins } from "../../helpers/dateFormatter";
 import { uniqByProp } from "../../helpers/arrayHelper";
 
 /** Initial State  */
@@ -2677,7 +2677,7 @@ export default function (state = INITIAL_STATE, action) {
           return {
             ...r,
             is_snooze: action.data.is_snooze,
-            snooze_time: getCurrentTimestamp()
+            snooze_time: getTimestampInMins()
           };
         }
         return {
@@ -2715,7 +2715,7 @@ export default function (state = INITIAL_STATE, action) {
         return {
           ...r,
           is_snooze: action.data.is_snooze,
-          snooze_time: getCurrentTimestamp()
+          snooze_time: getTimestampInMins()
         };
 
       })

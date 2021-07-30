@@ -9,7 +9,7 @@ import {
 } from "../../hooks";
 import { Avatar, SvgIconFeather } from "../../common";
 import { ToastContainer, toast, Slide } from "react-toastify";
-import { getTimestampInMins } from "../../../helpers/dateFormatter";
+import { getTimestampInMins, getCurrentTimestamp } from "../../../helpers/dateFormatter";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
 import { setSelectedChannel } from "../../../redux/actions/chatActions";
 
@@ -77,7 +77,7 @@ const MainSnooze = (props) => {
   const { notifications, notificationSnooze } = useNotifications();
   const { getReminders, items } = useTodos(true);
   const todos = useSelector((state) => state.global.todos);
-  //const toaster = useToaster();
+
   const user = useSelector((state) => state.session.user);
   const { _t } = useTranslationActions();
 
@@ -117,6 +117,7 @@ const MainSnooze = (props) => {
     timeTOHuddle: _t("SNOOZE.TIME_TO_HUDDLE", "Time to huddle, "),
     hasRequestedChange: _t("SNOOZE.HAS_REQUESTED_CHANGE", "has requested a change."),
     snoozeAll: _t("SNOOZE.SNOOZE_ALL", "Snoozed for 60 mins"),
+    snoozeMe: _t("SNOOZE.SNOOZE_ME", "Snoozed for 60 mins"),
     actionNeeded: _t("SNOOZE.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("SNOOZE.CHANGE_REQUESTED", "Change requested"),
   };
@@ -131,7 +132,7 @@ const MainSnooze = (props) => {
   }
 
   const todoCLean = () => {
-    var inMins = getTimestampInMins(15);
+    var inMins = getTimestampInMins(59);
     const todos = getReminders({ filter: { status: '', search: '' } });
     return todos.filter((t) => t.assigned_to && t.assigned_to.id === user.id && t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
   }
@@ -256,13 +257,11 @@ const MainSnooze = (props) => {
 
   const handleSnoozeAll = (a, e) => {
     e.preventDefault();
+    // toast.dismiss({ containerId: "toastS" });
     notifActions.snoozeAll({ is_snooze: true });
     todoActions.snoozeAll({ is_snooze: true });
     huddleActions.snoozeAll({ is_snooze: true });
-
-    //toast.clearWaitingQueue({ containerId: "toastS" });
-    //toast.dismiss({ containerId: "toastS" });
-    toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeAll }} />, { containerId: "toastA" });
+    toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeAll }} />, { containerId: "toastA", toastId: 'btnSnoozeMe' });
   }
 
   const renderContent = (type, n) => {
@@ -281,7 +280,7 @@ const MainSnooze = (props) => {
                 </>
               )}
             </div>
-            <p className="snooze-body "> {stripHtml(n.data.comment_body)}</p>
+
           </>
         );
       } else if (n.type === "POST_CREATE") {
@@ -296,7 +295,7 @@ const MainSnooze = (props) => {
                 </>
               )}
             </div>
-            <NotificationBadge notification={n} dictionary={dictionary} user={user} />
+            <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
           </>
         );
       }
@@ -306,7 +305,8 @@ const MainSnooze = (props) => {
             <div className="snooze-header ">
               {firstName}{" "} {dictionary.sentProposal}
             </div>
-            <NotificationBadge notification={n} dictionary={dictionary} user={user} />
+            <p className="snooze-body "> {stripHtml(n.data.title)}</p>
+            <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
           </>
         );
       }
@@ -316,7 +316,7 @@ const MainSnooze = (props) => {
             <div className="snooze-header ">
               {firstName}{" "} {dictionary.hasRequestedChange}
             </div>
-            <NotificationBadge notification={n} dictionary={dictionary} user={user} />
+            <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
           </>
         );
       }
@@ -351,7 +351,6 @@ const MainSnooze = (props) => {
                 user_bot: n.user_bot,
               })}`,
             })
-            // huddleActions.snoozeSkip({ id: n.id, is_skip: true });
             toast.dismiss(type + '__' + n.id);
           }}>Skip</span>
         </>
@@ -385,7 +384,7 @@ const MainSnooze = (props) => {
   const snoozeOpen = (snooze) => {
     if (snooze.length > 0) {
       const count = snooze.length;
-      const items = snooze.slice(0, 4);
+      const items = snooze.slice(0, 3);
       if (!toast.isActive('btnSnoozeAll'))
         toast(<span className="snooze-all" onClick={(e) => handleSnoozeAll(snooze, e)}>Snooze All {count > 4 && count} {" "} Notifications</span>, {
           className: 'snooze-all-container',
@@ -409,13 +408,19 @@ const MainSnooze = (props) => {
             containerId: 'toastS',
             toastId: n.element,
             onClose: () => {
-              if (n.type === 'notification' && notifications[n.id] && !notifications[n.id].is_read)
+              if (n.type === 'notification' && notifications[n.id] && !notifications[n.id].is_read) {
                 actions.snooze({ id: n.id, is_snooze: true });
-              else if (n.type === 'todo' && todos.items[n.id] && !todos.items[n.id].status !== "DONE")
+                toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: 'btnSnoozeMe' });
+              }
+              else if (n.type === 'todo' && todos.items[n.id] && !todos.items[n.id].status !== "DONE") {
                 actions.snooze({ id: n.id, is_snooze: true });
+                toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: 'btnSnoozeMe' });
+              }
               else if (n.type === 'huddle') {
-                if (!huddleClean(n))
+                if (!huddleClean(n)) {
                   actions.snooze({ id: n.id, is_snooze: true });
+                  toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: 'btnSnoozeMe' });
+                }
               }
             }
           });
@@ -430,20 +435,44 @@ const MainSnooze = (props) => {
 
   const processSnooze = (type, items, snoozed) => {
     const snooze = [];
+    const inMins = getCurrentTimestamp();
     items.map((n) => {
       let elemId = type + '__' + n.id;
+      var actions = type === 'notification' ? notifActions : type === 'todo' ? todoActions : huddleActions;
+
       if (type === 'notification') {
         let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.created_at.timestamp };
-        snoozed && !n.is_read && n.is_snooze ? snooze.push(content) : (!n.is_read && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
+        if (snoozed && !n.is_read && n.is_snooze && n.snooze_time <= inMins) {
+          (n.type === "POST_CREATE" && ((n.data.must_read && n.data.required_users && n.data.required_users.some((u) => u.id === user.id && !u.must_read)) || (n.data.must_read_users && n.data.must_read_users.some((u) => u.id === user.id && !u.must_read))) ||
+            (n.data.must_reply && n.data.required_users && n.data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
+          snooze.push(content);
+          actions.snooze({ id: n.id, is_snooze: false });
+        }
+        else if (!n.is_read && !n.is_snooze) {
+          n.type === "POST_CREATE" && (((n.data.must_read && n.data.required_users && n.data.required_users.some((u) => u.id === user.id && !u.must_read)) || (n.data.must_read_users && n.data.must_read_users.some((u) => u.id === user.id && !u.must_read))) ||
+            (n.data.must_reply && n.data.required_users && n.data.required_users.some((u) => u.id === user.id && !u.must_reply)) || (n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)))
+          snooze.push(content);
+        }
+        else toast.isActive(elemId) && toast.dismiss(elemId);
+
       } else if (type === 'todo') {
         let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.created_at.timestamp };
-        snoozed && n.status !== "DONE" && n.is_snooze ? snooze.push(content) : (n.status !== "DONE" && !n.is_snooze) ? snooze.push(content) : toast.isActive(elemId) && toast.dismiss(elemId);
+        if (snoozed && n.status !== "DONE" && n.is_snooze && n.snooze_time <= inMins) {
+          snooze.push(content);
+          actions.snooze({ id: n.id, is_snooze: false });
+        }
+        else if (n.status !== "DONE" && !n.is_snooze)
+          snooze.push(content)
+        else
+          toast.isActive(elemId) && toast.dismiss(elemId);
       }
       else if (type === 'huddle') {
         if (!isWeekend && !answeredChannels.includes(n.channel.id)) {
           let content = { 'id': n.id, 'content': ({ closeToast, toastProps }) => snoozeContent(type, n, closeToast, toastProps), 'element': elemId, 'type': type, 'snooze_time': (n.snooze_time) ? n.snooze_time : n.start_at.timestamp, 'huddle': n };
-          if (snoozed && !huddleClean(n) && n.is_snooze)
+          if (snoozed && !huddleClean(n) && n.is_snooze && n.snooze_time <= inMins) {
             snooze.push(content);
+            actions.snooze({ id: n.id, is_snooze: false });
+          }
           else if (!huddleClean(n) && !n.is_snooze)
             snooze.push(content);
           else
@@ -470,14 +499,12 @@ const MainSnooze = (props) => {
   //interval for all snoozed items
   useEffect(() => {
     const interval = setInterval(() => {
-      notifActions.snoozeAll({ is_snooze: false });
-      todoActions.snoozeAll({ is_snooze: false });
-      huddleActions.snoozeAll({ is_snooze: false });
       if (Object.keys(chats.channels).length > 0)
         snoozeUs(true);
-    }, 1000 * 60 * 60);
+    }, 5000);
     return () => clearInterval(interval);
   }, [notifications, todos, huddleBots]);
+
 
   //interval for all expiring todos
   useEffect(() => {
@@ -490,8 +517,9 @@ const MainSnooze = (props) => {
 
   //handler for all non-snoozed items
   useEffect(() => {
-    if (Object.keys(chats.channels).length > 0)
+    if (Object.keys(chats.channels).length > 0) {
       snoozeUs(false);
+    }
   }, [notifications, todos, huddleBots]);
 
   return (
