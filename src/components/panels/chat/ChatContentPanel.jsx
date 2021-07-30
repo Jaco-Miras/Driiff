@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
-import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
+import { useCountUnreadReplies, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 import { useIdleTimer } from "react-idle-timer";

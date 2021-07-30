@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addChannels,
   addHuddleLog,
@@ -33,14 +33,14 @@ import {
   setSidebarSearch as setSidebarSearchReducer,
   setSearchArchivedChannels,
 } from "../../redux/actions/chatActions";
-import { useSettings, useToaster, useTranslationActions } from "./index";
+import { useToaster, useTranslationActions } from "./index";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 
 const useChannelActions = () => {
   const dispatch = useDispatch();
 
-  const { chatSettings } = useSettings();
+  const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const { _t } = useTranslationActions();
   const toaster = useToaster();
   const history = useHistory();
