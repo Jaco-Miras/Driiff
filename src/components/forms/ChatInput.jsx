@@ -5,7 +5,7 @@ import { addChatMessage, addQuote, addToChannels, clearChannelDraft, clearQuote,
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster } from "../hooks";
+import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster, useCountRenders } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 import { useHistory } from "react-router-dom";
@@ -129,12 +129,20 @@ const ChatInput = (props) => {
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
-  const [text, setText] = useState("");
-  const [textOnly, setTextOnly] = useState("");
-  const [quillContents, setQuillContents] = useState([]);
-  //const [mounted, setMounted] = useState(false);
-  const [mentionedUserIds, setMentionedUserIds] = useState([]);
-  const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+  // const [text, setText] = useState("");
+  // const [textOnly, setTextOnly] = useState("");
+  // const [quillContents, setQuillContents] = useState([]);
+  const [quillData, setQuillData] = useState({
+    text: "",
+    textOnly: "",
+    quillContents: [],
+  });
+  const [mentionData, setMentionData] = useState({
+    mentionedUserIds: [],
+    ignoredMentionedUserIds: [],
+  });
+  // const [mentionedUserIds, setMentionedUserIds] = useState([]);
+  // const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
@@ -147,21 +155,26 @@ const ChatInput = (props) => {
   const { huddle, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
 
   //const setEditedAnswerId = useRef(null);
+  //useCountRenders();
 
   useEffect(() => {
-    if (editHuddle && question && answerId !== question.answer_id && textOnly !== question.original_answer) {
+    if (editHuddle && question && answerId !== question.answer_id && quillData.textOnly !== question.original_answer) {
       reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, question.original_answer);
       if (reactQuillRef.current.getEditor().getText() === question.original_answer) {
         setAnswerId(question.answer_id);
-        setTextOnly(question.original_answer);
+        //setTextOnly(question.original_answer);
+        setQuillData({
+          ...quillData,
+          textOnly: question.original_answer,
+        });
       }
     }
-  }, [editHuddle, question, answerId, textOnly]);
+  }, [editHuddle, question, answerId, quillData.textOnly]);
 
   const handleSubmit = () => {
     // if quill has inline image upload progress then return submit
     // eslint-disable-next-line quotes
-    if (text.includes('<span class="image-uploading">')) return;
+    if (quillData.text.includes('<span class="image-uploading">')) return;
     if (showQuestions) {
       if (question.isLastQuestion) {
         //const currentDate = new Date();
@@ -172,7 +185,7 @@ const ChatInput = (props) => {
             return {
               question_id: q.id,
               question: q.question,
-              answer: q.isLastQuestion ? textOnly : q.answer,
+              answer: q.isLastQuestion ? quillData.textOnly : q.answer,
             };
           }),
           skip_message_ids: skipId ? [skipId.id] : [],
@@ -225,7 +238,7 @@ const ChatInput = (props) => {
         huddleActions.saveAnswer({
           channel_id: selectedChannel.id,
           question_id: question.id,
-          answer: textOnly,
+          answer: quillData.textOnly,
         });
       }
       handleClearQuillInput();
@@ -238,8 +251,8 @@ const ChatInput = (props) => {
     let reference_id = require("shortid").generate();
     let allIds = selectedChannel.members.map((m) => m.id);
 
-    if (quillContents.ops && quillContents.ops.length > 0) {
-      let mentionIds = quillContents.ops
+    if (quillData.quillContents.ops && quillData.quillContents.ops.length > 0) {
+      let mentionIds = quillData.quillContents.ops
         .filter((id) => {
           return id.insert.mention ? id : null;
         })
@@ -255,17 +268,17 @@ const ChatInput = (props) => {
           mention_ids = mention_ids.filter((id) => !isNaN(id));
         }
       }
-      quillContents.ops.forEach((op) => {
+      quillData.quillContents.ops.forEach((op) => {
         if (op.insert.image) {
           haveGif = true;
         }
       });
     }
 
-    if (_.trim(textOnly) === "" && mention_ids.length === 0 && !haveGif) return;
+    if (_.trim(quillData.textOnly) === "" && mention_ids.length === 0 && !haveGif) return;
 
     let el = document.createElement("div");
-    el.innerHTML = text;
+    el.innerHTML = quillData.text;
     for (let i = el.childNodes.length - 1; i >= 0; i--) {
       if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
         el.removeChild(el.childNodes[i]);
@@ -311,7 +324,7 @@ const ChatInput = (props) => {
       body: el.innerHTML,
       mention_ids: mention_ids,
       user: user,
-      original_body: text,
+      original_body: quillData.text,
       is_read: true,
       editable: true,
       files: [],
@@ -367,9 +380,14 @@ const ChatInput = (props) => {
   };
 
   const handleClearQuillInput = () => {
-    setTextOnly("");
-    setText("");
-    setQuillContents([]);
+    // setTextOnly("");
+    // setText("");
+    // setQuillContents([]);
+    setQuillData({
+      text: "",
+      textOnly: "",
+      quillContents: [],
+    });
     if (reactQuillRef.current) {
       try {
         reactQuillRef.current.getEditor().setContents([]);
@@ -385,13 +403,19 @@ const ChatInput = (props) => {
   const handleQuillChange = (content, delta, source, editor) => {
     if (selectedChannel === null) return;
 
-    const textOnly = editor.getText(content);
+    // const textOnly = editor.getText(content);
 
-    setText(content);
-    setTextOnly(textOnly);
-    setQuillContents(editor.getContents());
+    // setText(content);
+    // setTextOnly(textOnly);
+    // setQuillContents(editor.getContents());
 
-    textOnly.trim() === "" ? onActive(false) : onActive(true);
+    // textOnly.trim() === "" ? onActive(false) : onActive(true);
+
+    setQuillData({
+      text: content,
+      textOnly: editor.getText(content),
+      quillContents: editor.getContents(),
+    });
 
     if (editor.getContents().ops && editor.getContents().ops.length) {
       handleMentionUser(
@@ -422,7 +446,7 @@ const ChatInput = (props) => {
       //check for recipients/type
       if (selectedChannel.type === "PERSONAL_BOT") return;
       const ingoredExternalIds = selectedChannel.type === "TOPIC" ? activeExternalUsers.map((m) => m.id) : [];
-      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...ignoredMentionedUserIds, ...ingoredExternalIds];
+      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...mentionData.ignoredMentionedUserIds, ...ingoredExternalIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -432,16 +456,29 @@ const ChatInput = (props) => {
         });
         return !userFound;
       });
-      setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
+      //setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
+      setMentionData({
+        mentionedUserIds: userIds.length ? userIds.map((id) => parseInt(id)) : [],
+        ignoredMentionedUserIds: [],
+      });
     } else {
-      setIgnoredMentionedUserIds([]);
-      setMentionedUserIds([]);
+      if (mentionData.mentionedUserIds.length === 0 && mentionData.ignoredMentionedUserIds.length === 0) return;
+      setMentionData({
+        mentionedUserIds: [],
+        ignoredMentionedUserIds: [],
+      });
+      // setIgnoredMentionedUserIds([]);
+      // setMentionedUserIds([]);
     }
   };
 
   const handleSetEditMessageStates = (reply) => {
     reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, reply.body);
-    setText(reply.body);
+    setQuillData({
+      ...quillData,
+      text: reply.body,
+    });
+    //setText(reply.body);
     setEditMessage(reply);
     setEditMode(true);
     if (reply.quote && reply.quote.hasOwnProperty("id")) {
@@ -582,7 +619,11 @@ const ChatInput = (props) => {
     } else {
       reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.text);
       setDraftId(draft.draft_id);
-      setText(draft.text);
+      //setText(draft.text);
+      setQuillData({
+        ...quillData,
+        text: draft.text,
+      });
     }
   };
 
@@ -661,17 +702,30 @@ const ChatInput = (props) => {
         postChannelMembers(memberPayload, (err, res) => {
           if (err) return;
 
-          if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+          if (res) {
+            setMentionData({
+              ...mentionData,
+              ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.id)],
+            });
+            //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+          }
         })
       );
 
-      setMentionedUserIds([]);
+      setMentionData({
+        ...mentionData,
+        mentionedUserIds: [],
+      });
     }
   };
 
   const handleIgnoreMentionedUsers = (users) => {
-    setIgnoredMentionedUserIds(users.map((u) => u.type_id));
-    setMentionedUserIds([]);
+    setMentionData({
+      mentionedUserIds: [],
+      ignoredMentionedUserIds: users.map((u) => u.type_id),
+    });
+    // setIgnoredMentionedUserIds(users.map((u) => u.type_id));
+    // setMentionedUserIds([]);
   };
 
   const handleEditReplyClose = () => {
@@ -685,9 +739,9 @@ const ChatInput = (props) => {
     }
   };
 
-  useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
+  useSaveInput(handleClearQuillInput, quillData.text, quillData.textOnly, quillData.quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
-  useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
+  useDraft(loadDraftCallback, "channel", quillData.text, quillData.textOnly, draftId);
   const { modules } = useQuillModules({
     mode: "chat",
     callback: handleSubmit,
@@ -719,8 +773,15 @@ const ChatInput = (props) => {
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
-      {mentionedUserIds.length > 0 && (
-        <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"} basedOnUserId={true} userMentionOnly={true} />
+      {mentionData.mentionedUserIds.length > 0 && (
+        <BodyMention
+          onAddUsers={handleAddMentionedUsers}
+          onDoNothing={handleIgnoreMentionedUsers}
+          userIds={mentionData.mentionedUserIds}
+          type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}
+          basedOnUserId={true}
+          userMentionOnly={true}
+        />
       )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
       {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file" />}
