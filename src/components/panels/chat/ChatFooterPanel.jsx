@@ -262,6 +262,9 @@ const ChatFooterPanel = (props) => {
     yes: _t("YES", "Yes"),
     no: _t("NO", "No"),
     googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
+    send: _t("TOOLTIP.SEND", "Send"),
+    attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
+    closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -403,11 +406,12 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
+                    dictionary={dictionary}
                   />
                 </Dflex>
               </ChatInputContainer>
 
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.send}>
                 <IconButton onClick={handleSend} icon="send" />
               </Tooltip>
             </React.Fragment>

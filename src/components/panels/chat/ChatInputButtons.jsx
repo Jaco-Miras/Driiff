@@ -51,7 +51,7 @@ const Wrapper = styled.div`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote, dictionary } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const [showButtons, setShowButtons] = useState(false);
@@ -77,7 +77,7 @@ const ChatInputButtons = (props) => {
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat}>
       {editChatMessage && (
         <IconWrapper>
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.closeEdit}>
             <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
           </Tooltip>
         </IconWrapper>
@@ -95,7 +95,7 @@ const ChatInputButtons = (props) => {
         </IconWrapper>
       )}
       <IconWrapper className="btn-paperclip">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
         </Tooltip>
       </IconWrapper>
@@ -106,4 +106,4 @@ const ChatInputButtons = (props) => {
   );
 };
 
-export default ChatInputButtons;
+export default React.memo(ChatInputButtons);

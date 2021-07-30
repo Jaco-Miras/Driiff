@@ -238,6 +238,7 @@ const MainNavigationTabPanel = (props) => {
     addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
+    newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
   };
 
   const handleIconClick = (e) => {
