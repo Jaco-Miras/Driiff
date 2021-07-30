@@ -56,7 +56,7 @@ const ApproveCheckBox = styled(CheckBox)`
 `;
 
 const PostInputButtons = (props) => {
-  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput } = props;
+  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput, dictionary } = props;
   const dispatch = useDispatch();
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
@@ -78,13 +78,13 @@ const PostInputButtons = (props) => {
     <Wrapper editMode={editPostComment !== null} showButtons={showButtons}>
       {editPostComment && mainInput && (
         <IconWrapper>
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.closeEdit}>
             <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
           </Tooltip>
         </IconWrapper>
       )}
       <IconWrapper className="btn-approver">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Select approver">
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.selectApprover}>
           <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
         </Tooltip>
       </IconWrapper>
@@ -95,12 +95,12 @@ const PostInputButtons = (props) => {
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-image">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Inline image">
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.images}>
           <SvgIconFeather icon="image" onClick={handleQuillImage} />
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
           <SvgIconFeather onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
         </Tooltip>
       </IconWrapper>

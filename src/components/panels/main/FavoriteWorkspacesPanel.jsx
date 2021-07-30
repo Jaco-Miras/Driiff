@@ -208,7 +208,7 @@ const FavoriteWorkspacesPanel = (props) => {
       <FavWorkspacesLabel>
         <span>{dictionary.favoriteWorkspaces}</span>
         {!isExternal && (
-          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.newFolder}>
             <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
           </StyledTooltip>
         )}

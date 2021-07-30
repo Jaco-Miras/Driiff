@@ -340,6 +340,8 @@ const PostDetailFooter = (props) => {
     disagree: _t("POST.DISAGREE", "Disagree"),
     overview: _t("POST.OVERVIEW", "Overview"),
     archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
+    send: _t("TOOLTIP.SEND", "Send"),
+    closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
   };
 
   const handleUnarchive = () => {
@@ -757,10 +759,11 @@ const PostDetailFooter = (props) => {
                 toggleApprover={toggleApprover}
                 editPostComment={editPostComment}
                 mainInput={mainInput}
+                dictionary={dictionary}
               />
             </ChatInputContainer>
 
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.send}>
               <IconButton onClick={handleSend} icon="send" />
             </Tooltip>
 

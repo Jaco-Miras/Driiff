@@ -86,6 +86,8 @@ const CreateWorkspaceFolderModal = (props) => {
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Private folder"),
     lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),
+    createNewFolder: _t("MODAL.CREATE_NEW_FOLDER", "Create new folder"),
+    editFolder: _t("MODAL.EDIT_FOLDER", "Edit folder"),
   };
   const toaster = useToaster();
   const inputRef = useRef();
@@ -359,7 +361,7 @@ const CreateWorkspaceFolderModal = (props) => {
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
       <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
-        {mode === "edit" ? "Edit  folder" : "Create new folder"}
+        {mode === "edit" ? dictionary.editFolder : dictionary.createNewFolder}
         {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
       </ModalHeaderSection>
       <ModalBody>
