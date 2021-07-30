@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useToaster } from "../../hooks";
+import { useToaster, useTranslationActions } from "../../hooks";
 import { MoreOptions } from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
@@ -32,8 +32,13 @@ const FolderOptions = (props) => {
   const { className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder } = props;
   const toaster = useToaster();
 
-  // const handleViewDetail = () => {
-  // };
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    rename: _t("FILES.RENAME", "Rename"),
+    restore: _t("FILES.RESTORE", "Restore"),
+    remove: _t("FILES.REMOVE", "Remove"),
+  };
 
   const handleRename = () => {
     if (isMember) {
@@ -92,9 +97,9 @@ const FolderOptions = (props) => {
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" folder={folder} scrollRef={scrollRef}>
       {/* <div onClick={handleViewDetail}>View Details</div> */}
-      {!folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div>}
-      {folder.is_archived && <div onClick={handleRestore}>Restore</div>}
-      <div onClick={handleDelete}>Remove</div>
+      {!folder.hasOwnProperty("payload") && <div onClick={handleRename}>{dictionary.rename}</div>}
+      {folder.is_archived && <div onClick={handleRestore}>{dictionary.restore}</div>}
+      <div onClick={handleDelete}>{dictionary.remove}</div>
     </Wrapper>
   );
 };
