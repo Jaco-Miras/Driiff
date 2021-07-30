@@ -142,6 +142,7 @@ const SystemPeoplePanel = (props) => {
     moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
     deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
     deleteConfirmationText: _t("PEOPLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this user? This means this user can't log in anymore."),
+    btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
   };
 
   const handleInviteUsers = () => {
@@ -319,7 +320,7 @@ const SystemPeoplePanel = (props) => {
         <div className="card-body">
           <div className="people-header">
             <div className="d-flex align-items-center people-search">
-              <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder="Search by name or email" onChange={handleSearchChange} autoFocus />
+              <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
               <CustomInput
                 className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
                 checked={showInactive}
@@ -333,7 +334,7 @@ const SystemPeoplePanel = (props) => {
             </div>
             <div>
               <button className="btn btn-primary" onClick={handleInviteUsers}>
-                <SvgIconFeather className="mr-2" icon="user-plus" /> Invite users
+                <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
               </button>
             </div>
           </div>

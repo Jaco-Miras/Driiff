@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { MoreOptions } from "../../../panels/common";
-import { useToaster } from "../../../hooks";
+import { useToaster, useTranslationActions } from "../../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -32,6 +32,13 @@ const CompanyFolderOptions = (props) => {
   const { className = "", folder, scrollRef = null, actions, history, handleAddEditFolder } = props;
 
   const toaster = useToaster();
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    rename: _t("FILES.RENAME", "Rename"),
+    restore: _t("FILES.RESTORE", "Restore"),
+    remove: _t("FILES.REMOVE", "Remove"),
+  };
 
   const handleRename = () => {
     handleAddEditFolder(folder, "edit");
@@ -87,9 +94,9 @@ const CompanyFolderOptions = (props) => {
 
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" folder={folder} scrollRef={scrollRef}>
-      {!folder.hasOwnProperty("payload") && !folder.is_archived && <div onClick={handleRename}>Rename</div>}
-      {folder.is_archived && <div onClick={handleRestore}>Restore</div>}
-      <div onClick={handleDelete}>Remove</div>
+      {!folder.hasOwnProperty("payload") && !folder.is_archived && <div onClick={handleRename}>{dictionary.rename}</div>}
+      {folder.is_archived && <div onClick={handleRestore}>{dictionary.restore}</div>}
+      <div onClick={handleDelete}>{dictionary.remove}</div>
     </Wrapper>
   );
 };

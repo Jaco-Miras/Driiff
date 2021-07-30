@@ -194,7 +194,7 @@ const ChatContentPanel = (props) => {
     discussOnTeamChat: _t("MESSAGE.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
   };
 
-  useFocusInput(document.querySelector(".chat-footer .ql-editor"));
+  //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { CompanyHeaderPanel } from "../company";
@@ -8,12 +8,16 @@ const Wrapper = styled.div``;
 
 const MainHeaderPanel = (props) => {
   const { className = "", isExternal } = props;
-  
+
+  useEffect(() => {
+    document.body.classList.add("stretch-layout");
+  }, []);
+
   return (
     <Wrapper className={`header ${className}`}>
       <Switch>
-        <Route render={() => <WorkspaceHeaderPanel isExternal={isExternal} {...props}/>} path={["/workspace/:page"]} />
-        <Route render={() => <CompanyHeaderPanel isExternal={isExternal} {...props}/>} path={["/:page"]} />
+        <Route render={() => <WorkspaceHeaderPanel isExternal={isExternal} {...props} />} path={["/workspace/:page"]} />
+        <Route render={() => <CompanyHeaderPanel isExternal={isExternal} {...props} />} path={["/:page"]} />
       </Switch>
     </Wrapper>
   );
