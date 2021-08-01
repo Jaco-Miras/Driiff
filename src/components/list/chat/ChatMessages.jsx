@@ -792,7 +792,15 @@ class ChatMessages extends React.PureComponent {
                                       chat_language={this.props.chat_language}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} scrollComponent={this.scrollComponent.current} />}
+                                        {
+                                          <ChatReactionButton
+                                            isAuthor={isAuthor}
+                                            reply={reply}
+                                            showEmojiSwitcher={this.state.showEmoji[reply.id]}
+                                            scrollComponent={this.scrollComponent.current}
+                                            chatMessageActions={this.props.chatMessageActions}
+                                          />
+                                        }
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <ChatMessageOptions
                                             dictionary={this.props.dictionary}
@@ -803,6 +811,7 @@ class ChatMessages extends React.PureComponent {
                                             replyData={reply}
                                             teamChannelId={this.props.teamChannelId}
                                             isExternalUser={this.props.user.type === "external"}
+                                            chatMessageActions={this.props.chatMessageActions}
                                           />
                                         )}
                                       </ChatActionsContainer>
@@ -849,7 +858,15 @@ class ChatMessages extends React.PureComponent {
                                         users={this.props.users}
                                       />
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} scrollComponent={this.scrollComponent.current} />}
+                                        {
+                                          <ChatReactionButton
+                                            isAuthor={isAuthor}
+                                            reply={reply}
+                                            showEmojiSwitcher={this.state.showEmoji[reply.id]}
+                                            scrollComponent={this.scrollComponent.current}
+                                            chatMessageActions={this.props.chatMessageActions}
+                                          />
+                                        }
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <ChatMessageOptions
                                             dictionary={this.props.dictionary}
@@ -860,6 +877,7 @@ class ChatMessages extends React.PureComponent {
                                             isAuthor={isAuthor}
                                             teamChannelId={this.props.teamChannelId}
                                             isExternalUser={this.props.user.type === "external"}
+                                            chatMessageActions={this.props.chatMessageActions}
                                           />
                                         )}
                                       </SystemChatActionsContainer>

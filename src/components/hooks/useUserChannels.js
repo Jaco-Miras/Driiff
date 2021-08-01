@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
-import { useChannels, useUsers } from "./index";
+import { useRef } from "react";
+import { useChannelActions, useUsers } from "./index";
 import { useSelector } from "react-redux";
 import { uniqByProp } from "../../helpers/arrayHelper";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-let init = true;
+//let init = true;
 
 const useUserChannels = () => {
-  const { channels, actions: channelActions } = useChannels();
+  const channelActions = useChannelActions();
+  const channels = useSelector((state) => state.chat.channels);
   const { actions: userActions, loggedUser, ...otherUseUsers } = useUsers();
   const userChannels = Object.values(channels).filter((channel) => channel.add_user);
   const recipients = useSelector((state) => state.global.recipients);
@@ -72,19 +73,18 @@ const useUserChannels = () => {
     }
   };
 
-  useEffect(() => {
-    if (init) {
-      init = false;
-      // channelActions.fetchNoChannelUsers((err) => {
-      //   if (err) init = false;
-      // });
-    }
+  // useEffect(() => {
+  //   if (init) {
+  //     init = false;
+  //     // channelActions.fetchNoChannelUsers((err) => {
+  //     //   if (err) init = false;
+  //     // });
+  //   }
 
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   //eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return {
-    ...useChannels(),
     ...otherUseUsers,
     loggedUser,
     userActions,
@@ -92,6 +92,7 @@ const useUserChannels = () => {
     selectUserChannel,
     history,
     match,
+    channels,
   };
 };
 
