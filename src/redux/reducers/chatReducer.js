@@ -2677,7 +2677,7 @@ export default function (state = INITIAL_STATE, action) {
           return {
             ...r,
             is_snooze: action.data.is_snooze,
-            snooze_time: getTimestampInMins()
+            snooze_time: action.data.snooze_time
           };
         }
         return {
@@ -2715,7 +2715,7 @@ export default function (state = INITIAL_STATE, action) {
         return {
           ...r,
           is_snooze: action.data.is_snooze,
-          snooze_time: getTimestampInMins()
+          snooze_time: action.data.snooze_time
         };
 
       })
