@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTimeFormat } from "../../hooks";
 import { Badge, ToolTip } from "../../common";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
@@ -60,7 +60,7 @@ const ChatTitleDate = (props) => {
 
   const { className = "", search = "", selectedChannel, channel, dictionary } = props;
 
-  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  //const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const getHighlightedSearchTitle = (title) => {
     let newTitle = title;

@@ -9,7 +9,7 @@ const useHuddle = (props) => {
   //const currentUTCDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
   const actions = useHuddleChatbot();
   //const loggedUser = useSelector((state) => state.session.user);
-  const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  //const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const editHuddle = useSelector((state) => state.chat.editHuddle);
   const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
 

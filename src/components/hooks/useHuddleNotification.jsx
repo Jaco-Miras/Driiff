@@ -15,11 +15,11 @@ const useHuddle = (props) => {
   const currentDate = new Date();
   const currentTime = currentDate.getTime();
   const dispatch = useDispatch();
-  const loggedUser = useSelector((state) => state.session.user);
+  //const loggedUser = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const channels = useSelector((state) => state.chat.channels);
-  const isOwner = loggedUser.role && loggedUser.role.name === "owner";
-  const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  // const channels = useSelector((state) => state.chat.channels);
+  // const isOwner = loggedUser.role && loggedUser.role.name === "owner";
+  // const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const hasUnpublishedAnswers = useSelector((state) => state.chat.hasUnpublishedAnswers);
   const huddleBots = useSelector((state) => state.chat.huddleBots);
   const weekDays = [
