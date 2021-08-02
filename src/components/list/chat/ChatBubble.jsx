@@ -468,7 +468,6 @@ const ChatBubble = (props) => {
     chatMessageActions,
     timeFormat,
     chatSettings,
-    isLastChatVisible,
     dictionary,
     users,
     translated_channels,
@@ -479,7 +478,6 @@ const ChatBubble = (props) => {
   } = props;
 
   const history = useHistory();
-  //const googleApis = useGoogleApis();
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
@@ -555,12 +553,12 @@ const ChatBubble = (props) => {
   useEffect(() => {
     if (isLastChat && entry) {
       if (entry.boundingClientRect.height - entry.intersectionRect.height >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        chatMessageActions.setLastMessageVisiblility({ status: false });
       } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        chatMessageActions.setLastMessageVisiblility({ status: true });
       }
     }
-  }, [isLastChat, entry, isLastChatVisible, inView]);
+  }, [isLastChat, entry, inView]);
 
   const handleQuoteClick = (e) => {
     if (reply.quote) {
@@ -657,9 +655,8 @@ const ChatBubble = (props) => {
           </ChatTimeStamp>
         </>
       }
-      {props.children}
     </ChatBubbleContainer>
   );
 };
 
-export default ChatBubble;
+export default React.memo(ChatBubble);

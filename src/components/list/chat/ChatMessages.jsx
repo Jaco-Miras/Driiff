@@ -343,8 +343,9 @@ class ChatMessages extends React.PureComponent {
     };
 
     this.scrollComponent = React.createRef();
-    this.infiniteScroll = React.createRef();
-    this.mouseOver = React.createRef(false);
+    //this.infiniteScroll = React.createRef();
+    //this.mouseOver = React.createRef(false);
+    //this.renderCount = React.createRef(0);
   }
 
   componentWillUnmount() {
@@ -661,6 +662,7 @@ class ChatMessages extends React.PureComponent {
 
   render() {
     let lastReplyUserId = 0;
+    //console.log(this.renderCount.current++);
 
     const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
 
@@ -671,7 +673,7 @@ class ChatMessages extends React.PureComponent {
             <Loader />
           </ChatLoader>
         )}
-        <InfiniteScroll ref={this.infiniteScroll} className={"infinite-scroll"} id="infinite-scroll-chat-replies">
+        <InfiniteScroll className={"infinite-scroll"} id="infinite-scroll-chat-replies">
           {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length >= 20 && (
             <InView as="div" onChange={(inView, entry) => this.handleLoadMoreRefChange(inView, entry)}>
               <span className="intersection-load-more-ref"></span>
@@ -752,39 +754,29 @@ class ChatMessages extends React.PureComponent {
                                     isLastChat={reply.isLastChat}
                                     loadReplies={this.loadReplies}
                                     chatSettings={this.props.settings}
-                                    isLastChatVisible={this.props.isLastChatVisible}
                                     dictionary={this.props.dictionary}
                                     users={this.props.users}
                                     translate={this.props.translate}
                                     language={this.props.language}
                                     translated_channels={this.props.translated_channels}
                                     chat_language={this.props.chat_language}
-                                  >
-                                    <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                      {
-                                        <ChatReactionButton
-                                          isAuthor={isAuthor}
-                                          reply={reply}
-                                          //showEmojiSwitcher={this.state.showEmoji[reply.id]}
-                                          scrollComponent={this.scrollComponent.current}
-                                          chatMessageActions={this.props.chatMessageActions}
-                                        />
-                                      }
-                                      {!isNaN(reply.id) && !reply.is_deleted && (
-                                        <ChatMessageOptions
-                                          dictionary={this.props.dictionary}
-                                          className={"chat-message-options"}
-                                          selectedChannel={this.props.selectedChannel}
-                                          scrollComponent={this.scrollComponent.current}
-                                          isAuthor={isAuthor}
-                                          replyData={reply}
-                                          teamChannelId={this.props.teamChannelId}
-                                          isExternalUser={this.props.user.type === "external"}
-                                          chatMessageActions={this.props.chatMessageActions}
-                                        />
-                                      )}
-                                    </ChatActionsContainer>
-                                  </ChatBubble>
+                                  />
+                                  <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                    {<ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
+                                    {!isNaN(reply.id) && !reply.is_deleted && (
+                                      <ChatMessageOptions
+                                        dictionary={this.props.dictionary}
+                                        className={"chat-message-options"}
+                                        selectedChannel={this.props.selectedChannel}
+                                        scrollComponent={this.scrollComponent.current}
+                                        isAuthor={isAuthor}
+                                        replyData={reply}
+                                        teamChannelId={this.props.teamChannelId}
+                                        isExternalUser={this.props.user.type === "external"}
+                                        chatMessageActions={this.props.chatMessageActions}
+                                      />
+                                    )}
+                                  </ChatActionsContainer>
 
                                   {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
                                   {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
@@ -816,9 +808,7 @@ class ChatMessages extends React.PureComponent {
                                       timeFormat={this.props.timeFormat}
                                       selectedChannel={this.props.selectedChannel}
                                       reply={reply}
-                                      addMessageRef={this.getLoadRef(reply.id)}
                                       isLastChat={reply.isLastChat}
-                                      isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
                                     />

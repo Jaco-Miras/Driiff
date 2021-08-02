@@ -273,7 +273,7 @@ const ChatSidebarPanel = (props) => {
           placeholder={dictionary.searchChatPlaceholder}
         />
         <div className="d-flex justify-content-center align-items-center ml-2 chat-sidebar-options-container">
-          <StyledMoreOptions ref={refs.navTab} role="tabList">
+          <StyledMoreOptions role="tabList">
             <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
               {dictionary.chats}
             </div>
