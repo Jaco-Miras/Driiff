@@ -104,7 +104,7 @@ const ChatTitleDate = (props) => {
         }
       }
       default: {
-        return "";
+        return null;
       }
     }
   };

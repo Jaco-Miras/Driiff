@@ -123,4 +123,4 @@ const MoreOptions = (props) => {
   );
 };
 
-export default React.memo(MoreOptions);
+export default MoreOptions;

@@ -680,4 +680,4 @@ const ChatBubble = (props) => {
   );
 };
 
-export default React.memo(ChatBubble);
+export default ChatBubble;

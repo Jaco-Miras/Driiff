@@ -113,4 +113,4 @@ const TodoCheckBox = (props) => {
   );
 };
 
-export default React.memo(TodoCheckBox);
+export default TodoCheckBox;
