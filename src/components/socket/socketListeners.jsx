@@ -1176,6 +1176,10 @@ class SocketListeners extends Component {
             this.props.incomingCompanyUpdatedFile(e);
             break;
           }
+          case "FILE_DELETE": {
+            this.props.incomingCompanyRemovedFile(e);
+            break;
+          }
           default:
             return null;
         }

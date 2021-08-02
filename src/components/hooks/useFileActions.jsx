@@ -381,20 +381,14 @@ const useFileActions = (params = null) => {
     dispatch(addToModals(payload));
   };
 
-  const removeCompanyFile = (
-    file,
-    callback = () => {},
-    options = {
-      force_delete: false,
-    }
-  ) => {
+  const removeCompanyFile = (file, callback = () => {}, forceDelete = false) => {
     const handleDeleteFile = () => {
       let payload = {
         file_id: file.id,
         link_id: file.link_id,
         link_type: file.link_type,
       };
-      if (options.force_delete) {
+      if (forceDelete) {
         payload = {
           ...payload,
           force_delete: 1,

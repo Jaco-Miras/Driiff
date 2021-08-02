@@ -101,9 +101,7 @@ const CompanyFileOptions = (props) => {
     if (file.hasOwnProperty("payload_id")) {
       actions.unlinkGoogleAttachment(file);
     } else {
-      actions.removeCompanyFile(file, () => {}, {
-        forceDelete: forceDelete,
-      });
+      actions.removeCompanyFile(file, () => {}, forceDelete);
     }
   };
 
