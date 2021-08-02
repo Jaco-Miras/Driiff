@@ -774,7 +774,7 @@ class ChatMessages extends React.PureComponent {
                                           isAuthor={isAuthor}
                                           reply={reply}
                                           //showEmojiSwitcher={this.state.showEmoji[reply.id]}
-                                          scrollComponent={this.scrollComponent.current}
+                                          scrollComponent={this.props.scrollComponent.current}
                                           chatMessageActions={this.props.chatMessageActions}
                                         />
                                       }
@@ -783,7 +783,7 @@ class ChatMessages extends React.PureComponent {
                                           dictionary={this.props.dictionary}
                                           className={"chat-message-options"}
                                           selectedChannel={this.props.selectedChannel}
-                                          scrollComponent={this.scrollComponent.current}
+                                          scrollComponent={this.props.scrollComponent.current}
                                           isAuthor={isAuthor}
                                           replyData={reply}
                                           teamChannelId={this.props.teamChannelId}
@@ -836,14 +836,14 @@ class ChatMessages extends React.PureComponent {
                                           isAuthor={isAuthor}
                                           reply={reply}
                                           //showEmojiSwitcher={this.state.showEmoji[reply.id]}
-                                          scrollComponent={this.scrollComponent.current}
+                                          scrollComponent={this.props.scrollComponent.current}
                                           chatMessageActions={this.props.chatMessageActions}
                                         />
                                       }
                                       {!isNaN(reply.id) && !reply.is_deleted && (
                                         <ChatMessageOptions
                                           dictionary={this.props.dictionary}
-                                          scrollComponent={this.scrollComponent.current}
+                                          scrollComponent={this.props.scrollComponent.current}
                                           replyData={reply}
                                           className={"chat-message-options"}
                                           selectedChannel={this.props.selectedChannel}
