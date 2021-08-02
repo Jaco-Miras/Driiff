@@ -1,5 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
-import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { getCurrentTimestamp,getTimestampInMins } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   user: null,
@@ -330,7 +330,7 @@ export default (state = INITIAL_STATE, action) => {
       let notifications = { ...state.notifications };
       Object.values(notifications).forEach((n) => {
         notifications[n.id].is_snooze = action.data.is_snooze;
-        notifications[n.id].snooze_time = getCurrentTimestamp();
+        notifications[n.id].snooze_time = action.data.snooze_time;
       });
       return {
         ...state,
@@ -340,7 +340,7 @@ export default (state = INITIAL_STATE, action) => {
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
       notifications[action.data.id].is_snooze = action.data.is_snooze;
-      notifications[action.data.id].snooze_time = getCurrentTimestamp();
+      notifications[action.data.id].snooze_time = action.data.snooze_time;
       return {
         ...state,
         notifications: notifications,
