@@ -81,7 +81,7 @@ const MainSnooze = (props) => {
   const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
   const answeredChannels = [...hasUnpublishedAnswers];
 
-  const snoozeTime = 5, snoozeCycle = 2, todoCycle = 7, expTodo = 59; //mins
+  const snoozeTime = 1, snoozeCycle = 1, todoCycle = 7, expTodo = 58; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }), todoReminder: _t("SNOOZE.REMINDER", `A friendly automated reminder`),
@@ -220,7 +220,7 @@ const MainSnooze = (props) => {
   };
 
   const snoozeMeButton = ({ closeToast }) => {
-    return ( <span className="snooze-me" onClick={(e) => {e.stopPropagation();closeToast();}}>Snooze</span>);
+    return (<span className="snooze-me" onClick={(e) => { e.stopPropagation(); closeToast(); }}>Snooze</span>);
   }
 
   const handleSnoozeAll = (a, e) => {
@@ -334,15 +334,23 @@ const MainSnooze = (props) => {
 
   const unSnoozeMe = (type, items) => {
     const inMins = getCurrentTimestamp();
+    const actions = type === 'notification' ? notifActions : type === 'todo' ? todoActions : huddleActions;
+    let counter = 0;
     items.map((n) => {
-      const actions = type === 'notification' ? notifActions : type === 'todo' ? todoActions : huddleActions;
-      if (type === 'notification' && !n.is_read && n.is_snooze && n.snooze_time <= inMins)
+      if (type === 'notification' && !n.is_read && n.is_snooze && n.snooze_time <= inMins) {
+        counter++;
         actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
-      else if (type === 'todo' && n.status !== "DONE" && n.is_snooze && n.snooze_time <= inMins)
+      }
+      else if (type === 'todo' && n.status !== "DONE" && n.is_snooze && n.snooze_time <= inMins) {
+        counter++;
         actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
-      else if (type === 'huddle' && n.is_snooze && n.snooze_time <= inMins)
-        actions.snooze({ id: n.id, is_snooze: false, snooze_time: null })
+      }
+      else if (type === 'huddle' && n.is_snooze && n.snooze_time <= inMins) {
+        counter++;
+        actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
+      }
     });
+    return counter;
   };
 
   const putToSnooze = () => {
@@ -362,14 +370,19 @@ const MainSnooze = (props) => {
     const interval = setInterval(() => {
       if (Object.keys(chats.channels).length > 0) {
         console.log('interval for all snoozed items');
-        unSnoozeMe('todo', todoCLean());
-        unSnoozeMe('notification', notifCLean());
-        unSnoozeMe('huddle', huddleBots);
+        const todos = unSnoozeMe('todo', todoCLean());
+        const notis = unSnoozeMe('notification', notifCLean());
+        const huddles = unSnoozeMe('huddle', huddleBots);
         toast.info(<span dangerouslySetInnerHTML={{ __html: `interval for all snoozed items ${snoozeCycle} mins` }} />, { containerId: "toastA", toastId: 'xxy' });
+        console.log({ todos, notis, huddles });
+        if (todos === 0 && notis === 0 && huddles === 0)
+          putToSnooze();
       }
     }, 1000 * 60 * snoozeCycle);
     return () => clearInterval(interval);
   }, [notifications, todos, huddleBots]);
+
+  /*
 
   //interval for all expiring todos
   useEffect(() => {
@@ -382,13 +395,12 @@ const MainSnooze = (props) => {
        
     }, 1000 * 60 * todoCycle);
     return () => clearInterval(interval);
-  }, [todos]);
-
+  }, [notifications, todos, huddleBots]);
+*/
   //handler for all non-snoozed items
   useEffect(() => {
-    if (Object.keys(chats.channels).length > 0) {
+    if (Object.keys(chats.channels).length > 0) 
       putToSnooze();
-    }
   }, [notifications, todos, huddleBots]);
 
   return (
