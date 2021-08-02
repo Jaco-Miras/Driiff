@@ -19,7 +19,6 @@ const NotifWrapper = styled.div`
   letter-spacing: 0;
   font-size: 12px;
   color: ${(props) => (props.darkMode === "1" ? "#afb8bd" : "#aaa")};
-
   .avatar {
     margin-right: 1rem;
     height: 2.7rem;
@@ -28,26 +27,25 @@ const NotifWrapper = styled.div`
   p {
     margin: 0;
   }
-  div.snooze-header {
-    display: inline-block;
-    width: 180px;
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-    line-height: 1
-  }
-  p.snooze-body {
-    display: inline-block;
-    width: 180px;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-    color: ${(props) => (props.darkMode === "1" ? "#afb8bd !important" : "#000")};
-    line-height: 1,
-    font-size: 14px;
-  }
   .chat-header-icon {padding:0px !important;}
   .badge-grey-ghost { background-color: white !important ; color: grey !important; border: 1px solid grey !important;}
 `;
+
+const SnoozeHeader = styled.div`display: inline-block;
+width: 180px;
+white-space: nowrap;
+overflow: hidden !important;
+text-overflow: ellipsis;
+line-height: 1 !important;`;
+
+const SnoozeBody = styled.p`display: inline-block;
+width: 180px;
+overflow: hidden !important;
+text-overflow: ellipsis;
+color: ${(props) => (props.darkMode === "1" ? "#afb8bd !important" : "#000")};
+line-height: 1 !important;
+font-size: 14px;
+white-space: nowrap;`;
 
 const SnoozeItem = (props) => {
   const { className = "", type, item, user, actions, users, channels, handleRedirect, darkMode } = props;
@@ -71,11 +69,7 @@ const SnoozeItem = (props) => {
       huddle_id: n.id,
       body: `HUDDLE_SKIP::${JSON.stringify({
         huddle_id: n.id,
-        author: {
-          name: user.name,
-          first_name: user.first_name,
-          id: user.id,
-          profile_image_link: user.profile_image_link,
+        author: {name: user.name,first_name: user.first_name,id: user.id, profile_image_link: user.profile_image_link,
         },
         user_bot: n.user_bot,
       })}`,
@@ -86,65 +80,39 @@ const SnoozeItem = (props) => {
 
 
   const renderContent = (type, n) => {
+
+    let header = '', body = '';
     if (type === 'notification') {
       var firstName = users.users[n.author.id].first_name;
       if (n.type === "POST_MENTION") {
-        return (
-          <>
-            <div className="snooze-header ">
-              {firstName} {" "}  {dictionary.notificationMention}   {" "} {n.data.title} {" "}
-              {n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
-                <><Icon icon="folder" /> {" "}{n.data.workspaces[0].workspace_name}</>
-              )}
-            </div>
-            <p className="snooze-body "> {stripHtml(n.data.title)}</p>
-          </>
+        header = `${firstName}" "${dictionary.notificationMention}" "${n.data.title}" "`;
+        n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
+          header += <><Icon icon="folder" /> {" "}{n.data.workspaces[0].workspace_name}</>
         );
+        body = <SnoozeBody>{stripHtml(n.data.title)}</SnoozeBody>;
       } else if (n.type === "POST_CREATE") {
-        return (
-          <>
-            <div className="snooze-header ">
-              {firstName} {" "} {dictionary.notificationNewPost} {" "}{n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
-                <> <Icon icon="folder" /> {" "}{n.data.workspaces[0].workspace_name}</>
-              )}
-            </div>
-            <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
-          </>
+        header = `${firstName}" "${dictionary.notificationNewPost}" "`;
+        n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (
+          header += <><Icon icon="folder" /> {" "}{n.data.workspaces[0].workspace_name}</>
         );
+        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
       }
       else if (n.type === "POST_REQST_APPROVAL") {
-        return (
-          <>
-            <div className="snooze-header">{firstName}{" "} {dictionary.sentProposal}</div>
-            <p className="snooze-body "> {stripHtml(n.data.title)}</p>
-            <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
-          </>
-        );
+        header = `${firstName}" "${dictionary.sentProposal}`;
+        body = <SnoozeBody>{stripHtml(n.data.title)}</SnoozeBody>;
       }
       else if (n.type === "POST_REJECT_APPROVAL") {
-        return (
-          <>
-            <div className="snooze-header ">{firstName}{" "} {dictionary.hasRequestedChange}</div>
-            <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
-          </>
-        );
+        header = `${firstName}" "${dictionary.hasRequestedChange}`;
+        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />
       }
     } else if (type === 'todo') {
-      return (
-        <>
-          <div className="snooze-header ">{dictionary.todoReminder}</div>
-          <p className="snooze-body ">{stripHtml(n.title)}</p>
-        </>
-      );
+      header = dictionary.todoReminder;
+      body = <SnoozeBody>{stripHtml(n.title)}</SnoozeBody>;
     } else if (type === 'huddle') {
-      return (
-        <>
-          <div className="snooze-header ">{dictionary.timeTOHuddle}{" "}{user.first_name}</div>
-          <span className={"badge badge-info badge-grey-ghost"} onClick={(e) => { handleSkip(type, n, e); }}>Skip</span>
-        </>
-      );
+      header = `${dictionary.timeTOHuddle}" "${user.first_name}`;
+      body = <span className={"badge badge-info badge-grey-ghost"} onClick={(e) => { handleSkip(type, n, e); }}>Skip</span>;
     }
-    return null;
+    return (<> <SnoozeHeader>{header}</SnoozeHeader> {body}</> );
   };
 
   return (
