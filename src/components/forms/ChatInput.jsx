@@ -107,7 +107,15 @@ const FileIcon = styled(SvgIconFeather)`
     color: #7a1b8b;
   }
 `;
-
+const getSlug = () => {
+  const host = window.location.host.split(".");
+  if (host.length === 3) {
+    localStorage.setItem("slug", host[0]);
+    return host[0];
+  } else {
+    return null;
+  }
+};
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
   const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
@@ -116,6 +124,8 @@ const ChatInput = (props) => {
   const reactQuillRef = useRef();
   const { localizeDate } = useTimeFormat();
   const { setSidebarSearch, create, fetchChannelLastReply } = useChannelActions();
+
+  //useCountRenders("chat input");
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const slugs = useSelector((state) => state.global.slugs);
@@ -132,6 +142,7 @@ const ChatInput = (props) => {
   // const [text, setText] = useState("");
   // const [textOnly, setTextOnly] = useState("");
   // const [quillContents, setQuillContents] = useState([]);
+  const [slug] = useState(getSlug());
   const [quillData, setQuillData] = useState({
     text: "",
     textOnly: "",
@@ -424,18 +435,18 @@ const ChatInput = (props) => {
       );
     }
 
-    let channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
-
-    channel.whisper("typing", {
-      user: {
-        id: user.id,
-        name: user.name,
-        profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-        email: user.email,
-      },
-      typing: true,
-      channel_id: selectedChannel.id,
-    });
+    if (slug) {
+      window.Echo.private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
+        user: {
+          id: user.id,
+          name: user.name,
+          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+          email: user.email,
+        },
+        typing: true,
+        channel_id: selectedChannel.id,
+      });
+    }
   };
 
   const handleMentionUser = (mention_ids) => {
@@ -769,6 +780,10 @@ const ChatInput = (props) => {
       handleEditReplyClose();
     }
   }, [editChatMessage]);
+
+  useEffect(() => {
+    quillData.textOnly.trim() === "" ? onActive(false) : onActive(true);
+  }, [quillData.textOnly]);
 
   return (
     <div className="chat-input-wrapper">
