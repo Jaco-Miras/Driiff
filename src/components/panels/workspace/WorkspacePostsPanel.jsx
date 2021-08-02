@@ -537,7 +537,7 @@ const WorkspacePostsPanel = (props) => {
                   <Loader />
                 </LoaderContainer>
               ) : (
-                <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
+                <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} user={user} />
               )}
             </>
           )}
