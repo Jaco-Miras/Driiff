@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { PickerEmoji, SvgIconFeather } from "../../common";
 import { useOutsideClick, useTooltipOrientation } from "../../hooks";
@@ -148,7 +148,7 @@ const ChatReactionButtonContainer = styled.div`
 // `;
 
 const ChatReactionButton = (props) => {
-  const { reply, showEmojiSwitcher = null, scrollComponent, chatMessageActions } = props;
+  const { reply, scrollComponent, chatMessageActions } = props;
   let timeout = null;
 
   // const chatMessageAction = useChatMessageActions();
@@ -158,7 +158,7 @@ const ChatReactionButton = (props) => {
     picker: useRef(null),
   };
 
-  const [showEmojiPicker, setShowEmojiPicker] = useState(showEmojiSwitcher);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(null);
 
   const handleShowEmojiPicker = () => setShowEmojiPicker(!showEmojiPicker);
 
@@ -179,11 +179,11 @@ const ChatReactionButton = (props) => {
 
   const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollComponent, showEmojiPicker);
 
-  useEffect(() => {
-    if (showEmojiSwitcher !== null) {
-      setShowEmojiPicker(true);
-    }
-  }, [showEmojiSwitcher]);
+  // useEffect(() => {
+  //   if (showEmojiSwitcher !== null) {
+  //     setShowEmojiPicker(true);
+  //   }
+  // }, [showEmojiSwitcher]);
 
   const hideEmojiPicker = () => setShowEmojiPicker(false);
   useOutsideClick(refs.container, hideEmojiPicker, true);

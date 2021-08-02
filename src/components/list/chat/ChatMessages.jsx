@@ -162,25 +162,7 @@ const ChatBubbleContainer = styled.div`
   }
   .dark & {
     &:before {
-      ${(props) => props.showAvatar && "content: '';"};
-      border: 10px solid transparent;
-      position: absolute;
-      top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
-      left: 30px;
-      z-index: 1;
-      @media all and (max-width: 620px) {
-        display: none;
-      }
-      ${(props) =>
-        props.isAuthor === true &&
-        `
-            left: auto;
-            right: -16px;            
-            border-right-color: transparent;
-            @media all and (max-width: 620px) {
-              display: none;
-            }
-        `};
+      display: none;
     }
   }
 `;
@@ -295,11 +277,6 @@ const SystemMessageContainer = styled.div`
   }
 `;
 
-const FailedSpan = styled.span`
-  color: red;
-  margin: 0 10px;
-`;
-
 const ChatLoader = styled.div`
   display: flex;
   justify-content: center;
@@ -358,11 +335,11 @@ class ChatMessages extends React.PureComponent {
     super(props);
 
     this.state = {
-      hasArrowUpListener: false,
-      //initializing: false,
-      loadMoreInView: false,
-      fetchingReplies: false,
-      showEmoji: {},
+      // hasArrowUpListener: false,
+      // //initializing: false,
+      // loadMoreInView: false,
+      // fetchingReplies: false,
+      // showEmoji: {},
     };
 
     this.scrollComponent = React.createRef();
@@ -707,188 +684,176 @@ class ChatMessages extends React.PureComponent {
                     <div key={`${gm[0]}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
-                      {gm[1]
-                        // .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
-                        .map((reply, k, e) => {
-                          const isAuthor = reply.user && reply.user.id === this.props.user.id;
+                      {gm[1].map((reply, k, e) => {
+                        const isAuthor = reply.user && reply.user.id === this.props.user.id;
 
-                          let showAvatar = false;
-                          let showTimestamp = false;
-                          let showGifPlayer = false;
-                          let isBot = false;
-                          let showMessageLine = false;
+                        let showAvatar = false;
+                        let showTimestamp = false;
+                        let showGifPlayer = false;
+                        let isBot = false;
+                        let showMessageLine = false;
 
-                          if (reply.user) {
-                            if (reply.created_at.timestamp) {
-                              if (k === 0) {
-                                showTimestamp = true;
-                                showAvatar = true;
-                              }
-                              if (k !== 0 && this.props.timeFormat.localizeDate(e[k - 1].created_at.timestamp, "D") !== this.props.timeFormat.localizeDate(reply.created_at.timestamp, "D")) {
-                                showTimestamp = true;
-                                showAvatar = true;
-                              }
-                              if (k !== 0 && reply.created_at.timestamp - e[k - 1].created_at.timestamp > 600) {
-                                //600 = 10 minutes
-                                showAvatar = true;
-                              }
-                            }
-
-                            if (k !== 0 && e[k - 1].is_read === true && reply.is_read === false) {
-                              showMessageLine = true;
-                            }
-                            if (k !== 0 && e[k - 1].user === null) {
+                        if (reply.user) {
+                          if (reply.created_at.timestamp) {
+                            if (k === 0) {
+                              showTimestamp = true;
                               showAvatar = true;
                             }
-                            if (lastReplyUserId !== reply.user.id) {
+                            if (k !== 0 && this.props.timeFormat.localizeDate(e[k - 1].created_at.timestamp, "D") !== this.props.timeFormat.localizeDate(reply.created_at.timestamp, "D")) {
+                              showTimestamp = true;
                               showAvatar = true;
-                              lastReplyUserId = reply.user.id;
                             }
-
-                            if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
-                              showGifPlayer = true;
+                            if (k !== 0 && reply.created_at.timestamp - e[k - 1].created_at.timestamp > 600) {
+                              //600 = 10 minutes
+                              showAvatar = true;
                             }
-                            let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
-                            isBot = botCodes.includes(reply.user.code);
                           }
-                          return (
-                            <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
-                              {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
-                              {reply.user && (
-                                <ChatBubbleContainer
-                                  isAuthor={isAuthor}
-                                  className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
-                                  //data-message-id={reply.id}
-                                  showAvatar={showAvatar}
-                                  isBot={isBot}
-                                  isImportant={reply.is_important}
-                                  isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
-                                >
-                                  {reply.message_failed ? (
-                                    <FailedSpan>
-                                      <i className="fas fa-times-circle" onClick={(e) => this.handleResendMessage(reply.payload)}></i>
-                                    </FailedSpan>
-                                  ) : null}
-                                  <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-                                    <ChatBubble
+
+                          if (k !== 0 && e[k - 1].is_read === true && reply.is_read === false) {
+                            showMessageLine = true;
+                          }
+                          if (k !== 0 && e[k - 1].user === null) {
+                            showAvatar = true;
+                          }
+                          if (lastReplyUserId !== reply.user.id) {
+                            showAvatar = true;
+                            lastReplyUserId = reply.user.id;
+                          }
+
+                          if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
+                            showGifPlayer = true;
+                          }
+                          let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+                          isBot = botCodes.includes(reply.user.code);
+                        }
+                        return (
+                          <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
+                            {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
+                            {reply.user && (
+                              <ChatBubbleContainer
+                                isAuthor={isAuthor}
+                                className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
+                                showAvatar={showAvatar}
+                                isBot={isBot}
+                                isImportant={reply.is_important}
+                                isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
+                              >
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <ChatBubble
+                                    chatMessageActions={this.props.chatMessageActions}
+                                    timeFormat={this.props.timeFormat}
+                                    user={this.props.user}
+                                    reply={reply}
+                                    showAvatar={showAvatar}
+                                    selectedChannel={this.props.selectedChannel}
+                                    showGifPlayer={showGifPlayer}
+                                    isAuthor={isAuthor}
+                                    addMessageRef={this.getLoadRef(reply.id)}
+                                    isLastChat={reply.isLastChat}
+                                    loadReplies={this.loadReplies}
+                                    chatSettings={this.props.settings}
+                                    isLastChatVisible={this.props.isLastChatVisible}
+                                    dictionary={this.props.dictionary}
+                                    users={this.props.users}
+                                    translate={this.props.translate}
+                                    language={this.props.language}
+                                    translated_channels={this.props.translated_channels}
+                                    chat_language={this.props.chat_language}
+                                  >
+                                    <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                      {
+                                        <ChatReactionButton
+                                          isAuthor={isAuthor}
+                                          reply={reply}
+                                          //showEmojiSwitcher={this.state.showEmoji[reply.id]}
+                                          scrollComponent={this.scrollComponent.current}
+                                          chatMessageActions={this.props.chatMessageActions}
+                                        />
+                                      }
+                                      {!isNaN(reply.id) && !reply.is_deleted && (
+                                        <ChatMessageOptions
+                                          dictionary={this.props.dictionary}
+                                          className={"chat-message-options"}
+                                          selectedChannel={this.props.selectedChannel}
+                                          scrollComponent={this.scrollComponent.current}
+                                          isAuthor={isAuthor}
+                                          replyData={reply}
+                                          teamChannelId={this.props.teamChannelId}
+                                          isExternalUser={this.props.user.type === "external"}
+                                          chatMessageActions={this.props.chatMessageActions}
+                                        />
+                                      )}
+                                    </ChatActionsContainer>
+                                  </ChatBubble>
+
+                                  {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
+                                  {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
+                                    <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
+                                  )}
+                                </ChatBubbleQuoteDiv>
+
+                                {!isAuthor && showAvatar && (
+                                  <StyledAvatar
+                                    isForwardedMessage={reply.is_transferred}
+                                    id={reply.user.id}
+                                    type="USER"
+                                    imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                    name={reply.user.name}
+                                    isBot={isBot}
+                                    isHuddleBot={reply.user.code === "huddle_bot"}
+                                    showSlider={true}
+                                  />
+                                )}
+                              </ChatBubbleContainer>
+                            )}
+                            {reply.user === null && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <SystemMessageContainer className="system-message" isAuthor={false}>
+                                    <SystemMessage
+                                      user={this.props.user}
                                       chatMessageActions={this.props.chatMessageActions}
                                       timeFormat={this.props.timeFormat}
-                                      user={this.props.user}
-                                      reply={reply}
-                                      showAvatar={showAvatar}
                                       selectedChannel={this.props.selectedChannel}
-                                      showGifPlayer={showGifPlayer}
-                                      isAuthor={isAuthor}
+                                      reply={reply}
                                       addMessageRef={this.getLoadRef(reply.id)}
                                       isLastChat={reply.isLastChat}
-                                      loadReplies={this.loadReplies}
-                                      chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
-                                      translate={this.props.translate}
-                                      language={this.props.language}
-                                      translated_channels={this.props.translated_channels}
-                                      chat_language={this.props.chat_language}
-                                    >
-                                      <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {
-                                          <ChatReactionButton
-                                            isAuthor={isAuthor}
-                                            reply={reply}
-                                            showEmojiSwitcher={this.state.showEmoji[reply.id]}
-                                            scrollComponent={this.scrollComponent.current}
-                                            chatMessageActions={this.props.chatMessageActions}
-                                          />
-                                        }
-                                        {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <ChatMessageOptions
-                                            dictionary={this.props.dictionary}
-                                            className={"chat-message-options"}
-                                            selectedChannel={this.props.selectedChannel}
-                                            scrollComponent={this.scrollComponent.current}
-                                            isAuthor={isAuthor}
-                                            replyData={reply}
-                                            teamChannelId={this.props.teamChannelId}
-                                            isExternalUser={this.props.user.type === "external"}
-                                            chatMessageActions={this.props.chatMessageActions}
-                                          />
-                                        )}
-                                      </ChatActionsContainer>
-                                    </ChatBubble>
-
-                                    {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
-                                    {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
-                                      <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
-                                    )}
-                                  </ChatBubbleQuoteDiv>
-
-                                  {!isAuthor && showAvatar && (
-                                    <StyledAvatar
-                                      isForwardedMessage={reply.is_transferred}
-                                      id={reply.user.id}
-                                      type="USER"
-                                      imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
-                                      name={reply.user.name}
-                                      isBot={isBot}
-                                      isHuddleBot={reply.user.code === "huddle_bot"}
-                                      showSlider={true}
                                     />
-                                  )}
-                                </ChatBubbleContainer>
-                              )}
-                              {reply.user === null && (
-                                <ChatBubbleContainer
-                                  className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
-                                  //data-message-id={reply.id}
-                                  isAuthor={false}
-                                >
-                                  <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-                                    <SystemMessageContainer className="system-message" isAuthor={false}>
-                                      <SystemMessage
-                                        user={this.props.user}
-                                        chatMessageActions={this.props.chatMessageActions}
-                                        timeFormat={this.props.timeFormat}
-                                        selectedChannel={this.props.selectedChannel}
-                                        reply={reply}
-                                        addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={reply.isLastChat}
-                                        isLastChatVisible={this.props.isLastChatVisible}
-                                        dictionary={this.props.dictionary}
-                                        users={this.props.users}
-                                      />
-                                      <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {
-                                          <ChatReactionButton
-                                            isAuthor={isAuthor}
-                                            reply={reply}
-                                            showEmojiSwitcher={this.state.showEmoji[reply.id]}
-                                            scrollComponent={this.scrollComponent.current}
-                                            chatMessageActions={this.props.chatMessageActions}
-                                          />
-                                        }
-                                        {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <ChatMessageOptions
-                                            dictionary={this.props.dictionary}
-                                            scrollComponent={this.scrollComponent.current}
-                                            replyData={reply}
-                                            className={"chat-message-options"}
-                                            selectedChannel={this.props.selectedChannel}
-                                            isAuthor={isAuthor}
-                                            teamChannelId={this.props.teamChannelId}
-                                            isExternalUser={this.props.user.type === "external"}
-                                            chatMessageActions={this.props.chatMessageActions}
-                                          />
-                                        )}
-                                      </SystemChatActionsContainer>
-                                    </SystemMessageContainer>
-                                    {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
-                                  </ChatBubbleQuoteDiv>
-                                </ChatBubbleContainer>
-                              )}
-                            </ChatList>
-                          );
-                        })}
+                                    <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                      {
+                                        <ChatReactionButton
+                                          isAuthor={isAuthor}
+                                          reply={reply}
+                                          //showEmojiSwitcher={this.state.showEmoji[reply.id]}
+                                          scrollComponent={this.scrollComponent.current}
+                                          chatMessageActions={this.props.chatMessageActions}
+                                        />
+                                      }
+                                      {!isNaN(reply.id) && !reply.is_deleted && (
+                                        <ChatMessageOptions
+                                          dictionary={this.props.dictionary}
+                                          scrollComponent={this.scrollComponent.current}
+                                          replyData={reply}
+                                          className={"chat-message-options"}
+                                          selectedChannel={this.props.selectedChannel}
+                                          isAuthor={isAuthor}
+                                          teamChannelId={this.props.teamChannelId}
+                                          isExternalUser={this.props.user.type === "external"}
+                                          chatMessageActions={this.props.chatMessageActions}
+                                        />
+                                      )}
+                                    </SystemChatActionsContainer>
+                                  </SystemMessageContainer>
+                                  {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
+                          </ChatList>
+                        );
+                      })}
                     </div>
                   );
                 })
