@@ -83,7 +83,7 @@ const ChatTimeStamp = styled.div`
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = (props) => {
-  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, isLastChatVisible, dictionary, users } = props;
+  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary, users } = props;
 
   const history = useHistory();
   const params = useParams();
@@ -98,12 +98,12 @@ const SystemMessage = (props) => {
   useEffect(() => {
     if (isLastChat && entry) {
       if (entry.boundingClientRect.height - entry.intersectionRect.height >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        chatMessageActions.setLastMessageVisiblility({ status: false });
       } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        chatMessageActions.setLastMessageVisiblility({ status: true });
       }
     }
-  }, [isLastChat, entry, isLastChatVisible, inView]);
+  }, [isLastChat, entry, inView]);
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {

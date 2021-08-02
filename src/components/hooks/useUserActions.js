@@ -68,7 +68,6 @@ const useUserActions = () => {
 
   const { _t } = useTranslationActions();
 
-  //const { getUserFilter } = useSelector((state) => state.users);
   const getUserFilter = useSelector((state) => state.users.getUserFilter);
   const { user: loggedUser } = useSelector((state) => state.session);
 
