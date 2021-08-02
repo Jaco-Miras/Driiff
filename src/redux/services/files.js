@@ -457,9 +457,13 @@ export function postCompanyUploadBulkFiles(payload) {
 }
 
 export function deleteCompanyFiles(payload) {
+  let url = `/v2/company/files/${payload.file_id}`;
+  if (payload.force_delete) {
+    url += "?force_delete=1";
+  }
   return apiCall({
     method: "DELETE",
-    url: `/v2/company/files/${payload.file_id}`,
+    url: url,
     data: payload,
   });
 }
