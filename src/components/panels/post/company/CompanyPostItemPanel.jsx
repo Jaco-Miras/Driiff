@@ -151,6 +151,20 @@ const CheckBox = styled(TodoCheckBox)`
   label {
     margin: 0;
   }
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-left: -5px;
+  :hover {
+    background: #f1f2f7;
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+    .dark & {
+      background: #25282c;
+    }
+  }
 `;
 
 const PostContent = styled.div`
