@@ -121,4 +121,4 @@ const ChatReactions = (props) => {
   );
 };
 
-export default ChatReactions;
+export default React.memo(ChatReactions);

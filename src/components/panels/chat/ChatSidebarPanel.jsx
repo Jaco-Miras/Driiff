@@ -52,6 +52,9 @@ const Wrapper = styled.div`
       display: none;
     }
   }
+  .chat-sidebar-options-container {
+    height: 38px;
+  }
 `;
 
 const Search = styled(SearchForm)`
@@ -269,8 +272,8 @@ const ChatSidebarPanel = (props) => {
           className="chat-search"
           placeholder={dictionary.searchChatPlaceholder}
         />
-        <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
-          <StyledMoreOptions ref={refs.navTab} role="tabList">
+        <div className="d-flex justify-content-center align-items-center ml-2 chat-sidebar-options-container">
+          <StyledMoreOptions role="tabList">
             <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
               {dictionary.chats}
             </div>
@@ -288,4 +291,4 @@ const ChatSidebarPanel = (props) => {
   );
 };
 
-export default ChatSidebarPanel;
+export default React.memo(ChatSidebarPanel);

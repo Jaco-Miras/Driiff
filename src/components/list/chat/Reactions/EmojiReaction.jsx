@@ -14,6 +14,17 @@ const EmojiContainer = styled.div`
   margin: 0 2px;
   cursor: pointer;
   position: relative;
+  .chat-emoji-users-list {
+    position: absolute;
+    bottom: 100%;
+    max-width: 250px;
+    left: ${(props) => (props.isAuthor ? "unset" : "5px")};
+    right: ${(props) => (props.isAuthor ? "5px" : "unset")};
+    visibility: hidden;
+    ul {
+      max-height: 250px;
+    }
+  }
   :hover {
     .chat-emoji-users-list {
       visibility: visible;
@@ -21,17 +32,17 @@ const EmojiContainer = styled.div`
   }
 `;
 
-const StyledUserListPopUp = styled(UserListPopUp)`
-  position: absolute;
-  bottom: 100%;
-  max-width: 250px;
-  left: ${(props) => (props.isAuthor ? "unset" : "5px")};
-  right: ${(props) => (props.isAuthor ? "5px" : "unset")};
-  visibility: hidden;
-  ul {
-    max-height: 250px;
-  }
-`;
+// const StyledUserListPopUp = styled(UserListPopUp)`
+//   position: absolute;
+//   bottom: 100%;
+//   max-width: 250px;
+//   left: ${(props) => (props.isAuthor ? "unset" : "5px")};
+//   right: ${(props) => (props.isAuthor ? "5px" : "unset")};
+//   visibility: hidden;
+//   ul {
+//     max-height: 250px;
+//   }
+// `;
 
 const EmojiReaction = (props) => {
   const { type, count, reactions, isAuthor, reply } = props;
@@ -46,7 +57,7 @@ const EmojiReaction = (props) => {
     <EmojiContainer onClick={handleToggleReact} isAuthor={isAuthor} className="chat-emoji">
       <Emoji emoji={type} size={20} />
       {count > 1 ? <span className={"emoji-counter"}> {count}</span> : null}
-      <StyledUserListPopUp
+      <UserListPopUp
         className={"chat-emoji-users-list"}
         isAuthor={isAuthor}
         users={reactions.map((r) => {
@@ -63,4 +74,4 @@ const EmojiReaction = (props) => {
   );
 };
 
-export default EmojiReaction;
+export default React.memo(EmojiReaction);

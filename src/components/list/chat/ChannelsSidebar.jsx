@@ -178,4 +178,4 @@ const ChannelsSidebar = (props) => {
   );
 };
 
-export default ChannelsSidebar;
+export default React.memo(ChannelsSidebar);

@@ -63,7 +63,7 @@ function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { profileSlider: userProfile } = useSelector((state) => state.users);
+  const userProfile = useSelector((state) => state.users.profileSlider);
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   useHuddleNotification();

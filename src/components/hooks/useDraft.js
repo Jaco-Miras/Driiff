@@ -6,7 +6,9 @@ import usePreviousValue from "./usePreviousValue";
 
 const useDraft = (callback, type, text, textOnly, draftId) => {
   const dispatch = useDispatch();
-  const { selectedChannel, channelDraftsLoaded, channelDrafts } = useSelector((state) => state.chat);
+  const channelDraftsLoaded = useSelector((state) => state.chat.channelDraftsLoaded);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const previousChannel = usePreviousValue(selectedChannel);
 
   const savedCallback = useRef(callback);

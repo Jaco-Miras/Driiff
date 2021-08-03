@@ -1,4 +1,4 @@
-import React, { useRef, useState, lazy, Suspense } from "react";
+import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
@@ -6,7 +6,7 @@ import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useCountRenders } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
@@ -106,14 +106,12 @@ const Icon = styled(SvgIconFeather)`
   width: 20px;
 `;
 
-const IconButton = styled(SvgIconFeather)``;
-
 const Dflex = styled.div`
   .feather-send {
-    background: ${(props) => props.backgroundSend} !important;
-    fill: ${(props) => props.fillSend};
+    ${(props) => props.activeSend && "background: #7a1b8b !important;"}
+    fill: ${(props) => (props.activeSend ? "#fff" : "#cacaca")};
     &:hover {
-      cursor: ${(props) => props.cursor};
+      cursor: ${(props) => (props.activeSend ? "cursor" : "default")};
     }
   }
   .workspace-chat & {
@@ -180,15 +178,13 @@ const ChatFooterPanel = (props) => {
   const ref = {
     picker: useRef(),
   };
+  //useCountRenders("chat footer");
+  const [activeSend, setActiveSend] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
-  //const [active, setActive] = useState(false);
-  const [cursor, setCursor] = useState("default");
-  const [backgroundSend, setBackgroundSend] = useState(null);
-  const [fillSend, setFillSend] = useState("#cacaca");
-
-  const { editChatMessage, selectedChannel } = useSelector((state) => state.chat);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const user = useSelector((state) => state.session.user);
 
   const [quote] = useSelectQuote();
@@ -209,23 +205,18 @@ const ChatFooterPanel = (props) => {
     setSelectedGif(e);
   };
 
-  const onClearEmoji = () => {
+  const onClearEmoji = useCallback(() => {
     setSelectedEmoji(null);
-  };
+  }, []);
 
-  const onActive = (active) => {
-    //setActive(active);
-    let sendButtonValues;
-    active ? (sendButtonValues = ["#7a1b8b", "pointer", "#fff"]) : (sendButtonValues = ["", "default", "#cacaca"]);
-    setBackgroundSend(sendButtonValues[0]);
-    setCursor(sendButtonValues[1]);
-    setFillSend(sendButtonValues[2]);
-  };
+  const onActive = useCallback((active) => {
+    setActiveSend(active);
+  }, []);
 
-  const onClearGif = () => {
+  const onClearGif = useCallback(() => {
     setSelectedGif(null);
     //handleSend();
-  };
+  }, []);
 
   const handleJoinWorkspace = () => {
     dispatch(
@@ -296,9 +287,9 @@ const ChatFooterPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const onSendCallback = () => {
+  const onSendCallback = useCallback(() => {
     setShowEmojiPicker(false);
-  };
+  }, []);
 
   const isMember = useIsMember(selectedChannel && selectedChannel.members && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
 
@@ -374,7 +365,7 @@ const ChatFooterPanel = (props) => {
       {selectedChannel && <TypingIndicator />}
       <LockedLabel channel={selectedChannel} />
       {isMember && (
-        <Dflex className="d-flex align-items-end chat-input-cointainer-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
+        <Dflex className="d-flex align-items-end chat-input-cointainer-footer" activeSend={activeSend}>
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
               <Icon icon="archive" />
@@ -385,7 +376,6 @@ const ChatFooterPanel = (props) => {
             </ArchivedDiv>
           ) : (
             <React.Fragment>
-              {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
               <ChatInputContainer className="flex-grow-1 chat-input-footer">
                 {selectedChannel && !selectedChannel.is_archived && quote && (
                   <Dflex className="d-flex pr-2 pl-2">
@@ -393,7 +383,16 @@ const ChatFooterPanel = (props) => {
                   </Dflex>
                 )}
                 <Dflex className="d-flex flex-grow-1">
-                  <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
+                  <ChatInput
+                    onActive={onActive}
+                    selectedGif={selectedGif}
+                    onSendCallback={onSendCallback}
+                    onClearGif={onClearGif}
+                    selectedEmoji={selectedEmoji}
+                    onClearEmoji={onClearEmoji}
+                    dropAction={dropAction}
+                    //test
+                  />
                   <ChatInputButtons
                     channel={selectedChannel}
                     showEmojiPicker={showEmojiPicker}
@@ -407,7 +406,7 @@ const ChatFooterPanel = (props) => {
               </ChatInputContainer>
 
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
-                <IconButton onClick={handleSend} icon="send" />
+                <SvgIconFeather onClick={handleSend} icon="send" />
               </Tooltip>
             </React.Fragment>
           )}

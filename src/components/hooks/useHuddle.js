@@ -8,11 +8,11 @@ const useHuddle = (props) => {
   const currentTime = currentDate.getTime();
   //const currentUTCDate = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
   const actions = useHuddleChatbot();
-  const loggedUser = useSelector((state) => state.session.user);
-  const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  //const loggedUser = useSelector((state) => state.session.user);
+  //const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const editHuddle = useSelector((state) => state.chat.editHuddle);
 
-  const isOwner = loggedUser.role && loggedUser.role.name === "owner";
+  //const isOwner = loggedUser.role && loggedUser.role.name === "owner";
 
   const huddleAnswered = localStorage.getItem("huddle");
   const huddleBots = useSelector((state) => state.chat.huddleBots);

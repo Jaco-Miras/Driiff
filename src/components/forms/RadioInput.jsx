@@ -108,4 +108,4 @@ RadioInput.propTypes = {
   value: oneOfType([number, string]),
 };
 
-export default React.memo(RadioInput);
+export default RadioInput;

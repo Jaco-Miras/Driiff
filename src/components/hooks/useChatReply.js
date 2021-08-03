@@ -1,5 +1,5 @@
 import React from "react";
-import quillHelper from "../../helpers/quillHelper";
+//import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
@@ -315,7 +315,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       }
 
       return newBody;
-    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -360,7 +360,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
     }
   }
 
-  replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
+  // replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
+  replyBody = parseSystemMessage(stripGif(replyBody));
 
   let quoteAuthor = "";
   let quoteBody = "";
@@ -422,7 +423,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       });
     }
 
-    quoteBody += quillHelper.parseEmoji(reply.quote.body);
+    //quoteBody += quillHelper.parseEmoji(reply.quote.body);
     quoteBody = parseSystemMessage(quoteBody);
   }
 

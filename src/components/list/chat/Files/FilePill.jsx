@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
@@ -87,7 +87,7 @@ const DocFile = styled.div`
   }
 `;
 
-const FilePill = forwardRef((props, ref) => {
+const FilePill = (props) => {
   let { className = "", file, cbFilePreview, dictionary, ...otherProps } = props;
   if (typeof file.type === "undefined") {
     file.type = file.mime_type;
@@ -149,13 +149,6 @@ const FilePill = forwardRef((props, ref) => {
     }
   };
 
-  const handleVideoOnLoad = (e) => {
-    //removed image loader in video file
-    // e.currentTarget.classList.remove("d-none");
-    // e.currentTarget.removeAttribute("height");
-    // refVideoLoader.current.classList.add("d-none");
-  };
-
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
@@ -198,7 +191,7 @@ const FilePill = forwardRef((props, ref) => {
   const isFileRemoved = file.file_type === "trashed";
 
   return (
-    <FilePillContainer onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
+    <FilePillContainer onClick={handleViewFile} className={`file-pill ${className}`} {...otherProps}>
       {isFileRemoved ? (
         <DocFile>
           <div className="card app-file-list">
@@ -226,7 +219,7 @@ const FilePill = forwardRef((props, ref) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
+          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onError={handleVideoOnError}>
             <source src={file.view_link} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
@@ -243,6 +236,6 @@ const FilePill = forwardRef((props, ref) => {
       )}
     </FilePillContainer>
   );
-});
+};
 
 export default React.memo(FilePill);

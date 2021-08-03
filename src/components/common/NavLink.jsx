@@ -24,4 +24,4 @@ const NavLink = (props) => {
   );
 };
 
-export default React.memo(NavLink);
+export default NavLink;
