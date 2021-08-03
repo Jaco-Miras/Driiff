@@ -463,3 +463,7 @@ export function incomingFollowPost(payload, callback) {
 export function incomingUnfollowPost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UNFOLLOW_POST", payload, callback);
 }
+
+export function getInProgressCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_IN_PROGRESS_COMPANY_POSTS_START", "GET_IN_PROGRESS_COMPANY_POSTS_SUCCESS", "GET_IN_PROGRESS_COMPANY_POSTS_FAIL", callback);
+}

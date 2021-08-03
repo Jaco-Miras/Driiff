@@ -151,13 +151,13 @@ const CheckBox = styled(TodoCheckBox)`
   label {
     margin: 0;
   }
-  width: 30px;
-  height: 30px;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  margin-left: -5px;
+  margin-left: -9px;
   :hover {
     background: #f1f2f7;
     cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};

@@ -19,6 +19,7 @@ import {
   fetchRecentPosts,
   fetchTagCounter,
   getArchivedCompanyPosts,
+  getInProgressCompanyPosts,
   getMyCompanyPosts,
   getStarCompanyPosts,
   getReadCompanyPosts,
@@ -793,6 +794,10 @@ const usePostActions = () => {
     dispatch(getReadCompanyPosts(payload, callback));
   };
 
+  const fetchInProgressCompanyPosts = (payload, callback) => {
+    dispatch(getInProgressCompanyPosts(payload, callback));
+  };
+
   const fetchUnreadCompanyPosts = (payload, callback) => {
     dispatch(getUnreadCompanyPosts(payload, callback));
   };
@@ -1053,6 +1058,7 @@ const usePostActions = () => {
     fetchMyCompanyPosts,
     fetchArchivedCompanyPosts,
     fetchStarCompanyPosts,
+    fetchInProgressCompanyPosts,
   };
 };
 

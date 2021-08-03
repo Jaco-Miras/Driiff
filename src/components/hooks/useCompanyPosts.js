@@ -15,6 +15,7 @@ const useCompanyPosts = () => {
   const myPosts = useSelector((state) => state.posts.myPosts);
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
+  const inProgress = useSelector((state) => state.posts.inProgress);
   const fetchMore = (callback) => {
     if (unreadPosts.has_more) {
       actions.fetchUnreadCompanyPosts({
@@ -30,7 +31,16 @@ const useCompanyPosts = () => {
         filters: ["read_post"],
       });
     }
-    if (filter === "archive") {
+    if (filter === "in_progress") {
+      let payload = {
+        skip: inProgress.skip,
+        limit: inProgress.limit,
+        filters: ["in_progress"],
+      };
+      if (inProgress.has_more) {
+        actions.fetchInProgressCompanyPosts(payload, callback);
+      }
+    } else if (filter === "archive") {
       let payload = {
         skip: archived.skip,
         limit: archived.limit,
@@ -85,6 +95,16 @@ const useCompanyPosts = () => {
       });
     }
   }, [filter, myPosts]);
+
+  useEffect(() => {
+    if (inProgress.skip === 0 && inProgress.has_more && filter === "in_progress") {
+      actions.fetchInProgressCompanyPosts({
+        skip: 0,
+        limit: 25,
+        filters: ["in_progress"],
+      });
+    }
+  }, [filter, inProgress]);
 
   let filteredPosts = Object.values(posts);
 

@@ -254,7 +254,38 @@ const WorkspacePostsPanel = (props) => {
   }, [params.postId, post]);
 
   useEffect(() => {
-    if (filter === "star") {
+    if (filter === "in_progress") {
+      let filterCb = (err, res) => {
+        if (err) return;
+        let files = res.data.posts.map((p) => p.files);
+        if (files.length) {
+          files = files.flat();
+        }
+        dispatch(
+          addToWorkspacePosts({
+            topic_id: parseInt(params.workspaceId),
+            posts: res.data.posts,
+            filter: res.data.posts,
+            files,
+            filters: {
+              inProgress: {
+                active: true,
+                skip: res.data.next_skip,
+                hasMore: res.data.total_take === 25,
+              },
+            },
+          })
+        );
+      };
+
+      actions.getPosts(
+        {
+          filters: ["in_progress"],
+          topic_id: parseInt(params.workspaceId),
+        },
+        filterCb
+      );
+    } else if (filter === "star") {
       let filterCb = (err, res) => {
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
@@ -355,13 +386,15 @@ const WorkspacePostsPanel = (props) => {
       setLoading(true);
       loadMoreUnreadPosts();
       let payload = {
-        filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
+        filters: filter === "in_progress" ? ["in_progress"] : filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
-        skip: filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
+        skip: filter === "in_progress" ? filters?.inProgress.skip : filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
       };
 
       if (filter === "all") {
         if (filters.all && !filters.all.hasMore) return;
+      } else if (filter === "in_progress") {
+        if (filters.inProgress && !filters.inProgress.hasMore) return;
       } else if (filter === "archive") {
         if (filters.archived && !filters.archived.hasMore) return;
       } else if (filter === "star") {
@@ -388,6 +421,13 @@ const WorkspacePostsPanel = (props) => {
             filters: {
               ...(filter === "all" && {
                 all: {
+                  active: true,
+                  skip: res.data.next_skip,
+                  hasMore: res.data.total_take === 25,
+                },
+              }),
+              ...(filter === "in_progress" && {
+                inProgress: {
                   active: true,
                   skip: res.data.next_skip,
                   hasMore: res.data.total_take === 25,
