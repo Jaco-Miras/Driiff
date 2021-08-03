@@ -9,6 +9,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "reactstrap";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -22,12 +23,14 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+    flex-flow: row wrap;
   }
 
   .people-search {
     flex: 0 0 80%;
     justify-content: flex-start;
     padding-left: 0;
+    flex-flow: row wrap;
   }
 `;
 
@@ -43,6 +46,8 @@ const SystemPeoplePanel = (props) => {
   const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
+  const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -138,6 +143,9 @@ const SystemPeoplePanel = (props) => {
     deactivate: _t("PEOPLE.DEACTIVATE", "Deactivate"),
     moveToInternal: _t("PEOPLE.MOVE_TO_INTERNAL", "Move to internal"),
     moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
+    deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
+    deleteConfirmationText: _t("PEOPLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this user? This means this user can't log in anymore."),
+    btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
   };
 
   const handleInviteUsers = () => {
@@ -145,6 +153,7 @@ const SystemPeoplePanel = (props) => {
       type: "driff_invite_users",
       hasLastName: true,
       invitations: [],
+      fromRegister: false,
       onPrimaryAction: (invitedUsers, callback, options) => {
         if (invitedUsers.length === 0) {
           options.closeModal();
@@ -221,6 +230,7 @@ const SystemPeoplePanel = (props) => {
   };
 
   useEffect(() => {
+    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
     refs.search.current.focus();
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
@@ -302,13 +312,34 @@ const SystemPeoplePanel = (props) => {
     if (showInactive && !showInvited) setShowInactive(false);
   };
 
+  const handleDeleteUser = (user) => {
+    const handleSubmit = () => {
+      userActions.deleteUserAccount({ user_id: user.id }, (err, res) => {
+        if (err) return;
+        toaster.success(`${user.name} deleted.`);
+      });
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.deleteUser,
+      submitText: dictionary.deleteUser,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.deleteConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
         <div className="card-body">
           <div className="people-header">
             <div className="d-flex align-items-center people-search">
-              <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder="Search by name or email" onChange={handleSearchChange} autoFocus />
+              <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
               <CustomInput
                 className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
                 checked={showInactive}
@@ -332,7 +363,7 @@ const SystemPeoplePanel = (props) => {
             </div>
             <div>
               <button className="btn btn-primary" onClick={handleInviteUsers}>
-                <SvgIconFeather className="mr-2" icon="user-plus" /> Invite users
+                <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
               </button>
             </div>
           </div>
@@ -347,12 +378,14 @@ const SystemPeoplePanel = (props) => {
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
                   onUpdateRole={userActions.updateUserRole}
-                  showOptions={loggedUser.role.name === "admin" || loggedUser.role.name === "owner"}
+                  showOptions={(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && usersWithoutActivityLoaded}
                   roles={roles}
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
+                  onDeleteUser={handleDeleteUser}
                   showInactive={showInactive}
+                  usersWithoutActivity={usersWithoutActivity}
                 />
               );
             })}

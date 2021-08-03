@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useSearch, useSearchActions, useTranslation } from "../../hooks";
+import { useSearch, useSearchActions, useTranslationActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 //import { ChatSearchItem, ChannelSearchItem, CommentSearchItem, FileSearchItem, PeopleSearchItem, PostSearchItem, WorkspaceSearchItem } from "../../list/search";
 
@@ -82,7 +82,7 @@ const SearchDropdown = (props) => {
     setInputValue(e.target.value);
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     searchGlobalPopupPlaceholder: _t("PLACEHOLDER.SEARCH_GLOBAL_POPUP", "Search for anything in this Driff"),
@@ -91,17 +91,24 @@ const SearchDropdown = (props) => {
   return (
     <Wrapper className="dropdown-menu p-2 dropdown-menu-right show" ref={dropdownRef}>
       <div className="input-group">
-        <input onChange={handleSearchChange} onKeyDown={handleEnter} value={inputValue} type="text"
-               className="form-control dropdown-search-input" placeholder={dictionary.searchGlobalPopupPlaceholder}
-               aria-describedby="button-addon1" autoFocus/>
+        <input
+          onChange={handleSearchChange}
+          onKeyDown={handleEnter}
+          value={inputValue}
+          type="text"
+          className="form-control dropdown-search-input"
+          placeholder={dictionary.searchGlobalPopupPlaceholder}
+          aria-describedby="button-addon1"
+          autoFocus
+        />
         {inputValue.trim() !== "" && (
           <button onClick={emptySearch} className="btn-cross" type="button">
-            <SvgIconFeather icon="x"/>
+            <SvgIconFeather icon="x" />
           </button>
         )}
         <div className="input-group-append">
           <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
-            <SvgIconFeather icon="search"/>
+            <SvgIconFeather icon="search" />
           </button>
         </div>
       </div>

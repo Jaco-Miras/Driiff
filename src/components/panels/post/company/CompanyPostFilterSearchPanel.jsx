@@ -11,7 +11,8 @@ const Wrapper = styled.div`
       margin-bottom: 0;
     }
     .app-sidebar-menu-button {
-      margin-left: 8px;
+      margin-left: 0;
+      margin-top: 1rem;
     }
   }
   .action-right {

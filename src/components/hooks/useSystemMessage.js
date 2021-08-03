@@ -1,35 +1,23 @@
 import React from "react";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
-import { useParams } from "react-router-dom";
 import quillHelper from "../../helpers/quillHelper";
 import { useSelector } from "react-redux";
 import { useTranslationActions } from "./index";
 
 const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
   const users = useSelector((state) => state.users.users);
-  //const recipients = useSelector((state) => state.global.recipients);
   const { _t } = useTranslationActions();
-  const params = useParams();
   const parseMessage = () => {
     let parseBody = "";
     if (reply.body.includes("POST_CREATE::")) {
       let parsedData = reply.body.replace("POST_CREATE::", "");
       if (parsedData.trim() !== "") {
         let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
-        let link = "";
-        if (params && params.workspaceId) {
-          if (params.folderId) {
-            link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
-          } else {
-            link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
-          }
-        } else {
-          link = `/posts/${item.post.id}/${item.post.title}`;
-        }
         let description = quillHelper.parseToText(item.post.description);
         parseBody = renderToString(
-          <a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
+          <span className="push-link">
+            {/* <a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0"> */}
             <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
             {item.post.description.includes("<img src") ? (
               <span className="card card-body">
@@ -41,7 +29,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
             <span className="open-post">
               {dictionary.openPost} <SvgIconFeather icon="arrow-right" />
             </span>
-          </a>
+          </span>
         );
       } else {
         parseBody = "System message...";
@@ -49,17 +37,6 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
     } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
       let extractedIds = reply.body.match(ids);
-      // let newMembers = recipients
-      //   .filter((r) => {
-      //     let userFound = false;
-      //     extractedIds.forEach((id) => {
-      //       if (parseInt(id) === r.type_id) {
-      //         userFound = true;
-      //       }
-      //     });
-      //     return userFound;
-      //   })
-      //   .map((user) => user.name);
       let newMembers = Object.values(users)
         .filter((u) => extractedIds.some((id) => parseInt(id) === u.id))
         .map((user) => user.name);

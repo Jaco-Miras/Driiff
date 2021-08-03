@@ -165,7 +165,7 @@ const WorkspacePageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
               {dictionary.pageTitleReminders}
-              {isLoaded && workspaceReminders[params.workspaceId].count.all > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.all}</div>}
+              {isLoaded && workspaceReminders[params.workspaceId].count.todo_with_date > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.todo_with_date}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">

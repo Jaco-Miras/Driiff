@@ -1,12 +1,16 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-//import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Avatar from "./Avatar";
 import { SvgIconFeather } from "./SvgIcon";
 //import Badge from "./Badge";
 import { useOutsideClick, useUserChannels, useTranslationActions } from "../hooks";
 
-const ProfileWrapper = styled.div``;
+const ProfileWrapper = styled.div`
+  .info-details span {
+    min-height: 14px;
+  }
+`;
 const Icon = styled(SvgIconFeather)`
   opacity: ${(props) => (props.loading ? "0" : "1")};
   width: ${(props) => (props.loading ? "1px !important" : "1rem")};
@@ -16,6 +20,18 @@ const ProfileSlider = (props) => {
   const { id, onShowPopup, orientation, profile, classNames = "" } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
   const [loading, setLoading] = useState(false);
+
+  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const externalUsers = useSelector((state) => state.users.externalUsers);
+
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = [...Object.values(users), ...inactiveUsers, ...externalUsers].filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 
   const sliderRef = useRef(null);
 
@@ -31,7 +47,7 @@ const ProfileSlider = (props) => {
     position: _t("PROFILE.POSITION", "Position:"),
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
-    phone: _t("PROFILE.Phone", "Phone:"),
+    phone: _t("PROFILE.PHONE", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     external: _t("PROFILE.EXTERNAL", "External"),
   };
@@ -40,7 +56,7 @@ const ProfileSlider = (props) => {
   if (profile) {
     user = { ...profile };
   } else {
-    user = { ...users[id] };
+    user = allUsers.find((u) => u.id === id);
   }
   const handleUserChat = (e) => {
     e.stopPropagation();

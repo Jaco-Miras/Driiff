@@ -122,6 +122,8 @@ import {
   incomingPostListDisconnect,
   getUnarchivePost,
   incomingPostRequired,
+  incomingFollowPost,
+  incomingUnfollowPost,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -135,6 +137,7 @@ import {
   incomingDeactivatedUser,
   incomingActivatedUser,
   incomingOnlineUsers,
+  incomingDeletedUser,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -241,11 +244,29 @@ class SocketListeners extends Component {
       //console.log("socket reconnecting");
     });
 
+    window.Echo.private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
+      this.props.incomingDeletedUser(e);
+    });
+
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".post-follow", (e) => {
+        this.props.incomingFollowPost(e);
+      })
+      .listen(".post-unfollow", (e) => {
+        this.props.incomingUnfollowPost(e);
+      })
       .listen(".unarchive-post-notification", (e) => {
         e.posts.forEach((p) => {
-          this.props.getUnarchivePost({ post_id: p.id });
+          this.props.fetchPost({ post_id: p.id }, (err, res) => {
+            if (err) return;
+            let post = {
+              ...res.data,
+              clap_user_ids: [],
+              is_unread: 1,
+            };
+            this.props.incomingPost(post);
+          });
         });
       })
       .listen(".huddle-notification", (e) => {
@@ -563,6 +584,7 @@ class SocketListeners extends Component {
       })
       .listen(".unread-post", (e) => {
         this.props.incomingReadUnreadReducer(e);
+        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
         this.props.getFavoriteWorkspaceCounters();
@@ -572,6 +594,16 @@ class SocketListeners extends Component {
             this.props.incomingClosePost(e);
             break;
           }
+          // case "FOLLOW_POST": {
+          //   console.log(e, "follow post");
+          //   this.props.incomingFollowPost(e);
+          //   break;
+          // }
+          // case "UNFOLLOW_POST": {
+          //   console.log(e, "unfollow post");
+          //   this.props.incomingUnfollowPost(e);
+          //   break;
+          // }
           case "POST_APPROVED": {
             this.props.incomingPostApproval(e);
             break;
@@ -616,24 +648,16 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CREATE": {
-            e.clap_user_ids = [];
-            let post = { ...e };
+            let post = { ...e, clap_user_ids: [] };
             const isApprover = post.users_approval.some((ua) => ua.id === this.props.user.id);
-            if (this.props.user.id !== e.author.id) {
+            if (this.props.user.id !== post.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
-                  pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+                  pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
                 }
               }
-              //check if post has favorite workspace as recipient
-              // if (e.recipients.some((r) => r.type === "TOPIC")) {
-              //   let topicRecipientIds = e.recipients.filter((r) => r.type === "TOPIC").map((r) => r.id);
-              //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
-              //     this.props.getFavoriteWorkspaceCounters();
-              //   }
-              // }
             }
-            if (e.show_at !== null && this.props.user.id === e.author.id) {
+            if (post.show_at !== null && this.props.user.id === post.author.id) {
               this.props.incomingPost({
                 ...post,
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
@@ -644,25 +668,26 @@ class SocketListeners extends Component {
                 post_approval_label: isApprover ? "NEED_ACTION" : null,
               });
             }
-            // if (this.props.user.id !== e.author.id) {
-            //   this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
-            // }
 
-            e.channel_messages &&
-              e.channel_messages.forEach((m) => {
-                m.system_message.files = [];
-                m.system_message.editable = false;
-                m.system_message.unfurls = [];
-                m.system_message.reactions = [];
-                m.system_message.is_deleted = false;
-                m.system_message.todo_reminder = null;
-                m.system_message.is_read = false;
-                m.system_message.is_completed = false;
-                m.system_message.user = null;
-                m.system_message.new_post = true;
-                m.system_message.topic = m.topic;
-                m.system_message.shared_with_client = e.shared_with_client;
-                this.props.incomingPostNotificationMessage(m.system_message);
+            post.channel_messages &&
+              post.channel_messages.forEach((m) => {
+                const message = {
+                  ...m.system_message,
+                  files: [],
+                  editable: false,
+                  unfurls: [],
+                  reactions: [],
+                  is_deleted: false,
+                  todo_reminder: null,
+                  is_read: false,
+                  is_completed: false,
+                  user: null,
+                  new_post: true,
+                  topic: m.topic,
+                  shared_with_client: e.shared_with_client,
+                };
+
+                this.props.incomingPostNotificationMessage(message);
               });
             break;
           }
@@ -697,7 +722,7 @@ class SocketListeners extends Component {
                 let companyChannel = Object.values(this.props.channels).filter((c) => c.type === "COMPANY");
                 if (companyChannel.length) {
                   let companyId = companyChannel[0].id;
-                  let postNotifMessages = [...e.channel.messages];
+                  let postNotifMessages = [...e.channel_messages];
                   postNotifMessages = postNotifMessages.filter((m) => {
                     if (m.channel.id !== companyId) {
                       return true;
@@ -758,6 +783,19 @@ class SocketListeners extends Component {
               }
             }
             if (e.author.id !== this.props.user.id) {
+              // check if posts exists, if not then fetch post
+              if (!this.props.posts[e.post_id]) {
+                console.log("fetch post");
+                this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
+                  if (err) return;
+                  let post = {
+                    ...res.data,
+                    clap_user_ids: [],
+                    is_unread: 1,
+                  };
+                  this.props.incomingPost(post);
+                });
+              }
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   let link = "";
@@ -1740,6 +1778,9 @@ function mapStateToProps({
   workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
   global: { unreadCounter, todos, recipients, isIdle, isBrowserActive },
   users: { mentions, users },
+  posts: {
+    companyPosts: { posts },
+  },
 }) {
   return {
     user,
@@ -1761,6 +1802,7 @@ function mapStateToProps({
     postComments,
     isIdle,
     isBrowserActive,
+    posts,
   };
 }
 
@@ -1907,6 +1949,9 @@ function mapDispatchToProps(dispatch) {
     getFavoriteWorkspaceCounters: bindActionCreators(getFavoriteWorkspaceCounters, dispatch),
     getToDoDetail: bindActionCreators(getToDoDetail, dispatch),
     setActiveTopic: bindActionCreators(setActiveTopic, dispatch),
+    incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
+    incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
+    incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
   };
 }
 

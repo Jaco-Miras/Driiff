@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { useTimeFormat } from "../../../hooks";
+import NotificationBadge from "./NotificationBadge";
 
 const Icon = styled(SvgIconFeather)`
   width: 12px;
@@ -143,6 +144,9 @@ export const NotificationTimelineItem = (props) => {
     needsReply: _t("NOTIFICATION.NEEDS_REPLY", "Needs reply"),
     markAsRead: _t("NOTIFICATION.MARK_AS_READ", "Mark as read"),
     markAsUnread: _t("NOTIFICATION.MARK_AS_UNREAD", "Mark as unread"),
+    actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
+    changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
+    accepted: _t("POST.ACCEPTED", "Accepted"),
   };
 
   const renderTitle = () => {
@@ -242,18 +246,6 @@ export const NotificationTimelineItem = (props) => {
     }
   };
 
-  const getBadgeClass = (data) => {
-    if (data.must_read) return "badge-danger";
-    if (data.must_reply) return "badge-success";
-    return null;
-  };
-
-  const getMustText = (data) => {
-    if (data.must_read) return dictionary.mustRead;
-    if (data.must_reply) return dictionary.needsReply;
-    return null;
-  };
-
   return (
     <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
       <div>
@@ -320,10 +312,7 @@ export const NotificationTimelineItem = (props) => {
                   </span>
                 )}
               </p>
-              <p>
-                {" "}
-                <span className={`badge ${getBadgeClass(notification.data)} text-white`}>{getMustText(notification.data)}</span>
-              </p>
+              <NotificationBadge notification={notification} dictionary={dictionary} user={user} />
             </div>
           </h6>
         </div>

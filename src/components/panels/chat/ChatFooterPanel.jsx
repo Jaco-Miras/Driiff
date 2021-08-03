@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { CommonPicker, SvgIconFeather } from "../../common";
+import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
@@ -13,6 +13,8 @@ import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { ChatInputButtons } from "./index";
+
+const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -409,7 +411,11 @@ const ChatFooterPanel = (props) => {
               </Tooltip>
             </React.Fragment>
           )}
-          {showEmojiPicker === true && <PickerContainer handleSend={handleSend} handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
+          {showEmojiPicker === true && (
+            <Suspense fallback={<></>}>
+              <PickerContainer handleSend={handleSend} handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />
+            </Suspense>
+          )}
         </Dflex>
       )}
       {isMember && editChatMessage && (

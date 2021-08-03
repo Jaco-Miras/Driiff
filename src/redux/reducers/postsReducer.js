@@ -601,7 +601,6 @@ export default (state = INITIAL_STATE, action) => {
         ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
           companyPosts: {
             ...state.companyPosts,
-            flipper: !state.flipper,
             posts: {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
@@ -1105,6 +1104,8 @@ export default (state = INITIAL_STATE, action) => {
                 ...state.companyPosts.posts[action.data.post.id],
                 required_users: action.data.required_users,
                 user_reads: action.data.user_reads,
+                must_read_users: action.data.must_read_users,
+                must_reply_users: action.data.must_reply_users,
               },
             }),
           },
@@ -1275,6 +1276,42 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
           },
         },
+      };
+    }
+    case "INCOMING_FOLLOW_POST": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
+                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+              },
+            },
+          },
+        }),
+      };
+    }
+    case "INCOMING_UNFOLLOW_POST": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+              },
+            },
+          },
+        }),
       };
     }
     default:

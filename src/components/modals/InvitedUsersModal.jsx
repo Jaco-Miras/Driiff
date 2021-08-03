@@ -17,7 +17,7 @@ const MoreMemberButton = styled.span`
 `;
 
 const InvitedUsersModal = (props) => {
-  const { submitText = "Submit", cancelText = "Cancel", onPrimaryAction, hasLastName = false, invitations = [], type } = props.data;
+  const { submitText = "Submit", cancelText = "Cancel", onPrimaryAction, hasLastName = false, invitations = [], type, fromRegister } = props.data;
 
   const [invitationItems, setInvitationItems] = useState(invitations);
 
@@ -227,7 +227,7 @@ const InvitedUsersModal = (props) => {
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
         {dictionary.userInvitations}
       </ModalHeaderSection>
-      {(user.role.name === "owner" || user.role.name === "admin") && (
+      {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
         <ModalBody>
           <table className="table table-responsive">
             <tr>
@@ -313,12 +313,12 @@ const InvitedUsersModal = (props) => {
           </table>
         </ModalBody>
       )}
-      {!(user.role.name === "owner" || user.role.name === "admin") && (
+      {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
         <ModalBody>
           <div>{dictionary.availableToAdmin}</div>
         </ModalBody>
       )}
-      {(user.role.name === "owner" || user.role.name === "admin") && (
+      {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
         <ModalFooter>
           <Button color="primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
@@ -329,7 +329,7 @@ const InvitedUsersModal = (props) => {
           </Button>
         </ModalFooter>
       )}
-      {!(user.role.name === "owner" || user.role.name === "admin") && (
+      {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
         <ModalFooter>
           <Button outline color="secondary" onClick={toggle}>
             {dictionary.closeButton}

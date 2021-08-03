@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
@@ -6,12 +6,13 @@ import { MoreOptions } from "../../../panels/common";
 const Wrapper = styled.div`
   .avatar {
     cursor: pointer;
-    // height: 2.5rem !important;
-    // width: 2.5rem !important;
+    min-height: 2.7rem;
+    min-width: 2.7rem;
   }
   .user-name {
     display: flex;
     cursor: pointer;
+    flex-flow: row wrap;
   }
   .feather-message-circle {
     cursor: pointer;
@@ -29,7 +30,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: ${(props) => props.userNameMaxWidth}px;
+    //max-width: ${(props) => props.userNameMaxWidth}px;
   }
   .button-wrapper {
     display: inline-flex;
@@ -96,11 +97,13 @@ const PeopleListItem = (props) => {
     onArchiveUser = null,
     onActivateUser = null,
     onChangeUserType = null,
+    onDeleteUser = null,
     showInactive = false,
     showWorkspaceRole = false,
+    usersWithoutActivity = [],
   } = props;
 
-  const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
+  //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
 
   const refs = {
     cardBody: useRef(null),
@@ -123,34 +126,34 @@ const PeopleListItem = (props) => {
     onUpdateRole(payload);
   };
 
-  const handleResize = () => {
-    if (refs.content.current) {
-      let width = refs.content.current.clientWidth - 150;
+  // refactor - should be handled in css
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (refs.content.current) {
+  //       let width = refs.content.current.clientWidth - 150;
 
-      let el = refs.content.current.querySelector(".button-wrapper");
-      if (el) {
-        width -= el.clientWidth;
-      }
+  //       let el = refs.content.current.querySelector(".button-wrapper");
+  //       if (el) {
+  //         width -= el.clientWidth;
+  //       }
 
-      el = refs.content.current.querySelector(".avatar");
-      if (el) {
-        width -= el.clientWidth;
-      }
+  //       el = refs.content.current.querySelector(".avatar");
+  //       if (el) {
+  //         width -= el.clientWidth;
+  //       }
 
-      el = refs.content.current.querySelector(".label-wrapper");
-      if (el) {
-        width -= el.clientWidth;
-      }
+  //       el = refs.content.current.querySelector(".label-wrapper");
+  //       if (el) {
+  //         width -= el.clientWidth;
+  //       }
 
-      setUserNameMaxWidth(width);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  //       setUserNameMaxWidth(width);
+  //     }
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   handleResize();
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   const handleArchiveUser = () => {
     onArchiveUser(user);
@@ -212,7 +215,7 @@ const PeopleListItem = (props) => {
   };
 
   return (
-    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`} userNameMaxWidth={userNameMaxWidth}>
+    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
         <div className="card border" key={user.id}>
           <div className="card-body" ref={refs.cardBody}>
@@ -229,7 +232,7 @@ const PeopleListItem = (props) => {
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
-                    <h6 className="user-name mb-1 ">
+                    <h6 className="user-name mb-0">
                       <ToolTip content={user.email}>
                         <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
                       </ToolTip>
@@ -237,7 +240,7 @@ const PeopleListItem = (props) => {
                       <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />
                     </h6>
                   ) : (
-                    <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
+                    <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
                         <ToolTip content={user.email}>
                           <span className="mr-2">{user.name}</span>
@@ -283,6 +286,7 @@ const PeopleListItem = (props) => {
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
                       {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
+                      {user.active && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && <div onClick={() => onDeleteUser(user)}>{dictionary.deleteUser}</div>}
                     </MoreOptions>
                   )}
                 </div>

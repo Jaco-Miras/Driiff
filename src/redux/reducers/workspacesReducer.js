@@ -111,10 +111,10 @@ export default (state = INITIAL_STATE, action) => {
             return m;
           }
         });
-        const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        //const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
         activeTopic = {
           ...activeTopic,
-          is_shared: action.data.type === "external" ? true : isStillExternal,
+          is_shared: action.data.type === "external" ? true : activeTopic.is_shared,
           members: updatedMembers,
         };
       }
@@ -143,11 +143,12 @@ export default (state = INITIAL_STATE, action) => {
                 }
               })
             : ws.members;
-          const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
+          //const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
           res[ws.id] = {
             ...ws,
             members: wsMembers,
-            is_shared: action.data.type === "external" ? true : isStillExternal,
+            //is_shared: action.data.type === "external" ? true : isStillExternal,
+            is_shared: ws.members.some((m) => m.id === action.data.id) && action.data.type === "external" ? true : ws.is_shared,
           };
           return res;
         }, {}),
@@ -1347,11 +1348,35 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      //need recipient ids
+      // let newWorkspacePosts = { ...state.workspacePosts };
+      // //need recipient ids
+      // return {
+      //   ...state,
+      //   workspacePosts: newWorkspacePosts,
+      // };
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipient_ids.reduce((res, rid) => {
+            if (state.workspacePosts[rid]) {
+              res[rid] = {
+                ...state.workspacePosts[rid],
+                ...(state.workspacePosts[rid].posts && {
+                  posts: {
+                    ...Object.keys(state.workspacePosts[rid].posts)
+                      .filter((key) => parseInt(key) !== action.data.id)
+                      .reduce((post, id) => {
+                        post[id] = { ...state.workspacePosts[rid].posts[id] };
+                        return post;
+                      }, {}),
+                  },
+                }),
+              };
+            }
+            return res;
+          }, {}),
+        },
       };
     }
     case "INCOMING_COMMENT": {
@@ -2490,28 +2515,30 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[ws.topic.id],
                   posts: {
                     ...state.workspacePosts[ws.topic.id].posts,
-                    [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
-                      post_approval_label: allUsersAgreed
-                        ? "ACCEPTED"
-                        : allUsersDisagreed
-                        ? "REQUEST_UPDATE"
-                        : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
-                        ? "SPLIT"
-                        : action.data.user_approved.id === state.user.id
-                        ? null
-                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
-                      users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
-                        if (u.id === action.data.user_approved.id) {
-                          return {
-                            ...u,
-                            ...action.data.user_approved,
-                          };
-                        } else {
-                          return u;
-                        }
-                      }),
-                    },
+                    ...(state.workspacePosts[ws.topic.id].posts[action.data.post.id] && {
+                      [action.data.post.id]: {
+                        ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                        post_approval_label: allUsersAgreed
+                          ? "ACCEPTED"
+                          : allUsersDisagreed
+                          ? "REQUEST_UPDATE"
+                          : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
+                          ? "SPLIT"
+                          : action.data.user_approved.id === state.user.id
+                          ? null
+                          : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
+                        users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
+                          if (u.id === action.data.user_approved.id) {
+                            return {
+                              ...u,
+                              ...action.data.user_approved,
+                            };
+                          } else {
+                            return u;
+                          }
+                        }),
+                      },
+                    }),
                   },
                 };
               }
@@ -2744,14 +2771,16 @@ export default (state = INITIAL_STATE, action) => {
               if (state.workspacePosts[ws.id]) {
                 res[ws.id] = {
                   ...state.workspacePosts[ws.id],
-                  posts: {
-                    ...Object.keys(state.workspacePosts[ws.id].posts)
-                      .filter((key) => parseInt(key) !== action.data.id)
-                      .reduce((post, id) => {
-                        post[id] = { ...state.workspacePosts[ws.id].posts[id] };
-                        return post;
-                      }, {}),
-                  },
+                  ...(state.workspacePosts[ws.id].posts && {
+                    posts: {
+                      ...Object.keys(state.workspacePosts[ws.id].posts)
+                        .filter((key) => parseInt(key) !== action.data.id)
+                        .reduce((post, id) => {
+                          post[id] = { ...state.workspacePosts[ws.id].posts[id] };
+                          return post;
+                        }, {}),
+                    },
+                  }),
                 };
               }
               return res;
@@ -2823,6 +2852,8 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
                       required_users: action.data.required_users,
                       user_reads: action.data.user_reads,
+                      must_read_users: action.data.must_read_users,
+                      must_reply_users: action.data.must_reply_users,
                     },
                   },
                 };
@@ -3304,6 +3335,62 @@ export default (state = INITIAL_STATE, action) => {
               }, {}),
             },
           }),
+        },
+      };
+    }
+    case "INCOMING_FOLLOW_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces &&
+            action.data.workspaces.length > 0 && {
+              ...state.workspacePosts,
+              ...action.data.workspaces.reduce((res, ws) => {
+                if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post_id]) {
+                  res[ws.topic.id] = {
+                    ...state.workspacePosts[ws.topic.id],
+                    posts: {
+                      ...state.workspacePosts[ws.topic.id].posts,
+                      [action.data.post_id]: {
+                        ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
+                        //is_followed: action.data.new_recipient_id === state.user.id ? true : state.workspacePosts[ws.topic.id].posts[action.data.post_id].is_followed,
+                        user_unfollow: state.workspacePosts[ws.topic.id].posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                      },
+                    },
+                  };
+                }
+                return res;
+              }, {}),
+            }),
+        },
+      };
+    }
+    case "INCOMING_UNFOLLOW_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(action.data.workspaces &&
+            action.data.workspaces.length > 0 && {
+              ...state.workspacePosts,
+              ...action.data.workspaces.reduce((res, ws) => {
+                if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post_id]) {
+                  res[ws.topic.id] = {
+                    ...state.workspacePosts[ws.topic.id],
+                    posts: {
+                      ...state.workspacePosts[ws.topic.id].posts,
+                      [action.data.post_id]: {
+                        ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
+                        //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.workspacePosts[ws.topic.id].posts[action.data.post_id].is_followed,
+                        user_unfollow: [...state.workspacePosts[ws.topic.id].posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+                      },
+                    },
+                  };
+                }
+                return res;
+              }, {}),
+            }),
         },
       };
     }

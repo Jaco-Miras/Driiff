@@ -85,7 +85,7 @@ const FavEmptyState = styled.div`
 `;
 
 const FavoriteWorkspacesPanel = (props) => {
-  const { dictionary, isExternal, generalSettings, user } = props;
+  const { dictionary, isExternal, user } = props;
 
   const dispatch = useDispatch();
 
@@ -100,22 +100,23 @@ const FavoriteWorkspacesPanel = (props) => {
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
   const companyChannel = useSelector((state) => state.chat.companyChannel);
 
-  const [defaultTopic, setDefaultTopic] = useState(null);
+  // need to revisit
+  // const [defaultTopic, setDefaultTopic] = useState(null);
 
-  useEffect(() => {
-    if (defaultTopic) {
-      actions.selectWorkspace(defaultTopic);
-      actions.redirectTo(defaultTopic);
-    }
-  }, [defaultTopic]);
+  // useEffect(() => {
+  //   if (defaultTopic) {
+  //     actions.selectWorkspace(defaultTopic);
+  //     actions.redirectTo(defaultTopic);
+  //   }
+  // }, [defaultTopic]);
 
-  useEffect(() => {
-    const arrWorkspaces = Object.values(workspaces);
-    if (generalSettings.active_topic === null && arrWorkspaces.length && defaultTopic === null) {
-      const topic = arrWorkspaces.sort((a, b) => (b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1)).find((w) => w.type === "WORKSPACE" && w.active === 1);
-      setDefaultTopic(topic);
-    }
-  }, [generalSettings.active_topic, defaultTopic, workspaces, setDefaultTopic]);
+  // useEffect(() => {
+  //   const arrWorkspaces = Object.values(workspaces);
+  //   if (generalSettings.active_topic === null && arrWorkspaces.length && defaultTopic === null) {
+  //     const topic = arrWorkspaces.sort((a, b) => (b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1)).find((w) => w.type === "WORKSPACE" && w.active === 1);
+  //     setDefaultTopic(topic);
+  //   }
+  // }, [generalSettings.active_topic, defaultTopic, workspaces, setDefaultTopic]);
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");

@@ -96,6 +96,11 @@ const Wrapper = styled.div`
     letter-spacing: 0;
     line-height: 12px;
   }
+  @media (max-width: 414px) {
+    .chat-header-folder {
+      display: none;
+    }
+  }
   .plus-recipient-component {
     width: 2.7rem;
     height: 2.7rem;
@@ -443,7 +448,7 @@ const ChatHeaderPanel = (props) => {
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li>
-              <MemberLists members={channel.members.filter((m) => m.has_accepted)} />
+              <MemberLists members={channel.members} />
             </li>
           )}
         </ul>

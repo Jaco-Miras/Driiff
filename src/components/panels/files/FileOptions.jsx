@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useToaster } from "../../hooks";
+import { useToaster, useTranslationActions } from "../../hooks";
 import { MoreOptions } from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
@@ -32,7 +32,20 @@ const FileOptions = (props) => {
   const { className = "", folders, file, scrollRef = null, actions, isMember, forceDelete, disableOptions } = props;
   const toaster = useToaster();
 
-  //const [showMoreOptions, setShowMoreOptions] = useState(false);
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    rename: _t("FILES.RENAME", "Rename"),
+    restore: _t("FILES.RESTORE", "Restore"),
+    remove: _t("FILES.REMOVE", "Remove"),
+    viewDetails: _t("FILES.VIEW_DETAILS", "View details"),
+    share: _t("FILES.SHARE", "Share"),
+    download: _t("FILES.DOWNLOAD", "Download"),
+    moveTo: _t("FILES.MOVE_TO", "Move to"),
+    favorite: _t("FILES.FAVORITE", "Favorite"),
+    unfavorite: _t("FILES.UNFAVORITE", "Unfavorite"),
+    notMemberOfWs: _t("TOASTER.NOT_MEMBER_OF_WS", "You are not a member of this workspace."),
+  };
 
   const handleViewDetail = () => {
     actions.viewFiles(file);
@@ -66,7 +79,7 @@ const FileOptions = (props) => {
     if (isMember) {
       actions.renameFile(file);
     } else {
-      toaster.warning("You are not a member of this workspace.");
+      toaster.warning(`${dictionary.notMemberOfWs}`);
     }
   };
 
@@ -104,20 +117,20 @@ const FileOptions = (props) => {
         actions.removeFile(file, forceDelete);
       }
     } else {
-      toaster.warning("You are not a member of this workspace.");
+      toaster.warning(`${dictionary.notMemberOfWs}`);
     }
   };
 
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" file={file} scrollRef={scrollRef}>
-      <div onClick={handleViewDetail}>View Details</div>
-      <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
-      <div onClick={handleShare}>Share</div>
-      <div onClick={handleDownload}>Download</div>
-      <div onClick={handleMoveTo}>Move to</div>
-      <div onClick={handleRename}>Rename</div>
-      {forceDelete && <div onClick={handleRestore}>Restore</div>}
-      {!disableOptions && <div onClick={handleDelete}>Remove</div>}
+      <div onClick={handleViewDetail}>{dictionary.viewDetails}</div>
+      <div onClick={handleFavorite}>{file.is_favorite ? dictionary.unfavorite : dictionary.favorite}</div>
+      <div onClick={handleShare}>{dictionary.share}</div>
+      <div onClick={handleDownload}>{dictionary.download}</div>
+      <div onClick={handleMoveTo}>{dictionary.moveTo}</div>
+      <div onClick={handleRename}>{dictionary.rename}</div>
+      {forceDelete && <div onClick={handleRestore}>{dictionary.restore}</div>}
+      {!disableOptions && <div onClick={handleDelete}>{dictionary.remove}</div>}
     </Wrapper>
   );
 };

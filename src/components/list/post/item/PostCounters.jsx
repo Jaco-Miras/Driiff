@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import Viewers from "./Viewers";
+import { useTranslationActions } from "../../../hooks";
+import { useSelector } from "react-redux";
 
 const Counters = styled.div`
   width: 100%;
@@ -44,6 +46,12 @@ const Counters = styled.div`
       }
     }
   }
+  .read-users-container {
+    .avatar.avatar-md {
+      min-height: 2.7rem;
+      min-width: 2.7rem;
+    }
+  }
   /* slide enter */
   .slide-enter,
   .slide-appear {
@@ -82,7 +90,12 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostCounters = (props) => {
-  const { dictionary, hasRead, likers, post, readByUsers, viewerIds, viewers, handleReaction } = props;
+  const { dictionary, likers, post, viewerIds, viewers, handleReaction } = props;
+  const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.users);
+  const { _t } = useTranslationActions();
+  const readByUsers = post && post.is_must_read && post.must_read_users.length > 0 ? post.must_read_users.filter((u) => u.must_read) : [];
+  const hasRead = readByUsers.some((u) => u.id === user.id);
   return (
     <Counters className="d-flex align-items-center">
       <div className="clap-count-wrapper d-none d-sm-flex">
@@ -101,33 +114,26 @@ const PostCounters = (props) => {
         )}
       </div>
       <div className="readers-container ml-auto text-muted">
-        {(readByUsers.length > 0 || (post.required_users && post.required_users.length > 0)) && post.is_must_read && (
+        {post.is_must_read && readByUsers.length > 0 && Object.values(users).length > 1 && (
           <div className="user-reads-container read-by">
             {hasRead && (
               <span className="mr-2">
                 <Icon className="mr-2" icon="check" /> {dictionary.alreadyReadThis}
               </span>
             )}
-            <span className="no-readers">{dictionary.readByNumberofUsers}</span>
+            <span className="no-readers">
+              {_t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
+                user_count: readByUsers.length,
+              })}
+            </span>
             <span className="hover read-users-container">
               {readByUsers.map((u) => {
                 return (
                   <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id] ? users[u.id].profile_image_thumbnail_link : null} id={u.id} /> <span className="name">{u.name}</span>
                   </span>
                 );
               })}
-            </span>
-            {post.required_users && post.required_users.length > 0 && post.is_must_read && <span className="not-readers">&nbsp; {dictionary.ofNumberOfUsers}</span>}
-            <span className="hover not-read-users-container">
-              {post.required_users &&
-                post.required_users.map((u) => {
-                  return (
-                    <span key={u.id}>
-                      <Avatar className="mr-2" key={u.id} name={u.name} imageLink={null} id={u.id} /> <span className="name">{u.name}</span>
-                    </span>
-                  );
-                })}
             </span>
           </div>
         )}
