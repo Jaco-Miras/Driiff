@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { PostItemPanel } from "./index";
+import { PostItemPanel, PostsButtons } from "./index";
 
 const PostsBtnWrapper = styled.div`
   margin-bottom: 10px;
@@ -50,7 +50,7 @@ const ReadPostsHeader = styled.li`
 `;
 
 const Posts = (props) => {
-  const { actions, dictionary, filter, isExternalUser, loading, posts, search, workspace } = props;
+  const { actions, dictionary, filter, isExternalUser, loading, posts, search, workspace, user } = props;
 
   const componentIsMounted = useRef(true);
 
@@ -60,6 +60,7 @@ const Posts = (props) => {
   const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
+  const [checked, setChecked] = useState(false);
 
   const handleToggleCheckbox = (postId) => {
     let checked = !checkedPosts.some((id) => id === postId);
@@ -134,18 +135,33 @@ const Posts = (props) => {
     if (componentIsMounted.current) setCheckedPosts([]);
   }, [filter]);
 
+  const handleToggleMainCheckbox = () => {
+    if (checked) {
+      setChecked(false);
+      setCheckedPosts([]);
+    } else {
+      const postIds = Object.values(posts)
+        .filter((p) => {
+          const hasPendingApproval = p.users_approval.length > 0 && p.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+          if (p.is_must_read && p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+            return false;
+          } else if (p.is_must_reply && p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+            return false;
+          } else if (hasPendingApproval) {
+            return false;
+          } else {
+            return true;
+          }
+        })
+        .map((p) => p.id);
+      setCheckedPosts(postIds);
+      setChecked(true);
+    }
+  };
+
   return (
     <>
-      {(filter === "all" || filter === "inbox") && checkedPosts.length > 0 && (
-        <PostsBtnWrapper>
-          <button className="btn all-action-button" onClick={handleArchiveAll}>
-            {dictionary.archive}
-          </button>
-          <button className="btn all-action-button" onClick={handleMarkAllAsRead}>
-            {dictionary.markAsRead}
-          </button>
-        </PostsBtnWrapper>
-      )}
+      <PostsButtons checked={checked} showButtons={checkedPosts.length > 0} onToggleCheckbox={handleToggleMainCheckbox} onMarkAll={handleMarkAllAsRead} onArchiveAll={handleArchiveAll} />
       {filter === "draft" && (
         <PostsBtnWrapper>
           <button className="btn all-action-button" onClick={handleSelectAllDraft}>
@@ -179,7 +195,18 @@ const Posts = (props) => {
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
-                  return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
+                  return (
+                    <PostItemPanel
+                      key={p.id}
+                      post={p}
+                      postActions={actions}
+                      dictionary={dictionary}
+                      toggleCheckbox={handleToggleCheckbox}
+                      checked={checkedPosts.some((id) => id === p.id)}
+                      isExternalUser={isExternalUser}
+                      workspace={workspace}
+                    />
+                  );
                 })}
               </div>
             </ul>
@@ -207,6 +234,7 @@ const Posts = (props) => {
                         toggleCheckbox={handleToggleCheckbox}
                         checked={checkedPosts.some((id) => id === p.id)}
                         isExternalUser={isExternalUser}
+                        workspace={workspace}
                       />
                     );
                   })}
@@ -233,6 +261,7 @@ const Posts = (props) => {
                         toggleCheckbox={handleToggleCheckbox}
                         checked={checkedPosts.some((id) => id === p.id)}
                         isExternalUser={isExternalUser}
+                        workspace={workspace}
                       />
                     );
                   })}

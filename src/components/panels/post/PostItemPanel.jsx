@@ -6,6 +6,7 @@ import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
 import { TodoCheckBox } from "../../forms";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -148,6 +149,20 @@ const CheckBox = styled(TodoCheckBox)`
   label {
     margin: 0;
   }
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-left: -9px;
+  :hover {
+    background: #f1f2f7;
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+    .dark & {
+      background: #25282c;
+    }
+  }
 `;
 
 const PostContent = styled.div`
@@ -252,6 +267,22 @@ const PostItemPanel = (props) => {
     }
   };
 
+  const handleTitleClick = (e) => {
+    e.preventDefault();
+  };
+
+  const getPostRedirectLink = () => {
+    if (workspace) {
+      if (workspace.folder_id) {
+        return `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else {
+        return `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`;
+      }
+    } else {
+      return post.redirect_link;
+    }
+  };
+
   const isUnread = post.is_unread === 1;
 
   return (
@@ -273,7 +304,9 @@ const PostItemPanel = (props) => {
             <div className="text-truncate d-flex">
               <span className="text-truncate">
                 {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
-                {post.title}
+                <a href={getPostRedirectLink()} target="_blank" rel="noopener noreferrer" onClick={handleTitleClick}>
+                  {post.title}
+                </a>
               </span>
               <HoverButtons className="hover-btns ml-1">
                 {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}

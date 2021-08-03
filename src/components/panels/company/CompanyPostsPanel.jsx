@@ -38,16 +38,6 @@ const Wrapper = styled.div`
       scrollbar-width: none;
     }
   }
-
-  .all-action-button {
-    background: none;
-    color: #828282;
-    padding: 10px 5px 5px 5px;
-    font-weight: 500;
-    .dark & {
-      color: rgba(255, 255, 255, 0.5);
-    }
-  }
   .unset-flex {
     flex: unset !important;
   }
@@ -209,6 +199,7 @@ const CompanyPostsPanel = (props) => {
     selectAll: _t("BUTTON.SELECT_ALL", "Select all"),
     remove: _t("BUTTON.REMOVE", "Remove"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
+    inProgress: _t("POST.IN_PROGRESS", "In progress"),
   };
 
   const handleLoadMore = () => {
@@ -334,7 +325,7 @@ const CompanyPostsPanel = (props) => {
                   <Loader />
                 </LoaderContainer>
               ) : (
-                <CompanyPosts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} />
+                <CompanyPosts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} user={user} />
               )}
             </>
           )}

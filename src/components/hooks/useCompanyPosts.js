@@ -15,6 +15,7 @@ const useCompanyPosts = () => {
   const myPosts = useSelector((state) => state.posts.myPosts);
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
+  const inProgress = useSelector((state) => state.posts.inProgress);
   const fetchMore = (callback) => {
     if (unreadPosts.has_more) {
       actions.fetchUnreadCompanyPosts({
@@ -30,7 +31,16 @@ const useCompanyPosts = () => {
         filters: ["read_post"],
       });
     }
-    if (filter === "archive") {
+    if (filter === "in_progress") {
+      let payload = {
+        skip: inProgress.skip,
+        limit: inProgress.limit,
+        filters: ["in_progress"],
+      };
+      if (inProgress.has_more) {
+        actions.fetchInProgressCompanyPosts(payload, callback);
+      }
+    } else if (filter === "archive") {
       let payload = {
         skip: archived.skip,
         limit: archived.limit,
@@ -86,6 +96,16 @@ const useCompanyPosts = () => {
     }
   }, [filter, myPosts]);
 
+  useEffect(() => {
+    if (inProgress.skip === 0 && inProgress.has_more && filter === "in_progress") {
+      actions.fetchInProgressCompanyPosts({
+        skip: 0,
+        limit: 25,
+        filters: ["in_progress"],
+      });
+    }
+  }, [filter, inProgress]);
+
   let filteredPosts = Object.values(posts);
 
   if (searchResults.length > 0 && search !== "") {
@@ -105,11 +125,11 @@ const useCompanyPosts = () => {
           return !p.hasOwnProperty("draft_type");
         } else if (filter === "inbox") {
           return !p.hasOwnProperty("draft_type");
-          // if (search !== "") {
-          //   return !p.hasOwnProperty("draft_type");
-          // } else {
-          //   return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
-          // }
+        } else if (filter === "in_progress") {
+          return (
+            !p.hasOwnProperty("draft_type") &&
+            ((p.is_must_read && p.must_read_users.length > 0) || (p.is_must_reply && p.must_reply_users.length > 0) || (p.users_approval.length > 0 && p.users_approval.some((u) => u.ip_address === null && u.id === user.id)))
+          );
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
           else return false;
