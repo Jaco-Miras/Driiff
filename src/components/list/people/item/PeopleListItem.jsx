@@ -98,6 +98,7 @@ const PeopleListItem = (props) => {
     onActivateUser = null,
     onChangeUserType = null,
     onDeleteUser = null,
+    onResendInvite = null,
     showInactive = false,
     showWorkspaceRole = false,
     usersWithoutActivity = [],
@@ -214,6 +215,14 @@ const PeopleListItem = (props) => {
     if (onChangeUserType) onChangeUserType(user, "external");
   };
 
+  const handleDeleteUser = () => {
+    if (onDeleteUser) onDeleteUser(user);
+  };
+
+  const handleReinvite = () => {
+    if (onResendInvite) onResendInvite(user);
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
@@ -286,7 +295,8 @@ const PeopleListItem = (props) => {
                       {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
                       {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
-                      {user.active && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && <div onClick={() => onDeleteUser(user)}>{dictionary.deleteUser}</div>}
+                      {user.active && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>}
+                      {user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                     </MoreOptions>
                   )}
                 </div>

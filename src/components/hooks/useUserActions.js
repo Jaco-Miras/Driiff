@@ -27,6 +27,7 @@ import {
   userLogout,
   unarchiveUser,
   updateUserType,
+  resendInvitation,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster, useTranslationActions } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -519,6 +520,10 @@ const useUserActions = () => {
     dispatch(deleteUser(payload, callback));
   };
 
+  const resendInvitationEmail = (payload, callback) => {
+    dispatch(resendInvitation(payload, callback));
+  };
+
   return {
     checkCredentials,
     login,
@@ -553,6 +558,7 @@ const useUserActions = () => {
     fetchArchivedUsers,
     updateType,
     deleteUserAccount,
+    resendInvitationEmail,
   };
 };
 

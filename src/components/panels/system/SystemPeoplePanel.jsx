@@ -146,6 +146,8 @@ const SystemPeoplePanel = (props) => {
     deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
     deleteConfirmationText: _t("PEOPLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this user? This means this user can't log in anymore."),
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
+    resendInvitation: _t("PEOPLE.RESEND_INVITATION", "Resend invitation"),
+    showInvited: _t("PEOPLE.SHOW_INVITED", "Show invited"),
   };
 
   const handleInviteUsers = () => {
@@ -333,6 +335,22 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleResendInvite = (user) => {
+    let payload = {
+      user_id: user.id,
+      email: user.email,
+    };
+    const callback = (err, res) => {
+      if (err) {
+        toaster.error(_t("TOASTER.RESEND_INVITATION_FAILED", "Invitation failed"));
+        return;
+      } else {
+        toaster.success(_t("TOASTER.RESEND_INVITATION_SUCCESS", "Invitation sent to ::email::", { email: user.email }));
+      }
+    };
+    userActions.resendInvitationEmail(payload, callback);
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -358,7 +376,7 @@ const SystemPeoplePanel = (props) => {
                 type="switch"
                 onChange={handleShowInvitedToggle}
                 //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
-                label={<span>Show invited</span>}
+                label={<span>{dictionary.showInvited}</span>}
               />
             </div>
             <div>
@@ -384,6 +402,7 @@ const SystemPeoplePanel = (props) => {
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
                   onDeleteUser={handleDeleteUser}
+                  onResendInvite={handleResendInvite}
                   showInactive={showInactive}
                   usersWithoutActivity={usersWithoutActivity}
                 />
