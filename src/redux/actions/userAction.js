@@ -30,6 +30,7 @@ import {
   unarchiveUser as unarchiveUserService,
   getArchivedUsers as getArchivedUsersService,
   updateUserType as updateUserTypeService,
+  resendInvitation as resendInvitationService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -190,4 +191,8 @@ export function getUsersWithoutActivity(payload, callback) {
 
 export function incomingDeletedUser(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_USER", payload, callback);
+}
+
+export function resendInvitation(payload, callback) {
+  return dispatchActionToReducer(resendInvitationService(payload), "RESEND_INVITATION_START", "RESEND_INVITATION_SUCCESS", "RESEND_INVITATION_FAILURE", callback);
 }
