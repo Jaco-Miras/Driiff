@@ -21,7 +21,7 @@ const PostsBtnWrapper = styled.div`
 `;
 
 const PostsButtons = (props) => {
-  const { onToggleCheckbox, onArchiveAll, onMarkAll, checked } = props;
+  const { onToggleCheckbox, onArchiveAll, onMarkAll, checked, showButtons } = props;
 
   const handleToggleMainCheckbox = () => {
     onToggleCheckbox();
@@ -38,9 +38,13 @@ const PostsButtons = (props) => {
   return (
     <PostsBtnWrapper>
       <TodoCheckBox name="test" checked={checked} onClick={handleToggleMainCheckbox} />
-      <SvgIconFeather icon="archive" width="20" height="20" onClick={handleArchiveAll} />
-      <SvgIconFeather icon="mail" width="20" height="20" onClick={handleMarkAllAsRead} />
-      <SvgIconFeather icon="check-circle" width="20" height="20" />
+      {showButtons && (
+        <>
+          <SvgIconFeather icon="archive" width="20" height="20" onClick={handleArchiveAll} />
+          <SvgIconFeather icon="mail" width="20" height="20" onClick={handleMarkAllAsRead} />
+          <SvgIconFeather icon="check-circle" width="20" height="20" />
+        </>
+      )}
     </PostsBtnWrapper>
   );
 };

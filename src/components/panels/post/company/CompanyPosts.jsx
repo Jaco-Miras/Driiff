@@ -145,7 +145,7 @@ const CompanyPosts = (props) => {
 
   return (
     <>
-      <PostsButtons checked={checked} onToggleCheckbox={handleToggleMainCheckbox} onMarkAll={handleMarkAllAsRead} onArchiveAll={handleArchiveAll} />
+      <PostsButtons checked={checked} showButtons={checkedPosts.length > 0} onToggleCheckbox={handleToggleMainCheckbox} onMarkAll={handleMarkAllAsRead} onArchiveAll={handleArchiveAll} />
       {filter === "draft" && (
         <PostsBtnWrapper>
           <button className="btn all-action-button" onClick={handleSelectAllDraft}>

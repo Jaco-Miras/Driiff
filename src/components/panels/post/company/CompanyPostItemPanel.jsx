@@ -75,6 +75,8 @@ const Wrapper = styled.li`
     .hover-btns {
       display: inline-block;
     }
+    box-shadow: 0 1px 10px 0 rgb(0 0 0 / 10%), 0 2px 15px 0 rgb(0 0 0 / 5%);
+    z-index: 2;
   }
 
   .more-options {
@@ -249,6 +251,10 @@ const CompanyPostItemPanel = (props) => {
     }
   };
 
+  const handleTitleClick = (e) => {
+    e.preventDefault();
+  };
+
   const isUnread = post.is_unread === 1;
 
   return (
@@ -270,7 +276,9 @@ const CompanyPostItemPanel = (props) => {
             <div className="text-truncate d-flex">
               <span className="text-truncate">
                 {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
-                {post.title}
+                <a href={post.redirect_link} target="_blank" rel="noopener noreferrer" onClick={handleTitleClick}>
+                  {post.title}
+                </a>
               </span>
               <HoverButtons className="hover-btns ml-1">
                 {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}

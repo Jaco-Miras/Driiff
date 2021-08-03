@@ -77,6 +77,10 @@ const CompanyPostFilterItem = (props) => {
         <SvgIconFeather className="mr-2" icon="mail" />
         {dictionary.all}
       </span>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "in_progress" ? "active" : ""}`} data-value="in_progress" onClick={handleClickFilter}>
+        <SvgIconFeather className="mr-2" icon="clock" />
+        {dictionary.inProgress}
+      </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="send-post" />
         {dictionary.myPosts}

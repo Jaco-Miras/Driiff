@@ -161,7 +161,7 @@ const Posts = (props) => {
 
   return (
     <>
-      <PostsButtons checked={checked} onToggleCheckbox={handleToggleMainCheckbox} onMarkAll={handleMarkAllAsRead} onArchiveAll={handleArchiveAll} />
+      <PostsButtons checked={checked} showButtons={checkedPosts.length > 0} onToggleCheckbox={handleToggleMainCheckbox} onMarkAll={handleMarkAllAsRead} onArchiveAll={handleArchiveAll} />
       {filter === "draft" && (
         <PostsBtnWrapper>
           <button className="btn all-action-button" onClick={handleSelectAllDraft}>
@@ -195,7 +195,18 @@ const Posts = (props) => {
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
-                  return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
+                  return (
+                    <PostItemPanel
+                      key={p.id}
+                      post={p}
+                      postActions={actions}
+                      dictionary={dictionary}
+                      toggleCheckbox={handleToggleCheckbox}
+                      checked={checkedPosts.some((id) => id === p.id)}
+                      isExternalUser={isExternalUser}
+                      workspace={workspace}
+                    />
+                  );
                 })}
               </div>
             </ul>
@@ -223,6 +234,7 @@ const Posts = (props) => {
                         toggleCheckbox={handleToggleCheckbox}
                         checked={checkedPosts.some((id) => id === p.id)}
                         isExternalUser={isExternalUser}
+                        workspace={workspace}
                       />
                     );
                   })}
@@ -249,6 +261,7 @@ const Posts = (props) => {
                         toggleCheckbox={handleToggleCheckbox}
                         checked={checkedPosts.some((id) => id === p.id)}
                         isExternalUser={isExternalUser}
+                        workspace={workspace}
                       />
                     );
                   })}

@@ -196,11 +196,11 @@ const usePosts = () => {
             return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
             return !p.hasOwnProperty("draft_type");
-            // if (search !== "") {
-            //   return !p.hasOwnProperty("draft_type");
-            // } else {
-            //   return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
-            // }
+          } else if (filter === "in_progress") {
+            return (
+              !p.hasOwnProperty("draft_type") &&
+              ((p.is_must_read && p.must_read_users.length > 0) || (p.is_must_reply && p.must_reply_users.length > 0) || (p.users_approval.length > 0 && p.users_approval.some((u) => u.ip_address === null && u.id === user.id)))
+            );
           } else if (activeFilter === "my_posts") {
             if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
             else return false;

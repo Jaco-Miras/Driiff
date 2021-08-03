@@ -10,8 +10,8 @@ const Wrapper = styled.div`
   .cci {
     z-index: 1;
     position: absolute;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     opacity: 0;
   }
   .ccl {
@@ -27,8 +27,8 @@ const Wrapper = styled.div`
     }
     span:first-child {
       position: relative;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 3px;
       transform: scale(1);
       vertical-align: middle;
@@ -51,8 +51,8 @@ const Wrapper = styled.div`
         transform: translate3d(0, 0, 0);
         width: 8px;
         height: 9px;
-        top: 4px;
-        left: 4px;
+        top: 3px;
+        left: 3px;
         stroke-width: 3;
       }
     }
