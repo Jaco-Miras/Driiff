@@ -371,7 +371,7 @@ const MainSnooze = (props) => {
   //interval for all snoozed items
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Object.keys(chats.channels).length > 0) {
+      if (Object.keys(chats.channels).length > 0 && users.users) {
         console.log('interval for all snoozed items');
         const todos = unSnoozeMe('todo', todoCLean());
         const notis = unSnoozeMe('notification', notifCLean());
@@ -402,7 +402,7 @@ const MainSnooze = (props) => {
 */
   //handler for all non-snoozed items
   useEffect(() => {
-    if (Object.keys(chats.channels).length > 0)
+    if (Object.keys(chats.channels).length > 0 && users.users)
       putToSnooze();
   }, [notifications, todos, huddleBots]);
 
