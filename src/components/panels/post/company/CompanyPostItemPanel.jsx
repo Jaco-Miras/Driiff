@@ -157,7 +157,7 @@ const CheckBox = styled(TodoCheckBox)`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  margin-left: -9px;
+  margin-left: -5px;
   :hover {
     background: #f1f2f7;
     cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
