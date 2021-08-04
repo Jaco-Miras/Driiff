@@ -195,6 +195,33 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_COMPANY_REMOVED_FILE": {
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          count: {
+            ...state.companyFiles.count,
+            trash: state.companyFiles.count.trash > 0 ? state.companyFiles.count.trash - 1 : 0,
+          },
+          items: Object.values(state.companyFiles.items).reduce((acc, file) => {
+            if (file.id !== parseInt(action.data.file_id)) {
+              acc[file.id] = file;
+            }
+            return acc;
+          }, {}),
+          trash_files: {
+            ...state.companyFiles.trash_files,
+            items: Object.values(state.companyFiles.trash_files).reduce((acc, file) => {
+              if (file.id !== parseInt(action.data.file_id)) {
+                acc[file.id] = file;
+              }
+              return acc;
+            }, {}),
+          },
+        },
+      };
+    }
     case "COMPANY_FILE_UPDATE":
     case "INCOMING_COMPANY_UPDATED_FILE": {
       let items = state.companyFiles.items;

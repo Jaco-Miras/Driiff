@@ -29,6 +29,7 @@ const MainNavLink = styled(NavLink)`
   height: 27px;
   position: relative;
   font-size: 13px;
+  white-space: nowrap;
   &.active {
     color: #363636;
     .dark & {

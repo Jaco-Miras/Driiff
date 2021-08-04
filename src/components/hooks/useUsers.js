@@ -2,7 +2,8 @@ import { useSelector } from "react-redux";
 import { useUserActions } from "./index";
 
 const useUsers = () => {
-  const { users, getUserFilter } = useSelector((state) => state.users);
+  const users = useSelector((state) => state.users.users);
+  const getUserFilter = useSelector((state) => state.users.getUserFilter);
   const { user: loggedUser } = useSelector((state) => state.session);
   const userActions = useUserActions();
 

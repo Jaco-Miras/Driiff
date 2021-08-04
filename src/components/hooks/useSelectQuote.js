@@ -45,18 +45,18 @@ const useSelectQuote = (props) => {
 
   const { _t } = useTranslationActions();
   const quotes = useSelector((state) => state.chat.chatQuotes);
-  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const channelId = useSelector((state) => state.chat.selectedChannelId);
   const [quote, setQuote] = useState(null);
   const [quoteBody, setQuoteBody] = useState(null);
 
   useEffect(() => {
     if (Object.keys(quotes).length > 0) {
-      let selectedQuote = Object.values(quotes).filter((q) => q.channel_id === selectedChannel.id);
+      let selectedQuote = Object.values(quotes).filter((q) => q.channel_id === channelId);
       if (selectedQuote.length) {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
         let selectedQuoteBody = "";
-        if (selectedQuote.user && (selectedQuote.body.startsWith('{"Welk punt geef je ons"') || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
+        if (selectedQuote.user && (selectedQuote.body.startsWith("{\"Welk punt geef je ons\"") || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
           const renderStars = (num) => {
             let star = "";
             for (let i = 1; i <= 10; i++) {
@@ -184,7 +184,7 @@ const useSelectQuote = (props) => {
       setQuote(null);
       setQuoteBody(null);
     }
-  }, [quotes, selectedChannel, _t]);
+  }, [quotes, channelId]);
 
   return [quote, quoteBody];
 };

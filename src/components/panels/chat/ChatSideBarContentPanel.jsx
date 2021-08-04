@@ -1,10 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
-//import ChatContactsList from "../../list/chat/ChatContactsList";
 import { SvgIconFeather } from "../../common";
-//import { useUserChannels } from "../../hooks";
-//import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   // overflow: auto !important;
@@ -65,12 +62,6 @@ const ChatSidebarContentPanel = (props) => {
             <ChannelsSidebar search={search} workspace={null} dictionary={dictionary} />
           </div>
         )}
-        {/* <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-          <div className="badge-filter badge badge badge-info text-white cursor-pointer mb-2" onClick={resetFilter}>
-            <SvgIconFeather className="mr-1" icon="x" width={11} height={11} onClick={resetFilter} /> Direct chats
-          </div>
-          <ChatContactsList search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary} />
-        </div> */}
         {pill === "pills-workspace" && (
           <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace" && "show active"}`} id="pills-workspace" role="tabpanel" aria-labelledby="pills-workspace-tab">
             <ChannelsSidebar search={search} workspace={true} dictionary={dictionary} />
@@ -81,4 +72,4 @@ const ChatSidebarContentPanel = (props) => {
   );
 };
 
-export default ChatSidebarContentPanel;
+export default React.memo(ChatSidebarContentPanel);
