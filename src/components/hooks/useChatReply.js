@@ -1,5 +1,5 @@
 import React from "react";
-//import quillHelper from "../../helpers/quillHelper";
+import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
@@ -424,8 +424,9 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       });
     }
 
-    //quoteBody += quillHelper.parseEmoji(reply.quote.body);
+    quoteBody += quillHelper.parseEmoji(reply.quote.body);
     quoteBody = parseSystemMessage(quoteBody);
+    //console.log(quoteBody);
   }
 
   let isGifOnly = !!reply.body.substring(15, reply.body.length - 8).match(GifRegex);

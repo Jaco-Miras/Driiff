@@ -148,6 +148,11 @@ const SystemPeoplePanel = (props) => {
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
     resendInvitation: _t("PEOPLE.RESEND_INVITATION", "Resend invitation"),
     showInvited: _t("PEOPLE.SHOW_INVITED", "Show invited"),
+    removeInvitedInternal: _t("PEOPLE.REMOVE_INVITED_INTERNAL", "Remove invited internal user"),
+    sendInviteManually: _t("PEOPLE.SEND_INVITE_MANUALLY", "Send invite manually"),
+    deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),
+    deleteInvitedConfirmationText: _t("PEOPLE.DELETE_INVITED_CONFIRMATION_TEXT", "Are you sure you want to remove this invited user?"),
+    toasterRemoveInvited: _t("TOASTER.REMOVE_INVITED_USER", "Removed invited user"),
   };
 
   const handleInviteUsers = () => {
@@ -351,6 +356,27 @@ const SystemPeoplePanel = (props) => {
     userActions.resendInvitationEmail(payload, callback);
   };
 
+  const handleDeleteInvitedInternalUser = (user) => {
+    const handleSubmit = () => {
+      userActions.deleteInvitedInternalUser({ user_id: user.id }, (err, res) => {
+        if (err) return;
+        toaster.success(`${dictionary.toasterRemoveInvited}`);
+      });
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.deleteInvitedUser,
+      submitText: dictionary.deleteInvitedUser,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.deleteInvitedConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -403,6 +429,7 @@ const SystemPeoplePanel = (props) => {
                   onChangeUserType={userActions.updateType}
                   onDeleteUser={handleDeleteUser}
                   onResendInvite={handleResendInvite}
+                  onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
                   showInactive={showInactive}
                   usersWithoutActivity={usersWithoutActivity}
                 />
