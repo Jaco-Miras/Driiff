@@ -56,7 +56,7 @@ const useSelectQuote = (props) => {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
         let selectedQuoteBody = "";
-        if (selectedQuote.user && (selectedQuote.body.startsWith('{"Welk punt geef je ons"') || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
+        if (selectedQuote.user && (selectedQuote.body.startsWith("{\"Welk punt geef je ons\"") || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
           const renderStars = (num) => {
             let star = "";
             for (let i = 1; i <= 10; i++) {
@@ -135,7 +135,7 @@ const useSelectQuote = (props) => {
               }
             });
           }
-          //selectedQuoteBody += quillHelper.parseEmoji(selectedQuote.body);
+          selectedQuoteBody += quillHelper.parseEmoji(selectedQuote.body);
         } else {
           if (selectedQuote.body.startsWith("CHANNEL_UPDATE")) {
             selectedQuoteBody = document.getElementById(`bot-${selectedQuote.id}`).outerHTML;
