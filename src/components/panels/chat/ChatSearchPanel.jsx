@@ -160,36 +160,43 @@ const ChatSearchPanel = (props) => {
   }, [selectedChannel]);
 */
 
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState([]);
+  const [skip, setSkip] = useState(0);
 
-  function getChatMsgs(query) {
+  const limit = 20
 
+  function getChatMsgs(query, skip, fresh = false) {
     setTimeout(() => {
-      getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: query })
+      getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: query, skip: skip, limit: limit })
         .then((res) => {
           return res;
         })
         .then((response) => {
-          setResults(response.data.results);
+          if (fresh) {
+            setResults([response.data.results]);
+            setSkip(0);
+          }
+          else
+            setResults([...results, response.data.results]);
         });
       setSearching(false);
     }, 1000);
 
   }
 
-  useEffect(() => {
-    if (selectedChannel !== null && query.trim() !== "" && query.length > 2) {
-      if (results !== null)
-        filterByQuery2(results);
-    }
-  }, [query]);
-
+  /*
+    useEffect(() => {
+      if (selectedChannel !== null && query.trim() !== "" && query.length > 2) {
+        setResults(initialArray);
+      }
+    }, [query]);
+  */
   const onSearchChange = (e) => {
     var value = e.target.value;
     setSearching(true);
     setQuery(value);
     if (value.trim() !== "" && value.length > 2) {
-      getChatMsgs(value);
+      getChatMsgs(value, 0, true);
     } else {
       setResults(initresultState);
       setSearching(false);
@@ -216,21 +223,21 @@ const ChatSearchPanel = (props) => {
   };
 
   const user = useSelector((state) => state.session.user);
-
-  const filterByQuery2 = (data) => {
-    let content = [];
-    data.map((item) => {
-      const isAuthor = item.user && item.user.id === user.id;
-      let body = item.body;
-      if (selectedChannel.is_translate)
-        body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
-
-      content.push({ 'id': item.id, 'body': body, 'created_at': item.created_at.timestamp });
-    });
-
-    return content;
-  };
-
+  /*
+    const filterByQuery2 = (data) => {
+      let content = [];
+      data.map((item) => {
+        const isAuthor = item.user && item.user.id === user.id;
+        let body = item.body;
+        if (selectedChannel.is_translate)
+          body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
+  
+        content.push({ 'id': item.id, 'body': body, 'created_at': item.created_at.timestamp });
+      });
+  
+      return content;
+    };
+  */
   const handleRedirect = (id, handleSearchChatPanel, e) => {
     e.preventDefault();
     handleSearchChatPanel();
@@ -249,20 +256,50 @@ const ChatSearchPanel = (props) => {
   };
 
   const parseResult = (data) => {
-    const items = [];
-    data.map((item, i) => {
-      items.push({ 'id': item.id, 'body': item.body, 'created_at': todoFormat(item.created_at.timestamp) });
-    });
-    return (items.length) ? (<ResultWrapper >{items.map((item) => {
-      return <ResultItem onClick={(e) => handleRedirect(item.id, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {item.created_at}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem>
-    })
-    }</ResultWrapper>)
-      : (<EmptyState>
+
+    // console.log(data.length);
+    /*
+    if (!data.length)
+      return (<EmptyState>
         <h3>{dictionary.noItemsFoundHeader}</h3>
         <h5>{dictionary.noItemsFoundText} </h5>
       </EmptyState>
-      )
+      );
+      */
+    const resp = data.map((i) => {
+      return i.map((item) => { return <ResultItem onClick={(e) => handleRedirect(item.id, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {todoFormat(item.created_at.timestamp)}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem> });
+    });
+
+    if (resp[0] && resp[0].length)
+      return resp;
+    else
+      return (<EmptyState>
+        <h3>{dictionary.noItemsFoundHeader}</h3>
+        <h5>{dictionary.noItemsFoundText} </h5>
+      </EmptyState>)
+  //  console.log(resp);
+    /*
+    (<EmptyState>
+      <h3>{dictionary.noItemsFoundHeader}</h3>
+      <h5>{dictionary.noItemsFoundText} </h5>
+    </EmptyState>
+    )
+*/
   };
+
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && skip <= selectedChannel.replies.length)
+      setSkip(skip + limit);
+  }
+
+  useEffect(() => {
+    if (selectedChannel !== null && skip > 0 && skip <= selectedChannel.replies.length) {
+      setSearching(true);
+      getChatMsgs(query, skip);
+    }
+  }, [skip]);
+
   return (
     <Wrapper isActive={showSearchPanel}>
       <div className="d-flex justify-content-between align-items-flex-start align-items-center mb-2">
@@ -276,8 +313,8 @@ const ChatSearchPanel = (props) => {
           searching={searching}
           className="chat-search-chat" />
       </div>
-      <ResultDivWrapper className="justify-content-between align-items-center">
-        {results !== null && parseResult(results)}
+      <ResultDivWrapper className="justify-content-between align-items-center" onScroll={handleScroll}>
+        <ResultWrapper > {parseResult(results)} </ResultWrapper >
       </ResultDivWrapper>
     </Wrapper>
   );
