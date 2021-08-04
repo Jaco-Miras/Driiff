@@ -74,6 +74,8 @@ const Wrapper = styled.li`
     .hover-btns {
       display: inline-block;
     }
+    box-shadow: 0 1px 10px 0 rgb(0 0 0 / 10%), 0 2px 15px 0 rgb(0 0 0 / 5%);
+    z-index: 2;
   }
 
   .more-options {
@@ -155,7 +157,7 @@ const CheckBox = styled(TodoCheckBox)`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  margin-left: -9px;
+  margin-left: -5px;
   :hover {
     background: #f1f2f7;
     cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
