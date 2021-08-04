@@ -28,6 +28,7 @@ import {
   unarchiveUser,
   updateUserType,
   resendInvitation,
+  deleteInvitedUser,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster, useTranslationActions } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -523,6 +524,10 @@ const useUserActions = () => {
     dispatch(resendInvitation(payload, callback));
   };
 
+  const deleteInvitedInternalUser = (payload, callback) => {
+    dispatch(deleteInvitedUser(payload, callback));
+  };
+
   return {
     checkCredentials,
     login,
@@ -558,6 +563,7 @@ const useUserActions = () => {
     updateType,
     deleteUserAccount,
     resendInvitationEmail,
+    deleteInvitedInternalUser,
   };
 };
 

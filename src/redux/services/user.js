@@ -607,3 +607,10 @@ export function resendInvitation(payload) {
     data: payload,
   });
 }
+
+export function deleteInvitedUser(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/users/invited/remove/${payload.user_id}`,
+  });
+}

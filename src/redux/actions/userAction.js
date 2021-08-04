@@ -31,6 +31,7 @@ import {
   getArchivedUsers as getArchivedUsersService,
   updateUserType as updateUserTypeService,
   resendInvitation as resendInvitationService,
+  deleteInvitedUser as deleteInvitedUserService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -195,4 +196,8 @@ export function incomingDeletedUser(payload, callback) {
 
 export function resendInvitation(payload, callback) {
   return dispatchActionToReducer(resendInvitationService(payload), "RESEND_INVITATION_START", "RESEND_INVITATION_SUCCESS", "RESEND_INVITATION_FAILURE", callback);
+}
+
+export function deleteInvitedUser(payload, callback) {
+  return dispatchActionToReducer(deleteInvitedUserService(payload), "DELETE_INVITED_USER_START", "DELETE_INVITED_USER_SUCCESS", "DELETE_INVITED_USER_FAILURE", callback);
 }
