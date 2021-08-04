@@ -12,9 +12,11 @@ import SnoozeItem from "../../list/snooze/SnoozeItem";
 const Wrapper = styled.div`
 .snooze-container {
   margin-bottom: 8px !important;
-  color: ${(props) => (props.darkMode === "1" ? "#afb8bd" : "#aaa")};
-  background: ${(props) => (props.darkMode === "1" ? "#191c20" : "#fff !important")};
+  color: ${(props) => (props.darkMode === "1" ? "#afb8bd !important" : "#aaa !important")};
+  background: ${(props) => (props.darkMode === "1" ? "#191c20 !important" : "#fff !important")};
+  
 }
+.snooze-container p.snooze-body { color: ${(props) => (props.darkMode === "1" ? "#afb8bd !important" : "#505050 !important")} };
 .snooze-container .snooze-me {
   font-size: 11px;
   margin: 0 5px;
@@ -29,6 +31,7 @@ const Wrapper = styled.div`
   min-height: 25px;
   color: ${(props) => (props.darkMode === "1" ? "#afb8bd" : "#aaa")};
   background: transparent;
+  font-size: 12px;
 }
 .snooze-all-container .snooze-all-body {
   height: auto;
@@ -399,7 +402,7 @@ const MainSnooze = (props) => {
 */
   //handler for all non-snoozed items
   useEffect(() => {
-    if (Object.keys(chats.channels).length > 0) 
+    if (Object.keys(chats.channels).length > 0)
       putToSnooze();
   }, [notifications, todos, huddleBots]);
 
