@@ -59,39 +59,39 @@ const usePosts = () => {
         actions.getPosts(payload, cb);
         actions.fetchPostList();
 
-        let filterCb = (err, res) => {
-          if (componentIsMounted.current) {
-            setFetchingPost(false);
-          }
-          if (err) return;
-          let files = res.data.posts.map((p) => p.files);
-          if (files.length) {
-            files = files.flat();
-          }
-          dispatch(
-            addToWorkspacePosts({
-              topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts,
-              filter: res.data.posts,
-              files,
-              filters: {
-                archived: {
-                  active: false,
-                  skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
-                },
-              },
-            })
-          );
-        };
+        // let filterCb = (err, res) => {
+        //   if (componentIsMounted.current) {
+        //     setFetchingPost(false);
+        //   }
+        //   if (err) return;
+        //   let files = res.data.posts.map((p) => p.files);
+        //   if (files.length) {
+        //     files = files.flat();
+        //   }
+        //   dispatch(
+        //     addToWorkspacePosts({
+        //       topic_id: parseInt(params.workspaceId),
+        //       posts: res.data.posts,
+        //       filter: res.data.posts,
+        //       files,
+        //       filters: {
+        //         archived: {
+        //           active: false,
+        //           skip: res.data.next_skip,
+        //           hasMore: res.data.total_take === 25,
+        //         },
+        //       },
+        //     })
+        //   );
+        // };
 
-        actions.getPosts(
-          {
-            filters: ["post", "archived"],
-            topic_id: parseInt(params.workspaceId),
-          },
-          filterCb
-        );
+        // actions.getPosts(
+        //   {
+        //     filters: ["post", "archived"],
+        //     topic_id: parseInt(params.workspaceId),
+        //   },
+        //   filterCb
+        // );
 
         let unreadCb = (err, res) => {
           if (componentIsMounted.current) {
@@ -110,6 +110,7 @@ const usePosts = () => {
               files,
               filters: {
                 unreadPosts: {
+                  active: true,
                   skip: res.data.next_skip,
                   hasMore: res.data.total_take === 25,
                 },
@@ -199,7 +200,9 @@ const usePosts = () => {
           } else if (filter === "in_progress") {
             return (
               !p.hasOwnProperty("draft_type") &&
-              ((p.is_must_read && p.must_read_users.length > 0) || (p.is_must_reply && p.must_reply_users.length > 0) || (p.users_approval.length > 0 && p.users_approval.some((u) => u.ip_address === null && u.id === user.id)))
+              ((p.is_must_read && p.must_read_users.length > 0 && p.must_read_users.some((u) => u.id === user.id)) ||
+                (p.is_must_reply && p.must_reply_users.length > 0 && p.must_reply_users.some((u) => u.id === user.id)) ||
+                (p.users_approval.length > 0 && p.users_approval.some((u) => u.id === user.id)))
             );
           } else if (activeFilter === "my_posts") {
             if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
