@@ -138,6 +138,7 @@ import {
   incomingActivatedUser,
   incomingOnlineUsers,
   incomingDeletedUser,
+  incomingAcceptedInternal,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -991,6 +992,10 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".reset-password-notification", (e) => {
+        console.log(e, "update password internal invite");
+        this.props.incomingAcceptedInternal(e);
+      })
       .listen(".remove-file-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "REMOVE_FILE": {
@@ -1111,6 +1116,7 @@ class SocketListeners extends Component {
       .listen(".company-request-form-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "CREATE_REQUEST_FORM": {
+            console.log(e, "invited user");
             this.props.incomingInternalUser(e);
             break;
           }
@@ -1956,6 +1962,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
     incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
+    incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
   };
 }
 
