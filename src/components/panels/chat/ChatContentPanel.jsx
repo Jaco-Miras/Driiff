@@ -50,15 +50,9 @@ const ChatContentPanel = (props) => {
     dropZoneRef: useRef(),
   };
 
-  const [chatListRef, setChatListRef] = useState([]);
   const [showSearchPanel, setShowSearchPanel] = useState(false);
-  const [pP, setPP] = useState(selectedChannel !== null ? selectedChannel.id : 0);
+  const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
 
-  /*
-  useEffect(() => {
-    selectedChannel !== null && pP !== selectedChannel.id && setShowSearchPanel(false)
-  }, [selectedChannel]);
-*/
   const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
@@ -199,6 +193,12 @@ const ChatContentPanel = (props) => {
   const handleSearchChatPanel = () => {
     setShowSearchPanel(!showSearchPanel);
   };
+
+  useEffect(() => {
+    selectedChannel !== null && setPP(selectedChannel.id);
+    selectedChannel !== null && pP !== selectedChannel.id && pP > 0 && setShowSearchPanel(false);
+  }, [pP, selectedChannel]);
+
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -233,7 +233,9 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      <ChatSearchPanel chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel}/>
+      {selectedChannel !== null &&
+        (<ChatSearchPanel chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} selectedChannel={selectedChannel} />)
+      }
     </Wrapper>
   );
 };
