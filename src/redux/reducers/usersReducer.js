@@ -352,6 +352,19 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      return {
+        ...state,
+        users: Object.values(state.users).reduce((acc, user) => {
+          if (user.id === action.data.id) {
+            acc[user.id] = { ...user, ...action.data };
+          } else {
+            acc[user.id] = user;
+          }
+          return acc;
+        }, {}),
+      };
+    }
     default:
       return state;
   }

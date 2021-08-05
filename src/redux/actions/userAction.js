@@ -201,3 +201,7 @@ export function resendInvitation(payload, callback) {
 export function deleteInvitedUser(payload, callback) {
   return dispatchActionToReducer(deleteInvitedUserService(payload), "DELETE_INVITED_USER_START", "DELETE_INVITED_USER_SUCCESS", "DELETE_INVITED_USER_FAILURE", callback);
 }
+
+export function incomingAcceptedInternal(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ACCEPTED_INTERNAL_USER", payload, callback);
+}
