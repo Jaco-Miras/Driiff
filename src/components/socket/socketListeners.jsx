@@ -1015,7 +1015,6 @@ class SocketListeners extends Component {
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
       .listen(".reset-password-notification", (e) => {
-        console.log(e, "update password internal invite");
         this.props.incomingAcceptedInternal(e);
       })
       .listen(".remove-file-notification", (e) => {
@@ -1138,7 +1137,6 @@ class SocketListeners extends Component {
       .listen(".company-request-form-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "CREATE_REQUEST_FORM": {
-            console.log(e, "invited user");
             this.props.incomingInternalUser(e);
             break;
           }
