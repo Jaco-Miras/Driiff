@@ -391,7 +391,7 @@ const WorkspacePostsPanel = (props) => {
         skip: filter === "in_progress" ? filters?.inProgress.skip : filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
       };
 
-      if (filter === "all") {
+      if (filter === "inbox") {
         if (filters.all && !filters.all.hasMore) return;
       } else if (filter === "in_progress") {
         if (filters.inProgress && !filters.inProgress.hasMore) return;
@@ -419,7 +419,7 @@ const WorkspacePostsPanel = (props) => {
             posts: res.data.posts,
             files,
             filters: {
-              ...(filter === "all" && {
+              ...(filter === "inbox" && {
                 all: {
                   active: true,
                   skip: res.data.next_skip,
@@ -507,7 +507,7 @@ const WorkspacePostsPanel = (props) => {
       topic_id: workspace.id,
       tag: null,
       postListTag: null,
-      filter: "all",
+      filter: "inbox",
     };
     dispatch(updateWorkspacePostFilterSort(payload));
   };

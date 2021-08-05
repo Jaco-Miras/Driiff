@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 `;
 
 const PostFilterItem = (props) => {
-  const { className = "", workspace, filter = "all", filters, onGoBack, counters, dictionary } = props;
+  const { className = "", workspace, filter = "inbox", filters, onGoBack, counters, dictionary } = props;
 
   const dispatch = useDispatch();
   const actions = usePostActions();
@@ -102,10 +102,10 @@ const PostFilterItem = (props) => {
         {dictionary.inbox}
         <span className="small ml-auto">{workspace && workspace.unread_posts > 0 && workspace.unread_posts}</span>
       </span>
-      <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
+      {/* <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="mail" />
         {dictionary.all}
-      </span>
+      </span> */}
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "in_progress" ? "active" : ""}`} data-value="in_progress" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="clock" />
         {dictionary.inProgress}
