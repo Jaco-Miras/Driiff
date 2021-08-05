@@ -357,7 +357,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         users: Object.values(state.users).reduce((acc, user) => {
           if (user.id === action.data.id) {
-            acc[user.id] = { ...user, ...action.data };
+            acc[user.id] = { ...user, ...action.data, has_accepted: true };
           } else {
             acc[user.id] = user;
           }
