@@ -134,12 +134,8 @@ const EmptyState = styled.div`
 
 const ChatSearchPanel = (props) => {
 
-  const { className = "", showSearchPanel, handleSearchChatPanel, selectedChannel } = props;
-  const [query, setQuery] = useState("");
+  const { className = "", setQuery, setSearching, setResults, query, searching, results, chatMessageActions, showSearchPanel, setShowSearchPanel, handleSearchChatPanel, selectedChannel, pP } = props;
 
-  const [searching, setSearching] = useState(false);
-  const initresultState = [];
-  const [results, setResults] = useState([]);
   const [skip, setSkip] = useState(0);
 
   const limit = 20;
@@ -148,7 +144,7 @@ const ChatSearchPanel = (props) => {
   const { _t } = useTranslationActions();
 
   const clear = () => {
-    setResults(initresultState);
+    setResults([]);
     setQuery("");
     setSearching(false);
   };
@@ -165,7 +161,7 @@ const ChatSearchPanel = (props) => {
     if (value.trim() !== "" && value.length > 2 && e.keyCode !== 32)
       getChatMsgs(value, 0, true);
     else {
-      setResults(initresultState);
+      setResults([]);
       setSearching(false);
     }
   };
@@ -180,8 +176,8 @@ const ChatSearchPanel = (props) => {
 
   const redirect = useRedirect();
 
-  const handleRedirect = (topic, handleSearchChatPanel, e) => {
-    handleSearchChatPanel();
+  const handleRedirect = (topic) => {
+    handleSearchChatPanel()
     redirect.toChat(selectedChannel, topic);
   };
 
@@ -192,25 +188,18 @@ const ChatSearchPanel = (props) => {
 
   const parseResult = (data) => {
     const resp = data.map((i) => {
-      return i.map((item) => { return <ResultItem onClick={(e) => handleRedirect(item, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {todoFormat(item.created_at.timestamp)}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem> });
+      return i.map((item) => { return <ResultItem onClick={(e) => handleRedirect(item)} key={item.id}><p className="chat-search-date"> {todoFormat(item.created_at.timestamp)}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem> });
     });
     return (resp[0] && resp[0].length) ? resp : (<EmptyState> <h3>{dictionary.noItemsFoundHeader}</h3><h5>{dictionary.noItemsFoundText} </h5> </EmptyState>)
   };
 
-
   const getChatMsgs = (query, skip, fresh = false) => {
     setTimeout(() => {
       getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: query, skip: skip, limit: limit })
-        .then((res) => { return res; })
-        .then((response) => {
-          if (fresh) {
-            setResults([response.data.results]);
-            setSkip(0);
-          }
-          else
-            setResults([...results, response.data.results]);
+        .then((res) => { return res; }).then((response) => {
+          if (fresh) { setResults([response.data.results]); setSkip(0); }
+          else setResults([...results, response.data.results]);
         });
-      setSearching(false);
     }, 1000);
   }
 
@@ -218,14 +207,14 @@ const ChatSearchPanel = (props) => {
     if (selectedChannel !== null && skip > 0) {
       setSearching(true);
       getChatMsgs(query, skip);
-
     }
-    console.log(skip);
   }, [skip]);
-
+  
   useEffect(() => {
-    !showSearchPanel && clear();
-  }, [showSearchPanel]);
+    setTimeout(() => {
+      searching && setSearching(!searching);
+    }, 500);
+  }, [results]);
 
   return (
     <Wrapper isActive={showSearchPanel}>
