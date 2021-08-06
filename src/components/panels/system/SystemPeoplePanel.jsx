@@ -54,6 +54,7 @@ const SystemPeoplePanel = (props) => {
 
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
+  const [showInvited, setShowInvited] = useState(false);
 
   const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
   const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
@@ -93,6 +94,8 @@ const SystemPeoplePanel = (props) => {
         if (user.name.trim() === "") {
           return false;
         }
+      } else if (showInvited) {
+        return !user.has_accepted && user.active;
       } else {
         if (user.active !== 1) {
           return false;
@@ -143,6 +146,13 @@ const SystemPeoplePanel = (props) => {
     deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
     deleteConfirmationText: _t("PEOPLE.DELETE_CONFIRMATION_TEXT", "Are you sure you want to delete this user? This means this user can't log in anymore."),
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
+    resendInvitation: _t("PEOPLE.RESEND_INVITATION", "Resend invitation"),
+    showInvited: _t("PEOPLE.SHOW_INVITED", "Show invited"),
+    removeInvitedInternal: _t("PEOPLE.REMOVE_INVITED_INTERNAL", "Remove invited internal user"),
+    sendInviteManually: _t("PEOPLE.SEND_INVITE_MANUALLY", "Send invite manually"),
+    deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),
+    deleteInvitedConfirmationText: _t("PEOPLE.DELETE_INVITED_CONFIRMATION_TEXT", "Are you sure you want to remove this invited user?"),
+    toasterRemoveInvited: _t("TOASTER.REMOVE_INVITED_USER", "Removed invited user"),
   };
 
   const handleInviteUsers = () => {
@@ -223,6 +233,7 @@ const SystemPeoplePanel = (props) => {
 
       return newState;
     });
+    if (showInvited && !showInactive) setShowInvited(false);
   };
 
   useEffect(() => {
@@ -293,6 +304,21 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleShowInvitedToggle = () => {
+    setShowInvited((prevState) => {
+      const newState = !prevState;
+
+      // if (newState) {
+      //   toaster.success("Showing inactive members");
+      // } else {
+      //   toaster.success("Showing active members only");
+      // }
+
+      return newState;
+    });
+    if (showInactive && !showInvited) setShowInactive(false);
+  };
+
   const handleDeleteUser = (user) => {
     const handleSubmit = () => {
       userActions.deleteUserAccount({ user_id: user.id }, (err, res) => {
@@ -307,6 +333,43 @@ const SystemPeoplePanel = (props) => {
       submitText: dictionary.deleteUser,
       cancelText: dictionary.cancel,
       bodyText: dictionary.deleteConfirmationText,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    dispatch(addToModals(confirmModal));
+  };
+
+  const handleResendInvite = (user) => {
+    let payload = {
+      user_id: user.id,
+      email: user.email,
+    };
+    const callback = (err, res) => {
+      if (err) {
+        toaster.error(_t("TOASTER.RESEND_INVITATION_FAILED", "Invitation failed"));
+        return;
+      } else {
+        toaster.success(_t("TOASTER.RESEND_INVITATION_SUCCESS", "Invitation sent to ::email::", { email: user.email }));
+      }
+    };
+    userActions.resendInvitationEmail(payload, callback);
+  };
+
+  const handleDeleteInvitedInternalUser = (user) => {
+    const handleSubmit = () => {
+      userActions.deleteInvitedInternalUser({ user_id: user.id }, (err, res) => {
+        if (err) return;
+        toaster.success(`${dictionary.toasterRemoveInvited}`);
+      });
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.deleteInvitedUser,
+      submitText: dictionary.deleteInvitedUser,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.deleteInvitedConfirmationText,
       actions: {
         onSubmit: handleSubmit,
       },
@@ -330,6 +393,16 @@ const SystemPeoplePanel = (props) => {
                 onChange={handleShowInactiveToggle}
                 data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
                 label={<span>{dictionary.showInactiveMembers}</span>}
+              />
+              <CustomInput
+                className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
+                checked={showInvited}
+                id="show_invited"
+                name="show_invited"
+                type="switch"
+                onChange={handleShowInvitedToggle}
+                //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
+                label={<span>{dictionary.showInvited}</span>}
               />
             </div>
             <div>
@@ -355,6 +428,8 @@ const SystemPeoplePanel = (props) => {
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
                   onDeleteUser={handleDeleteUser}
+                  onResendInvite={handleResendInvite}
+                  onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
                   showInactive={showInactive}
                   usersWithoutActivity={usersWithoutActivity}
                 />

@@ -599,3 +599,18 @@ export function getUsersWithoutActivity(payload) {
     url: "/users/inactive",
   });
 }
+
+export function resendInvitation(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/resend-email",
+    data: payload,
+  });
+}
+
+export function deleteInvitedUser(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/users/invited/remove/${payload.user_id}`,
+  });
+}

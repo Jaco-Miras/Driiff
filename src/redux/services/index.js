@@ -80,6 +80,8 @@ export {
   unarchiveUser,
   updateUserType,
   getUsersWithoutActivity,
+  resendInvitation,
+  deleteInvitedUser,
 } from "./user";
 
 export {

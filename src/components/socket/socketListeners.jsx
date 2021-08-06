@@ -138,6 +138,7 @@ import {
   incomingActivatedUser,
   incomingOnlineUsers,
   incomingDeletedUser,
+  incomingAcceptedInternal,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -991,6 +992,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".reset-password-notification", (e) => {
+        this.props.incomingAcceptedInternal(e);
+      })
       .listen(".remove-file-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "REMOVE_FILE": {
@@ -1956,6 +1960,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedUser: bindActionCreators(incomingDeletedUser, dispatch),
     incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
+    incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
   };
 }
 

@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
+import { copyTextToClipboard } from "../../../../helpers/commonFunctions";
+import { useToaster } from "../../../hooks";
 
 const Wrapper = styled.div`
   .avatar {
@@ -98,13 +100,15 @@ const PeopleListItem = (props) => {
     onActivateUser = null,
     onChangeUserType = null,
     onDeleteUser = null,
+    onResendInvite = null,
+    onDeleteInvitedInternalUser = null,
     showInactive = false,
     showWorkspaceRole = false,
     usersWithoutActivity = [],
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
-
+  const toaster = useToaster();
   const refs = {
     cardBody: useRef(null),
     content: useRef(null),
@@ -214,6 +218,22 @@ const PeopleListItem = (props) => {
     if (onChangeUserType) onChangeUserType(user, "external");
   };
 
+  const handleDeleteUser = () => {
+    if (onDeleteUser) onDeleteUser(user);
+  };
+
+  const handleReinvite = () => {
+    if (onResendInvite) onResendInvite(user);
+  };
+
+  const handleDeleteInvitedInternalUser = () => {
+    if (onDeleteInvitedInternalUser) onDeleteInvitedInternalUser(user);
+  };
+
+  const handleSendInviteManually = () => {
+    copyTextToClipboard(toaster, user.invite_link);
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
@@ -243,8 +263,9 @@ const PeopleListItem = (props) => {
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
                         <ToolTip content={user.email}>
-                          <span>{user.name}</span>
+                          <span className="mr-2">{user.name}</span>
                         </ToolTip>
+                        {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
                         {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
                           <ToolTip content={"This is an administrator account"}>
                             <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
@@ -276,16 +297,24 @@ const PeopleListItem = (props) => {
                   {loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
-                      {!showInactive && user.type === "internal" && user.role && user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>}
-                      {!showInactive && user.type === "internal" && user.role && user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>}
+                      {!showInactive && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
+                        <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>
+                      )}
+                      {!showInactive && user.type === "internal" && user.role && user.role.name === "admin" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
+                        <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>
+                      )}
                       {!showInactive && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
                       {!showInactive && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
-                      {/* <div onClick={handleArchiveUser}>{user.active ? dictionary.archiveUser : dictionary.unarchiveUser}</div> */}
                       {showInactive && user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}
-                      {user.active ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
-                      {!user.deactivate && user.active ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
-                      {user.deactivate && user.active === 0 ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
-                      {user.active && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && <div onClick={() => onDeleteUser(user)}>{dictionary.deleteUser}</div>}
+                      {user.active && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
+                      {!user.deactivate && user.active && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
+                      {showInactive && user.deactivate && user.active === 0 && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
+                      {!showInactive && user.active && user.hasOwnProperty("has_accepted") && user.has_accepted && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && (
+                        <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>
+                      )}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
                     </MoreOptions>
                   )}
                 </div>

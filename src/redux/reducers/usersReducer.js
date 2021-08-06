@@ -21,9 +21,22 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "INCOMING_INTERNAL_USER": {
       let user = {
-        contact: "",
-        active: 1,
         ...action.data,
+        active: 1,
+        has_accepted: false,
+        address: "",
+        company: "",
+        contact: "",
+        deactivate: false,
+        designation: "",
+        external_company_name: "",
+        external_id: null,
+        first_name: "",
+        is_favourite: false,
+        place: "",
+        profile_image_link: null,
+        profile_image_thumbnail_link: null,
+        type: "internal",
       };
       delete user["SOCKET_TYPE"];
 
@@ -333,6 +346,19 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         users: Object.values(state.users).reduce((acc, user) => {
           if (user.id !== action.data.id) {
+            acc[user.id] = user;
+          }
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      return {
+        ...state,
+        users: Object.values(state.users).reduce((acc, user) => {
+          if (user.id === action.data.id) {
+            acc[user.id] = { ...user, ...action.data, has_accepted: true };
+          } else {
             acc[user.id] = user;
           }
           return acc;
