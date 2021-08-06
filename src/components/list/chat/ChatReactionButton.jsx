@@ -116,7 +116,16 @@ const ChatReactionButton = (props) => {
     <ChatReactionButtonContainer className="emoji-button-div" ref={refs.container} active={showEmojiPicker}>
       <SvgIconFeather icon="smile" onClick={handleShowEmojiPicker} />
       {showEmojiPicker && (
-        <PickerEmoji ref={refs.picker} onMouseEnter={handlePickerMouseEnter} onMouseLeave={handlePickerMouseLeave} className={"chat-reaction-picker"} orientation={orientation} onSelectEmoji={handleSelectEmoji} show={showEmojiPicker} />
+        <PickerEmoji
+          ref={refs.picker}
+          onMouseEnter={handlePickerMouseEnter}
+          onMouseLeave={handlePickerMouseLeave}
+          className={"chat-reaction-picker"}
+          orientation={orientation}
+          onSelectEmoji={handleSelectEmoji}
+          show={showEmojiPicker}
+          perLine={7}
+        />
       )}
     </ChatReactionButtonContainer>
   );

@@ -17,10 +17,10 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
 
     const elPos = mainRef.current.getBoundingClientRect();
     if (scrollEl) {
-      if (70 + elPos.y < scrollEl.clientHeight) {
-        return "bottom";
-      } else {
+      if (window.innerHeight - (elPos.y + 150) < tooltipRef.current.clientHeight) {
         return "top";
+      } else {
+        return "bottom";
       }
       // if (scrollEl.clientHeight - elPos.y > tooltipRef.current.clientHeight) {
       //   console.log(scrollEl.clientHeight, elPos.y, tooltipRef.current.clientHeight, "bottom");
