@@ -80,7 +80,11 @@ const ChannelsSidebar = (props) => {
       }
     }
     actions.select({ ...channel, selected: true });
-    history.push(`/chat/${channel.code}`);
+    if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
+      return;
+    } else {
+      history.push(`/chat/${channel.code}`);
+    }
   };
 
   return (
