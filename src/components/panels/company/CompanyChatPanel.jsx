@@ -26,12 +26,12 @@ const Wrapper = styled.div`
   }
   @media (max-width: 1280px) {
     .chat-sidebar-panel {
-      flex: 0 0 45%;
-      max-width: 45%;
+      flex: 0 0 40%;
+      max-width: 40%;
     }
     .chat-content-panel {
-      flex: 0 0 55%;
-      max-width: 55%;
+      flex: 0 0 60%;
+      max-width: 60%;
     }
   }
   @media (max-width: 991.99px) {

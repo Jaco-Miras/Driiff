@@ -31,6 +31,7 @@ const PickerEmoji = React.forwardRef((props, ref) => {
   return (
     <Wrapper ref={ref} hide={orientation.vertical === null || orientation.horizontal === null} className={`picker-emoji orientation-${orientation.vertical} orientation-${orientation.horizontal} ${className}`} {...otherProps}>
       <Picker
+        className={className}
         title="Emoji"
         set="apple"
         onSelect={onSelectEmoji}
@@ -38,6 +39,7 @@ const PickerEmoji = React.forwardRef((props, ref) => {
         //autoFocus
         showPreview={false}
         showSkinTones={false}
+        perLine={6}
         i18n={{
           search: "Search",
           clear: "Clear",

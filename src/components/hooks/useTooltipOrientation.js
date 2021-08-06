@@ -17,11 +17,18 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
 
     const elPos = mainRef.current.getBoundingClientRect();
     if (scrollEl) {
-      if (scrollEl.clientHeight - elPos.y > tooltipRef.current.clientHeight / 2) {
+      if (70 + elPos.y < scrollEl.clientHeight) {
         return "bottom";
       } else {
         return "top";
       }
+      // if (scrollEl.clientHeight - elPos.y > tooltipRef.current.clientHeight) {
+      //   console.log(scrollEl.clientHeight, elPos.y, tooltipRef.current.clientHeight, "bottom");
+      //   return "bottom";
+      // } else {
+      //   console.log(scrollEl.clientHeight, elPos.y, tooltipRef.current.clientHeight, "top");
+      //   return "top";
+      // }
     } else {
       if (elPos.y - tooltipRef.current.clientHeight < tooltipRef.current.clientHeight) {
         return "bottom";
@@ -60,8 +67,10 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
 
     adjust += horizontalOffset;
     if (elPos.x - adjust < benchMark) {
+      console.log(elPos.x, adjust, benchMark, "right");
       return "right";
     } else {
+      console.log(elPos.x, adjust, benchMark, "left");
       return "left";
     }
   };
@@ -87,7 +96,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
         if (scrollEl) scrollEl.removeEventListener("scroll", calculatePosition);
       };
     }
-  }, [when, scrollEl, horizontalOrientation, verticalOrientation, tooltipRef, mainRef]);
+  }, [when]);
 
   useEffect(() => {
     //recalculate if initial clientheight is zero
