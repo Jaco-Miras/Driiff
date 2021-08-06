@@ -49,13 +49,8 @@ const ChatContentPanel = (props) => {
     dropZoneRef: useRef(),
   };
 
-  const [chatListRef, setChatListRef] = useState([]);
   const [showSearchPanel, setShowSearchPanel] = useState(false);
-  const [pP, setPP] = useState(selectedChannel !== null ? selectedChannel.id : 0);
-
-  useEffect(() => {
-    selectedChannel !== null && pP !== selectedChannel.id && setShowSearchPanel(false);
-  }, [selectedChannel]);
+  const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
 
   const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
@@ -207,6 +202,21 @@ const ChatContentPanel = (props) => {
   const handleSearchChatPanel = () => {
     setShowSearchPanel(!showSearchPanel);
   };
+
+  const [query, setQuery] = useState("");
+  const [searching, setSearching] = useState(false);
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    selectedChannel !== null && setPP(selectedChannel.id);
+    if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
+      setResults([]);
+      setQuery("");
+      setSearching(false);
+      setShowSearchPanel(false);
+    }
+  }, [pP, selectedChannel]);
+
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -245,7 +255,22 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      <ChatSearchPanel showSearchPanel={showSearchPanel} handleSearchChatPanel={handleSearchChatPanel} scrollComponent={scrollComponent} pP={pP} selectedChannel={selectedChannel} />
+      {selectedChannel !== null && (
+        <ChatSearchPanel
+          setQuery={setQuery}
+          setSearching={setSearching}
+          setResults={setResults}
+          query={query}
+          searching={searching}
+          results={results}
+          chatMessageActions={chatMessageActions}
+          showSearchPanel={showSearchPanel}
+          setShowSearchPanel={setShowSearchPanel}
+          handleSearchChatPanel={handleSearchChatPanel}
+          selectedChannel={selectedChannel}
+          pP={pP}
+        />
+      )}
     </Wrapper>
   );
 };

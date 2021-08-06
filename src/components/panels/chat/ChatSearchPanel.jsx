@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import SearchForm from "../../forms/SearchForm";
-import { useTimeFormat } from "../../hooks";
-import { stripHtml } from "../../../helpers/stringFormatter";
-
+import { useTimeFormat, useTranslationActions, useRedirect } from "../../hooks";
+import { getChatMsgsSearch } from "../../../redux/services/chat";
 const Wrapper = styled.div`position: absolute;
 top: 0;
 bottom: 0;
@@ -109,49 +107,63 @@ const ResultDivWrapper = styled.div`
   height: calc(100% - 43px);
 `;
 
+const EmptyState = styled.div`
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 5rem;
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
+  h3 {
+    font-size: 16px;
+  }
+  h5 {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+  button {
+    width: auto !important;
+    margin: 2rem auto;
+  }
+  color: #363636;
+`;
+
 const ChatSearchPanel = (props) => {
 
-  const { className = "", showSearchPanel, handleSearchChatPanel, scrollComponent, pP, selectedChannel } = props;
-  const [query, setQuery] = useState("");
+  const { className = "", setQuery, setSearching, setResults, query, searching, results, chatMessageActions, showSearchPanel, setShowSearchPanel, handleSearchChatPanel, selectedChannel, pP } = props;
 
-  const [searching, setSearching] = useState(false);
-  const initresultState = [];
-  const [result, setResult] = useState(initresultState);
+  const [skip, setSkip] = useState(0);
+
+  const limit = 20;
 
   const { todoFormat } = useTimeFormat();
+  const { _t } = useTranslationActions();
 
   const clear = () => {
-    setResult(initresultState);
+    setResults([]);
     setQuery("");
     setSearching(false);
   };
 
-  useEffect(() => {
-    selectedChannel !== null && pP !== selectedChannel.id && clear()
-  }, [selectedChannel]);
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    bottom && setSkip(skip + limit);
+  }
 
   const onSearchChange = (e) => {
     var value = e.target.value;
     setSearching(true);
-    if (value.trim() !== "" && value.length > 2) {
-      setResult(filterByQuery(sortedReplies(), value));
-      setSearching(false);
-    } else {
-      setResult(initresultState);
+    setQuery(value);
+    if (value.trim() !== "" && value.length > 2 && e.keyCode !== 32)
+      getChatMsgs(value, 0, true);
+    else {
+      setResults([]);
       setSearching(false);
     }
-    setQuery(value);
-  };
-
-  const sortedReplies = () => {
-    return selectedChannel.replies
-      .sort((a, b) => {
-        if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-          return a.id - b.id;
-        } else {
-          return a.created_at.timestamp - b.created_at.timestamp;
-        }
-      });
   };
 
   const handleSearchKeyDown = (e) => {
@@ -162,73 +174,47 @@ const ChatSearchPanel = (props) => {
     e.keyCode === 27 && clear();
   };
 
-  const user = useSelector((state) => state.session.user);
+  const redirect = useRedirect();
 
-  const filterByQuery = (data, inputValue) => {
-    const keywords = inputValue.split(/\s/);
-    let content = [];
-    const results = data.filter((item) => {
-      let resp = false;
-      if (item.body.includes("POST_CREATE::")
-        || item.body.startsWith("ZAP_SUBMIT::")
-        || item.body.includes("JOIN_CHANNEL")
-        || item.body.includes("MEMBER_REMOVE_CHANNEL")
-        || item.body.includes("ACCOUNT_DEACTIVATED")
-        || item.body.includes("NEW_ACCOUNT_ACTIVATED")
-        || item.body.includes("CHANNEL_UPDATE::")
-        || item.body.includes("CHAT_MESSAGE_DELETED"))
-        return resp;
-
-      const isAuthor = item.user && item.user.id === user.id;
-
-      let body = item.body;
-      if (selectedChannel.is_translate)
-        body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
-
-      body = stripHtml(body);
-      let respArr = [];
-      for (var i = 0; i < keywords.length; i++) {
-        if (keywords[i].trim() !== "" && keywords[i].length > 1)
-          respArr.push(new RegExp(keywords[i], 'ig').test(body));
-      }
-      return respArr.includes(true);
-
-    }).map((item) => {
-      const pattern = new RegExp(`(${keywords.join('|')})`, 'ig');
-      const isAuthor = item.user && item.user.id === user.id;
-      let body = item.body;
-      if (selectedChannel.is_translate)
-        body = (isAuthor) ? item.body : item.is_translated && item.translated_body !== null && item.translated_body;
-
-      body = body.replace(pattern, match => `<span>${match}</span>`);
-      content.push({ 'id': item.id, 'body': body, 'created_at': item.created_at.timestamp });
-    });
-
-    return content;
+  const handleRedirect = (topic) => {
+    handleSearchChatPanel()
+    redirect.toChat(selectedChannel, topic);
   };
 
-  const handleRedirect = (id, handleSearchChatPanel, e) => {
-    e.preventDefault();
-    handleSearchChatPanel();
-    var element = document.getElementsByClassName('chat-list-item-' + id);
-    scrollComponent.current.scrollTo({
-      behavior: "smooth",
-      top: element[0].offsetTop - (scrollComponent.current.offsetHeight / 2)
-    });
-    element[0].classList.add("pulsating");
-    setTimeout(function () { element[0].classList.remove("pulsating") }, 2000);
+  const dictionary = {
+    noItemsFoundHeader: _t("CHATSEARCH.NO_ITEMS_FOUND_HEADER", "WOO!"),
+    noItemsFoundText: _t("CHATSEARCH.NO_ITEMS_FOUND_TEXT", "Nothing here but me… 👻"),
   };
 
   const parseResult = (data) => {
-    const items = [];
-    data.map((item, i) => {
-      items.push({ 'id': item.id, 'body': item.body, 'created_at': todoFormat(item.created_at) });
+    const resp = data.map((i) => {
+      return i.map((item) => { return <ResultItem onClick={(e) => handleRedirect(item)} key={item.id}><p className="chat-search-date"> {todoFormat(item.created_at.timestamp)}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem> });
     });
-    return (<ResultWrapper >{items.map((item) => {
-      return <ResultItem onClick={(e) => handleRedirect(item.id, handleSearchChatPanel, e)} key={item.id}><p className="chat-search-date"> {item.created_at}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem>
-    })
-    }</ResultWrapper>);
+    return (resp[0] && resp[0].length) ? resp : (<EmptyState> <h3>{dictionary.noItemsFoundHeader}</h3><h5>{dictionary.noItemsFoundText} </h5> </EmptyState>)
   };
+
+  const getChatMsgs = (query, skip, fresh = false) => {
+    setTimeout(() => {
+      getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: query, skip: skip, limit: limit })
+        .then((res) => { return res; }).then((response) => {
+          if (fresh) { setResults([response.data.results]); setSkip(0); }
+          else setResults([...results, response.data.results]);
+        });
+    }, 1000);
+  }
+
+  useEffect(() => {
+    if (selectedChannel !== null && skip > 0) {
+      setSearching(true);
+      getChatMsgs(query, skip);
+    }
+  }, [skip]);
+  
+  useEffect(() => {
+    setTimeout(() => {
+      searching && setSearching(!searching);
+    }, 500);
+  }, [results]);
 
   return (
     <Wrapper isActive={showSearchPanel}>
@@ -243,8 +229,8 @@ const ChatSearchPanel = (props) => {
           searching={searching}
           className="chat-search-chat" />
       </div>
-      <ResultDivWrapper className="justify-content-between align-items-center">
-        {query.trim() !== "" && query.length > 2 && parseResult(result)}
+      <ResultDivWrapper className="justify-content-between align-items-center" onScroll={handleScroll}>
+        <ResultWrapper > {showSearchPanel && parseResult(results)} </ResultWrapper >
       </ResultDivWrapper>
     </Wrapper>
   );

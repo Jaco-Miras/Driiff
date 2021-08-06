@@ -509,3 +509,12 @@ export function getSiteMetaData(payload) {
     data: payload,
   });
 }
+
+export function getChatMsgsSearch(payload) {
+  let url = "/v2/search-on-chat";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
