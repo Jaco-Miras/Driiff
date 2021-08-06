@@ -67,10 +67,8 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
 
     adjust += horizontalOffset;
     if (elPos.x - adjust < benchMark) {
-      console.log(elPos.x, adjust, benchMark, "right");
       return "right";
     } else {
-      console.log(elPos.x, adjust, benchMark, "left");
       return "left";
     }
   };

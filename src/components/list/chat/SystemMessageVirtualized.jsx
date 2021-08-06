@@ -132,4 +132,4 @@ const SystemMessageVirtualized = forwardRef((props, ref) => {
   );
 });
 
-export default SystemMessageVirtualized;
+export default React.memo(SystemMessageVirtualized);

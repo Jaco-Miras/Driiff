@@ -361,7 +361,7 @@ const StyledAvatar = styled(Avatar)`
 let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
-  const { actualIndex, reply, lastReply, isLastChatVisible, dictionary, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language } = props;
+  const { actualIndex, reply, lastReply, isLastChatVisible, dictionary, timeFormat, chatMessageActions, translate, language, translated_channels, chat_language, scrollComponent } = props;
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
@@ -468,19 +468,20 @@ const VirtualizedChat = (props) => {
               isAuthor={isAuthor}
               isLastChat={lastReply.id === reply.id}
               chatSettings={chatSettings}
-              isLastChatVisible={isLastChatVisible}
               dictionary={dictionary}
               users={users}
               translate={translate}
               language={language}
               translated_channels={translated_channels}
               chat_language={chat_language}
-            >
-              <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
-                {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} replyData={reply} />}
-              </ChatActionsContainer>
-            </ChatBubbleVirtualized>
+            />
+            <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+              {<ChatReactionButton isAuthor={isAuthor} reply={reply} chatMessageActions={chatMessageActions} scrollComponent={scrollComponent} />}
+              {!isNaN(reply.id) && !reply.is_deleted && (
+                <MessageOptions dictionary={dictionary} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} replyData={reply} scrollComponent={scrollComponent} chatMessageActions={chatMessageActions} />
+              )}
+            </ChatActionsContainer>
+
             {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
             {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && seenMembers.length > 0 && (
               <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers} seenMembers={seenMembers} isPersonal={selectedChannel.members.length === 2} />
@@ -510,24 +511,22 @@ const VirtualizedChat = (props) => {
                 selectedChannel={selectedChannel}
                 reply={reply}
                 isLastChat={lastReply.id === reply.id}
-                isLastChatVisible={isLastChatVisible}
                 dictionary={dictionary}
                 users={users}
               />
-              {/* {reply.unfurls.length ? (
-                <ChatUnfurl
-                  unfurlData={reply.unfurls}
-                  isAuthor={false}
-                  deleteChatUnfurlAction={props.deleteChatUnfurlAction}
-                  removeChatUnfurlAction={props.removeChatUnfurlAction}
-                  channelId={selectedChannel.id}
-                  replyId={reply.id}
-                  removeUnfurl={chatMessageActions.removeUnfurl}
-                />
-              ) : null} */}
               <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                {<ChatReactionButton isAuthor={isAuthor} reply={reply} />}
-                {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={selectedChannel} isAuthor={isAuthor} />}
+                {<ChatReactionButton isAuthor={isAuthor} reply={reply} chatMessageActions={chatMessageActions} scrollComponent={scrollComponent} />}
+                {!isNaN(reply.id) && !reply.is_deleted && (
+                  <MessageOptions
+                    dictionary={dictionary}
+                    replyData={reply}
+                    className={"chat-message-options"}
+                    selectedChannel={selectedChannel}
+                    isAuthor={isAuthor}
+                    scrollComponent={scrollComponent}
+                    chatMessageActions={chatMessageActions}
+                  />
+                )}
               </SystemChatActionsContainer>
             </SystemMessageContainer>
             {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
@@ -538,4 +537,4 @@ const VirtualizedChat = (props) => {
   );
 };
 
-export default VirtualizedChat;
+export default React.memo(VirtualizedChat);

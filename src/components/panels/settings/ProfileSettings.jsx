@@ -674,7 +674,7 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              {
+              {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(loggedUser.email) && (
                 <div className="row mb-3">
                   <div className="col-12">
                     <CustomInput
@@ -689,7 +689,7 @@ const ProfileSettings = (props) => {
                     />
                   </div>
                 </div>
-              }
+              )}
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
                 <div className="col-7">
