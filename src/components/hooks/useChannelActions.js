@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addChannels,
@@ -39,6 +39,8 @@ import { replaceChar } from "../../helpers/stringFormatter";
 
 const useChannelActions = () => {
   const dispatch = useDispatch();
+
+  const creatingChannel = useRef(null);
 
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const { _t } = useTranslationActions();
@@ -89,43 +91,47 @@ const useChannelActions = () => {
   const createByUserChannel = (channel, callback = () => {}) => {
     let old_channel = { ...channel };
 
-    create(
-      {
-        title: "",
-        type: "person",
-        recipient_ids: channel.recipient_ids,
-      },
-      (err, res) => {
-        if (res) {
-          let timestamp = Math.round(+new Date() / 1000);
-          let newchannel = {
-            ...res.data.channel,
-            old_id: old_channel.id,
-            code: res.data.code,
-            selected: true,
-            hasMore: false,
-            isFetching: false,
-            skip: 0,
-            replies: [],
-            created_at: {
-              timestamp: timestamp,
-            },
-            last_reply: null,
-            title: res.data.channel.profile.name,
-          };
+    if (!creatingChannel.current) {
+      creatingChannel.current = true;
+      create(
+        {
+          title: "",
+          type: "person",
+          recipient_ids: channel.recipient_ids,
+        },
+        (err, res) => {
+          creatingChannel.current = null;
+          if (res) {
+            let timestamp = Math.round(+new Date() / 1000);
+            let newchannel = {
+              ...res.data.channel,
+              old_id: old_channel.id,
+              code: res.data.code,
+              selected: true,
+              hasMore: false,
+              isFetching: false,
+              skip: 0,
+              replies: [],
+              created_at: {
+                timestamp: timestamp,
+              },
+              last_reply: null,
+              title: res.data.channel.profile.name,
+            };
 
-          dispatch(
-            renameChannelKey(newchannel, () => {
-              history.push(`/chat/${newchannel.code}`);
-              dispatch(setSelectedChannel(newchannel));
-              if (callback) {
-                callback(newchannel);
-              }
-            })
-          );
+            dispatch(
+              renameChannelKey(newchannel, () => {
+                history.push(`/chat/${newchannel.code}`);
+                dispatch(setSelectedChannel(newchannel));
+                if (callback) {
+                  callback(newchannel);
+                }
+              })
+            );
+          }
         }
-      }
-    );
+      );
+    }
   };
 
   /**
