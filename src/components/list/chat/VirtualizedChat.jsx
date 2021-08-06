@@ -88,7 +88,7 @@ const ChatList = styled.li`
 `;
 const TimestampDiv = styled.div`
   z-index: 1;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   color: #a7abc3;
@@ -158,25 +158,7 @@ const ChatBubbleContainer = styled.div`
   }
   .dark & {
     &:before {
-      ${(props) => props.showAvatar && "content: '';"};
-      border: 10px solid transparent;
-      position: absolute;
-      top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
-      left: 30px;
-      z-index: 1;
-      @media all and (max-width: 620px) {
-        display: none;
-      }
-      ${(props) =>
-        props.isAuthor === true &&
-        `
-            left: auto;
-            right: -16px;            
-            border-right-color: transparent;
-            @media all and (max-width: 620px) {
-              display: none;
-            }
-        `};
+      display: none;
     }
   }
 `;
