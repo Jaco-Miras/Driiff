@@ -425,6 +425,26 @@ const CompanyPostDetail = (props) => {
     // postActions.getUnreadPostsCount();
   }, []);
 
+  useEffect(() => {
+    const viewed = post.view_user_ids.some((id) => id === user.id);
+    if (!viewed && !disableMarkAsRead()) {
+      postActions.visit({
+        post_id: post.id,
+        personalized_for_id: null,
+      });
+    }
+
+    if (post.is_unread === 1 || post.unread_count > 0) {
+      if (!disableMarkAsRead()) postActions.markAsRead(post);
+    }
+
+    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+
+    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    // postActions.getUnreadPostsCount();
+  }, [post.id]);
+
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
@@ -529,18 +549,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter
-          isMember={isMember}
-          post={post}
-          posts={posts}
-          filter={filter}
-          commentActions={commentActions}
-          postActions={postActions}
-          overview={handleClosePost}
-          onShowFileDialog={handleOpenFileDialog}
-          dropAction={dropAction}
-          mainInput={true}
-        />
+        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

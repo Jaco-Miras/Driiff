@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { CommonPicker, SvgIconFeather } from "../../../common";
@@ -188,6 +189,7 @@ const ApproverSelectWrapper = styled.div`
 const OverviewNextLink = styled.span`
   display: flex;
   align-items: center;
+  margin-right: 30px;
   svg {
     width: 1rem;
     height: 1rem;
@@ -199,9 +201,10 @@ const OverviewNextLink = styled.span`
 `;
 
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
+  const { className = "", onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
 
   const postActions = usePostActions();
+  const history = useHistory();
   const ref = {
     picker: useRef(),
     postInput: useRef(null),
@@ -458,19 +461,28 @@ const CompanyPostDetailFooter = (props) => {
     }
   };
 
+  const goBackToInbox = () => {
+    let payload = {
+      filter: "inbox",
+      tag: null,
+    };
+    postActions.setCompanyFilterPosts(payload);
+    history.push("/posts");
+  };
   const handleNextPost = () => {
-    const nextPost = posts.reduce((accumulator, { id }, index) => {
-      if (id === post.id) {
-        accumulator = posts[index + 1];
-      }
-      return accumulator;
-    }, null);
+    // const nextPost = posts.reduce((accumulator, { id }, index) => {
+    //   if (id === post.id) {
+    //     accumulator = posts[index + 1];
+    //   }
+    //   return accumulator;
+    // }, null);
 
     postActions.archivePost(post, () => {
-      if (!nextPost) {
-        overview();
+      const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
+      if (!nextUnreadPosts) {
+        goBackToInbox();
       } else {
-        postActions.openPost(nextPost, "/posts");
+        postActions.openPost(nextUnreadPosts, "/posts");
       }
     });
   };
@@ -677,10 +689,10 @@ const CompanyPostDetailFooter = (props) => {
           </div>
         </Dflex>
       )}
-      {filter && (filter === "all" || filter === "inbox") && (
+      {filter && filter === "inbox" && post && post.is_archived === 0 && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <OverviewNextLink className="mr-3" onClick={overview}>
+            <OverviewNextLink onClick={goBackToInbox}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </OverviewNextLink>
             <OverviewNextLink onClick={handleNextPost}>

@@ -429,6 +429,24 @@ const PostDetail = (props) => {
     return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
   }, []);
 
+  useEffect(() => {
+    const viewed = post.view_user_ids.some((id) => id === user.id);
+    if (!viewed && !disableMarkAsRead()) {
+      postActions.visit({
+        post_id: post.id,
+        personalized_for_id: null,
+      });
+    }
+
+    if (post.is_unread === 1 || post.unread_count > 0) {
+      if (!disableMarkAsRead()) postActions.markAsRead(post);
+    }
+
+    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+    postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+  }, [post.id]);
+
   const privateWsOnly = post.recipients.filter((r) => {
     return r.type === "TOPIC" && r.private === 1;
   });
@@ -577,7 +595,6 @@ const PostDetail = (props) => {
           filter={filter}
           commentActions={commentActions}
           postActions={postActions}
-          overview={handleClosePost}
           onShowFileDialog={handleOpenFileDialog}
           dropAction={dropAction}
           workspace={workspace}

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { joinWorkspace, updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
@@ -210,6 +211,7 @@ const ApproverSelectWrapper = styled.div`
 const OverviewNextLink = styled.span`
   display: flex;
   align-items: center;
+  margin-right: 30px;
   svg {
     width: 1rem;
     height: 1rem;
@@ -223,7 +225,6 @@ const OverviewNextLink = styled.span`
 const PostDetailFooter = (props) => {
   const {
     className = "",
-    overview,
     onShowFileDialog,
     dropAction,
     post,
@@ -240,6 +241,7 @@ const PostDetailFooter = (props) => {
     disableOptions,
     mainInput,
   } = props;
+  const history = useHistory();
   const postActions = usePostActions();
   const dispatch = useDispatch();
   const ref = {
@@ -554,24 +556,39 @@ const PostDetailFooter = (props) => {
     }
   };
 
+  const goBackToInbox = () => {
+    let payload = {
+      topic_id: workspace.id,
+      filter: "inbox",
+      tag: null,
+    };
+    const path =
+      workspace.folder_name && workspace.folder_id
+        ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+        : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+    dispatch(updateWorkspacePostFilterSort(payload));
+    history.push(path);
+    console.log("go back to inbox");
+  };
+
   const handleNextPost = () => {
-    const nextPost = posts.reduce((accumulator, { id }, index) => {
-      if (id === post.id) {
-        accumulator = posts[index + 1];
-      }
-      return accumulator;
-    }, null);
+    // const nextPost = posts.reduce((accumulator, { id }, index) => {
+    //   if (id === post.id) {
+    //     accumulator = posts[index + 1];
+    //   }
+    //   return accumulator;
+    // }, null);
 
     postActions.archivePost(post, () => {
-      if (!nextPost) {
-        overview();
+      const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
+      if (!nextUnreadPosts) {
+        goBackToInbox();
       } else {
         const path =
           workspace.folder_name && workspace.folder_id
             ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
             : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
-        console.error("PATH", path);
-        postActions.openPost(nextPost, path);
+        postActions.openPost(nextUnreadPosts, path);
       }
     });
   };
@@ -801,10 +818,10 @@ const PostDetailFooter = (props) => {
           </div>
         </Dflex>
       )}
-      {filter && (filter === "all" || filter === "inbox") && (
+      {filter && filter === "inbox" && post && post.is_archived === 0 && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <OverviewNextLink className="mr-3" onClick={overview}>
+            <OverviewNextLink onClick={goBackToInbox}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </OverviewNextLink>
             <OverviewNextLink onClick={handleNextPost}>
