@@ -203,16 +203,12 @@ const ChatContentPanel = (props) => {
     setShowSearchPanel(!showSearchPanel);
   };
 
-  const [query, setQuery] = useState("");
-  const [searching, setSearching] = useState(false);
-  const [results, setResults] = useState([]);
+  const [newSeachToogle, setNewSeachToogle] = useState(false);
 
   useEffect(() => {
     selectedChannel !== null && setPP(selectedChannel.id);
     if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
-      setResults([]);
-      setQuery("");
-      setSearching(false);
+      setNewSeachToogle(!newSeachToogle);
       setShowSearchPanel(false);
     }
   }, [pP, selectedChannel]);
@@ -257,12 +253,7 @@ const ChatContentPanel = (props) => {
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
       {selectedChannel !== null && (
         <ChatSearchPanel
-          setQuery={setQuery}
-          setSearching={setSearching}
-          setResults={setResults}
-          query={query}
-          searching={searching}
-          results={results}
+          newSeachToogle={newSeachToogle}
           chatMessageActions={chatMessageActions}
           showSearchPanel={showSearchPanel}
           setShowSearchPanel={setShowSearchPanel}
