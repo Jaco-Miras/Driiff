@@ -42,6 +42,7 @@ const CreateWorkspaceFolderModal = lazy(() => import("../modals/CreateWorkspaceF
 const DriffUpdateModal = lazy(() => import("../modals/DriffUpdateModal"));
 const PostSnoozeModal = lazy(() => import("../modals/PostSnoozeModal"));
 const SingleInputModal = lazy(() => import("../modals/SingleInputModal"));
+const ZoomInviteModal = lazy(() => import("../modals/ZoomInviteModal"));
 
 const ModalPanelContainer = styled.div`
   z-index: 7;
@@ -186,6 +187,12 @@ const ModalPanel = () => {
             return (
               <Suspense fallback={<div></div>}>
                 <PostModal key={modal.type} data={modal} />
+              </Suspense>
+            );
+          case "zoom_invite":
+            return (
+              <Suspense fallback={<div></div>}>
+                <ZoomInviteModal key={modal.type} data={modal} />
               </Suspense>
             );
           default:

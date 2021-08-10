@@ -32,6 +32,8 @@ const MainNavigationPanel = (props) => {
           "/files/folder/:folderId/:folderName",
           "/system/people",
           "/magic-link/:token",
+          "/zoom/:channelId",
+          "/zoom",
           "/:page",
         ]}
       />

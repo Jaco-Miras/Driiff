@@ -255,3 +255,11 @@ export function getOverdueToDo(payload, callback) {
 export function getTodayToDo(payload, callback) {
   return dispatchActionToReducer(getToDoService(payload), "GET_TODAY_TO_DO_START", "GET_TODAY_TO_DO_SUCCESS", "GET_TODAY_TO_DO_FAILURE", callback);
 }
+
+export function incomingZoomData(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ZOOM_DATA", payload, callback);
+}
+
+export function clearZoomData(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_ZOOM_DATA", payload, callback);
+}

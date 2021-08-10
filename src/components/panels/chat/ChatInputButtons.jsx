@@ -87,13 +87,11 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
       </IconWrapper>
-      {!isClientChat && (
-        <IconWrapper className="btn-meet">
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
-            <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
-          </Tooltip>
-        </IconWrapper>
-      )}
+      <IconWrapper className="btn-meet">
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+          <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
+        </Tooltip>
+      </IconWrapper>
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
