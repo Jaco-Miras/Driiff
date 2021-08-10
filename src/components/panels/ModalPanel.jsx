@@ -76,115 +76,115 @@ const ModalPanel = () => {
         switch (modal.type) {
           case "confirmation":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <ConfirmationModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "forward":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <ChatForwardModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "reminder":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <ChatReminderModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "file_upload":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <FileUploadModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "file_crop_upload":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <FileCropUploadModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "chat_create_edit":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <CreateEditChatModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "workspace_folder":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <CreateWorkspaceFolderModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "workspace_create_edit":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <CreateEditWorkspaceModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "snooze_post":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <PostSnoozeModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "driff_invite_users":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <InvitedUsersModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "single_input":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <SingleInputModal key={modal.type} {...modal} />
               </Suspense>
             );
           case "move_files":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <MoveFilesModal key={modal.type} {...modal} />
               </Suspense>
             );
           case "move_company_files":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <CompanyMoveFilesModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "personal_link_create_edit":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <CreatePersonalLinksModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "todo_reminder":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <TodoReminderModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "update_found":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <DriffUpdateModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "release":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <ReleaseModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "post_list":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <CreateEditPostListModal key={modal.type} data={modal} />
               </Suspense>
             );
           case "post_modal":
             return (
-              <Suspense fallback={<div></div>}>
+              <Suspense fallback={<div></div>} key={modal.type}>
                 <PostModal key={modal.type} data={modal} />
               </Suspense>
             );
