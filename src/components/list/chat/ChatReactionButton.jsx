@@ -47,11 +47,11 @@ const ChatReactionButtonContainer = styled.div`
       display: flex;
 
       &.orientation-top {
-        bottom: 100px;
+        bottom: 120px;
       }
       &.orientation-bottom {
         top: auto;
-        bottom: 100px;
+        bottom: 120px;
       }
       &.orientation-left {
         right: 0;
@@ -62,90 +62,14 @@ const ChatReactionButtonContainer = styled.div`
         right: 0;
       }
     }
-
-    .emoji-mart-bar {
-      display: none;
-    }
-
-    li {
-      &:before {
-        content: "" !important;
-        margin: 0 !important;
-        display: none !important;
+    @media (max-width: 1280px) {
+      .emoji-mart {
+        max-height: 280px;
+        overflow: auto;
       }
-
-      padding-left: 0 !important;
-      text-align: left !important;
-      position: relative !important;
-      margin-left: 10px !important;
     }
   }
 `;
-// const StyledEmojiButton = styled(SvgIconFeather)`
-//   @media (max-width: 620px) {
-//     //display: none;
-//   }
-//   ${(props) => props.active && "filter: brightness(0) saturate(100%) invert(23%) sepia(21%) saturate(6038%) hue-rotate(284deg) brightness(93%) contrast(91%);"};
-
-//   &:hover {
-//     filter: brightness(0) saturate(100%) invert(23%) sepia(21%) saturate(6038%) hue-rotate(284deg) brightness(93%) contrast(91%);
-//   }
-// `;
-// const StyledPickerEmoji = styled(PickerEmoji)`
-//   &.orientation-top {
-//     bottom: 25px;
-//   }
-//   &.orientation-bottom {
-//     top: calc(100% + 5px);
-//   }
-//   &.orientation-left {
-//     right: calc(100% - 25px);
-//     left: auto;
-//   }
-//   &.orientation-right {
-//     left: calc(100% - 25px);
-//     right: auto;
-//   }
-
-//   @media (max-width: 576px) {
-//     position: fixed;
-//     justify-content: center;
-//     display: flex;
-
-//     &.orientation-top {
-//       bottom: 100px;
-//     }
-//     &.orientation-bottom {
-//       top: auto;
-//       bottom: 100px;
-//     }
-//     &.orientation-left {
-//       right: 0;
-//       left: 0;
-//     }
-//     &.orientation-right {
-//       left: 0;
-//       right: 0;
-//     }
-//   }
-
-//   .emoji-mart-bar {
-//     display: none;
-//   }
-
-//   li {
-//     &:before {
-//       content: "" !important;
-//       margin: 0 !important;
-//       display: none !important;
-//     }
-
-//     padding-left: 0 !important;
-//     text-align: left !important;
-//     position: relative !important;
-//     margin-left: 10px !important;
-//   }
-// `;
 
 const ChatReactionButton = (props) => {
   const { reply, scrollComponent, chatMessageActions } = props;
@@ -192,7 +116,16 @@ const ChatReactionButton = (props) => {
     <ChatReactionButtonContainer className="emoji-button-div" ref={refs.container} active={showEmojiPicker}>
       <SvgIconFeather icon="smile" onClick={handleShowEmojiPicker} />
       {showEmojiPicker && (
-        <PickerEmoji ref={refs.picker} onMouseEnter={handlePickerMouseEnter} onMouseLeave={handlePickerMouseLeave} className={"chat-reaction-picker"} orientation={orientation} onSelectEmoji={handleSelectEmoji} show={showEmojiPicker} />
+        <PickerEmoji
+          ref={refs.picker}
+          onMouseEnter={handlePickerMouseEnter}
+          onMouseLeave={handlePickerMouseLeave}
+          className={"chat-reaction-picker"}
+          orientation={orientation}
+          onSelectEmoji={handleSelectEmoji}
+          show={showEmojiPicker}
+          perLine={7}
+        />
       )}
     </ChatReactionButtonContainer>
   );

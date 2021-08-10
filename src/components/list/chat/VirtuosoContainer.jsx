@@ -65,6 +65,7 @@ const VirtuosoContainer = (props) => {
 
   const itemsRenderedRef = useRef(null);
   const virtuoso = useRef(null);
+  const scrollComponent = useRef(null);
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
   const unreadCount = useCountUnreadReplies();
@@ -142,7 +143,7 @@ const VirtuosoContainer = (props) => {
   };
 
   return (
-    <Wrapper id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
+    <Wrapper ref={scrollComponent} id={"component-chat-thread"} className={"component-chat-thread messages"} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
       {selectedChannel.replies && selectedChannel.replies.length > 0 && (
         <Virtuoso
           ref={virtuoso}
@@ -194,6 +195,7 @@ const VirtuosoContainer = (props) => {
                 language={language}
                 translated_channels={translated_channels}
                 chat_language={chat_language}
+                scrollComponent={scrollComponent.current}
               />
             );
           }}

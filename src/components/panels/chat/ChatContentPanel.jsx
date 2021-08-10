@@ -33,6 +33,8 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
+  const user = useSelector((state) => state.session.user);
+
   const { virtualization, translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const { chat_language, translated_channels, language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
@@ -226,7 +228,7 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
       {selectedChannel !== null ? (
-        virtualization ? (
+        virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>
             <VirtuosoContainer dictionary={dictionary} />
           </Suspense>

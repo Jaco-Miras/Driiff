@@ -248,6 +248,7 @@ const FileUploadModal = (props) => {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
+  const [mounted, setMounted] = useState(false);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const toasterRef = useRef(null);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -301,16 +302,17 @@ const FileUploadModal = (props) => {
   };
 
   useEffect(() => {
-    if (savedInput !== null) {
+    if (savedInput !== null && reactQuillRef.current && mounted) {
       reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, savedInput.text);
       setComment(savedInput.text);
       setTextOnly(savedInput.textOnly);
       setQuillContents(savedInput.quillContents);
       reactQuillRef.current.focus();
     }
-  }, [savedInput]);
+  }, [savedInput, mounted]);
 
   useEffect(() => {
+    setMounted(true);
     if (mode === "post" && editPostComment) {
       setFiles([
         ...editPostComment.files.map((f) => {

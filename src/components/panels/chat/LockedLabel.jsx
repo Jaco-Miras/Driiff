@@ -33,21 +33,25 @@ const LockedLabel = (props) => {
   return (
     <>
       {channel && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].active === 1 && (
-        <Wrapper className={`locked-label ${className}`}>
+        <>
           {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id && user.type === "internal" && (
-            <span>
-              {dictionary.clientChat}
-              <EyeIcon icon="eye" />
-            </span>
+            <Wrapper className={`locked-label ${className}`}>
+              <span>
+                {dictionary.clientChat}
+                <EyeIcon icon="eye" />
+              </span>
+            </Wrapper>
           )}
           {workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].team_channel.id === channel.id && user.type === "internal" && (
-            <span>
-              {dictionary.teamChat} <EyeIcon icon="eye-off" />
-            </span>
+            <Wrapper className={`locked-label ${className}`}>
+              <span>
+                {dictionary.teamChat} <EyeIcon icon="eye-off" />
+              </span>
+            </Wrapper>
           )}
           {/* {workspaces[channel.entity_id].is_shared && user.type === "internal" && " / "} */}
           {/* {dictionary.lockedLabel} */}
-        </Wrapper>
+        </>
       )}
     </>
   );
