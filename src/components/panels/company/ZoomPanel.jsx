@@ -73,7 +73,7 @@ const ZoomPanel = (props) => {
   function joinMeeting(signature, meetConfig) {
     console.log(meetConfig);
     ZoomMtg.init({
-      leaveUrl: "localhost:3006/chat",
+      leaveUrl: `${process.env.REACT_APP_localDNSProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}/chat`,
       isSupportAV: true,
       success: function (success) {
         console.log("Init Success ", success);
