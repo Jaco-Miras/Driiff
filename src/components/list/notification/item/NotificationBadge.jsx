@@ -13,7 +13,6 @@ const NotificationBadge = (props) => {
     return null;
   };
 
-
   /*
   POST_REQST_APPROVAL only visible to users who are selected in the approval
   POST_REQST_APPROVAL badge to be removed if the user has requested change or accepted the proposal
@@ -21,15 +20,17 @@ const NotificationBadge = (props) => {
   return (
     <>
       {notification.type === "POST_CREATE" ? (
-        fromSnooze ?
-          <p className={"d-flex"} style={{ 'position': 'absolute' }}>
+        fromSnooze ? (
+          <p className={"d-flex"} style={{ position: "absolute" }}>
             <span className={"badge badge-danger text-white mr-1"}>{getMustReadText(notification.data)}</span>
             <span className={"badge badge-warning text-white  mr-1"}>{getMustReplyText(notification.data)}</span>
-          </p> :
+          </p>
+        ) : (
           <p>
             <span className={"badge badge-danger text-white"}>{getMustReadText(notification.data)}</span>
-            <span className={"badge badge-success text-white"}>{getMustReplyText(notification.data)}</span>
+            <span className={"badge badge-warning text-white"}>{getMustReplyText(notification.data)}</span>
           </p>
+        )
       ) : notification.type === "POST_REQST_APPROVAL" ? (
         <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
       ) : notification.type === "POST_ACCEPT_APPROVAL" ? (
@@ -42,4 +43,3 @@ const NotificationBadge = (props) => {
 };
 
 export default NotificationBadge;
-
