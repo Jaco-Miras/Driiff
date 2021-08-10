@@ -518,3 +518,21 @@ export function getChatMsgsSearch(payload) {
     data: payload,
   });
 }
+
+export function generateZoomSignature(payload) {
+  let url = `/zoom/signature?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function createZoomMeeting(payload) {
+  let url = `/zoom/meeting?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

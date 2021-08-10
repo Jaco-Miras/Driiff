@@ -95,6 +95,7 @@ import {
   setGeneralChat,
   setUnreadNotificationCounterEntries,
   incomingDeletedAnnouncement,
+  incomingZoomData,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -1426,6 +1427,16 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".create-meeting-notification", (e) => {
+        console.log(e, "zoom meeting notif");
+        if (this.props.user.id !== e.host.id) {
+          this.props.addToModals({
+            ...e,
+            type: "zoom_invite",
+          });
+          this.props.incomingZoomData({ ...e.zoom_data.data });
+        }
+      })
       .listen(".favourite-workspace-notification", (e) => {
         this.props.incomingFavouriteWorkspace(e);
         // switch (e.SOCKET_TYPE) {
@@ -1984,6 +1995,7 @@ function mapDispatchToProps(dispatch) {
     incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
+    incomingZoomData: bindActionCreators(incomingZoomData, dispatch),
   };
 }
 

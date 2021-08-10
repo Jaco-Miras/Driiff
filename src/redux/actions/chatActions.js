@@ -43,6 +43,8 @@ import {
   putMarkReminderComplete as putMarkReminderCompleteService,
   putMarkUnreadChannel as putMarkUnreadChannelService,
   putUnpublishedAnswers as putUnpublishedAnswersService,
+  generateZoomSignature as generateZoomSignatureService,
+  createZoomMeeting as createZoomMeetingService,
 } from "../services";
 
 export function setSelectedChannel(payload, callback) {
@@ -476,7 +478,14 @@ export function snoozeSkipHuddle(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_SKIP", payload, callback);
 }
 
-
 export function snoozeHuddleAll(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_ALL", payload, callback);
+}
+
+export function generateZoomSignature(payload, callback) {
+  return dispatchActionToReducer(generateZoomSignatureService(payload), "GENERATE_ZOOM_SIGNATURE_START", "GENERATE_ZOOM_SIGNATURE_SUCCESS", "GENERATE_ZOOM_SIGNATURE_FAILURE", callback);
+}
+
+export function createZoomMeeting(payload, callback) {
+  return dispatchActionToReducer(createZoomMeetingService(payload), "CREATE_ZOOM_MEETING_START", "CREATE_ZOOM_MEETING_SUCCESS", "CREATE_ZOOM_MEETING_FAILURE", callback);
 }

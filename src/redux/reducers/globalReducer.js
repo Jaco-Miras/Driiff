@@ -61,12 +61,13 @@ const INITIAL_STATE = {
     },
     items: {},
     doneRecently: [],
-    is_snooze: false
+    is_snooze: false,
   },
   releases: {
     timestamp: null,
     items: [],
   },
+  zoomData: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -251,8 +252,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_TO_DO_DETAIL_SUCCESS": {
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
-        if (typeof items[n.id].is_snooze === "undefined")
-          items[n.id].is_snooze = false;
+        if (typeof items[n.id].is_snooze === "undefined") items[n.id].is_snooze = false;
       });
 
       return {
@@ -269,7 +269,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_REMINDERS_SUCCESS": {
-
       let items = state.todos.items;
       action.data.todos.forEach((t) => {
         items[t.id] = t;
@@ -529,7 +528,6 @@ export default (state = INITIAL_STATE, action) => {
           }
           break;
         }
-
       }
       items[action.data.id].is_snooze = false;
       //items[action.data.id].snooze_time = getCurrentTimestamp();
@@ -782,7 +780,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMINDER_SNOOZE_ALL": {
-
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
         items[n.id].is_snooze = action.data.is_snooze;
@@ -794,10 +791,9 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           is_snooze: action.data.is_snooze,
-          items: items
+          items: items,
         },
       };
-
     }
     case "REMINDER_SNOOZE": {
       let items = state.todos.items;
@@ -807,8 +803,20 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          items: items
+          items: items,
         },
+      };
+    }
+    case "INCOMING_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: action.data,
+      };
+    }
+    case "CLEAR_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: null,
       };
     }
     default:

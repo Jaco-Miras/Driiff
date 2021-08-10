@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
@@ -172,6 +173,8 @@ const PickerContainer = styled(CommonPicker)`
 
 const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
+
+  const history = useHistory();
   const { localizeChatDate, localizeDate } = useTimeFormat();
 
   const dispatch = useDispatch();
@@ -350,18 +353,19 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleGoogleMeet = () => {
-    let modalPayload = {
-      type: "confirmation",
-      cancelText: dictionary.no,
-      headerText: dictionary.googleMeet,
-      submitText: dictionary.yes,
-      bodyText: dictionary.googleMeetConfirmation,
-      actions: {
-        onSubmit: handleStartGoogleMeet,
-      },
-    };
+    history.push(`/zoom/${selectedChannel.id}?join=1`);
+    // let modalPayload = {
+    //   type: "confirmation",
+    //   cancelText: dictionary.no,
+    //   headerText: dictionary.googleMeet,
+    //   submitText: dictionary.yes,
+    //   bodyText: dictionary.googleMeetConfirmation,
+    //   actions: {
+    //     onSubmit: handleStartGoogleMeet,
+    //   },
+    // };
 
-    dispatch(addToModals(modalPayload));
+    // dispatch(addToModals(modalPayload));
   };
 
   return (

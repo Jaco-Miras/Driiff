@@ -48,6 +48,8 @@ export {
   getSkippedAnswers,
   getChatMsgsForFancy,
   getSiteMetaData,
+  generateZoomSignature,
+  createZoomMeeting,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";

@@ -263,3 +263,11 @@ export function snoozeTodo(payload, callback) {
 export function snoozeTodoAll(payload, callback) {
   return SimpleDispatchActionToReducer("REMINDER_SNOOZE_ALL", payload, callback);
 }
+
+export function incomingZoomData(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ZOOM_DATA", payload, callback);
+}
+
+export function clearZoomData(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_ZOOM_DATA", payload, callback);
+}
