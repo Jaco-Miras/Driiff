@@ -1886,6 +1886,8 @@ export default function (state = INITIAL_STATE, action) {
         huddleBots: action.data.map((h) => {
           return {
             ...h,
+            is_snooze: false,
+            is_skip: false,
             questions: h.questions
               .sort((a, b) => a.id - b.id)
               .map((q, k) => {
@@ -2350,6 +2352,58 @@ export default function (state = INITIAL_STATE, action) {
               }),
             }
           : state.selectedChannel,
+      };
+    }
+    case "HUDDLE_SNOOZE": {
+      let huddleBots = Object.values(state.huddleBots).map((r) => {
+        if (r.id === action.data.id) {
+          return {
+            ...r,
+            is_snooze: action.data.is_snooze,
+            snooze_time: action.data.snooze_time,
+          };
+        }
+        return {
+          ...r,
+        };
+      });
+
+      return {
+        ...state,
+        huddleBots: huddleBots,
+      };
+    }
+
+    case "HUDDLE_SNOOZE_SKIP": {
+      let huddleBots = Object.values(state.huddleBots).map((r) => {
+        if (r.id === action.data.id) {
+          return {
+            ...r,
+            is_skip: action.data.is_skip,
+            is_snooze: false,
+          };
+        }
+        return {
+          ...r,
+        };
+      });
+      return {
+        ...state,
+        huddleBots: huddleBots,
+      };
+    }
+
+    case "HUDDLE_SNOOZE_ALL": {
+      let huddleBots = Object.values(state.huddleBots).map((r) => {
+        return {
+          ...r,
+          is_snooze: action.data.is_snooze,
+          snooze_time: action.data.snooze_time,
+        };
+      });
+      return {
+        ...state,
+        huddleBots: huddleBots,
       };
     }
     // case "INCOMING_DELETED_POST": {
