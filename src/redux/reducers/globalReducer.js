@@ -60,6 +60,7 @@ const INITIAL_STATE = {
     },
     items: {},
     doneRecently: [],
+    is_snooze: false
   },
   releases: {
     timestamp: null,
@@ -247,10 +248,17 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
+      let items = state.todos.items;
+      Object.values(items).forEach((n) => {
+        if (typeof items[n.id].is_snooze === "undefined")
+          items[n.id].is_snooze = false;
+      });
+
       return {
         ...state,
         todos: {
           ...state.todos,
+          is_snooze: action.data.is_snooze,
           count: action.data.reduce((res, c) => {
             res[c.status.toLowerCase()] = c.count;
             return res;
@@ -322,6 +330,7 @@ export default (state = INITIAL_STATE, action) => {
             break;
           }
         }
+        items[t.id].is_snooze = action.data.is_snooze;
       });
       let recent = action.data.today_todos.map((t) => {
         if (t.link_type) {
@@ -518,7 +527,7 @@ export default (state = INITIAL_STATE, action) => {
           break;
         }
       }
-
+      items[action.data.id].is_snooze = false;
       return {
         ...state,
         todos: {
@@ -542,6 +551,7 @@ export default (state = INITIAL_STATE, action) => {
 
         items[action.data.id] = {
           ...items[action.data.id],
+          is_snooze: false,
           ...action.data,
         };
       }
@@ -565,7 +575,7 @@ export default (state = INITIAL_STATE, action) => {
           // count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
-        item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at };
+        item = { ...items[action.data.id], status: action.data.status, updated_at: action.data.updated_at, is_snooze: false };
         items[action.data.id] = item;
       }
 
@@ -765,6 +775,36 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isIdle: action.data,
+      };
+    }
+    case "REMINDER_SNOOZE_ALL": {
+
+      let items = state.todos.items;
+      Object.values(items).forEach((n) => {
+        items[n.id].is_snooze = action.data.is_snooze;
+        items[n.id].snooze_time = action.data.snooze_time;
+      });
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          is_snooze: action.data.is_snooze,
+          items: items
+        },
+      };
+
+    }
+    case "REMINDER_SNOOZE": {
+      let items = state.todos.items;
+      items[action.data.id].is_snooze = action.data.is_snooze;
+      items[action.data.id].snooze_time = action.data.snooze_time;
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          items: items
+        },
       };
     }
     default:
