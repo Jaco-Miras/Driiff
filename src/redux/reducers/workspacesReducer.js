@@ -275,7 +275,7 @@ export default (state = INITIAL_STATE, action) => {
         team_unread_chats: action.data.workspace_data.topic_detail.team_unread_chats,
         unread_chats: action.data.workspace_data.topic_detail.unread_chats,
         unread_posts: action.data.workspace_data.topic_detail.unread_posts,
-        folder_id: action.data.workspace_id,
+        folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
         folder_name: action.data.workspace_name,
         is_shared: action.data.workspace_data.topic_detail.is_shared,
       };
