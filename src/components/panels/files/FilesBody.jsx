@@ -9,16 +9,25 @@ import { MoreOptions } from "../common";
 import { FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles, TeamChatFiles, ClientChatFiles, PrivatePostFiles, ClientPostFiles } from "./index";
 
 const Wrapper = styled.div`
-  .card-body {
-    position: relative;
-    overflow: visible !important;
-    padding-bottom: 12px;
-    min-height: 100px;
+  body & {
+    &.files-body.card {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .app-lists {
+    overflow: auto;
     &::-webkit-scrollbar {
       display: none;
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .card-body {
+    position: relative;
+    padding-bottom: 12px;
+
     .recent-new-group-wrapper {
       padding-right: 24px;
     }
@@ -187,7 +196,7 @@ const FilesBody = (props) => {
           params={params}
         />
       )}
-      <div className="card-body">
+      <div className="card-body app-lists">
         {folder && isMember && filter !== "removed" && !disableOptions && (
           <MoreButton moreButton="settings">
             <div onClick={handleEditFolder}>{dictionary.editFolder}</div>

@@ -83,7 +83,20 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         notifications: {
-          ...state.notifications,
+          ...Object.values(state.notifications).reduce((acc, notif) => {
+            if (notif.type === "POST_REQST_APPROVAL" && action.data.post.id === notif.data.post_id) {
+              acc[notif.id] = {
+                ...notif,
+                data: {
+                  ...notif.data,
+                  users_approval: action.data.users_approval,
+                },
+              };
+            } else {
+              acc[notif.id] = { ...notif };
+            }
+            return acc;
+          }, {}),
           ...(action.data.notification_approval && {
             [action.data.notification_approval.id]: {
               id: action.data.notification_approval.id,
@@ -158,6 +171,7 @@ export default (state = INITIAL_STATE, action) => {
               title: action.data.title,
               workspaces: action.data.workspaces,
               comment_body: null,
+              users_approval: action.data.users_approval,
               required_users: action.data.required_users,
               must_read_users: action.data.must_read_users,
               must_reply_users: action.data.must_reply_users,
