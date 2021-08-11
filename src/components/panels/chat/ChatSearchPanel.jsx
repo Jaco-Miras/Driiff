@@ -18,7 +18,7 @@ padding: 0 1em;
 margin-right: -10px;
 z-index: 3;
 background:#FFF;
-color:#eee;
+color:#8b8b8b;
 ${(props) => props.isActive && `transform: translateX(0%);margin:0px;`}
 .dark & {
   background:#191c20;
@@ -73,7 +73,7 @@ justify-content: center;
 align-items: center;
 flex-grow: 1;
 padding: 5rem;
-color:#eee;
+color: #8b8b8b;
 .dark & {
   color:#c7c7c7;
 }
