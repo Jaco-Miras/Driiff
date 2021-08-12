@@ -1,7 +1,8 @@
 function receivePushNotification(event) {
-    //console.log("[Service Worker] Push Received.", event, event.data.json());
-  
-    const { reference_title, id, channel_code, code, strip_body, user, author, title, body, code_data, workspaces, SOCKET_TYPE } = event.data.json();
+    // console.log("[Service Worker] Push Received.", event, event.data.json());
+
+    const data = event.data.json()
+    const { reference_title, id, channel_code, code, strip_body, user, author, title, body, code_data, workspaces, SOCKET_TYPE } = data.data;
     let options = {
       //data: redirect_link,
       data: `/chat/${channel_code}/${code}`,
