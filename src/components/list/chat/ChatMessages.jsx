@@ -357,13 +357,13 @@ class ChatMessages extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
   }
 
   loadReplies = () => {
     const { selectedChannel, chatMessageActions } = this.props;
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
@@ -410,7 +410,7 @@ class ChatMessages extends React.PureComponent {
   componentDidMount() {
     const { selectedChannel, historicalPositions } = this.props;
 
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
 
     if (typeof this.props.history.location.state !== "object") {
       if (historicalPositions.length) {
@@ -435,7 +435,7 @@ class ChatMessages extends React.PureComponent {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     const { selectedChannel } = this.props;
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
     if (prevProps.selectedChannel) {
       if (prevProps.selectedChannel && prevProps.selectedChannel.replies && selectedChannel.replies && scrollComponent) {
         if ((selectedChannel.replies.length > 20) & (prevProps.selectedChannel.replies.length < selectedChannel.replies.length)) {
@@ -458,7 +458,7 @@ class ChatMessages extends React.PureComponent {
     //     mentionEl.classList.add("is-author");
     //   });
     // }
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
