@@ -67,11 +67,3 @@ export function setPushNotification(payload, callback) {
 export function incomingReminderNotification(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMINDER_NOTIFICATION", payload, callback);
 }
-
-export function snoozeNotification(payload, callback) {
-  return SimpleDispatchActionToReducer("NOTIFICATION_SNOOZE", payload, callback);
-}
-
-export function snoozeNotificationAll(payload, callback) {
-  return SimpleDispatchActionToReducer("NOTIFICATION_SNOOZE_ALL", payload, callback);
-}
