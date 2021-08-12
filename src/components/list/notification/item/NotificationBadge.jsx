@@ -32,7 +32,7 @@ const NotificationBadge = (props) => {
           </p>
         )
       ) : notification.type === "POST_REQST_APPROVAL" ? (
-        notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
+        notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
           <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
         ) : null
       ) : notification.type === "POST_ACCEPT_APPROVAL" ? (

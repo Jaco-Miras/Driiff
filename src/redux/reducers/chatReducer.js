@@ -2644,26 +2644,6 @@ export default function (state = INITIAL_STATE, action) {
           : state.selectedChannel,
       };
     }
-
-    case "SET_EDIT_HUDDLE_ANSWERS": {
-      let huddle = state.huddleBots.find((h) => h.channel.id === action.data.channel_id);
-      return {
-        ...state,
-        editHuddle: huddle
-          ? {
-              ...huddle,
-              // huddle_log: action.data.huddle_log,
-              questions: huddle.questions.map((q) => {
-                return {
-                  ...q,
-                  answer: null,
-                };
-              }),
-            }
-          : null,
-      };
-    }
-
     case "HUDDLE_SNOOZE": {
       let huddleBots = Object.values(state.huddleBots).map((r) => {
         if (r.id === action.data.id) {
@@ -2716,7 +2696,6 @@ export default function (state = INITIAL_STATE, action) {
         huddleBots: huddleBots,
       };
     }
-
     // case "INCOMING_DELETED_POST": {
     //   return {
     //     ...state,

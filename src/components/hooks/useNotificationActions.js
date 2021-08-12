@@ -13,7 +13,7 @@ import {
   unreadNotification,
   unreadNotificationReducer,
   snoozeNotification,
-  snoozeNotificationAll
+  snoozeNotificationAll,
 } from "../../redux/actions/notificationActions";
 import { setActiveTopic } from "../../redux/actions/workspaceActions";
 import { useToaster } from "./index";
