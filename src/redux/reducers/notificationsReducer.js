@@ -134,6 +134,27 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_COMMENT_APPROVAL": {
+      return {
+        ...state,
+        notifications: {
+          ...Object.values(state.notifications).reduce((acc, notif) => {
+            if (notif.type === "POST_REQST_APPROVAL" && action.data.post.id === notif.data.post_id) {
+              acc[notif.id] = {
+                ...notif,
+                data: {
+                  ...notif.data,
+                  users_approval: action.data.users_approval,
+                },
+              };
+            } else {
+              acc[notif.id] = { ...notif };
+            }
+            return acc;
+          }, {}),
+        },
+      };
+    }
     case "INCOMING_POST": {
       let notificationApproval = {};
       if (action.data.notification && action.data.author.id !== state.user.id) {
