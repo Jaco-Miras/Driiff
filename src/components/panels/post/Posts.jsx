@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { PostItemPanel } from "./index";
@@ -52,10 +52,13 @@ const ReadPostsHeader = styled.li`
 const Posts = (props) => {
   const { actions, dictionary, filter, isExternalUser, loading, posts, search, workspace } = props;
 
+  const componentIsMounted = useRef(true);
+
   const readPosts = posts.filter((p) => p.is_unread === 0);
-  const unreadPosts = posts.filter((p) => p.is_unread === 1);
+  const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1);
 
   const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
+  //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
   const handleToggleCheckbox = (postId) => {
@@ -89,35 +92,23 @@ const Posts = (props) => {
   // };
 
   const handleShowUnread = () => {
-    if (showPosts.showUnread) {
-      // to false
-      setShowPosts({
-        showUnread: readPosts.length > 0 ? false : true,
-        showRead: readPosts.length > 0 ? true : false,
-      });
-    } else {
-      // to true
-      setShowPosts({
-        showUnread: true,
-        showRead: showPosts.showRead,
-      });
-    }
+    setShowPosts((prevState) => {
+      return {
+        ...prevState,
+        showRead: !showPosts.showRead,
+        showUnread: !showPosts.showUnread,
+      };
+    });
   };
 
   const handleShowRead = () => {
-    if (showPosts.showRead) {
-      // to false
-      setShowPosts({
-        showUnread: unreadPosts.length > 0 ? true : false,
-        showRead: unreadPosts.length > 0 ? false : true,
-      });
-    } else {
-      // to true
-      setShowPosts({
-        showUnread: unreadPosts.length > 0 ? true : false,
-        showRead: readPosts.length > 0 ? true : false,
-      });
-    }
+    setShowPosts((prevState) => {
+      return {
+        ...prevState,
+        showRead: !showPosts.showRead,
+        showUnread: !showPosts.showUnread,
+      };
+    });
   };
 
   const handleSelectAllDraft = () => {
@@ -134,29 +125,14 @@ const Posts = (props) => {
   };
 
   useEffect(() => {
-    setCheckedPosts([]);
-  }, [filter]);
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
 
   useEffect(() => {
-    // if bot category is set to false then show the category with posts
-    if (!showPosts.showUnread && !showPosts.showRead) {
-      if (unreadPosts.length) {
-        setShowPosts((prevState) => {
-          return {
-            ...prevState,
-            showUnread: true,
-          };
-        });
-      } else if (readPosts.length) {
-        setShowPosts((prevState) => {
-          return {
-            ...prevState,
-            showRead: true,
-          };
-        });
-      }
-    }
-  }, [showPosts, readPosts, unreadPosts]);
+    if (componentIsMounted.current) setCheckedPosts([]);
+  }, [filter]);
 
   return (
     <>
@@ -199,31 +175,27 @@ const Posts = (props) => {
               )}
             </>
           )}
-          {filter === "draft" && (
+          {filter !== "inbox" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
-                  return (
-                    <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} hasUnread={true} isExternalUser={isExternalUser} />
-                  );
+                  return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
                 })}
               </div>
             </ul>
           )}
-          {filter !== "draft" && (
+          {filter === "inbox" && search === "" && (
             <ul className="list-group list-group-flush ui-sortable fadeIn">
-              {search === "" && (
-                <div>
-                  <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
-                    <span className="badge badge-light">
-                      <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                      {dictionary.unread}
-                    </span>
-                  </UnreadPostsHeader>
-                </div>
-              )}
+              <div>
+                <UnreadPostsHeader className={"list-group-item post-item-panel pl-3 unread-posts-header"} onClick={handleShowUnread} showPosts={showPosts.showUnread}>
+                  <span className="badge badge-light">
+                    <SvgIconFeather icon={showPosts.showUnread ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                    {dictionary.unread}
+                  </span>
+                </UnreadPostsHeader>
+              </div>
               {unreadPosts.length > 0 && (
-                <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread || search !== "" ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
+                <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                   {unreadPosts.map((p, k) => {
                     return (
                       <PostItemPanel
@@ -234,25 +206,22 @@ const Posts = (props) => {
                         dictionary={dictionary}
                         toggleCheckbox={handleToggleCheckbox}
                         checked={checkedPosts.some((id) => id === p.id)}
-                        hasUnread={true}
                         isExternalUser={isExternalUser}
                       />
                     );
                   })}
                 </UnreadPostsContainer>
               )}
-              {search === "" && (
-                <div>
-                  <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
-                    <span className="badge badge-light">
-                      <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
-                      {dictionary.allOthers}
-                    </span>
-                  </ReadPostsHeader>
-                </div>
-              )}
+              <div>
+                <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>
+                  <span className="badge badge-light">
+                    <SvgIconFeather icon={showPosts.showRead ? "arrow-up" : "arrow-down"} width={16} height={16} className="mr-1" />
+                    {dictionary.allOthers}
+                  </span>
+                </ReadPostsHeader>
+              </div>
               {readPosts.length > 0 && (
-                <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead || search !== "" ? "show" : ""}`} showPosts={showPosts.showRead}>
+                <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                   {readPosts.map((p, k) => {
                     return (
                       <PostItemPanel
@@ -263,7 +232,6 @@ const Posts = (props) => {
                         dictionary={dictionary}
                         toggleCheckbox={handleToggleCheckbox}
                         checked={checkedPosts.some((id) => id === p.id)}
-                        hasUnread={false}
                         isExternalUser={isExternalUser}
                       />
                     );

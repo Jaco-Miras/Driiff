@@ -6,6 +6,7 @@ import {
   archiveUser,
   checkDriffUserEmail,
   deactivateUser,
+  deleteUser,
   getRoles,
   getUser,
   getUsers,
@@ -26,6 +27,8 @@ import {
   userLogout,
   unarchiveUser,
   updateUserType,
+  resendInvitation,
+  deleteInvitedUser,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster, useTranslationActions } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -65,7 +68,6 @@ const useUserActions = () => {
 
   const { _t } = useTranslationActions();
 
-  //const { getUserFilter } = useSelector((state) => state.users);
   const getUserFilter = useSelector((state) => state.users.getUserFilter);
   const { user: loggedUser } = useSelector((state) => state.session);
 
@@ -514,6 +516,18 @@ const useUserActions = () => {
     );
   };
 
+  const deleteUserAccount = (payload, callback) => {
+    dispatch(deleteUser(payload, callback));
+  };
+
+  const resendInvitationEmail = (payload, callback) => {
+    dispatch(resendInvitation(payload, callback));
+  };
+
+  const deleteInvitedInternalUser = (payload, callback) => {
+    dispatch(deleteInvitedUser(payload, callback));
+  };
+
   return {
     checkCredentials,
     login,
@@ -547,6 +561,9 @@ const useUserActions = () => {
     deactivate,
     fetchArchivedUsers,
     updateType,
+    deleteUserAccount,
+    resendInvitationEmail,
+    deleteInvitedInternalUser,
   };
 };
 

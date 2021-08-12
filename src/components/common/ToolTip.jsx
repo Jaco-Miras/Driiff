@@ -22,4 +22,4 @@ const ToolTip = (props) => {
   );
 };
 
-export default React.memo(ToolTip);
+export default ToolTip;

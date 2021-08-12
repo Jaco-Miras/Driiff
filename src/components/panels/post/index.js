@@ -15,3 +15,4 @@ export { default as PostList } from "./PostList";
 export { default as PostRecipients } from "./PostRecipients";
 export { default as Posts } from "./Posts";
 export { default as PostsEmptyState } from "./PostsEmptyState";
+export { default as PostUnfollowLabel } from "./PostUnfollowLabel";

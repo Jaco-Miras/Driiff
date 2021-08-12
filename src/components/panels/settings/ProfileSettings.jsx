@@ -7,11 +7,12 @@ import { CustomInput } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useSettings, useTimeFormat, useToaster, useTranslationActions } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
-import { deletePushSubscription } from "../../../redux/actions/globalActions";
+import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
   .card {
@@ -85,7 +86,7 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
     userSettings: { isLoaded },
     setChatSetting,
@@ -94,7 +95,45 @@ const ProfileSettings = (props) => {
     setPushSubscription,
   } = useSettings();
 
-  const { _t, setLocale, uploadTranslationToServer } = useTranslation();
+  const [triggerRender, setTriggerRender] = useState(false);
+
+  const { _t } = useTranslationActions();
+
+  const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
+
+  const uploadTranslationToServer = (callback = () => {}) => {
+    let vocabulary = [];
+    let bodyText = "You are about to add the following words to the dictionary files, continue?";
+    bodyText += "<table>";
+    Object.keys(i18new).forEach((k) => {
+      bodyText += "<tr>";
+      bodyText += `<td>${k}</td>`;
+      bodyText += `<td>${i18new[k]}</td>`;
+      bodyText += "</tr>";
+      vocabulary.push({
+        [k]: i18new[k],
+      });
+    });
+    bodyText += "</table>";
+
+    const cb = () => {
+      dispatch(postGenerateTranslationRaw(vocabulary, callback));
+    };
+
+    let payload = {
+      type: "confirmation",
+      headerText: "Translation - Add",
+      submitText: "Add",
+      cancelText: "Cancel",
+      bodyText: bodyText,
+      size: "lg",
+      actions: {
+        onSubmit: cb,
+      },
+    };
+    dispatch(addToModals(payload));
+  };
+
   const dictionary = {
     chatSettingsTitle: _t("SETTINGS.CHAT_TITLE", "Chat Settings"),
     soundLabel: _t("SETTINGS.SOUND_LABEL", "Play a sound when receiving a new chat message"),
@@ -114,6 +153,10 @@ const ProfileSettings = (props) => {
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
+    notifications: _t("NOTIFICATIONS", "Notifications"),
+    extraSettings: _t("SETTINGS.EXTRA_SETTINGS", "Extra settings"),
+    darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
   };
 
   // const notificationSoundOptions = [
@@ -421,7 +464,17 @@ const ProfileSettings = (props) => {
   ];
 
   const handleLanguageChange = (e) => {
-    setLocale(e.value);
+    setGeneralSetting(
+      {
+        language: e.value,
+      },
+      () => {
+        setTimeout(() => {
+          setTriggerRender((prevState) => !prevState);
+        }, 300);
+      }
+    );
+
     toaster.success(<span>You have successfully updated Language</span>);
   };
 
@@ -429,7 +482,7 @@ const ProfileSettings = (props) => {
     (e) => {
       setGeneralSetting({
         chat_language: e.value,
-        translated_channels: []
+        translated_channels: [],
       });
       setTimeout(function () {
         localStorage.setItem("chat_translate_change", "1");
@@ -451,32 +504,29 @@ const ProfileSettings = (props) => {
     [setChatSetting]
   );
 
-  const handleGeneralSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, checked, dataset } = e.target;
+  const handleGeneralSwitchToggle = (e) => {
+    e.persist();
+    const { name, checked, dataset } = e.target;
 
-      setGeneralSetting(
-        {
-          [name]: checked ? "1" : "0",
-        },
-        () => {
-          if (["log_rocket", "sentry"].includes(name)) {
-            localStorage.setItem(name, checked ? "1" : "0");
-            window.location.reload();
-          } else if (name === "logs") {
-            if (checked) {
-              localStorage.setItem("logger", "all");
-            } else {
-              localStorage.removeItem("logger");
-            }
+    setGeneralSetting(
+      {
+        [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
+      },
+      () => {
+        if (["log_rocket", "sentry"].includes(name)) {
+          localStorage.setItem(name, checked ? "1" : "0");
+          window.location.reload();
+        } else if (name === "logs") {
+          if (checked) {
+            localStorage.setItem("logger", "all");
+          } else {
+            localStorage.removeItem("logger");
           }
         }
-      );
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setChatSetting]
-  );
+      }
+    );
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleNotificationsSwitchToggle = useCallback(
     (e) => {
@@ -624,7 +674,7 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              {
+              {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(loggedUser.email) && (
                 <div className="row mb-3">
                   <div className="col-12">
                     <CustomInput
@@ -639,7 +689,7 @@ const ProfileSettings = (props) => {
                     />
                   </div>
                 </div>
-              }
+              )}
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
                 <div className="col-7">
@@ -705,7 +755,7 @@ const ProfileSettings = (props) => {
 
           <div className="card">
             <div className="card-body">
-              <h6 className="card-title d-flex justify-content-between align-items-center">Notifications</h6>
+              <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.notifications}</h6>
               <div className="row mb-2">
                 <div className="col-12 text-muted">
                   <CustomInput
@@ -720,6 +770,20 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
+              <div className="row mb-2">
+                <div className="col-12 text-muted">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={daily_digest}
+                    type="switch"
+                    id="daily_digest"
+                    name="daily_digest"
+                    data-success-message={`${!daily_digest ? "Daily digest enabled" : "Daily digest disabled"}`}
+                    onChange={handleGeneralSwitchToggle}
+                    label={<span>{dictionary.dailyDigest}</span>}
+                  />
+                </div>
+              </div>
               {/* <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.notificationSound}</div>
                 <div className="col-7">
@@ -731,7 +795,7 @@ const ProfileSettings = (props) => {
 
           <div className="card">
             <div className="card-body">
-              <h6 className="card-title d-flex justify-content-between align-items-center">Extra settings</h6>
+              <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.extraSettings}</h6>
 
               <div className="row mb-3">
                 <div className="col-12 text-muted">
@@ -743,7 +807,7 @@ const ProfileSettings = (props) => {
                     name="dark_mode"
                     data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
                     onChange={handleGeneralSwitchToggle}
-                    label={<span>Dark mode</span>}
+                    label={<span>{dictionary.darkMode}</span>}
                   />
                 </div>
                 <div className="col-12 text-muted">
@@ -792,6 +856,11 @@ const ProfileSettings = (props) => {
       <span className="version-number mb-3">
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
       </span>
+      {loggedUser && loggedUser.email === "nilo@makedevelopment.com" && (
+        <span>
+          {isMobileSafari && "mobile safari"}, {browserName}, {deviceType}
+        </span>
+      )}
     </Wrapper>
   );
 };

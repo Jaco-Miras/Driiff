@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useLoadChannel, useSettings, useTranslation, useChannelActions } from "../../hooks";
+import { useLoadChannel, useSettings, useTranslationActions, useChannelActions } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -51,6 +51,9 @@ const Wrapper = styled.div`
     @media (max-width: 991.99px) {
       display: none;
     }
+  }
+  .chat-sidebar-options-container {
+    height: 38px;
   }
 `;
 
@@ -189,7 +192,7 @@ const ChatSidebarPanel = (props) => {
     }
   };
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslationActions();
 
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),
@@ -269,8 +272,8 @@ const ChatSidebarPanel = (props) => {
           className="chat-search"
           placeholder={dictionary.searchChatPlaceholder}
         />
-        <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
-          <StyledMoreOptions ref={refs.navTab} role="tabList">
+        <div className="d-flex justify-content-center align-items-center ml-2 chat-sidebar-options-container">
+          <StyledMoreOptions role="tabList">
             <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
               {dictionary.chats}
             </div>
@@ -288,4 +291,4 @@ const ChatSidebarPanel = (props) => {
   );
 };
 
-export default ChatSidebarPanel;
+export default React.memo(ChatSidebarPanel);

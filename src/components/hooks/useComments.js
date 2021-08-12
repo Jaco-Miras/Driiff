@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useCommentActions } from "./index";
 
@@ -10,6 +10,14 @@ const useComments = (post) => {
   const [fetchingComments, setFetchingComments] = useState(false);
   const [fetchingPostReads, setFetchingPostReads] = useState(false);
 
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
   useEffect(() => {
     if (!fetchingComments && !postComments.hasOwnProperty(post.id)) {
       setFetchingComments(true);
@@ -18,15 +26,15 @@ const useComments = (post) => {
         url,
       };
       commentActions.fetchPostComments(payload, (err, res) => {
-        setFetchingComments(false);
+        if (componentIsMounted.current) setFetchingComments(false);
       });
     }
 
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     if (!fetchingPostReads && !post.hasOwnProperty("post_reads")) {
       if (hasPendingApproval) return;
-      if (post.is_must_read && post.author.id !== user.id && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) return;
-      if (post.is_must_reply && post.author.id !== user.id && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) return;
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return;
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) return;
       commentActions.fetchPostRead(parseInt(post.id), (err, res) => {
         setFetchingPostReads(true);
         const payload = {
@@ -34,7 +42,7 @@ const useComments = (post) => {
           readPosts: [...res.data],
         };
         commentActions.setPostReadComments(payload, () => {
-          setFetchingPostReads(false);
+          if (componentIsMounted.current) setFetchingPostReads(false);
         });
       });
     }

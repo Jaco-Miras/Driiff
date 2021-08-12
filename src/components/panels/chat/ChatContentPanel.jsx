@@ -1,16 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, Suspense, lazy } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
-import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslationActions } from "../../hooks";
+import { useCountUnreadReplies, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
-import ChatMessages from "../../list/chat/ChatMessages";
-//import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
-//import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 import { useIdleTimer } from "react-idle-timer";
-import VirtuosoContainer from "../../list/chat/VirtuosoContainer";
+
+const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
+const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer"));
 
 const Wrapper = styled.div`
   width: 100%;
@@ -18,13 +17,12 @@ const Wrapper = styled.div`
   position: relative;
   @media (max-width: 992px) {
     z-index: 1;
-  };
+  } ;
 `;
 
 const ChatMessagesPlaceholder = styled.div`
   flex: 1;
 `;
-
 
 const ChatContentPanel = (props) => {
   const { className = "", isWorkspace = false } = props;
@@ -34,6 +32,8 @@ const ChatContentPanel = (props) => {
   const dispatch = useDispatch();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
+
+  const user = useSelector((state) => state.session.user);
 
   const { virtualization, translate } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
@@ -53,7 +53,6 @@ const ChatContentPanel = (props) => {
   const [showSearchPanel, setShowSearchPanel] = useState(false);
   const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
 
-  const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
@@ -64,8 +63,15 @@ const ChatContentPanel = (props) => {
     setshowDropZone(false);
   };
 
-  const handleshowDropZone = () => {
-    setshowDropZone(true);
+  const handleshowDropZone = (e) => {
+    if (e.dataTransfer.types) {
+      for (var i = 0; i < e.dataTransfer.types.length; i++) {
+        if (e.dataTransfer.types[i] === "Files") {
+          setshowDropZone(true);
+          return;
+        }
+      }
+    }
   };
 
   const dropAction = (acceptedFiles) => {
@@ -188,7 +194,7 @@ const ChatContentPanel = (props) => {
     restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
   };
 
-  useFocusInput(document.querySelector(".chat-footer .ql-editor"));
+  //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
   const handleSearchChatPanel = () => {
     setShowSearchPanel(!showSearchPanel);
@@ -199,7 +205,8 @@ const ChatContentPanel = (props) => {
   useEffect(() => {
     selectedChannel !== null && setPP(selectedChannel.id);
     if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
-      setNewSeachToogle(!newSeachToogle); setShowSearchPanel(false);
+      setNewSeachToogle(!newSeachToogle);
+      setShowSearchPanel(false);
     }
   }, [pP, selectedChannel]);
 
@@ -216,30 +223,41 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
       {selectedChannel !== null ? (
-        virtualization ? (
-          <VirtuosoContainer dictionary={dictionary} />
+        virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
+          <Suspense fallback={<ChatMessagesPlaceholder />}>
+            <VirtuosoContainer dictionary={dictionary} />
+          </Suspense>
         ) : (
-          <ChatMessages
-            chatMessageActions={chatMessageActions}
-            timeFormat={timeFormat}
-            dictionary={dictionary}
-            unreadCount={unreadCount}
-            teamChannelId={teamChannelId}
-            isIdle={isIdle}
-            translate={translate}
-            language={language}
-            translated_channels={translated_channels}
-            chat_language={chat_language}
-            scrollComponent={scrollComponent}
-          />
+          <Suspense fallback={<ChatMessagesPlaceholder />}>
+            <ChatMessages
+              chatMessageActions={chatMessageActions}
+              timeFormat={timeFormat}
+              dictionary={dictionary}
+              unreadCount={unreadCount}
+              teamChannelId={teamChannelId}
+              isIdle={isIdle}
+              translate={translate}
+              language={language}
+              translated_channels={translated_channels}
+              chat_language={chat_language}
+            />
+          </Suspense>
         )
       ) : (
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      {selectedChannel !== null &&
-        (<ChatSearchPanel newSeachToogle={newSeachToogle} chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} setShowSearchPanel={setShowSearchPanel} handleSearchChatPanel={handleSearchChatPanel} selectedChannel={selectedChannel} pP={pP} />)
-      }
+      {selectedChannel !== null && (
+        <ChatSearchPanel
+          newSeachToogle={newSeachToogle}
+          chatMessageActions={chatMessageActions}
+          showSearchPanel={showSearchPanel}
+          setShowSearchPanel={setShowSearchPanel}
+          handleSearchChatPanel={handleSearchChatPanel}
+          selectedChannel={selectedChannel}
+          pP={pP}
+        />
+      )}
     </Wrapper>
   );
 };

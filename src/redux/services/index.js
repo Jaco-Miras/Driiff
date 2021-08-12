@@ -44,7 +44,7 @@ export {
   putUnpublishedAnswers,
   getSearchChannels,
   getChatMsgsForFancy,
-  postChatMessageTranslate
+  postChatMessageTranslate,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
@@ -53,6 +53,7 @@ export {
   activateUser,
   archiveUser,
   deactivateUser,
+  deleteUser,
   login,
   logout,
   googleLogin,
@@ -78,6 +79,9 @@ export {
   getArchivedUsers,
   unarchiveUser,
   updateUserType,
+  getUsersWithoutActivity,
+  resendInvitation,
+  deleteInvitedUser,
 } from "./user";
 
 export {

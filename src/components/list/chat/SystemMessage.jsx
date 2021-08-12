@@ -1,9 +1,9 @@
-import React, { forwardRef, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage } from "../../hooks";
-//import { SvgIconFeather } from "../../common";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -67,6 +67,7 @@ const SystemMessageContainer = styled.span`
 const SystemMessageContent = styled.span`
   display: block;
   width: 100%;
+  cursor: ${(props) => (props.isPostNotification ? "pointer" : "auto")};
 `;
 const ChatTimeStamp = styled.div`
   color: #a7abc3;
@@ -81,10 +82,11 @@ const ChatTimeStamp = styled.div`
   white-space: nowrap;
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-const SystemMessage = forwardRef((props, ref) => {
-  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, isLastChatVisible, dictionary, users } = props;
+const SystemMessage = (props) => {
+  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary, users } = props;
 
   const history = useHistory();
+  const params = useParams();
 
   const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users });
 
@@ -96,45 +98,12 @@ const SystemMessage = forwardRef((props, ref) => {
   useEffect(() => {
     if (isLastChat && entry) {
       if (entry.boundingClientRect.height - entry.intersectionRect.height >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        chatMessageActions.setLastMessageVisiblility({ status: false });
       } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        chatMessageActions.setLastMessageVisiblility({ status: true });
       }
     }
-  }, [isLastChat, entry, isLastChatVisible, inView]);
-
-  const handleHistoryPushClick = (e) => {
-    e.preventDefault();
-    if (e.currentTarget.dataset.ctrl === "1") {
-      e.currentTarget.dataset.ctrl = "0";
-      let link = document.createElement("a");
-      link.href = e.currentTarget.dataset.href;
-      link.target = "_blank";
-      link.click();
-    } else {
-      history.push(e.currentTarget.dataset.href);
-    }
-  };
-
-  const handleHistoryKeyDown = (e) => {
-    if (e.which === 17) e.currentTarget.dataset.ctrl = "1";
-  };
-
-  const handleHistoryKeyUp = (e) => {
-    e.currentTarget.dataset.ctrl = "0";
-  };
-
-  useEffect(() => {
-    if (reply) {
-      let pushLinks = document.querySelectorAll(".push-link[data-has-link=\"0\"]");
-      pushLinks.forEach((p) => {
-        p.addEventListener("click", handleHistoryPushClick);
-        p.dataset.hasLink = "1";
-        p.addEventListener("keydown", handleHistoryKeyDown);
-        p.addEventListener("keyup", handleHistoryKeyUp);
-      });
-    }
-  }, [reply]);
+  }, [isLastChat, entry, inView]);
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {
@@ -142,16 +111,30 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.files) {
         chatMessageActions.viewFiles(data.files);
       }
+    } else if (reply.body.startsWith("POST_CREATE::")) {
+      let parsedData = reply.body.replace("POST_CREATE::", "");
+      if (parsedData.trim() !== "") {
+        let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
+        if (params && params.workspaceId) {
+          if (params.folderId) {
+            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          } else {
+            history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          }
+        } else {
+          history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);
+        }
+      }
     }
   };
   return (
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent ref={ref} id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
+      <SystemMessageContent id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );
-});
+};
 
-export default SystemMessage;
+export default React.memo(SystemMessage);

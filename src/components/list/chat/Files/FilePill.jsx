@@ -1,9 +1,9 @@
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
-//import { useTouchActions } from "../../../hooks";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
+import { sessionService } from "redux-react-session";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -49,16 +49,6 @@ const FileImage = styled.img`
   }
 `;
 
-// const FileVideoOverlay = styled.div`
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   z-index: 1;
-//   cursor: pointer;
-// `;
-
 const FileVideo = styled.video`
   max-height: 150px;
   min-height: 150px;
@@ -97,7 +87,7 @@ const DocFile = styled.div`
   }
 `;
 
-const FilePill = forwardRef((props, ref) => {
+const FilePill = (props) => {
   let { className = "", file, cbFilePreview, dictionary, ...otherProps } = props;
   if (typeof file.type === "undefined") {
     file.type = file.mime_type;
@@ -125,12 +115,19 @@ const FilePill = forwardRef((props, ref) => {
         return <i className="fa fa-file-pdf-o text-danger" />;
       } else if (mimeType.includes("zip") || mimeType.includes("archive") || mimeType.includes("x-rar")) {
         return <i className="fa fa-file-zip-o text-primary" />;
-      } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers") || mimeType.includes("xml")) {
+      } else if (mimeType.includes("word") || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+        return <i className="fa fa-file-word-o text-info" />;
+      } else if (
+        mimeType.includes("excel") ||
+        mimeType.includes("spreadsheet") ||
+        mimeType.includes("csv") ||
+        mimeType.includes("numbers") ||
+        //mimeType.includes("xml") ||
+        mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
         return <i className="fa fa-file-excel-o text-success" />;
       } else if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) {
         return <i className="fa fa-file-powerpoint-o text-secondary" />;
-      } else if (mimeType.includes("word") || mimeType.includes("document")) {
-        return <i className="fa fa-file-word-o text-info" />;
       } else if (mimeType.includes("script")) {
         return <i className="fa fa-file-code-o" />;
       } else return <i className="fa fa-file-text-o text-warning" />;
@@ -140,10 +137,6 @@ const FilePill = forwardRef((props, ref) => {
   };
 
   const fileThumbnailBlobs = useSelector((state) => state.files.fileThumbnailBlobs);
-
-  //const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? fileThumbnailBlobs[file.id] : file.view_link);
-
-  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleViewFile = (e) => {
     if (file.type === "trashed") return;
@@ -163,13 +156,6 @@ const FilePill = forwardRef((props, ref) => {
     }
   };
 
-  const handleVideoOnLoad = (e) => {
-    //removed image loader in video file
-    // e.currentTarget.classList.remove("d-none");
-    // e.currentTarget.removeAttribute("height");
-    // refVideoLoader.current.classList.add("d-none");
-  };
-
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
@@ -180,67 +166,39 @@ const FilePill = forwardRef((props, ref) => {
     }
   };
 
-  // let touchActions = false;
-  // const handleTouchStart = (e) => {
-  //   touchActions = false;
-  // };
-  // const handleTouchEnd = (e) => {
-  //   e.preventDefault();
-  //   if (!touchActions) handleViewFile(e);
-  // };
-
-  // const handleSwipeLeft = (e) => {
-  //   touchActions = true;
-  // };
-  // const handleSwipeRight = (e) => {
-  //   touchActions = true;
-  // };
-
-  // const { touchStart, touchMove, touchEnd } = useTouchActions({
-  //   handleTouchStart,
-  //   handleTouchEnd,
-  //   handleSwipeLeft,
-  //   handleSwipeRight,
-  // });
-
   useEffect(() => {
     if (!fileThumbnailBlobs[file.id] && file.type.toLowerCase().includes("image")) {
-      fetch(file.thumbnail_link, {
-        method: "GET",
-        keepalive: true,
-        headers: {
-          Authorization: `Bearer ${userAuth.access_token}`,
-          "Access-Control-Allow-Origin": "*",
-          Connection: "keep-alive",
-          crossorigin: true,
-        },
-      })
-        .then(function (response) {
-          return response.blob();
+      sessionService.loadSession().then((current) => {
+        let myToken = current.token;
+        fetch(file.thumbnail_link, {
+          method: "GET",
+          keepalive: true,
+          headers: {
+            Authorization: myToken,
+            "Access-Control-Allow-Origin": "*",
+            Connection: "keep-alive",
+            crossorigin: true,
+          },
         })
-        .then(function (data) {
-          const imgObj = URL.createObjectURL(data);
-          //setImgSrc(imgObj);
-          setFileThumbnailSrc({
-            id: file.id,
-            src: imgObj,
+          .then(function (response) {
+            return response.blob();
+          })
+          .then(function (data) {
+            const imgObj = URL.createObjectURL(data);
+            //setImgSrc(imgObj);
+            setFileThumbnailSrc({
+              id: file.id,
+              src: imgObj,
+            });
           });
-        });
+      });
     }
   }, []);
 
   const isFileRemoved = file.file_type === "trashed";
 
   return (
-    <FilePillContainer
-      // onTouchStart={touchStart}
-      // onTouchEnd={touchEnd}
-      // onTouchMove={touchMove}
-      onClick={handleViewFile}
-      ref={ref}
-      className={`file-pill ${className}`}
-      {...otherProps}
-    >
+    <FilePillContainer onClick={handleViewFile} className={`file-pill ${className}`} {...otherProps}>
       {isFileRemoved ? (
         <DocFile>
           <div className="card app-file-list">
@@ -268,11 +226,7 @@ const FilePill = forwardRef((props, ref) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          {/* <ImgLoader ref={refVideoLoader}>
-            <ImgLoaderDiv className={"img-loader"} />
-          </ImgLoader> */}
-          {/* <FileVideoOverlay onClick={handleViewFile} /> */}
-          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
+          <FileVideo data-attempt={0} width="320" height="240" controls playsInline onError={handleVideoOnError}>
             <source src={file.view_link} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
@@ -289,6 +243,6 @@ const FilePill = forwardRef((props, ref) => {
       )}
     </FilePillContainer>
   );
-});
+};
 
 export default React.memo(FilePill);

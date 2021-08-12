@@ -9,4 +9,4 @@ const InputFeedback = (props) => {
   return <Wrapper className={`input-feedback ${valid ? "valid" : "invalid"}-feedback ${className}`}>{children}</Wrapper>;
 };
 
-export default React.memo(InputFeedback);
+export default InputFeedback;

@@ -1,4 +1,4 @@
-import { groupBy } from "lodash";
+//import { groupBy } from "lodash";
 import React from "react";
 import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
@@ -9,11 +9,14 @@ import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
+import memoizeOne from "memoize-one";
+
+//const ChatBubble = lazy(() => import("./ChatBubble"));
+//const SystemMessage = lazy(() => import("./SystemMessage"));
 
 const ChatReplyContainer = styled.div`
   background: transparent;
@@ -31,6 +34,46 @@ const ChatReplyContainer = styled.div`
   }
   .chat-message-options svg {
     fill: currentColor;
+  }
+  .chat-message-options {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    margin: 5px;
+    max-width: 25px;
+
+    @media (max-width: 620px) {
+      margin-right: 0;
+    }
+
+    .more-options-tooltip {
+      &.orientation-bottom {
+        top: calc(100% - 35px);
+        @media (max-width: 620px) {
+          top: 100%;
+        }
+      }
+
+      &.orientation-top {
+        @media (max-width: 620px) {
+          bottom: 30px;
+        }
+      }
+
+      &.orientation-right {
+        left: calc(100% + 10px);
+        @media (max-width: 620px) {
+          left: 0;
+        }
+      }
+      &.orientation-left {
+        @media (max-width: 620px) {
+          left: auto;
+          right: 0;
+        }
+      }
+    }
   }
   &.is-processed {
     opacity: 0;
@@ -52,11 +95,11 @@ const ChatList = styled.li`
       opacity: 1;
     }
   }
-  &.pulsating div.chat-bubble{
+  &.pulsating div.chat-bubble {
     animation: blinker 2s linear forwards;
     @keyframes blinker {
       50% {
-        opacity: .5;
+        opacity: 0.5;
       }
     }
   }
@@ -114,8 +157,8 @@ const ChatBubbleContainer = styled.div`
       display: none;
     }
     ${(props) =>
-    props.isAuthor === true &&
-    `
+      props.isAuthor === true &&
+      `
             left: auto;
             right: -16px;
             border-left-color:  ${(props) => (props.isImportant ? "#7B68EE" : "#7A1B8B")};
@@ -127,25 +170,7 @@ const ChatBubbleContainer = styled.div`
   }
   .dark & {
     &:before {
-      ${(props) => props.showAvatar && "content: '';"};
-      border: 10px solid transparent;
-      position: absolute;
-      top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
-      left: 30px;
-      z-index: 1;
-      @media all and (max-width: 620px) {
-        display: none;
-      }
-      ${(props) =>
-    props.isAuthor === true &&
-    `
-            left: auto;
-            right: -16px;            
-            border-right-color: transparent;
-            @media all and (max-width: 620px) {
-              display: none;
-            }
-        `};
+      display: none;
     }
   }
 `;
@@ -185,46 +210,7 @@ const SystemChatActionsContainer = styled.div`
   }
 `;
 
-const MessageOptions = styled(ChatMessageOptions)`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-  margin: 5px;
-  max-width: 25px;
-
-  @media (max-width: 620px) {
-    margin-right: 0;
-  }
-
-  .more-options-tooltip {
-    &.orientation-bottom {
-      top: calc(100% - 35px);
-      @media (max-width: 620px) {
-        top: 100%;
-      }
-    }
-
-    &.orientation-top {
-      @media (max-width: 620px) {
-        bottom: 30px;
-      }
-    }
-
-    &.orientation-right {
-      left: calc(100% + 10px);
-      @media (max-width: 620px) {
-        left: 0;
-      }
-    }
-    &.orientation-left {
-      @media (max-width: 620px) {
-        left: auto;
-        right: 0;
-      }
-    }
-  }
-`;
+//const MessageOptions = styled(ChatMessageOptions)``;
 const ChatBubbleQuoteDiv = styled.div`
   //width: 100%;
   //overflow: hidden;
@@ -299,11 +285,6 @@ const SystemMessageContainer = styled.div`
   }
 `;
 
-const FailedSpan = styled.span`
-  color: red;
-  margin: 0 10px;
-`;
-
 const ChatLoader = styled.div`
   display: flex;
   justify-content: center;
@@ -357,21 +338,22 @@ const EmptyState = styled.div`
   }
 `;
 
-class ChatMessages extends React.Component {
+class ChatMessages extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      hasArrowUpListener: false,
-      //initializing: false,
-      loadMoreInView: false,
-      fetchingReplies: false,
-      showEmoji: {},
+      // hasArrowUpListener: false,
+      // //initializing: false,
+      // loadMoreInView: false,
+      // fetchingReplies: false,
+      // showEmoji: {},
     };
 
-    //this.props.scrollComponent = React.createRef();
-    this.infiniteScroll = React.createRef();
-    this.mouseOver = React.createRef(false);
+    this.scrollComponent = React.createRef();
+    //this.infiniteScroll = React.createRef();
+    //this.mouseOver = React.createRef(false);
+    //this.renderCount = React.createRef(0);
   }
 
   componentWillUnmount() {
@@ -467,7 +449,7 @@ class ChatMessages extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { selectedChannel, historicalPositions, user } = this.props;
+    const { selectedChannel, historicalPositions } = this.props;
 
     //to be relocated
     // let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
@@ -599,8 +581,6 @@ class ChatMessages extends React.Component {
     let loadMoreRef = false;
     const isEqual = (reply) => reply.id === id;
     if (selectedChannel.replies.length && !selectedChannel.isFetching) {
-      //let sortedReplies = [...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)];
-      //let index = sortedReplies.findIndex(isEqual);
       let index = selectedChannel.replies.findIndex(isEqual);
       if (index < Math.round(selectedChannel.replies.length / 2)) {
         if (index % 2 === 0) {
@@ -611,88 +591,97 @@ class ChatMessages extends React.Component {
     return loadMoreRef;
   };
 
-  sortedReplies = () => {
-    return this.props.selectedChannel.replies
-      .map((r) => {
-        if (r.hasOwnProperty("g_date")) {
-          return r;
-        } else {
-          return {
-            ...r,
-            g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-          };
-        }
-      })
-      .sort((a, b) => {
-        if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-          return a.id - b.id;
-        } else {
-          return a.created_at.timestamp - b.created_at.timestamp;
-        }
-      });
-  };
+  // sortedReplies = () => {
+  //   return this.props.selectedChannel.replies
+  //     .sort((a, b) => {
+  //       if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+  //         return a.id - b.id;
+  //       } else {
+  //         return a.created_at.timestamp - b.created_at.timestamp;
+  //       }
+  //     })
+  //     .map((r, i) => {
+  //       if (r.hasOwnProperty("g_date")) {
+  //         return {
+  //           ...r,
+  //           isLastChat: i === this.props.selectedChannel.replies.length - 1,
+  //         };
+  //       } else {
+  //         return {
+  //           ...r,
+  //           g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+  //           isLastChat: i === this.props.selectedChannel.replies.length - 1,
+  //         };
+  //       }
+  //     });
+  // };
 
-  isLastChat = (reply) => {
-    const sortedReplies = this.sortedReplies();
-    return sortedReplies[this.props.selectedChannel.replies.length - 1].id === reply.id;
-  };
+  // groupedMessages2 = () =>
+  //   Object.entries(
+  //     this.sortedReplies().reduce((groups, item) => {
+  //       const val = item["g_date"];
+  //       groups[val] = groups[val] || [];
+  //       groups[val].push(item);
+  //       return groups;
+  //     }, {})
+  //   );
 
-  groupedMessages = () =>
-    Object.entries(groupBy(this.sortedReplies(), "g_date"))
-      .map((entries) => {
-        return {
-          key: entries[0],
-          replies: entries[1],
-        };
-      })
-      .sort((a, b) => a.key.localeCompare(b.key));
+  gMessages = memoizeOne((replies) =>
+    Object.entries(
+      replies
+        .sort((a, b) => {
+          if (a.created_at.timestamp - b.created_at.timestamp === 0) {
+            return a.id - b.id;
+          } else {
+            return a.created_at.timestamp - b.created_at.timestamp;
+          }
+        })
+        .map((r, i) => {
+          if (r.hasOwnProperty("g_date")) {
+            return {
+              ...r,
+              isLastChat: i === this.props.selectedChannel.replies.length - 1,
+            };
+          } else {
+            return {
+              ...r,
+              g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+              isLastChat: i === this.props.selectedChannel.replies.length - 1,
+            };
+          }
+        })
+        .reduce((groups, item) => {
+          const val = item["g_date"];
+          groups[val] = groups[val] || [];
+          groups[val].push(item);
+          return groups;
+        }, {})
+    )
+  );
+  // groupedMessages = () =>
+  //   Object.entries(groupBy(this.sortedReplies(), "g_date"))
+  //     .map((entries) => {
+  //       return {
+  //         key: entries[0],
+  //         replies: entries[1],
+  //       };
+  //     })
+  //     .sort((a, b) => a.key.localeCompare(b.key));
 
   render() {
-    //const { selectedChannel } = this.props;
-
     let lastReplyUserId = 0;
+    //console.log(this.renderCount.current++);
 
-    // let groupedMessages = [];
-
-    // if (this.props.selectedChannel.replies && this.props.selectedChannel.replies.length) {
-    //   groupedMessages = Object.entries(
-    //     groupBy(
-    //       this.props.selectedChannel.replies.map((r) => {
-    //         if (r.hasOwnProperty("g_date")) {
-    //           return r;
-    //         } else {
-    //           return {
-    //             ...r,
-    //             g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-    //           };
-    //         }
-    //       }),
-    //       "g_date"
-    //     )
-    //   )
-    //     .map((entries) => {
-    //       return {
-    //         key: entries[0],
-    //         replies: entries[1],
-    //       };
-    //     })
-    //     .sort((a, b) => a.key.localeCompare(b.key));
-    // }
+    const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
 
     return (
-      <ChatReplyContainer
-        ref={this.props.scrollComponent}
-        id={"component-chat-thread"}
-        className={`component-chat-thread messages ${this.props.className}`}
-        tabIndex="2"
-      //data-init={1} data-channel-id={this.props.selectedChannel.id}
-      >
+      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2">
         {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
           </ChatLoader>
         )}
-        <InfiniteScroll ref={this.infiniteScroll} className={"infinite-scroll"} id="infinite-scroll-chat-replies">
+        <InfiniteScroll className={"infinite-scroll"} id="infinite-scroll-chat-replies">
           {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length >= 20 && (
             <InView as="div" onChange={(inView, entry) => this.handleLoadMoreRefChange(inView, entry)}>
               <span className="intersection-load-more-ref"></span>
@@ -700,14 +689,12 @@ class ChatMessages extends React.Component {
           )}
           <ul>
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
-              ? this.groupedMessages().map((gm, i) => {
-                return (
-                  <div key={`${gm.replies[0].created_at.timestamp}`}>
-                    <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
+              ? groupedMessages.map((gm, i) => {
+                  return (
+                    <div key={`${gm[0]}`}>
+                      <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
-                    {gm.replies
-                      // .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
-                      .map((reply, k, e) => {
+                      {gm[1].map((reply, k, e) => {
                         const isAuthor = reply.user && reply.user.id === this.props.user.id;
 
                         let showAvatar = false;
@@ -748,41 +735,19 @@ class ChatMessages extends React.Component {
                           }
                           let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
                           isBot = botCodes.includes(reply.user.code);
-                        } else {
-                          //remove duplicate messages from bot
-                          if (k !== 0) {
-                            let prevReply = gm.replies[k - 1];
-                            if (prevReply.body === reply.body) {
-                              if (Math.abs(reply.created_at.timestamp - prevReply.created_at.timestamp) <= 10) return <></>;
-                            }
-                          }
                         }
                         return (
-                          <ChatList
-                            key={reply.id}
-                            // data-message-id={reply.id}
-                            // data-code={reply.code}
-                            // data-timestamp={reply.created_at.timestamp}
-                            className={`chat-list chat-list-item-${reply.id} code-${reply.code} `}
-                            showTimestamp={showTimestamp}
-                            isLastChat={this.isLastChat(reply)}
-                          >
+                          <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
                             {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                             {reply.user && (
                               <ChatBubbleContainer
                                 isAuthor={isAuthor}
                                 className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
-                                //data-message-id={reply.id}
                                 showAvatar={showAvatar}
                                 isBot={isBot}
                                 isImportant={reply.is_important}
                                 isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
                               >
-                                {reply.message_failed ? (
-                                  <FailedSpan>
-                                    <i className="fas fa-times-circle" onClick={(e) => this.handleResendMessage(reply.payload)}></i>
-                                  </FailedSpan>
-                                ) : null}
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <ChatBubble
                                     chatMessageActions={this.props.chatMessageActions}
@@ -794,33 +759,33 @@ class ChatMessages extends React.Component {
                                     showGifPlayer={showGifPlayer}
                                     isAuthor={isAuthor}
                                     addMessageRef={this.getLoadRef(reply.id)}
-                                    isLastChat={this.isLastChat(reply)}
+                                    isLastChat={reply.isLastChat}
                                     loadReplies={this.loadReplies}
-                                    //isBot={isBot}
                                     chatSettings={this.props.settings}
-                                    isLastChatVisible={this.props.isLastChatVisible}
                                     dictionary={this.props.dictionary}
                                     users={this.props.users}
                                     translate={this.props.translate}
                                     language={this.props.language}
                                     translated_channels={this.props.translated_channels}
                                     chat_language={this.props.chat_language}
-                                  >
-                                    <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                      {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
-                                      {!isNaN(reply.id) && !reply.is_deleted && (
-                                        <MessageOptions
-                                          dictionary={this.props.dictionary}
-                                          className={"chat-message-options"}
-                                          selectedChannel={this.props.selectedChannel}
-                                          isAuthor={isAuthor}
-                                          replyData={reply}
-                                          teamChannelId={this.props.teamChannelId}
-                                          isExternalUser={this.props.user.type === "external"}
-                                        />
-                                      )}
-                                    </ChatActionsContainer>
-                                  </ChatBubble>
+                                  />
+                                  <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                    {<ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
+                                    {!isNaN(reply.id) && !reply.is_deleted && (
+                                      <ChatMessageOptions
+                                        dictionary={this.props.dictionary}
+                                        className={"chat-message-options"}
+                                        selectedChannel={this.props.selectedChannel}
+                                        scrollComponent={this.scrollComponent.current}
+                                        isAuthor={isAuthor}
+                                        replyData={reply}
+                                        teamChannelId={this.props.teamChannelId}
+                                        isExternalUser={this.props.user.type === "external"}
+                                        chatMessageActions={this.props.chatMessageActions}
+                                      />
+                                    )}
+                                  </ChatActionsContainer>
+
                                   {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
                                   {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
                                     <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
@@ -842,11 +807,7 @@ class ChatMessages extends React.Component {
                               </ChatBubbleContainer>
                             )}
                             {reply.user === null && (
-                              <ChatBubbleContainer
-                                className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
-                                //data-message-id={reply.id}
-                                isAuthor={false}
-                              >
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
                                     <SystemMessage
@@ -855,34 +816,31 @@ class ChatMessages extends React.Component {
                                       timeFormat={this.props.timeFormat}
                                       selectedChannel={this.props.selectedChannel}
                                       reply={reply}
-                                      addMessageRef={this.getLoadRef(reply.id)}
-                                      isLastChat={this.isLastChat(reply)}
-                                      isLastChatVisible={this.props.isLastChatVisible}
+                                      isLastChat={reply.isLastChat}
                                       dictionary={this.props.dictionary}
                                       users={this.props.users}
                                     />
-                                    {/* {reply.unfurls.length ? (
-                                          <ChatUnfurl
-                                            unfurlData={reply.unfurls}
-                                            isAuthor={false}
-                                            deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
-                                            removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                            channelId={this.props.this.props.selectedChannel.id}
-                                            replyId={reply.id}
-                                          />
-                                        ) : null} */}
                                     <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                      {<ChatReactionButton isAuthor={isAuthor} reply={reply} showEmojiSwitcher={this.state.showEmoji[reply.id]} />}
+                                      {
+                                        <ChatReactionButton
+                                          isAuthor={isAuthor}
+                                          reply={reply}
+                                          //showEmojiSwitcher={this.state.showEmoji[reply.id]}
+                                          scrollComponent={this.scrollComponent.current}
+                                          chatMessageActions={this.props.chatMessageActions}
+                                        />
+                                      }
                                       {!isNaN(reply.id) && !reply.is_deleted && (
-                                        <MessageOptions
+                                        <ChatMessageOptions
                                           dictionary={this.props.dictionary}
-                                          scrollRef={this.props.scrollComponent}
+                                          scrollComponent={this.scrollComponent.current}
                                           replyData={reply}
                                           className={"chat-message-options"}
                                           selectedChannel={this.props.selectedChannel}
                                           isAuthor={isAuthor}
                                           teamChannelId={this.props.teamChannelId}
                                           isExternalUser={this.props.user.type === "external"}
+                                          chatMessageActions={this.props.chatMessageActions}
                                         />
                                       )}
                                     </SystemChatActionsContainer>
@@ -894,9 +852,9 @@ class ChatMessages extends React.Component {
                           </ChatList>
                         );
                       })}
-                  </div>
-                );
-              })
+                    </div>
+                  );
+                })
               : null}
             {!this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
               <EmptyState className="no-reply-container">

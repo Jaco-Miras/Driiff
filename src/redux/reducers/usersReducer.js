@@ -13,15 +13,30 @@ const INITIAL_STATE = {
   externalUsers: [],
   archivedUsers: [],
   profileSlider: null,
+  usersWithoutActivity: [],
+  usersWithoutActivityLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "INCOMING_INTERNAL_USER": {
       let user = {
-        contact: "",
-        active: 1,
         ...action.data,
+        active: 1,
+        has_accepted: false,
+        address: "",
+        company: "",
+        contact: "",
+        deactivate: false,
+        designation: "",
+        external_company_name: "",
+        external_id: null,
+        first_name: "",
+        is_favourite: false,
+        place: "",
+        profile_image_link: null,
+        profile_image_thumbnail_link: null,
+        type: "internal",
       };
       delete user["SOCKET_TYPE"];
 
@@ -93,8 +108,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_EXTERNAL_USERS_SUCCESS": {
+      let users = { ...state.users };
+      let mentions = { ...state.mentions };
+      action.data.users.forEach((item) => {
+        users[item.id] = {
+          ...users[item.id],
+          ...item,
+          name: item.name.toString(),
+        };
+        mentions[item.id] = {
+          ...mentions[item.id],
+          ...item,
+        };
+      });
+
       return {
         ...state,
+        users: users,
+        mentions: mentions,
         externalUsers: action.data.users,
       };
     }
@@ -301,6 +332,37 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         profileSlider: action.data.id && state.users[action.data.id] ? state.users[action.data.id] : null,
+      };
+    }
+    case "GET_USERS_WITHOUT_ACTIVITY_SUCCESS": {
+      return {
+        ...state,
+        usersWithoutActivity: action.data,
+        usersWithoutActivityLoaded: true,
+      };
+    }
+    case "INCOMING_DELETED_USER": {
+      return {
+        ...state,
+        users: Object.values(state.users).reduce((acc, user) => {
+          if (user.id !== action.data.id) {
+            acc[user.id] = user;
+          }
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      return {
+        ...state,
+        users: Object.values(state.users).reduce((acc, user) => {
+          if (user.id === action.data.id) {
+            acc[user.id] = { ...user, ...action.data, has_accepted: true };
+          } else {
+            acc[user.id] = user;
+          }
+          return acc;
+        }, {}),
       };
     }
     default:

@@ -9,6 +9,7 @@ import { useCommentActions, useComments } from "../../../hooks";
 import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
 import { MoreOptions } from "../../common";
 import { PostCounters } from "../../../list/post/item";
+import { PostUnfollowLabel } from "../index";
 
 const MainHeader = styled.div`
   .feather-eye-off {
@@ -260,7 +261,7 @@ const PostFilesTrashedContainer = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const { post, posts, filter, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { post, posts, filter, postActions, user, onGoBack, dictionary } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
 
   const dispatch = useDispatch();
@@ -270,8 +271,6 @@ const CompanyPostDetail = (props) => {
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const hasRead = readByUsers.some((u) => u.id === user.id);
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
@@ -354,6 +353,16 @@ const CompanyPostDetail = (props) => {
 
   const markRead = () => {
     postActions.markReadRequirement(post);
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    let triggerRead = true;
+    if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+        triggerRead = false;
+      }
+    }
+    if (triggerRead && !hasPendingApproval) {
+      postActions.markAsRead(post);
+    }
   };
 
   const handleReaction = () => {
@@ -381,18 +390,19 @@ const CompanyPostDetail = (props) => {
   const disableMarkAsRead = () => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     if (post.is_must_read && post.author.id !== user.id) {
-      if (post.is_must_read && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read)) {
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
         return true;
       }
-    } else if (post.is_must_reply && post.author.id !== user.id) {
-      if (post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
-        return true;
-      }
-    } else if (hasPendingApproval) {
-      return true;
-    } else {
-      return false;
     }
+    if (post.is_must_reply && post.author.id !== user.id) {
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+        return true;
+      }
+    }
+    if (hasPendingApproval) {
+      return true;
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -415,11 +425,25 @@ const CompanyPostDetail = (props) => {
     // postActions.getUnreadPostsCount();
   }, []);
 
-  // const privateWsOnly = post.recipients.filter((r) => {
-  //   return r.type === "TOPIC" && r.private === 1;
-  // });
+  useEffect(() => {
+    const viewed = post.view_user_ids.some((id) => id === user.id);
+    if (!viewed && !disableMarkAsRead()) {
+      postActions.visit({
+        post_id: post.id,
+        personalized_for_id: null,
+      });
+    }
 
-  //const hasNotReadUsers = post.required_users.filter((u) => !u.must_read);
+    if (post.is_unread === 1 || post.unread_count > 0) {
+      if (!disableMarkAsRead()) postActions.markAsRead(post);
+    }
+
+    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+
+    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    // postActions.getUnreadPostsCount();
+  }, [post.id]);
 
   return (
     <>
@@ -489,7 +513,7 @@ const CompanyPostDetail = (props) => {
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.author.id !== user.id && post.is_must_read && post && post.required_users && post.required_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
@@ -497,8 +521,9 @@ const CompanyPostDetail = (props) => {
             </MarkAsRead>
           )}
         </div>
+        {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} hasRead={hasRead} likers={likers} post={post} readByUsers={readByUsers} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
@@ -524,18 +549,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter
-          isMember={isMember}
-          post={post}
-          posts={posts}
-          filter={filter}
-          commentActions={commentActions}
-          postActions={postActions}
-          overview={handleClosePost}
-          onShowFileDialog={handleOpenFileDialog}
-          dropAction={dropAction}
-          mainInput={true}
-        />
+        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

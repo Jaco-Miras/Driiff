@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { Route, Switch, useLocation, useHistory } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
-import { useDriff, useSettings, useTranslation } from "./components/hooks";
-import { DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel } from "./components/panels";
+import { useDriff, useSettings, useTranslation, useHuddleNotification } from "./components/hooks";
+import { DriffRegisterPanel, PreLoader, RedirectPanel } from "./components/panels";
 import { AppRoute } from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
 import DriffSelectPanel from "./components/panels/DriffSelectPanel";
@@ -13,10 +13,11 @@ import { isIPAddress } from "./helpers/commonFunctions";
 import ProfileSlider from "./components/common/ProfileSlider";
 import { CSSTransition } from "react-transition-group";
 import { setProfileSlider } from "./redux/actions/globalActions";
-
 import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
 import { sessionService } from "redux-react-session";
+const FileViewer = lazy(() => import("./components/common/FileViewer"));
+const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -52,41 +53,22 @@ const Wrapper = styled.div`
   }
 `;
 
+const ModalPanelContainer = styled.div`
+  z-index: 7;
+`;
+
 function App() {
   const { driffSettings } = useSettings();
   const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { profileSlider: userProfile } = useSelector((state) => state.users);
-
-  //const session = useSelector((state) => state.session);
-  // const [initUserSnap, setInitUserSnap] = useState(null);
+  const userProfile = useSelector((state) => state.users.profileSlider);
+  const modals = useSelector((state) => state.global.modals);
+  const viewFiles = useSelector((state) => state.files.viewFiles);
+  useHuddleNotification();
 
   useTranslation();
-
-  // const userSnap = () => {
-  //   setInitUserSnap(session.authenticated);
-  //   window.onUsersnapCXLoad = function (api) {
-  //     if (session.authenticated) {
-  //       api.init({
-  //         user: {
-  //           user_id: session.user.id,
-  //           email: session.user.email,
-  //         },
-  //       });
-  //     } else {
-  //       api.init();
-  //     }
-  //     api.show("8f191889-6f0c-4879-ac3a-8760bc45e0f2");
-  //   };
-  // };
-
-  // useEffect(() => {
-  //   if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && session.checked && initUserSnap !== session.authenticated) {
-  //     //userSnap();
-  //   }
-  // }, [session]);
 
   useEffect(() => {
     if (location.pathname === "/force-logout") {
@@ -155,7 +137,18 @@ function App() {
           <ProfileSlider profile={userProfile} onShowPopup={handleShowSlider} classNames={"mobile"} />
         </CSSTransition>
       )}
-      <ModalPanel />
+      {Object.keys(modals).length > 0 && (
+        <Suspense fallback={<div></div>}>
+          <ModalPanel />
+        </Suspense>
+      )}
+      {viewFiles !== null && (
+        <Suspense fallback={<div></div>}>
+          <ModalPanelContainer>
+            <FileViewer />
+          </ModalPanelContainer>
+        </Suspense>
+      )}
     </Wrapper>
   );
 }

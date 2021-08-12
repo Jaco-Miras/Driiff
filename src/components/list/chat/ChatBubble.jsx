@@ -1,4 +1,4 @@
-import { hexToCSSFilter } from "hex-to-css-filter";
+//import { hexToCSSFilter } from "hex-to-css-filter";
 import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
 import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
-//import Unfurl from "./Unfurl/Unfurl";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
 
@@ -36,13 +35,13 @@ const ChatBubbleContainer = styled.div`
     height: 5px;
   }
 
-  a:not([href]):not([tabindex]) {
-    color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
+  // a:not([href]):not([tabindex]) {
+  //   color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
 
-    &:hover {
-      color: ${(props) => (props.isAuthor ? "#fff" : "#0056b3")};
-    }
-  }
+  //   &:hover {
+  //     color: ${(props) => (props.isAuthor ? "#fff" : "#0056b3")};
+  //   }
+  // }
 
   video {
     width: 100%;
@@ -189,85 +188,82 @@ const QuoteContent = styled.div`
   }
 `;
 
-const ChatMessageFiles = styled(MessageFiles)`
-  img {
-    cursor: pointer;
-  }
-  a {
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .reply-file-item {
-    display: block;
-    font-weight: bold;
+// const ChatMessageFiles = styled(MessageFiles)`
+//   img {
+//     cursor: pointer;
+//   }
+//   a {
+//     font-weight: bold;
+//     cursor: pointer;
+//   }
+//   .reply-file-item {
+//     display: block;
+//     font-weight: bold;
 
-    &.component-image-text-link {
-      img.component-svg-image {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#ffffff").filter : hexToCSSFilter("#8C3B9B").filter)};
-      }
+//     // &.component-image-text-link {
+//     //   img.component-svg-image {
+//     //     display: inline-block;
+//     //     width: 20px;
+//     //     height: 20px;
+//     //     margin-right: 5px;
+//     //     filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#ffffff").filter : hexToCSSFilter("#8C3B9B").filter)};
+//     //   }
 
-      &:hover {
-        color: #972c86;
+//     //   &:hover {
+//     //     color: #972c86;
 
-        img.component-svg-image {
-          filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#fff").filter : hexToCSSFilter("#0056b3").filter)};
-        }
-      }
-    }
+//     //     img.component-svg-image {
+//     //       filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#fff").filter : hexToCSSFilter("#0056b3").filter)};
+//     //     }
+//     //   }
+//     // }
 
-    &.file-only {
-      img {
-        width: 52.5px;
-        height: 52.5px;
-      }
-    }
-  }
-
-  ${(props) => props.hasMessage && ""}
-`;
+//     &.file-only {
+//       img {
+//         width: 52.5px;
+//         height: 52.5px;
+//       }
+//     }
+//   }
+// `;
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
-  padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "")};
+  padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
   ul {
     list-style-type: none;
   }
 
-  a,
-  a:not([href]):not([tabindex]) {
+  a {
     cursor: pointer;
     color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
     color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
     text-decoration: underline;
 
-    &.gdrive-link {
-      text-decoration: none;
+    // &.gdrive-link {
+    //   text-decoration: none;
 
-      .link {
-        @media (max-width: 1580px) {
-          max-width: 20vw;
-        }
-        @media (max-width: 1480px) {
-          max-width: 14vw;
-        }
-        @media (max-width: 1380px) {
-          max-width: 5vw;
-        }
-        @media (max-width: 991.99px) {
-          max-width: 350px;
-        }
-        @media (max-width: 822px) {
-          max-width: 20vw;
-        }
-      }
-      .preview-text {
-        font-weight: bold;
-        color: ${(props) => (props.isAuthor ? "#FFF" : "#828282")};
-      }
-    }
+    //   .link {
+    //     @media (max-width: 1580px) {
+    //       max-width: 20vw;
+    //     }
+    //     @media (max-width: 1480px) {
+    //       max-width: 14vw;
+    //     }
+    //     @media (max-width: 1380px) {
+    //       max-width: 5vw;
+    //     }
+    //     @media (max-width: 991.99px) {
+    //       max-width: 350px;
+    //     }
+    //     @media (max-width: 822px) {
+    //       max-width: 20vw;
+    //     }
+    //   }
+    //   .preview-text {
+    //     font-weight: bold;
+    //     color: ${(props) => (props.isAuthor ? "#FFF" : "#828282")};
+    //   }
+    // }
 
     &:focus,
     &:hover {
@@ -343,6 +339,7 @@ const ChatContent = styled.div`
     clear: both;
     width: 100%;
     display: block;
+    z-index: 1;
 
     p {
       overflow: hidden;
@@ -471,7 +468,6 @@ const ChatBubble = (props) => {
     chatMessageActions,
     timeFormat,
     chatSettings,
-    isLastChatVisible,
     dictionary,
     users,
     translated_channels,
@@ -482,7 +478,6 @@ const ChatBubble = (props) => {
   } = props;
 
   const history = useHistory();
-  //const googleApis = useGoogleApis();
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
@@ -518,24 +513,6 @@ const ChatBubble = (props) => {
     skip: !isLastChat,
   });
 
-  // const handleQuoteContentRef = (e) => {
-  //   if (e) {
-  //     const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
-  //     googleLinks.forEach((gl) => {
-  //       googleApis.init(gl);
-  //     });
-  //   }
-  // };
-
-  // const handleContentRef = (e) => {
-  //   if (e) {
-  //     const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
-  //     googleLinks.forEach((gl) => {
-  //       googleApis.init(gl);
-  //     });
-  //   }
-  // };
-
   const handleChannelMessageLink = (e) => {
     e.preventDefault();
     history.push(e.currentTarget.dataset.href);
@@ -544,13 +521,6 @@ const ChatBubble = (props) => {
 
   useEffect(() => {
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
-
-    // if (contentRef.current) {
-    //   const googleLinks = contentRef.current.querySelectorAll('[data-google-link-retrieve="0"]');
-    //   googleLinks.forEach((gl) => {
-    //     googleApis.init(gl);
-    //   });
-    // }
 
     if (lnkChannelMessage) lnkChannelMessage.addEventListener("click", handleChannelMessageLink, true);
 
@@ -583,12 +553,12 @@ const ChatBubble = (props) => {
   useEffect(() => {
     if (isLastChat && entry) {
       if (entry.boundingClientRect.height - entry.intersectionRect.height >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        chatMessageActions.setLastMessageVisiblility({ status: false });
       } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        chatMessageActions.setLastMessageVisiblility({ status: true });
       }
     }
-  }, [isLastChat, entry, isLastChatVisible, inView]);
+  }, [isLastChat, entry, inView]);
 
   const handleQuoteClick = (e) => {
     if (reply.quote) {
@@ -660,16 +630,7 @@ const ChatBubble = (props) => {
                 </QuoteContainer>
               )}
               {reply.files.length > 0 && !reply.is_deleted && (
-                <ChatMessageFiles
-                  dictionary={dictionary}
-                  hasMessage={hasMessage}
-                  isAuthor={isAuthor}
-                  theme={chatSettings.chat_message_theme}
-                  files={reply.files}
-                  reply={reply}
-                  type="chat"
-                  topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null}
-                />
+                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
               )}
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
@@ -684,10 +645,6 @@ const ChatBubble = (props) => {
                 </span>
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
-              {/* {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
-                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
-              )} */}
-              {/* {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />} */}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
@@ -698,9 +655,8 @@ const ChatBubble = (props) => {
           </ChatTimeStamp>
         </>
       }
-      {props.children}
     </ChatBubbleContainer>
   );
 };
 
-export default ChatBubble;
+export default React.memo(ChatBubble);

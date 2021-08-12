@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { joinWorkspace, updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
@@ -12,7 +13,8 @@ import { putChannel } from "../../../redux/actions/chatActions";
 import { FolderSelect } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import PostInputButtons from "./PostInputButtons";
-import Reward from "react-rewards";
+
+const Reward = lazy(() => import("../../lazy/Reward"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -209,6 +211,7 @@ const ApproverSelectWrapper = styled.div`
 const OverviewNextLink = styled.span`
   display: flex;
   align-items: center;
+  margin-right: 30px;
   svg {
     width: 1rem;
     height: 1rem;
@@ -222,7 +225,6 @@ const OverviewNextLink = styled.span`
 const PostDetailFooter = (props) => {
   const {
     className = "",
-    overview,
     onShowFileDialog,
     dropAction,
     post,
@@ -239,6 +241,7 @@ const PostDetailFooter = (props) => {
     disableOptions,
     mainInput,
   } = props;
+  const history = useHistory();
   const postActions = usePostActions();
   const dispatch = useDispatch();
   const ref = {
@@ -553,24 +556,39 @@ const PostDetailFooter = (props) => {
     }
   };
 
+  const goBackToInbox = () => {
+    let payload = {
+      topic_id: workspace.id,
+      filter: "inbox",
+      tag: null,
+    };
+    const path =
+      workspace.folder_name && workspace.folder_id
+        ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+        : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+    dispatch(updateWorkspacePostFilterSort(payload));
+    history.push(path);
+    console.log("go back to inbox");
+  };
+
   const handleNextPost = () => {
-    const nextPost = posts.reduce((accumulator, { id }, index) => {
-      if (id === post.id) {
-        accumulator = posts[index + 1];
-      }
-      return accumulator;
-    }, null);
+    // const nextPost = posts.reduce((accumulator, { id }, index) => {
+    //   if (id === post.id) {
+    //     accumulator = posts[index + 1];
+    //   }
+    //   return accumulator;
+    // }, null);
 
     postActions.archivePost(post, () => {
-      if (!nextPost) {
-        overview();
+      const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
+      if (!nextUnreadPosts) {
+        goBackToInbox();
       } else {
         const path =
           workspace.folder_name && workspace.folder_id
             ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
             : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
-        console.error("PATH", path);
-        postActions.openPost(nextPost, path);
+        postActions.openPost(nextUnreadPosts, path);
       }
     });
   };
@@ -585,9 +603,17 @@ const PostDetailFooter = (props) => {
 
   const requestForChangeCallback = (err, res) => {
     if (err) return;
-    if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
       postActions.markReplyRequirement(post);
-      postActions.markAsRead(post);
+      //check if post is also set as must read
+      let triggerRead = true;
+      if (post.is_must_read && post.author.id !== user.id) {
+        if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+          triggerRead = false;
+        }
+      }
+      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+      if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
@@ -763,20 +789,22 @@ const PostDetailFooter = (props) => {
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <button className="btn btn-primary" onClick={handleApprove}>
-                {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-              </button>
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <button className="btn btn-primary" onClick={handleApprove}>
+                  {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+                </button>
+              </Reward>
+            </Suspense>
           </div>
         </Dflex>
       )}
@@ -790,10 +818,10 @@ const PostDetailFooter = (props) => {
           </div>
         </Dflex>
       )}
-      {filter && (filter === "all" || filter === "inbox") && (
+      {filter && filter === "inbox" && post && post.is_archived === 0 && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <OverviewNextLink className="mr-3" onClick={overview}>
+            <OverviewNextLink onClick={goBackToInbox}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </OverviewNextLink>
             <OverviewNextLink onClick={handleNextPost}>

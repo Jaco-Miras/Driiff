@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   position: relative;
   //padding-bottom: 0 !important;
   // overflow: hidden;
+  overflow: auto;
 
   .spinner-container {
     display: flex;

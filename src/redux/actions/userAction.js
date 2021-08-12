@@ -5,10 +5,12 @@ import {
   archiveUser as archiveUserService,
   authenticateGoogleLogin as authenticateGoogleLoginService,
   checkDriffUserEmail as checkDriffUserEmailService,
+  deleteUser as deleteUserService,
   getMentions as getMentionsService,
   getOnlineUsers as getOnlineUsersService,
   getUser as getUserService,
   getUsers as getUsersService,
+  getUsersWithoutActivity as getUsersWithoutActivityService,
   googleLogin as googleLoginService,
   login as loginService,
   logout as logoutService,
@@ -28,6 +30,8 @@ import {
   unarchiveUser as unarchiveUserService,
   getArchivedUsers as getArchivedUsersService,
   updateUserType as updateUserTypeService,
+  resendInvitation as resendInvitationService,
+  deleteInvitedUser as deleteInvitedUserService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -176,4 +180,28 @@ export function incomingOnlineUsers(payload, callback) {
 
 export function updateUserType(payload, callback) {
   return dispatchActionToReducer(updateUserTypeService(payload), "UPDATE_USER_TYPE_START", "UPDATE_USER_TYPE_SUCCESS", "UPDATE_USER_TYPE_FAILURE", callback);
+}
+
+export function deleteUser(payload, callback) {
+  return dispatchActionToReducer(deleteUserService(payload), "DELETE_USER_START", "DELETE_USER_SUCCESS", "DELETE_USER_FAILURE", callback);
+}
+
+export function getUsersWithoutActivity(payload, callback) {
+  return dispatchActionToReducer(getUsersWithoutActivityService(payload), "GET_USERS_WITHOUT_ACTIVITY_START", "GET_USERS_WITHOUT_ACTIVITY_SUCCESS", "GET_USERS_WITHOUT_ACTIVITY_FAILURE", callback);
+}
+
+export function incomingDeletedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_USER", payload, callback);
+}
+
+export function resendInvitation(payload, callback) {
+  return dispatchActionToReducer(resendInvitationService(payload), "RESEND_INVITATION_START", "RESEND_INVITATION_SUCCESS", "RESEND_INVITATION_FAILURE", callback);
+}
+
+export function deleteInvitedUser(payload, callback) {
+  return dispatchActionToReducer(deleteInvitedUserService(payload), "DELETE_INVITED_USER_START", "DELETE_INVITED_USER_SUCCESS", "DELETE_INVITED_USER_FAILURE", callback);
+}
+
+export function incomingAcceptedInternal(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ACCEPTED_INTERNAL_USER", payload, callback);
 }

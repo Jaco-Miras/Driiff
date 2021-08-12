@@ -1,6 +1,6 @@
 //import {uniqBy} from "lodash";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
-import { uniqByProp } from "../../helpers/arrayHelper";
+//import { uniqByProp } from "../../helpers/arrayHelper";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -368,7 +368,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_CHAT_MESSAGES_SUCCESS": {
       let channel = { ...state.channels[action.data.channel_id] };
-      let messsages = [
+      let messages = [
         ...action.data.results.map((r) => {
           return {
             ...r,
@@ -379,17 +379,10 @@ export default function (state = INITIAL_STATE, action) {
         }),
         ...channel.replies,
       ];
-      let uniqMessages = uniqByProp(messsages, "id");
+      let uniqMessages = [...new Map(messages.map((item) => [item["id"], item])).values()];
       channel = {
         ...channel,
         replies: uniqMessages,
-        // replies: uniqMessages.sort((a, b) => {
-        //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-        //     return a.id - b.id;
-        //   } else {
-        //     return a.created_at.timestamp - b.created_at.timestamp;
-        //   }
-        // }),
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
@@ -1564,7 +1557,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...action.data.channel_detail,
           icon_link: channels[action.data.channel_detail.id].icon_link,
-          replies: uniqByProp(messages, "id"),
+          replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
           //.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1588,7 +1581,7 @@ export default function (state = INITIAL_STATE, action) {
             return { ...m, channel_id: c.channel_id };
           });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
-          channels[c.channel_id].replies = uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
           // channels[c.channel_id].last_reply = newMessages[0];
         }
       });
@@ -2359,6 +2352,41 @@ export default function (state = INITIAL_STATE, action) {
           : state.selectedChannel,
       };
     }
+    // case "INCOMING_DELETED_POST": {
+    //   return {
+    //     ...state,
+    //     channels: Object.values(state.channels).reduce((acc, channel) => {
+    //       if (channel.replies.length && action.data.channel_ids.some((c) => c.channel_id === channel.id)) {
+    //         acc[channel.id] = {
+    //           ...channel,
+    //           replies: channel.replies.filter((reply) => {
+    //             if (action.data.channel_ids.some((c) => c.message_id === reply.id)) {
+    //               return false;
+    //             } else {
+    //               return true;
+    //             }
+    //           }),
+    //         };
+    //       } else {
+    //         acc[channel.id] = channel;
+    //       }
+    //       return acc;
+    //     }, {}),
+    //     selectedChannel:
+    //       state.selectedChannel && action.data.channel_ids.some((c) => c.channel_id === state.selectedChannel.id)
+    //         ? {
+    //             ...state.selectedChannel,
+    //             replies: state.selectedChannel.replies.filter((reply) => {
+    //               if (action.data.channel_ids.some((c) => c.message_id === reply.id)) {
+    //                 return false;
+    //               } else {
+    //                 return true;
+    //               }
+    //             }),
+    //           }
+    //         : state.selectedChannel,
+    //   };
+    // }
     default:
       return state;
   }

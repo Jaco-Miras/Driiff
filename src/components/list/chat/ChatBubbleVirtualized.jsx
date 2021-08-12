@@ -344,6 +344,7 @@ const ChatContent = styled.div`
     clear: both;
     width: 100%;
     display: block;
+    z-index: 1;
 
     p {
       overflow: hidden;
@@ -625,10 +626,6 @@ const ChatBubbleVirtualized = (props) => {
                 </span>
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
-              {/* {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
-                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
-              )} */}
-              {/* {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />} */}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
@@ -639,9 +636,8 @@ const ChatBubbleVirtualized = (props) => {
           </ChatTimeStamp>
         </>
       }
-      {props.children}
     </ChatBubbleContainer>
   );
 };
 
-export default ChatBubbleVirtualized;
+export default React.memo(ChatBubbleVirtualized);

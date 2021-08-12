@@ -86,12 +86,19 @@ const useFileActions = (params = null) => {
         return <i className="fa fa-file-pdf-o text-danger" />;
       } else if (mimeType.includes("zip") || mimeType.includes("archive") || mimeType.includes("x-rar")) {
         return <i className="fa fa-file-zip-o text-primary" />;
-      } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers") || mimeType.includes("xml")) {
+      } else if (mimeType.includes("word") || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+        return <i className="fa fa-file-word-o text-info" />;
+      } else if (
+        mimeType.includes("excel") ||
+        mimeType.includes("spreadsheet") ||
+        mimeType.includes("csv") ||
+        mimeType.includes("numbers") ||
+        //mimeType.includes("xml") ||
+        mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
         return <i className="fa fa-file-excel-o text-success" />;
       } else if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) {
         return <i className="fa fa-file-powerpoint-o text-secondary" />;
-      } else if (mimeType.includes("word") || mimeType.includes("document")) {
-        return <i className="fa fa-file-word-o text-info" />;
       } else if (mimeType.includes("script")) {
         return <i className="fa fa-file-code-o" />;
       } else return <i className="fa fa-file-text-o text-warning" />;
@@ -377,20 +384,14 @@ const useFileActions = (params = null) => {
     dispatch(addToModals(payload));
   };
 
-  const removeCompanyFile = (
-    file,
-    callback = () => {},
-    options = {
-      force_delete: false,
-    }
-  ) => {
+  const removeCompanyFile = (file, callback = () => {}, forceDelete = false) => {
     const handleDeleteFile = () => {
       let payload = {
         file_id: file.id,
         link_id: file.link_id,
         link_type: file.link_type,
       };
-      if (options.force_delete) {
+      if (forceDelete) {
         payload = {
           ...payload,
           force_delete: 1,

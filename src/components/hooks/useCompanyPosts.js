@@ -3,8 +3,6 @@ import { usePostActions } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-let init = false;
-
 const useCompanyPosts = () => {
   const params = useParams();
   const actions = usePostActions();
@@ -54,14 +52,8 @@ const useCompanyPosts = () => {
   };
 
   useEffect(() => {
-    if (!init) {
-      init = true;
-      if (params.postId) {
-        actions.fetchPostDetail({ post_id: parseInt(params.postId) });
-      }
-      fetchMore();
-      actions.fetchPostList();
-    }
+    fetchMore();
+    actions.fetchPostList();
   }, []);
 
   useEffect(() => {
@@ -110,13 +102,14 @@ const useCompanyPosts = () => {
     .filter((p) => {
       if (filter) {
         if (filter === "all") {
-          return true;
+          return !p.hasOwnProperty("draft_type");
         } else if (filter === "inbox") {
-          if (search !== "") {
-            return true;
-          } else {
-            return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
-          }
+          return !p.hasOwnProperty("draft_type");
+          // if (search !== "") {
+          //   return !p.hasOwnProperty("draft_type");
+          // } else {
+          //   return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
+          // }
         } else if (filter === "my_posts") {
           if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
           else return false;
@@ -129,9 +122,9 @@ const useCompanyPosts = () => {
         }
       } else if (tag) {
         if (tag === "is_must_reply") {
-          return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
+          return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
         } else if (tag === "is_must_read") {
-          return (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_read);
+          return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
         } else if (tag === "is_read_only") {
           return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
         } else if (tag === "is_unread") {
@@ -158,16 +151,13 @@ const useCompanyPosts = () => {
     });
 
   count.is_must_reply = Object.values(posts).filter((p) => {
-    return (p.is_must_reply && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_reply) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_reply);
+    return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
   }).length;
   count.is_must_read = Object.values(posts).filter((p) => {
-    return (p.is_must_read && !p.is_archived && p.required_users && p.required_users.some((u) => u.id === user.id && !u.must_read) && !p.hasOwnProperty("draft_type")) || (p.author.id === user.id && p.is_must_read);
+    return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
   }).length;
   count.is_read_only = Object.values(posts).filter((p) => {
-    return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
-  }).length;
-  count.is_unread = Object.values(posts).filter((p) => {
-    return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
+    return p.is_read_only === 1 && !p.is_archived && p.is_unread === 1 && !p.hasOwnProperty("draft_type");
   }).length;
   count.is_close = Object.values(posts).filter((p) => {
     return p.is_close && !p.hasOwnProperty("draft_type");

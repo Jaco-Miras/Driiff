@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { CommonPicker, SvgIconFeather } from "../../../common";
@@ -7,7 +8,8 @@ import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput, FolderSelect } from "../../../forms";
 import { useTranslationActions, usePostActions } from "../../../hooks";
 import PostInputButtons from "../PostInputButtons";
-import Reward from "react-rewards";
+
+const Reward = lazy(() => import("../../../lazy/Reward"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -187,6 +189,7 @@ const ApproverSelectWrapper = styled.div`
 const OverviewNextLink = styled.span`
   display: flex;
   align-items: center;
+  margin-right: 30px;
   svg {
     width: 1rem;
     height: 1rem;
@@ -198,9 +201,10 @@ const OverviewNextLink = styled.span`
 `;
 
 const CompanyPostDetailFooter = (props) => {
-  const { className = "", overview, onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
+  const { className = "", onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
 
   const postActions = usePostActions();
+  const history = useHistory();
   const ref = {
     picker: useRef(),
     postInput: useRef(null),
@@ -457,19 +461,28 @@ const CompanyPostDetailFooter = (props) => {
     }
   };
 
+  const goBackToInbox = () => {
+    let payload = {
+      filter: "inbox",
+      tag: null,
+    };
+    postActions.setCompanyFilterPosts(payload);
+    history.push("/posts");
+  };
   const handleNextPost = () => {
-    const nextPost = posts.reduce((accumulator, { id }, index) => {
-      if (id === post.id) {
-        accumulator = posts[index + 1];
-      }
-      return accumulator;
-    }, null);
+    // const nextPost = posts.reduce((accumulator, { id }, index) => {
+    //   if (id === post.id) {
+    //     accumulator = posts[index + 1];
+    //   }
+    //   return accumulator;
+    // }, null);
 
     postActions.archivePost(post, () => {
-      if (!nextPost) {
-        overview();
+      const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
+      if (!nextUnreadPosts) {
+        goBackToInbox();
       } else {
-        postActions.openPost(nextPost, "/posts");
+        postActions.openPost(nextUnreadPosts, "/posts");
       }
     });
   };
@@ -484,9 +497,17 @@ const CompanyPostDetailFooter = (props) => {
 
   const requestForChangeCallback = (err, res) => {
     if (err) return;
-    if (post.is_must_reply && post.required_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
       postActions.markReplyRequirement(post);
-      postActions.markAsRead(post);
+      //check if post is also set as must read
+      let triggerRead = true;
+      if (post.is_must_read && post.author.id !== user.id) {
+        if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+          triggerRead = false;
+        }
+      }
+      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+      if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
       if (hasPendingAproval && isApprover && showApprover) {
@@ -649,27 +670,29 @@ const CompanyPostDetailFooter = (props) => {
             <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
-            <Reward
-              ref={rewardRef}
-              type="confetti"
-              config={{
-                elementCount: 65,
-                elementSize: 10,
-                spread: 140,
-                lifetime: 360,
-              }}
-            >
-              <button className="btn btn-primary" onClick={handleApprove}>
-                {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
-              </button>
-            </Reward>
+            <Suspense fallback={<></>}>
+              <Reward
+                ref={rewardRef}
+                type="confetti"
+                config={{
+                  elementCount: 65,
+                  elementSize: 10,
+                  spread: 140,
+                  lifetime: 360,
+                }}
+              >
+                <button className="btn btn-primary" onClick={handleApprove}>
+                  {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
+                </button>
+              </Reward>
+            </Suspense>
           </div>
         </Dflex>
       )}
-      {filter && (filter === "all" || filter === "inbox") && (
+      {filter && filter === "inbox" && post && post.is_archived === 0 && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <OverviewNextLink className="mr-3" onClick={overview}>
+            <OverviewNextLink onClick={goBackToInbox}>
               <SvgIconFeather className="mr-2" icon="corner-up-left" /> {dictionary.overview}
             </OverviewNextLink>
             <OverviewNextLink onClick={handleNextPost}>

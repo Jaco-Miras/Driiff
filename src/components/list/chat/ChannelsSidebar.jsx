@@ -11,11 +11,13 @@ const ChannelsSidebarContainer = styled.div`
   display: flex;
   width: 100%;
   flex-flow: column;
+  height: inherit;
 `;
 const Channels = styled.ul`
   padding-left: 24px;
   padding-right: 24px;
   list-style: none;
+  height: inherit;
   h4:first-of-type {
     margin-top: 12px !important;
   }
@@ -78,7 +80,11 @@ const ChannelsSidebar = (props) => {
       }
     }
     actions.select({ ...channel, selected: true });
-    history.push(`/chat/${channel.code}`);
+    if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
+      return;
+    } else {
+      history.push(`/chat/${channel.code}`);
+    }
   };
 
   return (
@@ -178,4 +184,4 @@ const ChannelsSidebar = (props) => {
   );
 };
 
-export default ChannelsSidebar;
+export default React.memo(ChannelsSidebar);
