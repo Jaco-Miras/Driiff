@@ -249,7 +249,7 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      {selectedChannel !== null && showSearchPanel && (
+      {selectedChannel !== null && showSearchPanel && isAuthorizedUser && (
         <ChatSearchPanel
           newSeachToogle={newSeachToogle}
           chatMessageActions={chatMessageActions}
