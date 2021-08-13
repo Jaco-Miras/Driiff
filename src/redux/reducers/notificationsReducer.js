@@ -31,17 +31,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_ALL_NOTIFICATION_REDUCER": {
-      let updatedNotifications = { ...state.notifications };
-      Object.values(updatedNotifications).forEach((n) => {
-        updatedNotifications[n.id].is_read = 1;
-        if (updatedNotifications[n.data.id].type === "POST_MENTION") {
-          updatedNotifications[n.id].is_snooze = false;
-          updatedNotifications[n.id].snooze_time = getCurrentTimestamp();
-        }
-      });
+      // let updatedNotifications = { ...state.notifications };
+      // Object.values(updatedNotifications).forEach((n) => {
+      //   updatedNotifications[n.id].is_read = 1;
+      //   if (updatedNotifications[n.data.id].type === "POST_MENTION") {
+      //     updatedNotifications[n.id].is_snooze = false;
+      //     updatedNotifications[n.id].snooze_time = getCurrentTimestamp();
+      //   }
+      // });
       return {
         ...state,
-        notifications: updatedNotifications,
+        notifications: Object.values(state.notifications).reduce((acc, notif) => {
+          if (notif.type === "POST_MENTION") {
+            acc[notif.id] = { ...notif, is_read: 1, is_snooze: false, snooze_time: getCurrentTimestamp() };
+          } else {
+            acc[notif.id] = { ...notif, is_read: 1 };
+          }
+          return acc;
+        }, {}),
         unreadCount: 0,
       };
     }
@@ -86,7 +93,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_APPROVAL": {
-      if (action.data.user_approved && state.user && state.user.id !== action.data.user_approved) {
+      if (action.data.user_approved && state.user && state.user.id !== action.data.user_approved.id) {
         return {
           ...state,
           notifications: {
@@ -139,7 +146,7 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_COMMENT_APPROVAL": {
-      if (action.data.user_approved && state.user && state.user.id !== action.data.user_approved) {
+      if (action.data.user_approved && state.user && state.user.id !== action.data.user_approved.id) {
         return {
           ...state,
           notifications: {
@@ -411,6 +418,24 @@ export default (state = INITIAL_STATE, action) => {
             };
           } else {
             acc[notif.id] = { ...notif };
+          }
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_UPDATED_POST": {
+      return {
+        ...state,
+        notifications: Object.values(state.notifications).reduce((acc, notif) => {
+          if (notif.type === "POST_CREATE" && action.data.id === notif.data.post_id && action.data.users_approval.length) {
+            acc[notif.id] = { ...notif, type: "POST_REQST_APPROVAL", data: { ...notif.data, users_approval: action.data.users_approval } };
+          } else if (notif.type === "POST_CREATE" && action.data.id === notif.data.post_id) {
+            acc[notif.id] = {
+              ...notif,
+              data: { ...notif.data, must_read: action.data.is_must_read ? 1 : 0, must_read_users: action.data.must_read_users, must_reply: action.data.is_must_reply ? 1 : 0, must_reply_users: action.data.must_reply_users },
+            };
+          } else {
+            acc[notif.id] = notif;
           }
           return acc;
         }, {}),
