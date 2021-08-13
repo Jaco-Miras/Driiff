@@ -255,6 +255,7 @@ export default (state = INITIAL_STATE, action) => {
           workspaces: action.data.workspaces,
           comment_body: action.data.body,
           comment_id: action.data.id,
+          users_approval: action.data.users_approval,
         },
       };
 
