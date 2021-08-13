@@ -222,7 +222,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary, handleSearchChatPanel} = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -411,7 +411,6 @@ const ChatHeaderPanel = (props) => {
 
   if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
 
-
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
@@ -450,7 +449,7 @@ const ChatHeaderPanel = (props) => {
             </li>
           </ul>
         </div>
-        <SearchIcon icon="search" onClick={handleSearchChatPanel} />
+        {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
       <div className="chat-header-right">

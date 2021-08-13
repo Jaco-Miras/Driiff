@@ -71,7 +71,8 @@ const ResultItem = styled.li`
   }
 `;
 const ResultDivWrapper = styled.div`
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: calc(100% - 43px);
 `;
 const EmptyState = styled.div`
