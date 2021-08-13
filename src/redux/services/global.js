@@ -134,7 +134,7 @@ export function subscribePushNotifications(payload) {
 }
 
 export function getPushNotification(payload) {
-  let url = `/v2/push-api-notification?subscription_id=${payload.sub_id}`;
+  let url = `/v2/push-api-notification?endpoint=${payload.endpoint}`;
   return apiCall({
     method: "GET",
     url: url,
