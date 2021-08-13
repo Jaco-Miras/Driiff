@@ -137,13 +137,23 @@ export default function usePushNotification() {
     const getExistingSubscription = async () => {
       const existingSubscription = await getUserSubscription();
       if (existingSubscription) {
-        dispatch(setPushNotification(true));
+        dispatch(
+          getPushNotification({ endpoint: `${existingSubscription.endpoint}` }, (err, res) => {
+            setFetchingSubscription(false);
+            setLoading(false);
+            if (err) setError(err);
+            if (res.data.data) {
+              setUserSubscription(existingSubscription);
+              dispatch(setPushNotification(true));
+            } else {
+              dispatch(setPushNotification(false));
+            }
+            console.log(res.data, "get user subscription");
+          })
+        );
       } else {
         dispatch(setPushNotification(false));
       }
-      setUserSubscription(existingSubscription);
-      setFetchingSubscription(false);
-      setLoading(false);
     };
     getExistingSubscription();
   }, []);
