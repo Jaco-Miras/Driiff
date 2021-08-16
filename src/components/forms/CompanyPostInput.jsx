@@ -132,6 +132,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     commentType,
     imageLoading = null,
     setImageLoading = null,
+    isApprover = false,
   } = props;
 
   const dispatch = useDispatch();
@@ -308,7 +309,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       setEditMode(false);
       setEditMessage(null);
     } else {
-      if (props.isApprover) {
+      if (isApprover) {
         payload.has_rejected = 1;
       }
       commentActions.create(payload, onSubmitCallback);

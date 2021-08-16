@@ -146,29 +146,25 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_COMMENT_APPROVAL": {
-      if (action.data.user_approved && state.user && state.user.id !== action.data.user_approved.id) {
-        return {
-          ...state,
-          notifications: {
-            ...Object.values(state.notifications).reduce((acc, notif) => {
-              if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL") && action.data.post.id === notif.data.post_id) {
-                acc[notif.id] = {
-                  ...notif,
-                  data: {
-                    ...notif.data,
-                    users_approval: action.data.users_approval,
-                  },
-                };
-              } else {
-                acc[notif.id] = { ...notif };
-              }
-              return acc;
-            }, {}),
-          },
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        notifications: {
+          ...Object.values(state.notifications).reduce((acc, notif) => {
+            if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL" || notif.type === "POST_COMMENT") && action.data.post.id === notif.data.post_id) {
+              acc[notif.id] = {
+                ...notif,
+                data: {
+                  ...notif.data,
+                  users_approval: action.data.users_approval,
+                },
+              };
+            } else {
+              acc[notif.id] = { ...notif };
+            }
+            return acc;
+          }, {}),
+        },
+      };
     }
     case "INCOMING_POST": {
       let notificationApproval = {};
@@ -255,6 +251,7 @@ export default (state = INITIAL_STATE, action) => {
           workspaces: action.data.workspaces,
           comment_body: action.data.body,
           comment_id: action.data.id,
+          users_approval: action.data.users_approval,
         },
       };
 

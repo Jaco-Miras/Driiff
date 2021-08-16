@@ -230,7 +230,7 @@ const MainSnooze = (props) => {
   const handleRedirect = (type, n, e) => {
     var actions = type === "notification" ? notifActions : n.type === "todo" ? todoActions : huddleActions;
     e.preventDefault();
-    if (n.is_read === 0 && n.type === "POST_MENTION") {
+    if (n.is_read === 0) { //&& n.type === "POST_MENTION"
       notifActions.read({ id: n.id });
     }
 
@@ -285,7 +285,7 @@ const MainSnooze = (props) => {
   };
 
   const hasApprovalAction = (n) => {
-    return n.data.users_approval && n.data.users_approval.some((u) => u.id === user.id && !u.is_approved);
+    return n.data.users_approval && n.data.users_approval.find((u) => u.ip_address === null && user.id === u.id);
   };
 
   const handleSnoozeAll = (a, e) => {
@@ -317,12 +317,14 @@ const MainSnooze = (props) => {
   const [activeSnooze, setActiveSnooze] = useState([]);
 
   const snoozeOpen = (snooze) => {
+
     if (snooze.length > 0) {
+
       const count = snooze.length;
       if (!toast.isActive("btnSnoozeAll"))
         toast(
           <span className="snooze-all" onClick={(e) => handleSnoozeAll(snooze, e)}>
-            Snooze All {count > 4 && count} Notifications
+            Snooze all {count > 4 && count} Notifications
           </span>,
           {
             className: "snooze-all-container",
@@ -336,7 +338,7 @@ const MainSnooze = (props) => {
         toast.update("btnSnoozeAll", {
           render: () => (
             <span className="snooze-all" onClick={(e) => handleSnoozeAll(snooze, e)}>
-              Snooze All {count > 4 && count} Notifications
+              Snooze all {count > 4 && count} Notifications
             </span>
           ),
           containerId: "toastS",
@@ -362,7 +364,7 @@ const MainSnooze = (props) => {
               if (item.type === "notification" && notifications[n.id]) {
                 if (n.type === "POST_CREATE" && (hasMustReadAction(n) || hasMustReplyAction(n))) closeAction = true;
                 else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) closeAction = true;
-                else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) closeAction = true;
+                else if ((n.type === "POST_MENTION" || n.type === "POST_REJECT_APPROVAL") && !notifications[n.id].is_read) closeAction = true;
               } else if (item.type === "todo" && todos.items[n.id] && todos.items[n.id].status !== "DONE") closeAction = true;
               else if (item.type === "huddle" && huddleClean(n)) closeAction = true;
               if (closeAction) {
@@ -381,6 +383,8 @@ const MainSnooze = (props) => {
         }
         active.push(elemId);
       });
+
+      /*
       activeSnooze
         .filter((t) => {
           return active.indexOf(t) < 0;
@@ -389,6 +393,7 @@ const MainSnooze = (props) => {
           toast.dismiss(t);
         });
       setActiveSnooze(active);
+      */
     } else toast.dismiss("btnSnoozeAll");
   };
 
@@ -398,26 +403,22 @@ const MainSnooze = (props) => {
       const elemId = type + "__" + n.id;
       const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
       if (type === "notification") {
-        if (n.type === "POST_MENTION") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
+        if (n.type === "POST_MENTION" || n.type === "POST_REJECT_APPROVAL") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
         else if (n.type === "POST_CREATE") {
-          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) {
+          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze)
             snooze.push({ ...data, update: true });
-          } else toast.isActive(elemId) && toast.dismiss(elemId);
+          else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REQST_APPROVAL") {
-          if (hasApprovalAction(n) && !n.is_snooze) snooze.push(data);
+          if (hasApprovalAction(n) && !n.is_snooze)
+            snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         }
-        /*
-        else {
-          !n.is_read && !n.is_snooze && snooze.push(data);
-          n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
-        }
-        */
       } else if (type === "todo") {
-        if (n.status !== "DONE" && !n.is_snooze) snooze.push(data);
+        n.status !== "DONE" && !n.is_snooze && snooze.push(data);
         n.status === "DONE" && toast.isActive(elemId) && toast.dismiss(elemId);
       } else if (type === "huddle") {
         if (!isWeekend && !answeredChannels.includes(n.channel.id) && huddleClean(n) && !n.is_snooze) snooze.push(data);
+        else toast.isActive(elemId) && toast.dismiss(elemId);
       }
     });
     return snooze;
@@ -428,7 +429,7 @@ const MainSnooze = (props) => {
     const actions = type === "notification" ? notifActions : type === "todo" ? todoActions : huddleActions;
     let counter = 0;
     items.map((n) => {
-      if (type === "notification" && !n.is_read && n.is_snooze && n.snooze_time <= inMins) {
+      if (type === "notification" && n.is_snooze && n.snooze_time <= inMins || !n.is_read) {
         counter++;
         actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
       } else if (type === "todo" && n.status !== "DONE" && n.is_snooze && n.snooze_time <= inMins) {
@@ -461,33 +462,17 @@ const MainSnooze = (props) => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (Object.keys(channels).length > 0 && users) {
-        //console.log('interval for all snoozed items');
         const todos = unSnoozeMe("todo", todoCLean()),
           notis = unSnoozeMe("notification", notifCLean()),
           huddles = unSnoozeMe("huddle", huddleBots);
         toast.info(<span dangerouslySetInnerHTML={{ __html: `interval for all snoozed items ${snoozeCycle} mins` }} />, { containerId: "toastA", toastId: "xxy" });
-        //console.log({ todos, notis, huddles });
+
         if (todos === 0 && notis === 0 && huddles === 0) putToSnooze();
       }
     }, 1000 * 60 * snoozeCycle);
     return () => clearInterval(interval);
   }, [notifications, todos, huddleBots]);
 
-  /*
-   
-  //interval for all expiring todos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (Object.keys(chats.channels).length > 0){
-        console.log('interval for all expiring todos');
-        putToSnooze();
-        toast.warning(<span dangerouslySetInnerHTML={{ __html: `interval for all expiring todos ${todoCycle} mins` }} />, { containerId: "toastA", toastId: 'xxz' });
-      }
-       
-    }, 1000 * 60 * todoCycle);
-    return () => clearInterval(interval);
-  }, [notifications, todos, huddleBots]);
-  */
   //handler for all non-snoozed items
   useEffect(() => {
     if (Object.keys(channels).length > 0 && users) {

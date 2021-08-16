@@ -661,7 +661,7 @@ const CompanyPostDetailFooter = (props) => {
               approvers={showApprover ? approvers : []}
               onClearApprovers={handleClearApprovers}
               onSubmitCallback={requestForChangeCallback}
-              isApprover={approving.change && hasPendingAproval}
+              isApprover={(approving.change && hasPendingAproval) || (changeRequestedComment && commentId && commentId === changeRequestedComment.id)}
               mainInput={mainInput}
               readOnly={disableButtons}
               onToggleCommentType={handleCommentType}
