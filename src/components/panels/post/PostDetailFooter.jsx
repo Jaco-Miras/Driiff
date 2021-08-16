@@ -757,7 +757,7 @@ const PostDetailFooter = (props) => {
                 approvers={showApprover ? approvers : []}
                 onClearApprovers={handleClearApprovers}
                 onSubmitCallback={requestForChangeCallback}
-                isApprover={approving.change && hasPendingAproval}
+                isApprover={(approving.change && hasPendingAproval) || (changeRequestedComment && commentId && commentId === changeRequestedComment.id)}
                 mainInput={mainInput}
                 imageLoading={imageLoading}
                 setImageLoading={setImageLoading}
