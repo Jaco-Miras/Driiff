@@ -2696,6 +2696,42 @@ export default function (state = INITIAL_STATE, action) {
         huddleBots: huddleBots,
       };
     }
+    case "TRANSFER_CHANNEL_MESSAGES": {
+      //const channel = state.channels[action.data.channel.id];
+      // const messagesToTransfer = channel
+      //   ? [...channel.replies].map((r) => {
+      //       return { ...r, channel_id: action.data.team_channel.id };
+      //     })
+      //   : [];
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel.id) {
+            acc[channel.id] = {
+              ...channel,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              isFetching: false,
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel.id
+            ? {
+                ...state.selectedChannel,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                isFetching: false,
+                selected: true,
+              }
+            : state.selectedChannel,
+      };
+    }
     // case "INCOMING_DELETED_POST": {
     //   return {
     //     ...state,
