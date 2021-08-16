@@ -426,7 +426,6 @@ export function updateCompanyChannel(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMPANY_CHANNEL", payload, callback);
 }
 
-
 export function resetTranslatedBody(payload, callback) {
   return SimpleDispatchActionToReducer("RESET_TRANSLATED_BODY", payload, callback);
 }
@@ -437,4 +436,8 @@ export function setChannelTranslateState(payload, callback) {
 
 export function postChatMessageTranslate(payload, callback) {
   return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
+}
+
+export function transferChannelMessages(payload, callback) {
+  return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
 }

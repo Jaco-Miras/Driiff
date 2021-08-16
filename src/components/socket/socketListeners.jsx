@@ -34,6 +34,7 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  transferChannelMessages,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -1344,6 +1345,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-workspace", (e) => {
+        if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
+          this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
@@ -1499,6 +1503,9 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-lock-workspace", (e) => {
+        if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
+          this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
         this.props.incomingUpdatedWorkspaceFolder(e);
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1961,6 +1968,7 @@ function mapDispatchToProps(dispatch) {
     incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
+    transferChannelMessages: bindActionCreators(transferChannelMessages, dispatch),
   };
 }
 
