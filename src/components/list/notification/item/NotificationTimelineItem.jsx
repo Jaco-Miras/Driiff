@@ -221,6 +221,24 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+      case "PST_CMT_REJCT_APPRVL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasRequestedChange}
+            </span>
+          </>
+        );
+      }
+      case "PST_CMT_ACCPT_APPRVL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasAcceptedProposal}
+            </span>
+          </>
+        );
+      }
       case "CLOSED_POST": {
         return (
           <>
