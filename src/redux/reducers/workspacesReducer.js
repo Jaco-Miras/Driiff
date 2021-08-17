@@ -1377,6 +1377,23 @@ export default (state = INITIAL_STATE, action) => {
             return res;
           }, {}),
         },
+        workspaceTimeline: {
+          ...state.workspaceTimeline,
+          ...action.data.recipient_ids.reduce((acc, id) => {
+            if (state.workspaceTimeline[id]) {
+              acc[id] = {
+                ...state.workspaceTimeline[id],
+                timeline: Object.values(state.workspaceTimeline[id].timeline)
+                  .filter((timeline) => !(timeline.tag === "POST" && timeline.item && timeline.item.id === action.data.post_id))
+                  .reduce((pacc, t) => {
+                    pacc[t.id] = t;
+                    return pacc;
+                  }, {}),
+              };
+            }
+            return acc;
+          }, {}),
+        },
       };
     }
     case "INCOMING_COMMENT": {
