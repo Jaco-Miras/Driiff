@@ -35,9 +35,9 @@ const NotificationBadge = (props) => {
         notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
           <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
         ) : null
-      ) : notification.type === "POST_ACCEPT_APPROVAL" ? (
+      ) : notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "PST_CMT_ACCPT_APPRVL" ? (
         <span className={"badge badge-success text-white"}>{dictionary.accepted}</span>
-      ) : notification.type === "POST_REJECT_APPROVAL" ? (
+      ) : notification.type === "POST_REJECT_APPROVAL" || notification.type === "PST_CMT_REJCT_APPRVL" ? (
         notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address !== null) ? (
           <span className={"badge badge-primary text-white"}>{dictionary.changeRequested}</span>
         ) : null
