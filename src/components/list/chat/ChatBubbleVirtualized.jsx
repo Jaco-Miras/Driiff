@@ -110,6 +110,9 @@ const ChatBubbleContainer = styled.div`
       cursor: pointer;
     }
   }
+  .message-files div:first-child {
+    align-items: center;
+  }
 `;
 
 const QuoteContainer = styled.div`
@@ -231,8 +234,8 @@ const ChatMessageFiles = styled(MessageFiles)`
   ${(props) => props.hasMessage && ""}
 `;
 const ReplyContent = styled.span`
-  max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
-  padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "")};
+  // max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
+  // padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "")};
   ul {
     list-style-type: none;
   }

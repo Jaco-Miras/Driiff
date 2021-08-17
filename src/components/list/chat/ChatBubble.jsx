@@ -108,14 +108,14 @@ const ChatBubbleContainer = styled.div`
       cursor: pointer;
     }
   }
-  a.a_fancy { 
+  a.a_fancy {
     border-radius: 5px !important;
-    background-color: #FFF !important;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.11) !important; 
+    background-color: #fff !important;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.11) !important;
     text-decoration: none !important;
     display: inline-block;
     height: auto !important;
-    padding:5px 10px;
+    padding: 5px 10px;
     margin-bottom: 5px;
     color: #000 !important;
     font-family: Inter !important;
@@ -124,6 +124,9 @@ const ChatBubbleContainer = styled.div`
     line-height: 21px !important;
     margin-right: 1pt;
     margin-left: 1pt;
+  }
+  .message-files div:first-child {
+    align-items: center;
   }
 `;
 
@@ -244,8 +247,8 @@ const QuoteContent = styled.div`
 //   }
 // `;
 const ReplyContent = styled.span`
-  max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
-  padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
+  // max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
+  // padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
   ul {
     list-style-type: none;
   }
