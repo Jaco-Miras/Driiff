@@ -99,7 +99,7 @@ const MainSnooze = (props) => {
   //const answeredChannels = [...hasUnpublishedAnswers];
   const answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
 
-  const snoozeTime = 3, snoozeCycle = 5, expTodo = 55; //mins
+  const snoozeTime = 1, snoozeCycle = 1, expTodo = 59; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
