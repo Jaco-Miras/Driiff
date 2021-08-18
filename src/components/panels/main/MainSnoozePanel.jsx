@@ -99,10 +99,7 @@ const MainSnooze = (props) => {
   //const answeredChannels = [...hasUnpublishedAnswers];
   const answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
 
-  const snoozeTime = 1,
-    snoozeCycle = 1,
-    todoCycle = 7,
-    expTodo = 58; //mins
+  const snoozeTime = 3, snoozeCycle = 5, expTodo = 55; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
@@ -113,15 +110,17 @@ const MainSnooze = (props) => {
     needsReply: _t("SNOOZE.NEEDS_REPLY", "Needs reply"),
     timeTOHuddle: _t("SNOOZE.TIME_TO_HUDDLE", "Time to huddle, "),
     hasRequestedChange: _t("SNOOZE.HAS_REQUESTED_CHANGE", "has requested a change."),
-    snoozeAll: _t("SNOOZE.SNOOZE_ALL", `Snoozed for ${snoozeTime} min(s)`),
+    //snoozeAll: _t("SNOOZE.SNOOZE_ALL", `Snoozed all for ${snoozeTime} min(s)`),
     snoozeMe: _t("SNOOZE.SNOOZE_ME", `Snoozed for ${snoozeTime} min(s)`),
     actionNeeded: _t("SNOOZE.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("SNOOZE.CHANGE_REQUESTED", "Change requested"),
+    timeTOHuddle: _t("SNOOZE.TIME_TO_HUDDLE", "Time to huddle, "),
+    huddleSkip: _t("SNOOZE.HUDDLE_SKIP", "Huddle is Skipped"),
   };
 
   const notifCLean = () => {
     return Object.values(notifications)
-      .filter((n) => n.type === "POST_MENTION" || n.type === "POST_REQST_APPROVAL" || n.type === "POST_REJECT_APPROVAL" || n.type === "POST_COMMENT" || (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply)))
+      .filter((n) => n.type === "POST_MENTION" || n.type === "POST_REQST_APPROVAL" || n.type === "POST_REJECT_APPROVAL" || n.type === "PST_CMT_REJCT_APPRVL" || n.type === "POST_COMMENT" || (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply)))
       .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
@@ -288,6 +287,12 @@ const MainSnooze = (props) => {
     return n.data.users_approval && n.data.users_approval.find((u) => u.ip_address === null && user.id === u.id);
   };
 
+  const hasCommentRejectApproval = (notification) => {
+    return Object.values(notifications)
+      .filter((n) => n.id !== notification.id)
+      .some((n) => n.type === "PST_CMT_REJCT_APPRVL" && n.data.post_id === notification.data.post_id && n.id > notification.id);
+  };
+
   const handleSnoozeAll = (a, e) => {
     e.preventDefault();
 
@@ -307,11 +312,11 @@ const MainSnooze = (props) => {
       const n = item.type === "notification" ? notifications[item.id] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
       const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
       if (!n.is_snooze) {
-        if (toast.isActive(elemId)) toast.dismiss(elemId);
+        toast.isActive(elemId) && toast.dismiss(elemId);
         actions.snooze(data);
       }
     });
-    toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeAll }} />, { containerId: "toastA", toastId: "btnSnoozeMe" });
+    // toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeAll }} />, { containerId: "toastA", toastId: "btnSnoozeAll" });
   };
 
   const [activeSnooze, setActiveSnooze] = useState([]);
@@ -354,7 +359,7 @@ const MainSnooze = (props) => {
 
         let closeAction = false;
         if (!toast.isActive(elemId)) {
-          toast(<SnoozeItem type={item.type} id={n.id} item={n} user={user} users={users} actions={actions} handleRedirect={handleRedirect} channels={channels} darkMode={dark_mode} />, {
+          toast(<SnoozeItem type={item.type} dictionary={dictionary} id={n.id} item={n} user={user} users={users} actions={actions} handleRedirect={handleRedirect} channels={channels} darkMode={dark_mode} />, {
             className: "snooze-container",
             bodyClassName: "snooze-body",
             containerId: "toastS",
@@ -364,9 +369,10 @@ const MainSnooze = (props) => {
               if (item.type === "notification" && notifications[n.id]) {
                 if (n.type === "POST_CREATE" && (hasMustReadAction(n) || hasMustReplyAction(n))) closeAction = true;
                 else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) closeAction = true;
-                else if (n.type === "POST_COMMENT" && hasApprovalAction(n)) closeAction = true;
                 else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) closeAction = true;
-                else if (n.type === "POST_REJECT_APPROVAL" && !notifications[n.id].is_read) closeAction = true;
+                else if (n.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") closeAction = true;
+                else if (n.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") closeAction = true;
+                else if (n.type === "POST_COMMENT" && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label === "NEED_ACTION") closeAction = true;
               } else if (item.type === "todo" && todos.items[n.id] && todos.items[n.id].status !== "DONE") closeAction = true;
               else if (item.type === "huddle" && huddleClean(n)) closeAction = true;
               if (closeAction) {
@@ -378,7 +384,7 @@ const MainSnooze = (props) => {
         } else {
           if (item.update) {
             toast.update(elemId, {
-              render: () => <SnoozeItem type={item.type} id={n.id} item={n} user={user} users={users} actions={actions} handleRedirect={handleRedirect} channels={channels} darkMode={dark_mode} />,
+              render: () => <SnoozeItem type={item.type} dictionary={dictionary} id={n.id} item={n} user={user} users={users} actions={actions} handleRedirect={handleRedirect} channels={channels} darkMode={dark_mode} />,
               containerId: "toastS",
             });
           }
@@ -406,7 +412,7 @@ const MainSnooze = (props) => {
       const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
       if (type === "notification") {
         if (n.type === "POST_MENTION" || n.type === "POST_REJECT_APPROVAL") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
-        else if (n.type === "POST_REJECT_APPROVAL") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
+
         else if (n.type === "POST_CREATE") {
           if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze)
             snooze.push({ ...data, update: true });
@@ -416,8 +422,19 @@ const MainSnooze = (props) => {
             snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         }
+        else if (n.type === "POST_REJECT_APPROVAL") {
+          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze)
+            snooze.push(data)
+          else
+            toast.isActive(elemId) && toast.dismiss(elemId);
+        }
+        else if (n.type === "PST_CMT_REJCT_APPRVL") {
+          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze)
+            snooze.push(data);
+          else toast.isActive(elemId) && toast.dismiss(elemId);
+        }
         else if (n.type === "POST_COMMENT") {
-          if (hasApprovalAction(n) && !n.is_snooze)
+          if (n.data.post_approval_label && n.data.post_approval_label === "NEED_ACTION" && !n.is_snooze)
             snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         }
