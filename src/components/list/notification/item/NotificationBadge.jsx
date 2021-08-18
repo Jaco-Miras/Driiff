@@ -41,9 +41,11 @@ const NotificationBadge = (props) => {
           </p>
         )
       ) : notification.type === "POST_REQST_APPROVAL" ? (
-        notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
-          <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
-        ) : null
+        <>
+          {notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) && <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>}
+          {getMustReadText(notification.data) && <span className={"badge badge-danger text-white mr-1"}>{getMustReadText(notification.data)}</span>}
+          {getMustReplyText(notification.data) && <span className={"badge badge-warning text-white mr-1"}>{getMustReplyText(notification.data)}</span>}
+        </>
       ) : notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "PST_CMT_ACCPT_APPRVL" ? (
         <span className={"badge badge-success text-white"}>{dictionary.accepted}</span>
       ) : notification.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval() && notification.data.post_approval_label && notification.data.post_approval_label === "REQUEST_UPDATE" ? (
