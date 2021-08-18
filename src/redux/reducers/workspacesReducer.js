@@ -2499,6 +2499,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
