@@ -845,7 +845,11 @@ const CreateEditWorkspaceModal = (props) => {
         }
       };
 
-      if ((item.is_lock !== payload.is_lock && payload.is_lock === 1) || form.has_externals) {
+      if (
+        (item.is_lock !== payload.is_lock && payload.is_lock === 1) ||
+        (form.has_externals && payload.new_externals && payload.new_externals.length) ||
+        (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length)
+      ) {
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
@@ -972,7 +976,7 @@ const CreateEditWorkspaceModal = (props) => {
         );
       };
 
-      if (payload.is_lock === 1 || form.has_externals) {
+      if (payload.is_lock === 1 || (form.has_externals && payload.external_emails && payload.external_emails.length) || (form.has_externals && form.selectedExternals.length)) {
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
