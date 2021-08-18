@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 //import SearchForm from "../../forms/SearchForm";
@@ -50,7 +51,7 @@ border-bottom: 1px solid #ebebeb;
     color:#c7c7c7;
 }
 color: #495057;
-p.chat-search-date {
+.chat-search-header span {
     font-size: smaller;
     margin: 0;
 }
@@ -97,11 +98,11 @@ button {
 const SearchForm = styled.form`flex-grow:1;margin:0 .5rem 0 0.5em!important;.form-control{border-radius:8px!important;padding-left:40px;transition:padding-left 0.4s cubic-bezier(.275,.42,0,1);&:focus{padding-left:12px}}.not-empty .form-control{padding-left:12px}.not-empty .input-group-append{display:none}.btn-cross{right:0!important}.input-group-append{position:absolute;top:2px;left:0;button{border:0!important;padding:10px 14px!important;color:#aaa;pointer-events:none}}@media (max-width:480px){margin:0 0 0.75rem!important}&::placeholder{color:#aaa}.btn-cross{position:absolute;right:45px;opacity:0;border:0;background:transparent;padding:0;height:100%;width:36px;border-radius:4px;svg{width:16px;color:#495057}}.not-empty .btn-cross{z-index:9;opacity:1}.loading{height:1rem;width:1rem}`;
 
 const ChatSearchPanel = (props) => {
-  const { className = "", showSearchPanel, handleSearchChatPanel, selectedChannel, newSeachToogle } = props;
+  const { className = "", showSearchPanel, handleSearchChatPanel, selectedChannel, newSeachToogle, user } = props;
   const [skip, setSkip] = useState(0);
   const limit = 20;
   const inputGroup = useRef();
-  const { todoFormat } = useTimeFormat();
+  const { localizeChatDate } = useTimeFormat();
   const { _t } = useTranslationActions();
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState(false);
@@ -109,6 +110,7 @@ const ChatSearchPanel = (props) => {
   const dictionary = {
     noItemsFoundHeader: _t("CHATSEARCH.NO_ITEMS_FOUND_HEADER", "WOO!"),
     noItemsFoundText: _t("CHATSEARCH.NO_ITEMS_FOUND_TEXT", "Nothing here but me… 👻"),
+    you: _t("CHATSEARCH.YOU", "You"),
   };
 
   const clear = () => {
@@ -118,17 +120,6 @@ const ChatSearchPanel = (props) => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     bottom && setSkip(skip + limit);
   }
-  const onSearchChange = (e) => {
-    var value = e.target.value;
-    setSearching(true);
-    setQuery(value);
-    if (value.trim() !== "" && value.length > 2 && e.keyCode !== 32)
-      getChatMsgs(value, 0, true);
-    else {
-      setResults([]);
-      setSearching(false);
-    }
-  };
 
   const handleSearchKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -147,7 +138,27 @@ const ChatSearchPanel = (props) => {
 
   const parseResult = (data) => {
     const resp = data.map((i) => {
-      return i.map((item) => { return <ResultItem onClick={(e) => handleRedirect(item)} key={item.id}><p className="chat-search-date"> {todoFormat(item.created_at.timestamp)}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div> </ResultItem> });
+      return i.map((item) => {
+        const isAuthor = item.user && item.user.id === user.id;
+        console.log(i);
+        return <ResultItem onClick={(e) => handleRedirect(item)} key={item.id}>
+          <div className="d-flex align-items-center chat-search-header">
+            <div className="d-flex justify-content-between align-items-center text-muted w-100">
+              <div className="d-inline-flex justify-content-center align-items-start">
+                <div>
+                  <span>{localizeChatDate(item.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
+                </div>
+              </div>
+              <div className="d-inline-flex">
+                <div>
+                  <span>{isAuthor ? dictionary.you : item.user.name}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div>
+        </ResultItem>
+      });
     });
     return (resp[0] && resp[0].length) ? resp : (<EmptyState > <h3>{dictionary.noItemsFoundHeader}</h3><h5>{dictionary.noItemsFoundText} </h5> </EmptyState>)
   };
