@@ -50,8 +50,6 @@ const ChatContentPanel = (props) => {
     dropZoneRef: useRef(),
   };
 
-  const user = useSelector((state) => state.session.user);
-
   const [showSearchPanel, setShowSearchPanel] = useState(false);
   const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
 
@@ -251,9 +249,17 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      {selectedChannel !== null && showSearchPanel && isAuthorizedUser &&
-        (<ChatSearchPanel newSeachToogle={newSeachToogle} chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} setShowSearchPanel={setShowSearchPanel} handleSearchChatPanel={handleSearchChatPanel} selectedChannel={selectedChannel} user={user} />)
-      }
+      {selectedChannel !== null && showSearchPanel && isAuthorizedUser && (
+        <ChatSearchPanel
+          newSeachToogle={newSeachToogle}
+          chatMessageActions={chatMessageActions}
+          showSearchPanel={showSearchPanel}
+          setShowSearchPanel={setShowSearchPanel}
+          handleSearchChatPanel={handleSearchChatPanel}
+          selectedChannel={selectedChannel}
+          user={user}
+        />
+      )}
     </Wrapper>
   );
 };
