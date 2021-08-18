@@ -128,6 +128,7 @@ export default (state = INITIAL_STATE, action) => {
                   personalized_for_id: null,
                   title: action.data.post.title,
                   users_approval: action.data.users_approval,
+                  post_approval_label: action.data.notification_approval.type === "POST_REJECT_APPROVAL" ? "REQUEST_UPDATE" : "",
                   workspaces: action.data.workspaces.map((ws) => {
                     return {
                       topic_id: ws.topic.id,
@@ -147,58 +148,56 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_COMMENT_APPROVAL": {
-      // return {
-      //   ...state,
-      //   notifications: {
-      //     ...Object.values(state.notifications).reduce((acc, notif) => {
-      //       if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL" || notif.type === "POST_COMMENT") && action.data.post.id === notif.data.post_id) {
-      //         acc[notif.id] = {
-      //           ...notif,
-      //           data: {
-      //             ...notif.data,
-      //             users_approval: action.data.users_approval,
-      //           },
-      //         };
-      //       } else {
-      //         acc[notif.id] = { ...notif };
-      //       }
-      //       return acc;
-      //     }, {}),
-      //   },
-      // };
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          ...(action.data.notification_approval && {
-            [action.data.notification_approval.id]: {
-              id: action.data.notification_approval.id,
-              type: action.data.notification_approval.type,
-              is_read: 0,
-              is_snooze: false,
-              snooze_time: null,
-              created_at: action.data.created_at,
-              author: action.data.user_approved,
-              data: {
-                post_id: action.data.post.id,
-                type: "POST",
-                must_read: false,
-                must_reply: false,
-                personalized_for_id: null,
-                title: action.data.post.title,
-                users_approval: action.data.users_approval,
-                workspaces: action.data.workspaces.map((ws) => {
-                  return {
-                    topic_id: ws.topic.id,
-                    topic_name: ws.topic.name,
-                    workspace_id: ws.workspace ? ws.workspace.id : null,
-                    workspace_name: ws.workspace ? ws.workspace.name : null,
-                  };
-                }),
-                comment_body: null,
+          ...(action.data.notification_approval &&
+            action.data.user_approved.id !== state.user.id && {
+              [action.data.notification_approval.id]: {
+                id: action.data.notification_approval.id,
+                type: action.data.notification_approval.type,
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                created_at: action.data.created_at,
+                author: action.data.user_approved,
+                data: {
+                  post_id: action.data.post.id,
+                  type: "POST",
+                  must_read: false,
+                  must_reply: false,
+                  personalized_for_id: null,
+                  title: action.data.post.title,
+                  users_approval: action.data.users_approval,
+                  post_approval_label: "REQUEST_UPDATE",
+                  workspaces: action.data.workspaces.map((ws) => {
+                    return {
+                      topic_id: ws.topic.id,
+                      topic_name: ws.topic.name,
+                      workspace_id: ws.workspace ? ws.workspace.id : null,
+                      workspace_name: ws.workspace ? ws.workspace.name : null,
+                    };
+                  }),
+                  comment_body: null,
+                },
               },
-            },
-          }),
+            }),
+          ...Object.values(state.notifications).reduce((acc, notif) => {
+            if (notif.type === "POST_COMMENT" && action.data.post.id === notif.data.post_id && action.data.user_approved.id === state.user.id && action.data.users_approval.some((u) => u.ip_address !== null && u.id === state.user.id)) {
+              acc[notif.id] = {
+                ...notif,
+                data: {
+                  ...notif.data,
+                  users_approval: action.data.users_approval,
+                  post_approval_label: "",
+                },
+              };
+            } else {
+              acc[notif.id] = notif;
+            }
+            return acc;
+          }, {}),
         },
       };
     }
@@ -262,33 +261,56 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_COMMENT": {
-      if (action.data.notification === null || action.data.author.id === state.user.id) return state;
-
-      let postNotification = {
-        id: action.data.notification.id,
-        type: action.data.notification.type,
-        is_read: 0,
-        is_snooze: false,
-        snooze_time: null,
-        created_at: action.data.created_at,
-        author: action.data.author,
-        data: {
-          post_id: action.data.post_id,
-          type: "TOPIC_POST",
-          must_read: 0,
-          must_reply: 0,
-          personalized_for_id: action.data.personalized_for_id,
-          title: action.data.post_title,
-          workspaces: action.data.workspaces,
-          comment_body: action.data.body,
-          comment_id: action.data.id,
-          users_approval: action.data.users_approval,
-        },
-      };
-
       return {
         ...state,
-        notifications: { ...state.notifications, [postNotification.id]: postNotification },
+        notifications: {
+          ...state.notifications,
+          ...(action.data.author.id !== state.user.id &&
+            action.data.notification && {
+              [action.data.notification.id]: {
+                id: action.data.notification.id,
+                type: action.data.notification.type,
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                created_at: action.data.created_at,
+                author: action.data.author,
+                data: {
+                  post_id: action.data.post_id,
+                  type: "TOPIC_POST",
+                  must_read: 0,
+                  must_reply: 0,
+                  personalized_for_id: action.data.personalized_for_id,
+                  title: action.data.post_title,
+                  workspaces: action.data.workspaces,
+                  comment_body: action.data.body,
+                  comment_id: action.data.id,
+                  users_approval: action.data.users_approval,
+                  post_approval_label: action.data.users_approval.every((u) => u.ip_address === null) ? "NEED_ACTION" : "",
+                },
+              },
+            }),
+          ...Object.values(state.notifications).reduce((acc, notif) => {
+            if (
+              (notif.type === "POST_REJECT_APPROVAL" || notif.type === "PST_CMT_REJCT_APPRVL") &&
+              action.data.post_id === notif.data.post_id &&
+              action.data.users_approval &&
+              action.data.users_approval.every((u) => u.ip_address === null)
+            ) {
+              acc[notif.id] = {
+                ...notif,
+                data: {
+                  ...notif.data,
+                  users_approval: action.data.users_approval,
+                  post_approval_label: "",
+                },
+              };
+            } else {
+              acc[notif.id] = notif;
+            }
+            return acc;
+          }, {}),
+        },
       };
     }
     case "SET_PUSH_NOTIFICATION": {

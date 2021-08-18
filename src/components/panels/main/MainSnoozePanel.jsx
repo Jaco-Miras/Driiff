@@ -121,7 +121,7 @@ const MainSnooze = (props) => {
 
   const notifCLean = () => {
     return Object.values(notifications)
-      .filter((n) => n.type === "POST_MENTION" || n.type === "POST_REQST_APPROVAL" || n.type === "POST_REJECT_APPROVAL" || (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply)))
+      .filter((n) => n.type === "POST_MENTION" || n.type === "POST_REQST_APPROVAL" || n.type === "POST_REJECT_APPROVAL" || n.type === "POST_COMMENT" || (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply)))
       .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
@@ -364,7 +364,9 @@ const MainSnooze = (props) => {
               if (item.type === "notification" && notifications[n.id]) {
                 if (n.type === "POST_CREATE" && (hasMustReadAction(n) || hasMustReplyAction(n))) closeAction = true;
                 else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) closeAction = true;
-                else if ((n.type === "POST_MENTION" || n.type === "POST_REJECT_APPROVAL") && !notifications[n.id].is_read) closeAction = true;
+                else if (n.type === "POST_COMMENT" && hasApprovalAction(n)) closeAction = true;
+                else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) closeAction = true;
+                else if (n.type === "POST_REJECT_APPROVAL" && !notifications[n.id].is_read) closeAction = true;
               } else if (item.type === "todo" && todos.items[n.id] && todos.items[n.id].status !== "DONE") closeAction = true;
               else if (item.type === "huddle" && huddleClean(n)) closeAction = true;
               if (closeAction) {
@@ -404,11 +406,17 @@ const MainSnooze = (props) => {
       const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
       if (type === "notification") {
         if (n.type === "POST_MENTION" || n.type === "POST_REJECT_APPROVAL") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
+        else if (n.type === "POST_REJECT_APPROVAL") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
         else if (n.type === "POST_CREATE") {
           if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze)
             snooze.push({ ...data, update: true });
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REQST_APPROVAL") {
+          if (hasApprovalAction(n) && !n.is_snooze)
+            snooze.push(data);
+          else toast.isActive(elemId) && toast.dismiss(elemId);
+        }
+        else if (n.type === "POST_COMMENT") {
           if (hasApprovalAction(n) && !n.is_snooze)
             snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
