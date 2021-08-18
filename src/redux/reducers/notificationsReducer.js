@@ -143,6 +143,27 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         };
+      } else if (action.data.user_approved && state.user && state.user.id === action.data.user_approved.id) {
+        return {
+          ...state,
+          notifications: {
+            ...Object.values(state.notifications).reduce((acc, notif) => {
+              if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL") && action.data.post.id === notif.data.post_id) {
+                acc[notif.id] = {
+                  ...notif,
+                  data: {
+                    ...notif.data,
+                    post_approval_label: "",
+                    users_approval: action.data.users_approval,
+                  },
+                };
+              } else {
+                acc[notif.id] = { ...notif };
+              }
+              return acc;
+            }, {}),
+          },
+        };
       } else {
         return state;
       }
