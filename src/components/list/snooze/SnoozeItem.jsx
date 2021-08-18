@@ -67,25 +67,10 @@ const SnoozeContainer = styled.div`
 `;
 
 const SnoozeItem = (props) => {
-  const { className = "", type, item, user, actions, users, channels, handleRedirect, darkMode, post } = props;
+  const { className = "", type, item, user, dictionary, users, channels, handleRedirect, darkMode, } = props;
 
   const { _t } = useTranslationActions();
 
-  const dictionary = {
-    notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
-    todoReminder: _t("SNOOZE.REMINDER", "A friendly automated reminder"),
-    sentProposal: _t("SNOOZE.SENT_PROPOSAL", "sent a proposal."),
-    notificationNewPost: _t("SNOOZE.NEW_POST", "shared a post"),
-    mustRead: _t("SNOOZE.MUST_READ", "Must read"),
-    needsReply: _t("SNOOZE.NEEDS_REPLY", "Needs reply"),
-    timeTOHuddle: _t("SNOOZE.TIME_TO_HUDDLE", "Time to huddle, "),
-    hasRequestedChange: _t("SNOOZE.HAS_REQUESTED_CHANGE", "has requested a change."),
-    snoozeAll: _t("SNOOZE.SNOOZE_ALL", "Snoozed for 60 mins"),
-    snoozeMe: _t("SNOOZE.SNOOZE_ME", "Snoozed for 60 mins"),
-    actionNeeded: _t("SNOOZE.ACTION_NEEDED", "Action needed"),
-    changeRequested: _t("SNOOZE.CHANGE_REQUESTED", "Change requested"),
-    huddleSkip: _t("SNOOZE.HUDDLE_SKIP", "Huddle is Skipped"),
-  };
 
   const handleSkip = (type, n, e) => {
     e.stopPropagation();
@@ -134,6 +119,14 @@ const SnoozeItem = (props) => {
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       } else if (n.type === "POST_REJECT_APPROVAL") {
         header = `${firstName}" "${dictionary.hasRequestedChange}`;
+        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+      }
+      else if (n.type === "PST_CMT_REJCT_APPRVL") {
+        header = `${firstName}" "${dictionary.changeRequested}`;
+        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+      }
+      else if (n.type === "POST_COMMENT") {
+        header = `${firstName}" "${dictionary.actionNeeded}`;
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       }
     } else if (type === "todo") {
