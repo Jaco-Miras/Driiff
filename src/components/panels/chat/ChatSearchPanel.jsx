@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 //import SearchForm from "../../forms/SearchForm";
@@ -55,7 +56,7 @@ const ResultItem = styled.li`
     color: #c7c7c7;
   }
   color: #495057;
-  p.chat-search-date {
+  .chat-search-header span {
     font-size: smaller;
     margin: 0;
   }
@@ -166,11 +167,11 @@ const SearchForm = styled.form`
 `;
 
 const ChatSearchPanel = (props) => {
-  const { showSearchPanel, handleSearchChatPanel, selectedChannel, newSeachToogle } = props;
+  const { className = "", showSearchPanel, handleSearchChatPanel, selectedChannel, newSeachToogle, user } = props;
   const [skip, setSkip] = useState(0);
   const limit = 20;
   const inputGroup = useRef();
-  const { todoFormat } = useTimeFormat();
+  const { localizeChatDate } = useTimeFormat();
   const { _t } = useTranslationActions();
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState(false);
@@ -178,6 +179,7 @@ const ChatSearchPanel = (props) => {
   const dictionary = {
     noItemsFoundHeader: _t("CHATSEARCH.NO_ITEMS_FOUND_HEADER", "WOO!"),
     noItemsFoundText: _t("CHATSEARCH.NO_ITEMS_FOUND_TEXT", "Nothing here but me… 👻"),
+    you: _t("CHATSEARCH.YOU", "You"),
   };
 
   const clear = () => {
@@ -189,16 +191,6 @@ const ChatSearchPanel = (props) => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     bottom && setSkip(skip + limit);
   };
-  // const onSearchChange = (e) => {
-  //   var value = e.target.value;
-  //   setSearching(true);
-  //   setQuery(value);
-  //   if (value.trim() !== "" && value.length > 2 && e.keyCode !== 32) getChatMsgs(value, 0, true);
-  //   else {
-  //     setResults([]);
-  //     setSearching(false);
-  //   }
-  // };
 
   const handleSearchKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -218,9 +210,25 @@ const ChatSearchPanel = (props) => {
   const parseResult = (data) => {
     const resp = data.map((i) => {
       return i.map((item) => {
+        const isAuthor = item.user && item.user.id === user.id;
+        //console.log(i);
         return (
           <ResultItem onClick={(e) => handleRedirect(item)} key={item.id}>
-            <p className="chat-search-date"> {todoFormat(item.created_at.timestamp)}</p> <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div>{" "}
+            <div className="d-flex align-items-center chat-search-header">
+              <div className="d-flex justify-content-between align-items-center text-muted w-100">
+                <div className="d-inline-flex justify-content-center align-items-start">
+                  <div>
+                    <span>{isAuthor ? dictionary.you : item.user.name}</span>
+                  </div>
+                </div>
+                <div className="d-inline-flex">
+                  <div>
+                    <span>{localizeChatDate(item.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="chat-search-body mb-2" dangerouslySetInnerHTML={{ __html: item.body }}></div>
           </ResultItem>
         );
       });
