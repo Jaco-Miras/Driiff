@@ -146,12 +146,13 @@ const ChatSearchPanel = (props) => {
             <div className="d-flex justify-content-between align-items-center text-muted w-100">
               <div className="d-inline-flex justify-content-center align-items-start">
                 <div>
-                  <span>{localizeChatDate(item.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
+                  <span>{isAuthor ? dictionary.you : item.user.name}</span>
+
                 </div>
               </div>
               <div className="d-inline-flex">
                 <div>
-                  <span>{isAuthor ? dictionary.you : item.user.name}</span>
+                  <span>{localizeChatDate(item.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
                 </div>
               </div>
             </div>
