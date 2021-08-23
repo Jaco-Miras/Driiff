@@ -62,10 +62,31 @@ const SnoozeBody = styled.p`
 `;
 
 const SnoozeContainer = styled.div`
-  display: inline-block;
-  margin-top: 3px;
+display: inline-block;
+vertical-align: middle;
+line-height: 1;
 `;
 
+const SnoozeContainerWrapper = styled.div`
+  ::before {
+    content: '';
+    display: inline-block;
+    height: 100%; 
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+  }
+`;
+const RobotAvatar = styled.div`
+::before {
+  content: '';
+  display: inline-block;
+  height: 100%; 
+  vertical-align: middle;
+  margin-right: -0.25em; /* Adjusts for spacing */
+}
+div {display: inline-block;
+  vertical-align: middle;}
+`;
 const SnoozeItem = (props) => {
   const { className = "", type, item, user, dictionary, users, channels, handleRedirect, darkMode, } = props;
 
@@ -131,7 +152,7 @@ const SnoozeItem = (props) => {
       }
     } else if (type === "todo") {
       header = dictionary.todoReminder;
-      body = <SnoozeBody className={"snooze-body"}>{stripHtml(n.title)}</SnoozeBody>;
+      body = <SnoozeBody className={"snooze-body"} style={{ 'padding-top': '5px' }}>{stripHtml(n.title)}</SnoozeBody>;
     } else if (type === "huddle") {
       header = `${dictionary.timeTOHuddle}" "${user.first_name}`;
       body = (
@@ -163,14 +184,16 @@ const SnoozeItem = (props) => {
             <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={false} />
           )
         ) : type === "todo" ? (
-          <div className="robotAvatar">
+          <RobotAvatar className="robotAvatar">
             <div>🤖</div>
-          </div>
+          </RobotAvatar>
         ) : (
           <ChannelIcon className="chat-header-icon" channel={channels[item.channel.id]} />
         )}
       </div>
-      <SnoozeContainer>{renderContent(type, item)}</SnoozeContainer>
+      <SnoozeContainerWrapper >
+        <SnoozeContainer>{renderContent(type, item)}</SnoozeContainer>
+      </SnoozeContainerWrapper>
     </NotifWrapper>
   );
 };

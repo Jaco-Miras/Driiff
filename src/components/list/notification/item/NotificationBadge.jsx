@@ -30,7 +30,7 @@ const NotificationBadge = (props) => {
     <>
       {notification.type === "POST_CREATE" ? (
         fromSnooze ? (
-          <p className={"d-flex"} style={{ position: "absolute" }}>
+          <p className={"d-flex"}>
             <span className={"badge badge-danger text-white mr-1"}>{getMustReadText(notification.data)}</span>
             <span className={"badge badge-warning text-white  mr-1"}>{getMustReplyText(notification.data)}</span>
           </p>
