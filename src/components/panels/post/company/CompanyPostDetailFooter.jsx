@@ -663,7 +663,8 @@ const CompanyPostDetailFooter = (props) => {
               onSubmitCallback={requestForChangeCallback}
               isApprover={(approving.change && hasPendingAproval) || (changeRequestedComment && commentId && commentId === changeRequestedComment.id)}
               mainInput={mainInput}
-              readOnly={disableButtons}
+              //readOnly={disableButtons}
+              readOnly={false}
               onToggleCommentType={handleCommentType}
               commentType={commentType}
               imageLoading={imageLoading}
@@ -678,7 +679,8 @@ const CompanyPostDetailFooter = (props) => {
               toggleApprover={toggleApprover}
               editPostComment={editPostComment}
               mainInput={mainInput}
-              disableButtons={disableButtons}
+              //disableButtons={disableButtons}
+              disableButtons={false}
               commentType={commentType}
               dictionary={dictionary}
             />
