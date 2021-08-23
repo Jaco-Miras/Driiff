@@ -130,7 +130,7 @@ const MainSnooze = (props) => {
   const todoCLean = () => {
     var inMins = getTimestampInMins(expTodo);
     const todos = getReminders({ filter: { status: "", search: "" } });
-    return todos.filter((t) => t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
+    return todos.filter((t) => t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
   };
 
   const huddleClean = (h) => {
@@ -373,7 +373,7 @@ const MainSnooze = (props) => {
               const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
               if (item.type === "notification" && notifications[n.id]) {
                 if (n.type === "POST_CREATE" && (hasMustReadAction(n) || hasMustReplyAction(n))) ca = true;
-                else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) { ca = true; }
+                else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) { console.log('yups'); ca = true; }
                 else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) ca = true;
                 else if (n.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
                 else if (n.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
@@ -418,9 +418,8 @@ const MainSnooze = (props) => {
       if (type === "notification") {
         if (n.type === "POST_MENTION") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
         else if (n.type === "POST_CREATE") {
-          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) {
+          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze)
             snooze.push({ ...data, update: true });
-          }
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REQST_APPROVAL") {
           if (hasApprovalAction(n) && !n.is_snooze)
