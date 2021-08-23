@@ -503,7 +503,6 @@ const MainSnooze = (props) => {
   useEffect(() => {
     if (Object.keys(channels).length > 0 && users) {
       putToSnooze();
-      console.log({ notifications });
     }
   }, [notifications, todos, huddleBots]);
 

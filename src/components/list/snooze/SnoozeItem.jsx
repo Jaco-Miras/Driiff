@@ -77,15 +77,27 @@ const SnoozeContainerWrapper = styled.div`
   }
 `;
 const RobotAvatar = styled.div`
-::before {
-  content: '';
-  display: inline-block;
-  height: 100%; 
-  vertical-align: middle;
-  margin-right: -0.25em; /* Adjusts for spacing */
-}
-div {display: inline-block;
-  vertical-align: middle;}
+
+span {
+  line-height: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: auto;
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;}
 `;
 const SnoozeItem = (props) => {
   const { className = "", type, item, user, dictionary, users, channels, handleRedirect, darkMode, } = props;
@@ -185,7 +197,7 @@ const SnoozeItem = (props) => {
           )
         ) : type === "todo" ? (
           <RobotAvatar className="robotAvatar">
-            <div>🤖</div>
+            <div><span>🤖</span></div>
           </RobotAvatar>
         ) : (
           <ChannelIcon className="chat-header-icon" channel={channels[item.channel.id]} />
