@@ -307,7 +307,7 @@ export default (state = INITIAL_STATE, action) => {
                   comment_body: action.data.body,
                   comment_id: action.data.id,
                   users_approval: action.data.users_approval,
-                  post_approval_label: action.data.users_approval.length > 0 && action.data.users_approval.every((u) => u.ip_address === null) ? "NEED_ACTION" : "",
+                  post_approval_label: action.data.users_approval.every((u) => u.ip_address === null) ? "NEED_ACTION" : "",
                 },
               },
             }),

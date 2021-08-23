@@ -372,8 +372,8 @@ const MainSnooze = (props) => {
             onClose: () => {
               const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
               if (item.type === "notification" && notifications[n.id]) {
-                if (n.type === "POST_CREATE" && (hasMustReadAction(n) || hasMustReplyAction(n))) ca = true;
-                else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) { console.log('yups'); ca = true; }
+                if (n.type === "POST_CREATE" && (!hasMustReadAction(n) || !hasMustReplyAction(n))) { ca = true; }
+                else if (n.type === "POST_REQST_APPROVAL" && !hasApprovalAction(n)) { ca = true; }
                 else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) ca = true;
                 else if (n.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
                 else if (n.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
@@ -501,6 +501,7 @@ const MainSnooze = (props) => {
   useEffect(() => {
     if (Object.keys(channels).length > 0 && users) {
       putToSnooze();
+      console.log({ notifications });
     }
   }, [notifications, todos, huddleBots]);
 
