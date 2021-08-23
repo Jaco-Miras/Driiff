@@ -102,7 +102,9 @@ const MainSnooze = (props) => {
   //const answeredChannels = [...hasUnpublishedAnswers];
   const answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
 
-  const snoozeTime = 1, snoozeCycle = 1, expTodo = 59; //mins
+  const snoozeTime = 1,
+    snoozeCycle = 1,
+    expTodo = 59; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
@@ -123,14 +125,22 @@ const MainSnooze = (props) => {
 
   const notifCLean = () => {
     return Object.values(notifications)
-      .filter((n) => n.type === "POST_MENTION" || n.type === "POST_REQST_APPROVAL" || n.type === "POST_REJECT_APPROVAL" || n.type === "PST_CMT_REJCT_APPRVL" || n.type === "POST_COMMENT" || (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply)))
+      .filter(
+        (n) =>
+          n.type === "POST_MENTION" ||
+          n.type === "POST_REQST_APPROVAL" ||
+          n.type === "POST_REJECT_APPROVAL" ||
+          n.type === "PST_CMT_REJCT_APPRVL" ||
+          n.type === "POST_COMMENT" ||
+          (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply))
+      )
       .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
   const todoCLean = () => {
     var inMins = getTimestampInMins(expTodo);
     const todos = getReminders({ filter: { status: "", search: "" } });
-    return todos.filter((t) => t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
+    return todos.filter((t) => t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE");
   };
 
   const huddleClean = (h) => {
@@ -232,7 +242,8 @@ const MainSnooze = (props) => {
   const handleRedirect = (type, n, e) => {
     var actions = type === "notification" ? notifActions : n.type === "todo" ? todoActions : huddleActions;
     e.preventDefault();
-    if (n.is_read === 0) { //&& n.type === "POST_MENTION"
+    if (n.is_read === 0) {
+      //&& n.type === "POST_MENTION"
       notifActions.read({ id: n.id });
     }
 
@@ -240,7 +251,7 @@ const MainSnooze = (props) => {
       history.push(`/chat/${n.channel.code}`);
       dispatch(setSelectedChannel({ id: n.channel.id }));
       return;
-    } else if (type === 'todo') {
+    } else if (type === "todo") {
       redirect.toTodos();
     } else {
       let post = { id: n.data.post_id, title: n.data.title };
@@ -327,9 +338,7 @@ const MainSnooze = (props) => {
   const [activeSnooze, setActiveSnooze] = useState([]);
 
   const snoozeOpen = (snooze) => {
-
     if (snooze.length > 0) {
-
       const count = snooze.length;
       if (!toast.isActive("btnSnoozeAll"))
         toast(
@@ -373,8 +382,10 @@ const MainSnooze = (props) => {
               const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
               if (item.type === "notification" && notifications[n.id]) {
                 if (n.type === "POST_CREATE" && (hasMustReadAction(n) || hasMustReplyAction(n))) ca = true;
-                else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) { ca = true; }
-                else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) ca = true;
+                else if (n.type === "POST_REQST_APPROVAL" && hasApprovalAction(n)) {
+                  console.log("yups");
+                  ca = true;
+                } else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) ca = true;
                 else if (n.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
                 else if (n.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
                 else if (n.type === "POST_COMMENT" && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label === "NEED_ACTION") ca = true;
@@ -418,35 +429,25 @@ const MainSnooze = (props) => {
       if (type === "notification") {
         if (n.type === "POST_MENTION") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
         else if (n.type === "POST_CREATE") {
-          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) {
-            snooze.push({ ...data, update: true });
-          }
+          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) snooze.push({ ...data, update: true });
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REQST_APPROVAL") {
-          if (hasApprovalAction(n) && !n.is_snooze)
-            snooze.push(data);
+          if (hasApprovalAction(n) && !n.is_snooze) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
-        }
-        else if (n.type === "POST_REJECT_APPROVAL") {
-          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze)
-            snooze.push(data)
-          else
-            toast.isActive(elemId) && toast.dismiss(elemId);
-        }
-        else if (n.type === "PST_CMT_REJCT_APPRVL") {
-          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze)
-            snooze.push(data);
+        } else if (n.type === "POST_REJECT_APPROVAL") {
+          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
-        }
-        else if (n.type === "POST_COMMENT") {
-          if (n.data.post_approval_label && n.data.post_approval_label === "NEED_ACTION" && !n.is_snooze)
-            snooze.push(data);
+        } else if (n.type === "PST_CMT_REJCT_APPRVL") {
+          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze) snooze.push(data);
+          else toast.isActive(elemId) && toast.dismiss(elemId);
+        } else if (n.type === "POST_COMMENT") {
+          if (n.data.post_approval_label && n.data.post_approval_label === "NEED_ACTION" && !n.is_snooze) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         }
       } else if (type === "todo") {
-        (n.status !== "DONE" && !n.is_snooze) ? snooze.push(data) : toast.isActive(elemId) && toast.dismiss(elemId);
+        n.status !== "DONE" && !n.is_snooze ? snooze.push(data) : toast.isActive(elemId) && toast.dismiss(elemId);
       } else if (type === "huddle") {
-        (!isWeekend && !answeredChannels.includes(n.channel.id) && huddleClean(n) && !n.is_snooze) ? snooze.push(data) : toast.isActive(elemId) && toast.dismiss(elemId);
+        !isWeekend && !answeredChannels.includes(n.channel.id) && huddleClean(n) && !n.is_snooze ? snooze.push(data) : toast.isActive(elemId) && toast.dismiss(elemId);
       }
     });
     return snooze;
@@ -457,7 +458,7 @@ const MainSnooze = (props) => {
     const actions = type === "notification" ? notifActions : type === "todo" ? todoActions : huddleActions;
     let counter = 0;
     items.map((n) => {
-      if (type === "notification" && n.is_snooze && n.snooze_time <= inMins || !n.is_read) {
+      if ((type === "notification" && n.is_snooze && n.snooze_time <= inMins) || !n.is_read) {
         counter++;
         actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
       } else if (type === "todo" && n.status !== "DONE" && n.is_snooze && n.snooze_time <= inMins) {
@@ -473,7 +474,9 @@ const MainSnooze = (props) => {
 
   const putToSnooze = () => {
     const items = [];
-    let todos = [], notifs = [], huddles = [];
+    let todos = [],
+      notifs = [],
+      huddles = [];
 
     todos = processItems("todo", todoCLean());
     notifs = processItems("notification", notifCLean());
