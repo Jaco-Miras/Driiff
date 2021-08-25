@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal, incomingZoomData } from "../../redux/actions/globalActions";
 
@@ -15,7 +15,7 @@ const ButtonsContainer = styled.div`
 const ZoomInviteModal = (props) => {
   const { zoom_data, channel_id, type, title, host } = props.data;
   const dispatch = useDispatch();
-  const history = useHistory();
+  //const history = useHistory();
   const [modal, setModal] = useState(true);
 
   const toggle = () => {
@@ -25,11 +25,18 @@ const ZoomInviteModal = (props) => {
 
   const handleJoin = () => {
     toggle();
-    dispatch(
-      incomingZoomData({ ...zoom_data.data }, () => {
-        history.push(`/zoom/${channel_id}?join=0`);
-      })
-    );
+    let payload = {
+      meetingNumber: zoom_data.data.id,
+      role: "0",
+      password: zoom_data.data.password,
+    };
+    localStorage.setItem("zoomConfig", JSON.stringify(payload));
+    window.open(`https://demo24.drevv.com/zoom/${channel_id}`, "_blank");
+    // dispatch(
+    //   incomingZoomData({ ...zoom_data.data }, () => {
+    //     history.push(`/zoom/${channel_id}?join=0`);
+    //   })
+    // );
   };
 
   return (
