@@ -3,11 +3,11 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, addChatMessage, postChatMessage, createZoomMeeting } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useCountRenders } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
@@ -353,7 +353,24 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleGoogleMeet = () => {
-    history.push(`/zoom/${selectedChannel.id}?join=1`);
+    dispatch(
+      createZoomMeeting({ channel_id: selectedChannel.id }, (err, res) => {
+        if (err) return;
+        if (res) {
+          console.log(res.data);
+          let payload = {
+            meetingNumber: res.data.zoom_data.data.id,
+            role: "1",
+            password: res.data.zoom_data.data.password,
+          };
+          localStorage.setItem("zoomConfig", JSON.stringify(payload));
+          setTimeout(() => {
+            window.open(`https://demo24.drevv.com/zoom/${selectedChannel.id}`, "_blank");
+          }, 500);
+        }
+      })
+    );
+    //history.push(`/zoom/${selectedChannel.id}?join=1`);
     // let modalPayload = {
     //   type: "confirmation",
     //   cancelText: dictionary.no,
