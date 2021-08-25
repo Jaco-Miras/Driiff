@@ -22,7 +22,7 @@ const UserNotificationPanel = lazy(() => import("../user/UserNotificationPanel")
 const UserProfilePanel = lazy(() => import("../user/UserProfilePanel"));
 const UserSearchPanel = lazy(() => import("../user/UserSearchPanel"));
 
-const ZoomPanel = lazy(() => import("../company/ZoomPanel"));
+//const ZoomPanel = lazy(() => import("../company/ZoomPanel"));
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
@@ -53,7 +53,7 @@ const MainContentPanel = (props) => {
           {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
-          {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />}
+          {/* {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />} */}
           <Redirect
             from="*"
             to={{
