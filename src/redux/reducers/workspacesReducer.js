@@ -1365,7 +1365,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.workspacePosts[rid].posts && {
                   posts: {
                     ...Object.keys(state.workspacePosts[rid].posts)
-                      .filter((key) => parseInt(key) !== action.data.id)
+                      .filter((key) => parseInt(key) !== action.data.post_id)
                       .reduce((post, id) => {
                         post[id] = { ...state.workspacePosts[rid].posts[id] };
                         return post;
