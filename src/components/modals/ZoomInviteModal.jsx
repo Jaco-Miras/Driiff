@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useDispatch } from "react-redux";
 //import { useHistory } from "react-router-dom";
 import { Button, Modal, ModalBody } from "reactstrap";
-import { clearModal, incomingZoomData } from "../../redux/actions/globalActions";
+import { clearModal } from "../../redux/actions/globalActions";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -29,6 +29,7 @@ const ZoomInviteModal = (props) => {
       meetingNumber: zoom_data.data.id,
       role: "0",
       password: zoom_data.data.password,
+      host: false,
     };
     localStorage.setItem("zoomConfig", JSON.stringify(payload));
     window.open(`https://demo24.drevv.com/zoom/${channel_id}`, "_blank");
