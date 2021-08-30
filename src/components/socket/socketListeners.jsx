@@ -1384,6 +1384,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null}
         });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1605,7 +1606,11 @@ class SocketListeners extends Component {
         if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
           this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
         }
-        this.props.incomingUpdatedWorkspaceFolder(e);
+        this.props.incomingUpdatedWorkspaceFolder({
+          ...e,
+          is_shared: e.is_shared,
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null}
+        });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
