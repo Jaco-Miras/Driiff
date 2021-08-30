@@ -160,9 +160,14 @@ const ChatMessageOptions = (props) => {
       {isAuthor && <div onClick={handleImportant}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.code && replyData.user.code.includes("huddle_bot") && replyData.body.includes("<div><p>Your Unpublished") && <div onClick={handleEditHuddle}>{dictionary.editHuddle}</div>}
       {replyData.body.startsWith("HUDDLE_SKIP::") && <div onClick={handleUnskip}>Unskip</div>}
-      {replyData.user && replyData.user.type !== "BOT" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && replyData.user.code && replyData.user.code !== "huddle_bot" && isInternalUser && (
-        <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
-      )}
+      {replyData.user &&
+        replyData.user.type !== "BOT" &&
+        loggedUser.type === "internal" &&
+        replyData.user.id !== loggedUser.id &&
+        selectedChannel.type !== "DIRECT" &&
+        replyData.user.code &&
+        replyData.user.code !== "huddle_bot" &&
+        isInternalUser && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
       {teamChannelId && !isExternalUser && <div onClick={handleDiscussInTeam}>{dictionary.discussOnTeamChat}</div>}
     </MoreOptions>
   );
