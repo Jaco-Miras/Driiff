@@ -126,7 +126,7 @@ const ChatBubbleContainer = styled.div`
     margin-left: 1pt;
   }
   .message-files div:first-child {
-    align-items: center;
+    align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   }
 `;
 
@@ -650,9 +650,6 @@ const ChatBubble = (props) => {
                   <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
-              {reply.files.length > 0 && !reply.is_deleted && (
-                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
-              )}
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
@@ -664,6 +661,9 @@ const ChatBubble = (props) => {
                     dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
+              )}
+              {reply.files.length > 0 && !reply.is_deleted && (
+                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
             </ChatContent>
