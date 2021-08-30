@@ -47,6 +47,9 @@ const Counters = styled.div`
     }
   }
   .read-users-container {
+    span {
+      align-items: center;
+    }
     .avatar.avatar-md {
       min-height: 2.7rem;
       min-width: 2.7rem;
