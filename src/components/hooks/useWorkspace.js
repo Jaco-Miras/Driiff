@@ -111,23 +111,6 @@ const useWorkspace = () => {
     }
   }, [activeTopic, activeTopicSettings, params, workspaces, url, workspacesLoaded]);
 
-  // useEffect(() => {
-  //   workspace is already set and changing channel / workspace
-  //   if (activeTopic && Object.keys(channels).length && url.startsWith("/workspace")) {
-  //     //check params for team-chat
-  //     if (channels.hasOwnProperty(activeTopic.channel.id)) {
-  //       if ((activeChannelId && activeChannelId !== activeTopic.channel.id) || activeChannelId === null) {
-  //         actions.selectChannel(channels[activeTopic.channel.id]);
-  //       }
-  //     } else {
-  //       if (!fetchingChannel) {
-  //         setFetchingChannel(true);
-  //         actions.fetchChannel({ code: activeTopic.channel.code }, () => setFetchingChannel(false));
-  //       }
-  //     }
-  //   }
-  // }, [activeTopic, channels, activeChannelId, fetchingChannel, url]);
-
   useEffect(() => {
     //check if workspace is active and channel is not set yet
     const fetchingCallback = (err, res) => {
@@ -144,12 +127,19 @@ const useWorkspace = () => {
           }
         }
       } else {
-        if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
-          actions.selectChannel({ id: activeTopic.channel.id });
-        } else {
-          if (!fetchingChannel && activeTopic.channel.code) {
+        if (activeTopic.is_shared) {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
+            actions.selectChannel({ id: activeTopic.channel.id });
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
             setFetchingChannel(true);
             actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+          }
+        } else {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
+            actions.selectChannel({ id: activeTopic.team_channel.id });
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
+            setFetchingChannel(true);
+            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
           }
         }
       }
@@ -167,14 +157,19 @@ const useWorkspace = () => {
           }
         }
       } else {
-        if (activeTopic.channel.id !== selectedChannelId) {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
+        if (activeTopic.is_shared) {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
             actions.selectChannel({ id: activeTopic.channel.id });
-          } else {
-            if (!fetchingChannel && activeTopic.channel.code) {
-              setFetchingChannel(true);
-              actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
-            }
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
+            setFetchingChannel(true);
+            actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+          }
+        } else {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
+            actions.selectChannel({ id: activeTopic.team_channel.id });
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
+            setFetchingChannel(true);
+            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
           }
         }
       }

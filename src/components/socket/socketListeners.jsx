@@ -1315,27 +1315,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  }
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                }
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              }
+            });
           }
 
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1435,27 +1468,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  }
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                }
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              }
+            });
           }
 
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1473,27 +1539,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  }
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                }
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              }
+            });
           }
-
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
+          
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
