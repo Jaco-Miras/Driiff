@@ -1328,7 +1328,7 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: {
           ...state.channels,
-          ...(action.data.type === "WORKSPACE" &&
+          ...(action.data.type === "WORKSPACE" && action.data.channel &&
             state.channels[action.data.channel.id] && {
               [action.data.channel.id]: {
                 ...state.channels[action.data.channel.id],
@@ -1367,16 +1367,16 @@ export default function (state = INITIAL_STATE, action) {
               },
             }),
           ...(action.data.type === "WORKSPACE" &&
-            action.data.team_channel &&
+            action.data.team_channel && 
             state.channels[action.data.team_channel.id] && {
               [action.data.team_channel.id]: {
                 //transfer the internal post notification here
                 ...state.channels[action.data.team_channel.id],
                 replies:
-                  action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
+                  action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
                     ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
                     : state.channels[action.data.team_channel.id].replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-                icon_link: action.data.channel.icon_link,
+                icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
                 members: action.data.members
                   .filter((m) => m.type !== "external")
@@ -1390,7 +1390,7 @@ export default function (state = INITIAL_STATE, action) {
               },
             }),
         },
-        ...(state.selectedChannel &&
+        ...(state.selectedChannel && action.data.channel &&
           state.selectedChannel.id === action.data.channel.id && {
             selectedChannel: {
               ...state.selectedChannel,
@@ -1433,10 +1433,10 @@ export default function (state = INITIAL_STATE, action) {
             selectedChannel: {
               ...state.selectedChannel,
               replies:
-                action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
+                action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
                   ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
                   : state.selectedChannel.replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-              icon_link: action.data.channel.icon_link,
+              icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
               members: action.data.members
                 .filter((m) => m.type !== "external")
