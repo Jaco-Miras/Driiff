@@ -524,6 +524,7 @@ const MainSnooze = (props) => {
         draggable={false}
         limit={5}
         closeButton={snoozeMeButton}
+        style={{zIndex: 999}}
       />
     </Wrapper>
   );
