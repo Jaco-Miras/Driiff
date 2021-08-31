@@ -37,7 +37,7 @@ const NotificationBadge = (props) => {
         ) : (
           <p>
             <span className={"badge badge-danger text-white"}>{getMustReadText(notification.data)}</span>
-            <span className={"badge badge-warning"}>{getMustReplyText(notification.data)}</span>
+            <span className={"badge badge-warning ml-1"}>{getMustReplyText(notification.data)}</span>
           </p>
         )
       ) : notification.type === "POST_REQST_APPROVAL" && notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (

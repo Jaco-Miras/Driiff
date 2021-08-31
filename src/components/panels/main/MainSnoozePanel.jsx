@@ -102,8 +102,8 @@ const MainSnooze = (props) => {
   //const answeredChannels = [...hasUnpublishedAnswers];
   const answeredChannels = huddleAnswered ? JSON.parse(huddleAnswered).channels : [];
 
-  const snoozeTime = 1,
-    snoozeCycle = 1,
+  const snoozeTime = 60,
+    snoozeCycle = 60,
     expTodo = 59; //mins
 
   const dictionary = {

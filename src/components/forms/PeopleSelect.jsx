@@ -76,11 +76,12 @@ const MultiValueLabel = ({ children, selectProps, ...props }) => {
 const MultiValueContainer = ({ children, selectProps, ...props }) => {
   let newChildren = children.map((c, i) => {
     if (i === 0) {
+      const valueLabel = props.data.name.trim() !== "" ? `${props.data.first_name} ${props.data.middle_name} ${props.data.last_name}` : props.data.email;
       return {
         ...c,
         props: {
           ...c.props,
-          children: props.data.first_name && props.data.first_name.trim() !== "" ? props.data.first_name : props.data.email,
+          children: valueLabel,
         },
       };
     } else return c;
