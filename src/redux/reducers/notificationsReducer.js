@@ -509,6 +509,21 @@ export default (state = INITIAL_STATE, action) => {
             acc[notif.id] = notif;
           }
           return acc;
+        }, {})
+      }
+    }
+    case "INCOMING_DELETED_POST": {
+      return {
+        ...state,
+        notifications: Object.values(state.notifications).filter((notif) => {
+          if (notif.type.includes("POST")) {
+            return notif.data && notif.data.post_id !== action.data.post_id
+          } else {
+            return true
+          }
+        }).reduce((acc, notif) => {
+          acc[notif.id] = notif;
+          return acc;
         }, {}),
       };
     }
