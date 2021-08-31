@@ -5,7 +5,7 @@ import NotificationBadge from "../../list/notification/item/NotificationBadge";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { toast } from "react-toastify";
-import { useTranslationActions } from "../../hooks";
+//import { useTranslationActions } from "../../hooks";
 
 const Icon = styled(SvgIconFeather)`
   width: 12px;
@@ -65,6 +65,9 @@ const SnoozeContainer = styled.div`
 display: inline-block;
 vertical-align: middle;
 line-height: 1;
+.badge {
+  margin-top: 3px;
+}
 `;
 
 const SnoozeContainerWrapper = styled.div`
@@ -102,7 +105,7 @@ span {
 const SnoozeItem = (props) => {
   const { className = "", type, item, user, dictionary, users, channels, handleRedirect, darkMode, } = props;
 
-  const { _t } = useTranslationActions();
+  // const { _t } = useTranslationActions();
 
 
   const handleSkip = (type, n, e) => {
@@ -140,33 +143,33 @@ const SnoozeItem = (props) => {
     if (type === "notification") {
       var firstName = users[n.author.id] ? users[n.author.id].first_name : "";
       if (n.type === "POST_MENTION") {
-        header = `${firstName}" "${dictionary.notificationMention}" "${n.data.title}" "`;
+        header = `${firstName} ${dictionary.notificationMention} ${n.data.title}`;
         n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
         body = <SnoozeBody className={"snooze-body"}>{stripHtml(n.data.title)}</SnoozeBody>;
       } else if (n.type === "POST_CREATE") {
-        header = `${firstName}" "${dictionary.notificationNewPost}" "`;
+        header = `${firstName} ${dictionary.notificationNewPost}`;
         n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       } else if (n.type === "POST_REQST_APPROVAL") {
-        header = `${firstName}" "${dictionary.sentProposal}`;
+        header = `${firstName} ${dictionary.sentProposal}`;
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       } else if (n.type === "POST_REJECT_APPROVAL") {
-        header = `${firstName}" "${dictionary.hasRequestedChange}`;
+        header = `${firstName} ${dictionary.hasRequestedChange}`;
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       }
       else if (n.type === "PST_CMT_REJCT_APPRVL") {
-        header = `${firstName}" "${dictionary.changeRequested}`;
+        header = `${firstName} ${dictionary.changeRequested}`;
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       }
       else if (n.type === "POST_COMMENT") {
-        header = `${firstName}" "${dictionary.actionNeeded}`;
+        header = `${firstName} ${dictionary.actionNeeded}`;
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       }
     } else if (type === "todo") {
       header = dictionary.todoReminder;
       body = <SnoozeBody className={"snooze-body"} style={{ 'padding-top': '5px' }}>{stripHtml(n.title)}</SnoozeBody>;
     } else if (type === "huddle") {
-      header = `${dictionary.timeTOHuddle}" "${user.first_name}`;
+      header = `${dictionary.timeTOHuddle} ${user.first_name}`;
       body = (
         <span
           className={"badge badge-info badge-grey-ghost"}

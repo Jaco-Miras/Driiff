@@ -121,6 +121,8 @@ const MainSnooze = (props) => {
     changeRequested: _t("SNOOZE.CHANGE_REQUESTED", "Change requested"),
     timeTOHuddle: _t("SNOOZE.TIME_TO_HUDDLE", "Time to huddle, "),
     huddleSkip: _t("SNOOZE.HUDDLE_SKIP", "Huddle is Skipped"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
+    snoozeAllNotifications: _t("SNOOZE.SNOOZE_ALL_NOTIFICATIONS", "Snooze all notifications")
   };
 
   const notifCLean = () => {
@@ -343,7 +345,8 @@ const MainSnooze = (props) => {
       if (!toast.isActive("btnSnoozeAll"))
         toast(
           <span className="snooze-all" onClick={(e) => handleSnoozeAll(snooze, e)}>
-            Snooze all {count > 4 && count} Notifications
+            {/* Snooze all {count > 4 && count} Notifications */}
+            {dictionary.snoozeAllNotifications}
           </span>,
           {
             className: "snooze-all-container",
@@ -357,7 +360,8 @@ const MainSnooze = (props) => {
         toast.update("btnSnoozeAll", {
           render: () => (
             <span className="snooze-all" onClick={(e) => handleSnoozeAll(snooze, e)}>
-              Snooze all {count > 4 && count} Notifications
+              {/* Snooze all {count > 4 && count} Notifications */}
+              {dictionary.snoozeAllNotifications}
             </span>
           ),
           containerId: "toastS",

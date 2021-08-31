@@ -12,7 +12,7 @@ const NotificationBadge = (props) => {
   };
 
   const getMustReplyText = (data) => {
-    if (data.must_reply && data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return dictionary.needsReply;
+    if (data.must_reply && data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return dictionary.replyRequired;
     return null;
   };
 
@@ -32,12 +32,12 @@ const NotificationBadge = (props) => {
         fromSnooze ? (
           <p className={"d-flex"}>
             <span className={"badge badge-danger text-white mr-1"}>{getMustReadText(notification.data)}</span>
-            <span className={"badge badge-warning text-white  mr-1"}>{getMustReplyText(notification.data)}</span>
+            <span className={"badge badge-warning mr-1"}>{getMustReplyText(notification.data)}</span>
           </p>
         ) : (
           <p>
             <span className={"badge badge-danger text-white"}>{getMustReadText(notification.data)}</span>
-            <span className={"badge badge-warning text-white"}>{getMustReplyText(notification.data)}</span>
+            <span className={"badge badge-warning"}>{getMustReplyText(notification.data)}</span>
           </p>
         )
       ) : notification.type === "POST_REQST_APPROVAL" && notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
