@@ -147,6 +147,7 @@ export const NotificationTimelineItem = (props) => {
     actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
     accepted: _t("POST.ACCEPTED", "Accepted"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
   };
 
   const renderTitle = () => {
@@ -217,6 +218,24 @@ export const NotificationTimelineItem = (props) => {
           <>
             <span>
               {notification.author.name} {dictionary.sentProposal}
+            </span>
+          </>
+        );
+      }
+      case "PST_CMT_REJCT_APPRVL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasRequestedChange}
+            </span>
+          </>
+        );
+      }
+      case "PST_CMT_ACCPT_APPRVL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasAcceptedProposal}
             </span>
           </>
         );
