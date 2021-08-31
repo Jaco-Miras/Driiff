@@ -66,6 +66,7 @@ const INITIAL_STATE = {
     timestamp: null,
     items: [],
   },
+  zoomData: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -805,6 +806,18 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           items: items
         },
+      };
+    }
+    case "INCOMING_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: action.data,
+      };
+    }
+    case "CLEAR_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: null,
       };
     }
     default:
