@@ -144,11 +144,11 @@ const SnoozeItem = (props) => {
       var firstName = users[n.author.id] ? users[n.author.id].first_name : "";
       if (n.type === "POST_MENTION") {
         header = `${firstName} ${dictionary.notificationMention} ${n.data.title}`;
-        n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
+        //n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
         body = <SnoozeBody className={"snooze-body"} style={{ 'padding-top': '5px' }}>{stripHtml(n.data.title)}</SnoozeBody>;
       } else if (n.type === "POST_CREATE") {
         header = `${firstName} ${dictionary.notificationNewPost}`;
-        n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
+        //n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
         body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
       } else if (n.type === "POST_REQST_APPROVAL") {
         header = `${firstName} ${dictionary.sentProposal}`;
@@ -177,7 +177,7 @@ const SnoozeItem = (props) => {
             handleSkip(type, n, e);
           }}
         >
-          Skip
+          {dictionary.skip}
         </span>
       );
     }

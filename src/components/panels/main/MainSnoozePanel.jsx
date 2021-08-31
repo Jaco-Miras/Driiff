@@ -122,7 +122,8 @@ const MainSnooze = (props) => {
     timeTOHuddle: _t("SNOOZE.TIME_TO_HUDDLE", "Time to huddle, "),
     huddleSkip: _t("SNOOZE.HUDDLE_SKIP", "Huddle is Skipped"),
     replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
-    snoozeAllNotifications: _t("SNOOZE.SNOOZE_ALL_NOTIFICATIONS", "Snooze all notifications")
+    snoozeAllNotifications: _t("SNOOZE.SNOOZE_ALL_NOTIFICATIONS", "Snooze all notifications"),
+    skip: _t("SNOOZE.SKIP", "Skip")
   };
 
   const notifCLean = () => {
