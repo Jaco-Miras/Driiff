@@ -64,7 +64,7 @@ const SnoozeBody = styled.p`
 const SnoozeContainer = styled.div`
 display: inline-block;
 vertical-align: middle;
-line-height: 1;
+line-height: 1.1;
 .badge {
   margin-top: 3px;
 }
@@ -145,7 +145,7 @@ const SnoozeItem = (props) => {
       if (n.type === "POST_MENTION") {
         header = `${firstName} ${dictionary.notificationMention} ${n.data.title}`;
         n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
-        body = <SnoozeBody className={"snooze-body"}>{stripHtml(n.data.title)}</SnoozeBody>;
+        body = <SnoozeBody className={"snooze-body"} style={{ 'padding-top': '5px' }}>{stripHtml(n.data.title)}</SnoozeBody>;
       } else if (n.type === "POST_CREATE") {
         header = `${firstName} ${dictionary.notificationNewPost}`;
         n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
@@ -191,7 +191,7 @@ const SnoozeItem = (props) => {
 
   return (
     <NotifWrapper className="timeline-item timeline-item-no-line d-flex" darkMode={darkMode} onClick={(e) => handleRedirect(type, item, e)}>
-      <div>
+      <div className="d-flex">
         {type === "notification" ? (
           item.author ? (
             <Avatar id={item.author.id} name={item.author.name} showSlider={false} imageLink={item.author.profile_image_thumbnail_link ? item.author.profile_image_thumbnail_link : item.author.profile_image_link} />
