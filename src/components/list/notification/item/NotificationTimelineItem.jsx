@@ -147,6 +147,7 @@ export const NotificationTimelineItem = (props) => {
     actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
     accepted: _t("POST.ACCEPTED", "Accepted"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
   };
 
   const renderTitle = () => {
