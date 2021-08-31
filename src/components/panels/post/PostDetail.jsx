@@ -119,14 +119,14 @@ const MainBody = styled.div`
         padding: 0.25rem 0.5rem 0.25rem 0.25rem;
         display: flex;
         justify-content: flex-start;
-        align-items: start;
+        // align-items: start;
 
-        .avatar {
-          min-width: 1.5rem;
-          max-width: 1.5rem;
-          width: 1.5rem;
-          height: 1.5rem;
-        }
+        // .avatar {
+        //   min-width: 1.5rem;
+        //   max-width: 1.5rem;
+        //   width: 1.5rem;
+        //   height: 1.5rem;
+        // }
         .name {
           display: block;
           white-space: nowrap;
