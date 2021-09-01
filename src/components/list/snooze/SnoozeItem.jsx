@@ -178,6 +178,7 @@ const SnoozeItem = (props) => {
   const handleDeleteNotification = (e) => {
     e.stopPropagation();
     if (type === "notification") {
+      actions.snooze(snoozeData);
       actions.remove({id: item.id})
     } else if (type === "todo") {
       actions.removeReminderNotif({id: item.id})
