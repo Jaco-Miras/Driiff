@@ -305,29 +305,28 @@ const MainSnooze = (props) => {
     e.preventDefault();
 
     const items = [];
-    let todos = [],
+    let reminders = [],
       notifs = [],
       huddles = [];
 
-    todos = processItems("todo", todoCLean());
+    reminders = processItems("todo", todoCLean());
     notifs = processItems("notification", notifCLean());
     huddles = processItems("huddle", huddleBots);
-    const snooze = items.concat(todos, notifs, huddles);
-
+    const snooze = items.concat(reminders, notifs, huddles);
+    
     snooze.map((item) => {
       const elemId = item.type + "__" + item.id;
       var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
       const n = item.type === "notification" ? notifications[item.id] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
-      const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
-      if (!n.is_snooze) {
-        toast.isActive(elemId) && toast.dismiss(elemId);
-        actions.snooze(data);
+      if (n) {
+        const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
+        if (!n.is_snooze) {
+          toast.isActive(elemId) && toast.dismiss(elemId);
+          actions.snooze(data);
+        }
       }
     });
-    // toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeAll }} />, { containerId: "toastA", toastId: "btnSnoozeAll" });
   };
-
-  const [activeSnooze, setActiveSnooze] = useState([]);
 
   const snoozeOpen = (snooze) => {
     if (snooze.length > 0) {
@@ -466,15 +465,15 @@ const MainSnooze = (props) => {
 
   const putToSnooze = () => {
     const items = [];
-    let todos = [],
+    let reminders = [],
       notifs = [],
       huddles = [];
 
-    todos = processItems("todo", todoCLean());
+    reminders = processItems("todo", todoCLean());
     notifs = processItems("notification", notifCLean());
     huddles = processItems("huddle", huddleBots);
 
-    const snooze = items.concat(todos, notifs, huddles);
+    const snooze = items.concat(reminders, notifs, huddles);
     snooze.length ? snoozeOpen(snooze) : toast.dismiss("btnSnoozeAll");
   };
 
