@@ -3,12 +3,10 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings, useTodos, useTodoActions, useHuddleChatbot } from "../../hooks";
-
 import { ToastContainer, toast } from "react-toastify";
 import { getTimestampInMins, getCurrentTimestamp } from "../../../helpers/dateFormatter";
 import { setSelectedChannel, clearHuddleAnswers } from "../../../redux/actions/chatActions";
 import SnoozeItem from "../../list/snooze/SnoozeItem";
-import { render } from "react-dom";
 
 const Wrapper = styled.div`
   .snooze-container {
@@ -63,7 +61,7 @@ const Wrapper = styled.div`
 `;
 const MainSnooze = (props) => {
   const { notifications } = useNotifications();
-  const { getReminders } = useTodos();
+  const { getReminders } = useTodos(true)
   const todos = useSelector((state) => state.global.todos);
 
   const user = useSelector((state) => state.session.user);
@@ -127,7 +125,8 @@ const MainSnooze = (props) => {
     replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
     snoozeAllNotifications: _t("SNOOZE.SNOOZE_ALL_NOTIFICATIONS", "Snooze all notifications"),
     skip: _t("SNOOZE.SKIP", "Skip"),
-    open: _t("SNOOZE.OPEN", "Open")
+    open: _t("SNOOZE.OPEN", "Open"),
+    snooze: _t("SNOOZE.SNOOZE", "Snooze")
   };
 
   const notifCLean = () => {

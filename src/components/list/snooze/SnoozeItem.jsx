@@ -2,20 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
-//import ChannelIcon from "../../list/chat/ChannelIcon";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { toast } from "react-toastify";
-//import { useTranslationActions } from "../../hooks";
 
-const Icon = styled(SvgIconFeather)`
-  width: 12px;
-  height: 12px;
-`;
+// const Icon = styled(SvgIconFeather)`
+//   width: 12px;
+//   height: 12px;
+// `;
 
-const IconSnooze = styled(SvgIconFeather)`
-  width: 16px;
-  height: 16px;
-`;
+// const IconSnooze = styled(SvgIconFeather)`
+//   width: 16px;
+//   height: 16px;
+// `;
 
 const OpenIcon = styled(SvgIconFeather)`
   min-width: 1rem;
@@ -23,6 +21,9 @@ const OpenIcon = styled(SvgIconFeather)`
   width: 1rem;
   height: 1rem;
   margin-left: 5px;
+  :hover {
+    color: #505050;
+  }
 `;
 
 const NotifWrapper = styled.div`
@@ -57,6 +58,11 @@ const SnoozeHeader = styled.div`
   overflow: hidden !important;
   text-overflow: ellipsis;
   line-height: 1 !important;
+  .feather-x, .snooze-me {
+    :hover {
+      color: #505050;
+    }
+  }
 `;
 
 const SnoozeBody = styled.p`
@@ -196,7 +202,6 @@ const SnoozeItem = (props) => {
     }
     toast.dismiss(type + "__" + item.id);
   }
-  console.log(item)
   const renderContent = (type, n) => {
     let header = "",
       body = "";
@@ -227,7 +232,7 @@ const SnoozeItem = (props) => {
       }
     } else if (type === "todo") {
       header = dictionary.todoReminder;
-      body = <SnoozeBody className={"snooze-body"}>{stripHtml(n.title)} <OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></SnoozeBody>;
+      body = <span className="d-flex align-items-center post-mention-body"><SnoozeBody className={"snooze-body"}>{stripHtml(n.title)}</SnoozeBody><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></span>;
     } else if (type === "huddle") {
       header = `${dictionary.timeTOHuddle} ${user.first_name}`;
       body = (
@@ -260,7 +265,7 @@ const SnoozeItem = (props) => {
               className="snooze-me mr-1"
               onClick={handleSnooze}
             >
-              Snooze
+              {dictionary.snooze}
             </span>
             <SvgIconFeather icon="x" width="18" height="18" strokeWidth="2" onClick={handleDeleteNotification}/>
           </span>
