@@ -68,6 +68,30 @@ const INITIAL_STATE = {
   },
 };
 
+const getLink = (t) => {
+  switch (t.link_type) {
+    case "CHAT": {
+      return `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
+    }
+    case "POST": {
+      if (t.data.workspaces.length) {
+        return `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+      } else {
+        return `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+      }
+    }
+    case "POST_COMMENT": {
+      if (t.data.workspaces.length) {
+        return `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+      } else {
+        return `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+      }
+    }
+    default:
+      return null;
+  }
+}
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "SET_BROWSER_TAB_STATUS": {
@@ -259,6 +283,7 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           is_snooze: action.data.is_snooze,
+          show_notification: true,
           count: action.data.reduce((res, c) => {
             res[c.status.toLowerCase()] = c.count;
             return res;
@@ -305,60 +330,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TO_DO_SUCCESS": {
-      let items = state.todos.items;
-      action.data.todos.forEach((t) => {
-        items[t.id] = t;
-        switch (t.link_type) {
-          case "CHAT": {
-            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
-            break;
-          }
-          case "POST": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            }
-            break;
-          }
-          case "POST_COMMENT": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            }
-            break;
-          }
-        }
-        items[t.id].is_snooze = action.data.is_snooze;
-      });
-      let recent = action.data.today_todos.map((t) => {
-        if (t.link_type) {
-          if (t.link_type === "CHAT") {
-            return {
-              ...t,
-              link: `/chat/${t.data.channel.code}/${t.data.chat_message.code}`,
-            };
-          } else if (t.link_type === "POST") {
-            return {
-              ...t,
-              link: t.data.workspaces.length
-                ? `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`
-                : `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`,
-            };
-          } else if (t.link_type === "POST_COMMENT") {
-            return {
-              ...t,
-              link: t.data.workspaces.length
-                ? `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`
-                : `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`,
-            };
-          }
-        } else {
-          return { ...t, link: null };
-        }
-      });
-
+      const reminderNotif = localStorage.getItem("reminderNotif");
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const currentDate = new Date();
       return {
         ...state,
         todos: {
@@ -366,45 +340,46 @@ export default (state = INITIAL_STATE, action) => {
           isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
           skip: state.todos.skip + action.data.todos.length,
-          items: items,
-          doneRecently: recent,
+          items: {
+            ...state.todos.items,
+            ...(Object.values(action.data.todos).length > 0 && {
+              ...Object.values(action.data.todos).reduce((acc, todo) => {
+                acc[todo.id] = {
+                  ...todo,
+                  is_snooze: false,
+                  show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
+                  link: getLink(todo)
+                }
+                return acc
+              }, {})
+            })
+          },
+          doneRecently: [],
         },
       };
     }
     case "GET_DONE_TO_DO_SUCCESS": {
-      let items = state.todos.items;
-      action.data.todos.forEach((t) => {
-        items[t.id] = t;
-        switch (t.link_type) {
-          case "CHAT": {
-            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
-            break;
-          }
-          case "POST": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            }
-            break;
-          }
-          case "POST_COMMENT": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            }
-            break;
-          }
-          default:
-            return;
-        }
-      });
-
+      const reminderNotif = localStorage.getItem("reminderNotif");
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const currentDate = new Date();
       return {
         ...state,
         todos: {
           ...state.todos,
+          items: {
+            ...state.todos.items,
+            ...(Object.values(action.data.todos).length > 0 && {
+              ...Object.values(action.data.todos).reduce((acc, todo) => {
+                acc[todo.id] = {
+                  ...todo,
+                  is_snooze: false,
+                  show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
+                  link: getLink(todo)
+                }
+                return acc
+              }, {})
+            })
+          },
           done: {
             limit: 10,
             hasMore: action.data.todos.length === state.todos.done.limit,
@@ -414,39 +389,27 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_OVERDUE_TO_DO_SUCCESS": {
-      let items = state.todos.items;
-      action.data.todos.forEach((t) => {
-        items[t.id] = t;
-        switch (t.link_type) {
-          case "CHAT": {
-            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
-            break;
-          }
-          case "POST": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            }
-            break;
-          }
-          case "POST_COMMENT": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            }
-            break;
-          }
-          default:
-            return;
-        }
-      });
-
+      const reminderNotif = localStorage.getItem("reminderNotif");
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const currentDate = new Date();
       return {
         ...state,
         todos: {
           ...state.todos,
+          items: {
+            ...state.todos.items,
+            ...(Object.values(action.data.todos).length > 0 && {
+              ...Object.values(action.data.todos).reduce((acc, todo) => {
+                acc[todo.id] = {
+                  ...todo,
+                  is_snooze: false,
+                  show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
+                  link: getLink(todo)
+                }
+                return acc
+              }, {})
+            })
+          },
           overdue: {
             ...state.todos.overdue.limit,
             hasMore: action.data.todos.length === state.todos.overdue.limit,
@@ -456,39 +419,27 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TODAY_TO_DO_SUCCESS": {
-      let items = state.todos.items;
-      action.data.todos.forEach((t) => {
-        items[t.id] = t;
-        switch (t.link_type) {
-          case "CHAT": {
-            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`;
-            break;
-          }
-          case "POST": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
-            }
-            break;
-          }
-          case "POST_COMMENT": {
-            if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            } else {
-              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
-            }
-            break;
-          }
-          default:
-            return;
-        }
-      });
-
+      const reminderNotif = localStorage.getItem("reminderNotif");
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const currentDate = new Date();
       return {
         ...state,
         todos: {
           ...state.todos,
+          items: {
+            ...state.todos.items,
+            ...(Object.values(action.data.todos).length > 0 && {
+              ...Object.values(action.data.todos).reduce((acc, todo) => {
+                acc[todo.id] = {
+                  ...todo,
+                  is_snooze: false,
+                  show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
+                  link: getLink(todo)
+                }
+                return acc
+              }, {})
+            })
+          },
           today: {
             ...state.todos.today.limit,
             hasMore: action.data.todos.length === state.todos.today.limit,
@@ -806,6 +757,22 @@ export default (state = INITIAL_STATE, action) => {
           items: items
         },
       };
+    }
+    case "REMOVE_REMINDER_NOTIFICATION": {
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          items: Object.values(state.todos.items).reduce((acc,todo) => {
+            if (todo.id === action.data.id) {
+              acc[todo.id] = {...todo, show_notification: false}
+            } else {
+              acc[todo.id] = todo
+            }
+            return acc
+          }, {})
+        }
+      }
     }
     default:
       return state;

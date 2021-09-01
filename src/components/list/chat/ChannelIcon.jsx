@@ -102,7 +102,7 @@ const ChannelIcon = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channelTitle = channel && channel.title ? channel.title.toLowerCase() : "";
   return (
-    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)} onClick={onSelectChannel}>
+    <Wrapper className={`pr-3 ${className}`} iconColor={iconColor(channelTitle)} onClick={onSelectChannel}>
       {channel && channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <Avatar
           imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}

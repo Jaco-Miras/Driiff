@@ -205,7 +205,7 @@ const TodosList = (props) => {
     const setFileSrc = (payload, callback = () => {}) => {
       dispatch(incomingFileData(payload, callback));
     };
-    const imageFiles = todo.files.filter((f) => f.type.includes("image"));
+    const imageFiles = todo.files.filter((f) => f.type && f.type.includes("image"));
     if (imageFiles.length) {
       imageFiles.forEach((file) => {
         if (!fileBlobs[file.id]) {

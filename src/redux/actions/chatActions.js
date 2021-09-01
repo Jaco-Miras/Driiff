@@ -449,3 +449,7 @@ export function snoozeSkipHuddle(payload, callback) {
 export function snoozeHuddleAll(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_ALL", payload, callback);
 }
+
+export function removeHuddleNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_HUDDLE_NOTIFICATION", payload, callback);
+}

@@ -263,3 +263,7 @@ export function snoozeTodo(payload, callback) {
 export function snoozeTodoAll(payload, callback) {
   return SimpleDispatchActionToReducer("REMINDER_SNOOZE_ALL", payload, callback);
 }
+
+export function removeReminderNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_REMINDER_NOTIFICATION", payload, callback);
+}
