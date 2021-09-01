@@ -4,6 +4,7 @@ import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
+import zoomIcon from "../../../assets/icons/zoom.png";
 
 const IconWrapper = styled.div`
   width: 40px;
@@ -25,6 +26,14 @@ const Wrapper = styled.div`
   }
   .chat-buttons {
     display: none;
+  }
+  .btn-meet {
+    img {
+      width: 24px;
+      height: 24px;
+      vertical-align: top;
+      margin-bottom: -5px;
+    }
   }
   @media (max-width: 414px) {
     min-width: ${(props) =>
@@ -89,7 +98,8 @@ const ChatInputButtons = (props) => {
       </IconWrapper>
       <IconWrapper className="btn-meet">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-          <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
+          <img src={zoomIcon} onClick={handleGoogleMeet} />
+          {/* <SvgIconFeather onClick={handleGoogleMeet} icon="zoom" /> */}
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
