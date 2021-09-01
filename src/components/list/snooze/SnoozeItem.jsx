@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
-import ChannelIcon from "../../list/chat/ChannelIcon";
+//import ChannelIcon from "../../list/chat/ChannelIcon";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { toast } from "react-toastify";
 //import { useTranslationActions } from "../../hooks";
@@ -15,6 +15,14 @@ const Icon = styled(SvgIconFeather)`
 const IconSnooze = styled(SvgIconFeather)`
   width: 16px;
   height: 16px;
+`;
+
+const OpenIcon = styled(SvgIconFeather)`
+  min-width: 1rem;
+  min-height: 1rem;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 5px;
 `;
 
 const NotifWrapper = styled.div`
@@ -68,16 +76,34 @@ line-height: 1.1;
 .badge {
   margin-top: 3px;
 }
+.post-mention-body {
+  width: 200px;
+  padding-top: 5px;
+  p {
+    width: auto;
+  }
+}
+.badge-light {
+  color: #fff;
+  border: 1px solid grey;
+}
 `;
 
 const SnoozeContainerWrapper = styled.div`
-  ::before {
-    content: '';
-    display: inline-block;
-    height: 100%; 
-    vertical-align: middle;
-    margin-right: -0.25em; /* Adjusts for spacing */
+  display: flex;
+  align-items: center;
+  .snooze-x {
+    position: absolute;
+    right: 5px;
+    top: 5px;
   }
+  // ::before {
+  //   content: '';
+  //   display: inline-block;
+  //   height: 100%; 
+  //   vertical-align: middle;
+  //   margin-right: -0.25em; /* Adjusts for spacing */
+  // }
 `;
 const RobotAvatar = styled.div`
 
@@ -103,8 +129,7 @@ span {
   justify-content: center;}
 `;
 const SnoozeItem = (props) => {
-  const { className = "", type, item, user, dictionary, users, channels, handleRedirect, darkMode, } = props;
-
+  const { type, item, user, dictionary, users, handleRedirect, darkMode, snoozeData, actions } = props;
   // const { _t } = useTranslationActions();
 
 
@@ -137,6 +162,41 @@ const SnoozeItem = (props) => {
     toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.huddleSkip }} />, { containerId: "toastA", toastId: "btnSnoozeMe" });
   };
 
+  const handleSnooze = (e) => {
+    e.stopPropagation();
+    actions.snooze(snoozeData);
+    toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: "btnSnoozeMe" });
+    toast.dismiss(type + "__" + item.id);
+  }
+
+  const handleDeleteNotification = (e) => {
+    e.stopPropagation();
+    if (type === "notification") {
+      actions.remove({id: item.id})
+    } else if (type === "todo") {
+      actions.removeReminderNotif({id: item.id})
+      const huddleNotif = localStorage.getItem("reminderNotif");
+      const currentDate = new Date();
+      if (huddleNotif) {
+        const { reminders } = JSON.parse(huddleNotif);
+        localStorage.setItem("reminderNotif", JSON.stringify({ reminders: [...reminders, item.id], day: currentDate.getDay() }));
+      } else {
+        localStorage.setItem("reminderNotif", JSON.stringify({ reminders: [item.id], day: currentDate.getDay() }));
+      }
+    } else if (type === "huddle") {
+      actions.removeHuddleNotif({id: item.id});
+      const huddleNotif = localStorage.getItem("huddleNotif");
+      const currentDate = new Date();
+      if (huddleNotif) {
+        const { channels } = JSON.parse(huddleNotif);
+        localStorage.setItem("huddleNotif", JSON.stringify({ channels: [...channels, item.channel.id], day: currentDate.getDay() }));
+      } else {
+        localStorage.setItem("huddleNotif", JSON.stringify({ channels: [item.channel.id], day: currentDate.getDay() }));
+      }
+    }
+    toast.dismiss(type + "__" + item.id);
+  }
+  console.log(item)
   const renderContent = (type, n) => {
     let header = "",
       body = "";
@@ -144,53 +204,76 @@ const SnoozeItem = (props) => {
       var firstName = users[n.author.id] ? users[n.author.id].first_name : "";
       if (n.type === "POST_MENTION") {
         header = `${firstName} ${dictionary.notificationMention} ${n.data.title}`;
-        n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
-        body = <SnoozeBody className={"snooze-body"} style={{ 'padding-top': '5px' }}>{stripHtml(n.data.title)}</SnoozeBody>;
+        //n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
+        body = <span className="d-flex align-items-center post-mention-body"><SnoozeBody className={"snooze-body"}>{n.data.comment_body && stripHtml(n.data.comment_body)}</SnoozeBody><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></span>;
       } else if (n.type === "POST_CREATE") {
         header = `${firstName} ${dictionary.notificationNewPost}`;
-        n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
-        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+        //n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
+        body = <span className="d-flex align-items-center"><NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} /><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></span>;
       } else if (n.type === "POST_REQST_APPROVAL") {
         header = `${firstName} ${dictionary.sentProposal}`;
-        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+        body = <><NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} /><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></>;
       } else if (n.type === "POST_REJECT_APPROVAL") {
         header = `${firstName} ${dictionary.hasRequestedChange}`;
-        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+        body = <><NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} /><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></>;
       }
       else if (n.type === "PST_CMT_REJCT_APPRVL") {
         header = `${firstName} ${dictionary.changeRequested}`;
-        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+        body = <><NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} /><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></>;
       }
       else if (n.type === "POST_COMMENT") {
         header = `${firstName} ${dictionary.actionNeeded}`;
-        body = <NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} />;
+        body = <><NotificationBadge notification={n} dictionary={dictionary} user={user} fromSnooze={true} /><OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></>;
       }
     } else if (type === "todo") {
       header = dictionary.todoReminder;
-      body = <SnoozeBody className={"snooze-body"} style={{ 'padding-top': '5px' }}>{stripHtml(n.title)}</SnoozeBody>;
+      body = <SnoozeBody className={"snooze-body"}>{stripHtml(n.title)} <OpenIcon icon="external-link" onClick={(e) => {handleRedirect(type, item, e)}}/></SnoozeBody>;
     } else if (type === "huddle") {
       header = `${dictionary.timeTOHuddle} ${user.first_name}`;
       body = (
+        <>
+        <span
+          className={"badge badge-light mr-2"}
+          onClick={(e) => {
+            handleRedirect(type, item, e)
+          }}
+        >
+          {dictionary.open}
+        </span>
         <span
           className={"badge badge-info badge-grey-ghost"}
           onClick={(e) => {
             handleSkip(type, n, e);
           }}
         >
-          Skip
+          {dictionary.skip}
         </span>
+        </>
       );
     }
     return (
       <>
-        {" "}
-        <SnoozeHeader>{header}</SnoozeHeader> {body}
+        <SnoozeHeader>
+          {header}
+          <span className="snooze-x">
+            <span
+              className="snooze-me mr-1"
+              onClick={handleSnooze}
+            >
+              Snooze
+            </span>
+            <SvgIconFeather icon="x" width="18" height="18" strokeWidth="2" onClick={handleDeleteNotification}/>
+          </span>
+        </SnoozeHeader> {body}
       </>
     );
   };
 
   return (
-    <NotifWrapper className="timeline-item timeline-item-no-line d-flex" darkMode={darkMode} onClick={(e) => handleRedirect(type, item, e)}>
+    <NotifWrapper className="timeline-item timeline-item-no-line d-flex" 
+      darkMode={darkMode} 
+      //onClick={(e) => handleRedirect(type, item, e)}
+    >
       <div className="d-flex">
         {type === "notification" ? (
           item.author ? (
@@ -203,7 +286,8 @@ const SnoozeItem = (props) => {
             <div><span>🤖</span></div>
           </RobotAvatar>
         ) : (
-          <ChannelIcon className="chat-header-icon" channel={channels[item.channel.id]} />
+          <Avatar id={item.channel.id} name={item.channel.name} showSlider={false} imageLink={null} showSlider={false} noDefaultClick={true}/>
+          // <ChannelIcon className="chat-header-icon" channel={channels[item.channel.id]} />
         )}
       </div>
       <SnoozeContainerWrapper >

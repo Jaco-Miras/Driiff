@@ -195,8 +195,8 @@ const ChatContentPanel = (props) => {
     fileAutomaticallyRemoved: _t("FILE.AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     connectPreview: _t("GOOGLE_DRIVE.CONNECT_TO_PREVIEW", "Connect to preview"),
     restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
-    editHuddle: _t("MESSAGE.EDIT_HUDDLE", "Edit huddle"),
-    discussOnTeamChat: _t("MESSAGE.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
+    editHuddle: _t("CHAT.EDIT_HUDDLE", "Edit huddle"),
+    discussOnTeamChat: _t("CHAT.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

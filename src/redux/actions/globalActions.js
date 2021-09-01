@@ -271,3 +271,7 @@ export function incomingZoomData(payload, callback) {
 export function clearZoomData(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_ZOOM_DATA", payload, callback);
 }
+
+export function removeReminderNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_REMINDER_NOTIFICATION", payload, callback);
+}

@@ -493,3 +493,7 @@ export function createZoomMeeting(payload, callback) {
 export function transferChannelMessages(payload, callback) {
   return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
 }
+
+export function removeHuddleNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_HUDDLE_NOTIFICATION", payload, callback);
+}

@@ -1328,7 +1328,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: {
           ...state.channels,
-          ...(action.data.type === "WORKSPACE" && action.data.channel &&
+          ...(action.data.type === "WORKSPACE" &&
+            action.data.channel &&
             state.channels[action.data.channel.id] && {
               [action.data.channel.id]: {
                 ...state.channels[action.data.channel.id],
@@ -1367,7 +1368,7 @@ export default function (state = INITIAL_STATE, action) {
               },
             }),
           ...(action.data.type === "WORKSPACE" &&
-            action.data.team_channel && 
+            action.data.team_channel &&
             state.channels[action.data.team_channel.id] && {
               [action.data.team_channel.id]: {
                 //transfer the internal post notification here
@@ -1390,7 +1391,8 @@ export default function (state = INITIAL_STATE, action) {
               },
             }),
         },
-        ...(state.selectedChannel && action.data.channel &&
+        ...(state.selectedChannel &&
+          action.data.channel &&
           state.selectedChannel.id === action.data.channel.id && {
             selectedChannel: {
               ...state.selectedChannel,
@@ -1948,6 +1950,9 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "GET_HUDDLE_CHATBOT_SUCCESS": {
+      const huddleNotif = localStorage.getItem("huddleNotif");
+      const huddleNotifications = huddleNotif ? JSON.parse(huddleNotif) : null;
+      const currentDate = new Date();
       return {
         ...state,
         huddleBots: action.data.map((h) => {
@@ -1957,6 +1962,7 @@ export default function (state = INITIAL_STATE, action) {
             is_skip: false,
             snooze_time: getCurrentTimestamp(),
             showToday: false,
+            show_notification: huddleNotifications && currentDate.getDay() === huddleNotifications.day && huddleNotifications.channels.some((cid) => cid === h.channel.id) ? false : true,
             questions: h.questions
               .sort((a, b) => a.id - b.id)
               .map((q, k) => {
@@ -2730,6 +2736,21 @@ export default function (state = INITIAL_STATE, action) {
                 selected: true,
               }
             : state.selectedChannel,
+      };
+    }
+    case "REMOVE_HUDDLE_NOTIFICATION": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.id === action.data.id) {
+            return {
+              ...h,
+              show_notification: false,
+            };
+          } else {
+            return h;
+          }
+        }),
       };
     }
     // case "INCOMING_DELETED_POST": {

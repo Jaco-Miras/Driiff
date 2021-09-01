@@ -15,6 +15,7 @@ import {
   snoozeHuddle,
   snoozeSkipHuddle,
   snoozeHuddleAll,
+  removeHuddleNotification,
 } from "../../redux/actions/chatActions";
 
 const useHuddleChatbot = () => {
@@ -75,9 +76,14 @@ const useHuddleChatbot = () => {
   const snoozeSkip = (payload) => {
     dispatch(snoozeSkipHuddle(payload));
   };
+
   const snoozeAll = (payload) => {
     dispatch(snoozeHuddleAll(payload));
   };
+
+  const removeHuddleNotif = (payload) => {
+    dispatch(removeHuddleNotification(payload))
+  }
 
   return {
     fetch,
@@ -95,6 +101,7 @@ const useHuddleChatbot = () => {
     snooze,
     snoozeSkip,
     snoozeAll,
+    removeHuddleNotif,
   };
 };
 
