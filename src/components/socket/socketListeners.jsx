@@ -163,7 +163,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 
@@ -614,6 +614,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_APPROVED": {
+            this.props.getNotifications({ skip: 0, limit: 5 });
             this.props.incomingCommentApproval({
               ...e,
               users_approval: e.users_approval.map((u) => {
@@ -1961,6 +1962,7 @@ function mapDispatchToProps(dispatch) {
     incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
+    getNotifications: bindActionCreators(getNotifications, dispatch),
   };
 }
 
