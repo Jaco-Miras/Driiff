@@ -49,10 +49,11 @@ const NotificationBadge = (props) => {
       ) : notification.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval() && notification.data.post_approval_label && notification.data.post_approval_label === "REQUEST_UPDATE" ? (
         <span className={"badge badge-primary text-white"}>{dictionary.changeRequested}</span>
       ) : notification.type === "POST_COMMENT" &&
+        notification.data.comment_body && !notification.data.comment_body.startsWith("COMMENT_APPROVAL::") &&
         notification.data.post_approval_label &&
         notification.data.post_approval_label === "NEED_ACTION" &&
         notification.data.users_approval &&
-        notification.data.users_approval.some((u) => user.id === u.id) ? (
+        notification.data.users_approval.some((u) => user.id === u.id && !u.is_approved) ? (
         <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
       ) : null}
     </>

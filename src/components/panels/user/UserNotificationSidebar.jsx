@@ -58,6 +58,8 @@ const UserNotificationSidebar = (props) => {
     history.push("/settings");
   };
 
+  const removeAll = () => actions.removeAll()
+
   return (
     <Wrapper className={`bottom-modal-mobile ${className}`} darkMode={darkMode}>
       <div className="card">
@@ -70,6 +72,7 @@ const UserNotificationSidebar = (props) => {
             {dictionary.notificationCount1} {unreadNotifications} {dictionary.notificationCount2}
           </p>
           <span onClick={markAllRead}>{dictionary.markAllAsRead}</span>
+          <span onClick={removeAll}>Clear notifications</span>
         </div>
       </div>
       <p>{dictionary.improve}</p>
