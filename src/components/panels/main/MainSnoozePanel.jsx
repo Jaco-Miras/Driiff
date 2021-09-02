@@ -502,6 +502,7 @@ const MainSnooze = (props) => {
   const currentDay = currentDate.getDay()
 
   const renderCount = useRef(0)
+
   useEffect(() => {
     renderCount.current++
     if (renderCount.current > 1) {
@@ -511,6 +512,20 @@ const MainSnooze = (props) => {
       dispatch(clearHuddleAnswers())
     }
   }, [currentDay])
+
+  useEffect(() => {
+    const date = new Date();
+    const today = date.getDay();
+    const huddleStorage = localStorage.getItem("huddle");
+    //setCurrentTime(currentDate.getTime());
+    if (huddleStorage) {
+      const { day } = JSON.parse(huddleStorage);
+      if (day !== today || today === 0 || today === 6) {
+        localStorage.removeItem("huddle");
+        dispatch(clearHuddleAnswers());
+      }
+    }
+  }, [])
 
   return (
     <Wrapper darkMode={dark_mode}>
