@@ -166,7 +166,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 
@@ -254,6 +254,19 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".snooze-notification", (e) => {
+        console.log(e, "snooze notif");
+        switch (e.SOCKET_TYPE) {
+          case "SNOOZE_NOTIFICATION": {
+            this.props.incomingSnoozedNotification(e);
+            break;
+          }
+        }
+      })
+      .listen(".snooze-all-notification", (e) => {
+        console.log(e, "snooze all");
+        this.props.incomingSnoozedAllNotification(e);
+      })
       .listen(".post-follow", (e) => {
         this.props.incomingFollowPost(e);
       })
@@ -638,6 +651,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_APPROVED": {
+            this.props.getNotifications({ skip: 0, limit: 5 });
             this.props.incomingCommentApproval({
               ...e,
               users_approval: e.users_approval.map((u) => {
@@ -1343,7 +1357,7 @@ class SocketListeners extends Component {
                   channel: {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
-                  }
+                  },
                 });
               });
             } else {
@@ -1352,7 +1366,7 @@ class SocketListeners extends Component {
                 channel: {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
-                }
+                },
               });
             }
           } else {
@@ -1361,7 +1375,7 @@ class SocketListeners extends Component {
               channel: {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
-              }
+              },
             });
           }
 
@@ -1407,7 +1421,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
-          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null}
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1507,7 +1521,7 @@ class SocketListeners extends Component {
                   channel: {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
-                  }
+                  },
                 });
               });
             } else {
@@ -1516,7 +1530,7 @@ class SocketListeners extends Component {
                 channel: {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
-                }
+                },
               });
             }
           } else {
@@ -1525,7 +1539,7 @@ class SocketListeners extends Component {
               channel: {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
-              }
+              },
             });
           }
 
@@ -1578,7 +1592,7 @@ class SocketListeners extends Component {
                   channel: {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
-                  }
+                  },
                 });
               });
             } else {
@@ -1587,7 +1601,7 @@ class SocketListeners extends Component {
                 channel: {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
-                }
+                },
               });
             }
           } else {
@@ -1596,7 +1610,7 @@ class SocketListeners extends Component {
               channel: {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
-              }
+              },
             });
           }
           if (e.channel.code) {
@@ -1626,7 +1640,6 @@ class SocketListeners extends Component {
               this.props.addToChannels(channel);
             });
           }
-          
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1642,7 +1655,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
-          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null}
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -2108,6 +2121,9 @@ function mapDispatchToProps(dispatch) {
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
     incomingZoomData: bindActionCreators(incomingZoomData, dispatch),
     transferChannelMessages: bindActionCreators(transferChannelMessages, dispatch),
+    getNotifications: bindActionCreators(getNotifications, dispatch),
+    incomingSnoozedNotification: bindActionCreators(incomingSnoozedNotification, dispatch),
+    incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
   };
 }
 

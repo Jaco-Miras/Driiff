@@ -4,6 +4,8 @@ import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
 import { getEmojiRegexPattern, GifRegex, stripGif, hasCurrencySymbol } from "../../helpers/stringFormatter";
 import styled from "styled-components";
+//import { lang } from "moment-timezone";
+import { useTranslationActions } from "./index";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
@@ -35,6 +37,7 @@ const OriginalHtml = styled.div`
 `;
 
 const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, users, translated_channels }) => {
+  const { _t } = useTranslationActions();
   const parseSystemMessage = (message) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
@@ -316,7 +319,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -346,6 +349,15 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
         newBody += "</span>";
       } catch (e) {
         return message;
+      }
+    } else if (message.startsWith("UPLOAD_BULK::")) {
+      const data = JSON.parse(message.replace("UPLOAD_BULK::", ""));
+      if (data.files && data.files.length === 1) {
+        // eslint-disable-next-line quotes
+        newBody = _t("SYSTEM.USER_UPLOADED_FILE", '<span class="chat-file-notification">::name:: uploaded <b>::filename::</b></span>', { name: data.author.first_name, filename: data.files[0].search });
+      } else {
+        // eslint-disable-next-line quotes
+        newBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
       }
     }
 

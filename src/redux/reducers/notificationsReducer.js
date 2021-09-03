@@ -1,5 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
-import { getCurrentTimestamp, getTimestampInMins } from "../../helpers/dateFormatter";
+import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   user: null,
@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   hasSubscribed: true,
   is_snooze: false,
   snooze_time: getCurrentTimestamp(),
+  snoozedNotifications: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -19,8 +20,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
-      let results = action.data.notifications;
-      results = results.map((obj) => ({ ...obj, is_snooze: false, snooze_time: null }));
+      let results = action.data.notifications.map((obj) => {
+        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.notification_id === obj.id);
+        return {
+          ...obj,
+          is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false,
+          snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[obj.id] ? state.notifications[obj.id].snooze_time : null,
+        };
+      });
       return {
         ...state,
         notifications: {
@@ -173,37 +180,37 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         notifications: {
           ...state.notifications,
-          ...(action.data.notification_approval &&
-            action.data.user_approved.id !== state.user.id && {
-              [action.data.notification_approval.id]: {
-                id: action.data.notification_approval.id,
-                type: action.data.notification_approval.type,
-                is_read: 0,
-                is_snooze: false,
-                snooze_time: null,
-                created_at: action.data.created_at,
-                author: action.data.user_approved,
-                data: {
-                  post_id: action.data.post.id,
-                  type: "POST",
-                  must_read: false,
-                  must_reply: false,
-                  personalized_for_id: null,
-                  title: action.data.post.title,
-                  users_approval: action.data.users_approval,
-                  post_approval_label: "REQUEST_UPDATE",
-                  workspaces: action.data.workspaces.map((ws) => {
-                    return {
-                      topic_id: ws.topic.id,
-                      topic_name: ws.topic.name,
-                      workspace_id: ws.workspace ? ws.workspace.id : null,
-                      workspace_name: ws.workspace ? ws.workspace.name : null,
-                    };
-                  }),
-                  comment_body: null,
-                },
-              },
-            }),
+          // ...(action.data.notification_approval &&
+          //   action.data.user_approved.id !== state.user.id && {
+          //     [action.data.notification_approval.id]: {
+          //       id: action.data.notification_approval.id,
+          //       type: action.data.notification_approval.type,
+          //       is_read: 0,
+          //       is_snooze: false,
+          //       snooze_time: null,
+          //       created_at: action.data.created_at,
+          //       author: action.data.user_approved,
+          //       data: {
+          //         post_id: action.data.post.id,
+          //         type: "POST",
+          //         must_read: false,
+          //         must_reply: false,
+          //         personalized_for_id: null,
+          //         title: action.data.post.title,
+          //         users_approval: action.data.users_approval,
+          //         post_approval_label: "REQUEST_UPDATE", //should show to user who sent the comment approval
+          //         workspaces: action.data.workspaces.map((ws) => {
+          //           return {
+          //             topic_id: ws.topic.id,
+          //             topic_name: ws.topic.name,
+          //             workspace_id: ws.workspace ? ws.workspace.id : null,
+          //             workspace_name: ws.workspace ? ws.workspace.name : null,
+          //           };
+          //         }),
+          //         comment_body: null,
+          //       },
+          //     },
+          //   }),
           ...Object.values(state.notifications).reduce((acc, notif) => {
             if (notif.type === "POST_COMMENT" && action.data.post.id === notif.data.post_id && action.data.user_approved.id === state.user.id && action.data.users_approval.some((u) => u.ip_address !== null && u.id === state.user.id)) {
               acc[notif.id] = {
@@ -527,6 +534,70 @@ export default (state = INITIAL_STATE, action) => {
             acc[notif.id] = notif;
             return acc;
           }, {}),
+      };
+    }
+    case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {
+      const regex = /\s|\/|-|:/g;
+      return {
+        ...state,
+        snoozedNotifications: [
+          ...state.snoozedNotifications,
+          ...action.data.snoozed_notifications.map((sn) => {
+            const timeString = sn.snooze_time.replace(regex, ",");
+            const timeSplit = timeString.split(",");
+            const utcDate = new Date(parseInt(timeSplit[0]), parseInt(timeSplit[1]) - 1, parseInt(timeSplit[2]), parseInt(timeSplit[3]), parseInt(timeSplit[4]), parseInt(timeSplit[5]));
+            const date = convertUTCDateToLocalDate(utcDate);
+            return {
+              ...sn,
+              is_snooze: !!sn.is_snooze,
+              snooze_time: Math.round(date / 1000),
+            };
+          }),
+        ],
+      };
+    }
+    case "INCOMING_SNOOZED_ALL_NOTIFICATION":
+    case "SNOOZE_ALL_NOTIFICATION_SUCCESS": {
+      return {
+        ...state,
+        snoozedNotifications: [
+          ...state.snoozedNotifications,
+          ...action.data.data.map((sn) => {
+            return {
+              ...sn,
+              is_snooze: sn.is_snooze,
+              snooze_time: getCurrentTimestamp(),
+            };
+          }),
+        ],
+        notifications: Object.values(state.notifications).reduce((acc, n) => {
+          const notif = action.data.data.find((d) => d.notification_id === n.id);
+          if (notif) {
+            acc[n.id] = { ...n, is_snooze: notif.is_snooze, snooze_time: getCurrentTimestamp() };
+          } else {
+            acc[n.id] = n;
+          }
+          return acc;
+        }, {}),
+      };
+    }
+    case "SNOOZE_NOTIFICATION_SUCCESS":
+    case "INCOMING_SNOOZED_NOTIFICATION": {
+      return {
+        ...state,
+        notifications: Object.values(state.notifications).reduce((acc, n) => {
+          if (n.id === action.data.notification_id) {
+            acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+          } else {
+            acc[n.id] = n;
+          }
+          return acc;
+        }, {}),
+        snoozedNotifications: state.snoozedNotifications.map((sn) => {
+          if (sn.notification_id === action.data.notification_id) {
+            return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+          } else return sn;
+        }),
       };
     }
     default:
