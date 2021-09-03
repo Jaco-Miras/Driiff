@@ -1,5 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
-import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   user: null,
@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   hasSubscribed: true,
   is_snooze: false,
   snooze_time: getCurrentTimestamp(),
+  snoozedNotifications: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -19,8 +20,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
-      let results = action.data.notifications;
-      results = results.map((obj) => ({ ...obj, is_snooze: state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false, snooze_time: state.notifications[obj.id] ? state.notifications[obj.id].snooze_time : null }));
+      let results = action.data.notifications.map((obj) => {
+        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.notification_id === obj.id);
+        return {
+          ...obj,
+          is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false,
+          snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[obj.id] ? state.notifications[obj.id].snooze_time : null,
+        };
+      });
       return {
         ...state,
         notifications: {
@@ -509,22 +516,88 @@ export default (state = INITIAL_STATE, action) => {
             acc[notif.id] = notif;
           }
           return acc;
-        }, {})
-      }
+        }, {}),
+      };
     }
     case "INCOMING_DELETED_POST": {
       return {
         ...state,
-        notifications: Object.values(state.notifications).filter((notif) => {
-          if (notif.type.includes("POST")) {
-            return notif.data && notif.data.post_id !== action.data.post_id
+        notifications: Object.values(state.notifications)
+          .filter((notif) => {
+            if (notif.type.includes("POST")) {
+              return notif.data && notif.data.post_id !== action.data.post_id;
+            } else {
+              return true;
+            }
+          })
+          .reduce((acc, notif) => {
+            acc[notif.id] = notif;
+            return acc;
+          }, {}),
+      };
+    }
+    case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {
+      const regex = /\s|\/|-|:/g;
+      return {
+        ...state,
+        snoozedNotifications: [
+          ...state.snoozedNotifications,
+          ...action.data.snoozed_notifications.map((sn) => {
+            const timeString = sn.snooze_time.replace(regex, ",");
+            const timeSplit = timeString.split(",");
+            const utcDate = new Date(parseInt(timeSplit[0]), parseInt(timeSplit[1]) - 1, parseInt(timeSplit[2]), parseInt(timeSplit[3]), parseInt(timeSplit[4]), parseInt(timeSplit[5]));
+            const date = convertUTCDateToLocalDate(utcDate);
+            return {
+              ...sn,
+              is_snooze: !!sn.is_snooze,
+              snooze_time: Math.round(date / 1000),
+            };
+          }),
+        ],
+      };
+    }
+    case "INCOMING_SNOOZED_ALL_NOTIFICATION":
+    case "SNOOZE_ALL_NOTIFICATION_SUCCESS": {
+      return {
+        ...state,
+        snoozedNotifications: [
+          ...state.snoozedNotifications,
+          ...action.data.data.map((sn) => {
+            return {
+              ...sn,
+              is_snooze: sn.is_snooze,
+              snooze_time: getCurrentTimestamp(),
+            };
+          }),
+        ],
+        notifications: Object.values(state.notifications).reduce((acc, n) => {
+          const notif = action.data.data.find((d) => d.notification_id === n.id);
+          if (notif) {
+            acc[n.id] = { ...n, is_snooze: notif.is_snooze, snooze_time: getCurrentTimestamp() };
           } else {
-            return true
+            acc[n.id] = n;
           }
-        }).reduce((acc, notif) => {
-          acc[notif.id] = notif;
           return acc;
         }, {}),
+      };
+    }
+    case "SNOOZE_NOTIFICATION_SUCCESS":
+    case "INCOMING_SNOOZED_NOTIFICATION": {
+      return {
+        ...state,
+        notifications: Object.values(state.notifications).reduce((acc, n) => {
+          if (n.id === action.data.notification_id) {
+            acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+          } else {
+            acc[n.id] = n;
+          }
+          return acc;
+        }, {}),
+        snoozedNotifications: state.snoozedNotifications.map((sn) => {
+          if (sn.notification_id === action.data.notification_id) {
+            return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+          } else return sn;
+        }),
       };
     }
     default:

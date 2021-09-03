@@ -163,7 +163,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification, getNotifications } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 
@@ -251,6 +251,19 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".snooze-notification", (e) => {
+        console.log(e, "snooze notif");
+        switch (e.SOCKET_TYPE) {
+          case "SNOOZE_NOTIFICATION": {
+            this.props.incomingSnoozedNotification(e);
+            break;
+          }
+        }
+      })
+      .listen(".snooze-all-notification", (e) => {
+        console.log(e, "snooze all");
+        this.props.incomingSnoozedAllNotification(e);
+      })
       .listen(".post-follow", (e) => {
         this.props.incomingFollowPost(e);
       })
@@ -1963,6 +1976,8 @@ function mapDispatchToProps(dispatch) {
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
     getNotifications: bindActionCreators(getNotifications, dispatch),
+    incomingSnoozedNotification: bindActionCreators(incomingSnoozedNotification, dispatch),
+    incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
   };
 }
 
