@@ -590,7 +590,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state,
           notifications: Object.values(state.notifications).reduce((acc, n) => {
             if (n.id === action.data.notification_id) {
-              acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+              acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
             } else {
               acc[n.id] = n;
             }
@@ -598,7 +598,7 @@ export default (state = INITIAL_STATE, action) => {
           }, {}),
           snoozedNotifications: state.snoozedNotifications.map((sn) => {
             if (sn.notification_id === action.data.notification_id) {
-              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
             } else return sn;
           }),
         };
