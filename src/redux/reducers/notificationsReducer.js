@@ -21,7 +21,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
       let results = action.data.notifications.map((obj) => {
-        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.notification_id === obj.id);
+        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.notification_id === obj.id && sn.type && sn.type === "POST_SNOOZE");
         return {
           ...obj,
           is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false,
@@ -542,17 +542,19 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         snoozedNotifications: [
           ...state.snoozedNotifications,
-          ...action.data.snoozed_notifications.map((sn) => {
-            const timeString = sn.snooze_time.replace(regex, ",");
-            const timeSplit = timeString.split(",");
-            const utcDate = new Date(parseInt(timeSplit[0]), parseInt(timeSplit[1]) - 1, parseInt(timeSplit[2]), parseInt(timeSplit[3]), parseInt(timeSplit[4]), parseInt(timeSplit[5]));
-            const date = convertUTCDateToLocalDate(utcDate);
-            return {
-              ...sn,
-              is_snooze: !!sn.is_snooze,
-              snooze_time: Math.round(date / 1000),
-            };
-          }),
+          ...action.data.snoozed_notifications
+            .filter((sn) => sn.type && sn.type === "POST_SNOOZE")
+            .map((sn) => {
+              const timeString = sn.snooze_time.replace(regex, ",");
+              const timeSplit = timeString.split(",");
+              const utcDate = new Date(parseInt(timeSplit[0]), parseInt(timeSplit[1]) - 1, parseInt(timeSplit[2]), parseInt(timeSplit[3]), parseInt(timeSplit[4]), parseInt(timeSplit[5]));
+              const date = convertUTCDateToLocalDate(utcDate);
+              return {
+                ...sn,
+                is_snooze: !!sn.is_snooze,
+                snooze_time: Math.round(date / 1000),
+              };
+            }),
         ],
       };
     }
@@ -571,7 +573,7 @@ export default (state = INITIAL_STATE, action) => {
           }),
         ],
         notifications: Object.values(state.notifications).reduce((acc, n) => {
-          const notif = action.data.data.find((d) => d.notification_id === n.id);
+          const notif = action.data.data.find((d) => d.notification_id === n.id && d.type === "POST_SNOOZE");
           if (notif) {
             acc[n.id] = { ...n, is_snooze: notif.is_snooze, snooze_time: getCurrentTimestamp() };
           } else {
@@ -583,22 +585,26 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "SNOOZE_NOTIFICATION_SUCCESS":
     case "INCOMING_SNOOZED_NOTIFICATION": {
-      return {
-        ...state,
-        notifications: Object.values(state.notifications).reduce((acc, n) => {
-          if (n.id === action.data.notification_id) {
-            acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
-          } else {
-            acc[n.id] = n;
-          }
-          return acc;
-        }, {}),
-        snoozedNotifications: state.snoozedNotifications.map((sn) => {
-          if (sn.notification_id === action.data.notification_id) {
-            return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
-          } else return sn;
-        }),
-      };
+      if (action.data.type === "POST_SNOOZE") {
+        return {
+          ...state,
+          notifications: Object.values(state.notifications).reduce((acc, n) => {
+            if (n.id === action.data.notification_id) {
+              acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+            } else {
+              acc[n.id] = n;
+            }
+            return acc;
+          }, {}),
+          snoozedNotifications: state.snoozedNotifications.map((sn) => {
+            if (sn.notification_id === action.data.notification_id) {
+              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+            } else return sn;
+          }),
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

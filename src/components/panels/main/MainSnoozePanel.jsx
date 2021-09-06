@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings, useTodos, useTodoActions, useHuddleChatbot } from "../../hooks";
+import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings, useTodos, useTodoActions, useHuddleChatbot, useSnoozeActions } from "../../hooks";
 import { ToastContainer, toast } from "react-toastify";
 import { getTimestampInMins, getCurrentTimestamp } from "../../../helpers/dateFormatter";
 import { setSelectedChannel, clearHuddleAnswers } from "../../../redux/actions/chatActions";
@@ -67,6 +67,7 @@ const MainSnooze = (props) => {
   const user = useSelector((state) => state.session.user);
   const { _t } = useTranslationActions();
 
+  const snoozeActions = useSnoozeActions();
   const notifActions = useNotificationActions();
   const todoActions = useTodoActions();
   const {
@@ -307,9 +308,9 @@ const MainSnooze = (props) => {
     e.preventDefault();
 
     const items = [];
-    let reminders = [],
-      notifs = [],
-      huddles = [];
+    let reminders = [];
+    let notifs = [];
+    let huddles = [];
 
     reminders = processItems("todo", todoCLean());
     notifs = processItems("notification", notifCLean());
@@ -329,7 +330,13 @@ const MainSnooze = (props) => {
       }
     });
     if (notifs.length) {
-      notifActions.snoozeAllNotif({ is_snooze: true, notification_ids: notifs.map((n) => n.id) });
+      snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: notifs.map((n) => n.id), type: "POST_SNOOZE" });
+    }
+    if (reminders.length) {
+      snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: reminders.map((n) => n.id), type: "REMINDER_SNOOZE" });
+    }
+    if (huddles.length) {
+      snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: huddles.map((n) => n.id), type: "HUDDLE_SNOOZE" });
     }
   };
 
@@ -485,26 +492,28 @@ const MainSnooze = (props) => {
   };
 
   const unSnoozeMe = (type, items) => {
-    const currentTimestamp = getCurrentTimestamp();
+    const currentTimestamp = Math.round(+new Date() / 1000);
     const actions = type === "notification" ? notifActions : type === "todo" ? todoActions : huddleActions;
     let counter = 0;
     items.map((n) => {
+      const snoozeTime = n.snooze_time + snoozeCycle * 60;
       if (type === "notification") {
-        const snoozeTime = n.snooze_time + snoozeCycle * 60;
         if (n.is_snooze && n.snooze_time && currentTimestamp > snoozeTime) {
           counter++;
-          notifActions.snoozeNotif({ notification_id: n.id, is_snooze: false });
-          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
+          snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "POST_SNOOZE" });
+          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "POST_SNOOZE" });
         }
       } else if (type === "todo") {
-        if (n.status !== "DONE" && n.is_snooze && n.snooze_time <= currentTimestamp) {
+        if (n.status !== "DONE" && n.is_snooze && n.snooze_time && currentTimestamp > snoozeTime) {
           counter++;
-          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
+          snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "REMINDER_SNOOZE" });
+          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "REMINDER_SNOOZE" });
         }
       } else if (type === "huddle") {
-        if (n.is_snooze && n.snooze_time <= currentTimestamp) {
+        if (n.is_snooze && n.snooze_time && currentTimestamp > snoozeTime) {
           counter++;
-          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null });
+          snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "HUDDLE_SNOOZE" });
+          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "HUDDLE_SNOOZE" });
         }
       }
     });

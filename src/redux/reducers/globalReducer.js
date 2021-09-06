@@ -1,4 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/dateFormatter";
 //import { groupBy } from "lodash";
 
 const INITIAL_STATE = {
@@ -60,12 +61,14 @@ const INITIAL_STATE = {
     },
     items: {},
     doneRecently: [],
-    is_snooze: false
+    is_snooze: false,
   },
   releases: {
     timestamp: null,
     items: [],
   },
+  snoozedReminders: [],
+  snoozedRemindersLoaded: false,
 };
 
 const getLink = (t) => {
@@ -90,7 +93,7 @@ const getLink = (t) => {
     default:
       return null;
   }
-}
+};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -274,8 +277,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_TO_DO_DETAIL_SUCCESS": {
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
-        if (typeof items[n.id].is_snooze === "undefined")
-          items[n.id].is_snooze = false;
+        if (typeof items[n.id].is_snooze === "undefined") items[n.id].is_snooze = false;
       });
 
       return {
@@ -331,7 +333,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -344,15 +346,18 @@ export default (state = INITIAL_STATE, action) => {
             ...state.todos.items,
             ...(Object.values(action.data.todos).length > 0 && {
               ...Object.values(action.data.todos).reduce((acc, todo) => {
+                const snoozedReminder = state.snoozedReminders.find((sn) => sn.notification_id === todo.id && sn.type && sn.type === "REMINDER_SNOOZE");
+                const reminder = state.todos.items[todo.id];
                 acc[todo.id] = {
                   ...todo,
-                  is_snooze: false,
+                  is_snooze: snoozedReminder ? !!snoozedReminder.is_snooze : reminder ? reminder.is_snooze : false,
+                  snooze_time: snoozedReminder ? snoozedReminder.snooze_time : reminder ? reminder.snooze_time : null,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           doneRecently: [],
         },
@@ -360,7 +365,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_DONE_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -370,15 +375,18 @@ export default (state = INITIAL_STATE, action) => {
             ...state.todos.items,
             ...(Object.values(action.data.todos).length > 0 && {
               ...Object.values(action.data.todos).reduce((acc, todo) => {
+                const snoozedReminder = state.snoozedReminders.find((sn) => sn.notification_id === todo.id && sn.type && sn.type === "REMINDER_SNOOZE");
+                const reminder = state.todos.items[todo.id];
                 acc[todo.id] = {
                   ...todo,
-                  is_snooze: false,
+                  is_snooze: snoozedReminder ? !!snoozedReminder.is_snooze : reminder ? reminder.is_snooze : false,
+                  snooze_time: snoozedReminder ? snoozedReminder.snooze_time : reminder ? reminder.snooze_time : null,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           done: {
             limit: 10,
@@ -390,7 +398,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_OVERDUE_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -400,15 +408,18 @@ export default (state = INITIAL_STATE, action) => {
             ...state.todos.items,
             ...(Object.values(action.data.todos).length > 0 && {
               ...Object.values(action.data.todos).reduce((acc, todo) => {
+                const snoozedReminder = state.snoozedReminders.find((sn) => sn.notification_id === todo.id && sn.type && sn.type === "REMINDER_SNOOZE");
+                const reminder = state.todos.items[todo.id];
                 acc[todo.id] = {
                   ...todo,
-                  is_snooze: false,
+                  is_snooze: snoozedReminder ? !!snoozedReminder.is_snooze : reminder ? reminder.is_snooze : false,
+                  snooze_time: snoozedReminder ? snoozedReminder.snooze_time : reminder ? reminder.snooze_time : null,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           overdue: {
             ...state.todos.overdue.limit,
@@ -420,7 +431,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_TODAY_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -430,15 +441,18 @@ export default (state = INITIAL_STATE, action) => {
             ...state.todos.items,
             ...(Object.values(action.data.todos).length > 0 && {
               ...Object.values(action.data.todos).reduce((acc, todo) => {
+                const snoozedReminder = state.snoozedReminders.find((sn) => sn.notification_id === todo.id && sn.type && sn.type === "REMINDER_SNOOZE");
+                const reminder = state.todos.items[todo.id];
                 acc[todo.id] = {
                   ...todo,
-                  is_snooze: false,
+                  is_snooze: snoozedReminder ? !!snoozedReminder.is_snooze : reminder ? reminder.is_snooze : false,
+                  snooze_time: snoozedReminder ? snoozedReminder.snooze_time : reminder ? reminder.snooze_time : null,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           today: {
             ...state.todos.today.limit,
@@ -729,7 +743,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMINDER_SNOOZE_ALL": {
-
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
         items[n.id].is_snooze = action.data.is_snooze;
@@ -741,10 +754,9 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           is_snooze: action.data.is_snooze,
-          items: items
+          items: items,
         },
       };
-
     }
     case "REMINDER_SNOOZE": {
       let items = state.todos.items;
@@ -754,7 +766,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          items: items
+          items: items,
         },
       };
     }
@@ -763,16 +775,93 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          items: Object.values(state.todos.items).reduce((acc,todo) => {
+          items: Object.values(state.todos.items).reduce((acc, todo) => {
             if (todo.id === action.data.id) {
-              acc[todo.id] = {...todo, show_notification: false}
+              acc[todo.id] = { ...todo, show_notification: false };
             } else {
-              acc[todo.id] = todo
+              acc[todo.id] = todo;
             }
-            return acc
-          }, {})
-        }
+            return acc;
+          }, {}),
+        },
+      };
+    }
+    case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {
+      const regex = /\s|\/|-|:/g;
+      return {
+        ...state,
+        snoozedRemindersLoaded: true,
+        snoozedReminders: [
+          ...state.snoozedReminders,
+          ...action.data.snoozed_notifications
+            .filter((sn) => sn.type && sn.type === "REMINDER_SNOOZE")
+            .map((sn) => {
+              const timeString = sn.snooze_time.replace(regex, ",");
+              const timeSplit = timeString.split(",");
+              const utcDate = new Date(parseInt(timeSplit[0]), parseInt(timeSplit[1]) - 1, parseInt(timeSplit[2]), parseInt(timeSplit[3]), parseInt(timeSplit[4]), parseInt(timeSplit[5]));
+              const date = convertUTCDateToLocalDate(utcDate);
+              return {
+                ...sn,
+                is_snooze: !!sn.is_snooze,
+                snooze_time: Math.round(date / 1000),
+              };
+            }),
+        ],
+      };
+    }
+    case "SNOOZE_NOTIFICATION_SUCCESS":
+    case "INCOMING_SNOOZED_NOTIFICATION": {
+      if (action.data.type === "REMINDER_SNOOZE") {
+        return {
+          ...state,
+          todos: {
+            ...state.todos,
+            items: Object.values(state.todos.items).reduce((acc, item) => {
+              if (item.id === action.data.notification_id) {
+                acc[item.id] = { ...item, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+              } else {
+                acc[item.id] = item;
+              }
+              return acc;
+            }, {}),
+          },
+          snoozedReminders: state.snoozedReminders.map((sn) => {
+            if (sn.notification_id === action.data.notification_id) {
+              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+            } else return sn;
+          }),
+        };
+      } else {
+        return state;
       }
+    }
+    case "INCOMING_SNOOZED_ALL_NOTIFICATION":
+    case "SNOOZE_ALL_NOTIFICATION_SUCCESS": {
+      return {
+        ...state,
+        snoozedReminders: [
+          ...state.snoozedReminders,
+          ...action.data.data.map((sn) => {
+            return {
+              ...sn,
+              is_snooze: sn.is_snooze,
+              snooze_time: getCurrentTimestamp(),
+            };
+          }),
+        ],
+        todos: {
+          ...state.todos,
+          items: Object.values(state.todos.items).reduce((acc, item) => {
+            const todo = action.data.data.find((d) => d.notification_id === item.id && d.type === "HUDDLE_SNOOZE");
+            if (todo) {
+              acc[item.id] = { ...item, is_snooze: todo.is_snooze, snooze_time: getCurrentTimestamp() };
+            } else {
+              acc[item.id] = item;
+            }
+            return acc;
+          }, {}),
+        },
+      };
     }
     default:
       return state;

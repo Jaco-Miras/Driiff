@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { useTimeFormat, useTodoActions } from "./index";
 
-let init = false;
 const useTodos = (fetchTodosOnMount = false) => {
   const { isLoaded, skip, limit, hasMore, items, count, doneRecently, done, overdue, today } = useSelector((state) => state.global.todos);
+  const snoozedRemindersLoaded = useSelector((state) => state.global.snoozedRemindersLoaded);
 
   const { user: loggedUser } = useSelector((state) => state.session);
   const users = useSelector((state) => state.users.users);
@@ -103,14 +103,14 @@ const useTodos = (fetchTodosOnMount = false) => {
   };
 
   useEffect(() => {
-    if (!init) {
-      init = true;
-    }
-    if (!isLoaded && fetchTodosOnMount) {
-      loadMore();
-    }
     todoActions.fetchDetail({});
   }, []);
+
+  useEffect(() => {
+    if (snoozedRemindersLoaded && !isLoaded && fetchTodosOnMount) {
+      loadMore();
+    }
+  }, [snoozedRemindersLoaded]);
 
   return {
     isLoaded,
