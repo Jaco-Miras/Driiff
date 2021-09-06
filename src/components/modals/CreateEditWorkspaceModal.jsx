@@ -131,6 +131,12 @@ const WrapperDiv = styled(InputGroup)`
       border-color: ${(props) => (props.valid === false ? "red" : "#cccccc")}!important;
     }
   }
+  .workspace-radio-input {
+    display: flex;
+    > div:first-child {
+      margin-right: 1rem;
+    }
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -374,6 +380,7 @@ const CreateEditWorkspaceModal = (props) => {
     save: _t("POST.SAVE", "Save"),
     sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
     sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
+    publicWorkspace: _t("LABEL.PUBLIC_WORKSPACE", "Public workspace"),
   };
 
   const _validateName = useCallback(() => {
@@ -426,6 +433,13 @@ const CreateEditWorkspaceModal = (props) => {
     const checked = !form[name];
     setForm((prevState) => {
       return { ...prevState, [name]: checked };
+    });
+  };
+
+  const toggleWorkspaceType = (e) => {
+    const checked = !form["is_private"];
+    setForm((prevState) => {
+      return { ...prevState, is_private: checked };
     });
   };
 
@@ -1252,7 +1266,7 @@ const CreateEditWorkspaceModal = (props) => {
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
               middle_name: users[m.id] ? users[m.id].middle_name : "",
-              last_name:  users[m.id] ? users[m.id].last_name : "",
+              last_name: users[m.id] ? users[m.id].last_name : "",
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               has_accepted: m.has_accepted,
@@ -1269,7 +1283,7 @@ const CreateEditWorkspaceModal = (props) => {
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
               middle_name: users[m.id] ? users[m.id].middle_name : "",
-              last_name:  users[m.id] ? users[m.id].last_name : "",
+              last_name: users[m.id] ? users[m.id].last_name : "",
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               email: m.email,
@@ -1658,9 +1672,14 @@ const CreateEditWorkspaceModal = (props) => {
         )}
         <WrapperDiv className="action-wrapper">
           <Label />
-          <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-            {dictionary.lockWorkspace}
-          </CheckBox>
+          <RadioInputWrapper className="workspace-radio-input">
+            <RadioInput readOnly onClick={toggleWorkspaceType} checked={form.is_private} value={"is_private"} name={"is_private"}>
+              {dictionary.lockWorkspace}
+            </RadioInput>
+            <RadioInput readOnly onClick={toggleWorkspaceType} checked={!form.is_private} value={"is_private"} name={"is_private"}>
+              {dictionary.publicWorkspace}
+            </RadioInput>
+          </RadioInputWrapper>
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
