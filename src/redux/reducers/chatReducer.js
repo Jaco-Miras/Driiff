@@ -40,6 +40,7 @@ const INITIAL_STATE = {
   },
   searchArchivedChannels: false,
   snoozedHuddle: [],
+  huddleBotsLoaded: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1887,6 +1888,7 @@ export default function (state = INITIAL_STATE, action) {
       const currentDate = new Date();
       return {
         ...state,
+        huddleBotsLoaded: true,
         huddleBots: action.data.map((h) => {
           const snoozedHuddle = state.snoozedHuddle.find((sn) => sn.notification_id === h.id && sn.type && sn.type === "HUDDLE_SNOOZE");
           const huddle = state.huddleBots.find((hb) => hb.id === h.id);
