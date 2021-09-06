@@ -255,16 +255,9 @@ class SocketListeners extends Component {
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".snooze-notification", (e) => {
-        console.log(e, "snooze notif");
-        switch (e.SOCKET_TYPE) {
-          case "SNOOZE_NOTIFICATION": {
-            this.props.incomingSnoozedNotification(e);
-            break;
-          }
-        }
+        this.props.incomingSnoozedNotification(e);
       })
       .listen(".snooze-all-notification", (e) => {
-        console.log(e, "snooze all");
         this.props.incomingSnoozedAllNotification(e);
       })
       .listen(".post-follow", (e) => {
@@ -824,7 +817,6 @@ class SocketListeners extends Component {
             if (e.author.id !== this.props.user.id) {
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
-                console.log("fetch post");
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
                   if (err) return;
                   let post = {

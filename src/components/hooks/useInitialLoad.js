@@ -37,9 +37,12 @@ const useInitialLoad = () => {
       dispatch(getExternalUsers());
       dispatch(getDrafts());
       if (Object.keys(notifications).length === 0) {
-        dispatch(getAllSnoozedNotification({}, () => {
-          dispatch(getNotifications({ skip: 0, limit: 50 }));
-        }))
+        dispatch(
+          getAllSnoozedNotification({}, () => {
+            dispatch(getNotifications({ skip: 0, limit: 50 }));
+            dispatch(getHuddleChatbot({}));
+          })
+        );
       }
       dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
       dispatch(getQuickLinks());

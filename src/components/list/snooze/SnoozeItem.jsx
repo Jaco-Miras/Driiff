@@ -4,7 +4,8 @@ import { Avatar, SvgIconFeather } from "../../common";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { toast } from "react-toastify";
-import { getCurrentTimestamp } from "../../../helpers/dateFormatter";
+import { useSnoozeActions } from "../../hooks";
+//import { getCurrentTimestamp } from "../../../helpers/dateFormatter";
 
 // const Icon = styled(SvgIconFeather)`
 //   width: 12px;
@@ -140,6 +141,8 @@ const SnoozeItem = (props) => {
   const { type, item, user, dictionary, users, handleRedirect, darkMode, snoozeData, actions } = props;
   // const { _t } = useTranslationActions();
 
+  const snoozeActions = useSnoozeActions();
+
   const handleSkip = (type, n, e) => {
     e.stopPropagation();
     const huddleAnswered = localStorage.getItem("huddle");
@@ -173,7 +176,11 @@ const SnoozeItem = (props) => {
     e.stopPropagation();
     actions.snooze(snoozeData);
     if (type === "notification") {
-      actions.snoozeNotif({ notification_id: item.id, is_snooze: true });
+      snoozeActions.snoozeNotif({ notification_id: item.id, is_snooze: true, type: "POST_SNOOZE" });
+    } else if (type === "todo") {
+      snoozeActions.snoozeNotif({ notification_id: item.id, is_snooze: true, type: "REMINDER_SNOOZE" });
+    } else if (type === "huddle") {
+      snoozeActions.snoozeNotif({ notification_id: item.id, is_snooze: true, type: "HUDDLE_SNOOZE" });
     }
     toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: "btnSnoozeMe" });
     toast.dismiss(type + "__" + item.id);
