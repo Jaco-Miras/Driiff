@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings, useTodos, useTodoActions, useHuddleChatbot, useSnoozeActions } from "../../hooks";
 import { ToastContainer, toast } from "react-toastify";
-import { getTimestampInMins, getCurrentTimestamp } from "../../../helpers/dateFormatter";
+import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import { setSelectedChannel, clearHuddleAnswers } from "../../../redux/actions/chatActions";
 import SnoozeItem from "../../list/snooze/SnoozeItem";
 
@@ -92,6 +92,7 @@ const MainSnooze = (props) => {
   //const channels = chats.channels;
   const huddleBots = useSelector((state) => state.chat.huddleBots.filter((h) => h.show_notification && h.show_notification === true));
   const channels = useSelector((state) => state.chat.channels);
+  const huddleBotsLoaded = useSelector((state) => state.chat.huddleBotsLoaded);
   // const weekDays = [
   //   { day: "M", value: 1 },
   //   { day: "T", value: 2 },
@@ -592,10 +593,10 @@ const MainSnooze = (props) => {
 
   //handler for all non-snoozed items
   useEffect(() => {
-    if (Object.keys(channels).length > 0 && users) {
+    if (Object.keys(channels).length > 0 && huddleBotsLoaded) {
       putToSnooze();
     }
-  }, [notifications, todos, huddleBots]);
+  }, [notifications, todos, huddleBots, huddleBotsLoaded]);
 
   const currentDay = currentDate.getDay();
 
