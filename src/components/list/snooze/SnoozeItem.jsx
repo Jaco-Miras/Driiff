@@ -25,6 +25,9 @@ const OpenIcon = styled(SvgIconFeather)`
   margin-left: 5px;
   :hover {
     color: #505050;
+    .dark & {
+      color: #fff;
+    }
   }
 `;
 
@@ -64,6 +67,9 @@ const SnoozeHeader = styled.div`
   .snooze-me {
     :hover {
       color: #505050;
+      .dark & {
+        color: #fff;
+      }
     }
   }
 `;

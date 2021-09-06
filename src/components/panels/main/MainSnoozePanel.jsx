@@ -106,8 +106,8 @@ const MainSnooze = (props) => {
 
   const [triggerUnsnooze, setTriggerUnsnooze] = useState(false);
 
-  const snoozeTime = 1;
-  const snoozeCycle = 1;
+  const snoozeTime = 60;
+  const snoozeCycle = 60;
   const expTodo = 59; //mins
 
   const dictionary = {
@@ -338,6 +338,9 @@ const MainSnooze = (props) => {
     if (huddles.length) {
       snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: huddles.map((n) => n.id), type: "HUDDLE_SNOOZE" });
     }
+    if (notifs.length || reminders.length || huddles.length) {
+      toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: "btnSnoozeMe" });
+    }
   };
 
   const snoozeOpen = (snooze) => {
@@ -496,21 +499,21 @@ const MainSnooze = (props) => {
     const actions = type === "notification" ? notifActions : type === "todo" ? todoActions : huddleActions;
     let counter = 0;
     items.map((n) => {
-      const snoozeTime = n.snooze_time + snoozeCycle * 60;
+      const snoozedTime = n.snooze_time + snoozeCycle * 60;
       if (type === "notification") {
-        if (n.is_snooze && n.snooze_time && currentTimestamp > snoozeTime) {
+        if (n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {
           counter++;
           snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "POST_SNOOZE" });
           actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "POST_SNOOZE" });
         }
       } else if (type === "todo") {
-        if (n.status !== "DONE" && n.is_snooze && n.snooze_time && currentTimestamp > snoozeTime) {
+        if (n.status !== "DONE" && n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {
           counter++;
           snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "REMINDER_SNOOZE" });
           actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "REMINDER_SNOOZE" });
         }
       } else if (type === "huddle") {
-        if (n.is_snooze && n.snooze_time && currentTimestamp > snoozeTime) {
+        if (n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {
           counter++;
           snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "HUDDLE_SNOOZE" });
           actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "HUDDLE_SNOOZE" });
@@ -570,6 +573,18 @@ const MainSnooze = (props) => {
       const todos = unSnoozeMe("todo", todoCLean());
       const notis = unSnoozeMe("notification", notifCLean());
       const huddles = unSnoozeMe("huddle", huddleBots);
+      // const todos = unSnoozeMe(
+      //   "todo",
+      //   todoCLean().filter((t) => t.is_snooze === false)
+      // );
+      // const notis = unSnoozeMe(
+      //   "notification",
+      //   notifCLean().filter((n) => n.is_snooze === false)
+      // );
+      // const huddles = unSnoozeMe(
+      //   "huddle",
+      //   huddleBots.filter((h) => h.is_snooze === false)
+      // );
       //toast.info(<span dangerouslySetInnerHTML={{ __html: `interval for all snoozed items ${snoozeCycle} mins` }} />, { containerId: "toastA", toastId: "xxy" });
       if (todos === 0 && notis === 0 && huddles === 0) putToSnooze();
     }
