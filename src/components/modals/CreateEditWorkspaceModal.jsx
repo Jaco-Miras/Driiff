@@ -437,10 +437,19 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const toggleWorkspaceType = (e, value) => {
-    const checked = form["is_private"] === null && value === "is_public" ? false : form["is_private"] === null && value === "is_private" ? true : !form["is_private"];
-    setForm((prevState) => {
-      return { ...prevState, is_private: checked };
-    });
+    let checked = null;
+    if (form["is_private"] === null) {
+      checked = value === "is_public" ? false : true;
+    } else {
+      if (form["is_private"] === true && value === "is_private") return;
+      if (form["is_private"] === false && value === "is_public") return;
+      checked = !form["is_private"];
+    }
+    if (checked !== null) {
+      setForm((prevState) => {
+        return { ...prevState, is_private: checked };
+      });
+    }
   };
 
   const folderOptions = Object.values(folders)
