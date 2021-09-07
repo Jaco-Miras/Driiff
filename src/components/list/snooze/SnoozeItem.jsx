@@ -360,17 +360,13 @@ const SnoozeItem = (props) => {
   };
 
   return (
-    <NotifWrapper
-      className="timeline-item timeline-item-no-line d-flex"
-      darkMode={darkMode}
-      //onClick={(e) => handleRedirect(type, item, e)}
-    >
+    <NotifWrapper className="timeline-item timeline-item-no-line d-flex" darkMode={darkMode} onClick={(e) => handleRedirect(type, item, e)}>
       <div className="d-flex">
         {type === "notification" ? (
           item.author ? (
-            <Avatar id={item.author.id} name={item.author.name} showSlider={false} imageLink={item.author.profile_image_thumbnail_link ? item.author.profile_image_thumbnail_link : item.author.profile_image_link} />
+            <Avatar id={item.author.id} name={item.author.name} showSlider={false} imageLink={item.author.profile_image_thumbnail_link ? item.author.profile_image_thumbnail_link : item.author.profile_image_link} noDefaultClick={true} />
           ) : (
-            <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={false} />
+            <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={false} noDefaultClick={true} />
           )
         ) : type === "todo" ? (
           <RobotAvatar className="robotAvatar">
