@@ -1262,6 +1262,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: {
           ...state.channels,
           ...(action.data.type === "WORKSPACE" &&
+            action.data.channel &&
             state.channels[action.data.channel.id] && {
               [action.data.channel.id]: {
                 ...state.channels[action.data.channel.id],
@@ -1301,6 +1302,7 @@ export default function (state = INITIAL_STATE, action) {
             }),
           ...(action.data.type === "WORKSPACE" &&
             action.data.team_channel &&
+            action.data.channel &&
             state.channels[action.data.team_channel.id] && {
               [action.data.team_channel.id]: {
                 //transfer the internal post notification here
@@ -1882,7 +1884,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_HUDDLE_CHATBOT_SUCCESS": {
       const huddleNotif = localStorage.getItem("huddleNotif");
-      const huddleNotifications = huddleNotif ? JSON.parse(huddleNotif) : null
+      const huddleNotifications = huddleNotif ? JSON.parse(huddleNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -2418,12 +2420,12 @@ export default function (state = INITIAL_STATE, action) {
             return {
               ...h,
               show_notification: false,
-            }
+            };
           } else {
-            return h
+            return h;
           }
-        })
-      }
+        }),
+      };
     }
     // case "INCOMING_DELETED_POST": {
     //   return {
