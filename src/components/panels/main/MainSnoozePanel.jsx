@@ -400,22 +400,6 @@ const MainSnooze = (props) => {
               bodyClassName: "snooze-body",
               containerId: "toastS",
               toastId: elemId,
-              // onClose: () => {
-              //   const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
-              //   if (item.type === "notification" && notifications[n.id]) {
-              //     if (n.type === "POST_CREATE" && (!hasMustReadAction(n) || !hasMustReplyAction(n))) ca = true;
-              //     else if (n.type === "POST_REQST_APPROVAL" && !hasApprovalAction(n)) ca = true;
-              //     else if (n.type === "POST_MENTION" && !notifications[n.id].is_read) ca = true;
-              //     else if (n.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
-              //     else if (n.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval(n) && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label == "REQUEST_UPDATE") ca = true;
-              //     else if (n.type === "POST_COMMENT" && notifications[n.id].data.post_approval_label && notifications[n.id].data.post_approval_label === "NEED_ACTION") ca = true;
-              //   } else if (item.type === "todo" && todos.items[n.id] && todos.items[n.id].status !== "DONE") ca = true;
-              //   else if (item.type === "huddle" && huddleClean(n)) ca = true;
-              //   if (ca) {
-              //     actions.snooze(data);
-              //     toast.success(<span dangerouslySetInnerHTML={{ __html: dictionary.snoozeMe }} />, { containerId: "toastA", toastId: "btnSnoozeMe" });
-              //   }
-              // },
             }
           );
         } else {
@@ -441,17 +425,6 @@ const MainSnooze = (props) => {
         }
         active.push(elemId);
       });
-
-      /*
-      activeSnooze
-        .filter((t) => {
-          return active.indexOf(t) < 0;
-        })
-        .map((t) => {
-          toast.dismiss(t);
-        });
-      setActiveSnooze(active);
-      */
     } else toast.dismiss("btnSnoozeAll");
   };
 
@@ -461,8 +434,13 @@ const MainSnooze = (props) => {
       const elemId = type + "__" + n.id;
       const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
       if (type === "notification") {
-        if (n.type === "POST_MENTION") !n.is_read && !n.is_snooze ? snooze.push(data) : n.is_read && toast.isActive(elemId) && toast.dismiss(elemId);
-        else if (n.type === "POST_CREATE") {
+        if (n.type === "POST_MENTION") {
+          if (!n.is_read && !n.is_snooze) {
+            snooze.push(data);
+          } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
+            toast.dismiss(elemId);
+          }
+        } else if (n.type === "POST_CREATE") {
           if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) snooze.push({ ...data, update: true });
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REQST_APPROVAL") {
@@ -574,19 +552,6 @@ const MainSnooze = (props) => {
       const todos = unSnoozeMe("todo", todoCLean());
       const notis = unSnoozeMe("notification", notifCLean());
       const huddles = unSnoozeMe("huddle", huddleBots);
-      // const todos = unSnoozeMe(
-      //   "todo",
-      //   todoCLean().filter((t) => t.is_snooze === false)
-      // );
-      // const notis = unSnoozeMe(
-      //   "notification",
-      //   notifCLean().filter((n) => n.is_snooze === false)
-      // );
-      // const huddles = unSnoozeMe(
-      //   "huddle",
-      //   huddleBots.filter((h) => h.is_snooze === false)
-      // );
-      //toast.info(<span dangerouslySetInnerHTML={{ __html: `interval for all snoozed items ${snoozeCycle} mins` }} />, { containerId: "toastA", toastId: "xxy" });
       if (todos === 0 && notis === 0 && huddles === 0) putToSnooze();
     }
   }, [triggerUnsnooze, notifications, todos, huddleBots]);
