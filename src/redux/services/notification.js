@@ -90,7 +90,7 @@ export function snoozeAllNotification(payload) {
 
 export function snoozeNotification(payload) {
   return apiCall({
-    method: "POST",
+    method: "PUT",
     url: `/v2/snooze-notification/${payload.notification_id}`,
     data: payload,
   });
