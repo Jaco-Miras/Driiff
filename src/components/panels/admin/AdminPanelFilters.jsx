@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useAdminActions } from "../../hooks";
+import { useAdminActions, useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.ul`
   .list-group-item:last-child {
@@ -21,6 +21,16 @@ const Wrapper = styled.ul`
 `;
 
 const AdminPanelFilters = (props) => {
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    automation: _t("ADMIN.FILTER_AUTOMATION", "Automation"),
+    quickLinks: _t("ADMIN.FILTER_QUICKLINKS", "Quick links"),
+    settings: _t("ADMIN.FILTER_SETTINGS", "Settings"),
+    huddleBots: _t("ADMIN.FILTER_HUDDLE", "Huddle bots"),
+    subscription: _t("ADMIN.FILTER_SUBSCRIPTION", "Subscription"),
+    contact: _t("ADMIN.FILTER_CONTACT", "Contact"),
+    support: _t("ADMIN.FILTER_SUPPORT", "Support desk"),
+  };
   const { setAdminFilter } = useAdminActions();
   const history = useHistory();
   const filters = useSelector((state) => state.admin.filters);
@@ -35,25 +45,25 @@ const AdminPanelFilters = (props) => {
   return (
     <Wrapper className={"list-group list-group-flush"}>
       <li className={`list-group-item d-flex align-items-center ${filters["automation"] ? "active" : ""}`} data-value="automation" onClick={handleClickFilter}>
-        Automation
+        {dictionary.automation}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["quick_links"] ? "active" : ""}`} data-value="quick-links" onClick={handleClickFilter}>
-        Quick link menu
+        {dictionary.quickLinks}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["settings"] ? "active" : ""}`} data-value="settings" onClick={handleClickFilter}>
-        Settings
+        {dictionary.settings}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["bots"] ? "active" : ""}`} data-value="bots" onClick={handleClickFilter}>
-        Bots
+        {dictionary.huddleBots}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["subscription"] ? "active" : ""}`} data-value="subscription" onClick={handleClickFilter}>
-        Subscription
+        {dictionary.subscription}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["contact"] ? "active" : ""}`} data-value="contact" onClick={handleClickFilter}>
-        Contact
+        {dictionary.contact}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["support"] ? "active" : ""}`} data-value="support" onClick={handleClickFilter}>
-        Support desk
+        {dictionary.support}
       </li>
     </Wrapper>
   );
