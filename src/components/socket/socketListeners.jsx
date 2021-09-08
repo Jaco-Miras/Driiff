@@ -97,6 +97,7 @@ import {
   setUnreadNotificationCounterEntries,
   incomingDeletedAnnouncement,
   incomingZoomData,
+  setNewDriffData,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -1115,23 +1116,7 @@ class SocketListeners extends Component {
         const latestVersion = parseFloat(driffData.version.substr(2));
 
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && socketVersion > latestVersion) {
-          const handleReminder = () => {
-            // setTimeout(() => {
-            //   this.props.addToModals({
-            //     id: version,
-            //     type: "update_found",
-            //     requirement: requirement,
-            //     handleReminder: handleReminder,
-            //   });
-            // }, [30 * 60 * 1000]);
-          };
-
-          this.props.addToModals({
-            id: version,
-            type: "update_found",
-            requirement: requirement,
-            handleReminder: handleReminder,
-          });
+          this.props.setNewDriffData({ requirement: requirement, showNewDriffBar: true });
           localStorage.setItem("site_ver", version);
         }
       })
@@ -2122,6 +2107,7 @@ function mapDispatchToProps(dispatch) {
     incomingSnoozedNotification: bindActionCreators(incomingSnoozedNotification, dispatch),
     incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
     removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
+    setNewDriffData: bindActionCreators(setNewDriffData, dispatch),
   };
 }
 

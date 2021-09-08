@@ -70,6 +70,10 @@ const INITIAL_STATE = {
   zoomData: null,
   snoozedReminders: [],
   snoozedRemindersLoaded: false,
+  newDriffData: {
+    showNewDriffBar: false,
+    requirement: "",
+  },
 };
 
 const getLink = (t) => {
@@ -875,6 +879,12 @@ export default (state = INITIAL_STATE, action) => {
             return acc;
           }, {}),
         },
+      };
+    }
+    case "SHOW_NEW_DRIFF_BAR": {
+      return {
+        ...state,
+        newDriffData: action.data,
       };
     }
     default:
