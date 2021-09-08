@@ -70,3 +70,4 @@ export { default as useTranslationActions } from "./useTranslationActions";
 export { default as useFilterAllWorkspaces } from "./useFilterAllWorkspaces";
 export { default as useTypingIndicator } from "./useTypingIndicator";
 export { default as useSnoozeActions } from "./useSnoozeActions";
+export { default as useAdminActions } from "./useAdminActions";

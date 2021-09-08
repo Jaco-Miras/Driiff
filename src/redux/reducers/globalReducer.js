@@ -30,6 +30,7 @@ const INITIAL_STATE = {
   searching: false,
   tabs: {},
   links: [],
+  linksFetched: false,
   todos: {
     isLoaded: false,
     hasMore: true,
@@ -277,6 +278,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         links: action.data,
+        linksFetched: true,
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
@@ -885,6 +887,13 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         newDriffData: action.data,
+      };
+    }
+    case "CREATE_QUICK_LINKS_SUCCESS":
+    case "PUT_QUICK_LINKS_SUCCESS": {
+      return {
+        ...state,
+        links: [...state.links, ...action.data.quick_links],
       };
     }
     default:

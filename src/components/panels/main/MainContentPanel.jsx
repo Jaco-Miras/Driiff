@@ -16,11 +16,12 @@ const CompanyPostsPanel = lazy(() => import("../company/CompanyPostsPanel"));
 const CompanySettingsPanel = lazy(() => import("../company/CompanySettingsPanel"));
 const TodosPanel = lazy(() => import("../todos/TodosPanel"));
 const SystemPeoplePanel = lazy(() => import("../system/SystemPeoplePanel"));
-const HuddlePanel = lazy(() => import("../bot/HuddlePanel"));
+//const HuddlePanel = lazy(() => import("../bot/HuddlePanel"));
 const ReleasesPanel = lazy(() => import("../news/ReleasesPanel"));
 const UserNotificationPanel = lazy(() => import("../user/UserNotificationPanel"));
 const UserProfilePanel = lazy(() => import("../user/UserProfilePanel"));
 const UserSearchPanel = lazy(() => import("../user/UserSearchPanel"));
+const AdminPanel = lazy(() => import("../../panels/admin/AdminPanel"));
 
 //const ZoomPanel = lazy(() => import("../company/ZoomPanel"));
 
@@ -50,10 +51,10 @@ const MainContentPanel = (props) => {
           {!isExternal && <Route {...props} component={SystemPeoplePanel} path={["/system/people"]} />}
           <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />
           <Route {...props} component={TodosPanel} path={["/todos"]} />
-          {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />}
+          {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
-          {/* {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />} */}
+          {isOwner && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page"]} />}
           <Redirect
             from="*"
             to={{

@@ -130,7 +130,7 @@ const QuickLinks = (props) => {
   const { className = "", user, dictionary } = props;
 
   const { generalSettings, showModal } = useSettings();
-  const links = useSelector((state) => state.global.links);
+  const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
 
   const httpsPattern = new RegExp("^(http|https)://");
   const ref = {

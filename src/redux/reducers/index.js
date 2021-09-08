@@ -1,5 +1,5 @@
-import {combineReducers} from "redux";
-import {sessionReducer} from "redux-react-session";
+import { combineReducers } from "redux";
+import { sessionReducer } from "redux-react-session";
 import chat from "./chatReducer";
 import dashboard from "./dashboardReducer";
 import files from "./filesReducer";
@@ -10,9 +10,11 @@ import settings from "./settingsReducer";
 import tags from "./tagsReducer";
 import users from "./usersReducer";
 import workspaces from "./workspacesReducer";
+import admin from "./adminReducer";
 
 const appReducer = combineReducers({
   session: sessionReducer,
+  admin,
   chat,
   dashboard,
   files,
