@@ -1517,7 +1517,7 @@ const CreateEditWorkspaceModal = (props) => {
         />
         <WrapperDiv className={"modal-input mt-0"}>
           <div>
-            <Label className={"modal-info pb-3 pt-3"}>{dictionary.workspaceInfo}</Label>
+            {/* <Label className={"modal-info pb-3 pt-3"}>{dictionary.workspaceInfo}</Label> */}
             <div className="d-flex justify-content-start align-items-center">
               <div className="icon-wrapper" onClick={handleWorkspaceIconClick}>
                 <DropDocument
