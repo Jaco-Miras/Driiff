@@ -775,9 +775,11 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "CREATE_QUICK_LINKS_SUCCESS":
     case "PUT_QUICK_LINKS_SUCCESS": {
+      const links = [...state.links, ...action.data.quick_links];
+      let uniqLinks = [...new Map(links.map((item) => [item["id"], item])).values()];
       return {
         ...state,
-        links: [...state.links, ...action.data.quick_links],
+        links: uniqLinks,
       };
     }
     default:
