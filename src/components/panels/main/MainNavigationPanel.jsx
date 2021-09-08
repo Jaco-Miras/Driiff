@@ -32,6 +32,7 @@ const MainNavigationPanel = (props) => {
           "/files/folder/:folderId/:folderName",
           "/system/people",
           "/magic-link/:token",
+          "/admin-settings/:page",
           "/:page",
         ]}
       />

@@ -29,6 +29,7 @@ const INITIAL_STATE = {
   searching: false,
   tabs: {},
   links: [],
+  linksFetched: false,
   todos: {
     isLoaded: false,
     hasMore: true,
@@ -60,7 +61,7 @@ const INITIAL_STATE = {
     },
     items: {},
     doneRecently: [],
-    is_snooze: false
+    is_snooze: false,
   },
   releases: {
     timestamp: null,
@@ -90,7 +91,7 @@ const getLink = (t) => {
     default:
       return null;
   }
-}
+};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -269,13 +270,13 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         links: action.data,
+        linksFetched: true,
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
-        if (typeof items[n.id].is_snooze === "undefined")
-          items[n.id].is_snooze = false;
+        if (typeof items[n.id].is_snooze === "undefined") items[n.id].is_snooze = false;
       });
 
       return {
@@ -331,7 +332,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -348,11 +349,11 @@ export default (state = INITIAL_STATE, action) => {
                   ...todo,
                   is_snooze: false,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           doneRecently: [],
         },
@@ -360,7 +361,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_DONE_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -374,11 +375,11 @@ export default (state = INITIAL_STATE, action) => {
                   ...todo,
                   is_snooze: false,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           done: {
             limit: 10,
@@ -390,7 +391,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_OVERDUE_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -404,11 +405,11 @@ export default (state = INITIAL_STATE, action) => {
                   ...todo,
                   is_snooze: false,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           overdue: {
             ...state.todos.overdue.limit,
@@ -420,7 +421,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_TODAY_TO_DO_SUCCESS": {
       const reminderNotif = localStorage.getItem("reminderNotif");
-      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null
+      const reminderNotifications = reminderNotif ? JSON.parse(reminderNotif) : null;
       const currentDate = new Date();
       return {
         ...state,
@@ -434,11 +435,11 @@ export default (state = INITIAL_STATE, action) => {
                   ...todo,
                   is_snooze: false,
                   show_notification: reminderNotifications && currentDate.getDay() === reminderNotifications.day && reminderNotifications.reminders.some((id) => id === todo.id) ? false : true,
-                  link: getLink(todo)
-                }
-                return acc
-              }, {})
-            })
+                  link: getLink(todo),
+                };
+                return acc;
+              }, {}),
+            }),
           },
           today: {
             ...state.todos.today.limit,
@@ -729,7 +730,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMINDER_SNOOZE_ALL": {
-
       let items = state.todos.items;
       Object.values(items).forEach((n) => {
         items[n.id].is_snooze = action.data.is_snooze;
@@ -741,10 +741,9 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           is_snooze: action.data.is_snooze,
-          items: items
+          items: items,
         },
       };
-
     }
     case "REMINDER_SNOOZE": {
       let items = state.todos.items;
@@ -754,7 +753,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          items: items
+          items: items,
         },
       };
     }
@@ -763,16 +762,23 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          items: Object.values(state.todos.items).reduce((acc,todo) => {
+          items: Object.values(state.todos.items).reduce((acc, todo) => {
             if (todo.id === action.data.id) {
-              acc[todo.id] = {...todo, show_notification: false}
+              acc[todo.id] = { ...todo, show_notification: false };
             } else {
-              acc[todo.id] = todo
+              acc[todo.id] = todo;
             }
-            return acc
-          }, {})
-        }
-      }
+            return acc;
+          }, {}),
+        },
+      };
+    }
+    case "CREATE_QUICK_LINKS_SUCCESS":
+    case "PUT_QUICK_LINKS_SUCCESS": {
+      return {
+        ...state,
+        links: [...state.links, ...action.data.quick_links],
+      };
     }
     default:
       return state;
