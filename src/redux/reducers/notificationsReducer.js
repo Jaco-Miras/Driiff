@@ -411,22 +411,24 @@ export default (state = INITIAL_STATE, action) => {
           ...state,
           notifications: {
             ...state.notifications,
-            [action.data.notification_id[0]]: {
-              author: author,
-              created_at: { timestamp: getCurrentTimestamp() },
-              data: {
-                description: action.data.description,
-                id: action.data.id,
-                title: action.data.name,
-                workspace_folder_id: action.data.workspace_id,
-                workspace_folder_name: action.data.current_workspace_folder_name,
+            ...(action.data.notification_id.length && {
+              [action.data.notification_id[0]]: {
+                author: author,
+                created_at: { timestamp: getCurrentTimestamp() },
+                data: {
+                  description: action.data.description,
+                  id: action.data.id,
+                  title: action.data.name,
+                  workspace_folder_id: action.data.workspace_id,
+                  workspace_folder_name: action.data.current_workspace_folder_name,
+                },
+                id: action.data.notification_id[0],
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                type: "WORKSPACE_ADD_MEMBER",
               },
-              id: action.data.notification_id[0],
-              is_read: 0,
-              is_snooze: false,
-              snooze_time: null,
-              type: "WORKSPACE_ADD_MEMBER",
-            },
+            }),
           },
         };
       } else {
@@ -441,22 +443,24 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         notifications: {
           ...state.notifications,
-          [action.data.notification_id[0]]: {
-            author: author,
-            created_at: { timestamp: getCurrentTimestamp() },
-            data: {
-              description: action.data.topic.description,
-              id: action.data.topic.id,
-              title: action.data.topic.name,
-              workspace_folder_id: action.data.workspace ? action.data.workspace.id : 0,
-              workspace_folder_name: action.data.workspace ? action.data.workspace.name : "",
+          ...(action.data.notification_id.length && {
+            [action.data.notification_id[0]]: {
+              author: author,
+              created_at: { timestamp: getCurrentTimestamp() },
+              data: {
+                description: action.data.topic.description,
+                id: action.data.topic.id,
+                title: action.data.topic.name,
+                workspace_folder_id: action.data.workspace ? action.data.workspace.id : 0,
+                workspace_folder_name: action.data.workspace ? action.data.workspace.name : "",
+              },
+              id: action.data.notification_id[0],
+              is_read: 0,
+              is_snooze: false,
+              snooze_time: null,
+              type: "WORKSPACE_ADD_MEMBER",
             },
-            id: action.data.notification_id[0],
-            is_read: 0,
-            is_snooze: false,
-            snooze_time: null,
-            type: "WORKSPACE_ADD_MEMBER",
-          },
+          }),
         },
       };
     }

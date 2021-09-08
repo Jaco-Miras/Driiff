@@ -1372,6 +1372,7 @@ export default function (state = INITIAL_STATE, action) {
             }),
           ...(action.data.type === "WORKSPACE" &&
             action.data.team_channel &&
+            action.data.channel &&
             state.channels[action.data.team_channel.id] && {
               [action.data.team_channel.id]: {
                 //transfer the internal post notification here

@@ -238,7 +238,7 @@ const CreateEditWorkspaceModal = (props) => {
   //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
   const [form, setForm] = useState({
-    is_private: false,
+    is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
     icon_link: item && item.channel ? item.channel.icon_link : null,
@@ -436,11 +436,20 @@ const CreateEditWorkspaceModal = (props) => {
     });
   };
 
-  const toggleWorkspaceType = (e) => {
-    const checked = !form["is_private"];
-    setForm((prevState) => {
-      return { ...prevState, is_private: checked };
-    });
+  const toggleWorkspaceType = (e, value) => {
+    let checked = null;
+    if (form["is_private"] === null) {
+      checked = value === "is_public" ? false : true;
+    } else {
+      if (form["is_private"] === true && value === "is_private") return;
+      if (form["is_private"] === false && value === "is_public") return;
+      checked = !form["is_private"];
+    }
+    if (checked !== null) {
+      setForm((prevState) => {
+        return { ...prevState, is_private: checked };
+      });
+    }
   };
 
   const folderOptions = Object.values(folders)
@@ -1673,17 +1682,17 @@ const CreateEditWorkspaceModal = (props) => {
         <WrapperDiv className="action-wrapper">
           <Label />
           <RadioInputWrapper className="workspace-radio-input">
-            <RadioInput readOnly onClick={toggleWorkspaceType} checked={form.is_private} value={"is_private"} name={"is_private"}>
+            <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
               {dictionary.lockWorkspace}
             </RadioInput>
-            <RadioInput readOnly onClick={toggleWorkspaceType} checked={!form.is_private} value={"is_private"} name={"is_private"}>
+            <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
               {dictionary.publicWorkspace}
             </RadioInput>
           </RadioInputWrapper>
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0}>
+          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>
