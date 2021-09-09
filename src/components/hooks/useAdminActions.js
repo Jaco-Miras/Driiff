@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { getLoginSettings, putLoginSettings, setFilter, putQuickLinks, postQuickLinks } from "../../redux/actions/adminActions";
+import { getLoginSettings, putLoginSettings, setFilter, putQuickLinks, postQuickLinks, getUserBot, deleteUserBot, putUserBot, postUserBot } from "../../redux/actions/adminActions";
 
 const useAdminActions = () => {
   const dispatch = useDispatch();
@@ -44,12 +44,48 @@ const useAdminActions = () => {
     );
   };
 
+  const fetchUserBot = (payload, callback) => {
+    dispatch(
+      getUserBot(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  const removeUserBot = (payload, callback) => {
+    dispatch(
+      deleteUserBot(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  const updateUserBot = (payload, callback) => {
+    dispatch(
+      putUserBot(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  const createUserBot = (payload, callback) => {
+    dispatch(
+      postUserBot(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
     setAdminFilter,
     updateQuickLinks,
     createQuickLinks,
+    fetchUserBot,
+    removeUserBot,
+    updateUserBot,
+    createUserBot,
   };
 };
 

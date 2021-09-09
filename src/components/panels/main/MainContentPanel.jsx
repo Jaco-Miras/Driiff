@@ -35,6 +35,7 @@ const MainContentPanel = (props) => {
   const loggedUser = useSelector((state) => state.session.user);
 
   const isOwner = loggedUser.role && loggedUser.role.name === "owner";
+  const isAdmin = loggedUser.role && loggedUser.role.name === "admin";
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
@@ -54,7 +55,7 @@ const MainContentPanel = (props) => {
           {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
-          {isOwner && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page"]} />}
+          {(isOwner || isAdmin) && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
           <Redirect
             from="*"
             to={{

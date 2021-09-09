@@ -2,7 +2,7 @@
 // import { delRemoveToDo, postToDo, putDoneToDo, putToDo, getReleaseAnnouncements } from "./global";
 
 export { apiCall, apiNoTokenCall } from "./service";
-export { getLoginSettings, putLoginSettings, postQuickLinks, putQuickLinks } from "./admin";
+export { getLoginSettings, putLoginSettings, postQuickLinks, putQuickLinks, getUserBot, deleteUserBot, putUserBot, postUserBot } from "./admin";
 export {
   getGlobalRecipients,
   getChannels,

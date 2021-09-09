@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import AdminPanelSidebar from "./AdminPanelSidebar";
 import AdminPanelBody from "./AdminPanelBody";
-//import { Route, Switch, Redirect } from "react-router-dom";
 
 const Wrapper = styled.div`
   overflow: hidden auto;
@@ -22,15 +21,6 @@ const AdminPanel = (props) => {
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <AdminPanelBody />
-          {/* <Switch>
-            <Route {...props} component={AdminPanelBody} path={["/admin-settings/settings"]} />
-            <Redirect
-              from="*"
-              to={{
-                pathname: "/admin-settings/settings",
-              }}
-            />
-          </Switch> */}
         </div>
       </div>
     </Wrapper>

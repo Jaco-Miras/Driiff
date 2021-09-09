@@ -1,5 +1,4 @@
 import { apiCall } from "./service";
-//import { objToUrlParams } from "../../helpers/commonFunctions";
 
 export function getLoginSettings(payload) {
   return apiCall({
@@ -28,6 +27,41 @@ export function postQuickLinks(payload) {
   return apiCall({
     method: "POST",
     url: "/v2/quick-link",
+    data: payload,
+  });
+}
+
+export function getUserBot(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/user-bot-settings",
+  });
+}
+
+export function deleteUserBot(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/user-bot-settings/${payload.id}`,
+    data: payload,
+  });
+}
+// {
+//   "bot_name": "Chopper D. Oged",
+//   "new_ch_ids": [225, 123],
+//   "remove_ch_ids": []
+// }
+export function putUserBot(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/user-bot-settings/${payload.id}`,
+    data: payload,
+  });
+}
+
+export function postUserBot(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/user-bot-settings",
     data: payload,
   });
 }

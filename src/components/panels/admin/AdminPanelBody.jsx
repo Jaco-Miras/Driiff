@@ -15,12 +15,10 @@ const Wrapper = styled.div`
 `;
 
 const AdminPanelBody = (props) => {
-  //const params = useParams();
-  // console.log(params);
   return (
     <Wrapper className={"card"}>
       <Switch>
-        <Route {...props} component={AutomationBody} path={["/admin-settings/automation"]} />
+        <Route {...props} component={AutomationBody} path={["/admin-settings/automation", "/admin-settings/automation/:subpage"]} />
         <Route {...props} component={LoginSettingsBody} path={["/admin-settings/settings"]} />
         <Route {...props} component={QuickLinksBody} path={["/admin-settings/quick-links"]} />
         <Route {...props} component={HuddleBotsBody} path={["/admin-settings/bots"]} />

@@ -23,6 +23,8 @@ import {
   CreateEditPostListModal,
   PostModal,
   ZoomInviteModal,
+  CreateAdminBotModal,
+  UpdateAdminBotModal,
 } from "../modals";
 
 // const PostModal = lazy(() => import("../modals/PostModal"));
@@ -116,7 +118,10 @@ const ModalPanel = () => {
             return <PostModal key={modal.type} data={modal} />;
           case "zoom_invite":
             return <ZoomInviteModal key={modal.type} data={modal} />;
-
+          case "create_bot":
+            return <CreateAdminBotModal key={modal.type} />;
+          case "update_bot":
+            return <UpdateAdminBotModal key={modal.type} data={modal} />;
           default:
             return null;
         }
