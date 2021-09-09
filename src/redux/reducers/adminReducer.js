@@ -15,6 +15,10 @@ const INITIAL_STATE = {
     sign_up: true,
     password_login: true,
   },
+  automation: {
+    bots: [],
+    channels: [],
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -36,6 +40,48 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         login: { ...state.login, ...action.data },
+      };
+    }
+    case "GET_USER_BOT_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          bots: action.data.bots,
+          channels: action.data.channels,
+        },
+      };
+    }
+    case "DELETE_USER_BOT_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          ...state.automation,
+          bots: state.automation.bots.filter((b) => b.id !== parseInt(action.data.user_id)),
+        },
+      };
+    }
+    case "CREATE_USER_BOT_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          ...state.automation,
+          bots: [...state.automation.bots, action.data],
+        },
+      };
+    }
+    case "UPDATE_USER_BOT_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          ...state.automation,
+          bots: state.automation.bots.map((b) => {
+            if (b.id === action.data.id) {
+              return action.data;
+            } else {
+              return b;
+            }
+          }),
+        },
       };
     }
     default:
