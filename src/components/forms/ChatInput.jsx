@@ -161,6 +161,12 @@ const ChatInput = (props) => {
 
   const [quote] = useSelectQuote();
 
+  useEffect(() => {
+    if (quote) {
+      reactQuillRef.current.focus();
+    }
+  }, [quote]);
+
   const toaster = useToaster();
 
   const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
