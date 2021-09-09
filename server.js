@@ -7,6 +7,12 @@ var request = require("request");
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/user-profile/:id", (req, res) => {
+  const URL = `https://demo24.driff.network/user-profile/${req.params.id}`;
+  request.get(URL, { encoding: "binary" }, function (error, response) {
+    var contentType = response.headers["content-type"];
+    res.writeHead(200, { "Content-Type": contentType, "Cache-Control": "no-cache" });
+    res.end(response.body, "binary");
+  });
   // request.get("https://demo24.driff.network/user-profile/3", function (error, res, body) {
   //   if (!error && res.statusCode == 200) {
   //     response.setHeader("Content-Type", "image");
@@ -17,13 +23,6 @@ app.get("/user-profile/:id", (req, res) => {
   //     response.send(error);
   //   }
   // });
-
-  const URL = `https://demo24.driff.network/user-profile/${req.params.id}`;
-  request.get(URL, { encoding: "binary" }, function (error, response) {
-    var contentType = response.headers["content-type"];
-    res.writeHead(200, { "Content-Type": contentType, "Cache-Control": "no-cache" });
-    res.end(response.body, "binary");
-  });
   // fetch("https://demo24.driff.network/user-profile/3")
   //   .then((resp) => resp.json())
   //   .then((data) => {
