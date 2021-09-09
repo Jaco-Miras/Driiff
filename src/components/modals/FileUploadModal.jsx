@@ -290,6 +290,7 @@ const FileUploadModal = (props) => {
     const cursorPosition = editor.getSelection().index;
     editor.insertEmbed(cursorPosition, "image", e.images.downsized.url);
     editor.setSelection(cursorPosition + 5);
+    handleShowEmojiPicker();
   };
 
   const dictionary = {

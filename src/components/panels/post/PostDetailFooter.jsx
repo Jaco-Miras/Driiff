@@ -293,6 +293,7 @@ const PostDetailFooter = (props) => {
 
   const onSelectGif = (e) => {
     setSelectedGif(e);
+    handleShowEmojiPicker();
   };
 
   const onClearEmoji = () => {
