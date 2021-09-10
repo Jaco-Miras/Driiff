@@ -5,9 +5,9 @@ import { useAdminActions, useTranslationActions } from "../../hooks";
 import { Route, Switch, useHistory } from "react-router-dom";
 import AdminBotBody from "./AdminBotBody";
 import GrippBotBody from "./GrippBotBody";
-import BitrixBody from "./BitrixBody";
+//import BitrixBody from "./BitrixBody";
 import { SvgIcon, SvgIconFeather } from "../../common";
-import BitrixIcon from "../../../assets/img/bitrix.png";
+//import BitrixIcon from "../../../assets/img/bitrix.png";
 
 const Wrapper = styled.div`
   padding: 1rem;
@@ -80,18 +80,18 @@ const AutomationBody = () => {
             </div>
           </div>
         </div>
-        <div className="col-12 col-md-4">
+        {/* <div className="col-12 col-md-4">
           <div className="card border" onClick={() => handleRedirect("bitrix")}>
             <div className="card-body">
               <img className="bitrix-icon" src={BitrixIcon} alt="bitrix" />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <Switch>
         <Route component={AdminBotBody} path={["/admin-settings/automation/admin-bot"]} />
         <Route component={GrippBotBody} path={["/admin-settings/automation/gripp"]} />
-        <Route component={BitrixBody} path={["/admin-settings/automation/bitrix"]} />
+        {/* <Route component={BitrixBody} path={["/admin-settings/automation/bitrix"]} /> */}
       </Switch>
     </Wrapper>
   );

@@ -108,7 +108,7 @@ const Initials = styled.span`
 const Avatar = (props) => {
   let {
     className = "",
-    imageLink,
+    imageLink = null,
     id,
     name = "",
     children,
@@ -249,7 +249,7 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
         {isBot ? (
-          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={isHuddleBot ? driffIcon : botIcon} alt={name} />
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
           <Initials className="rounded-circle" avatarColor={avatarColor(name)} onClick={handleOnClick}>
             {handleInitials(name)}

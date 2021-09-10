@@ -46,7 +46,7 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const UpdateAdminBotModal = (props) => {
-  const { item } = props.data;
+  const { item, mode } = props.data;
   const { _t } = useTranslationActions();
   const dictionary = {
     edit: _t("MODAL.HEADER_EDIT", "Edit"),
@@ -93,7 +93,7 @@ const UpdateAdminBotModal = (props) => {
     };
   });
 
-  const { updateUserBot } = useAdminActions();
+  const { updateUserBot, updateGrippBot } = useAdminActions();
 
   const handleSelectChannel = (e) => {
     if (e === null) {
@@ -115,20 +115,37 @@ const UpdateAdminBotModal = (props) => {
   const handleConfirm = () => {
     if (!loading) {
       setLoading(true);
-      const payload = {
-        id: item.id,
-        bot_name: name,
-        new_ch_ids: selectedChannels.map((c) => c.id),
-        remove_ch_ids: item.channel_connected.filter((id) => {
-          return !selectedChannels.some((c) => c.id === id);
-        }),
-      };
-      updateUserBot(payload, (err, res) => {
-        setLoading(false);
-        if (err) return;
-        toaster.success(`${name} successfully updated.`);
-        toggle();
-      });
+      if (mode === "admin") {
+        const payload = {
+          id: item.id,
+          bot_name: name,
+          new_ch_ids: selectedChannels.map((c) => c.id),
+          remove_ch_ids: item.channel_connected.filter((id) => {
+            return !selectedChannels.some((c) => c.id === id);
+          }),
+        };
+        updateUserBot(payload, (err, res) => {
+          setLoading(false);
+          if (err) return;
+          toaster.success(`${name} successfully updated.`);
+          toggle();
+        });
+      } else if (mode === "gripp") {
+        const payload = {
+          id: item.id,
+          bot_name: name,
+          new_ch_ids: selectedChannels.map((c) => c.id),
+          remove_ch_ids: item.channel_connected.filter((id) => {
+            return !selectedChannels.some((c) => c.id === id);
+          }),
+        };
+        updateGrippBot(payload, (err, res) => {
+          setLoading(false);
+          if (err) return;
+          toaster.success(`${name} successfully updated.`);
+          toggle();
+        });
+      }
     }
   };
 
