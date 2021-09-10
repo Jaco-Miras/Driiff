@@ -8,6 +8,9 @@ import {
   deleteUserBot as deleteUserBotService,
   putUserBot as putUserBotService,
   postUserBot as postUserBotService,
+  getGrippBot as getGrippBotService,
+  putGrippBot as putGrippBotService,
+  postUploadUserBotIcon as postUploadUserBotIconService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -44,4 +47,16 @@ export function putUserBot(payload, callback) {
 
 export function postUserBot(payload, callback) {
   return dispatchActionToReducer(postUserBotService(payload), "CREATE_USER_BOT_START", "CREATE_USER_BOT_SUCCESS", "CREATE_USER_BOT_FAILURE", callback);
+}
+
+export function getGrippBot(payload, callback) {
+  return dispatchActionToReducer(getGrippBotService(payload), "GET_GRIPP_BOT_START", "GET_GRIPP_BOT_SUCCESS", "GET_GRIPP_BOT_FAILURE", callback);
+}
+
+export function putGrippBot(payload, callback) {
+  return dispatchActionToReducer(putGrippBotService(payload), "UPDATE_GRIPP_BOT_START", "UPDATE_GRIPP_BOT_SUCCESS", "UPDATE_GRIPP_BOT_FAILURE", callback);
+}
+
+export function postUploadUserBotIcon(payload, callback) {
+  return dispatchActionToReducer(postUploadUserBotIconService(payload), "POST_UPLOAD_USER_BOT_ICON_START", "POST_UPLOAD_USER_BOT_ICON_SUCCESS", "POST_UPLOAD_USER_BOT_ICON_FAILURE", callback);
 }

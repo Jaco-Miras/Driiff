@@ -45,11 +45,7 @@ export function deleteUserBot(payload) {
     data: payload,
   });
 }
-// {
-//   "bot_name": "Chopper D. Oged",
-//   "new_ch_ids": [225, 123],
-//   "remove_ch_ids": []
-// }
+
 export function putUserBot(payload) {
   return apiCall({
     method: "PUT",
@@ -62,6 +58,36 @@ export function postUserBot(payload) {
   return apiCall({
     method: "POST",
     url: "/v2/user-bot-settings",
+    data: payload,
+  });
+}
+
+export function getGrippBot(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/gripp-bot-settings",
+  });
+}
+
+// {
+//   "bot_name": "test name edited",
+//   "new_ch_ids": [345],
+//   "remove_ch_ids": []
+// }
+export function putGrippBot(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/gripp-bot-settings/${payload.id}`,
+    data: payload,
+  });
+}
+
+export function postUploadUserBotIcon(payload) {
+  const { id } = payload;
+  return apiCall({
+    method: "POST",
+    url: `/v2/user-bot-settings/upload-bot-image/${id}`,
+    hasFile: true,
     data: payload,
   });
 }
