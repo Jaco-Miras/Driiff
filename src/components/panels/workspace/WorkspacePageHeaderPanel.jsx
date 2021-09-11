@@ -143,7 +143,7 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
-          {((workspace && user.type === "internal" && workspace.is_shared) || (workspace && user.type === "internal" && workspace.team_channel.code)) && (
+          {workspace && user.type === "internal" && workspace.is_shared && workspace.team_channel && workspace.team_channel.code && (
             <li className="nav-item">
               <MainNavLink isSub={true} to={`/workspace/team-chat${pathname}`}>
                 {dictionary.pageTitleTeamChat}

@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const { getReminders, action: todoActions, isLoaded, count } = useTodos(true); //pass true to fetch to do list on mount - default to false
+  const { getReminders, action: todoActions, isLoaded, count } = useTodos(); //pass true to fetch to do list on mount - default to false
 
   const { _t } = useTranslationActions();
 

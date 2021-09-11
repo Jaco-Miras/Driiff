@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo, snoozeTodo, snoozeTodoAll } from "../../redux/actions/globalActions";
+import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo, snoozeTodo, snoozeTodoAll, removeReminderNotification } from "../../redux/actions/globalActions";
 import {
   getDoneWorkspaceRemindersCallback,
   getTodayWorkspaceRemindersCallback,
@@ -125,8 +125,8 @@ const useTodoActions = () => {
     dispatch(postToDo(payload, callback));
   };
 
-  const createFromModal = (callback = () => { }) => {
-    const onConfirm = (payload, modalCallback = () => { }) => {
+  const createFromModal = (callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
       create(payload, (err, res) => {
         if (err) {
           toaster.error(dictionary.toasterGeneraError);
@@ -219,8 +219,8 @@ const useTodoActions = () => {
     dispatch(putToDo(payload, callback));
   };
 
-  const updateFromModal = (todo, callback = () => { }) => {
-    const onConfirm = (payload, modalCallback = () => { }) => {
+  const updateFromModal = (todo, callback = () => {}) => {
+    const onConfirm = (payload, modalCallback = () => {}) => {
       update(
         {
           ...payload,
@@ -265,7 +265,7 @@ const useTodoActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const markDone = (payload, callback = () => { }) => {
+  const markDone = (payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -286,7 +286,7 @@ const useTodoActions = () => {
     );
   };
 
-  const markUnDone = (payload, callback = () => { }) => {
+  const markUnDone = (payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -308,7 +308,7 @@ const useTodoActions = () => {
     );
   };
 
-  const toggleDone = (payload, callback = () => { }) => {
+  const toggleDone = (payload, callback = () => {}) => {
     dispatch(
       putDoneToDo(
         {
@@ -377,6 +377,10 @@ const useTodoActions = () => {
     dispatch(snoozeTodoAll(payload));
   };
 
+  const removeReminderNotif = (payload) => {
+    dispatch(removeReminderNotification(payload));
+  };
+
   return {
     fetch,
     fetchDetail,
@@ -401,7 +405,8 @@ const useTodoActions = () => {
     fetchToday,
     fetchWsToday,
     snooze,
-    snoozeAll
+    snoozeAll,
+    removeReminderNotif,
   };
 };
 

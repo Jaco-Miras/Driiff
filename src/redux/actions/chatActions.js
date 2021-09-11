@@ -459,3 +459,7 @@ export function generateZoomSignature(payload, callback) {
 export function createZoomMeeting(payload, callback) {
   return dispatchActionToReducer(createZoomMeetingService(payload), "CREATE_ZOOM_MEETING_START", "CREATE_ZOOM_MEETING_SUCCESS", "CREATE_ZOOM_MEETING_FAILURE", callback);
 }
+
+export function removeHuddleNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_HUDDLE_NOTIFICATION", payload, callback);
+}

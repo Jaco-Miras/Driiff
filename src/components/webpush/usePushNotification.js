@@ -148,7 +148,6 @@ export default function usePushNotification() {
             } else {
               dispatch(setPushNotification(false));
             }
-            console.log(res.data, "get user subscription");
           })
         );
       } else {

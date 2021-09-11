@@ -295,7 +295,8 @@ export const NotificationTimelineItem = (props) => {
                   notification.type === "WORKSPACE_ADD_MEMBER" ? (
                   <span style={{ fontWeight: "normal" }}>{notification.data && notification.data.title}</span>
                 ) : (
-                  <span style={{ fontWeight: "normal" }}>{stripHtml(notification.data.comment_body)}</span>
+                  
+                  <span style={{ fontWeight: "normal" }}>{notification.data.comment_body && notification.data.comment_body.startsWith("COMMENT_APPROVAL") ? JSON.parse(notification.data.comment_body.replace("COMMENT_APPROVAL::", "")).message : stripHtml(notification.data.comment_body)}</span>
                 )}
               </span>
               <p style={{ fontWeight: "normal", color: "#8B8B8B" }}>

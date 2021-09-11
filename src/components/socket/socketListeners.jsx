@@ -164,7 +164,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 
@@ -252,6 +252,17 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".delete-notification", (e) => {
+        const elemId = `notification__${e.notification_id}`;
+        if (toast.isActive(elemId)) toast.dismiss(elemId);
+        this.props.removeNotificationReducer({ id: e.notification_id });
+      })
+      .listen(".snooze-notification", (e) => {
+        this.props.incomingSnoozedNotification(e);
+      })
+      .listen(".snooze-all-notification", (e) => {
+        this.props.incomingSnoozedAllNotification(e);
+      })
       .listen(".post-follow", (e) => {
         this.props.incomingFollowPost(e);
       })
@@ -615,6 +626,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_APPROVED": {
+            this.props.getNotifications({ skip: 0, limit: 5 });
             this.props.incomingCommentApproval({
               ...e,
               users_approval: e.users_approval.map((u) => {
@@ -787,7 +799,6 @@ class SocketListeners extends Component {
             if (e.author.id !== this.props.user.id) {
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
-                console.log("fetch post");
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
                   if (err) return;
                   let post = {
@@ -1973,6 +1984,10 @@ function mapDispatchToProps(dispatch) {
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
     incomingZoomData: bindActionCreators(incomingZoomData, dispatch),
+    getNotifications: bindActionCreators(getNotifications, dispatch),
+    incomingSnoozedNotification: bindActionCreators(incomingSnoozedNotification, dispatch),
+    incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
+    removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
   };
 }
 

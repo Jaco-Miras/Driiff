@@ -6,6 +6,9 @@ import {
   patchNotification as patchNotificationService,
   readAllNotification as readAllNotificationService,
   unreadNotification as unreadNotificationService,
+  getAllSnoozedNotification as getAllSnoozedNotificationService,
+  snoozeAllNotification as snoozeAllNotificationService,
+  snoozeNotification as snoozeNotificationService,
 } from "../services";
 
 export function getNotifications(payload, callback) {
@@ -60,10 +63,30 @@ export function incomingReminderNotification(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMINDER_NOTIFICATION", payload, callback);
 }
 
-export function snoozeNotification(payload, callback) {
+export function snoozeNotificationReducer(payload, callback) {
   return SimpleDispatchActionToReducer("NOTIFICATION_SNOOZE", payload, callback);
 }
 
 export function snoozeNotificationAll(payload, callback) {
   return SimpleDispatchActionToReducer("NOTIFICATION_SNOOZE_ALL", payload, callback);
+}
+
+export function getAllSnoozedNotification(payload, callback) {
+  return dispatchActionToReducer(getAllSnoozedNotificationService(payload), "GET_ALL_SNOOZED_NOTIFICATION_START", "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS", "GET_ALL_SNOOZED_NOTIFICATION_FAIL", callback);
+}
+
+export function snoozeAllNotification(payload, callback) {
+  return dispatchActionToReducer(snoozeAllNotificationService(payload), "SNOOZE_ALL_NOTIFICATION_START", "SNOOZE_ALL_NOTIFICATION_SUCCESS", "SNOOZE_ALL_NOTIFICATION_FAIL", callback);
+}
+
+export function snoozeNotification(payload, callback) {
+  return dispatchActionToReducer(snoozeNotificationService(payload), "SNOOZE_NOTIFICATION_START", "SNOOZE_NOTIFICATION_SUCCESS", "SNOOZE_NOTIFICATION_FAIL", callback);
+}
+
+export function incomingSnoozedNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_SNOOZED_NOTIFICATION", payload, callback);
+}
+
+export function incomingSnoozedAllNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_SNOOZED_ALL_NOTIFICATION", payload, callback);
 }
