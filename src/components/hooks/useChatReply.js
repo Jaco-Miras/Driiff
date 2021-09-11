@@ -319,7 +319,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       }
 
       return newBody;
-    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -359,6 +359,11 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
         // eslint-disable-next-line quotes
         newBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
       }
+    } else if (message.includes("ZOOM_MESSAGE::{")) {
+      // eslint-disable-next-line quotes
+      const zmessage = message.replace('<span class="fancied"></span>', "");
+      const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+      newBody = data.message;
     }
 
     return newBody === "" ? message : newBody;
