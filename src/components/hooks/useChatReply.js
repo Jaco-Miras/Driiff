@@ -346,6 +346,11 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       } catch (e) {
         return message;
       }
+    } else if (message.includes("ZOOM_MESSAGE::{")) {
+      // eslint-disable-next-line quotes
+      const zmessage = message.replace('<span class="fancied"></span>', "");
+      const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+      newBody = data.message;
     }
 
     return newBody === "" ? message : newBody;

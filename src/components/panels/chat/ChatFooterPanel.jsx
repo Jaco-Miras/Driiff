@@ -351,9 +351,10 @@ const ChatFooterPanel = (props) => {
   const handleGoogleMeet = () => {
     let payload = {
       meetingNumber: "",
-      role: "1",
+      role: 1,
       password: "",
       host: true,
+      hasJoin: false,
     };
     localStorage.setItem("zoomConfig", JSON.stringify(payload));
     window.open(`https://demo24.drevv.com/zoom/${selectedChannel.id}`, "_blank");

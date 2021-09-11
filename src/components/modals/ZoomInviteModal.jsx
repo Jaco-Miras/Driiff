@@ -30,9 +30,10 @@ const ZoomInviteModal = (props) => {
       role: "0",
       password: zoom_data.data.password,
       host: false,
+      hasJoin: false,
     };
     localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    window.open(`https://demo24.drevv.com/zoom/${channel_id}`, "_blank");
+    window.open(`https://demo24.drevv.com/zoom/meeting/${channel_id}/${zoom_data.data.id}`, "_blank");
     // dispatch(
     //   incomingZoomData({ ...zoom_data.data }, () => {
     //     history.push(`/zoom/${channel_id}?join=0`);

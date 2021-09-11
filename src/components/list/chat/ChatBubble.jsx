@@ -522,13 +522,37 @@ const ChatBubble = (props) => {
     return false;
   };
 
+  const handleZoomLink = (e) => {
+    e.preventDefault();
+    if (reply.body.includes("ZOOM_MESSAGE::{")) {
+      // eslint-disable-next-line quotes
+      const zmessage = reply.body.replace('<span class="fancied"></span>', "");
+      const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+      let payload = {
+        meetingNumber: data.meetingNumber,
+        role: 0,
+        password: data.passWord,
+        host: false,
+        hasJoin: false,
+      };
+      localStorage.setItem("zoomConfig", JSON.stringify(payload));
+      window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${data.meetingNumber}`, "_blank");
+    }
+
+    return false;
+  };
+
   useEffect(() => {
+    const zoomLink = refs.container.current.querySelector("a.zoom-link");
+    if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
+
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
 
     if (lnkChannelMessage) lnkChannelMessage.addEventListener("click", handleChannelMessageLink, true);
 
     return () => {
       if (lnkChannelMessage) lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
+      if (zoomLink) zoomLink.removeEventListener("click", handleZoomLink, true);
     };
   }, []);
 
