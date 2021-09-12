@@ -56,7 +56,7 @@ const useSelectQuote = (props) => {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
         let selectedQuoteBody = "";
-        if (selectedQuote.user && (selectedQuote.body.startsWith("{\"Welk punt geef je ons\"") || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
+        if (selectedQuote.user && (selectedQuote.body.startsWith('{"Welk punt geef je ons"') || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
           const renderStars = (num) => {
             let star = "";
             for (let i = 1; i <= 10; i++) {
@@ -87,6 +87,14 @@ const useSelectQuote = (props) => {
           } catch (e) {
             return selectedQuote.body;
           }
+        } else if (selectedQuote.body.includes("ZOOM_MESSAGE::{")) {
+          // // eslint-disable-next-line quotes
+          // const zmessage = selectedQuote.body.replace('<span class="fancied"></span>', "");
+          // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+          const splitStr = selectedQuote.body.split("::");
+          const str = `${splitStr[1]}`;
+          const data = JSON.parse(str);
+          selectedQuoteBody += data.message;
         } else if (selectedQuote.user) {
           let div = document.createElement("div");
           div.innerHTML = selectedQuote.body;

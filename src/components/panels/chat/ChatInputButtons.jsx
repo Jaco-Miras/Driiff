@@ -99,7 +99,7 @@ const ChatInputButtons = (props) => {
       <IconWrapper className="btn-meet">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
           <img src={zoomIcon} onClick={handleGoogleMeet} />
-          {/* <SvgIconFeather onClick={handleGoogleMeet} icon="zoom" /> */}
+          {/* <SvgIconFeather onClick={handleGoogleMeet} icon="meet" /> */}
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
