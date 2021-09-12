@@ -147,6 +147,14 @@ const ReplyPreview = (props) => {
           previewText = `${item.author.first_name} has created the post ${item.post.title}`;
         }
       }
+      if (channel.last_reply.body.includes("ZOOM_MESSAGE::")) {
+        // const splitStr = channel.last_reply.body.split("::");
+        // const str = `${splitStr[1]}`;
+        // const data = JSON.parse(str);
+        // previewText = data.message;
+        // previewText += renderToString(previewText);
+        previewText = "I started a ZOOM meeting: Click here to join";
+      }
       if (channel.last_reply.body.includes("ZAP_SUBMIT::")) {
         previewText = "System message update...";
       }
