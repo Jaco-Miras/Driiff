@@ -541,7 +541,7 @@ const ChatBubble = (props) => {
   };
 
   const handleZoomLink = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     if (reply.body.includes("ZOOM_MESSAGE::{")) {
       // eslint-disable-next-line quotes
       const zmessage = reply.body.replace('<span class="fancied"></span>', "");
@@ -554,7 +554,7 @@ const ChatBubble = (props) => {
         hasJoin: false,
       };
       localStorage.setItem("zoomConfig", JSON.stringify(payload));
-      window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${data.meetingNumber}`, "_blank");
+      //window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${data.meetingNumber}`, "_blank");
     }
 
     return false;
