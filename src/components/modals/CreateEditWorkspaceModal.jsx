@@ -210,11 +210,6 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
-// const LockIcon = styled(SvgIconFeather)`
-//   width: 1rem;
-//   height: 1rem;
-// `;
-
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
@@ -527,7 +522,6 @@ const CreateEditWorkspaceModal = (props) => {
         ...prevState,
         selectedExternals: externals,
       }));
-      //setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
       setInvitedExternals(invitedExternals.filter((ex) => e.some((e) => e.email === ex.email)));
     }
   };
@@ -693,21 +687,8 @@ const CreateEditWorkspaceModal = (props) => {
     );
   };
 
-  // const confirmExternalUsers = () => {
-  //   const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-  //   if (externalEmails.length) {
-  //     var answer = window.confirm(dictionary.externalUserConfirmation);
-  //     if (answer) {
-  //       handleConfirm();
-  //     }
-  //   } else {
-  //     handleConfirm();
-  //   }
-  // };
-
   const handleConfirm = () => {
     if (loading) return;
-    //if (Object.values(valid).filter((v) => !v).length) return;
 
     const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
     const member_ids = selectedMembers.map((u) => u.id);
@@ -721,23 +702,6 @@ const CreateEditWorkspaceModal = (props) => {
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
     };
-
-    //const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    // if (invitedEmails.length && form.has_externals) {
-    //   if (mode === "edit") {
-    //     payload = {
-    //       ...payload,
-    //       new_external_emails: invitedEmails,
-    //       is_external: 1,
-    //     };
-    //   } else {
-    //     payload = {
-    //       ...payload,
-    //       external_emails: invitedEmails,
-    //       is_external: 1,
-    //     };
-    //   }
-    // }
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
@@ -1115,15 +1079,10 @@ const CreateEditWorkspaceModal = (props) => {
     setShowIconDropzone(false);
   };
 
-  // const handleShowIconDropzone = () => {
-  //   setShowIconDropzone(true);
-  // };
-
   const dropAction = (acceptedFiles) => {
     let selectedFiles = [];
     acceptedFiles.forEach((file) => {
       let timestamp = Math.floor(Date.now());
-      //let shortFileId = require("shortid").generate();
       if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
         selectedFiles.push({
           rawFile: file,
