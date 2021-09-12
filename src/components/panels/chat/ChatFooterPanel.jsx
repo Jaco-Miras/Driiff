@@ -357,7 +357,7 @@ const ChatFooterPanel = (props) => {
       hasJoin: false,
     };
     localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    window.open(`https://demo24.drevv.com/zoom/${selectedChannel.id}`, "_blank");
+    window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}`, "_blank");
     // dispatch(
     //   createZoomMeeting({ channel_id: selectedChannel.id }, (err, res) => {
     //     if (err) return;
