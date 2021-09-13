@@ -177,7 +177,7 @@ const useQuillModules = ({
         mentionDenotationChars: ["@", "/"],
         minChars: 0,
         //linkTarget: "_blank",
-        dataAttributes: ["id", "value", "denotationChar", "link", "target", "disabled", "type_id", "type", "show_line"],
+        dataAttributes: ["id", "value", "denotationChar", "link", "target", "disabled", "type_id", "type", "show_line", "user_id"],
         source: function (searchTerm, renderList, mentionChar) {
           let values;
 

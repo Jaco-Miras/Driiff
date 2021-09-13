@@ -15,6 +15,7 @@ const INITIAL_STATE = {
       magic_link: true,
       password_login: true,
       sign_up: true,
+      allowed_domains: [],
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
@@ -113,6 +114,7 @@ export default (state = INITIAL_STATE, action) => {
       let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
       let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
+      console.log(action.data.settings);
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
         if (s.ANNOUNCEMENT_LINK) ANNOUNCEMENT_LINK = s.ANNOUNCEMENT_LINK;

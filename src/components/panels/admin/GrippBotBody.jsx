@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 import GrippSyncForm from "./GrippSyncForm";
 import GrippBots from "./GrippBots";
+import GrippUsersList from "./GrippUsersList";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   .gripp-card-body {
@@ -64,12 +66,17 @@ const LabelBackButton = styled.div`
 
 const GrippBotBody = () => {
   const { _t } = useTranslationActions();
+  const dispatch = useDispatch();
 
-  const { setAdminFilter, fetchGrippBot } = useAdminActions();
+  const { setAdminFilter, fetchGrippBot, resetGrippProfileImages } = useAdminActions();
   const componentIsMounted = useRef(true);
 
   const dictionary = {
     grippLabel: _t("ADMIN.GRIPP_LABEL", "Gripp"),
+    resetProfileImages: _t("GRIPP_MODAL", "Reset profile images"),
+    cancel: _t("CANCEL", "Cancel"),
+    reset: _t("RESET", "Reset"),
+    confirmationText: _t("GRIPP_MODAL_CONFIRMATION", "Are you sure you want to reset all gripp users profile image?"),
   };
 
   //["main", "sync-form", "sync-lists", "gripp-bots"]
@@ -88,6 +95,21 @@ const GrippBotBody = () => {
     };
   }, []);
 
+  const resetProfileImages = () => {
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.resetProfileImages,
+      submitText: dictionary.reset,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.confirmationText,
+      actions: {
+        onSubmit: () => resetGrippProfileImages(),
+      },
+    };
+
+    dispatch(addToModals(confirmModal));
+  };
+
   return (
     <Wrapper>
       <LabelBackButton className="mb-3">
@@ -100,9 +122,9 @@ const GrippBotBody = () => {
       </LabelBackButton>
       {hasGrippLinked === true && activePage === "main" && (
         <div className="row">
-          <div className="col-12 col-md-3">
+          <div className="col-12 col-md-4">
             <div className="card border">
-              <div className="gripp-card-body">
+              <div className="gripp-card-body" onClick={() => setActivePage("sync-lists")}>
                 <CardHeader>
                   <SvgIconFeather icon="refresh-ccw" />
                   <div>
@@ -117,7 +139,7 @@ const GrippBotBody = () => {
               </div>
             </div>
           </div>
-          <div className="col-12 col-md-3">
+          {/* <div className="col-12 col-md-3">
             <div className="card border">
               <div className="gripp-card-body">
                 <CardHeader>
@@ -132,8 +154,8 @@ const GrippBotBody = () => {
                 </CardFooter>
               </div>
             </div>
-          </div>
-          <div className="col-12 col-md-3">
+          </div> */}
+          <div className="col-12 col-md-4">
             <div className="card border">
               <div className="gripp-card-body" onClick={() => setActivePage("gripp-bots")}>
                 <CardHeader>
@@ -150,14 +172,16 @@ const GrippBotBody = () => {
               </div>
             </div>
           </div>
-          <div className="col-12 col-md-3">
+          <div className="col-12 col-md-4">
             <div className="card border">
               <div className="gripp-card-body">
                 <CardHeader>
-                  <h5>Reset profile image</h5>
+                  <h5>Reset profile images</h5>
                 </CardHeader>
                 <CardFooter>
-                  <button className="btn btn-primary">Reset</button>
+                  <button className="btn btn-primary" onClick={resetProfileImages}>
+                    Reset
+                  </button>
                 </CardFooter>
               </div>
             </div>
@@ -187,6 +211,7 @@ const GrippBotBody = () => {
       )}
       {hasGrippLinked === false && activePage === "sync-form" && <GrippSyncForm />}
       {hasGrippLinked === true && activePage === "gripp-bots" && <GrippBots bots={grippBots} />}
+      {hasGrippLinked === true && activePage === "sync-lists" && <GrippUsersList />}
     </Wrapper>
   );
 };

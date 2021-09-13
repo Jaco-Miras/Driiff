@@ -100,6 +100,8 @@ const useAdminActions = () => {
     );
   };
 
+  const resetGrippProfileImages = (payload, callback) => {};
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -113,6 +115,7 @@ const useAdminActions = () => {
     fetchGrippBot,
     updateGrippBot,
     uploadUserBotIcon,
+    resetGrippProfileImages,
   };
 };
 

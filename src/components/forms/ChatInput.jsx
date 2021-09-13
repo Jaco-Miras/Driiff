@@ -271,7 +271,7 @@ const ChatInput = (props) => {
         .filter((id) => {
           return id.insert.mention ? id : null;
         })
-        .map((mid) => Number(mid.insert.mention.id));
+        .map((mid) => Number(mid.insert.mention.user_id));
 
       mention_ids = [...new Set(mentionIds)];
 

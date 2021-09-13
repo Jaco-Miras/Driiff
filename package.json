@@ -19,6 +19,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "hex-to-css-filter": "^2.0.4",
+    "is-valid-domain": "^0.1.2",
     "laravel-echo": "^1.7.0",
     "lodash": "^4.17.15",
     "logrocket": "^1.0.14",

@@ -6,7 +6,7 @@ import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { CheckBox, FormInput, PasswordInput } from "../forms";
-import { useSettings, useUserActions } from "../hooks";
+import { useSettings, useUserActions, useToaster } from "../hooks";
 
 const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 
@@ -27,7 +27,7 @@ const LoginPanel = (props) => {
   const { driffSettings } = useSettings();
 
   const userActions = useUserActions();
-
+  const toaster = useToaster();
   const refs = {
     email: useRef(),
     password: useRef(),
@@ -157,9 +157,14 @@ const LoginPanel = (props) => {
             // };
             //openModalAction(cb);
           } else {
-            const returnUrl =
-              typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
-            userActions.login(res.data, returnUrl);
+            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+              dispatch(toggleLoading(false));
+              toaster.info("Please login via your Google account.");
+            } else {
+              const returnUrl =
+                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
+              userActions.login(res.data, returnUrl);
+            }
           }
         }
       });
@@ -177,21 +182,20 @@ const LoginPanel = (props) => {
   }
   return (
     <Wrapper className="fadeIn">
-      {driffSettings.settings.password_login && (
-        <>
-          <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
-          <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
-          <div className="form-group d-flex justify-content-between">
-            <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-              {dictionary.rememberMe}
-            </CheckBox>
-            <Link to="/reset-password">{dictionary.resetPassword}</Link>
-          </div>
-          <button className="btn btn-primary btn-block" onClick={handleSignIn}>
-            {dictionary.signIn}
-          </button>
-        </>
-      )}
+      <>
+        <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
+        <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
+        <div className="form-group d-flex justify-content-between">
+          <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
+            {dictionary.rememberMe}
+          </CheckBox>
+          <Link to="/reset-password">{dictionary.resetPassword}</Link>
+        </div>
+        <button className="btn btn-primary btn-block" onClick={handleSignIn}>
+          {dictionary.signIn}
+        </button>
+      </>
+
       {(driffSettings.settings.google_login || driffSettings.settings.magic_link) && (
         <>
           <hr />
