@@ -71,3 +71,27 @@ export function deleteNotification(payload) {
     url: `/v2/notification-counter/${payload.id}`,
   });
 }
+
+export function getAllSnoozedNotification(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/snooze-notification",
+    data: payload,
+  });
+}
+
+export function snoozeAllNotification(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/snooze-notification",
+    data: payload,
+  });
+}
+
+export function snoozeNotification(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/snooze-notification/${payload.notification_id}`,
+    data: payload,
+  });
+}

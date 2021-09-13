@@ -87,7 +87,7 @@ const CommonPicker = React.forwardRef((props, ref) => {
           }}
         />
       ) : (
-        <GifPicker handleShowGifPicker={handleShowGifPicker} onSelectGif={props.onSelectGif} orientation={props.orientation} />
+        <GifPicker onSelectGif={props.onSelectGif} orientation={props.orientation} />
       )}
       <div className={"block mt-2 common-picker-btn"}>
         <SwitchButton onClick={togglePicker} className="btn btn-primary">

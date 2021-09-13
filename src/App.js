@@ -2,7 +2,7 @@ import React, { useEffect, lazy, Suspense } from "react";
 import { Route, Switch, useLocation, useHistory } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
-import { useDriff, useSettings, useTranslation, useHuddleNotification } from "./components/hooks";
+import { useDriff, useSettings, useTranslation } from "./components/hooks";
 import { DriffRegisterPanel, PreLoader, RedirectPanel } from "./components/panels";
 import { AppRoute } from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
@@ -16,6 +16,7 @@ import { setProfileSlider } from "./redux/actions/globalActions";
 import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
 import { sessionService } from "redux-react-session";
+import { DriffUpdateModal } from "./components/modals";
 const FileViewer = lazy(() => import("./components/common/FileViewer"));
 const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
 
@@ -66,6 +67,7 @@ function App() {
   const userProfile = useSelector((state) => state.users.profileSlider);
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
+  const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
   //useHuddleNotification();
 
   useTranslation();
@@ -109,7 +111,7 @@ function App() {
   return (
     <Wrapper className="App">
       {imgAsLogin()}
-      <ToastContainer enableMultiContainer containerId={'toastA'} transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false}  />
+      <ToastContainer enableMultiContainer containerId={"toastA"} transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false} />
       <PreLoader />
       {location.pathname === "/driff" ? (
         <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff} />
@@ -149,6 +151,7 @@ function App() {
           </ModalPanelContainer>
         </Suspense>
       )}
+      {showNewDriffBar && <DriffUpdateModal />}
     </Wrapper>
   );
 }

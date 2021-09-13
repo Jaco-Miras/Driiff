@@ -1,5 +1,5 @@
 //import {uniqBy} from "lodash";
-import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/dateFormatter";
 //import { uniqByProp } from "../../helpers/arrayHelper";
 
 /** Initial State  */
@@ -39,6 +39,8 @@ const INITIAL_STATE = {
     hasMore: false,
   },
   searchArchivedChannels: false,
+  snoozedHuddle: [],
+  huddleBotsLoaded: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1262,6 +1264,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: {
           ...state.channels,
           ...(action.data.type === "WORKSPACE" &&
+            action.data.channel &&
             state.channels[action.data.channel.id] && {
               [action.data.channel.id]: {
                 ...state.channels[action.data.channel.id],
@@ -1301,6 +1304,7 @@ export default function (state = INITIAL_STATE, action) {
             }),
           ...(action.data.type === "WORKSPACE" &&
             action.data.team_channel &&
+            action.data.channel &&
             state.channels[action.data.team_channel.id] && {
               [action.data.team_channel.id]: {
                 //transfer the internal post notification here
@@ -1886,10 +1890,14 @@ export default function (state = INITIAL_STATE, action) {
       const currentDate = new Date();
       return {
         ...state,
+        huddleBotsLoaded: true,
         huddleBots: action.data.map((h) => {
+          const snoozedHuddle = state.snoozedHuddle.find((sn) => sn.notification_id === h.id && sn.type && sn.type === "HUDDLE_SNOOZE");
+          const huddle = state.huddleBots.find((hb) => hb.id === h.id);
           return {
             ...h,
-            is_snooze: false,
+            is_snooze: snoozedHuddle ? !!snoozedHuddle.is_snooze : huddle ? huddle.is_snooze : false,
+            snooze_time: snoozedHuddle ? snoozedHuddle.snooze_time : huddle ? huddle.snooze_time : null,
             is_skip: false,
             show_notification: huddleNotifications && currentDate.getDay() === huddleNotifications.day && huddleNotifications.channels.some((cid) => cid === h.channel.id) ? false : true,
             questions: h.questions
@@ -2419,6 +2427,77 @@ export default function (state = INITIAL_STATE, action) {
               ...h,
               show_notification: false,
             };
+          } else {
+            return h;
+          }
+        }),
+      };
+    }
+    case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {
+      const regex = /\s|\/|-|:/g;
+      return {
+        ...state,
+        snoozedHuddle: [
+          ...state.snoozedHuddle,
+          ...action.data.snoozed_notifications
+            .filter((sn) => sn.type && sn.type === "HUDDLE_SNOOZE")
+            .map((sn) => {
+              const timeString = sn.snooze_time.replace(regex, ",");
+              const timeSplit = timeString.split(",");
+              const utcDate = new Date(parseInt(timeSplit[0]), parseInt(timeSplit[1]) - 1, parseInt(timeSplit[2]), parseInt(timeSplit[3]), parseInt(timeSplit[4]), parseInt(timeSplit[5]));
+              const date = convertUTCDateToLocalDate(utcDate);
+              return {
+                ...sn,
+                is_snooze: !!sn.is_snooze,
+                snooze_time: Math.round(date / 1000),
+              };
+            }),
+        ],
+      };
+    }
+    case "SNOOZE_NOTIFICATION_SUCCESS":
+    case "INCOMING_SNOOZED_NOTIFICATION": {
+      if (action.data.type === "HUDDLE_SNOOZE") {
+        return {
+          ...state,
+          huddleBots: state.huddleBots.map((h) => {
+            if (h.id === action.data.notification_id) {
+              return {
+                ...h,
+                is_snooze: action.data.is_snooze,
+                snooze_time: getCurrentTimestamp(),
+                type: action.data.type,
+              };
+            } else return h;
+          }),
+          snoozedHuddle: state.snoozedHuddle.map((sn) => {
+            if (sn.notification_id === action.data.notification_id) {
+              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), type: action.data.type };
+            } else return sn;
+          }),
+        };
+      } else {
+        return state;
+      }
+    }
+    case "INCOMING_SNOOZED_ALL_NOTIFICATION":
+    case "SNOOZE_ALL_NOTIFICATION_SUCCESS": {
+      return {
+        ...state,
+        snoozedHuddle: [
+          ...state.snoozedHuddle,
+          ...action.data.data.map((sn) => {
+            return {
+              ...sn,
+              is_snooze: sn.is_snooze,
+              snooze_time: getCurrentTimestamp(),
+            };
+          }),
+        ],
+        huddleBots: state.huddleBots.map((h) => {
+          const huddle = action.data.data.find((d) => d.notification_id === h.id && d.type === "HUDDLE_SNOOZE");
+          if (huddle) {
+            return { ...h, is_snooze: huddle.is_snooze, snooze_time: getCurrentTimestamp() };
           } else {
             return h;
           }

@@ -13,6 +13,7 @@ import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload, addComment } from "../../redux/actions/postActions";
 import { osName } from "react-device-detect";
 import { FolderSelect } from "../forms";
+import _ from "lodash";
 
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
@@ -288,6 +289,7 @@ const FileUploadModal = (props) => {
     const cursorPosition = editor.getSelection().index;
     editor.insertEmbed(cursorPosition, "image", e.images.downsized.url);
     editor.setSelection(cursorPosition + 5);
+    handleShowEmojiPicker();
   };
 
   const dictionary = {
@@ -323,7 +325,9 @@ const FileUploadModal = (props) => {
         ...droppedFiles,
       ]);
     }
+  }, []);
 
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.keyCode === 27) {
         dispatch(clearModal({ type: type }));
@@ -342,7 +346,7 @@ const FileUploadModal = (props) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown, false);
     };
-  }, []);
+  }, [textOnly]);
 
   const toggle = () => {
     setModal(!modal);
@@ -449,10 +453,20 @@ const FileUploadModal = (props) => {
       dispatch(setSidebarSearch({ value: "" }));
       uFiles.forEach((file, k) => {
         let payload = {};
+        let el = document.createElement("div");
+        el.innerHTML = body;
+        for (let i = el.childNodes.length - 1; i >= 0; i--) {
+          if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
+            el.removeChild(el.childNodes[i]);
+          } else {
+            el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
+            break;
+          }
+        }
         if (k === uFiles.length - 1) {
           payload = {
             channel_id: selectedChannel.id,
-            body: body,
+            body: el.innerHTML,
             mention_ids: mention_ids,
             file_ids: [file.id],
             quote: null,
