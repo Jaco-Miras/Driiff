@@ -4,12 +4,22 @@ import { useSelector } from "react-redux";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
+import { Loader } from "../../common";
+import { DomainSelect } from "../../forms";
+const isValidDomain = require("is-valid-domain");
 
 const Wrapper = styled.div`
   padding: 1rem;
   > div {
     margin-bottom: 1rem;
   }
+`;
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
 `;
 
 const LoginSettingsBody = () => {
@@ -26,6 +36,7 @@ const LoginSettingsBody = () => {
     enable: _t("LABEL.ENABLE", "Enable"),
     disable: _t("LABEL.DISABLE", "Disable"),
     loginSettingsUpdated: _t("TOAST.LOGIN_SETTINGS_SUCCESS", "Login settings updated"),
+    allowedDomains: _t("ADMIN.ALLOWED_DOMAINS", "Allowed domains"),
   };
 
   const componentIsMounted = useRef(true);
@@ -41,6 +52,8 @@ const LoginSettingsBody = () => {
 
   const [settings, setSettings] = useState({ ...loginSettings });
   const [saving, setSaving] = useState(false);
+  const [domainInput, setDomainInput] = useState("");
+  const [selectedDomains, setSelectedDomains] = useState([]);
 
   useEffect(() => {
     setAdminFilter({ filters: { ...filters, settings: true } });
@@ -81,11 +94,75 @@ const LoginSettingsBody = () => {
     return { ...o, name: "password_login" };
   });
 
+  const domainOptions = [
+    // {
+    //   value: "makedevelopment.com",
+    //   label: "makedevelopment.com",
+    // },
+    // {
+    //   value: "zuid.com",
+    //   label: "zuid.com",
+    // },
+  ];
+
+  const handleCreateOption = (value) => {
+    setSelectedDomains([
+      ...selectedDomains,
+      {
+        value: value,
+        label: value,
+      },
+    ]);
+  };
+
+  const handleSelectDomain = (e) => {
+    if (e === null) {
+      setSelectedDomains([]);
+    } else {
+      setSelectedDomains(e);
+    }
+  };
+
+  const handleDomainInputChange = (e) => {
+    setDomainInput(e);
+  };
+
+  const handleDomainValidation = (inputValue, selectValue, selectOptions) => {
+    const isExistingOption = selectOptions.some((o) => o.value === inputValue);
+    const isSelectedOption = selectValue.some((o) => o.value === inputValue);
+    if (!isExistingOption && !isSelectedOption && inputValue !== "") {
+      //validate domain
+      return isValidDomain(inputValue, { subdomain: false });
+    } else {
+      //reset to default
+      //validateExternalEmail(null);
+      return false;
+    }
+  };
+
+  const formatCreateLabel = (inputValue) => {
+    return `Allow ${inputValue}`;
+  };
+
   const handleSelect = (e) => {
-    setSettings({
-      ...settings,
-      [e.name]: e.value,
-    });
+    if (e.name === "password_login" && e.value === false && settings.google_login === false) {
+      setSettings({
+        ...settings,
+        [e.name]: e.value,
+        google_login: true,
+      });
+    } else if (e.name === "google_login" && e.value === false && settings.password_login === false) {
+      setSettings({
+        ...settings,
+        [e.name]: e.value,
+        password_login: true,
+      });
+    } else {
+      setSettings({
+        ...settings,
+        [e.name]: e.value,
+      });
+    }
   };
 
   const handleSubmit = () => {
@@ -100,27 +177,55 @@ const LoginSettingsBody = () => {
   return (
     <Wrapper>
       <h4 className="mb-3">{dictionary.loginSettings}</h4>
-      <div>
-        <label>{dictionary.googleLogin}</label>
-        <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={googleOptions.find((o) => o.value === settings.google_login)} onChange={handleSelect} options={googleOptions} />
-      </div>
-      <div>
-        <label>{dictionary.magicLink}</label>
-        <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={magicOptions.find((o) => o.value === settings.magic_link)} onChange={handleSelect} options={magicOptions} />
-      </div>
-      <div>
-        <label>{dictionary.signUp}</label>
-        <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={signUpOptions.find((o) => o.value === settings.sign_up)} onChange={handleSelect} options={signUpOptions} />
-      </div>
-      <div>
-        <label>{dictionary.passwordLogin}</label>
-        <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={passwordLoginOptions.find((o) => o.value === settings.password_login)} onChange={handleSelect} options={passwordLoginOptions} />
-      </div>
-      <div className="mt-2">
-        <button className="btn btn-primary" onClick={handleSubmit} disabled={saving || !loginFetched}>
-          {dictionary.saveLogin}
-        </button>
-      </div>
+      {!loginFetched && (
+        <LoaderContainer className={"initial-load"}>
+          <Loader />
+        </LoaderContainer>
+      )}
+      {loginFetched && (
+        <>
+          <div>
+            <label>{dictionary.passwordLogin}</label>
+            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={passwordLoginOptions.find((o) => o.value === settings.password_login)} onChange={handleSelect} options={passwordLoginOptions} />
+          </div>
+          <div>
+            <label>{dictionary.googleLogin}</label>
+            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={googleOptions.find((o) => o.value === settings.google_login)} onChange={handleSelect} options={googleOptions} />
+          </div>
+          <div>
+            <label>{dictionary.magicLink}</label>
+            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={magicOptions.find((o) => o.value === settings.magic_link)} onChange={handleSelect} options={magicOptions} />
+          </div>
+          <div>
+            <label>{dictionary.signUp}</label>
+            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={signUpOptions.find((o) => o.value === settings.sign_up)} onChange={handleSelect} options={signUpOptions} />
+            {settings.sign_up && (
+              <>
+                <label className="mt-1">{dictionary.allowedDomains}</label>
+                <DomainSelect
+                  styles={dark_mode === "0" ? lightTheme : darkTheme}
+                  value={selectedDomains}
+                  onChange={handleSelectDomain}
+                  options={domainOptions}
+                  inputValue={domainInput}
+                  isValidNewOption={handleDomainValidation}
+                  onCreateOption={handleCreateOption}
+                  onInputChange={handleDomainInputChange}
+                  formatCreateLabel={formatCreateLabel}
+                  isSearchable
+                  classNamePrefix="react-select"
+                  placeholder="Domain..."
+                />
+              </>
+            )}
+          </div>
+          <div className="mt-2">
+            <button className="btn btn-primary" onClick={handleSubmit} disabled={saving || !loginFetched}>
+              {dictionary.saveLogin}
+            </button>
+          </div>
+        </>
+      )}
     </Wrapper>
   );
 };

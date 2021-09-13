@@ -142,6 +142,7 @@ const GuestLayout = (props) => {
     email: _t("LOGIN.EMAIL", "Email"),
     invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
     acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
+    invalidDomain: _t("FEEDBACK.INVALID_DOMAIN", "Invalid domain"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
