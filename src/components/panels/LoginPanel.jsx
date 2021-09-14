@@ -16,8 +16,12 @@ const Wrapper = styled.form`
   max-width: 430px;
 
   .btn-magic-link {
-    background-color: #7a1b8b;
-    color: #fff;
+    background-color: #fff;
+    color: rgb(0, 0, 0, 60%);
+    box-shadow: 0 1px 2px 0px rgb(0 0 0 / 30%);
+    padding: 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
   }
   .google-signin {
     cursor: pointer;
@@ -202,9 +206,9 @@ const LoginPanel = (props) => {
           <p className="text-muted">{dictionary.loginSocialMedia}</p>
           <ul className="list-inline">
             {driffSettings.settings.magic_link && (
-              <li className="list-inline-item">
-                <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
-                  <i className="fa fa-magic" />
+              <li>
+                <span onClick={handleMagicLinkClick} className="btn-magic-link">
+                  <i className="fa fa-magic" /> Magic Link
                 </span>
               </li>
             )}
