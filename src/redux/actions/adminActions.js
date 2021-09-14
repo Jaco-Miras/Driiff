@@ -11,6 +11,9 @@ import {
   getGrippBot as getGrippBotService,
   putGrippBot as putGrippBotService,
   postUploadUserBotIcon as postUploadUserBotIconService,
+  getGrippDetails as getGrippDetailsService,
+  getGrippUsers as getGrippUsersService,
+  postSyncGrippUsers as postSyncGrippUsersService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -59,4 +62,16 @@ export function putGrippBot(payload, callback) {
 
 export function postUploadUserBotIcon(payload, callback) {
   return dispatchActionToReducer(postUploadUserBotIconService(payload), "POST_UPLOAD_USER_BOT_ICON_START", "POST_UPLOAD_USER_BOT_ICON_SUCCESS", "POST_UPLOAD_USER_BOT_ICON_FAILURE", callback);
+}
+
+export function getGrippDetails(payload, callback) {
+  return dispatchActionToReducer(getGrippDetailsService(payload), "GET_GRIPP_DETAILS_START", "GET_GRIPP_DETAILS_SUCCESS", "GET_GRIPP_DETAILS_FAILURE", callback);
+}
+
+export function getGrippUsers(payload, callback) {
+  return dispatchActionToReducer(getGrippUsersService(payload), "GET_GRIPP_USERS_START", "GET_GRIPP_USERS_SUCCESS", "GET_GRIPP_USERS_FAILURE", callback);
+}
+
+export function postSyncGrippUsers(payload, callback) {
+  return dispatchActionToReducer(postSyncGrippUsersService(payload), "SYNC_GRIPP_USERS_START", "SYNC_GRIPP_USERS_SUCCESS", "SYNC_GRIPP_USERS_FAILURE", callback);
 }

@@ -91,3 +91,25 @@ export function postUploadUserBotIcon(payload) {
     data: payload,
   });
 }
+
+export function getGrippDetails(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/gripp/details",
+  });
+}
+
+export function getGrippUsers(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/gripp/sync/users",
+  });
+}
+
+export function postSyncGrippUsers(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/gripp/sync/users",
+    data: payload,
+  });
+}
