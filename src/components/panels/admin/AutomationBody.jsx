@@ -46,6 +46,7 @@ const AutomationBody = () => {
 
   const dictionary = {
     automationLabel: _t("ADMIN.AUTOMATION_LABEL", "Automation"),
+    adminBotLabel: _t("ADMIN.ADMIN_BOT_LABEL", "Admin bot"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -76,7 +77,7 @@ const AutomationBody = () => {
           <div className="card border" onClick={() => handleRedirect("admin-bot")}>
             <div className="card-body admin-bot">
               <SvgIconFeather icon="admin-bot" viewBox="0 0 54 54" />
-              <h4>Admin bot</h4>
+              <h4>{dictionary.adminBotLabel}</h4>
             </div>
           </div>
         </div>

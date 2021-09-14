@@ -29,6 +29,11 @@ const AdminBotBody = () => {
     deleteBotBody: _t("MODAL.DELETE_BOT_CONFIRMATION", "Are you sure you want to delete this bot?"),
     buttonCancel: _t("BUTTON.CANCEL", "Cancel"),
     buttonRemove: _t("BUTTON.REMOVE", "Remove"),
+    uploadSuccess: _t("TOAST.UPLOAD_ICON_SUCCESS", "Uploaded icon success!"),
+    channelsConnected: _t("LABEL.CHANNELS_CONNECTED", "Channels connected"),
+    fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
+    multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
+    createBot: _t("ADMIN.CREATE_BOT_BTN", "Create new bot"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -56,7 +61,7 @@ const AdminBotBody = () => {
       <h5 className="mb-3">{dictionary.adminBotLabel}</h5>
       <div className="mb-3">
         <button className="btn btn-primary create-btn" onClick={handleCreateBot}>
-          Create new bot
+          {dictionary.createBot}
         </button>
       </div>
       <div className="row">

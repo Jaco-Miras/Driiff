@@ -34,15 +34,15 @@ const AdminBotCard = (props) => {
   const handleUploadIcon = (file, fileUrl) => {
     uploadUserBotIcon({ id: bot.id, imageFile: file }, (err, res) => {
       if (err) return;
-      toaster.success("Uploaded icon success!");
+      toaster.success(dictionary.uploadSuccess);
     });
   };
 
   const dropIconAction = (uploadedFiles) => {
     if (uploadedFiles.length === 0) {
-      toaster.error("File type not allowed. Please use an image file.");
+      toaster.error(dictionary.fileTypeError);
     } else if (uploadedFiles.length > 1) {
-      toaster.warning("Multiple files detected. First selected image will be used.");
+      toaster.warning(dictionary.multipleFileError);
     }
 
     let modal = {
@@ -119,7 +119,9 @@ const AdminBotCard = (props) => {
             </div>
             <BotTitleChannels>
               <h5>{bot.name}</h5>
-              <span>{bot.channel_connected.length} Channels connected</span>
+              <span>
+                {bot.channel_connected.length} {dictionary.channelsConnected}
+              </span>
             </BotTitleChannels>
           </BotAvatarTitle>
           <div>

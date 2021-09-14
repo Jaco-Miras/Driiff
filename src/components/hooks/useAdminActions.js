@@ -1,5 +1,21 @@
 import { useDispatch } from "react-redux";
-import { getLoginSettings, putLoginSettings, setFilter, putQuickLinks, postQuickLinks, getUserBot, deleteUserBot, putUserBot, postUserBot, getGrippBot, putGrippBot, postUploadUserBotIcon } from "../../redux/actions/adminActions";
+import {
+  getLoginSettings,
+  putLoginSettings,
+  setFilter,
+  putQuickLinks,
+  postQuickLinks,
+  getUserBot,
+  deleteUserBot,
+  putUserBot,
+  postUserBot,
+  getGrippBot,
+  putGrippBot,
+  postUploadUserBotIcon,
+  getGrippDetails,
+  getGrippUsers,
+  postSyncGrippUsers,
+} from "../../redux/actions/adminActions";
 
 const useAdminActions = () => {
   const dispatch = useDispatch();
@@ -102,6 +118,30 @@ const useAdminActions = () => {
 
   const resetGrippProfileImages = (payload, callback) => {};
 
+  const fetchGrippDetails = (payload, callback) => {
+    dispatch(
+      getGrippDetails(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  const fetchGrippUsers = (payload, callback) => {
+    dispatch(
+      getGrippUsers(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  const syncGrippUsers = (payload, callback) => {
+    dispatch(
+      postSyncGrippUsers(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -116,6 +156,9 @@ const useAdminActions = () => {
     updateGrippBot,
     uploadUserBotIcon,
     resetGrippProfileImages,
+    fetchGrippDetails,
+    fetchGrippUsers,
+    syncGrippUsers,
   };
 };
 

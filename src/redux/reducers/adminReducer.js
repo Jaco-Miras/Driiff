@@ -20,6 +20,10 @@ const INITIAL_STATE = {
     channels: [],
     grippBots: [],
     hasGrippLinked: null,
+    grippDetails: null,
+    grippUsers: [],
+    grippToken: null,
+    grippApiUrl: null,
   },
 };
 
@@ -138,6 +142,42 @@ export default (state = INITIAL_STATE, action) => {
               return b;
             }
           }),
+          grippBots: state.automation.grippBots.map((b) => {
+            if (b.id === action.data.image_data.user) {
+              return { ...b, image_path: action.data.image_data.image_url };
+            } else {
+              return b;
+            }
+          }),
+        },
+      };
+    }
+    case "GET_GRIPP_DETAILS_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          ...state.automation,
+          grippDetails: action.data,
+        },
+      };
+    }
+    case "GET_GRIPP_USERS_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          ...state.automation,
+          grippUsers: action.data.employees,
+          grippApiUrl: action.data.gripp_api_url,
+          grippToken: action.data.gripp_token,
+        },
+      };
+    }
+    case "SYNC_GRIPP_USERS_SUCCESS": {
+      return {
+        ...state,
+        automation: {
+          ...state.automation,
+          hasGrippLinked: true,
         },
       };
     }

@@ -68,25 +68,39 @@ const GrippBotBody = () => {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
 
-  const { setAdminFilter, fetchGrippBot, resetGrippProfileImages } = useAdminActions();
+  const { setAdminFilter, fetchGrippBot, resetGrippProfileImages, fetchGrippDetails, fetchGrippUsers } = useAdminActions();
   const componentIsMounted = useRef(true);
 
   const dictionary = {
     grippLabel: _t("ADMIN.GRIPP_LABEL", "Gripp"),
-    resetProfileImages: _t("GRIPP_MODAL", "Reset profile images"),
+    resetProfileImages: _t("LABEL.RESET_PROFILE_IMAGES", "Reset profile images"),
     cancel: _t("CANCEL", "Cancel"),
     reset: _t("RESET", "Reset"),
     confirmationText: _t("GRIPP_MODAL_CONFIRMATION", "Are you sure you want to reset all gripp users profile image?"),
+    adminBotLabel: _t("ADMIN.AUTOMATION_LABEL_ADMIN_BOT", "Admin bot"),
+    deleteBotBody: _t("MODAL.DELETE_BOT_CONFIRMATION", "Are you sure you want to delete this bot?"),
+    buttonCancel: _t("BUTTON.CANCEL", "Cancel"),
+    buttonRemove: _t("BUTTON.REMOVE", "Remove"),
+    uploadSuccess: _t("TOAST.UPLOAD_ICON_SUCCESS", "Uploaded icon success!"),
+    channelsConnected: _t("LABEL.CHANNELS_CONNECTED", "Channels connected"),
+    fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
+    multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
+    detail: _t("DETAIL", "Detail"),
+    back: _t("BACK", "Back"),
+    syncGrippUsers: _t("LABEL.SYNC_GRIPP_USERS", "Sync gripp users"),
+    grippBots: _t("LABEL.GRIPP_BOTS", "Gripp bots"),
   };
 
   //["main", "sync-form", "sync-lists", "gripp-bots"]
   const [activePage, setActivePage] = useState("main");
   const filters = useSelector((state) => state.admin.filters);
   const automation = useSelector((state) => state.admin.automation);
-  const { hasGrippLinked, grippBots } = automation;
+  const { hasGrippLinked, grippBots, grippUsers } = automation;
 
   useEffect(() => {
     setAdminFilter({ filters: { ...filters, automation: true } });
+    fetchGrippDetails();
+    fetchGrippUsers();
     if (hasGrippLinked === null) {
       fetchGrippBot({});
     }
@@ -116,7 +130,7 @@ const GrippBotBody = () => {
         <h5 className="mr-3">{dictionary.grippLabel}</h5>
         {activePage !== "main" && (
           <span className="back-button" onClick={() => setActivePage("main")}>
-            <SvgIconFeather icon="arrow-left" /> Back
+            <SvgIconFeather icon="arrow-left" /> {dictionary.back}
           </span>
         )}
       </LabelBackButton>
@@ -128,12 +142,12 @@ const GrippBotBody = () => {
                 <CardHeader>
                   <SvgIconFeather icon="refresh-ccw" />
                   <div>
-                    <h3>0</h3>
-                    <h5>Sync gripp user</h5>
+                    <h3>{grippUsers.length}</h3>
+                    <h5>{dictionary.syncGrippUsers}</h5>
                   </div>
                 </CardHeader>
                 <CardFooter>
-                  <h5>Detail</h5>
+                  <h5>{dictionary.detail}</h5>
                   <SvgIconFeather icon="arrow-right-circle" />
                 </CardFooter>
               </div>
@@ -162,11 +176,11 @@ const GrippBotBody = () => {
                   <SvgIconFeather icon="admin-bot" viewBox="0 0 54 54" />
                   <div>
                     <h3>{grippBots.length}</h3>
-                    <h5>Gripp bots</h5>
+                    <h5>{dictionary.grippBots}</h5>
                   </div>
                 </CardHeader>
                 <CardFooter>
-                  <h5>Detail</h5>
+                  <h5>{dictionary.detail}</h5>
                   <SvgIconFeather icon="arrow-right-circle" />
                 </CardFooter>
               </div>
@@ -176,11 +190,11 @@ const GrippBotBody = () => {
             <div className="card border">
               <div className="gripp-card-body">
                 <CardHeader>
-                  <h5>Reset profile images</h5>
+                  <h5>{dictionary.resetProfileImages}</h5>
                 </CardHeader>
                 <CardFooter>
                   <button className="btn btn-primary" onClick={resetProfileImages}>
-                    Reset
+                    {dictionary.reset}
                   </button>
                 </CardFooter>
               </div>
@@ -197,11 +211,11 @@ const GrippBotBody = () => {
                   <SvgIconFeather icon="refresh-ccw" />
                   <div>
                     <h3>0</h3>
-                    <h5>Sync gripp user</h5>
+                    <h5>{dictionary.syncGrippUsers}</h5>
                   </div>
                 </CardHeader>
                 <CardFooter>
-                  <h5>Detail</h5>
+                  <h5>{dictionary.detail}</h5>
                   <SvgIconFeather icon="arrow-right-circle" />
                 </CardFooter>
               </div>
