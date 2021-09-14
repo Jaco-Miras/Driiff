@@ -7,6 +7,7 @@ import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { CheckBox, FormInput, PasswordInput } from "../forms";
 import { useSettings, useUserActions } from "../hooks";
+import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
 const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 
@@ -17,6 +18,9 @@ const Wrapper = styled.form`
   .btn-magic-link {
     background-color: #7a1b8b;
     color: #fff;
+  }
+  .google-signin {
+    cursor: pointer;
   }
 `;
 
@@ -206,9 +210,10 @@ const LoginPanel = (props) => {
             )}
             {driffSettings.settings.google_login && (
               <li className="list-inline-item">
-                <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
+                <img className="google-signin" src={GoogleIcon} alt="Google signin" onClick={userActions.googleLogin} />
+                {/* <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
                   <i className="fa fa-google" />
-                </span>
+                </span> */}
               </li>
             )}
           </ul>
