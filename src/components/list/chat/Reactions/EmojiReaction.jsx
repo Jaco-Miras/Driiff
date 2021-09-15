@@ -24,6 +24,10 @@ const EmojiContainer = styled.div`
     ul {
       max-height: 250px;
     }
+    .avatar-md {
+      min-height: 2.7rem;
+      min-width: 2.7rem;
+    }
   }
   :hover {
     .chat-emoji-users-list {
