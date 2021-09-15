@@ -95,15 +95,17 @@ const GrippBotBody = () => {
   const [activePage, setActivePage] = useState("main");
   const filters = useSelector((state) => state.admin.filters);
   const automation = useSelector((state) => state.admin.automation);
-  const { hasGrippLinked, grippBots, grippUsers } = automation;
+  const { grippBots, grippUsers, grippDetails } = automation;
 
   useEffect(() => {
     setAdminFilter({ filters: { ...filters, automation: true } });
-    fetchGrippDetails();
+    fetchGrippDetails({}, (err, res) => {
+      if (err) return;
+      if (res.data.grippBotCount > 0) {
+        fetchGrippBot({});
+      }
+    });
     fetchGrippUsers();
-    if (hasGrippLinked === null) {
-      fetchGrippBot({});
-    }
     return () => {
       componentIsMounted.current = false;
     };
@@ -134,7 +136,7 @@ const GrippBotBody = () => {
           </span>
         )}
       </LabelBackButton>
-      {hasGrippLinked === true && activePage === "main" && (
+      {grippDetails && grippDetails.has_gripp_token && activePage === "main" && (
         <div className="row">
           <div className="col-12 col-md-4">
             <div className="card border">
@@ -202,7 +204,7 @@ const GrippBotBody = () => {
           </div>
         </div>
       )}
-      {hasGrippLinked === false && activePage === "main" && (
+      {grippDetails && !grippDetails.has_gripp_token && activePage === "main" && (
         <div className="row">
           <div className="col-12 col-md-4">
             <div className="card border">
@@ -223,9 +225,9 @@ const GrippBotBody = () => {
           </div>
         </div>
       )}
-      {hasGrippLinked === false && activePage === "sync-form" && <GrippSyncForm />}
-      {hasGrippLinked === true && activePage === "gripp-bots" && <GrippBots bots={grippBots} />}
-      {hasGrippLinked === true && activePage === "sync-lists" && <GrippUsersList />}
+      {grippDetails && !grippDetails.has_gripp_token && activePage === "sync-form" && <GrippSyncForm />}
+      {grippDetails && grippDetails.has_gripp_token && activePage === "gripp-bots" && <GrippBots bots={grippBots} />}
+      {grippDetails && grippDetails.has_gripp_token && activePage === "sync-lists" && <GrippUsersList />}
     </Wrapper>
   );
 };

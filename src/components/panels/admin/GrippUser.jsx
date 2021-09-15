@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 `;
 
 const GrippUser = (props) => {
-  const { className = "", onNameClick = null, user, dictionary } = props;
+  const { className = "", onNameClick = null, user, dictionary, onActivateDeactivateUser } = props;
   const refs = {
     cardBody: useRef(null),
     content: useRef(null),
@@ -52,9 +52,14 @@ const GrippUser = (props) => {
     if (onNameClick) onNameClick(user);
   };
 
-  const handleActivateUser = () => {};
+  const handleActivateUser = () => {
+    onActivateDeactivateUser(user);
+  };
 
-  const handleDeactivateUser = () => {};
+  const handleDeactivateUser = () => {
+    onActivateDeactivateUser(user);
+  };
+
   return (
     <Wrapper className={`gripp-user col-12 col-md-6 ${className}`}>
       <div className="col-12">
