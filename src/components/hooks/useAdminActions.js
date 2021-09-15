@@ -15,6 +15,8 @@ import {
   getGrippDetails,
   getGrippUsers,
   postSyncGrippUsers,
+  createCheckoutSession,
+  resetGrippUsersImage,
 } from "../../redux/actions/adminActions";
 
 const useAdminActions = () => {
@@ -116,8 +118,6 @@ const useAdminActions = () => {
     );
   };
 
-  const resetGrippProfileImages = (payload, callback) => {};
-
   const fetchGrippDetails = (payload, callback) => {
     dispatch(
       getGrippDetails(payload, (err, res) => {
@@ -142,6 +142,35 @@ const useAdminActions = () => {
     );
   };
 
+  const resetGrippProfileImages = (payload, callback) => {
+    dispatch(
+      resetGrippUsersImage(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  //   {
+  //     "success_url": "https://getdriff.com/get-started/",
+  //     "cancel_url": "https://getdriff.com/pricing/",
+  //     "payment_method_types": ["card"],
+  //     "mode": "subscription",
+  //     "line_items": [
+  //         {
+  //             "price": "price_1JDRQXLoW9ieUi2mdBJP8Wkp",
+  //             "quantity": 1
+  //         }
+  //     ]
+  // }
+
+  const stripeCheckout = (payload, callback) => {
+    dispatch(
+      createCheckoutSession(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -159,6 +188,7 @@ const useAdminActions = () => {
     fetchGrippDetails,
     fetchGrippUsers,
     syncGrippUsers,
+    stripeCheckout,
   };
 };
 

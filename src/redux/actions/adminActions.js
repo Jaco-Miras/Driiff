@@ -14,6 +14,8 @@ import {
   getGrippDetails as getGrippDetailsService,
   getGrippUsers as getGrippUsersService,
   postSyncGrippUsers as postSyncGrippUsersService,
+  createCheckoutSession as createCheckoutSessionService,
+  resetGrippUsersImage as resetGrippUsersImageService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -74,4 +76,12 @@ export function getGrippUsers(payload, callback) {
 
 export function postSyncGrippUsers(payload, callback) {
   return dispatchActionToReducer(postSyncGrippUsersService(payload), "SYNC_GRIPP_USERS_START", "SYNC_GRIPP_USERS_SUCCESS", "SYNC_GRIPP_USERS_FAILURE", callback);
+}
+
+export function createCheckoutSession(payload, callback) {
+  return dispatchActionToReducer(createCheckoutSessionService(payload), "CREATE_CHECKOUT_SESSION_START", "CREATE_CHECKOUT_SESSION_SUCCESS", "CREATE_CHECKOUT_SESSION_FAILURE", callback);
+}
+
+export function resetGrippUsersImage(payload, callback) {
+  return dispatchActionToReducer(resetGrippUsersImageService(payload), "RESET_GRIPP_USERS_IMAGE_START", "RESET_GRIPP_USERS_IMAGE_SUCCESS", "RESET_GRIPP_USERS_IMAGE_FAILURE", callback);
 }

@@ -113,3 +113,19 @@ export function postSyncGrippUsers(payload) {
     data: payload,
   });
 }
+
+export function resetGrippUsersImage(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/gripp/reset",
+    data: payload,
+  });
+}
+
+export function createCheckoutSession(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/stripe/checkout",
+    data: payload,
+  });
+}
