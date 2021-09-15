@@ -18,8 +18,7 @@ const RegisterPanel = (props) => {
 
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(false);
-  //const allowedDomains = useSelector((state) => state.settings.driff.settings.allowed_domains);
-  const allowedDomains = [];
+  const allowedDomains = useSelector((state) => state.settings.driff.domains);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},

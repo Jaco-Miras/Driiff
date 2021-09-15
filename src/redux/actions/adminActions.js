@@ -85,3 +85,7 @@ export function createCheckoutSession(payload, callback) {
 export function resetGrippUsersImage(payload, callback) {
   return dispatchActionToReducer(resetGrippUsersImageService(payload), "RESET_GRIPP_USERS_IMAGE_START", "RESET_GRIPP_USERS_IMAGE_SUCCESS", "RESET_GRIPP_USERS_IMAGE_FAILURE", callback);
 }
+
+export function updateAllowedDomains(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATED_ALLOWED_DOMAINS", payload, callback);
+}
