@@ -17,6 +17,7 @@ import {
   postSyncGrippUsers,
   createCheckoutSession,
   resetGrippUsersImage,
+  updateAllowedDomains,
 } from "../../redux/actions/adminActions";
 
 const useAdminActions = () => {
@@ -171,6 +172,14 @@ const useAdminActions = () => {
     );
   };
 
+  const updateDomains = (payload, callback) => {
+    dispatch(
+      updateAllowedDomains(payload, () => {
+        if (callback) callback();
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -189,6 +198,7 @@ const useAdminActions = () => {
     fetchGrippUsers,
     syncGrippUsers,
     stripeCheckout,
+    updateDomains,
   };
 };
 

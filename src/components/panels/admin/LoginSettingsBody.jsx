@@ -47,13 +47,21 @@ const LoginSettingsBody = () => {
   const loginSettings = useSelector((state) => state.admin.login);
   const loginFetched = useSelector((state) => state.admin.loginFetched);
   const filters = useSelector((state) => state.admin.filters);
+  const domains = useSelector((state) => state.settings.driff.domains);
 
-  const { fetchLoginSettings, updateLoginSettings, setAdminFilter } = useAdminActions();
+  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains } = useAdminActions();
 
   const [settings, setSettings] = useState({ ...loginSettings });
   const [saving, setSaving] = useState(false);
   const [domainInput, setDomainInput] = useState("");
-  const [selectedDomains, setSelectedDomains] = useState([]);
+  const [selectedDomains, setSelectedDomains] = useState(
+    domains.map((d) => {
+      return {
+        value: d,
+        label: d,
+      };
+    })
+  );
 
   useEffect(() => {
     setAdminFilter({ filters: { ...filters, settings: true } });
@@ -167,9 +175,15 @@ const LoginSettingsBody = () => {
 
   const handleSubmit = () => {
     setSaving(true);
-    updateLoginSettings(settings, (err, res) => {
+    const payload = {
+      ...settings,
+      domains: selectedDomains.map((d) => d.value).toString(),
+    };
+
+    updateLoginSettings(payload, (err, res) => {
       if (componentIsMounted.current) setSaving(false);
       if (err) return;
+      updateDomains(selectedDomains.map((d) => d.value));
       toast.success(dictionary.loginSettingsUpdated);
     });
   };

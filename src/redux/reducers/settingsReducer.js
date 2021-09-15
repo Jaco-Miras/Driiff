@@ -9,6 +9,7 @@ const INITIAL_STATE = {
     isSettingsLoaded: false,
     isCompSettingsLoaded: false,
     company_name: "Driff communication",
+    domains: [],
     settings: {
       maintenance_mode: false,
       google_login: true,
@@ -114,11 +115,15 @@ export default (state = INITIAL_STATE, action) => {
       let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
       let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
-      console.log(action.data.settings);
+      let domains = state.driff.domains;
+
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
         if (s.ANNOUNCEMENT_LINK) ANNOUNCEMENT_LINK = s.ANNOUNCEMENT_LINK;
         if (s.READ_RELEASE_UPDATES) READ_RELEASE_UPDATES = s.READ_RELEASE_UPDATES;
+        if (s.domains) {
+          domains = s.domains.split(",");
+        }
         settings = { ...settings, ...s };
       });
 
@@ -141,6 +146,7 @@ export default (state = INITIAL_STATE, action) => {
           ANNOUNCEMENT_LINK,
           ANNOUNCEMENT_AT,
           READ_RELEASE_UPDATES,
+          domains: domains,
         },
       };
     }
@@ -181,6 +187,14 @@ export default (state = INITIAL_STATE, action) => {
                   i18n: driff["translation_updated_at"] < value.timestamp ? value.timestamp : driff["translation_updated_at"],
                 };
               }
+
+              break;
+            }
+            case "domains": {
+              driff = {
+                ...driff,
+                domains: value.split(","),
+              };
 
               break;
             }
@@ -337,6 +351,15 @@ export default (state = INITIAL_STATE, action) => {
         user: {
           ...state.user,
           READ_RELEASE_UPDATES: { timestamp: action.data.READ_RELEASE_UPDATES.timestamp },
+        },
+      };
+    }
+    case "UPDATED_ALLOWED_DOMAINS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          domains: action.data,
         },
       };
     }
