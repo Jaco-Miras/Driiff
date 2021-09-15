@@ -96,23 +96,17 @@ const GrippBotCard = (props) => {
             <BotTitleChannels>
               <h5>{bot.name}</h5>
               <span>
-                {bot.channel_connected.length} {dictionary.channel_connected}
+                {bot.channel_connected.length} {dictionary.channelsConnected}
               </span>
             </BotTitleChannels>
           </BotAvatarTitle>
           <div>
-            {/* <button className="btn btn-danger mr-2" onClick={handleDeleteBot}>
-              <SvgIconFeather icon="x" />
-            </button> */}
             <button className="btn btn-primary mr-2" onClick={handleUpdateBot}>
               <SvgIconFeather icon="edit" />
             </button>
             <button className="btn btn-info mr-2" onClick={handleOpenDropzone}>
               <SvgIconFeather icon="upload" />
             </button>
-            {/* <button className="btn btn-light mr-2" onClick={handleCopyLink}>
-              <SvgIconFeather icon="link" />
-            </button> */}
           </div>
         </div>
       </div>
