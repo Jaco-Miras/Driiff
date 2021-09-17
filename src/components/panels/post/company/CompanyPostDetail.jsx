@@ -262,7 +262,7 @@ const PostFilesTrashedContainer = styled.div`
 
 const CompanyPostDetail = (props) => {
   const { post, posts, filter, postActions, user, onGoBack, dictionary } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
@@ -410,6 +410,7 @@ const CompanyPostDetail = (props) => {
   };
 
   useEffect(() => {
+    readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed && !disableMarkAsRead()) {
       postActions.visit({

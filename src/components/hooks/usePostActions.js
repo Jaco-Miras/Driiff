@@ -66,6 +66,7 @@ import {
   incomingPostListDisconnect,
   postRequired,
   setPostCommentType,
+  readNotification,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -1011,6 +1012,10 @@ const usePostActions = () => {
     dispatch(setPostCommentType(type, callback));
   };
 
+  const readPostNotification = (payload = {}, callback) => {
+    dispatch(readNotification(payload, callback));
+  };
+
   return {
     approve,
     approveComment,
@@ -1065,6 +1070,7 @@ const usePostActions = () => {
     fetchArchivedCompanyPosts,
     fetchStarCompanyPosts,
     fetchInProgressCompanyPosts,
+    readPostNotification,
   };
 };
 
