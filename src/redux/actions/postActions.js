@@ -46,6 +46,7 @@ import {
   postListConnect as postListConnectService,
   postListDisconnect as postListDisconnectService,
   postRequired as postRequiredService,
+  readNotification as readNotificationService,
 } from "../services";
 
 export function getPostList(payload, callback) {
@@ -462,4 +463,8 @@ export function incomingFollowPost(payload, callback) {
 
 export function incomingUnfollowPost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UNFOLLOW_POST", payload, callback);
+}
+
+export function readNotification(payload, callback) {
+  return dispatchActionToReducer(readNotificationService(payload), "READ_POST_NOTIFICATION_START", "READ_POST_NOTIFICATION_SUCCESS", "READ_POST_NOTIFICATION_FAIL", callback);
 }

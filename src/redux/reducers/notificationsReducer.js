@@ -610,6 +610,25 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "READ_POST_NOTIFICATION_SUCCESS":
+    case "INCOMING_READ_NOTIFICATIONS": {
+      if (action.data.notification_id.length) {
+        const notificationIds = action.data.notification_id.map((n) => n.id);
+        return {
+          ...state,
+          notifications: Object.values(state.notifications).reduce((acc, n) => {
+            if (notificationIds.some((id) => id === n.id)) {
+              acc[n.id] = { ...n, is_read: 1 };
+            } else {
+              acc[n.id] = n;
+            }
+            return acc;
+          }, {}),
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }

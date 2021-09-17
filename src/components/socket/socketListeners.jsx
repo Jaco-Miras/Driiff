@@ -164,7 +164,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 
@@ -252,6 +252,9 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".notification-read", (e) => {
+        this.props.incomingReadNotifications(e);
+      })
       .listen(".delete-notification", (e) => {
         const elemId = `notification__${e.notification_id}`;
         if (toast.isActive(elemId)) toast.dismiss(elemId);
@@ -1962,6 +1965,7 @@ function mapDispatchToProps(dispatch) {
     incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
     removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
     setNewDriffData: bindActionCreators(setNewDriffData, dispatch),
+    incomingReadNotifications: bindActionCreators(incomingReadNotifications, dispatch),
   };
 }
 
