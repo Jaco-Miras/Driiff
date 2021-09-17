@@ -41,6 +41,7 @@ const INITIAL_STATE = {
   searchArchivedChannels: false,
   snoozedHuddle: [],
   huddleBotsLoaded: false,
+  filterUnreadChannels: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -2502,6 +2503,12 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+      };
+    }
+    case "SHOW_UNREAD_CHANNELS": {
+      return {
+        ...state,
+        filterUnreadChannels: !state.filterUnreadChannels,
       };
     }
     // case "INCOMING_DELETED_POST": {

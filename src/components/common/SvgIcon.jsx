@@ -12,10 +12,46 @@ export const SvgIconFeather = React.memo(
     let content = "";
 
     switch (icon) {
-      case "external-link": 
+      case "filter":
+        viewBox = "0 0 18 18";
+        height = 18;
+        width = 18;
         content = (
           <>
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="menu" transform="translate(1.000000, 1.000000)" stroke="#E1E1E1">
+                <path d="M5,8.5 L10.75,8.5" id="Path" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M4,5.5 L12,5.5" id="Path" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7,11.5 L9.5,11.5" id="Path" stroke-linecap="round" stroke-linejoin="round"></path>
+                <rect id="Rectangle" x="0" y="0" width="16" height="16" rx="8"></rect>
+              </g>
+            </g>
+          </>
+        );
+        break;
+      case "filter-active":
+        viewBox = "0 0 18 18";
+        height = 18;
+        width = 18;
+        content = (
+          <>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="menu" transform="translate(1.000000, 1.000000)">
+                <rect id="Rectangle" stroke="#505050" fill="#505050" x="0" y="0" width="16" height="16" rx="8"></rect>
+                <path d="M5,8.5 L10.75,8.5" id="Path" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M4,5.5 L12,5.5" id="Path" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7,11.5 L9.5,11.5" id="Path" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+              </g>
+            </g>
+          </>
+        );
+        break;
+      case "external-link":
+        content = (
+          <>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
           </>
         );
         break;

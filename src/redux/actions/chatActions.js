@@ -453,3 +453,7 @@ export function snoozeHuddleAll(payload, callback) {
 export function removeHuddleNotification(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_HUDDLE_NOTIFICATION", payload, callback);
 }
+
+export function showUnreadChannels(payload, callback) {
+  return SimpleDispatchActionToReducer("SHOW_UNREAD_CHANNELS", payload, callback);
+}
