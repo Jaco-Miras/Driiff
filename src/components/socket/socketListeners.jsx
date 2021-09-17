@@ -185,7 +185,7 @@ class SocketListeners extends Component {
   }
 
   refetchPosts = () => {
-    this.props.refetchPosts();
+    this.props.refetchPosts({ skip: 0, limit: 10 });
   };
 
   refetchPostComments = () => {

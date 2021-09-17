@@ -317,7 +317,7 @@ export function incomingPostRecipients(payload, callback) {
 }
 
 export function refetchPosts(payload, callback) {
-  return dispatchActionToReducer(refetchPostsService(payload), "REFETCH_POSTS_START", "REFETCH_POSTS_SUCCESS", "REFETCH_POSTS_FAIL", callback);
+  return dispatchActionToReducer(getCompanyPostsService(payload), "REFETCH_POSTS_START", "REFETCH_POSTS_SUCCESS", "REFETCH_POSTS_FAIL", callback);
 }
 
 export function refetchPostComments(payload, callback) {
