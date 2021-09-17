@@ -5,7 +5,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
   const user = useSelector((state) => state.session.user);
   const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings: settings } = useSettings();
-
+  const filterUnreadChannels = useSelector((state) => state.chat.filterUnreadChannels);
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
   // const getChannelTitle = (ac) => {
@@ -234,11 +234,19 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         //   return aTitle.localeCompare(bTitle);
         // }
       }
+    })
+    .filter((c) => {
+      if (filterUnreadChannels) {
+        return c.is_read === false || c.total_unread > 0;
+      } else {
+        return true;
+      }
     });
   return {
     sortedChannels: results,
     favoriteChannels: results.filter((c) => c.is_pinned),
     searchArchivedChannels,
+    filterUnreadChannels,
   };
 };
 

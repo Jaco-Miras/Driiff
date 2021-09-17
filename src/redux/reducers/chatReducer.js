@@ -43,6 +43,7 @@ const INITIAL_STATE = {
   searchArchivedChannels: false,
   snoozedHuddle: [],
   huddleBotsLoaded: false,
+  filterUnreadChannels: false,
 };
 
 const date = new Date();
@@ -2830,6 +2831,12 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+      };
+    }
+    case "SHOW_UNREAD_CHANNELS": {
+      return {
+        ...state,
+        filterUnreadChannels: !state.filterUnreadChannels,
       };
     }
     // case "INCOMING_DELETED_POST": {

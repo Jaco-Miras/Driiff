@@ -54,7 +54,7 @@ const ChannelsSidebar = (props) => {
   // const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   const [fetchingChannels, setFetchingChannels] = useState(false);
   const actions = useChannelActions();
-  const { favoriteChannels, sortedChannels, searchArchivedChannels } = useSortChannels(Object.values(channels), search, {}, workspace);
+  const { favoriteChannels, sortedChannels, searchArchivedChannels, filterUnreadChannels } = useSortChannels(Object.values(channels), search, {}, workspace);
   const virtualization = useSelector((state) => state.settings.user.CHAT_SETTINGS.virtualization);
   const history = useHistory();
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
@@ -89,7 +89,7 @@ const ChannelsSidebar = (props) => {
 
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
-      {favoriteChannels.length > 0 && <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />}
+      <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />
       <Channels className={"list-group list-group-flush"}>
         {/* {searchingChannels && (
           <ChatHeaderContainer>
@@ -167,7 +167,7 @@ const ChannelsSidebar = (props) => {
             </React.Fragment>
           );
         })}
-        {workspace === true && sortedChannels.length === 0 ? (
+        {(workspace === true && sortedChannels.length === 0) || (filterUnreadChannels && sortedChannels.length === 0) ? (
           <li>
             <h4>{dictionary.nothingToSeeHere}</h4>
           </li>
