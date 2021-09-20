@@ -36,7 +36,7 @@ const INITIAL_STATE = {
     skip: 0,
     limit: 25,
     fetching: false,
-    hasMore: false,
+    hasMore: true,
   },
   searchArchivedChannels: false,
   snoozedHuddle: [],
@@ -44,7 +44,7 @@ const INITIAL_STATE = {
   filterUnreadChannels: false,
   unreadChannels: {
     skip: 0,
-    limit: 5,
+    limit: 25,
     hasMore: true,
     fetching: false,
   },
@@ -172,28 +172,38 @@ export default function (state = INITIAL_STATE, action) {
     //   };
     // }
     case "ADD_CHANNELS": {
-      let fetchedChannels = {};
-      action.data.channels
-        .filter((r) => r.id !== null)
-        .filter((r) => {
-          return !(state.selectedChannel && state.selectedChannel.id === r.id);
-        })
-        .forEach((r) => {
-          fetchedChannels[r.id] = {
-            ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
-            ...r,
-            hasMore: true,
-            skip: 0,
-            replies: [],
-            selected: false,
-            isFetching: false,
-          };
-        });
+      // let fetchedChannels = {};
+      // action.data.channels
+      //   .filter((r) => r.id !== null)
+      //   .filter((r) => {
+      //     return !(state.selectedChannel && state.selectedChannel.id === r.id);
+      //   })
+      //   .forEach((r) => {
+      //     fetchedChannels[r.id] = {
+      //       ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
+      //       ...r,
+      //       hasMore: true,
+      //       skip: 0,
+      //       replies: [],
+      //       selected: false,
+      //       isFetching: false,
+      //     };
+      //   });
       return {
         ...state,
         channels: {
           ...state.channels,
-          ...fetchedChannels,
+          ...(action.data.channels.length > 0 && {
+            ...Object.values(action.data.channels).reduce((acc, c) => {
+              if (state.channels[c.id]) {
+                acc[c.id] = { ...state.channels[c.id] };
+              } else {
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+              }
+              return acc;
+            }, {}),
+          }),
+          //...fetchedChannels,
         },
         fetch: {
           skip: action.data.channels.length + state.fetch.skip,
