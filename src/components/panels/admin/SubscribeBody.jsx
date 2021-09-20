@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { useAdminActions, useTranslationActions } from "../../hooks";
+import { useAdminActions, useTranslationActions, useTimeFormat } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   padding: 1rem;
   > div {
     margin-bottom: 1rem;
+  }
+  .trial-label {
+    font-style: italic;
+    font-size: 1rem;
   }
 `;
 
@@ -115,7 +119,9 @@ const CardFooter = styled.div`
 const SubscribeBody = () => {
   const { _t } = useTranslationActions();
 
+  const timeFormat = useTimeFormat();
   const { setAdminFilter, stripeCheckout } = useAdminActions();
+  const subscriptions = useSelector((state) => state.admin.subscriptions);
   const componentIsMounted = useRef(true);
 
   const dictionary = {
@@ -136,6 +142,7 @@ const SubscribeBody = () => {
     standardFeatureDescription: _t("PRICING.FEATURES_STANDARD_DESCRIPTION", "Collaborate effectively with anyone inside or outside your team or company"),
     proFeatureDescription: _t("PRICING.FEATURES_PRO_DESCRIPTION", "Gain access to additional useful features"),
     enterpriseFeatureDescription: _t("PRICING.FEATURES_ENTERPRISE_DESCRIPTION", "Spice up your Driff by integrating your favorite software tools."),
+    trialSubscriptionLabel: _t("PRICING.TRIAL_SUBSCRIPTION_LABEL", "Trial subscription will end:"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -189,6 +196,11 @@ const SubscribeBody = () => {
   return (
     <Wrapper>
       <h4 className="mb-3">{dictionary.subscriptionLabel}</h4>
+      {subscriptions && subscriptions.status === "trialing" && (
+        <label className="trial-label">
+          {dictionary.trialSubscriptionLabel} <strong>{timeFormat.fromNow(subscriptions.trial_ends_at.timestamp)}</strong>
+        </label>
+      )}
       <div className="row">
         <div className="col-12 col-md-4">
           <div className="card">
