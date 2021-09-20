@@ -223,6 +223,7 @@ export {
   postListConnect,
   postListDisconnect,
   postRequired,
+  readNotification,
 } from "./post";
 
 export {
