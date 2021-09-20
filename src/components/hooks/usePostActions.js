@@ -64,6 +64,7 @@ import {
   incomingPostListConnect,
   incomingPostListDisconnect,
   postRequired,
+  refetchUnreadCompanyPosts,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -1001,6 +1002,10 @@ const usePostActions = () => {
     dispatch(addToModals(payload));
   };
 
+  const refetchCompanyPosts = (payload = {}, callback) => {
+    dispatch(refetchUnreadCompanyPosts(payload, callback));
+  };
+
   return {
     approve,
     approveComment,
@@ -1053,6 +1058,7 @@ const usePostActions = () => {
     fetchMyCompanyPosts,
     fetchArchivedCompanyPosts,
     fetchStarCompanyPosts,
+    refetchCompanyPosts,
   };
 };
 

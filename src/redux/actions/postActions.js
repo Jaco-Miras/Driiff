@@ -317,7 +317,7 @@ export function incomingPostRecipients(payload, callback) {
 }
 
 export function refetchPosts(payload, callback) {
-  return dispatchActionToReducer(refetchPostsService(payload), "REFETCH_POSTS_START", "REFETCH_POSTS_SUCCESS", "REFETCH_POSTS_FAIL", callback);
+  return dispatchActionToReducer(getCompanyPostsService(payload), "REFETCH_POSTS_START", "REFETCH_POSTS_SUCCESS", "REFETCH_POSTS_FAIL", callback);
 }
 
 export function refetchPostComments(payload, callback) {
@@ -462,4 +462,8 @@ export function incomingFollowPost(payload, callback) {
 
 export function incomingUnfollowPost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UNFOLLOW_POST", payload, callback);
+}
+
+export function refetchUnreadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "REFETCH_UNREAD_COMPANY_POSTS_START", "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS", "REFETCH_UNREAD_COMPANY_POSTS_FAIL", callback);
 }
