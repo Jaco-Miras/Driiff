@@ -59,6 +59,7 @@ const INITIAL_STATE = {
       },
       virtualization: false,
       translate: false,
+      filter_channel: false,
     },
     GENERAL_SETTINGS: {
       daily_digest: true,

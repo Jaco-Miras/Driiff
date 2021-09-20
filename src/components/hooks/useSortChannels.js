@@ -236,7 +236,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
     })
     .filter((c) => {
-      if (filterUnreadChannels) {
+      if (settings.filter_channel) {
         return c.is_read === false || c.total_unread > 0;
       } else {
         return true;
@@ -246,7 +246,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     sortedChannels: results,
     favoriteChannels: results.filter((c) => c.is_pinned),
     searchArchivedChannels,
-    filterUnreadChannels,
+    filterUnreadChannels: settings.filter_channel,
   };
 };
 
