@@ -136,6 +136,7 @@ const Avatar = (props) => {
   const [showInitials, setShowInitials] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [orientation, setOrientation] = useState(null);
+  const [errorBotImage, setErrorBotImage] = useState(false);
 
   const toggleTooltip = () => {
     if (fromSlider) return;
@@ -229,6 +230,11 @@ const Avatar = (props) => {
     setShowInitials(true);
   };
 
+  const handleBotImageError = () => {
+    setIsLoaded(true);
+    setErrorBotImage(true);
+  };
+
   const handleInitials = (title) => {
     if (typeof title === "undefined") return "";
 
@@ -249,7 +255,7 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name} zIndex={99999}>
         {isBot ? (
-          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleBotImageError} src={errorBotImage ? botIcon : imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
           <Initials className="rounded-circle" avatarColor={avatarColor(name)} onClick={handleOnClick}>
             {handleInitials(name)}
