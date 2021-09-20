@@ -25,6 +25,7 @@ const INITIAL_STATE = {
     grippToken: null,
     grippApiUrl: null,
   },
+  subsrcriptions: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -180,6 +181,24 @@ export default (state = INITIAL_STATE, action) => {
           hasGrippLinked: true,
         },
       };
+    }
+    case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
+      let subscriptions = null;
+      Array.from(action.data.settings).map((value) => {
+        if (value.subscriptions) {
+          subscriptions = value.subscriptions;
+          console.log(subscriptions);
+        }
+        return value;
+      });
+      if (subscriptions) {
+        return {
+          ...state,
+          subscriptions: subscriptions,
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;
