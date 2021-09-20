@@ -975,6 +975,33 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
     case "GET_UNREAD_COMPANY_POSTS_SUCCESS": {
       return {
         ...state,
