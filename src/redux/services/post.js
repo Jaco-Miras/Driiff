@@ -706,3 +706,11 @@ export function postRequired(payload) {
     data: payload,
   });
 }
+
+export function readNotification(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/toggle-notification-unread",
+    data: payload,
+  });
+}
