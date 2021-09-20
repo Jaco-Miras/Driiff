@@ -9,6 +9,7 @@ const useCompanyPosts = () => {
   const user = useSelector((state) => state.session.user);
   const { flipper, next_skip, posts, filter, tag, postListTag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
   const postsLists = useSelector((state) => state.posts.postsLists);
+  const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const archived = useSelector((state) => state.posts.archived);
   const favourites = useSelector((state) => state.posts.favourites);
@@ -64,6 +65,9 @@ const useCompanyPosts = () => {
   useEffect(() => {
     fetchMore();
     actions.fetchPostList();
+    if (unreadCounter.general_post > 0) {
+      actions.refetchCompanyPosts({ skip: 0, limit: unreadCounter.general_post });
+    }
   }, []);
 
   useEffect(() => {
