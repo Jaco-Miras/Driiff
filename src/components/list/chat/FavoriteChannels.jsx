@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import ChannelIcon from "./ChannelIcon";
 import { SvgIconFeather } from "../../common";
-import { useDispatch, useSelector } from "react-redux";
-import { showUnreadChannels } from "../../../redux/actions/chatActions";
+// import { useDispatch, useSelector } from "react-redux";
+// import { showUnreadChannels } from "../../../redux/actions/chatActions";
 import Tooltip from "react-tooltip-lite";
-import { useTranslationActions } from "../../hooks";
+import { useTranslationActions, useFilterChannelActions } from "../../hooks";
 //import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.div`
@@ -154,18 +154,21 @@ const FavoriteChannels = (props) => {
   const { channels, onSelectChannel } = props;
   const { _t } = useTranslationActions();
 
+  const { filterChannel, chatSettings } = useFilterChannelActions();
+
   const dictionary = {
     showUnreadChats: _t("TOOLTIP.SHOW_UNREAD_CHATS", "Show unread chats"),
     hideUnreadChats: _t("TOOLTIP.HIDE_UNREAD_CHATS", "Hide unread chats"),
   };
-  const dispatch = useDispatch();
-  const filterUnreadChannels = useSelector((state) => state.chat.filterUnreadChannels);
+  //const dispatch = useDispatch();
+  //const filterUnreadChannels = useSelector((state) => state.chat.filterUnreadChannels);
   const handleSelectChannel = (channel) => {
     onSelectChannel(channel);
   };
 
   const handleFilterClick = () => {
-    dispatch(showUnreadChannels());
+    //dispatch(showUnreadChannels());
+    filterChannel();
   };
 
   const toggleTooltip = () => {
@@ -197,7 +200,7 @@ const FavoriteChannels = (props) => {
         )}
         <FilterWrapper>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.showUnreadChats}>
-            <SvgIconFeather icon={filterUnreadChannels ? "filter-active" : "filter"} onClick={handleFilterClick} />
+            <SvgIconFeather icon={chatSettings.filter_channel ? "filter-active" : "filter"} onClick={handleFilterClick} />
           </Tooltip>
         </FilterWrapper>
       </FavoriteAndFilter>

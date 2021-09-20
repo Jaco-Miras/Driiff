@@ -44,6 +44,12 @@ const INITIAL_STATE = {
   snoozedHuddle: [],
   huddleBotsLoaded: false,
   filterUnreadChannels: false,
+  unreadChannels: {
+    skip: 0,
+    limit: 5,
+    hasMore: true,
+    fetching: false,
+  },
 };
 
 const date = new Date();
@@ -2837,6 +2843,39 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         filterUnreadChannels: !state.filterUnreadChannels,
+      };
+    }
+    case "GET_UNREAD_CHANNELS_START": {
+      return {
+        ...state,
+        unreadChannels: {
+          ...state.unreadChannels,
+          fetching: true,
+        },
+      };
+    }
+    case "GET_UNREAD_CHANNELS_SUCCESS": {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...(action.data.results.length > 0 && {
+            ...Object.values(action.data.results).reduce((acc, c) => {
+              if (state.channels[c.id]) {
+                acc[c.id] = { ...state.channels[c.id] };
+              } else {
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+              }
+              return acc;
+            }, {}),
+          }),
+        },
+        unreadChannels: {
+          ...state.unreadChannels,
+          skip: state.unreadChannels.skip + action.data.results.length,
+          hasMore: action.data.results.length === state.unreadChannels.limit,
+          fetching: false,
+        },
       };
     }
     // case "INCOMING_DELETED_POST": {
