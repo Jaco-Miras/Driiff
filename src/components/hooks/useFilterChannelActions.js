@@ -14,7 +14,7 @@ const useFilterChannelActions = () => {
     });
   };
 
-  const fetchUnreadChanels = ({ skip = 0, limit = 5, ...res }, callback = () => {}) => {
+  const fetchUnreadChanels = ({ skip = 0, limit = 25, ...res }, callback = () => {}) => {
     let payload = {
       skip: skip,
       limit: limit,
