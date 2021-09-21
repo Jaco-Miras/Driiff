@@ -148,7 +148,7 @@ const HuddleBotsBody = (props) => {
       //get the bots
       let cb = (err, res) => {
         if (err) return;
-        if (res.data.user_bots && res.data.user_bots.length === 0) {
+        if (res.data.user_bots && res.data.user_bots.length === 0 && res.data.channels.length > 0) {
           actions.createUserBot({ bot_name: "Huddle" });
         }
       };

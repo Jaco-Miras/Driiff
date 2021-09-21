@@ -32,7 +32,7 @@ const GrippSyncForm = (props) => {
     firstName: _t("FIRST_NAME", "First name"),
     lastName: _t("LAST_NAME", "Last name"),
   };
-  const { syncGrippUsers } = useAdminActions();
+  const { syncGrippUsers, fetchGrippBot } = useAdminActions();
   const [loading, setLoading] = useState(false);
   const [tokenValue, setTokenValue] = useState("");
   const [checkAll, setCheckAll] = useState(false);
@@ -84,6 +84,7 @@ const GrippSyncForm = (props) => {
       if (err) return;
       toaster.success(dictionary.successSyc);
       dispatch(getUsers());
+      fetchGrippBot({});
     });
   };
 
