@@ -105,6 +105,12 @@ const Wrapper = styled.div`
     width: 2.7rem;
     height: 2.7rem;
   }
+  .feather-pencil {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 5px;
+    cursor: pointer;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
@@ -196,9 +202,9 @@ const ChatHeaderBadgeContainer = styled.div`
 `;
 
 const StarIcon = styled(SvgIconFeather)`
-  height: 14px !important;
-  width: 14px !important;
-  min-width: 14px;
+  height: 1rem !important;
+  width: 1rem !important;
+  min-width: 1rem;
   margin-left: 5px;
   cursor: pointer;
   ${(props) =>
@@ -212,9 +218,9 @@ const StarIcon = styled(SvgIconFeather)`
 `;
 
 const SearchIcon = styled(SvgIconFeather)`
-  height: 14px !important;
-  width: 14px !important;
-  min-width: 14px;
+  height: 1rem !important;
+  width: 1rem !important;
+  min-width: 1rem;
   margin-left: 5px;
   cursor: pointer;
 `;
@@ -222,7 +228,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary, handleSearchChatPanel} = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -231,7 +237,7 @@ const ChatHeaderPanel = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
-  const { chat_language, translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const chatMessageActions = useChatMessageActions();
 
   const handleArchiveChat = () => {
@@ -411,7 +417,6 @@ const ChatHeaderPanel = (props) => {
 
   if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
 
-
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
@@ -440,7 +445,7 @@ const ChatHeaderPanel = (props) => {
             <li className="ml-2" style={{ height: "21px" }}>
               <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
                 {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
-                {channel.tyope === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+                {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
                 <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
                 <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
                 <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
@@ -450,6 +455,7 @@ const ChatHeaderPanel = (props) => {
             </li>
           </ul>
         </div>
+        {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
         <SearchIcon icon="search" onClick={handleSearchChatPanel} />
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
