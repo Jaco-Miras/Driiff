@@ -34,6 +34,10 @@ const AdminBotBody = () => {
     fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
     multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
     createBot: _t("ADMIN.CREATE_BOT_BTN", "Create new bot"),
+    editBotTooltip: _t("TOOLTIP.EDIT_ADMIN_BOT", "Edit admin bot"),
+    changeBotImage: _t("TOOLTIP.CHANGE_ADMIN_BOT_IMAGE", "Change admin bot image"),
+    deleteBotTooltip: _t("TOOLTIP.DELETE_BOT", "Delete admin bot"),
+    copyWebhookUrl: _t("TOOLTIP.COPY_WEBHOOK_URL", "Copy webhook link"),
   };
 
   const filters = useSelector((state) => state.admin.filters);

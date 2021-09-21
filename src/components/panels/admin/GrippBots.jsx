@@ -15,6 +15,8 @@ const GrippBots = (props) => {
     fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
     multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
     createBot: _t("ADMIN.CREATE_BOT_BTN", "Create new bot"),
+    editBotTooltip: _t("TOOLTIP.EDIT_GRIPP_BOT", "Edit gripp bot"),
+    changeBotImage: _t("TOOLTIP.CHANGE_GRIPP_BOT_IMAGE", "Change gripp bot image"),
   };
   return (
     <div className="row">

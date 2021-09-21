@@ -4,14 +4,20 @@ import { useSelector } from "react-redux";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
-import { Loader } from "../../common";
+import { Loader, SvgIconFeather } from "../../common";
 import { DomainSelect } from "../../forms";
+import Tooltip from "react-tooltip-lite";
 const isValidDomain = require("is-valid-domain");
 
 const Wrapper = styled.div`
   padding: 1rem;
   > div {
     margin-bottom: 1rem;
+  }
+  .feather-info {
+    margin-left: 5px;
+    height: 1rem;
+    width: 1rem;
   }
 `;
 
@@ -20,6 +26,15 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 50vh;
+`;
+
+const LabelInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  label {
+    margin: 0 !important;
+  }
+  margin-bottom: 0.5rem;
 `;
 
 const LoginSettingsBody = () => {
@@ -37,6 +52,11 @@ const LoginSettingsBody = () => {
     disable: _t("LABEL.DISABLE", "Disable"),
     loginSettingsUpdated: _t("TOAST.LOGIN_SETTINGS_SUCCESS", "Login settings updated"),
     allowedDomains: _t("ADMIN.ALLOWED_DOMAINS", "Allowed domains"),
+    passwordLoginInfo: _t("ADMIN.PASSWORD_LOGIN_INFO", "If disabled only external users can login using the login form"),
+    googleLoginInfo: _t("ADMIN.GOOGLE_LOGIN_INFO", "Show/Hide google login button"),
+    magicLinkInfo: _t("ADMIN.MAGIC_LINK_INFO", "Show/Hide magic link button"),
+    signupInfo: _t("ADMIN.SIGN_UP_INFO", "Show/Hide register button"),
+    allowedDomainsInfo: _t("ADMIN.ALLOWED_DOMAINS_INFO", "Domain list allowed when signing up in driff"),
   };
 
   const componentIsMounted = useRef(true);
@@ -188,6 +208,13 @@ const LoginSettingsBody = () => {
     });
   };
 
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
+
   return (
     <Wrapper>
       <h4 className="mb-3">{dictionary.loginSettings}</h4>
@@ -199,40 +226,67 @@ const LoginSettingsBody = () => {
       {loginFetched && (
         <>
           <div>
-            <label>{dictionary.passwordLogin}</label>
+            <LabelInfoWrapper>
+              <label>{dictionary.passwordLogin}</label>{" "}
+              <Tooltip onToggle={toggleTooltip} content={dictionary.passwordLoginInfo}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
             <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={passwordLoginOptions.find((o) => o.value === settings.password_login)} onChange={handleSelect} options={passwordLoginOptions} />
           </div>
           <div>
-            <label>{dictionary.googleLogin}</label>
+            <LabelInfoWrapper>
+              <label>{dictionary.googleLogin}</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.googleLoginInfo}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
             <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={googleOptions.find((o) => o.value === settings.google_login)} onChange={handleSelect} options={googleOptions} />
           </div>
           <div>
-            <label>{dictionary.magicLink}</label>
+            <LabelInfoWrapper>
+              <label>{dictionary.magicLink}</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.magicLinkInfo}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
             <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={magicOptions.find((o) => o.value === settings.magic_link)} onChange={handleSelect} options={magicOptions} />
           </div>
           <div>
-            <label>{dictionary.signUp}</label>
+            <LabelInfoWrapper>
+              <label>{dictionary.signUp}</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.signupInfo}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
             <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={signUpOptions.find((o) => o.value === settings.sign_up)} onChange={handleSelect} options={signUpOptions} />
-            {settings.sign_up && (
-              <>
-                <label className="mt-1">{dictionary.allowedDomains}</label>
-                <DomainSelect
-                  styles={dark_mode === "0" ? lightTheme : darkTheme}
-                  value={selectedDomains}
-                  onChange={handleSelectDomain}
-                  options={domainOptions}
-                  inputValue={domainInput}
-                  isValidNewOption={handleDomainValidation}
-                  onCreateOption={handleCreateOption}
-                  onInputChange={handleDomainInputChange}
-                  formatCreateLabel={formatCreateLabel}
-                  isSearchable
-                  classNamePrefix="react-select"
-                  placeholder="Domain..."
-                />
-              </>
-            )}
           </div>
+
+          {settings.sign_up && (
+            <div>
+              <LabelInfoWrapper>
+                <label className="mt-1">{dictionary.allowedDomains}</label>{" "}
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.allowedDomainsInfo}>
+                  <SvgIconFeather icon="info" />
+                </Tooltip>
+              </LabelInfoWrapper>
+              <DomainSelect
+                styles={dark_mode === "0" ? lightTheme : darkTheme}
+                value={selectedDomains}
+                onChange={handleSelectDomain}
+                options={domainOptions}
+                inputValue={domainInput}
+                isValidNewOption={handleDomainValidation}
+                onCreateOption={handleCreateOption}
+                onInputChange={handleDomainInputChange}
+                formatCreateLabel={formatCreateLabel}
+                isSearchable
+                classNamePrefix="react-select"
+                placeholder="Domain..."
+              />
+            </div>
+          )}
+
           <div className="mt-2">
             <button className="btn btn-primary" onClick={handleSubmit} disabled={saving || !loginFetched}>
               {dictionary.saveLogin}
