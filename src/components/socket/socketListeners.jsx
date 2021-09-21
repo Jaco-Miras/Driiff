@@ -779,6 +779,13 @@ class SocketListeners extends Component {
           }
           case "POST_DELETE": {
             this.props.incomingDeletedPost(e);
+            if (e.notification_ids) {
+              const ids = Array.from(e.notification_ids);
+              ids.forEach((id) => {
+                const elemId = "notification__" + id;
+                toast.isActive(elemId) && toast.dismiss(elemId);
+              });
+            }
             break;
           }
           case "POST_COMMENT_UPDATE": {
