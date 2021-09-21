@@ -5,8 +5,17 @@ import { Input } from "reactstrap";
 import { CheckBox } from "../../forms";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
 import { getUsers } from "../../../redux/actions/userAction";
+import { TooltipInfo } from "../../common";
 
 const SyncFormContainer = styled.div``;
+
+const LabelInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  label {
+    margin: 0 !important;
+  }
+`;
 
 const GrippSyncForm = (props) => {
   const dispatch = useDispatch();
@@ -31,6 +40,8 @@ const GrippSyncForm = (props) => {
     email: _t("EMAIL", "Email"),
     firstName: _t("FIRST_NAME", "First name"),
     lastName: _t("LAST_NAME", "Last name"),
+    grippTokenPlaceholder: _t("PLACEHOLDER.GRIPP_TOKEN", "Paste gripp token here"),
+    grippTokenInfo: _t("GRIPP.TOKEN_INFO", "Token from gripp"),
   };
   const { syncGrippUsers, fetchGrippBot } = useAdminActions();
   const [loading, setLoading] = useState(false);
@@ -91,8 +102,11 @@ const GrippSyncForm = (props) => {
   return (
     <SyncFormContainer>
       <div className="mb-3">
-        <label>{dictionary.grippToken}</label>
-        <Input value={tokenValue} onChange={handleInputChange} />
+        <LabelInfoWrapper>
+          <label>{dictionary.grippToken}</label> <TooltipInfo content={dictionary.grippTokenInfo} />
+        </LabelInfoWrapper>
+
+        <Input value={tokenValue} onChange={handleInputChange} placeholder={dictionary.grippTokenPlaceholder} />
       </div>
       <div className="mb-3">
         <label>

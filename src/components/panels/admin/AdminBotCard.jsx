@@ -6,6 +6,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { copyTextToClipboard } from "../../../helpers/commonFunctions";
 import { useAdminActions, useToaster, useTranslationActions } from "../../hooks";
 import { DropDocument } from "../../dropzone/DropDocument";
+import Tooltip from "react-tooltip-lite";
 
 const BotAvatarTitle = styled.div`
   display: flex;
@@ -99,6 +100,13 @@ const AdminBotCard = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
+
   return (
     <div className="col-12 col-md-6" key={bot.id}>
       <div className="card border">
@@ -124,19 +132,27 @@ const AdminBotCard = (props) => {
               </span>
             </BotTitleChannels>
           </BotAvatarTitle>
-          <div>
-            <button className="btn btn-danger mr-2" onClick={handleDeleteBot}>
-              <SvgIconFeather icon="x" />
-            </button>
-            <button className="btn btn-primary mr-2" onClick={handleUpdateBot}>
-              <SvgIconFeather icon="edit" />
-            </button>
-            <button className="btn btn-info mr-2" onClick={handleOpenDropzone}>
-              <SvgIconFeather icon="upload" />
-            </button>
-            <button className="btn btn-light mr-2" onClick={handleCopyLink}>
-              <SvgIconFeather icon="link" />
-            </button>
+          <div className="d-flex">
+            <Tooltip onToggle={toggleTooltip} content={dictionary.deleteBotTooltip}>
+              <button className="btn btn-danger mr-2" onClick={handleDeleteBot}>
+                <SvgIconFeather icon="x" />
+              </button>
+            </Tooltip>
+            <Tooltip onToggle={toggleTooltip} content={dictionary.editBotTooltip}>
+              <button className="btn btn-primary mr-2" onClick={handleUpdateBot}>
+                <SvgIconFeather icon="edit" />
+              </button>
+            </Tooltip>
+            <Tooltip onToggle={toggleTooltip} content={dictionary.changeBotImage}>
+              <button className="btn btn-info mr-2" onClick={handleOpenDropzone}>
+                <SvgIconFeather icon="upload" />
+              </button>
+            </Tooltip>
+            <Tooltip onToggle={toggleTooltip} content={dictionary.copyWebhookUrl}>
+              <button className="btn btn-light mr-2" onClick={handleCopyLink}>
+                <SvgIconFeather icon="link" />
+              </button>
+            </Tooltip>
           </div>
         </div>
       </div>

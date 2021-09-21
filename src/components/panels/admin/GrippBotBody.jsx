@@ -7,6 +7,7 @@ import GrippSyncForm from "./GrippSyncForm";
 import GrippBots from "./GrippBots";
 import GrippUsersList from "./GrippUsersList";
 import { addToModals } from "../../../redux/actions/globalActions";
+import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
   .gripp-card-body {
@@ -47,6 +48,10 @@ const CardHeader = styled.div`
     height: 2rem;
     stroke-width: 3;
   }
+  .feather-info {
+    width: 1rem;
+    height: 1rem;
+  }
   > div {
     display: flex;
     flex-flow: column;
@@ -54,6 +59,13 @@ const CardHeader = styled.div`
     text-align: right;
     height: 100%;
     justify-content: flex-end;
+  }
+  &.reset-card-header {
+    justify-content: flex-start;
+    div {
+      display: flex;
+      margin-left: 5px;
+    }
   }
 `;
 const LabelBackButton = styled.div`
@@ -92,6 +104,7 @@ const GrippBotBody = () => {
     back: _t("BACK", "Back"),
     syncGrippUsers: _t("LABEL.SYNC_GRIPP_USERS", "Sync gripp users"),
     grippBots: _t("LABEL.GRIPP_BOTS", "Gripp bots"),
+    resetImageInfo: _t("TOOLTIP.GRIPP_RESET_IMAGE", "Reset users profile image"),
   };
 
   //["main", "sync-form", "sync-lists", "gripp-bots"]
@@ -127,6 +140,13 @@ const GrippBotBody = () => {
     };
 
     dispatch(addToModals(confirmModal));
+  };
+
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
   };
 
   return (
@@ -194,8 +214,11 @@ const GrippBotBody = () => {
           <div className="col-12 col-md-4">
             <div className="card border">
               <div className="gripp-card-body">
-                <CardHeader>
-                  <h5>{dictionary.resetProfileImages}</h5>
+                <CardHeader className="reset-card-header">
+                  <h5>{dictionary.resetProfileImages} </h5>
+                  <Tooltip onToggle={toggleTooltip} content={dictionary.resetImageInfo}>
+                    <SvgIconFeather icon="info" height="16" width="16" />
+                  </Tooltip>
                 </CardHeader>
                 <CardFooter>
                   <button className="btn btn-primary" onClick={resetProfileImages}>
@@ -207,7 +230,7 @@ const GrippBotBody = () => {
           </div>
         </div>
       )}
-      {grippDetails && !grippDetails.has_gripp_token && activePage === "main" && (
+      {/* {grippDetails && !grippDetails.has_gripp_token && activePage === "main" && (
         <div className="row">
           <div className="col-12 col-md-4">
             <div className="card border">
@@ -227,8 +250,8 @@ const GrippBotBody = () => {
             </div>
           </div>
         </div>
-      )}
-      {grippDetails && !grippDetails.has_gripp_token && activePage === "sync-form" && <GrippSyncForm />}
+      )} */}
+      {grippDetails && !grippDetails.has_gripp_token && <GrippSyncForm />}
       {grippDetails && grippDetails.has_gripp_token && activePage === "gripp-bots" && <GrippBots bots={grippBots} />}
       {grippDetails && grippDetails.has_gripp_token && activePage === "sync-lists" && <GrippUsersList />}
     </Wrapper>

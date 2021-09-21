@@ -5,6 +5,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useAdminActions, useToaster } from "../../hooks";
 import { DropDocument } from "../../dropzone/DropDocument";
+import Tooltip from "react-tooltip-lite";
 
 const BotAvatarTitle = styled.div`
   display: flex;
@@ -75,6 +76,13 @@ const GrippBotCard = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
+
   return (
     <div className="col-12 col-md-6" key={bot.id}>
       <div className="card border">
@@ -100,13 +108,17 @@ const GrippBotCard = (props) => {
               </span>
             </BotTitleChannels>
           </BotAvatarTitle>
-          <div>
-            <button className="btn btn-primary mr-2" onClick={handleUpdateBot}>
-              <SvgIconFeather icon="edit" />
-            </button>
-            <button className="btn btn-info mr-2" onClick={handleOpenDropzone}>
-              <SvgIconFeather icon="upload" />
-            </button>
+          <div className="d-flex">
+            <Tooltip onToggle={toggleTooltip} content={dictionary.editBotTooltip}>
+              <button className="btn btn-primary mr-2" onClick={handleUpdateBot}>
+                <SvgIconFeather icon="edit" />
+              </button>
+            </Tooltip>
+            <Tooltip onToggle={toggleTooltip} content={dictionary.changeBotImage}>
+              <button className="btn btn-info mr-2" onClick={handleOpenDropzone}>
+                <SvgIconFeather icon="upload" />
+              </button>
+            </Tooltip>
           </div>
         </div>
       </div>
