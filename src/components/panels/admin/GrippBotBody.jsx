@@ -17,6 +17,9 @@ const Wrapper = styled.div`
     justify-content: space-between;
     cursor: pointer;
     background-color: #fafafa;
+    .dark & {
+      background-color: #25282c;
+    }
   }
 `;
 
