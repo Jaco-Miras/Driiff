@@ -509,7 +509,7 @@ const useChannelActions = () => {
     dispatch(
       putChannelUpdate(payload, (err, res) => {
         if (err) {
-          toaster.success(dictionary.toasterGeneraError);
+          toaster.error(dictionary.toasterGeneraError);
         }
         if (res) {
           const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? res.data.profile.name : "";
