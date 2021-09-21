@@ -131,13 +131,13 @@ export const NotificationTimelineItem = (props) => {
   };
 
   const dictionary = {
-    notificationNewPost: _t("NOTIFICATION.NEW_POST", `shared a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
-    notificationComment: _t("NOTIFICATION.COMMENT", `made a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">comment</span> in <span class="text-link">${notification.data.title}`),
-    notificationMention: _t("NOTIFICATION.MENTION", `<span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">mentioned</span> you in`),
+    notificationNewPost: _t("NOTIFICATION.SHARED_A_POST", "shared a post"),
+    notificationComment: _t("NOTIFICATION.MADE_A_COMMENT", "made a comment"),
+    notificationMention: _t("NOTIFICATION.MENTIONED_YOU_IN", "mentioned you in"),
     hasAcceptedProposal: _t("POST.HAS_ACCEPTED_PROPOSAL", "has accepted the proposal."),
     hasRequestedChange: _t("POST.HAS_REQUESTED_CHANGE", "has requested a change."),
     sentProposal: _t("POST.SENT_PROPOSAL", "sent a proposal."),
-    notificationClosedPost: _t("NOTIFICATION.CLOSED_POST", `closed the <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
+    notificationClosedPost: _t("NOTIFICATION.CLOSED_THE_POST", "closed the post"),
     addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
     reminder: _t("NOTIFICATION.REMINDER_ICON", "Reminder"),
     mustRead: _t("NOTIFICATION.MUST_READ", "Must read"),
@@ -147,6 +147,7 @@ export const NotificationTimelineItem = (props) => {
     actionNeeded: _t("POST.ACTION_NEEDED", "Action needed"),
     changeRequested: _t("POST.CHANGE_REQUESTED", "Change requested"),
     accepted: _t("POST.ACCEPTED", "Accepted"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
   };
 
   const renderTitle = () => {
@@ -221,6 +222,24 @@ export const NotificationTimelineItem = (props) => {
           </>
         );
       }
+      case "PST_CMT_REJCT_APPRVL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasRequestedChange}
+            </span>
+          </>
+        );
+      }
+      case "PST_CMT_ACCPT_APPRVL": {
+        return (
+          <>
+            <span>
+              {notification.author.name} {dictionary.hasAcceptedProposal}
+            </span>
+          </>
+        );
+      }
       case "CLOSED_POST": {
         return (
           <>
@@ -276,7 +295,11 @@ export const NotificationTimelineItem = (props) => {
                   notification.type === "WORKSPACE_ADD_MEMBER" ? (
                   <span style={{ fontWeight: "normal" }}>{notification.data && notification.data.title}</span>
                 ) : (
-                  <span style={{ fontWeight: "normal" }}>{stripHtml(notification.data.comment_body)}</span>
+                  <span style={{ fontWeight: "normal" }}>
+                    {notification.data.comment_body && notification.data.comment_body.startsWith("COMMENT_APPROVAL")
+                      ? JSON.parse(notification.data.comment_body.replace("COMMENT_APPROVAL::", "")).message
+                      : stripHtml(notification.data.comment_body)}
+                  </span>
                 )}
               </span>
               <p style={{ fontWeight: "normal", color: "#8B8B8B" }}>

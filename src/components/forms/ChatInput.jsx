@@ -1,11 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { addChatMessage, addQuote, addToChannels, clearChannelDraft, clearQuote, onClickSendButton, postChannelMembers, postChatMessage, putChatMessage, setEditChatMessage, setSelectedChannel } from "../../redux/actions/chatActions";
+import {
+  addChatMessage,
+  addQuote,
+  addToChannels,
+  clearChannelDraft,
+  clearQuote,
+  onClickSendButton,
+  postChannelMembers,
+  postChatMessage,
+  putChatMessage,
+  setEditChatMessage,
+  setSelectedChannel,
+  incomingUpdatedChatMessage,
+} from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster, useCountRenders } from "../hooks";
+import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 import { useHistory } from "react-router-dom";
@@ -160,6 +173,12 @@ const ChatInput = (props) => {
   const [answerId, setAnswerId] = useState(null);
 
   const [quote] = useSelectQuote();
+
+  useEffect(() => {
+    if (quote) {
+      reactQuillRef.current.focus();
+    }
+  }, [quote]);
 
   const toaster = useToaster();
 
@@ -365,7 +384,12 @@ const ChatInput = (props) => {
       if (quote) {
         payload.quote = quote;
       }
-      dispatch(putChatMessage(payloadEdit));
+      dispatch(
+        putChatMessage(payloadEdit, (err, res) => {
+          if (err) return;
+          dispatch(incomingUpdatedChatMessage({ ...payload, id: payloadEdit.message_id, updated_at: { timestamp: timestamp } }));
+        })
+      );
       setEditMode(false);
       setEditMessage(null);
       if (editChatMessage !== null) {

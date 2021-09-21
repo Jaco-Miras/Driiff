@@ -862,6 +862,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
@@ -970,6 +971,33 @@ export default (state = INITIAL_STATE, action) => {
                 is_close: action.data.is_close,
               },
             }),
+          },
+        },
+      };
+    }
+    case "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
           },
         },
       };

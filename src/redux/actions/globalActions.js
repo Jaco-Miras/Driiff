@@ -255,3 +255,19 @@ export function getOverdueToDo(payload, callback) {
 export function getTodayToDo(payload, callback) {
   return dispatchActionToReducer(getToDoService(payload), "GET_TODAY_TO_DO_START", "GET_TODAY_TO_DO_SUCCESS", "GET_TODAY_TO_DO_FAILURE", callback);
 }
+
+export function snoozeTodo(payload, callback) {
+  return SimpleDispatchActionToReducer("REMINDER_SNOOZE", payload, callback);
+}
+
+export function snoozeTodoAll(payload, callback) {
+  return SimpleDispatchActionToReducer("REMINDER_SNOOZE_ALL", payload, callback);
+}
+
+export function removeReminderNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_REMINDER_NOTIFICATION", payload, callback);
+}
+
+export function setNewDriffData(payload, callback) {
+  return SimpleDispatchActionToReducer("SHOW_NEW_DRIFF_BAR", payload, callback);
+}

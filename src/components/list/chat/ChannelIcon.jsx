@@ -100,10 +100,10 @@ const iconColor = (input) => {
 const ChannelIcon = (props) => {
   const { className = "", channel, children = null, onSelectChannel = null, showSlider = true } = props;
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const channelTitle = channel.title ? channel.title.toLowerCase() : "";
+  const channelTitle = channel && channel.title ? channel.title.toLowerCase() : "";
   return (
-    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)} onClick={onSelectChannel}>
-      {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
+    <Wrapper className={`pr-3 ${className}`} iconColor={iconColor(channelTitle)} onClick={onSelectChannel}>
+      {channel && channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <Avatar
           imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
           userId={channel.profile.id}
@@ -115,18 +115,18 @@ const ChannelIcon = (props) => {
           onClick={onSelectChannel}
         />
       )}
-      {channel.type === "GROUP" &&
+      {channel && channel.type === "GROUP" &&
         (channel.icon_link ? (
           <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />
         ) : (
           <Icon icon="users" alt={channel.title} />
         ))}
-      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
-      {channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
-      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
-      {channel.type === "TOPIC" && <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />}
-      {channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye-off" />}
-      {!channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye" />}
+      {channel && channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
+      {channel && channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
+      {channel && channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
+      {channel && channel.type === "TOPIC" && <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />}
+      {channel && channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye-off" />}
+      {channel && !channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye" />}
       {children}
     </Wrapper>
   );

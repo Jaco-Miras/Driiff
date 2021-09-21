@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo } from "../../redux/actions/globalActions";
+import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo, snoozeTodo, snoozeTodoAll, removeReminderNotification } from "../../redux/actions/globalActions";
 import {
   getDoneWorkspaceRemindersCallback,
   getTodayWorkspaceRemindersCallback,
@@ -369,6 +369,18 @@ const useTodoActions = () => {
     );
   };
 
+  const snooze = (payload) => {
+    dispatch(snoozeTodo(payload));
+  };
+
+  const snoozeAll = (payload) => {
+    dispatch(snoozeTodoAll(payload));
+  };
+
+  const removeReminderNotif = (payload) => {
+    dispatch(removeReminderNotification(payload));
+  };
+
   return {
     fetch,
     fetchDetail,
@@ -392,6 +404,9 @@ const useTodoActions = () => {
     fetchWsOverdue,
     fetchToday,
     fetchWsToday,
+    snooze,
+    snoozeAll,
+    removeReminderNotif,
   };
 };
 

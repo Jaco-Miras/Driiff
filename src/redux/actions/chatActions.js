@@ -441,3 +441,19 @@ export function postChatMessageTranslate(payload, callback) {
 export function transferChannelMessages(payload, callback) {
   return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
 }
+
+export function snoozeHuddle(payload, callback) {
+  return SimpleDispatchActionToReducer("HUDDLE_SNOOZE", payload, callback);
+}
+
+export function snoozeSkipHuddle(payload, callback) {
+  return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_SKIP", payload, callback);
+}
+
+export function snoozeHuddleAll(payload, callback) {
+  return SimpleDispatchActionToReducer("HUDDLE_SNOOZE_ALL", payload, callback);
+}
+
+export function removeHuddleNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_HUDDLE_NOTIFICATION", payload, callback);
+}

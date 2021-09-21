@@ -64,3 +64,13 @@ export const formatWeeekDayName = (date) => {
 export const getCurrentTimestamp = () => {
   return Math.round(+new Date() / 1000);
 };
+
+export const getTimestampInMins = (mins = 2) => {
+  //var mins = mins;
+  var ddate = new Date();
+  return Math.round(+new Date(ddate.getTime() + mins * 60000) / 1000);
+};
+
+export const convertUTCDateToLocalDate = (date) => {
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
+};

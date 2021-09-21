@@ -119,14 +119,14 @@ const MainBody = styled.div`
         padding: 0.25rem 0.5rem 0.25rem 0.25rem;
         display: flex;
         justify-content: flex-start;
-        align-items: start;
+        // align-items: start;
 
-        .avatar {
-          min-width: 1.5rem;
-          max-width: 1.5rem;
-          width: 1.5rem;
-          height: 1.5rem;
-        }
+        // .avatar {
+        //   min-width: 1.5rem;
+        //   max-width: 1.5rem;
+        //   width: 1.5rem;
+        //   height: 1.5rem;
+        // }
         .name {
           display: block;
           white-space: nowrap;
@@ -260,7 +260,7 @@ const PostFilesTrashedContainer = styled.div`
 
 const PostDetail = (props) => {
   const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, isMember } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
@@ -412,6 +412,7 @@ const PostDetail = (props) => {
   //const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   useEffect(() => {
+    readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed && !disableMarkAsRead()) {
       postActions.visit({

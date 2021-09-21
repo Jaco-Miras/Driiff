@@ -119,6 +119,7 @@ const PostInput = forwardRef((props, ref) => {
     mainInput,
     imageLoading = null,
     setImageLoading = null,
+    isApprover = false,
   } = props;
 
   const dispatch = useDispatch();
@@ -289,8 +290,11 @@ const PostInput = forwardRef((props, ref) => {
       setEditMode(false);
       setEditMessage(null);
     } else {
-      if (props.isApprover) {
+      if (isApprover && mainInput) {
         payload.has_rejected = 1;
+      }
+      if (isApprover && !mainInput) {
+        payload.has_reject = 1;
       }
       commentActions.create(payload, onSubmitCallback);
     }

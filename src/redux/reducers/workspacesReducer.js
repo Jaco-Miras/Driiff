@@ -1365,7 +1365,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.workspacePosts[rid].posts && {
                   posts: {
                     ...Object.keys(state.workspacePosts[rid].posts)
-                      .filter((key) => parseInt(key) !== action.data.id)
+                      .filter((key) => parseInt(key) !== action.data.post_id)
                       .reduce((post, id) => {
                         post[id] = { ...state.workspacePosts[rid].posts[id] };
                         return post;
@@ -1375,6 +1375,23 @@ export default (state = INITIAL_STATE, action) => {
               };
             }
             return res;
+          }, {}),
+        },
+        workspaceTimeline: {
+          ...state.workspaceTimeline,
+          ...action.data.recipient_ids.reduce((acc, id) => {
+            if (state.workspaceTimeline[id]) {
+              acc[id] = {
+                ...state.workspaceTimeline[id],
+                timeline: Object.values(state.workspaceTimeline[id].timeline)
+                  .filter((timeline) => !(timeline.tag === "POST" && timeline.item && timeline.item.id === action.data.post_id))
+                  .reduce((pacc, t) => {
+                    pacc[t.id] = t;
+                    return pacc;
+                  }, {}),
+              };
+            }
+            return acc;
           }, {}),
         },
       };
@@ -2499,6 +2516,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;

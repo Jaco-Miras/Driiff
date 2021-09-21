@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { PostItemPanel } from "./index";
+import { useTranslationActions } from "../../hooks";
 
 const PostsBtnWrapper = styled.div`
   margin-bottom: 10px;
@@ -49,10 +50,47 @@ const ReadPostsHeader = styled.li`
   }
 `;
 
+const EmptyState = styled.div`
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid #ebebeb;
+  border-top: none;
+
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+  h5 {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+
+  button {
+    width: auto !important;
+    margin: 2rem auto;
+  }
+`;
+
 const Posts = (props) => {
   const { actions, dictionary, filter, isExternalUser, loading, posts, search, workspace } = props;
 
   const componentIsMounted = useRef(true);
+
+  const { _t } = useTranslationActions();
+
+  let emptyStatesHeader = [_t("POSTS.NO_ITEMS_FOUND_HEADER_1", "WOO!"), _t("POSTS.NO_ITEMS_FOUND_HEADER_2", "Queue’s empty, time to dance!")];
+
+  let emptyStatesText = [_t("POSTS.NO_ITEMS_FOUND_TEXT_1", "Nothing here but me… 👻"), _t("POSTS.NO_ITEMS_FOUND_TEXT_2", "Job well done!💃🕺")];
+
+  const [inDexer, setInDexer] = useState(Math.floor(Math.random() * emptyStatesHeader.length));
 
   const readPosts = posts.filter((p) => p.is_unread === 0);
   const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1);
@@ -134,6 +172,10 @@ const Posts = (props) => {
     if (componentIsMounted.current) setCheckedPosts([]);
   }, [filter]);
 
+  useEffect(() => {
+    setInDexer(Math.floor(Math.random() * emptyStatesHeader.length));
+  }, [showPosts]);
+
   return (
     <>
       {(filter === "all" || filter === "inbox") && checkedPosts.length > 0 && (
@@ -211,6 +253,12 @@ const Posts = (props) => {
                     );
                   })}
                 </UnreadPostsContainer>
+              )}
+              {showPosts.showUnread && unreadPosts.length === 0 && (
+                <EmptyState>
+                  <h3>{emptyStatesHeader[inDexer]}</h3>
+                  <h5>{emptyStatesText[inDexer]} </h5>
+                </EmptyState>
               )}
               <div>
                 <ReadPostsHeader className={"list-group-item post-item-panel pl-3 other-posts-header"} onClick={handleShowRead} showPosts={showPosts.showRead}>

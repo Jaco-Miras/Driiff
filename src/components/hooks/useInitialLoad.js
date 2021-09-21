@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getNotifications } from "../../redux/actions/notificationActions";
+import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel } from "../../redux/actions/chatActions";
@@ -26,7 +26,12 @@ const useInitialLoad = () => {
       dispatch(getDrafts());
       //dispatch(getUnreadPostEntries());
       if (Object.keys(notifications).length === 0) {
-        dispatch(getNotifications({ skip: 0, limit: 50 }));
+        dispatch(
+          getAllSnoozedNotification({}, () => {
+            dispatch(getNotifications({ skip: 0, limit: 50 }));
+            dispatch(getHuddleChatbot({}));
+          })
+        );
       }
       dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
       dispatch(getQuickLinks());
@@ -37,7 +42,6 @@ const useInitialLoad = () => {
     dispatch(getAllRecipients());
     dispatch(getCompanyChannel());
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
-    dispatch(getHuddleChatbot({}));
   }, []);
 };
 

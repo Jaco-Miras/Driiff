@@ -131,6 +131,12 @@ const WrapperDiv = styled(InputGroup)`
       border-color: ${(props) => (props.valid === false ? "red" : "#cccccc")}!important;
     }
   }
+  .workspace-radio-input {
+    display: flex;
+    > div:first-child {
+      margin-right: 1rem;
+    }
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -204,11 +210,6 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
-// const LockIcon = styled(SvgIconFeather)`
-//   width: 1rem;
-//   height: 1rem;
-// `;
-
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
@@ -232,7 +233,7 @@ const CreateEditWorkspaceModal = (props) => {
   //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
   const [form, setForm] = useState({
-    is_private: false,
+    is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
     icon_link: item && item.channel ? item.channel.icon_link : null,
@@ -374,6 +375,7 @@ const CreateEditWorkspaceModal = (props) => {
     save: _t("POST.SAVE", "Save"),
     sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
     sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
+    publicWorkspace: _t("LABEL.PUBLIC_WORKSPACE", "Public workspace"),
   };
 
   const _validateName = useCallback(() => {
@@ -427,6 +429,22 @@ const CreateEditWorkspaceModal = (props) => {
     setForm((prevState) => {
       return { ...prevState, [name]: checked };
     });
+  };
+
+  const toggleWorkspaceType = (e, value) => {
+    let checked = null;
+    if (form["is_private"] === null) {
+      checked = value === "is_public" ? false : true;
+    } else {
+      if (form["is_private"] === true && value === "is_private") return;
+      if (form["is_private"] === false && value === "is_public") return;
+      checked = !form["is_private"];
+    }
+    if (checked !== null) {
+      setForm((prevState) => {
+        return { ...prevState, is_private: checked };
+      });
+    }
   };
 
   const folderOptions = Object.values(folders)
@@ -504,7 +522,6 @@ const CreateEditWorkspaceModal = (props) => {
         ...prevState,
         selectedExternals: externals,
       }));
-      //setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
       setInvitedExternals(invitedExternals.filter((ex) => e.some((e) => e.email === ex.email)));
     }
   };
@@ -670,21 +687,8 @@ const CreateEditWorkspaceModal = (props) => {
     );
   };
 
-  // const confirmExternalUsers = () => {
-  //   const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-  //   if (externalEmails.length) {
-  //     var answer = window.confirm(dictionary.externalUserConfirmation);
-  //     if (answer) {
-  //       handleConfirm();
-  //     }
-  //   } else {
-  //     handleConfirm();
-  //   }
-  // };
-
   const handleConfirm = () => {
     if (loading) return;
-    //if (Object.values(valid).filter((v) => !v).length) return;
 
     const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
     const member_ids = selectedMembers.map((u) => u.id);
@@ -698,23 +702,6 @@ const CreateEditWorkspaceModal = (props) => {
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
     };
-
-    //const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    // if (invitedEmails.length && form.has_externals) {
-    //   if (mode === "edit") {
-    //     payload = {
-    //       ...payload,
-    //       new_external_emails: invitedEmails,
-    //       is_external: 1,
-    //     };
-    //   } else {
-    //     payload = {
-    //       ...payload,
-    //       external_emails: invitedEmails,
-    //       is_external: 1,
-    //     };
-    //   }
-    // }
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
@@ -845,7 +832,11 @@ const CreateEditWorkspaceModal = (props) => {
         }
       };
 
-      if ((item.is_lock !== payload.is_lock && payload.is_lock === 1) || form.has_externals) {
+      if (
+        (item.is_lock !== payload.is_lock && payload.is_lock === 1) ||
+        (form.has_externals && payload.new_externals && payload.new_externals.length) ||
+        (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length)
+      ) {
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
@@ -972,7 +963,7 @@ const CreateEditWorkspaceModal = (props) => {
         );
       };
 
-      if (payload.is_lock === 1 || form.has_externals) {
+      if (payload.is_lock === 1 || (form.has_externals && payload.external_emails && payload.external_emails.length) || (form.has_externals && form.selectedExternals.length)) {
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
@@ -1088,15 +1079,10 @@ const CreateEditWorkspaceModal = (props) => {
     setShowIconDropzone(false);
   };
 
-  // const handleShowIconDropzone = () => {
-  //   setShowIconDropzone(true);
-  // };
-
   const dropAction = (acceptedFiles) => {
     let selectedFiles = [];
     acceptedFiles.forEach((file) => {
       let timestamp = Math.floor(Date.now());
-      //let shortFileId = require("shortid").generate();
       if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
         selectedFiles.push({
           rawFile: file,
@@ -1247,6 +1233,8 @@ const CreateEditWorkspaceModal = (props) => {
               name: m.name,
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
+              middle_name: users[m.id] ? users[m.id].middle_name : "",
+              last_name: users[m.id] ? users[m.id].last_name : "",
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               has_accepted: m.has_accepted,
@@ -1262,6 +1250,8 @@ const CreateEditWorkspaceModal = (props) => {
               name: m.name,
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
+              middle_name: users[m.id] ? users[m.id].middle_name : "",
+              last_name: users[m.id] ? users[m.id].last_name : "",
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               email: m.email,
@@ -1650,13 +1640,18 @@ const CreateEditWorkspaceModal = (props) => {
         )}
         <WrapperDiv className="action-wrapper">
           <Label />
-          <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-            {dictionary.lockWorkspace}
-          </CheckBox>
+          <RadioInputWrapper className="workspace-radio-input">
+            <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
+              {dictionary.lockWorkspace}
+            </RadioInput>
+            <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
+              {dictionary.publicWorkspace}
+            </RadioInput>
+          </RadioInputWrapper>
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0}>
+          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>
