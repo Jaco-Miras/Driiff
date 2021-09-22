@@ -22,6 +22,7 @@ import {
   PostModal,
   CreateAdminBotModal,
   UpdateAdminBotModal,
+  TrialEndedModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -97,7 +98,8 @@ const ModalPanel = () => {
             return <CreateAdminBotModal key={modal.type} />;
           case "update_bot":
             return <UpdateAdminBotModal key={modal.type} data={modal} />;
-
+          case "trial_ended_modal":
+            return <TrialEndedModal key={modal.type} data={modal} />;
           default:
             return null;
         }

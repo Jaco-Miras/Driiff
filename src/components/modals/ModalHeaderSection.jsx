@@ -18,16 +18,18 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const ModalHeaderSection = (props) => {
-  const { className = "", children, toggle, ...otherProps } = props;
+  const { className = "", children, toggle, showCloseButton = true, ...otherProps } = props;
 
   return (
     <Wrapper className={`model-header-section modal-header ${className}`} {...otherProps}>
       <h5 className="modal-title">{children}</h5>
-      <button type="button" onClick={toggle} className="close" aria-label="Close">
-        <span aria-hidden="true">
-          <Icon icon="x" />
-        </span>
-      </button>
+      {showCloseButton && (
+        <button type="button" onClick={toggle} className="close" aria-label="Close">
+          <span aria-hidden="true">
+            <Icon icon="x" />
+          </span>
+        </button>
+      )}
     </Wrapper>
   );
 };

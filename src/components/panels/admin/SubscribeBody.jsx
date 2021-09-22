@@ -143,6 +143,7 @@ const SubscribeBody = () => {
     proFeatureDescription: _t("PRICING.FEATURES_PRO_DESCRIPTION", "Gain access to additional useful features"),
     enterpriseFeatureDescription: _t("PRICING.FEATURES_ENTERPRISE_DESCRIPTION", "Spice up your Driff by integrating your favorite software tools."),
     trialSubscriptionLabel: _t("PRICING.TRIAL_SUBSCRIPTION_LABEL", "Trial subscription will end:"),
+    trialSubscriptionEndedLabel: _t("PRICING.TRIAL_SUBSCRIPTION_ENDED_LABEL", "Your trial subscription has ended"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -201,6 +202,7 @@ const SubscribeBody = () => {
           {dictionary.trialSubscriptionLabel} <strong>{timeFormat.fromNow(subscriptions.trial_ends_at.timestamp)}</strong>
         </label>
       )}
+      {subscriptions && subscriptions.status === "canceled" && <label className="trial-label">{dictionary.trialSubscriptionEndedLabel}</label>}
       <div className="row">
         <div className="col-12 col-md-4">
           <div className="card">
