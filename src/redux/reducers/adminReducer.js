@@ -25,7 +25,7 @@ const INITIAL_STATE = {
     grippToken: null,
     grippApiUrl: null,
   },
-  subsrcriptions: null,
+  subscriptions: null,
 };
 
 export default (state = INITIAL_STATE, action) => {

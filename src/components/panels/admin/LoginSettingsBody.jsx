@@ -57,6 +57,7 @@ const LoginSettingsBody = () => {
     magicLinkInfo: _t("ADMIN.MAGIC_LINK_INFO", "Show/Hide magic link button"),
     signupInfo: _t("ADMIN.SIGN_UP_INFO", "Show/Hide register button"),
     allowedDomainsInfo: _t("ADMIN.ALLOWED_DOMAINS_INFO", "Domain list allowed when signing up in driff"),
+    loginSettingsDescription: _t("ADMIN.LOGIN_SETTINGS_DESCRIPTION", "Edit login/signup settings for Driff. More info can be found here (External link icon)"),
   };
 
   const componentIsMounted = useRef(true);
@@ -217,7 +218,8 @@ const LoginSettingsBody = () => {
 
   return (
     <Wrapper>
-      <h4 className="mb-3">{dictionary.loginSettings}</h4>
+      <h4>{dictionary.loginSettings}</h4>
+      <h6 className="mb-3">{dictionary.loginSettingsDescription}</h6>
       {!loginFetched && (
         <LoaderContainer className={"initial-load"}>
           <Loader />

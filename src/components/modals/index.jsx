@@ -23,3 +23,4 @@ export { default as PostModal } from "./PostModal";
 export { default as ZoomInviteModal } from "./ZoomInviteModal";
 export { default as CreateAdminBotModal } from "./CreateAdminBotModal";
 export { default as UpdateAdminBotModal } from "./UpdateAdminBotModal";
+export { default as TrialEndedModal } from "./TrialEndedModal";

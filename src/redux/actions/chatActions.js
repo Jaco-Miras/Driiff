@@ -470,6 +470,10 @@ export function updateCompanyChannel(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMPANY_CHANNEL", payload, callback);
 }
 
+export function transferChannelMessages(payload, callback) {
+  return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
+}
+
 export function snoozeHuddle(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE", payload, callback);
 }
@@ -488,10 +492,6 @@ export function generateZoomSignature(payload, callback) {
 
 export function createZoomMeeting(payload, callback) {
   return dispatchActionToReducer(createZoomMeetingService(payload), "CREATE_ZOOM_MEETING_START", "CREATE_ZOOM_MEETING_SUCCESS", "CREATE_ZOOM_MEETING_FAILURE", callback);
-}
-
-export function transferChannelMessages(payload, callback) {
-  return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
 }
 
 export function removeHuddleNotification(payload, callback) {

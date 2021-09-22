@@ -10,7 +10,7 @@ import SocketListeners from "../components/socket/socketListeners";
 import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
 import { useIdleTimer } from "react-idle-timer";
-import { setIdleStatus } from "../redux/actions/globalActions";
+import { setIdleStatus, addToModals } from "../redux/actions/globalActions";
 
 const MainContent = styled.div``;
 
@@ -26,6 +26,7 @@ const MainLayout = (props) => {
   useSocketConnection();
   useInitialLoad();
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
+
   const { path } = useRouteMatch();
   const { displayWelcomeBanner } = useUserActions();
   const uDriff = useDriff();
@@ -37,6 +38,7 @@ const MainLayout = (props) => {
     likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
   };
 
+  const subscriptions = useSelector((state) => state.admin.subscriptions);
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
@@ -110,6 +112,15 @@ const MainLayout = (props) => {
     onActive: handleOnActive,
     debounce: 250,
   });
+
+  useEffect(() => {
+    // if (subscriptions && subscriptions.status === "canceled" && history.location.pathname !== "/admin-settings/subscription/subscribe") {
+    //   let payload = {
+    //     type: "trial_ended_modal",
+    //   };
+    //   dispatch(addToModals(payload));
+    // }
+  }, []);
 
   return (
     <>
