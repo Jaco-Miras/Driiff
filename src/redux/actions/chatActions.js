@@ -438,6 +438,10 @@ export function postChatMessageTranslate(payload, callback) {
   return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }
 
+export function transferChannelMessages(payload, callback) {
+  return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
+}
+
 export function snoozeHuddle(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE", payload, callback);
 }
