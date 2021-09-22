@@ -1255,10 +1255,10 @@ export default function (state = INITIAL_STATE, action) {
       }
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      let teamPostNotif = [];
-      if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
-        teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
-      }
+      // let teamPostNotif = [];
+      // if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
+      //   teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
+      // }
       return {
         ...state,
         channels: {
@@ -1288,7 +1288,7 @@ export default function (state = INITIAL_STATE, action) {
                       reactions: [],
                       unfurls: [],
                     },
-                    ...teamPostNotif,
+                    //...teamPostNotif,
                   ],
                 }),
                 icon_link: action.data.channel.icon_link,
@@ -1312,7 +1312,7 @@ export default function (state = INITIAL_STATE, action) {
                 replies:
                   action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
                     ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                    : state.channels[action.data.team_channel.id].replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
+                    : state.channels[action.data.team_channel.id].replies,
                 icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
                 members: action.data.members
@@ -1351,7 +1351,7 @@ export default function (state = INITIAL_STATE, action) {
                     reactions: [],
                     unfurls: [],
                   },
-                  ...teamPostNotif,
+                  //...teamPostNotif,
                 ],
               }),
               icon_link: action.data.channel.icon_link,
@@ -1373,7 +1373,7 @@ export default function (state = INITIAL_STATE, action) {
               replies:
                 action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
                   ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                  : state.selectedChannel.replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
+                  : state.selectedChannel.replies,
               icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
               members: action.data.members
