@@ -698,18 +698,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let updatedWorkspaces = { ...state.workspaces };
       let updatedSearch = { ...state.search };
-      let activeTopic = null;
-      if (Object.keys(updatedWorkspaces).length) {
-        Object.values(updatedWorkspaces).forEach((ws) => {
-          if (ws.channel.id && ws.channel.id === action.data.channel_id) {
-            updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, ...action.data.users];
-            updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, ...action.data.users.map((u) => u.id)];
-            activeTopic = updatedWorkspaces[ws.id];
-          }
-        });
-      }
       if (updatedSearch.results.length) {
         updatedSearch.results = updatedSearch.results.map((item) => {
           if (item.channel.id === action.data.channel_id) {
@@ -724,8 +713,22 @@ export default (state = INITIAL_STATE, action) => {
       }
       return {
         ...state,
-        workspaces: updatedWorkspaces,
-        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id && activeTopic ? activeTopic : state.activeTopic,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (action.data.data.workspace_data.topic && action.data.data.workspace_data.topic.id === ws.id) {
+            acc[ws.id] = { ...ws, members: [...ws.members, ...action.data.users], member_ids: [...ws.member_ids, ...action.data.users.map((u) => u.id)] };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic:
+          state.activeTopic && action.data.data.workspace_data.topic && action.data.data.workspace_data.topic.id === state.activeTopic.id
+            ? {
+                ...state.activeTopic,
+                members: [...state.activeTopic.members, ...action.data.users],
+                member_ids: [...state.activeTopic.member_ids, ...action.data.users.map((u) => u.id)],
+              }
+            : state.activeTopic,
         search: updatedSearch,
       };
     }

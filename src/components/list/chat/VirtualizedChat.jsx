@@ -413,7 +413,7 @@ const VirtualizedChat = (props) => {
       }
     })
     .filter((m) => {
-      if (m.last_visited_at) {
+      if (m.last_visited_at && selectedChannel.last_reply) {
         return m.last_visited_at.timestamp >= selectedChannel.last_reply.created_at.timestamp;
       } else {
         return false;
