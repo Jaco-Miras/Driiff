@@ -90,3 +90,7 @@ export function incomingSnoozedNotification(payload, callback) {
 export function incomingSnoozedAllNotification(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_SNOOZED_ALL_NOTIFICATION", payload, callback);
 }
+
+export function incomingReadNotifications(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_READ_NOTIFICATIONS", payload, callback);
+}

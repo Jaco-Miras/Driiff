@@ -34,6 +34,7 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  transferChannelMessages,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -164,7 +165,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 
@@ -182,7 +183,7 @@ class SocketListeners extends Component {
   }
 
   refetchPosts = () => {
-    this.props.refetchPosts();
+    this.props.refetchPosts({ skip: 0, limit: 10 });
   };
 
   refetchPostComments = () => {
@@ -252,6 +253,9 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".notification-read", (e) => {
+        this.props.incomingReadNotifications(e);
+      })
       .listen(".delete-notification", (e) => {
         const elemId = `notification__${e.notification_id}`;
         if (toast.isActive(elemId)) toast.dismiss(elemId);
@@ -752,6 +756,13 @@ class SocketListeners extends Component {
           }
           case "POST_DELETE": {
             this.props.incomingDeletedPost(e);
+            if (e.notification_ids) {
+              const ids = Array.from(e.notification_ids);
+              ids.forEach((id) => {
+                const elemId = "notification__" + id;
+                toast.isActive(elemId) && toast.dismiss(elemId);
+              });
+            }
             break;
           }
           case "POST_COMMENT_UPDATE": {
@@ -1310,27 +1321,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              },
+            });
           }
 
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1340,9 +1384,13 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-workspace", (e) => {
+        if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
+          this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
@@ -1427,27 +1475,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              },
+            });
           }
 
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1465,27 +1546,59 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              },
+            });
           }
-
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1495,7 +1608,14 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-lock-workspace", (e) => {
-        this.props.incomingUpdatedWorkspaceFolder(e);
+        if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
+          this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
+        this.props.incomingUpdatedWorkspaceFolder({
+          ...e,
+          is_shared: e.is_shared,
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
+        });
         if (e.type === "WORKSPACE") {
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
@@ -1957,11 +2077,13 @@ function mapDispatchToProps(dispatch) {
     incomingFollowPost: bindActionCreators(incomingFollowPost, dispatch),
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
+    transferChannelMessages: bindActionCreators(transferChannelMessages, dispatch),
     getNotifications: bindActionCreators(getNotifications, dispatch),
     incomingSnoozedNotification: bindActionCreators(incomingSnoozedNotification, dispatch),
     incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
     removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
     setNewDriffData: bindActionCreators(setNewDriffData, dispatch),
+    incomingReadNotifications: bindActionCreators(incomingReadNotifications, dispatch),
   };
 }
 
