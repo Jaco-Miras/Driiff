@@ -129,3 +129,17 @@ export function createCheckoutSession(payload) {
     data: payload,
   });
 }
+
+export function getStripePricing(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/stripe/pricing",
+  });
+}
+
+export function getStripeProducts(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/stripe/products",
+  });
+}

@@ -15,12 +15,14 @@ const Wrapper = styled.div`
 `;
 
 const SubscriptionBody = () => {
-  const { setAdminFilter } = useAdminActions();
+  const { setAdminFilter, fetchStripePricing, fetchStripeProducts } = useAdminActions();
   const componentIsMounted = useRef(true);
 
   const filters = useSelector((state) => state.admin.filters);
 
   useEffect(() => {
+    fetchStripePricing();
+    fetchStripeProducts();
     setAdminFilter({ filters: { ...filters, subscription: true } });
     return () => {
       componentIsMounted.current = false;

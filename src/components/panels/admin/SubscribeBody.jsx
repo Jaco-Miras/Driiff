@@ -101,6 +101,9 @@ const CardFeatures = styled.div`
   &.enterprise-feat li:nth-child(1) {
     font-weight: bold;
   }
+  &.pro-feat label {
+    min-height: 42px;
+  }
 `;
 
 const CardFooter = styled.div`
@@ -108,7 +111,8 @@ const CardFooter = styled.div`
   border: 1px solid #e6e6e6;
   border-radius: 0 0 8px 8px;
   border-top: 0;
-  button.btn-primary {
+  button.btn-primary,
+  button.btn-secondary {
     width: 100%;
     text-align: center;
     justify-content: center;
@@ -123,6 +127,7 @@ const SubscribeBody = () => {
   const { setAdminFilter, stripeCheckout } = useAdminActions();
   const subscriptions = useSelector((state) => state.admin.subscriptions);
   const componentIsMounted = useRef(true);
+  const stripe = useSelector((state) => state.admin.stripe);
 
   const dictionary = {
     subscriptionLabel: _t("ADMIN.SUBSCRIPTION_LABEL", "Subscription"),
@@ -144,6 +149,8 @@ const SubscribeBody = () => {
     enterpriseFeatureDescription: _t("PRICING.FEATURES_ENTERPRISE_DESCRIPTION", "Spice up your Driff by integrating your favorite software tools."),
     trialSubscriptionLabel: _t("PRICING.TRIAL_SUBSCRIPTION_LABEL", "Trial subscription will end:"),
     trialSubscriptionEndedLabel: _t("PRICING.TRIAL_SUBSCRIPTION_ENDED_LABEL", "Your trial subscription has ended"),
+    activeSubscriptionLabel: _t("PRICING.ACTIVE_SUBSCRIPTION_LABEL", "You are currently subscribed to:"),
+    currentPlanBtn: _t("PRICING.BUTTON_CURRENT_PLAN", "Current plan"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -194,6 +201,9 @@ const SubscribeBody = () => {
     });
   };
 
+  const currentPricing = stripe.pricing.find((p) => subscriptions && subscriptions.plan === p.id);
+  const currentPlan = currentPricing ? stripe.products.find((p) => p.id === currentPricing.product) : null;
+
   return (
     <Wrapper>
       <h4 className="mb-3">{dictionary.subscriptionLabel}</h4>
@@ -203,6 +213,13 @@ const SubscribeBody = () => {
         </label>
       )}
       {subscriptions && subscriptions.status === "canceled" && <label className="trial-label">{dictionary.trialSubscriptionEndedLabel}</label>}
+      {subscriptions && subscriptions.status === "active" && currentPlan && (
+        <label className="trial-label">
+          {dictionary.activeSubscriptionLabel}
+          {currentPlan && <strong>{currentPlan.name}</strong>}
+          {" plan"}
+        </label>
+      )}
       <div className="row">
         <div className="col-12 col-md-4">
           <div className="card">
@@ -256,10 +273,17 @@ const SubscribeBody = () => {
                   </li>
                 </ul>
               </CardFeatures>
+
               <CardFooter>
-                <button className="btn btn-primary" onClick={() => handleSubscribe("standard")}>
-                  {dictionary.select}
-                </button>
+                {subscriptions && subscriptions.status === "active" && currentPricing && currentPricing.id === process.env.REACT_APP_STANDARD_PRICE_ID ? (
+                  <button className="btn btn-secondary">{dictionary.currentPlanBtn}</button>
+                ) : stripe.pricingFetched && stripe.productsFetched ? (
+                  <button className="btn btn-primary" onClick={() => handleSubscribe("standard")}>
+                    {dictionary.select}
+                  </button>
+                ) : (
+                  <button className="btn btn-primary">Loading...</button>
+                )}
               </CardFooter>
             </div>
           </div>
@@ -325,9 +349,15 @@ const SubscribeBody = () => {
                 </ul>
               </CardFeatures>
               <CardFooter>
-                <button className="btn btn-primary" onClick={() => handleSubscribe("pro")}>
-                  {dictionary.select}
-                </button>
+                {subscriptions && subscriptions.status === "active" && currentPricing && currentPricing.id === process.env.REACT_APP_PRO_PRICE_ID ? (
+                  <button className="btn btn-secondary">{dictionary.currentPlanBtn}</button>
+                ) : stripe.pricingFetched && stripe.productsFetched ? (
+                  <button className="btn btn-primary" onClick={() => handleSubscribe("pro")}>
+                    {dictionary.select}
+                  </button>
+                ) : (
+                  <button className="btn btn-primary">Loading...</button>
+                )}
               </CardFooter>
             </div>
           </div>
