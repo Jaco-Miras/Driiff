@@ -33,26 +33,15 @@ const SubscribeSuccess = () => {
   const { _t } = useTranslationActions();
 
   const { setAdminFilter } = useAdminActions();
+  const subscriptions = useSelector((state) => state.admin.subscriptions);
   const componentIsMounted = useRef(true);
+  const stripe = useSelector((state) => state.admin.stripe);
+
+  const currentPricing = stripe.pricing.find((p) => subscriptions && subscriptions.plan === p.id);
+  const currentPlan = currentPricing ? stripe.products.find((p) => p.id === currentPricing.product) : null;
 
   const dictionary = {
-    subscriptionLabel: _t("ADMIN.SUBSCRIPTION_LABEL", "Subscription"),
-    select: _t("BUTTON.SELECT", "Select"),
-    contactUs: _t("BUTTON.CONTACT_US", "Contact us"),
-    workspaces: _t("PRICING.FEATURE_WORKSPACES", "Workspaces"),
-    realTimeChat: _t("PRICING.FEATURE_REAL_TIME_CHAT", "Real time chat"),
-    messageBoard: _t("PRICING.FEATURE_MESSAGE_BOARD", "Message board"),
-    todoLists: _t("PRICING.FEATURE_TODO_LISTS", "To-do lists"),
-    fileStorage: _t("PRICING.FEATURE_FILE_STORAGE", "File storage"),
-    emailNotifications: _t("PRICING.FEATURE_EMAIL_NOTIFICATIONS", "Email notifications"),
-    unlimitedProjects: _t("PRICING.FEATURE_UNLIMITED_PROJECTS", "Unlimited projects"),
-    unlimitedUsers: _t("PRICING.FEATURE_UNLIMITED_USERS", "Unlimited users"),
-    zoomVideoMeetings: _t("PRICING.FEATURES_ZOOM_VIDEO_MEETINGS", "ZOOM video meetings"),
-    automaticTranslations: _t("PRICING.FEATURES_AUTOMATIC_TRANSLATIONS", "Automatic translations"),
-    customSoftwareIntegration: _t("PRICING.FEATURES_CUSTOM_SOFTWARE_INTEGRATION", "Custom software integration"),
-    standardFeatureDescription: _t("PRICING.FEATURES_STANDARD_DESCRIPTION", "Collaborate effectively with anyone inside or outside your team or company"),
-    proFeatureDescription: _t("PRICING.FEATURES_PRO_DESCRIPTION", "Gain access to additional useful features"),
-    enterpriseFeatureDescription: _t("PRICING.FEATURES_ENTERPRISE_DESCRIPTION", "Spice up your Driff by integrating your favorite software tools."),
+    successSubscriptionLabel: _t("PRICING.SUCCESS_SUBSCRIPTION_LABEL", "Congrats! You have successfully subscribed to"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -68,7 +57,11 @@ const SubscribeSuccess = () => {
     <Wrapper>
       <EmptyState>
         <SvgEmptyState icon={1} />
-        <p>You have successfully subscribed to "pricing plan"</p>
+        {subscriptions && subscriptions.status === "active" && stripe.pricingFetched && stripe.productsFetched && currentPlan && (
+          <p>
+            {dictionary.successSubscriptionLabel} {currentPlan && currentPlan.name}
+          </p>
+        )}
       </EmptyState>
     </Wrapper>
   );

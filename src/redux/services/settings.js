@@ -1,4 +1,4 @@
-import {apiCall, apiNoTokenCall} from "./index";
+import { apiCall, apiNoTokenCall } from "./index";
 
 export function getDriffCompSettings(payload) {
   return apiNoTokenCall({
@@ -36,6 +36,6 @@ export function putCompanyUpdateName(payload) {
   return apiCall({
     method: "PUT",
     url: "/v2/company/update-name",
-    data: payload
+    data: payload,
   });
 }
