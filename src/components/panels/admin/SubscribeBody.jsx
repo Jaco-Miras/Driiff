@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useAdminActions, useTranslationActions, useTimeFormat } from "../../hooks";
 import { SvgIconFeather } from "../../common";
-
+import { getBaseUrl } from "../../../helpers/slugHelper";
 const Wrapper = styled.div`
   padding: 1rem;
   > div {
@@ -182,8 +182,8 @@ const SubscribeBody = () => {
     const standardPriceId = process.env.REACT_APP_STANDARD_PRICE_ID;
     const proPriceId = process.env.REACT_APP_PRO_PRICE_ID;
     const payload = {
-      success_url: "https://demo24.drevv.com/admin-settings/subscription/success",
-      cancel_url: "https://demo24.drevv.com/admin-settings/subscription/subscribe",
+      success_url: `${getBaseUrl()}/admin-settings/subscription/success`,
+      cancel_url: `${getBaseUrl()}/admin-settings/subscription/subscribe`,
       payment_method_types: ["card"],
       mode: "subscription",
       line_items: [
