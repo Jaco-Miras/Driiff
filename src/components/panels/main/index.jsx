@@ -8,3 +8,4 @@ export { default as MainSidebarLinks } from "./MainSidebarLinks";
 export { default as NewModalButtons } from "./NewModalButtons";
 export { default as MainSnoozePanel } from "./MainSnoozePanel";
 export { default as MainBackButton } from "./MainBackButton";
+export { default as TrialEndedPanel } from "./TrialEndedPanel";

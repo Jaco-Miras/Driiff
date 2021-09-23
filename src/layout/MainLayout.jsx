@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslationActions } from "../components/hooks";
-import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
+import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel, TrialEndedPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
 import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
 import { useIdleTimer } from "react-idle-timer";
-import { setIdleStatus, addToModals } from "../redux/actions/globalActions";
+import { setIdleStatus } from "../redux/actions/globalActions";
 
 const MainContent = styled.div``;
 
@@ -56,6 +56,7 @@ const MainLayout = (props) => {
   } = useSettings();
 
   const history = useHistory();
+  const location = useLocation();
 
   const handleSoundPlay = () => {
     if (sound_enabled && refs.audio.current) {
@@ -120,6 +121,7 @@ const MainLayout = (props) => {
     //   };
     //   dispatch(addToModals(payload));
     // }
+    console.log(location, path);
   }, []);
 
   return (
@@ -148,11 +150,14 @@ const MainLayout = (props) => {
       {mounted && (
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
-          <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
-            <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
-          </Switch>
-          <MainSnoozePanel />
+          {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
+            <Switch>
+              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+              <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
+            </Switch>
+          )}
+          {subscriptions && subscriptions.status === "canceled" && path !== "/admin-settings" && <TrialEndedPanel />}
+          {subscriptions && subscriptions.status === "active" && <MainSnoozePanel />}
         </MainContent>
       )}
       <MobileOverlay />
