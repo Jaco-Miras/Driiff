@@ -16,6 +16,8 @@ import {
   postSyncGrippUsers as postSyncGrippUsersService,
   createCheckoutSession as createCheckoutSessionService,
   resetGrippUsersImage as resetGrippUsersImageService,
+  getStripePricing as getStripePricingService,
+  getStripeProducts as getStripeProductsService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -88,4 +90,16 @@ export function resetGrippUsersImage(payload, callback) {
 
 export function updateAllowedDomains(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATED_ALLOWED_DOMAINS", payload, callback);
+}
+
+export function incomingUpdatedSubscription(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_SUBSCRIPTION", payload, callback);
+}
+
+export function getStripePricing(payload, callback) {
+  return dispatchActionToReducer(getStripePricingService(payload), "GET_STRIPE_PRICING_START", "GET_STRIPE_PRICING_SUCCESS", "GET_STRIPE_PRICING_FAILURE", callback);
+}
+
+export function getStripeProducts(payload, callback) {
+  return dispatchActionToReducer(getStripeProductsService(payload), "GET_STRIPE_PRODUCTS_START", "GET_STRIPE_PRODUCTS_SUCCESS", "GET_STRIPE_PRODUCTS_FAILURE", callback);
 }

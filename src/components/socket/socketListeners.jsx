@@ -170,6 +170,7 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
+import { incomingUpdatedSubscription } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1038,6 +1039,12 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".team-checkout-complete", (e) => {
+        this.props.incomingUpdatedSubscription(e);
+      })
+      .listen(".team-subscription-cancelled", (e) => {
+        console.log(e);
+      })
       .listen(".reset-password-notification", (e) => {
         this.props.incomingAcceptedInternal(e);
       })
@@ -2119,6 +2126,7 @@ function mapDispatchToProps(dispatch) {
     removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
     setNewDriffData: bindActionCreators(setNewDriffData, dispatch),
     incomingReadNotifications: bindActionCreators(incomingReadNotifications, dispatch),
+    incomingUpdatedSubscription: bindActionCreators(incomingUpdatedSubscription, dispatch),
   };
 }
 

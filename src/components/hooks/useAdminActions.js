@@ -18,6 +18,8 @@ import {
   createCheckoutSession,
   resetGrippUsersImage,
   updateAllowedDomains,
+  getStripePricing,
+  getStripeProducts,
 } from "../../redux/actions/adminActions";
 
 const useAdminActions = () => {
@@ -180,6 +182,22 @@ const useAdminActions = () => {
     );
   };
 
+  const fetchStripePricing = (payload, callback) => {
+    dispatch(
+      getStripePricing(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
+  const fetchStripeProducts = (payload, callback) => {
+    dispatch(
+      getStripeProducts(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -199,6 +217,8 @@ const useAdminActions = () => {
     syncGrippUsers,
     stripeCheckout,
     updateDomains,
+    fetchStripePricing,
+    fetchStripeProducts,
   };
 };
 

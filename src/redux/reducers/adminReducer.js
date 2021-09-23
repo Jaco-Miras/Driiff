@@ -26,6 +26,12 @@ const INITIAL_STATE = {
     grippApiUrl: null,
   },
   subscriptions: null,
+  stripe: {
+    pricing: [],
+    products: [],
+    pricingFetched: false,
+    productsFetched: false,
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -187,7 +193,6 @@ export default (state = INITIAL_STATE, action) => {
       Array.from(action.data.settings).map((value) => {
         if (value.subscriptions) {
           subscriptions = value.subscriptions;
-          console.log(subscriptions);
         }
         return value;
       });
@@ -199,6 +204,32 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_UPDATED_SUBSCRIPTION": {
+      return {
+        ...state,
+        subsrcriptions: action.data.subscriptions,
+      };
+    }
+    case "GET_STRIPE_PRICING_SUCCESS": {
+      return {
+        ...state,
+        stripe: {
+          ...state.stripe,
+          pricing: action.data.pricing,
+          pricingFetched: true,
+        },
+      };
+    }
+    case "GET_STRIPE_PRODUCTS_SUCCESS": {
+      return {
+        ...state,
+        stripe: {
+          ...state.stripe,
+          products: action.data.products,
+          productsFetched: true,
+        },
+      };
     }
     default:
       return state;
