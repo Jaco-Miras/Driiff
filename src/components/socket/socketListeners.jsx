@@ -1023,6 +1023,9 @@ class SocketListeners extends Component {
         console.log(e, "cancelled subs");
         this.props.incomingUpdatedSubscription(e);
       })
+      .listen(".team-subscription-will-end", (e) => {
+        console.log(e, "trial will end");
+      })
       .listen(".reset-password-notification", (e) => {
         this.props.incomingAcceptedInternal(e);
       })

@@ -20,10 +20,21 @@ import {
   updateAllowedDomains,
   getStripePricing,
   getStripeProducts,
+  cancelStripeSubscription,
 } from "../../redux/actions/adminActions";
+import { addToModals } from "../../redux/actions/globalActions";
+import { useTranslationActions } from "./index";
 
 const useAdminActions = () => {
   const dispatch = useDispatch();
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    cancelHeaderText: _t("MODAL.CANCEL_HEADER_TEXT", "Cancel subsription?"),
+    cancelBodyText: _t("MODAL.CANCEL_BODY_TEXT", "Are you sure you want to cancel your Driff subscription?"),
+    cancelSubscriptionButton: _t("BUTTON.CANCEL_SUBSCRIPTION", "Cancel subscription"),
+    closeButton: _t("BUTTON.CLOSE", "Close"),
+  };
 
   const fetchLoginSettings = (payload, callback) => {
     dispatch(
@@ -198,6 +209,28 @@ const useAdminActions = () => {
     );
   };
 
+  const cancelSubscription = (payload = {}, callback = () => {}) => {
+    const onConfirm = () => {
+      dispatch(
+        cancelStripeSubscription(payload, (err, res) => {
+          if (callback) callback(err, res);
+        })
+      );
+    };
+    let modal = {
+      type: "confirmation",
+      headerText: dictionary.cancelHeaderText,
+      submitText: dictionary.cancelSubscriptionButton,
+      cancelText: dictionary.closeButton,
+      bodyText: dictionary.cancelBodyText,
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
+
+    dispatch(addToModals(modal));
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -219,6 +252,7 @@ const useAdminActions = () => {
     updateDomains,
     fetchStripePricing,
     fetchStripeProducts,
+    cancelSubscription,
   };
 };
 

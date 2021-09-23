@@ -111,6 +111,14 @@ const CardFooter = styled.div`
   border: 1px solid #e6e6e6;
   border-radius: 0 0 8px 8px;
   border-top: 0;
+  min-height: 115px;
+  display: flex;
+  align-items: end;
+  justify-content: end;
+  flex-flow: column;
+  button.btn-primary {
+    margin-top: 10px;
+  }
   button.btn-primary,
   button.btn-secondary {
     width: 100%;
@@ -124,7 +132,7 @@ const SubscribeBody = () => {
   const { _t } = useTranslationActions();
 
   const timeFormat = useTimeFormat();
-  const { setAdminFilter, stripeCheckout } = useAdminActions();
+  const { setAdminFilter, stripeCheckout, cancelSubscription } = useAdminActions();
   const subscriptions = useSelector((state) => state.admin.subscriptions);
   const componentIsMounted = useRef(true);
   const stripe = useSelector((state) => state.admin.stripe);
@@ -151,6 +159,7 @@ const SubscribeBody = () => {
     trialSubscriptionEndedLabel: _t("PRICING.TRIAL_SUBSCRIPTION_ENDED_LABEL", "Your trial subscription has ended"),
     activeSubscriptionLabel: _t("PRICING.ACTIVE_SUBSCRIPTION_LABEL", "You are currently subscribed to:"),
     currentPlanBtn: _t("PRICING.BUTTON_CURRENT_PLAN", "Current plan"),
+    cancelSubscriptionButton: _t("BUTTON.CANCEL_SUBSCRIPTION", "Cancel subscription"),
   };
 
   const filters = useSelector((state) => state.admin.filters);
@@ -199,6 +208,10 @@ const SubscribeBody = () => {
       if (err) return;
       window.location = res.data.url;
     });
+  };
+
+  const handleCancelSubscription = () => {
+    cancelSubscription();
   };
 
   const currentPricing = stripe.pricing.find((p) => subscriptions && subscriptions.plan === p.id);
@@ -276,7 +289,12 @@ const SubscribeBody = () => {
 
               <CardFooter>
                 {subscriptions && subscriptions.status === "active" && currentPricing && currentPricing.id === process.env.REACT_APP_STANDARD_PRICE_ID ? (
-                  <button className="btn btn-secondary">{dictionary.currentPlanBtn}</button>
+                  <>
+                    <button className="btn btn-secondary">{dictionary.currentPlanBtn}</button>
+                    <button className="btn btn-primary" onClick={handleCancelSubscription}>
+                      {dictionary.cancelSubscriptionButton}
+                    </button>
+                  </>
                 ) : stripe.pricingFetched && stripe.productsFetched ? (
                   <button className="btn btn-primary" onClick={() => handleSubscribe("standard")}>
                     {dictionary.select}
@@ -350,7 +368,12 @@ const SubscribeBody = () => {
               </CardFeatures>
               <CardFooter>
                 {subscriptions && subscriptions.status === "active" && currentPricing && currentPricing.id === process.env.REACT_APP_PRO_PRICE_ID ? (
-                  <button className="btn btn-secondary">{dictionary.currentPlanBtn}</button>
+                  <>
+                    <button className="btn btn-secondary">{dictionary.currentPlanBtn}</button>
+                    <button className="btn btn-primary" onClick={handleCancelSubscription}>
+                      {dictionary.cancelSubscriptionButton}
+                    </button>
+                  </>
                 ) : stripe.pricingFetched && stripe.productsFetched ? (
                   <button className="btn btn-primary" onClick={() => handleSubscribe("pro")}>
                     {dictionary.select}

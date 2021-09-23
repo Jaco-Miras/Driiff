@@ -18,6 +18,7 @@ import {
   resetGrippUsersImage as resetGrippUsersImageService,
   getStripePricing as getStripePricingService,
   getStripeProducts as getStripeProductsService,
+  cancelStripeSubscription as cancelStripeSubscriptionService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -102,4 +103,8 @@ export function getStripePricing(payload, callback) {
 
 export function getStripeProducts(payload, callback) {
   return dispatchActionToReducer(getStripeProductsService(payload), "GET_STRIPE_PRODUCTS_START", "GET_STRIPE_PRODUCTS_SUCCESS", "GET_STRIPE_PRODUCTS_FAILURE", callback);
+}
+
+export function cancelStripeSubscription(payload, callback) {
+  return dispatchActionToReducer(cancelStripeSubscriptionService(payload), "CANCEL_STRIPE_SUBSCRIPTION_START", "CANCEL_STRIPE_SUBSCRIPTION_SUCCESS", "CANCEL_STRIPE_SUBSCRIPTION_FAILURE", callback);
 }
