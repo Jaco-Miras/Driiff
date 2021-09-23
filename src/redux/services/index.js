@@ -21,6 +21,7 @@ export {
   resetGrippUsersImage,
   getStripePricing,
   getStripeProducts,
+  cancelStripeSubscription,
 } from "./admin";
 export {
   getGlobalRecipients,

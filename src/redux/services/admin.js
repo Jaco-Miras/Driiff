@@ -143,3 +143,9 @@ export function getStripeProducts(payload) {
     url: "/stripe/products",
   });
 }
+export function cancelStripeSubscription(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/stripe/cancel-subscriptions",
+  });
+}
