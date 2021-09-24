@@ -19,9 +19,11 @@ const AllWorkspaceFolders = (props) => {
 
   return (
     <Wrapper className={`list-group list-group-flush ${className}`}>
-      {Object.values(folders).map((f) => {
-        return <FilterFolder folder={f} filterByFolder={filterByFolder} key={f.id} />;
-      })}
+      {Object.values(folders)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((f) => {
+          return <FilterFolder folder={f} filterByFolder={filterByFolder} key={f.id} />;
+        })}
     </Wrapper>
   );
 };
