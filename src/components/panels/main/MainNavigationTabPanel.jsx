@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { setNavMode } from "../../../redux/actions/globalActions";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import { useSettings, useTranslationActions } from "../../hooks";
-import { FavoriteWorkspacesPanel, MainSidebarLinks, MainBackButton } from "./index";
+import { FavoriteWorkspacesPanel, MainSidebarLinks, MainBackButton, MainLogo } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
 const Wrapper = styled.div`
@@ -238,16 +237,6 @@ const MainNavigationTabPanel = (props) => {
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
   };
 
-  const handleIconClick = (e) => {
-    e.preventDefault();
-    if (e.target.dataset.link) {
-      dispatch(setNavMode({ mode: 3 }));
-    } else {
-      dispatch(setNavMode({ mode: 2 }));
-    }
-    history.push(e.target.dataset.link);
-  };
-
   const handleGiftClick = () => {
     history.push("/releases");
   };
@@ -264,7 +253,8 @@ const MainNavigationTabPanel = (props) => {
             <GiftIcon icon="gift" color="#fff" onClick={handleGiftClick} />
           </GiftWrapper>
         )}
-        <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />
+        <MainLogo />
+
         <MainBackButton />
       </div>
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
