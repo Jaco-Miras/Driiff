@@ -30,6 +30,7 @@ const AllWorkspaceFilters = (props) => {
     if (filterBy === e.target.dataset.value) return;
     actions.updateSearch({
       filterBy: e.target.dataset.value,
+      filterByFolder: null,
     });
 
     //onGoBack();

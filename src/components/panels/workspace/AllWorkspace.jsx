@@ -79,6 +79,10 @@ const AllWorkspace = (props) => {
     });
     return () => {
       componentIsMounted.current = false;
+      actions.updateSearch({
+        filterBy: "all",
+        filterByFolder: null,
+      });
     };
   }, []);
 
@@ -134,6 +138,8 @@ const AllWorkspace = (props) => {
     all: _t("ALL_WORKSPACE.ALL", "All"),
     workspaceSortOptionsAlpha: _t("WORKSPACE_SORT_OPTIONS.ALPHA", "Sort by Alphabetical Order (A-Z)"),
     workspaceSortOptionsDate: _t("WORKSPACE_SORT_OPTIONS.DATE", "Sort by Date (New to Old)"),
+    folders: _t("ALL_WORKSPACE.FOLDERS", "Folders"),
+    newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
   };
 
   // const handleLoadMore = () => {

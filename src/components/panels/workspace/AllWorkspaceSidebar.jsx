@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AllWorkspaceFilters from "./AllWorkspaceFilters";
 import { SvgIconFeather } from "../../common";
+import { AllWorkspaceFolders } from ".";
+import Tooltip from "react-tooltip-lite";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -40,15 +43,43 @@ const Icon = styled(SvgIconFeather)`
   margin-right: 4px;
 `;
 
+const StyledIcon = styled(SvgIconFeather)`
+  width: 1em;
+  vertical-align: bottom;
+  margin-right: 40px;
+  cursor: pointer;
+
+  &:hover {
+    color: #000000;
+  }
+`;
+
 const MobileOverlayFilter = styled.div``;
 
 const AllWorkspaceSidebar = (props) => {
   const { actions, counters, dictionary, filterBy } = props;
 
+  const dispatch = useDispatch();
+
   const user = useSelector((state) => state.session.user);
 
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
+  };
+
+  const handleShowFolderModal = () => {
+    let payload = {
+      type: "workspace_folder",
+      mode: "create",
+    };
+    dispatch(addToModals(payload));
+  };
+
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
   };
 
   return (
@@ -70,6 +101,17 @@ const AllWorkspaceSidebar = (props) => {
             </span>
           </div>
           <AllWorkspaceFilters actions={actions} counters={counters} dictionary={dictionary} filterBy={filterBy} />
+          <div className="post-filter-item list-group list-group-flush">
+            <span className={"list-group-item d-flex align-items-center pr-3"} data-value="inbox">
+              {dictionary.folders}
+              <span className="ml-auto">
+                <Tooltip onToggle={toggleTooltip} content={dictionary.newFolder}>
+                  <StyledIcon className="mr-0" icon="plus" onClick={handleShowFolderModal} />
+                </Tooltip>
+              </span>
+            </span>
+          </div>
+          <AllWorkspaceFolders />
         </div>
       </div>
     </Wrapper>
