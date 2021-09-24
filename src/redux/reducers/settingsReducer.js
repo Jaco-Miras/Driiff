@@ -16,7 +16,7 @@ const INITIAL_STATE = {
       magic_link: true,
       password_login: true,
       sign_up: true,
-      allowed_domains: [],
+      custom_translation: false,
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
@@ -370,6 +370,18 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           logo: action.data.path.view_link,
+        },
+      };
+    }
+    case "UPDATE_CUSTOM_TRANSLATION_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          settings: {
+            ...state.driff.settings,
+            custom_translation: !state.driff.settings.custom_translation,
+          },
         },
       };
     }

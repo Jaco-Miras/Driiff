@@ -59,7 +59,7 @@ export const useTranslation = () => {
     dispatch(
       getTranslationObject(
         {
-          url: language ? `https://driff.io/api/lang/${language}` : `https://driff.io/api/lang/${browserLang.main}`,
+          url: language && driffSettings.settings.custom_translation ? `${dictionaryAPIUrl}/${language}` : language ? `https://driff.io/api/lang/${language}` : `https://driff.io/api/lang/${browserLang.main}`,
         },
         (err, res) => {
           if (err) {
@@ -86,7 +86,7 @@ export const useTranslation = () => {
       )
     );
     localStorage.setItem(cookieName.lang, language);
-  }, [language]);
+  }, [language, driffSettings.settings.custom_translation]);
 
   // useEffect(() => {
   //   if (dictFile) {

@@ -59,3 +59,7 @@ export function updateCompanyPostAnnouncement(payload, callback) {
 export function uploadDriffLogo(payload, callback) {
   return dispatchActionToReducer(uploadDriffLogoService(payload), "UPLOAD_DRIFF_LOGO_START", "UPLOAD_DRIFF_LOGO_SUCCESS", "UPLOAD_DRIFF_LOGO_FAILURE", callback);
 }
+
+export function updateCustomTranslationSettings(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_CUSTOM_TRANSLATION_SETTINGS", payload, callback);
+}
