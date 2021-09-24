@@ -39,3 +39,13 @@ export function putCompanyUpdateName(payload) {
     data: payload,
   });
 }
+
+export function uploadDriffLogo(payload) {
+  let url = "/v1/file-logo";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+    hasFile: true,
+  });
+}

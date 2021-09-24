@@ -1,5 +1,4 @@
 import momentTZ from "moment-timezone";
-//import React from "react";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
@@ -10,6 +9,7 @@ const INITIAL_STATE = {
     isCompSettingsLoaded: false,
     company_name: "Driff communication",
     domains: [],
+    logo: "",
     settings: {
       maintenance_mode: false,
       google_login: true,
@@ -360,6 +360,15 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           domains: action.data,
+        },
+      };
+    }
+    case "UPLOAD_DRIFF_LOGO_SUCCESS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          logo: action.data.path.view_link,
         },
       };
     }

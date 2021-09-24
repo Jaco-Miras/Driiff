@@ -23,6 +23,7 @@ import {
   cancelStripeSubscription,
 } from "../../redux/actions/adminActions";
 import { addToModals } from "../../redux/actions/globalActions";
+import { uploadDriffLogo } from "../../redux/actions/settingsActions";
 import { useTranslationActions } from "./index";
 
 const useAdminActions = () => {
@@ -231,6 +232,14 @@ const useAdminActions = () => {
     dispatch(addToModals(modal));
   };
 
+  const uploadLogo = (payload, callback) => {
+    dispatch(
+      uploadDriffLogo(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -253,6 +262,7 @@ const useAdminActions = () => {
     fetchStripePricing,
     fetchStripeProducts,
     cancelSubscription,
+    uploadLogo,
   };
 };
 

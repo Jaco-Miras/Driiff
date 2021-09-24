@@ -7,6 +7,7 @@ import { useAdminActions, useTranslationActions, useToaster } from "../../hooks"
 import { Loader, SvgIconFeather } from "../../common";
 import { DomainSelect } from "../../forms";
 import Tooltip from "react-tooltip-lite";
+import { DropDocument } from "../../dropzone/DropDocument";
 const isValidDomain = require("is-valid-domain");
 
 const Wrapper = styled.div`
@@ -58,9 +59,18 @@ const LoginSettingsBody = () => {
     signupInfo: _t("ADMIN.SIGN_UP_INFO", "Show/Hide register button"),
     allowedDomainsInfo: _t("ADMIN.ALLOWED_DOMAINS_INFO", "Domain list allowed when signing up in driff"),
     loginSettingsDescription: _t("ADMIN.LOGIN_SETTINGS_DESCRIPTION", "Edit login/signup settings for Driff. More info can be found here (External link icon)"),
+    companyLogo: _t("ADMIN.COMPANY_LOGO", "Company logo"),
+    companyLogoDescription: _t("ADMIN.COMPANY_LOGO_DESCRIPTION", "Upload your company logo."),
+    uploadLogoBtn: _t("BUTTON.UPLOAD.LOGO_BTN", "Upload logo"),
+    companyLogoRequirement: _t("ADMIN.COMPANY_LOGO_REQUIREMENT", "Your logo must be a image file."),
+    companyLogoDimensions: _t("ADMIN.COMPANY_LOGO_DIMENSIONS", "Maximun dimensions are 80px by 60px"),
+    uploadSuccess: _t("TOAST.UPLOAD_ICON_SUCCESS", "Uploaded icon success!"),
+    fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
+    multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
   };
 
   const componentIsMounted = useRef(true);
+  const iconDropZone = useRef(null);
 
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
@@ -70,7 +80,7 @@ const LoginSettingsBody = () => {
   const filters = useSelector((state) => state.admin.filters);
   const domains = useSelector((state) => state.settings.driff.domains);
 
-  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains } = useAdminActions();
+  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo } = useAdminActions();
 
   const [settings, setSettings] = useState({ ...loginSettings });
   const [saving, setSaving] = useState(false);
@@ -216,6 +226,38 @@ const LoginSettingsBody = () => {
     });
   };
 
+  const [showIconDropzone, setShowIconDropzone] = useState(false);
+
+  const handleUploadIcon = (file, fileUrl) => {
+    let payload = {
+      file: file,
+      code: "code",
+    };
+    let cb = (err, res) => {
+      if (err) return;
+      toast.success(dictionary.uploadSuccess);
+    };
+    uploadLogo(payload, cb);
+  };
+
+  const dropIconAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toast.error(dictionary.fileTypeError);
+    } else if (uploadedFiles.length > 1) {
+      toast.warning(dictionary.multipleFileError);
+    }
+
+    handleUploadIcon(uploadedFiles[0]);
+  };
+
+  const handleOpenDropzone = () => {
+    if (iconDropZone.current) iconDropZone.current.open();
+  };
+
+  const handleHideIconDropzone = () => {
+    setShowIconDropzone(false);
+  };
+
   return (
     <Wrapper>
       <h4>{dictionary.loginSettings}</h4>
@@ -296,6 +338,29 @@ const LoginSettingsBody = () => {
           </div>
         </>
       )}
+      <h4>{dictionary.companyLogo}</h4>
+      <h6>{dictionary.companyLogoDescription}</h6>
+      <div>
+        <label className="mb-0">{dictionary.companyLogoRequirement}</label>
+        <br />
+        <label className="mb-0">{dictionary.companyLogoDimensions}</label>
+      </div>
+
+      <div>
+        <DropDocument
+          acceptType="imageOnly"
+          hide={!showIconDropzone}
+          ref={iconDropZone}
+          onDragLeave={handleHideIconDropzone}
+          onDrop={({ acceptedFiles }) => {
+            dropIconAction(acceptedFiles);
+          }}
+          onCancel={handleHideIconDropzone}
+        />
+        <button className="btn btn-primary" onClick={handleOpenDropzone}>
+          {dictionary.uploadLogoBtn}
+        </button>
+      </div>
     </Wrapper>
   );
 };
