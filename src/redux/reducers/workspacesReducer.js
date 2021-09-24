@@ -22,6 +22,8 @@ const INITIAL_STATE = {
   folderToDelete: null,
   isOnClientChat: null,
   search: {
+    folders: {},
+    filterByFolder: null,
     results: [],
     searching: false,
     filterBy: "all",
@@ -2963,6 +2965,24 @@ export default (state = INITIAL_STATE, action) => {
             }
             return res;
           }, {}),
+        },
+      };
+    }
+    case "GET_ALL_WORKSPACE_SUCCESS": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          folders: action.data.workspaces
+            .filter((ws) => ws.workspace !== null)
+            .reduce((acc, ws) => {
+              acc[ws.workspace.id] = {
+                id: ws.workspace.id,
+                name: ws.workspace.name,
+                workspaces: action.data.workspaces.filter((w) => w.workspace && w.workspace.id === ws.workspace.id).map((ws) => ws.topic.id),
+              };
+              return acc;
+            }, {}),
         },
       };
     }

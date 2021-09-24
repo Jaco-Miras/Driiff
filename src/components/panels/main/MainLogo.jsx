@@ -10,8 +10,11 @@ import { setNavMode } from "../../../redux/actions/globalActions";
 
 const LogoWrapper = styled.div`
   position: relative;
-  height: 100%;
-  width: 70%;
+  ${(props) =>
+    props.hasCompanyLogo &&
+    `height: 100%;
+    width: 70%;`}
+
   :hover {
     .feather-pencil {
       display: block;
@@ -120,7 +123,7 @@ const MainLogo = (props) => {
   // };
 
   return (
-    <LogoWrapper>
+    <LogoWrapper hasCompanyLogo={companyLogo.trim() !== ""}>
       {/* <DropDocument
         acceptType="imageOnly"
         hide={!showIconDropzone}

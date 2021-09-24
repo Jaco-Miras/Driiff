@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Switch, useHistory, useRouteMatch, useLocation } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslationActions } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel, TrialEndedPanel } from "../components/panels/main";
@@ -56,7 +56,6 @@ const MainLayout = (props) => {
   } = useSettings();
 
   const history = useHistory();
-  const location = useLocation();
 
   const handleSoundPlay = () => {
     if (sound_enabled && refs.audio.current) {
@@ -113,16 +112,6 @@ const MainLayout = (props) => {
     onActive: handleOnActive,
     debounce: 250,
   });
-
-  useEffect(() => {
-    // if (subscriptions && subscriptions.status === "canceled" && history.location.pathname !== "/admin-settings/subscription/subscribe") {
-    //   let payload = {
-    //     type: "trial_ended_modal",
-    //   };
-    //   dispatch(addToModals(payload));
-    // }
-    console.log(location, path);
-  }, []);
 
   return (
     <>

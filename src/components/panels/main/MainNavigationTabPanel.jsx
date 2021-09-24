@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIcon, SvgIconFeather } from "../../common";
+import { SvgIconFeather } from "../../common";
 import { useSettings, useTranslationActions } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks, MainBackButton, MainLogo } from "./index";
 import NewModalButtons from "./NewModalButtons";
@@ -138,13 +138,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const DriffLogo = styled(SvgIcon)`
-  width: 84px;
-  height: 56px;
-  filter: brightness(0) saturate(100%) invert(1);
-  cursor: pointer;
-`;
-
 const CirclePlus = styled(SvgIconFeather)`
   height: 14px;
   width: 14px;
@@ -199,7 +192,7 @@ const MainNavigationTabPanel = (props) => {
   const history = useHistory();
   // const params = useParams();
   // const location = useLocation();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const count = useSelector((state) => state.global.todos.count);
   const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
@@ -241,6 +234,7 @@ const MainNavigationTabPanel = (props) => {
     addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
+    newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
   };
 
   const handleGiftClick = () => {
