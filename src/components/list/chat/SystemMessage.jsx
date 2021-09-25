@@ -83,12 +83,12 @@ const ChatTimeStamp = styled.div`
 `;
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = (props) => {
-  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary, users } = props;
+  const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary } = props;
 
   const history = useHistory();
   const params = useParams();
 
-  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users });
+  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user });
 
   const [lastChatRef, inView, entry] = useInView({
     threshold: THRESHOLD,
