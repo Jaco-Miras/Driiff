@@ -44,9 +44,9 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       } else {
         parseBody = "System message...";
       }
-    } else if (reply.body.includes("WORKSPACE_CREATE::")) {
-      let parsedData = reply.body.replace("WORKSPACE_CREATE::", "");
-      parseBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author, workspaceName: parsedData.workspace.name })}</span>`;
+    } else if (reply.body.includes("CREATE_WORKSPACE::")) {
+      let parsedData = JSON.parse(reply.body.replace("CREATE_WORKSPACE::", ""));
+      parseBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
     } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
       let extractedIds = reply.body.match(ids);
