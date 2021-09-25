@@ -68,6 +68,7 @@ const LoginSettingsBody = () => {
     fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
     multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
     resetButton: _t("BUTTON.REMOVE_LOGO", "Remove logo"),
+    resetLogoSuccess: _t("TOAST.RESET_COMPANY_LOGO_SUCCESS", "Reset company logo success!"),
   };
 
   const componentIsMounted = useRef(true);
@@ -75,6 +76,8 @@ const LoginSettingsBody = () => {
 
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
+
+  const logo = useSelector((state) => state.settings.driff.logo);
 
   const loginSettings = useSelector((state) => state.admin.login);
   const loginFetched = useSelector((state) => state.admin.loginFetched);
@@ -260,7 +263,11 @@ const LoginSettingsBody = () => {
   };
 
   const handleRemoveLogo = () => {
-    resetLogo({});
+    let cb = (err, res) => {
+      if (err) return;
+      toast.success(dictionary.resetLogoSuccess);
+    };
+    resetLogo({}, cb);
   };
 
   return (
@@ -365,9 +372,11 @@ const LoginSettingsBody = () => {
         <button className="btn btn-primary" onClick={handleOpenDropzone}>
           {dictionary.uploadLogoBtn}
         </button>
-        <button className="ml-2 btn btn-secondary" onClick={handleRemoveLogo}>
-          {dictionary.resetButton}
-        </button>
+        {logo !== "" && (
+          <button className="ml-2 btn btn-secondary" onClick={handleRemoveLogo}>
+            {dictionary.resetButton}
+          </button>
+        )}
       </div>
     </Wrapper>
   );

@@ -75,7 +75,7 @@ const FolderListItem = (props) => {
   const { path, url } = useRouteMatch();
   const pickerRef = useRef(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState(folder.bg_color ? folder.bg_color : "");
 
   const handleRedirect = (e) => {
     e.preventDefault();
@@ -107,6 +107,13 @@ const FolderListItem = (props) => {
   useEffect(() => {
     if (color !== "" && !showColorPicker) {
       //update color
+      const payload = {
+        id: folder.id,
+        name: folder.search,
+        bg_color: color,
+        topic_id: params.workspaceId,
+      };
+      actions.updateFolder(payload);
     }
   }, [showColorPicker, color]);
 

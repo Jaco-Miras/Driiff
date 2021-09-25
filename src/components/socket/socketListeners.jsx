@@ -1019,6 +1019,9 @@ class SocketListeners extends Component {
       .listen(".upload-company-logo", (e) => {
         this.props.incomingUpdatedCompanyLogo(e);
       })
+      .listen(".reset-company-logo", (e) => {
+        this.props.incomingUpdatedCompanyLogo({ files: { view_link: "" } });
+      })
       .listen(".team-checkout-complete", (e) => {
         this.props.incomingUpdatedSubscription(e);
       })

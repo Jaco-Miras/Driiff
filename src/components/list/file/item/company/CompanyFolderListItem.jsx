@@ -70,16 +70,14 @@ const PickerWrapper = styled.div`
 
 const CompanyFolderListItem = (props) => {
   const { className = "", folder, actions, history, params, handleAddEditFolder, disableOptions } = props;
-
   const { path, url } = useRouteMatch();
   const pickerRef = useRef(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState(folder.bg_color ? folder.bg_color : "");
 
   const handleRedirect = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(e.target);
 
     if (folder.hasOwnProperty("payload")) {
       window.open(folder.payload.url, "_blank");
@@ -107,6 +105,12 @@ const CompanyFolderListItem = (props) => {
   useEffect(() => {
     if (color !== "" && !showColorPicker) {
       //update color
+      const payload = {
+        id: folder.id,
+        name: folder.search,
+        bg_color: color,
+      };
+      actions.updateCompanyFolders(payload);
     }
   }, [showColorPicker, color]);
 
