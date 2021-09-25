@@ -20,3 +20,6 @@ export { default as DriffUpdateModal } from "./DriffUpdateModal";
 export { default as ReleaseModal } from "./ReleaseModal";
 export { default as CreateEditPostListModal } from "./CreateEditPostListModal";
 export { default as PostModal } from "./PostModal";
+export { default as CreateAdminBotModal } from "./CreateAdminBotModal";
+export { default as UpdateAdminBotModal } from "./UpdateAdminBotModal";
+export { default as TrialEndedModal } from "./TrialEndedModal";

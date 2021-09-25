@@ -13,6 +13,8 @@ import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
+import { putLoginSettings } from "../../../redux/actions/adminActions";
+import { updateCustomTranslationSettings } from "../../../redux/actions/settingsActions";
 
 const Wrapper = styled.div`
   .card {
@@ -93,7 +95,11 @@ const ProfileSettings = (props) => {
     setWorkspaceSetting,
     setGeneralSetting,
     setPushSubscription,
+    driffSettings,
   } = useSettings();
+
+  const loginSettings = useSelector((state) => state.admin.login);
+  const domains = useSelector((state) => state.settings.driff.domains);
 
   const [triggerRender, setTriggerRender] = useState(false);
 
@@ -157,6 +163,7 @@ const ProfileSettings = (props) => {
     notifications: _t("NOTIFICATIONS", "Notifications"),
     extraSettings: _t("SETTINGS.EXTRA_SETTINGS", "Extra settings"),
     darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
+    customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
   };
 
   // const notificationSoundOptions = [
@@ -628,6 +635,18 @@ const ProfileSettings = (props) => {
     history.push("/releases");
   };
 
+  const handleTranslationToggle = (e) => {
+    const { dataset } = e.target;
+    const payload = {
+      ...loginSettings,
+      custom_translation: !driffSettings.settings.custom_translation,
+      domains: domains.toString(),
+    };
+    dispatch(putLoginSettings(payload));
+    dispatch(updateCustomTranslationSettings());
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
+
   return (
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
@@ -741,6 +760,23 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               </div>
+              {loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && (
+                <div className="row mb-2">
+                  <div className="col-12 text-muted">
+                    <CustomInput
+                      className="cursor-pointer text-muted"
+                      checked={driffSettings.settings.custom_translation}
+                      type="switch"
+                      id="custom_translation"
+                      name="custom_translation"
+                      data-success-message={`${!driffSettings.settings.custom_translation ? "Custom translations enabled" : "Custom translations disabled"}`}
+                      onChange={handleTranslationToggle}
+                      label={<span>{dictionary.customTranslation}</span>}
+                    />
+                  </div>
+                </div>
+              )}
+
               {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-2 mt-4">
                   <div className="col-12 text-right">

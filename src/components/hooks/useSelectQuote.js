@@ -56,7 +56,7 @@ const useSelectQuote = (props) => {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
         let selectedQuoteBody = "";
-        if (selectedQuote.user && (selectedQuote.body.startsWith("{\"Welk punt geef je ons\"") || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
+        if (selectedQuote.user && (selectedQuote.body.startsWith('{"Welk punt geef je ons"') || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
           const renderStars = (num) => {
             let star = "";
             for (let i = 1; i <= 10; i++) {
@@ -162,6 +162,9 @@ const useSelectQuote = (props) => {
                 </PushLink>
               );
             }
+          } else if (selectedQuote.body.includes("CREATE_WORKSPACE::")) {
+            let parsedData = JSON.parse(selectedQuote.body.replace("CREATE_WORKSPACE::", ""));
+            selectedQuote.body = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
           } else if (selectedQuote.body.startsWith("UPLOAD_BULK::")) {
             const data = JSON.parse(selectedQuote.body.replace("UPLOAD_BULK::", ""));
             if (data.files && data.files.length === 1) {

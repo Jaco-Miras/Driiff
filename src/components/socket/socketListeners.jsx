@@ -168,6 +168,7 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
+import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1015,6 +1016,22 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".upload-company-logo", (e) => {
+        this.props.incomingUpdatedCompanyLogo(e);
+      })
+      .listen(".reset-company-logo", (e) => {
+        this.props.incomingUpdatedCompanyLogo({ files: { view_link: "" } });
+      })
+      .listen(".team-checkout-complete", (e) => {
+        this.props.incomingUpdatedSubscription(e);
+      })
+      .listen(".team-subscription-cancelled", (e) => {
+        console.log(e, "cancelled subs");
+        this.props.incomingUpdatedSubscription(e);
+      })
+      .listen(".team-subscription-will-end", (e) => {
+        console.log(e, "trial will end");
+      })
       .listen(".reset-password-notification", (e) => {
         this.props.incomingAcceptedInternal(e);
       })
@@ -2084,6 +2101,8 @@ function mapDispatchToProps(dispatch) {
     removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
     setNewDriffData: bindActionCreators(setNewDriffData, dispatch),
     incomingReadNotifications: bindActionCreators(incomingReadNotifications, dispatch),
+    incomingUpdatedSubscription: bindActionCreators(incomingUpdatedSubscription, dispatch),
+    incomingUpdatedCompanyLogo: bindActionCreators(incomingUpdatedCompanyLogo, dispatch),
   };
 }
 

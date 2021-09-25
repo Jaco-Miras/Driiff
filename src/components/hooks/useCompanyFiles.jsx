@@ -263,7 +263,7 @@ const useFiles = () => {
     topic: activeTopic,
     fileIds: fileIds,
     folders: folders,
-    subFolders: folder ? folder.subFolders : [],
+    subFolders: folder && folder.subFolders ? folder.subFolders : [],
     folder: folder,
     googleDriveApiFiles,
     loadMore: {

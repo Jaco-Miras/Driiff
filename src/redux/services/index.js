@@ -3,6 +3,28 @@
 
 export { apiCall, apiNoTokenCall } from "./service";
 export {
+  getLoginSettings,
+  putLoginSettings,
+  postQuickLinks,
+  putQuickLinks,
+  getUserBot,
+  deleteUserBot,
+  putUserBot,
+  postUserBot,
+  getGrippBot,
+  putGrippBot,
+  postUploadUserBotIcon,
+  getGrippDetails,
+  getGrippUsers,
+  postSyncGrippUsers,
+  createCheckoutSession,
+  resetGrippUsersImage,
+  getStripePricing,
+  getStripeProducts,
+  cancelStripeSubscription,
+  resetCompanyLogo,
+} from "./admin";
+export {
   getGlobalRecipients,
   getChannels,
   getChannel,
@@ -47,7 +69,7 @@ export {
   postChatMessageTranslate,
 } from "./chat";
 
-export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
+export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";
 
 export {
   activateUser,

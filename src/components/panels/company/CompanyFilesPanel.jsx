@@ -108,6 +108,7 @@ const CompanyFilesPanel = (props) => {
       };
       let payload = {
         name: folderName.current,
+        bg_color: "",
       };
       if (params.hasOwnProperty("folderId")) {
         payload = {
@@ -131,6 +132,7 @@ const CompanyFilesPanel = (props) => {
           id: f.id,
           name: folderName.current,
           is_archived: true,
+          bg_color: f.bg_color,
         },
         cb
       );

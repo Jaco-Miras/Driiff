@@ -100,9 +100,9 @@ const CompanyPageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
           </li>
-          {user.role && ["owner"].includes(user.role.name) && (
+          {user.role && ["owner", "admin"].includes(user.role.name) && (
             <li className="nav-item">
-              <MainNavLink to="/bot">{dictionary.bots}</MainNavLink>
+              <MainNavLink to="/admin-settings">{dictionary.adminSettings}</MainNavLink>
             </li>
           )}
           {/* <li className="nav-item">

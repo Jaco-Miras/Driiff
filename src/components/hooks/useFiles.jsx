@@ -81,7 +81,7 @@ const useFiles = (triggerFetch = false) => {
     topic: activeTopic,
     fileIds: fileIds,
     folders: hasActiveTopic ? workspaceFiles[activeTopic.id].folders : {},
-    subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && f.parent_folder.id == params.fileFolderId) : [],
+    subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && Number(f.parent_folder.id) === Number(params.fileFolderId)) : [],
     folder: hasActiveTopic ? workspaceFiles[activeTopic.id].folders[params.fileFolderId] : null,
     googleDriveApiFiles,
     gifBlobs,
