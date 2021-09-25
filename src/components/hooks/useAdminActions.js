@@ -21,6 +21,7 @@ import {
   getStripePricing,
   getStripeProducts,
   cancelStripeSubscription,
+  resetCompanyLogo,
 } from "../../redux/actions/adminActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { uploadDriffLogo } from "../../redux/actions/settingsActions";
@@ -35,6 +36,10 @@ const useAdminActions = () => {
     cancelBodyText: _t("MODAL.CANCEL_BODY_TEXT", "Are you sure you want to cancel your Driff subscription?"),
     cancelSubscriptionButton: _t("BUTTON.CANCEL_SUBSCRIPTION", "Cancel subscription"),
     closeButton: _t("BUTTON.CLOSE", "Close"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    resetButton: _t("BUTTON.REMOVE_LOGO", "Remove logo"),
+    resetHeaderText: _t("MODAL.REMOVE_HEADER_TEXT", "Remove company logo?"),
+    resetBodyText: _t("MODAL.REMOVE_BODY_TEXT", "Are you sure you want to remove your company logo? Default Driff logo will be displayed if company logo is removed."),
   };
 
   const fetchLoginSettings = (payload, callback) => {
@@ -240,6 +245,28 @@ const useAdminActions = () => {
     );
   };
 
+  const resetLogo = (payload, callback) => {
+    const onConfirm = () => {
+      dispatch(
+        resetCompanyLogo(payload, (err, res) => {
+          if (callback) callback(err, res);
+        })
+      );
+    };
+    let modal = {
+      type: "confirmation",
+      headerText: dictionary.resetHeaderText,
+      submitText: dictionary.resetButton,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.resetBodyText,
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
+
+    dispatch(addToModals(modal));
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -263,6 +290,7 @@ const useAdminActions = () => {
     fetchStripeProducts,
     cancelSubscription,
     uploadLogo,
+    resetLogo,
   };
 };
 

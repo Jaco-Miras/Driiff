@@ -384,6 +384,24 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_UPDATED_COMPANY_LOGO": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          logo: action.data.files.view_link,
+        },
+      };
+    }
+    case "RESET_COMPANY_LOGO_SUCCESS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          logo: "",
+        },
+      };
+    }
     default:
       return state;
   }
