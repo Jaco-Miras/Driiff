@@ -124,7 +124,11 @@ export default (state = INITIAL_STATE, action) => {
         if (s.domains) {
           domains = s.domains.split(",");
         }
+
         settings = { ...settings, ...s };
+        if (s.custom_translation) {
+          settings.custom_translation = s.custom_translation === "1" ? true : false;
+        }
       });
 
       Object.keys(settings).forEach((k) => {
