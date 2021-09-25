@@ -83,6 +83,7 @@ const LoginSettingsBody = () => {
   const loginFetched = useSelector((state) => state.admin.loginFetched);
   const filters = useSelector((state) => state.admin.filters);
   const domains = useSelector((state) => state.settings.driff.domains);
+  const custom_translation = useSelector((state) => state.settings.driff.settings.custom_translation);
 
   const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo, resetLogo } = useAdminActions();
 
@@ -212,6 +213,7 @@ const LoginSettingsBody = () => {
     setSaving(true);
     const payload = {
       ...settings,
+      custom_translation: custom_translation,
       domains: selectedDomains.map((d) => d.value).toString(),
     };
 
