@@ -22,6 +22,7 @@ export {
   getStripePricing,
   getStripeProducts,
   cancelStripeSubscription,
+  resetCompanyLogo,
 } from "./admin";
 export {
   getGlobalRecipients,

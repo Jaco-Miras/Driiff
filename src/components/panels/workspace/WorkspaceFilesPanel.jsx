@@ -143,6 +143,7 @@ const WorkspaceFilesPanel = (props) => {
             id: f.id,
             topic_id: topic.id,
             name: folderName.current,
+            bg_color: f.bg_color,
           },
           cb
         );

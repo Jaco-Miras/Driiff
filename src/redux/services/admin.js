@@ -143,9 +143,17 @@ export function getStripeProducts(payload) {
     url: "/stripe/products",
   });
 }
+
 export function cancelStripeSubscription(payload) {
   return apiCall({
     method: "PUT",
     url: "/stripe/cancel-subscriptions",
+  });
+}
+
+export function resetCompanyLogo(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v1/file-logo-reset",
   });
 }

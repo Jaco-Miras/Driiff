@@ -19,6 +19,7 @@ import {
   getStripePricing as getStripePricingService,
   getStripeProducts as getStripeProductsService,
   cancelStripeSubscription as cancelStripeSubscriptionService,
+  resetCompanyLogo as resetCompanyLogoService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -107,4 +108,12 @@ export function getStripeProducts(payload, callback) {
 
 export function cancelStripeSubscription(payload, callback) {
   return dispatchActionToReducer(cancelStripeSubscriptionService(payload), "CANCEL_STRIPE_SUBSCRIPTION_START", "CANCEL_STRIPE_SUBSCRIPTION_SUCCESS", "CANCEL_STRIPE_SUBSCRIPTION_FAILURE", callback);
+}
+
+export function incomingUpdatedCompanyLogo(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_COMPANY_LOGO", payload, callback);
+}
+
+export function resetCompanyLogo(payload, callback) {
+  return dispatchActionToReducer(resetCompanyLogoService(payload), "RESET_COMPANY_LOGO_START", "RESET_COMPANY_LOGO_SUCCESS", "RESET_COMPANY_LOGO_FAILURE", callback);
 }

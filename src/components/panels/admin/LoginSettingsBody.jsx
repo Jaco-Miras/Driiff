@@ -67,6 +67,8 @@ const LoginSettingsBody = () => {
     uploadSuccess: _t("TOAST.UPLOAD_ICON_SUCCESS", "Uploaded icon success!"),
     fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
     multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
+    resetButton: _t("BUTTON.REMOVE_LOGO", "Remove logo"),
+    resetLogoSuccess: _t("TOAST.RESET_COMPANY_LOGO_SUCCESS", "Reset company logo success!"),
   };
 
   const componentIsMounted = useRef(true);
@@ -75,12 +77,14 @@ const LoginSettingsBody = () => {
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
 
+  const logo = useSelector((state) => state.settings.driff.logo);
+
   const loginSettings = useSelector((state) => state.admin.login);
   const loginFetched = useSelector((state) => state.admin.loginFetched);
   const filters = useSelector((state) => state.admin.filters);
   const domains = useSelector((state) => state.settings.driff.domains);
 
-  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo } = useAdminActions();
+  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo, resetLogo } = useAdminActions();
 
   const [settings, setSettings] = useState({ ...loginSettings });
   const [saving, setSaving] = useState(false);
@@ -258,6 +262,14 @@ const LoginSettingsBody = () => {
     setShowIconDropzone(false);
   };
 
+  const handleRemoveLogo = () => {
+    let cb = (err, res) => {
+      if (err) return;
+      toast.success(dictionary.resetLogoSuccess);
+    };
+    resetLogo({}, cb);
+  };
+
   return (
     <Wrapper>
       <h4>{dictionary.loginSettings}</h4>
@@ -360,6 +372,11 @@ const LoginSettingsBody = () => {
         <button className="btn btn-primary" onClick={handleOpenDropzone}>
           {dictionary.uploadLogoBtn}
         </button>
+        {logo !== "" && (
+          <button className="ml-2 btn btn-secondary" onClick={handleRemoveLogo}>
+            {dictionary.resetButton}
+          </button>
+        )}
       </div>
     </Wrapper>
   );

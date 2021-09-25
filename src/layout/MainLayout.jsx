@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslationActions } from "../components/hooks";
-import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel, TrialEndedPanel } from "../components/panels/main";
+import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
@@ -38,7 +38,7 @@ const MainLayout = (props) => {
     likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
   };
 
-  const subscriptions = useSelector((state) => state.admin.subscriptions);
+  //const subscriptions = useSelector((state) => state.admin.subscriptions);
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
@@ -139,6 +139,17 @@ const MainLayout = (props) => {
       {mounted && (
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
+          <Switch>
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+            <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
+          </Switch>
+          <MainSnoozePanel />
+        </MainContent>
+      )}
+      {/* stripe code*/}
+      {/* {mounted && (
+        <MainContent id="main">
+          <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
             <Switch>
               <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
@@ -148,7 +159,7 @@ const MainLayout = (props) => {
           {subscriptions && subscriptions.status === "canceled" && path !== "/admin-settings" && <TrialEndedPanel />}
           {subscriptions && subscriptions.status === "active" && <MainSnoozePanel />}
         </MainContent>
-      )}
+      )} */}
       <MobileOverlay />
       {user.id !== undefined && window.Echo !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />

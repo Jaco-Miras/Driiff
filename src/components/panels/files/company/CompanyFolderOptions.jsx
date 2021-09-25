@@ -10,7 +10,7 @@ const Wrapper = styled(MoreOptions)`
     width: 150px;
 
     &.orientation-top {
-      top: calc(100% - 25px);
+      top: 25px;
       bottom: auto;
     }
     &.orientation-bottom {
@@ -18,7 +18,7 @@ const Wrapper = styled(MoreOptions)`
       bottom: auto;
     }
     &.orientation-left {
-      right: calc(100% + 5px);
+      right: 0;
       left: auto;
     }
     &.orientation-right {
