@@ -74,7 +74,7 @@ const CompanyFilesHeader = (props) => {
       {
         value: "folder",
         label: dictionary.folder,
-        onClick: () => handleAddEditFolder("add"),
+        onClick: () => handleAddEditFolder(null, "create"),
       },
       {
         value: "file",
