@@ -103,6 +103,7 @@ const ProfileSettings = (props) => {
   } = useSettings();
 
   const loginSettings = useSelector((state) => state.admin.login);
+  const domains = useSelector((state) => state.settings.driff.domains);
 
   const [triggerRender, setTriggerRender] = useState(false);
 
@@ -662,6 +663,7 @@ const ProfileSettings = (props) => {
     const payload = {
       ...loginSettings,
       custom_translation: !driffSettings.settings.custom_translation,
+      domains: domains.toString(),
     };
     dispatch(putLoginSettings(payload));
     dispatch(updateCustomTranslationSettings());

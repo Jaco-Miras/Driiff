@@ -12,7 +12,7 @@ const LogoWrapper = styled.div`
   position: relative;
   ${(props) =>
     props.hasCompanyLogo &&
-    `height: 100%;
+    `height: 60%;
     width: 70%;`}
 
   :hover {
@@ -32,10 +32,13 @@ const CompanyLogoWrapper = styled.div`
   height: 100%;
   width: 100%;
   justify-content: center;
+  cursor: pointer;
   .feather-heart {
     color: #fff;
     height: 0.7rem;
     width: 0.7rem;
+    min-height: 0.7rem;
+    min-width: 0.7rem;
     margin: 0 5px;
   }
   .company-logo {
@@ -51,8 +54,10 @@ const DriffLogo = styled(SvgIcon)`
 `;
 
 const SmallDriffLogo = styled(SvgIcon)`
-  width: 2.5rem;
-  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
   filter: brightness(0) saturate(100%) invert(1);
   cursor: pointer;
 `;
@@ -84,7 +89,7 @@ const MainLogo = (props) => {
     } else {
       dispatch(setNavMode({ mode: 2 }));
     }
-    history.push(e.target.dataset.link);
+    history.push("/chat");
   };
 
   // const iconDropZone = useRef(null);
@@ -135,13 +140,13 @@ const MainLogo = (props) => {
         onCancel={handleHideIconDropzone}
       /> */}
       {companyLogo.trim() !== "" && (
-        <CompanyLogoWrapper>
+        <CompanyLogoWrapper data-link="/" onClick={handleIconClick}>
           <img className="company-logo" src={companyLogo} alt="company logo" />
           <SvgIconFeather icon="heart" />
           <SmallDriffLogo icon="driff-logo2" />
         </CompanyLogoWrapper>
       )}
-      {companyLogo.trim() === "" && <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />}
+      {companyLogo.trim() === "" && <DriffLogo icon="driff-logo2" data-link="/chat" onClick={handleIconClick} />}
       {/* <EditIcon icon="pencil" onClick={handleOpenDropzone} /> */}
     </LogoWrapper>
   );

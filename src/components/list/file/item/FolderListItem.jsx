@@ -117,6 +117,10 @@ const FolderListItem = (props) => {
     }
   }, [showColorPicker, color]);
 
+  useEffect(() => {
+    setColor(folder.bg_color);
+  }, [folder.bg_color]);
+
   useOutsideClick(pickerRef, () => setShowColorPicker(!showColorPicker), showColorPicker);
 
   return (
