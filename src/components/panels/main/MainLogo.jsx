@@ -4,15 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { SvgIconFeather, SvgIcon } from "../../common";
 import { setNavMode } from "../../../redux/actions/globalActions";
-// import { uploadDriffLogo } from "../../../redux/actions/settingsActions";
-// import { DropDocument } from "../../dropzone/DropDocument";
-// import { useToaster, useTranslationActions } from "../../hooks";
 
 const LogoWrapper = styled.div`
   position: relative;
   ${(props) =>
     props.hasCompanyLogo &&
-    `height: 60%;
+    `height: 100%;
     width: 70%;`}
 
   :hover {
@@ -42,7 +39,9 @@ const CompanyLogoWrapper = styled.div`
     margin: 0 5px;
   }
   .company-logo {
-    height: 80%;
+    height: 70%;
+    max-height: 40px;
+    max-width: 100px;
   }
 `;
 
@@ -62,24 +61,9 @@ const SmallDriffLogo = styled(SvgIcon)`
   cursor: pointer;
 `;
 
-// const EditIcon = styled(SvgIconFeather)`
-//   height: 1rem;
-//   width: 1rem;
-//   color: #fff;
-//   position: absolute;
-//   display: none;
-// `;
-
 const MainLogo = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  // const toaster = useToaster();
-  // const { _t } = useTranslationActions();
-  // const dictionary = {
-  //   uploadSuccess: _t("TOAST.UPLOAD_ICON_SUCCESS", "Uploaded icon success!"),
-  //   fileTypeError: _t("TOAST.FILE_TYPE_ERROR", "File type not allowed. Please use an image file."),
-  //   multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
-  // };
 
   const companyLogo = useSelector((state) => state.settings.driff.logo);
   const handleIconClick = (e) => {
@@ -92,53 +76,8 @@ const MainLogo = (props) => {
     history.push("/chat");
   };
 
-  // const iconDropZone = useRef(null);
-
-  // const [showIconDropzone, setShowIconDropzone] = useState(false);
-
-  // const handleUploadIcon = (file, fileUrl) => {
-  //   let payload = {
-  //     file: file,
-  //     code: "code",
-  //   };
-  //   dispatch(
-  //     uploadDriffLogo(payload, (err, res) => {
-  //       if (err) return;
-  //       toaster.success(dictionary.uploadSuccess);
-  //     })
-  //   );
-  // };
-
-  // const dropIconAction = (uploadedFiles) => {
-  //   if (uploadedFiles.length === 0) {
-  //     toaster.error(dictionary.fileTypeError);
-  //   } else if (uploadedFiles.length > 1) {
-  //     toaster.warning(dictionary.multipleFileError);
-  //   }
-
-  //   handleUploadIcon(uploadedFiles[0]);
-  // };
-
-  // const handleOpenDropzone = () => {
-  //   if (iconDropZone.current) iconDropZone.current.open();
-  // };
-
-  // const handleHideIconDropzone = () => {
-  //   setShowIconDropzone(false);
-  // };
-
   return (
     <LogoWrapper hasCompanyLogo={companyLogo.trim() !== ""}>
-      {/* <DropDocument
-        acceptType="imageOnly"
-        hide={!showIconDropzone}
-        ref={iconDropZone}
-        onDragLeave={handleHideIconDropzone}
-        onDrop={({ acceptedFiles }) => {
-          dropIconAction(acceptedFiles);
-        }}
-        onCancel={handleHideIconDropzone}
-      /> */}
       {companyLogo.trim() !== "" && (
         <CompanyLogoWrapper data-link="/" onClick={handleIconClick}>
           <img className="company-logo" src={companyLogo} alt="company logo" />
@@ -147,7 +86,6 @@ const MainLogo = (props) => {
         </CompanyLogoWrapper>
       )}
       {companyLogo.trim() === "" && <DriffLogo icon="driff-logo2" data-link="/chat" onClick={handleIconClick} />}
-      {/* <EditIcon icon="pencil" onClick={handleOpenDropzone} /> */}
     </LogoWrapper>
   );
 };

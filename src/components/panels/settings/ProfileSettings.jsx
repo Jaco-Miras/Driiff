@@ -813,7 +813,7 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               </div>
-              {loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && (
+              {/* {loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && (
                 <div className="row mb-2">
                   <div className="col-12 text-muted">
                     <CustomInput
@@ -828,7 +828,7 @@ const ProfileSettings = (props) => {
                     />
                   </div>
                 </div>
-              )}
+              )} */}
 
               {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-2 mt-4">
