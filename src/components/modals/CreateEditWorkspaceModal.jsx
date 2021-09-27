@@ -236,7 +236,7 @@ const CreateEditWorkspaceModal = (props) => {
     is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
-    icon_link: item && item.channel ? item.channel.icon_link : null,
+    icon_link: item && item.team_channel ? item.team_channel.icon_link : null,
     name: "",
     selectedUsers: [],
     selectedFolder:
