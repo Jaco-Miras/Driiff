@@ -92,10 +92,16 @@ const CreateFilesFolderModal = (props) => {
       name: inputValue,
       bg_color: color,
     };
-    if (params.hasOwnProperty("folderId")) {
+    if (params.hasOwnProperty("folderId") && topic_id === null) {
       payload = {
         ...payload,
         folder_id: params.folderId,
+      };
+    }
+    if (params.hasOwnProperty("fileFolderId") && topic_id) {
+      payload = {
+        ...payload,
+        folder_id: params.fileFolderId,
       };
     }
     if (topic_id) {
