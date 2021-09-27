@@ -40,7 +40,7 @@ const CompanyLogoWrapper = styled.div`
   }
   .company-logo {
     height: 70%;
-    max-height: 35px;
+    max-height: 40px;
     max-width: 100px;
   }
 `;

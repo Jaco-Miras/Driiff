@@ -376,6 +376,18 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "PUT_LOGIN_SETTINGS_SUCCESS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          settings: {
+            ...state.driff.settings,
+            custom_translation: action.data.custom_translation,
+          },
+        },
+      };
+    }
     case "UPDATE_CUSTOM_TRANSLATION_SETTINGS": {
       return {
         ...state,

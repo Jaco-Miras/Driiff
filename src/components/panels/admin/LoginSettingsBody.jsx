@@ -69,6 +69,8 @@ const LoginSettingsBody = () => {
     multipleFileError: _t("TOAST.MULTIPLE_FILE_ERROR", "Multiple files detected. First selected image will be used."),
     resetButton: _t("BUTTON.REMOVE_LOGO", "Remove logo"),
     resetLogoSuccess: _t("TOAST.RESET_COMPANY_LOGO_SUCCESS", "Reset company logo success!"),
+    customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
+    customTranslationInfo: _t("SETTINGS.CUSTOM_TRANSLATION_INFO", "Use custom translation"),
   };
 
   const componentIsMounted = useRef(true);
@@ -87,7 +89,7 @@ const LoginSettingsBody = () => {
 
   const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo, resetLogo } = useAdminActions();
 
-  const [settings, setSettings] = useState({ ...loginSettings });
+  const [settings, setSettings] = useState({ ...loginSettings, custom_translation: custom_translation });
   const [saving, setSaving] = useState(false);
   const [domainInput, setDomainInput] = useState("");
   const [selectedDomains, setSelectedDomains] = useState(
@@ -136,6 +138,10 @@ const LoginSettingsBody = () => {
 
   const passwordLoginOptions = options.map((o) => {
     return { ...o, name: "password_login" };
+  });
+
+  const translationOptions = options.map((o) => {
+    return { ...o, name: "custom_translation" };
   });
 
   const domainOptions = [
@@ -213,7 +219,7 @@ const LoginSettingsBody = () => {
     setSaving(true);
     const payload = {
       ...settings,
-      custom_translation: custom_translation,
+      // custom_translation: custom_translation,
       domains: selectedDomains.map((d) => d.value).toString(),
     };
 
@@ -344,6 +350,16 @@ const LoginSettingsBody = () => {
               />
             </div>
           )}
+
+          <div>
+            <LabelInfoWrapper>
+              <label>{dictionary.customTranslation}</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.customTranslationInfo}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
+            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={translationOptions.find((o) => o.value === settings.custom_translation)} onChange={handleSelect} options={translationOptions} />
+          </div>
 
           <div className="mt-2">
             <button className="btn btn-primary" onClick={handleSubmit} disabled={saving || !loginFetched}>
