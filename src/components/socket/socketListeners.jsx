@@ -1682,7 +1682,11 @@ class SocketListeners extends Component {
           } else {
             //moved workspace to another folder
             if (e.original_workspace_id !== e.workspace_id) {
-              this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+              if (e.current_workspace_folder_name) {
+                this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+              } else {
+                this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+              }
             }
           }
         }

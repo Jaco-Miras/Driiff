@@ -388,8 +388,8 @@ export default (state = INITIAL_STATE, action) => {
           ...state.workspaces[action.data.id],
           ...action.data,
           is_lock: action.data.private,
-          folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
-          folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name,
+          //folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
+          folder_name: action.data.current_workspace_folder_name,
         };
         updatedWorkspaces[workspace.id] = workspace;
         if (state.activeTopic && state.activeTopic.id === workspace.id) {

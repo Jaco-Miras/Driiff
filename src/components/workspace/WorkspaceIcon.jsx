@@ -41,7 +41,7 @@ const WorkspaceIcon = (props) => {
         className={avatarClassName}
         forceThumbnail={false}
         type={"TOPIC"}
-        imageLink={workspace.channel ? workspace.channel.icon_link : null}
+        imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null}
         id={workspace.id}
         name={workspace.name}
         onClick={onSelectWorkspace}
