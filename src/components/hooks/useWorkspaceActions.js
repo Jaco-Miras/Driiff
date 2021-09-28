@@ -110,16 +110,15 @@ const useWorkspaceActions = () => {
   };
 
   const selectWorkspace = (workspace, callback = () => {}) => {
-    if (workspace.members && workspace.members.some((m) => m.id === loggedUser.id)) {
-      dispatch(
-        setActiveTopic(workspace, (err, res) => {
-          setGeneralSetting({
-            active_topic: workspace,
-          });
-          callback(err, res);
-        })
-      );
-    }
+    if (workspace.members && workspace.is_lock === 1 && !workspace.members.some((m) => m.id === loggedUser.id)) return;
+    dispatch(
+      setActiveTopic(workspace, (err, res) => {
+        setGeneralSetting({
+          active_topic: workspace,
+        });
+        callback(err, res);
+      })
+    );
   };
 
   const selectChannel = (channel, callback) => {
