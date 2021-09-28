@@ -8,6 +8,7 @@ import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect } from "../forms
 import { useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { toggleShowAbout } from "../../redux/actions/workspaceActions";
+import { sessionService } from "redux-react-session";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -187,6 +188,7 @@ const AboutWorkspaceModal = (props) => {
   const users = useSelector((state) => state.users.users);
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const folders = useSelector((state) => state.workspaces.folders);
+  const loggedUser = useSelector((state) => state.session.user);
 
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
@@ -223,6 +225,7 @@ const AboutWorkspaceModal = (props) => {
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
+    sessionService.saveUser({ ...loggedUser, dontShowIds: loggedUser.dontShowIds ? [...loggedUser.dontShowIds, workspace.id] : [workspace.id] });
     if (dontShowPopUp) {
       dispatch(toggleShowAbout({ id: workspace.id, show_about: false }));
     }
