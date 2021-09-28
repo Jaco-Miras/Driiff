@@ -1,20 +1,21 @@
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addToModals } from "../../redux/actions/globalActions";
 
 const useShowDashboardModal = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const location = useLocation();
   const workspaceId = useSelector((state) => state.workspaces.selectedWorkspaceId);
   const showAboutModal = useSelector((state) => state.workspaces.showAboutModal);
+
   useEffect(() => {
-    if (history.location.pathname.startsWith("/workspace/search")) {
-      return;
-    } else if (workspaceId && showAboutModal) {
-      dispatch(addToModals({ type: "about_workspace" }));
+    if (!location.pathname.startsWith("/workspace/search") && workspaceId) {
+      if (showAboutModal) {
+        dispatch(addToModals({ type: "about_workspace" }));
+      }
     }
-  }, [workspaceId, showAboutModal]);
+  }, [workspaceId, showAboutModal, location.pathname]);
 };
 
 export default useShowDashboardModal;

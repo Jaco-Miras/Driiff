@@ -540,7 +540,7 @@ export default (state = INITIAL_STATE, action) => {
         folders: updatedFolders,
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? { ...state.workspaces[action.data.id] } : state.activeTopic,
         selectedWorkspaceId: action.data ? action.data.id : null,
-        showAboutModal: action.data ? action.data.show_about === 1 : false,
+        showAboutModal: action.data && state.workspaces[action.data.id] ? state.workspaces[action.data.id].show_about : false,
       };
     }
     // case "SET_SELECTED_CHANNEL": {
@@ -3449,7 +3449,7 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: state.activeTopic && state.activeTopic.id === action.data.message.id ? { ...state.activeTopic, show_about: action.data.message.show_about } : state.activeTopic,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
           if (ws.id === action.data.message.id) {
-            acc[ws.id] = { ...ws, show_about: action.data.message.show_about };
+            acc[ws.id] = { ...ws, show_about: action.data.message.show_about === false ? 0 : 1 };
           } else {
             acc[ws.id] = ws;
           }
