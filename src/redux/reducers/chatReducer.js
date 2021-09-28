@@ -2550,6 +2550,23 @@ export default function (state = INITIAL_STATE, action) {
         }),
       };
     }
+    case "INCOMING_DEACTIVATED_USER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, ch) => {
+          if (acc.type === "COMPANY") {
+            acc[ch.id] = { ...ch, members: ch.members.filter((m) => m.id !== action.data.user_id) };
+          } else {
+            acc[ch.id] = ch;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.user_id)
+            ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.user_id) }
+            : state.selectedChannel,
+      };
+    }
     // case "INCOMING_DELETED_POST": {
     //   return {
     //     ...state,
