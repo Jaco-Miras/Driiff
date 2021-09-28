@@ -277,6 +277,7 @@ export {
   postResendInvite,
   updatePostStatus,
   updateWorkspace,
+  toggleShowAbout,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";
