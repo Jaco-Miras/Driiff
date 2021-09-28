@@ -3,6 +3,8 @@ import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
+  selectedWorkspaceId: null,
+  showAboutModal: false,
   flipper: true,
   user: {},
   workspaces: {},
@@ -197,6 +199,7 @@ export default (state = INITIAL_STATE, action) => {
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+            show_about: ws.topic_detail.show_about,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -280,6 +283,7 @@ export default (state = INITIAL_STATE, action) => {
         folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
         folder_name: action.data.workspace_name,
         is_shared: action.data.workspace_data.topic_detail.is_shared,
+        show_about: action.data.workspace_data.topic_detail.show_about,
       };
       return {
         ...state,
@@ -288,6 +292,8 @@ export default (state = INITIAL_STATE, action) => {
           [ws.id]: ws,
         },
         activeTopic: ws,
+        selectedWorkspaceId: ws.id,
+        showAboutModal: ws.show_about,
       };
     }
     case "INCOMING_WORKSPACE_FOLDER": {
@@ -533,6 +539,8 @@ export default (state = INITIAL_STATE, action) => {
         folderToDelete: null,
         folders: updatedFolders,
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? { ...state.workspaces[action.data.id] } : state.activeTopic,
+        selectedWorkspaceId: action.data ? action.data.id : null,
+        showAboutModal: action.data ? action.data.show_about === 1 : false,
       };
     }
     // case "SET_SELECTED_CHANNEL": {
@@ -3433,6 +3441,20 @@ export default (state = INITIAL_STATE, action) => {
               }, {}),
             }),
         },
+      };
+    }
+    case "TOGGLE_SHOW_ABOUT_SUCCESS": {
+      return {
+        ...state,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.message.id ? { ...state.activeTopic, show_about: action.data.message.show_about } : state.activeTopic,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.id === action.data.message.id) {
+            acc[ws.id] = { ...ws, show_about: action.data.message.show_about };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
       };
     }
     default:

@@ -24,6 +24,7 @@ import {
   UpdateAdminBotModal,
   TrialEndedModal,
   CreateFilesFolderModal,
+  AboutWorkspaceModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -103,6 +104,8 @@ const ModalPanel = () => {
             return <TrialEndedModal key={modal.type} data={modal} />;
           case "files_folder":
             return <CreateFilesFolderModal key={modal.type} data={modal} />;
+          case "about_workspace":
+            return <AboutWorkspaceModal key={modal.type} data={modal} />;
           default:
             return null;
         }

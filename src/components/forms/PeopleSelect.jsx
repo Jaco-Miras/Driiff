@@ -110,7 +110,18 @@ const PeopleSelect = forwardRef((props, ref) => {
       />
     );
   } else {
-    return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={{ Option, MultiValueContainer }} {...otherProps} />;
+    return (
+      <Select
+        ref={ref}
+        className={`react-select-container ${className}`}
+        classNamePrefix="react-select"
+        styles={dark_mode === "0" ? lightTheme : darkTheme}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        components={{ Option, MultiValueContainer }}
+        {...otherProps}
+      />
+    );
   }
 });
 
