@@ -423,3 +423,12 @@ export function getFavoriteWorkspaces(payload) {
     data: payload,
   });
 }
+
+export function toggleShowAbout(payload) {
+  let url = `/v2/workspace-about/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
