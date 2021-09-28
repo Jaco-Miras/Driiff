@@ -146,6 +146,7 @@ import {
   getFavoriteWorkspaceCounters,
   getUnreadWorkspacePostEntries,
   getWorkspace,
+  getWorkspaceAndSetToFavorites,
   getWorkspaceFolder,
   incomingArchivedWorkspaceChannel,
   incomingDeletedWorkspaceFolder,
@@ -1416,10 +1417,18 @@ class SocketListeners extends Component {
               if (e.workspace_id !== 0 && !this.props.folders.hasOwnProperty(e.workspace_id)) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_id }, (err, res) => {
                   if (err) return;
-                  this.props.getWorkspace({ topic_id: e.id });
+                  if (this.props.user.type === "external") {
+                    this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                  } else {
+                    this.props.getWorkspace({ topic_id: e.id });
+                  }
                 });
               } else {
-                this.props.getWorkspace({ topic_id: e.id });
+                if (this.props.user.type === "external") {
+                  this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                } else {
+                  this.props.getWorkspace({ topic_id: e.id });
+                }
               }
               // get the folder if the workspace folder does not exists yet
             }
@@ -1640,10 +1649,18 @@ class SocketListeners extends Component {
               if (e.workspace_id !== 0 && !this.props.folders.hasOwnProperty(e.workspace_id)) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_id }, (err, res) => {
                   if (err) return;
-                  this.props.getWorkspace({ topic_id: e.id });
+                  if (this.props.user.type === "external") {
+                    this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                  } else {
+                    this.props.getWorkspace({ topic_id: e.id });
+                  }
                 });
               } else {
-                this.props.getWorkspace({ topic_id: e.id });
+                if (this.props.user.type === "external") {
+                  this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                } else {
+                  this.props.getWorkspace({ topic_id: e.id });
+                }
               }
               // get the folder if the workspace folder does not exists yet
             }
@@ -1795,10 +1812,18 @@ class SocketListeners extends Component {
               if (e.workspace_data.workspace && !this.props.folders.hasOwnProperty(e.workspace_data.workspace.id)) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_data.workspace.id }, (err, res) => {
                   if (err) return;
-                  this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                  if (this.props.user.type === "external") {
+                    this.props.getWorkspaceAndSetToFavorites({ topic_id: e.workspace_data.topic.id });
+                  } else {
+                    this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                  }
                 });
               } else {
-                this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                if (this.props.user.type === "external") {
+                  this.props.getWorkspaceAndSetToFavorites({ topic_id: e.workspace_data.topic.id });
+                } else {
+                  this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                }
               }
             }
           } else {
@@ -2107,6 +2132,7 @@ function mapDispatchToProps(dispatch) {
     incomingReadNotifications: bindActionCreators(incomingReadNotifications, dispatch),
     incomingUpdatedSubscription: bindActionCreators(incomingUpdatedSubscription, dispatch),
     incomingUpdatedCompanyLogo: bindActionCreators(incomingUpdatedCompanyLogo, dispatch),
+    getWorkspaceAndSetToFavorites: bindActionCreators(getWorkspaceAndSetToFavorites, dispatch),
   };
 }
 

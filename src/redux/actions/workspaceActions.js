@@ -29,7 +29,7 @@ import {
   postWorkspaceRole as postWorkspaceRoleService,
   updatePostStatus as updatePostStatusService,
   updateWorkspace as updateWorkspaceService,
-  putChannel as putChannelService
+  putChannel as putChannelService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -270,4 +270,8 @@ export function setChannelIsTranslate(payload, callback) {
 
 export function updateChannelIsTranslate(payload, callback) {
   return dispatchActionToReducer(putChannelService(payload), "UPDATE_CHANNEL_IS_TRANSLATE", "UPDATE_CHANNEL_IS_TRANSLATE_SUCCESS", "UPDATE_CHANNEL_IS_TRANSLATE_FAILURE", callback);
+}
+
+export function getWorkspaceAndSetToFavorites(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_SET_TO_FAV_START", "GET_WORKSPACE_SET_TO_FAV_SUCCESS", "GET_WORKSPACE_SET_TO_FAV_FAIL", callback);
 }

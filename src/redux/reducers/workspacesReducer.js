@@ -269,6 +269,27 @@ export default (state = INITIAL_STATE, action) => {
         favoriteWorkspacesLoaded: true,
       };
     }
+    case "GET_WORKSPACE_SET_TO_FAV_SUCCESS": {
+      let ws = {
+        ...action.data.workspace_data,
+        channel: action.data.workspace_data.topic_detail.channel,
+        team_channel: action.data.workspace_data.topic_detail.team_channel,
+        team_unread_chats: action.data.workspace_data.topic_detail.team_unread_chats,
+        unread_chats: action.data.workspace_data.topic_detail.unread_chats,
+        unread_posts: action.data.workspace_data.topic_detail.unread_posts,
+        folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
+        folder_name: action.data.workspace_name,
+        is_shared: action.data.workspace_data.topic_detail.is_shared,
+        is_favourite: true,
+      };
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          [ws.id]: ws,
+        },
+      };
+    }
     case "GET_WORKSPACE_SUCCESS": {
       let ws = {
         ...action.data.workspace_data,
