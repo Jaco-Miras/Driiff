@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useRouteMatch, useHistory } from "react-router-dom";
-import { useSettings, useWorkspaceActions, useToaster } from "../hooks";
+import { useSettings, useWorkspaceActions, useToaster, useTranslationActions } from "../hooks";
 
 const useWorkspace = () => {
   const fetchingRef = useRef(null);
@@ -27,9 +27,23 @@ const useWorkspace = () => {
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    notAuthorized: _t("TOASTER.NOT_AUTHORIZED", "You are not authorized to view this workspace"),
+  };
+
   useEffect(() => {
     if (params.workspaceId) {
-      actions.fetchWorkspace(params.workspaceId);
+      actions.fetchWorkspace(params.workspaceId, (err, res) => {
+        if (err) {
+          if (err.response.status === 422) {
+            history.push("/chat");
+            if (err.response.data.errors.error_message && err.response.data.errors.error_message.includes("NOT_AUTHORIZED")) {
+              toaster.error(dictionary.notAuthorized);
+            }
+          }
+        }
+      });
     }
     actions.fetchFavoriteWorkspaces({}, () => {
       actions.fetchWorkspaces({

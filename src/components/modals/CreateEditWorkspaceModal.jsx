@@ -236,7 +236,7 @@ const CreateEditWorkspaceModal = (props) => {
     is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
-    icon_link: item && item.channel ? item.channel.icon_link : null,
+    icon_link: item && item.team_channel ? item.team_channel.icon_link : null,
     name: "",
     selectedUsers: [],
     selectedFolder:
@@ -378,6 +378,7 @@ const CreateEditWorkspaceModal = (props) => {
     sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
     sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
     publicWorkspace: _t("LABEL.PUBLIC_WORKSPACE", "Public workspace"),
+    toasterGeneralError: _t("TOASTER.WORKSPACE_ICON_GENERAL_ERROR", "Error uploading workspace icon!"),
   };
 
   const _validateName = useCallback(() => {
@@ -677,6 +678,10 @@ const CreateEditWorkspaceModal = (props) => {
         files: formData,
       },
       (err, res) => {
+        if (err) {
+          toaster.error(dictionary.toasterGeneralError);
+          return;
+        }
         dispatch(
           updateWorkspace({
             ...payload,
