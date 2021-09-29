@@ -107,9 +107,9 @@ const MainSnooze = (props) => {
 
   const [triggerUnsnooze, setTriggerUnsnooze] = useState(false);
 
-  const snoozeTime = 60;
-  const snoozeCycle = 60;
-  const expTodo = 59; //mins
+  const snoozeTime = 180;
+  const snoozeCycle = 180;
+  const expTodo = 179; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
