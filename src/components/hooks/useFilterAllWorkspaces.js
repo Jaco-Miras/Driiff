@@ -7,7 +7,7 @@ const useFilterAllWorkspaces = (props) => {
   const filteredResults = results
     .filter((ws) => {
       if (filterByFolder) {
-        return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && filterByFolder.workspaces.some((id) => id === ws.topic.id) : filterByFolder.workspaces.some((id) => id === ws.topic.id);
+        return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && filterByFolder.workspaces.some((w) => w.id === ws.topic.id) : filterByFolder.workspaces.some((w) => w.id === ws.topic.id);
       } else {
         if (filterBy === "all" || filterBy === "new") {
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) : true;

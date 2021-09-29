@@ -278,6 +278,8 @@ export {
   updatePostStatus,
   updateWorkspace,
   toggleShowAbout,
+  getAllWorkspaceFolders,
+  getExistingFolder,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";

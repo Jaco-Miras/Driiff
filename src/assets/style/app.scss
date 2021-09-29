@@ -742,9 +742,9 @@ body.dark {
   margin-bottom: 1rem;
 }
 
-.folder-searchbar {
-  width: 550px;
-}
+// .folder-searchbar {
+//   width: 550px;
+// }
 
 @media all and (max-width: 991.99px) {
   .folder-searchbar {
@@ -753,7 +753,7 @@ body.dark {
 }
 
 .folder-searchbar-container {
-  max-width: 550px;
+  width: 100%;
 }
 
 .feather-gdrive {
