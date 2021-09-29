@@ -92,9 +92,8 @@ const WorkspaceFilesPanel = (props) => {
       params: params,
       mode: mode,
       topic_id: topic.id,
-      parentFolder: folder && folder.search ? folder.search : null,
+      parentFolder: folder ? folder : null,
     };
-
     dispatch(addToModals(modal));
   };
 

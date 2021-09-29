@@ -93,6 +93,13 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyFolders,
           items: {
             ...state.companyFolders.items,
+            ...(action.data.folder.parent_folder &&
+              state.companyFolders.items[action.data.folder.parent_folder.id] && {
+                [action.data.folder.parent_folder.id]: {
+                  ...state.companyFolders.items[action.data.folder.parent_folder.id],
+                  subFolders: [...state.companyFolders.items[action.data.folder.parent_folder.id].subFolders, action.data.folder],
+                },
+              }),
             [action.data.folder.id]: {
               ...action.data.folder,
               files: [],
@@ -650,25 +657,6 @@ export default (state = INITIAL_STATE, action) => {
       }
     }*/
     case "GET_COMPANY_FOLDERS_SUCCESS": {
-      let items = state.companyFolders.items;
-      action.data.folders.forEach((f) => {
-        items[f.id] = {
-          ...f,
-          init: false,
-          has_more: true,
-          skip: 0,
-          limit: 100,
-          files: [],
-          subFolders: [],
-        };
-
-        if (f.parent_folder && typeof items[f.parent_folder.id] !== "undefined") {
-          if (!items[f.parent_folder.id].subFolders.some((sf) => sf.id === f.id)) {
-            items[f.parent_folder.id].subFolders.push(f);
-          }
-        }
-      });
-
       return {
         ...state,
         companyFolders: {
@@ -676,7 +664,18 @@ export default (state = INITIAL_STATE, action) => {
           init: true,
           skip: state.companyFolders.skip + state.companyFolders.limit,
           has_more: action.data.folders.length === state.companyFolders.limit,
-          items: items,
+          items: action.data.folders.reduce((acc, f) => {
+            acc[f.id] = {
+              ...f,
+              init: false,
+              has_more: true,
+              skip: 0,
+              limit: 100,
+              files: [],
+              subFolders: action.data.folders.filter((sf) => sf.parent_folder && f.id === sf.parent_folder.id),
+            };
+            return acc;
+          }, {}),
         },
       };
     }
@@ -1059,6 +1058,7 @@ export default (state = INITIAL_STATE, action) => {
                   ...(action.data.folder_id &&
                     state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id] && {
                       folders: {
+                        ...state.workspaceFiles[action.data.topic_id].folders,
                         [action.data.folder_id]: {
                           ...state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id],
                           loaded: true,

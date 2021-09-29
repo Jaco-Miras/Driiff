@@ -75,7 +75,7 @@ const FolderList = (props) => {
     nav: useRef(null),
   };
 
-  const [showFolders, setShowFolders] = useState(null);
+  const [showFolders, setShowFolders] = useState(false);
   const [maxHeight, setMaxHeight] = useState(null);
   //const [active, setActive] = useState(false);
 
