@@ -230,6 +230,9 @@ const TodosList = (props) => {
                   id: file.id,
                   src: imgObj,
                 });
+              })
+              .catch((error) => {
+                console.log(error, "error fetching image");
               });
           });
         }
