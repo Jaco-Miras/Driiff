@@ -275,7 +275,6 @@ export function getTodayWorkspaceRemindersCallback(payload, callback) {
 export function getWorkspaceAndSetToFavorites(payload, callback) {
   return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_SET_TO_FAV_START", "GET_WORKSPACE_SET_TO_FAV_SUCCESS", "GET_WORKSPACE_SET_TO_FAV_FAIL", callback);
 }
-
 export function toggleShowAbout(payload, callback) {
   return dispatchActionToReducer(toggleShowAboutService(payload), "TOGGLE_SHOW_ABOUT_START", "TOGGLE_SHOW_ABOUT_SUCCESS", "TOGGLE_SHOW_ABOUT_FAILURE", callback);
 }

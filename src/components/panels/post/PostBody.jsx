@@ -401,6 +401,9 @@ const PostBody = (props) => {
                     blobUrl: imgObj,
                   },
                 });
+              })
+              .catch((error) => {
+                console.log(error, "error fetching image");
               });
           });
         }

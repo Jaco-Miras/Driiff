@@ -2895,7 +2895,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: Object.values(state.channels).reduce((acc, ch) => {
-          if (acc.type === "COMPANY") {
+          if (ch.type === "COMPANY") {
             acc[ch.id] = { ...ch, members: ch.members.filter((m) => m.id !== action.data.user_id) };
           } else {
             acc[ch.id] = ch;

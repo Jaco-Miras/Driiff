@@ -285,6 +285,7 @@ export default (state = INITIAL_STATE, action) => {
         is_shared: action.data.workspace_data.topic_detail.is_shared,
         is_favourite: true,
         show_about: action.data.workspace_data.topic_detail.show_about,
+        active: action.data.workspace_data.topic_detail.active,
       };
       return {
         ...state,
@@ -306,6 +307,7 @@ export default (state = INITIAL_STATE, action) => {
         folder_name: action.data.workspace_name,
         is_shared: action.data.workspace_data.topic_detail.is_shared,
         show_about: action.data.workspace_data.topic_detail.show_about,
+        active: action.data.workspace_data.topic_detail.active,
       };
       return {
         ...state,

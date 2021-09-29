@@ -330,6 +330,9 @@ const FileRender = (props) => {
                 setIsLoaded(true);
               }
             );
+          })
+          .catch((error) => {
+            console.log("error fetching image");
           });
       });
     } else {
