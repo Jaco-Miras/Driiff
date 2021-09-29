@@ -40,6 +40,7 @@ const ColorWheelIcon = styled.img`
 const CreateFilesFolderModal = (props) => {
   const { type, folder = null, mode = "create", params, topic_id = null, parentFolder = null } = props.data;
 
+  const folderName = parentFolder ? parentFolder.search : "";
   const history = useHistory();
   const { _t } = useTranslationActions();
   const dictionary = {
@@ -51,7 +52,7 @@ const CreateFilesFolderModal = (props) => {
     create: _t("FILE.CREATE", "Create"),
     updateFolder: _t("FILE.UPDATE_FOLDER", "Update folder"),
     altText: _t("ALT_TEXT_FOLDER_COLOR", "Select folder color"),
-    postInputLabel: _t("FOLDER_MODAL.PARENT_FOLDER_LABEL", "The folder will be created inside ::folderName::", { folderName: parentFolder ? parentFolder : "" }),
+    postInputLabel: _t("FOLDER_MODAL.PARENT_FOLDER_LABEL", "The folder will be created inside ::folderName::", { folderName: folderName }),
   };
   const dispatch = useDispatch();
 
@@ -81,11 +82,14 @@ const CreateFilesFolderModal = (props) => {
   const handleCreateFolder = () => {
     let cb = (err, res) => {
       if (err) return;
-      if (params.hasOwnProperty("folderId")) {
-        let pathname = history.location.pathname.split("/folder/")[0];
-        history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+      if (topic_id) {
+        if (params.hasOwnProperty("folderId")) {
+          history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        } else {
+          history.push(`/workspace/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        }
       } else {
-        history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
       }
     };
     let payload = {
@@ -114,9 +118,14 @@ const CreateFilesFolderModal = (props) => {
   const handleUpdateFolder = () => {
     let cb = (err, res) => {
       if (err) return;
-      if (params.hasOwnProperty("folderId")) {
-        let pathname = history.location.pathname.split("/folder/")[0];
-        history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+      if (topic_id) {
+        if (params.hasOwnProperty("folderId")) {
+          history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        } else {
+          history.push(`/workspace/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        }
+      } else {
+        history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
       }
     };
     const payload = {

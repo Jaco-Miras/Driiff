@@ -86,7 +86,7 @@ const CompanyFilesPanel = (props) => {
       folder: mode === "create" ? null : f,
       params: params,
       mode: mode,
-      parentFolder: folder && folder.search ? folder.search : null,
+      parentFolder: folder ? folder : null,
     };
 
     dispatch(addToModals(modal));
