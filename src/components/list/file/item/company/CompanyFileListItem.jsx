@@ -68,15 +68,15 @@ const CompanyFileListItem = (props) => {
   }, [file.name, file.search]);
 
   return (
-    <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleFileView}>
+    <Wrapper className={`file-list-item ${className}`}>
       <div className="card  app-file-list">
-        <div className={typeof file.id === "string" ? "app-file-icon uploading" : "app-file-icon uploaded"}>
+        <div className={typeof file.id === "string" ? "app-file-icon uploading cursor-pointer" : "app-file-icon uploaded cursor-pointer"} onClick={handleFileView}>
           {isFavorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
           {typeof file.id === "number" && <CompanyFileOptions file={file} files={files} folders={folders} actions={{ ...actions, favorite: handleFavorite }} forceDelete={forceDelete} disableOptions={disableOptions} />}
           {typeof file.id === "string" && <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"} />}
         </div>
-        <div className="p-2 small">
+        <div className="p-2 small cursor-pointer" onClick={handleFileView}>
           <ToolTip content={fileName}>
             <div className="file-name">
               {file.hasOwnProperty("payload_id") && <SvgIconFeather className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20" width="15" opacity=".8" />}

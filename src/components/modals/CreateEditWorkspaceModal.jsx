@@ -236,7 +236,7 @@ const CreateEditWorkspaceModal = (props) => {
     is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
-    icon_link: item && item.channel ? item.channel.icon_link : null,
+    icon_link: item && item.team_channel ? item.team_channel.icon_link : null,
     name: "",
     selectedUsers: [],
     selectedFolder:
@@ -354,6 +354,8 @@ const CreateEditWorkspaceModal = (props) => {
       workspace_name: `<b>${form.name}</b>`,
     }),
     externalWorkspace: _t("WORKSPACE.EXTERNAL_WORKSPACE", "External workspace"),
+    newUsers: _t("WORKSPACE.NEW_USERS", "New users"),
+    internalUserConfirmation: _t("CONFIRMATION_INTERNAL_USER", "Are you sure you want to give new user/s access to this Workspace?"),
     externalUserConfirmation: _t("CONFIRMATION_EXTERNAL_USER", "Are you sure you want to give an external user access to this Workspace?"),
     workspaceWithExternals: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS", "Workspace with externals"),
     externalGuest: _t("WORKSPACE.EXTERNAL_GUEST", "External guest"),
@@ -376,6 +378,7 @@ const CreateEditWorkspaceModal = (props) => {
     sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
     sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
     publicWorkspace: _t("LABEL.PUBLIC_WORKSPACE", "Public workspace"),
+    toasterGeneralError: _t("TOASTER.WORKSPACE_ICON_GENERAL_ERROR", "Error uploading workspace icon!"),
   };
 
   const _validateName = useCallback(() => {
@@ -675,6 +678,10 @@ const CreateEditWorkspaceModal = (props) => {
         files: formData,
       },
       (err, res) => {
+        if (err) {
+          toaster.error(dictionary.toasterGeneralError);
+          return;
+        }
         dispatch(
           updateWorkspace({
             ...payload,
@@ -831,19 +838,38 @@ const CreateEditWorkspaceModal = (props) => {
           dispatch(updateWorkspace(payload, cb));
         }
       };
-
       if (
         (item.is_lock !== payload.is_lock && payload.is_lock === 1) ||
         (form.has_externals && payload.new_externals && payload.new_externals.length) ||
-        (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length)
+        (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length) ||
+        payload.new_member_ids.length
       ) {
+        const hasExternals = (form.has_externals && payload.new_externals && payload.new_externals.length) || (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length);
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
-            headerText: form.has_externals && payload.is_lock === 1 ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}` : form.has_externals ? dictionary.externalWorkspace : dictionary.lockedWorkspace,
+            headerText:
+              hasExternals && payload.is_lock === 1
+                ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}`
+                : payload.new_member_ids.length && payload.is_lock === 1
+                ? `${dictionary.lockedWorkspace} / ${dictionary.newUsers}`
+                : hasExternals
+                ? dictionary.externalWorkspace
+                : payload.new_member_ids.length
+                ? dictionary.newUsers
+                : dictionary.lockedWorkspace,
             submitText: dictionary.confirm,
             cancelText: dictionary.cancel,
-            bodyText: form.has_externals && payload.is_lock === 1 ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}` : form.has_externals ? dictionary.externalUserConfirmation : dictionary.lockedWorkspaceText,
+            bodyText:
+              hasExternals && payload.is_lock === 1
+                ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}`
+                : payload.new_member_ids.length && payload.is_lock === 1
+                ? `${dictionary.internalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}`
+                : hasExternals
+                ? dictionary.externalUserConfirmation
+                : payload.new_member_ids.length
+                ? dictionary.internalUserConfirmation
+                : dictionary.lockedWorkspaceText,
             actions: {
               onSubmit: handleSubmit,
             },

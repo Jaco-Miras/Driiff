@@ -1,22 +1,22 @@
-import React, {useCallback, useRef, useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useCallback, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import {EmailRegex} from "../../helpers/stringFormatter";
-import {CheckBox, FormInput} from "../forms";
-import {usePageLoader, useUserActions} from "../hooks";
+import { EmailRegex } from "../../helpers/stringFormatter";
+import { CheckBox, FormInput } from "../forms";
+import { usePageLoader, useUserActions } from "../hooks";
+import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
 const Wrapper = styled.form`
   margin: 50px auto;
   max-width: 430px;
-  
+
   .btn-magic-link {
     background-color: #7a1b8b;
     color: #fff;
-  }  
+  }
 `;
 
 const MagicLinkPanel = (props) => {
-
   const { dictionary } = props;
   const pageLoader = usePageLoader();
   const userActions = useUserActions();
@@ -35,33 +35,39 @@ const MagicLinkPanel = (props) => {
     message: {},
   });
 
-  const toggleCheck = useCallback((e) => {
-    e.persist();
-    setForm(prevState => ({
-      ...prevState,
-      [e.target.dataset.name]: !prevState[e.target.dataset.name],
-    }));
-  }, [setForm]);
+  const toggleCheck = useCallback(
+    (e) => {
+      e.persist();
+      setForm((prevState) => ({
+        ...prevState,
+        [e.target.dataset.name]: !prevState[e.target.dataset.name],
+      }));
+    },
+    [setForm]
+  );
 
-  const handleInputChange = useCallback((e) => {
-    e.persist();
-    setForm(prevState => ({
-      ...prevState,
-      [e.target.name]: e.target.value.trim(),
-    }));
+  const handleInputChange = useCallback(
+    (e) => {
+      e.persist();
+      setForm((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value.trim(),
+      }));
 
-    setFormResponse(prevState => ({
-      ...prevState,
-      valid: {
-        ...prevState.valid,
-        [e.target.name]: undefined,
-      },
-      message: {
-        ...prevState.message,
-        [e.target.name]: undefined,
-      },
-    }));
-  }, [setForm, setFormResponse]);
+      setFormResponse((prevState) => ({
+        ...prevState,
+        valid: {
+          ...prevState.valid,
+          [e.target.name]: undefined,
+        },
+        message: {
+          ...prevState.message,
+          [e.target.name]: undefined,
+        },
+      }));
+    },
+    [setForm, setFormResponse]
+  );
 
   const _validate = () => {
     let valid = {};
@@ -79,11 +85,11 @@ const MagicLinkPanel = (props) => {
 
     setFormResponse({
       valid: valid,
-      message: message
+      message: message,
     });
 
-    return (!Object.values(valid).some(v => v === false));
-  }
+    return !Object.values(valid).some((v) => v === false);
+  };
 
   const handleSendMagicLink = (e) => {
     e.preventDefault();
@@ -97,35 +103,32 @@ const MagicLinkPanel = (props) => {
             if (err) {
               setFormResponse({
                 valid: {
-                  email: false
+                  email: false,
                 },
                 message: {
-                  email: dictionary.notAllowedForExternal
-                }
+                  email: dictionary.notAllowedForExternal,
+                },
               });
             }
           });
         } else {
           setFormResponse({
             valid: {
-              email: false
+              email: false,
             },
             message: {
-              email: dictionary.emailNotFound
-            }
+              email: dictionary.emailNotFound,
+            },
           });
           pageLoader.hide();
         }
-      })
+      });
     }
   };
 
   return (
     <Wrapper className="fadeIn">
-      <FormInput
-        onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-        feedback={formResponse.message.email} placeholder="Email" innerRef={refs.email} type="email"
-        autoFocus/>
+      <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder="Email" innerRef={refs.email} type="email" autoFocus />
       <div className="form-group d-flex justify-content-between">
         <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
           {dictionary.rememberMe}
@@ -134,22 +137,25 @@ const MagicLinkPanel = (props) => {
       <button className="btn btn-primary btn-block" onClick={handleSendMagicLink}>
         {dictionary.sendLink}
       </button>
-      <hr/>
+      <hr />
       <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
         <li className="list-inline-item">
-          <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
-            <i className="fa fa-google"/>
-          </span>
+          <img className="google-signin" src={GoogleIcon} alt="Google signin" onClick={userActions.googleLogin} />
+          {/* <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
+            <i className="fa fa-google" />
+          </span> */}
         </li>
       </ul>
-      <hr/>
+      <hr />
       <p className="text-muted">{dictionary.takeADifferentAction}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
         {dictionary.registerNow}
-      </Link> or <Link className={"btn btn-outline-light btn-sm"} to="/login">
+      </Link>{" "}
+      or{" "}
+      <Link className={"btn btn-outline-light btn-sm"} to="/login">
         {dictionary.login}
-    </Link>
+      </Link>
     </Wrapper>
   );
 };

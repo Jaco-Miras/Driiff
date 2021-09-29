@@ -1,5 +1,4 @@
 import momentTZ from "moment-timezone";
-//import React from "react";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
@@ -9,12 +8,15 @@ const INITIAL_STATE = {
     isSettingsLoaded: false,
     isCompSettingsLoaded: false,
     company_name: "Driff communication",
+    domains: [],
+    logo: "",
     settings: {
       maintenance_mode: false,
       google_login: true,
       magic_link: true,
       password_login: true,
       sign_up: true,
+      custom_translation: false,
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
@@ -114,11 +116,20 @@ export default (state = INITIAL_STATE, action) => {
       let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
       let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
+      let domains = state.driff.domains;
+
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
         if (s.ANNOUNCEMENT_LINK) ANNOUNCEMENT_LINK = s.ANNOUNCEMENT_LINK;
         if (s.READ_RELEASE_UPDATES) READ_RELEASE_UPDATES = s.READ_RELEASE_UPDATES;
+        if (s.domains) {
+          domains = s.domains.split(",");
+        }
+
         settings = { ...settings, ...s };
+        if (s.custom_translation) {
+          settings.custom_translation = s.custom_translation === "1" ? true : false;
+        }
       });
 
       Object.keys(settings).forEach((k) => {
@@ -140,6 +151,7 @@ export default (state = INITIAL_STATE, action) => {
           ANNOUNCEMENT_LINK,
           ANNOUNCEMENT_AT,
           READ_RELEASE_UPDATES,
+          domains: domains,
         },
       };
     }
@@ -180,6 +192,14 @@ export default (state = INITIAL_STATE, action) => {
                   i18n: driff["translation_updated_at"] < value.timestamp ? value.timestamp : driff["translation_updated_at"],
                 };
               }
+
+              break;
+            }
+            case "domains": {
+              driff = {
+                ...driff,
+                domains: value.split(","),
+              };
 
               break;
             }
@@ -336,6 +356,66 @@ export default (state = INITIAL_STATE, action) => {
         user: {
           ...state.user,
           READ_RELEASE_UPDATES: { timestamp: action.data.READ_RELEASE_UPDATES.timestamp },
+        },
+      };
+    }
+    case "UPDATED_ALLOWED_DOMAINS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          domains: action.data,
+        },
+      };
+    }
+    case "UPLOAD_DRIFF_LOGO_SUCCESS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          logo: action.data.path.view_link,
+        },
+      };
+    }
+    case "PUT_LOGIN_SETTINGS_SUCCESS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          settings: {
+            ...state.driff.settings,
+            custom_translation: action.data.custom_translation,
+          },
+        },
+      };
+    }
+    case "UPDATE_CUSTOM_TRANSLATION_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          settings: {
+            ...state.driff.settings,
+            custom_translation: !state.driff.settings.custom_translation,
+          },
+        },
+      };
+    }
+    case "INCOMING_UPDATED_COMPANY_LOGO": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          logo: action.data.files.view_link,
+        },
+      };
+    }
+    case "RESET_COMPANY_LOGO_SUCCESS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          logo: "",
         },
       };
     }

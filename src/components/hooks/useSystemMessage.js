@@ -7,6 +7,16 @@ import { useTranslationActions } from "./index";
 
 const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
   const users = useSelector((state) => state.users.users);
+  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
   const { _t } = useTranslationActions();
   const parseMessage = () => {
     let parseBody = "";
@@ -34,10 +44,13 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       } else {
         parseBody = "System message...";
       }
+    } else if (reply.body.includes("CREATE_WORKSPACE::")) {
+      let parsedData = JSON.parse(reply.body.replace("CREATE_WORKSPACE::", ""));
+      parseBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
     } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
       let extractedIds = reply.body.match(ids);
-      let newMembers = Object.values(users)
+      let newMembers = Object.values(allUsers)
         .filter((u) => extractedIds.some((id) => parseInt(id) === u.id))
         .map((user) => user.name);
       if (selectedChannel.type === "DIRECT") {
@@ -88,7 +101,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
           id: user.id,
         };
       } else if (data.author && data.author.id !== user.id) {
-        let sysAuthor = Object.values(users).find((u) => data.author.id === u.id);
+        let sysAuthor = Object.values(allUsers).find((u) => data.author.id === u.id);
         if (sysAuthor) {
           author = {
             name: sysAuthor.name,
@@ -98,7 +111,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       }
 
       if (data.accepted_members && data.author) {
-        let sysAuthor = Object.values(users).find((u) => data.author === u.id);
+        let sysAuthor = Object.values(allUsers).find((u) => data.author === u.id);
         if (sysAuthor) {
           author = {
             name: sysAuthor.name,
@@ -127,7 +140,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
 
       if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
         //for adding one member without changes in title and for user who join the channel / workspace
-        const am = Object.values(users).find((u) => data.added_members.includes(u.id));
+        const am = Object.values(allUsers).find((u) => data.added_members.includes(u.id));
         if (am && author.id === am.id) {
           newBody = (
             <>
@@ -142,7 +155,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
           );
         }
       } else if (data.added_members.length >= 1) {
-        let am = Object.values(users).filter((u) => data.added_members.includes(u.id));
+        let am = Object.values(allUsers).filter((u) => data.added_members.includes(u.id));
         if (newBody === "") {
           newBody = (
             <>
@@ -208,7 +221,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
             );
           }
         } else {
-          let userLeft = Object.values(users).find((u) => data.removed_members.includes(u.id));
+          let userLeft = Object.values(allUsers).find((u) => data.removed_members.includes(u.id));
           if (newBody === "") {
             newBody = (
               <>
@@ -224,7 +237,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
           }
         }
       } else if (data.removed_members.length > 1) {
-        let rm = Object.values(users).filter((u) => data.removed_members.includes(u.id));
+        let rm = Object.values(allUsers).filter((u) => data.removed_members.includes(u.id));
         if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
@@ -289,7 +302,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
           }
         }
       } else if (data.accepted_members) {
-        const am = Object.values(users).find((u) => data.accepted_members[0] === u.id);
+        const am = Object.values(allUsers).find((u) => data.accepted_members[0] === u.id);
         newBody = (
           <>
             <b>{author.name}</b> {dictionary.added} <b>{am && am.name}</b>

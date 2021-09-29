@@ -154,6 +154,7 @@ const CompanyHeaderPanel = () => {
       mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode"),
     }),
     bots: _t("SIDEBAR.BOTS", "Bots"),
+    adminSettings: _t("PAGE_TITLE.ADMIN_SETTINGS", "Driff settings"),
   };
 
   const dispatch = useDispatch();

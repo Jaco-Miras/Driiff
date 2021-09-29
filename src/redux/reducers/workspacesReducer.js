@@ -3,6 +3,8 @@ import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
+  selectedWorkspaceId: null,
+  showAboutModal: false,
   flipper: true,
   user: {},
   workspaces: {},
@@ -22,6 +24,8 @@ const INITIAL_STATE = {
   folderToDelete: null,
   isOnClientChat: null,
   search: {
+    folders: {},
+    filterByFolder: null,
     results: [],
     searching: false,
     filterBy: "all",
@@ -195,6 +199,7 @@ export default (state = INITIAL_STATE, action) => {
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+            show_about: ws.topic_detail.show_about,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -267,6 +272,28 @@ export default (state = INITIAL_STATE, action) => {
         favoriteWorkspacesLoaded: true,
       };
     }
+    case "GET_WORKSPACE_SET_TO_FAV_SUCCESS": {
+      let ws = {
+        ...action.data.workspace_data,
+        channel: action.data.workspace_data.topic_detail.channel,
+        team_channel: action.data.workspace_data.topic_detail.team_channel,
+        team_unread_chats: action.data.workspace_data.topic_detail.team_unread_chats,
+        unread_chats: action.data.workspace_data.topic_detail.unread_chats,
+        unread_posts: action.data.workspace_data.topic_detail.unread_posts,
+        folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
+        folder_name: action.data.workspace_name,
+        is_shared: action.data.workspace_data.topic_detail.is_shared,
+        is_favourite: true,
+        show_about: action.data.workspace_data.topic_detail.show_about,
+      };
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          [ws.id]: ws,
+        },
+      };
+    }
     case "GET_WORKSPACE_SUCCESS": {
       let ws = {
         ...action.data.workspace_data,
@@ -278,6 +305,7 @@ export default (state = INITIAL_STATE, action) => {
         folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
         folder_name: action.data.workspace_name,
         is_shared: action.data.workspace_data.topic_detail.is_shared,
+        show_about: action.data.workspace_data.topic_detail.show_about,
       };
       return {
         ...state,
@@ -286,6 +314,8 @@ export default (state = INITIAL_STATE, action) => {
           [ws.id]: ws,
         },
         activeTopic: ws,
+        selectedWorkspaceId: ws.id,
+        showAboutModal: ws.show_about,
       };
     }
     case "INCOMING_WORKSPACE_FOLDER": {
@@ -332,8 +362,8 @@ export default (state = INITIAL_STATE, action) => {
             loaded: false,
           },
           team_channel: {
-            code: action.data.members.filter((m) => m.type === "external").length > 0 && action.data.team_channel.code ? action.data.team_channel.code : null,
-            id: action.data.members.filter((m) => m.type === "external").length > 0 && action.data.team_channel.ud ? action.data.team_channel.id : null,
+            code: action.data.team_channel.code ? action.data.team_channel.code : null,
+            id: action.data.team_channel.id ? action.data.team_channel.id : null,
             icon_link: null,
           },
           created_at: action.data.topic.created_at,
@@ -386,8 +416,8 @@ export default (state = INITIAL_STATE, action) => {
           ...state.workspaces[action.data.id],
           ...action.data,
           is_lock: action.data.private,
-          folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
-          folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name,
+          //folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
+          folder_name: action.data.current_workspace_folder_name,
         };
         updatedWorkspaces[workspace.id] = workspace;
         if (state.activeTopic && state.activeTopic.id === workspace.id) {
@@ -531,6 +561,8 @@ export default (state = INITIAL_STATE, action) => {
         folderToDelete: null,
         folders: updatedFolders,
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? { ...state.workspaces[action.data.id] } : state.activeTopic,
+        selectedWorkspaceId: action.data ? action.data.id : null,
+        showAboutModal: action.data && state.workspaces[action.data.id] ? state.workspaces[action.data.id].show_about : false,
       };
     }
     // case "SET_SELECTED_CHANNEL": {
@@ -698,18 +730,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let updatedWorkspaces = { ...state.workspaces };
       let updatedSearch = { ...state.search };
-      let activeTopic = null;
-      if (Object.keys(updatedWorkspaces).length) {
-        Object.values(updatedWorkspaces).forEach((ws) => {
-          if (ws.channel.id && ws.channel.id === action.data.channel_id) {
-            updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, ...action.data.users];
-            updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, ...action.data.users.map((u) => u.id)];
-            activeTopic = updatedWorkspaces[ws.id];
-          }
-        });
-      }
       if (updatedSearch.results.length) {
         updatedSearch.results = updatedSearch.results.map((item) => {
           if (item.channel.id === action.data.channel_id) {
@@ -724,8 +745,22 @@ export default (state = INITIAL_STATE, action) => {
       }
       return {
         ...state,
-        workspaces: updatedWorkspaces,
-        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id && activeTopic ? activeTopic : state.activeTopic,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (action.data.data.workspace_data.topic && action.data.data.workspace_data.topic.id === ws.id) {
+            acc[ws.id] = { ...ws, members: [...ws.members, ...action.data.users], member_ids: [...ws.member_ids, ...action.data.users.map((u) => u.id)] };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic:
+          state.activeTopic && action.data.data.workspace_data.topic && action.data.data.workspace_data.topic.id === state.activeTopic.id
+            ? {
+                ...state.activeTopic,
+                members: [...state.activeTopic.members, ...action.data.users],
+                member_ids: [...state.activeTopic.member_ids, ...action.data.users.map((u) => u.id)],
+              }
+            : state.activeTopic,
         search: updatedSearch,
       };
     }
@@ -2966,6 +3001,24 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_ALL_WORKSPACE_SUCCESS": {
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          folders: action.data.workspaces
+            .filter((ws) => ws.workspace !== null)
+            .reduce((acc, ws) => {
+              acc[ws.workspace.id] = {
+                id: ws.workspace.id,
+                name: ws.workspace.name,
+                workspaces: action.data.workspaces.filter((w) => w.workspace && w.workspace.id === ws.workspace.id).map((ws) => ws.topic.id),
+              };
+              return acc;
+            }, {}),
+        },
+      };
+    }
     case "REMOVE_DRAFT_POST": {
       return {
         ...state,
@@ -3410,6 +3463,20 @@ export default (state = INITIAL_STATE, action) => {
               }, {}),
             }),
         },
+      };
+    }
+    case "TOGGLE_SHOW_ABOUT_SUCCESS": {
+      return {
+        ...state,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.message.id ? { ...state.activeTopic, show_about: action.data.message.show_about } : state.activeTopic,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.id === action.data.message.id) {
+            acc[ws.id] = { ...ws, show_about: action.data.message.show_about === false ? 0 : 1 };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
       };
     }
     default:

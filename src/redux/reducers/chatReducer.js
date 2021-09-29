@@ -1272,10 +1272,25 @@ export default function (state = INITIAL_STATE, action) {
       }
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      let teamPostNotif = [];
-      if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
-        teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
-      }
+      // let teamPostNotif = [];
+      // if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
+      //   teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
+      // }
+      const sysMessage =
+        action.data.type === "WORKSPACE" && action.data.system_message
+          ? [
+              {
+                ...action.data.system_message,
+                created_at: action.data.updated_at,
+                editable: false,
+                is_read: true,
+                is_deleted: false,
+                files: [],
+                reactions: [],
+                unfurls: [],
+              },
+            ]
+          : [];
       return {
         ...state,
         channels: {
@@ -1295,17 +1310,17 @@ export default function (state = INITIAL_STATE, action) {
                         return true;
                       }
                     }),
-                    {
-                      ...action.data.system_message,
-                      created_at: action.data.updated_at,
-                      editable: false,
-                      is_read: true,
-                      is_deleted: false,
-                      files: [],
-                      reactions: [],
-                      unfurls: [],
-                    },
-                    ...teamPostNotif,
+                    // {
+                    //   ...action.data.system_message,
+                    //   created_at: action.data.updated_at,
+                    //   editable: false,
+                    //   is_read: true,
+                    //   is_deleted: false,
+                    //   files: [],
+                    //   reactions: [],
+                    //   unfurls: [],
+                    // },
+                    //...teamPostNotif,
                   ],
                 }),
                 icon_link: action.data.channel.icon_link,
@@ -1327,10 +1342,10 @@ export default function (state = INITIAL_STATE, action) {
                 //transfer the internal post notification here
                 ...state.channels[action.data.team_channel.id],
                 replies:
-                  action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
-                    ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                    : state.channels[action.data.team_channel.id].replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-                icon_link: action.data.channel.icon_link,
+                  action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
+                    ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client), ...sysMessage]
+                    : [...state.channels[action.data.team_channel.id].replies, ...sysMessage],
+                icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
                 members: action.data.members
                   .filter((m) => m.type !== "external")
@@ -1345,6 +1360,7 @@ export default function (state = INITIAL_STATE, action) {
             }),
         },
         ...(state.selectedChannel &&
+          action.data.channel &&
           state.selectedChannel.id === action.data.channel.id && {
             selectedChannel: {
               ...state.selectedChannel,
@@ -1357,17 +1373,17 @@ export default function (state = INITIAL_STATE, action) {
                       return true;
                     }
                   }),
-                  {
-                    ...action.data.system_message,
-                    created_at: action.data.updated_at,
-                    editable: false,
-                    is_read: true,
-                    is_deleted: false,
-                    files: [],
-                    reactions: [],
-                    unfurls: [],
-                  },
-                  ...teamPostNotif,
+                  // {
+                  //   ...action.data.system_message,
+                  //   created_at: action.data.updated_at,
+                  //   editable: false,
+                  //   is_read: true,
+                  //   is_deleted: false,
+                  //   files: [],
+                  //   reactions: [],
+                  //   unfurls: [],
+                  // },
+                  //...teamPostNotif,
                 ],
               }),
               icon_link: action.data.channel.icon_link,
@@ -1387,10 +1403,10 @@ export default function (state = INITIAL_STATE, action) {
             selectedChannel: {
               ...state.selectedChannel,
               replies:
-                action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
-                  ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                  : state.selectedChannel.replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-              icon_link: action.data.channel.icon_link,
+                action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
+                  ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client), ...sysMessage]
+                  : [...state.selectedChannel.replies, ...sysMessage],
+              icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
               members: action.data.members
                 .filter((m) => m.type !== "external")
@@ -2383,6 +2399,36 @@ export default function (state = INITIAL_STATE, action) {
           : state.selectedChannel,
       };
     }
+    case "TRANSFER_CHANNEL_MESSAGES": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel.id) {
+            acc[channel.id] = {
+              ...channel,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              isFetching: false,
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel.id
+            ? {
+                ...state.selectedChannel,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                isFetching: false,
+                selected: true,
+              }
+            : state.selectedChannel,
+      };
+    }
     case "HUDDLE_SNOOZE": {
       let huddleBots = Object.values(state.huddleBots).map((r) => {
         if (r.id === action.data.id) {
@@ -2558,6 +2604,23 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: action.data.results.length === state.unreadChannels.limit,
           fetching: false,
         },
+      };
+    }
+    case "INCOMING_DEACTIVATED_USER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, ch) => {
+          if (ch.type === "COMPANY") {
+            acc[ch.id] = { ...ch, members: ch.members.filter((m) => m.id !== action.data.user_id) };
+          } else {
+            acc[ch.id] = ch;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.user_id)
+            ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.user_id) }
+            : state.selectedChannel,
       };
     }
     // case "INCOMING_DELETED_POST": {

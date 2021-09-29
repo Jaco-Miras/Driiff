@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useFiles, useTranslationActions, useFetchWsCount } from "../../hooks";
 import { FilesBody, FilesHeader, FilesSidebar } from "../files";
@@ -12,13 +11,6 @@ const Wrapper = styled.div`
     overflow: hidden;
     outline: currentcolor none medium;
   }
-  // .row.app-block {
-  //   overflow: auto;
-  // }
-`;
-
-const CreateFolderLabel = styled.div`
-  padding-top: 10px;
 `;
 
 const WorkspaceFilesPanel = (props) => {
@@ -93,97 +85,17 @@ const WorkspaceFilesPanel = (props) => {
     uploadFiles: _t("UPLOAD_FILES", "Upload files"),
   };
 
-  const folderName = useRef("");
-
-  const handleFolderClose = () => {
-    folderName.current = "";
-  };
-
-  const handleFolderNameChange = (e) => {
-    folderName.current = e.target.value.trim();
-  };
-
-  const handleAddEditFolder = (f, mode = "add") => {
-    const handleCreateFolder = () => {
-      if (topic) {
-        let cb = (err, res) => {
-          if (err) return;
-          if (params.hasOwnProperty("fileFolderId")) {
-            let pathname = history.location.pathname.split("/folder/")[0];
-            history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-          } else {
-            history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-          }
-        };
-        let payload = {
-          topic_id: topic.id,
-          name: folderName.current,
-        };
-        if (params.hasOwnProperty("fileFolderId")) {
-          payload = {
-            ...payload,
-            folder_id: params.fileFolderId,
-          };
-        }
-        actions.createFolder(payload, cb);
-      }
+  const handleAddEditFolder = (f, mode = "create") => {
+    const modal = {
+      type: "files_folder",
+      folder: mode === "create" ? null : f,
+      params: params,
+      mode: mode,
+      topic_id: topic.id,
+      parentFolder: folder && folder.search ? folder.search : null,
     };
 
-    const handleUpdateFolder = () => {
-      if (topic) {
-        let cb = (err, res) => {
-          if (err) return;
-          if (params.hasOwnProperty("fileFolderId")) {
-            let pathname = history.location.pathname.split("/folder/")[0];
-            history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-          }
-        };
-        actions.updateFolder(
-          {
-            id: f.id,
-            topic_id: topic.id,
-            name: folderName.current,
-          },
-          cb
-        );
-      }
-    };
-
-    let payload = {
-      type: "single_input",
-      defaultValue: "",
-      label: dictionary.folderName,
-      postInputLabel: !folder ? (
-        ""
-      ) : (
-        <CreateFolderLabel>
-          The folder will be created inside <b>#{folder.search}</b>
-        </CreateFolderLabel>
-      ),
-      onChange: handleFolderNameChange,
-      onClose: handleFolderClose,
-    };
-    if (mode === "add") {
-      payload = {
-        ...payload,
-        title: dictionary.createFolder,
-        preInputLabel: dictionary.folderInfo,
-        labelPrimaryAction: dictionary.create,
-        onPrimaryAction: handleCreateFolder,
-      };
-    } else {
-      folderName.current = f.search;
-      payload = {
-        ...payload,
-        defaultValue: f.search,
-        title: dictionary.renameFolder,
-        preInputLabel: dictionary.renameFolderInfo,
-        labelPrimaryAction: dictionary.renameFolder,
-        onPrimaryAction: handleUpdateFolder,
-      };
-    }
-
-    dispatch(addToModals(payload));
+    dispatch(addToModals(modal));
   };
 
   const clearFilter = () => {

@@ -329,6 +329,7 @@ const WorspaceHeaderPanel = (props) => {
     }),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
+    workspaces: _t("WORKSPACES", "Workspces"),
   };
 
   //const actions = useWorkspaceSearchActions();
@@ -485,7 +486,7 @@ const WorspaceHeaderPanel = (props) => {
                       {!isExternal && (
                         <>
                           <li className="nav-item nav-item-folder">
-                            <WorkspaceName>Workspaces</WorkspaceName>
+                            <WorkspaceName>{dictionary.workspaces}</WorkspaceName>
                           </li>
                           <li className="nav-item-chevron">
                             <SvgIconFeather icon="chevron-right" />
@@ -494,7 +495,7 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
+                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.team_channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -541,7 +542,7 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
+                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.team_channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>

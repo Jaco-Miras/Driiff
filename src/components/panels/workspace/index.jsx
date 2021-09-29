@@ -12,3 +12,4 @@ export { default as WorkspaceSearchResults } from "./WorkspaceSearchResults";
 export { default as WorkspaceSearchResult } from "./WorkspaceSearchResult";
 export { default as WorkspaceSearch } from "./WorkspaceSearch";
 export { default as WorkspaceRemindersPanel } from "./WorkspaceRemindersPanel";
+export { default as AllWorkspaceFolders } from "./AllWorkspaceFolders";

@@ -26,6 +26,7 @@ const MainLayout = (props) => {
   useSocketConnection();
   useInitialLoad();
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
+
   const { path } = useRouteMatch();
   const { displayWelcomeBanner } = useUserActions();
   const uDriff = useDriff();
@@ -37,6 +38,7 @@ const MainLayout = (props) => {
     likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
   };
 
+  //const subscriptions = useSelector((state) => state.admin.subscriptions);
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
@@ -144,6 +146,20 @@ const MainLayout = (props) => {
           <MainSnoozePanel />
         </MainContent>
       )}
+      {/* stripe code*/}
+      {/* {mounted && (
+        <MainContent id="main">
+          <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
+          {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
+            <Switch>
+              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+              <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
+            </Switch>
+          )}
+          {subscriptions && subscriptions.status === "canceled" && path !== "/admin-settings" && <TrialEndedPanel />}
+          {subscriptions && subscriptions.status === "active" && <MainSnoozePanel />}
+        </MainContent>
+      )} */}
       <MobileOverlay />
       {user.id !== undefined && window.Echo !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />

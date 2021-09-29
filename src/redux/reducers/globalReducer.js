@@ -30,6 +30,7 @@ const INITIAL_STATE = {
   searching: false,
   tabs: {},
   links: [],
+  linksFetched: false,
   todos: {
     isLoaded: false,
     hasMore: true,
@@ -276,6 +277,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         links: action.data,
+        linksFetched: true,
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
@@ -788,6 +790,15 @@ export default (state = INITIAL_STATE, action) => {
             return acc;
           }, {}),
         },
+      };
+    }
+    case "CREATE_QUICK_LINKS_SUCCESS":
+    case "PUT_QUICK_LINKS_SUCCESS": {
+      const links = [...state.links, ...action.data.quick_links];
+      let uniqLinks = [...new Map(links.map((item) => [item["id"], item])).values()];
+      return {
+        ...state,
+        links: uniqLinks,
       };
     }
     case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {

@@ -119,6 +119,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     width: 100%;
   }
   .ql-toolbar {
+    display: ${(props) => (props.readOnly ? "none" : "block")};
     position: absolute;
     bottom: 0;
     padding: 0;
@@ -206,6 +207,7 @@ const DescriptionInput = (props) => {
     setInlineImages = null,
     setImageLoading = null,
     prioMentionIds = [],
+    readOnly = false,
     ...otherProps
   } = props;
 
@@ -265,15 +267,17 @@ const DescriptionInput = (props) => {
     <WrapperDiv className={`description-input ${className}`}>
       <Label for="firstMessage">{dictionary.description}</Label>
       <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
-        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} {...otherProps} />
+        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} readOnly={readOnly} {...otherProps} />
         {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} />}
-        <Buttons className="action-wrapper">
-          <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-          {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
-        </Buttons>
+        {!readOnly && (
+          <Buttons className="action-wrapper">
+            <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+            {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
+          </Buttons>
+        )}
         <InputFeedback valid={valid}>{feedback}</InputFeedback>
       </DescriptionInputWrapper>
-      {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
+      {showEmojiPicker === true && !readOnly && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
     </WrapperDiv>
   );
 };

@@ -4,7 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
-import { useIsMember, useTranslationActions, useUsers, useWorkspaceActions } from "../../hooks";
+import { useIsMember, useTranslationActions, useUsers, useWorkspaceActions, useShowDashboardModal } from "../../hooks";
 //import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceRemindersPanel, WorkspaceSettingsPanel } from "../workspace";
 //import AllWorkspace from "./AllWorkspace";
 
@@ -58,7 +58,6 @@ const EmptyState = styled.div`
 
 const WorkspaceContentPanel = (props) => {
   const { className = "", isExternal } = props;
-
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -67,6 +66,8 @@ const WorkspaceContentPanel = (props) => {
   };
 
   const dispatch = useDispatch();
+
+  useShowDashboardModal();
 
   const { loggedUser } = useUsers();
   const actions = useWorkspaceActions();

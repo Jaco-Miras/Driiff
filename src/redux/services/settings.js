@@ -1,4 +1,4 @@
-import {apiCall, apiNoTokenCall} from "./index";
+import { apiCall, apiNoTokenCall } from "./index";
 
 export function getDriffCompSettings(payload) {
   return apiNoTokenCall({
@@ -36,6 +36,16 @@ export function putCompanyUpdateName(payload) {
   return apiCall({
     method: "PUT",
     url: "/v2/company/update-name",
-    data: payload
+    data: payload,
+  });
+}
+
+export function uploadDriffLogo(payload) {
+  let url = "/v1/file-logo";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+    hasFile: true,
   });
 }
