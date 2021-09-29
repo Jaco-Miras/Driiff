@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   showAboutModal: false,
   flipper: true,
   user: {},
+  allFolders: {},
   workspaces: {},
   activeTopic: null,
   activeTab: "intern",
@@ -296,29 +297,42 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_SUCCESS": {
-      let ws = {
-        ...action.data.workspace_data,
-        channel: action.data.workspace_data.topic_detail.channel,
-        team_channel: action.data.workspace_data.topic_detail.team_channel,
-        team_unread_chats: action.data.workspace_data.topic_detail.team_unread_chats,
-        unread_chats: action.data.workspace_data.topic_detail.unread_chats,
-        unread_posts: action.data.workspace_data.topic_detail.unread_posts,
-        folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
-        folder_name: action.data.workspace_name,
-        is_shared: action.data.workspace_data.topic_detail.is_shared,
-        show_about: action.data.workspace_data.topic_detail.show_about,
-        active: action.data.workspace_data.topic_detail.active,
-      };
-      return {
-        ...state,
-        workspaces: {
-          ...state.workspaces,
-          [ws.id]: ws,
-        },
-        activeTopic: ws,
-        selectedWorkspaceId: ws.id,
-        showAboutModal: ws.show_about,
-      };
+      if (action.data.tye === "FOLDER") {
+        return {
+          ...state,
+          allFolders: {
+            ...state.allFolders,
+            [action.data.workspace.id]: {
+              ...action.data.workspace,
+              workspaces: [],
+            },
+          },
+        };
+      } else {
+        let ws = {
+          ...action.data.workspace_data,
+          channel: action.data.workspace_data.topic_detail.channel,
+          team_channel: action.data.workspace_data.topic_detail.team_channel,
+          team_unread_chats: action.data.workspace_data.topic_detail.team_unread_chats,
+          unread_chats: action.data.workspace_data.topic_detail.unread_chats,
+          unread_posts: action.data.workspace_data.topic_detail.unread_posts,
+          folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
+          folder_name: action.data.workspace_name,
+          is_shared: action.data.workspace_data.topic_detail.is_shared,
+          show_about: action.data.workspace_data.topic_detail.show_about,
+          active: action.data.workspace_data.topic_detail.active,
+        };
+        return {
+          ...state,
+          workspaces: {
+            ...state.workspaces,
+            [ws.id]: ws,
+          },
+          activeTopic: ws,
+          selectedWorkspaceId: ws.id,
+          showAboutModal: ws.show_about,
+        };
+      }
     }
     case "INCOMING_WORKSPACE_FOLDER": {
       let updatedFolders = { ...state.folders };
@@ -334,6 +348,13 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         folders: updatedFolders,
+        allFolders: {
+          ...state.allFolders,
+          [action.data.id]: {
+            ...action.data,
+            workspaces: [],
+          },
+        },
       };
     }
     case "INCOMING_WORKSPACE": {
@@ -3477,6 +3498,18 @@ export default (state = INITIAL_STATE, action) => {
           } else {
             acc[ws.id] = ws;
           }
+          return acc;
+        }, {}),
+      };
+    }
+    case "GET_ALL_WORKSPACE_FOLDERS_SUCCESS": {
+      return {
+        ...state,
+        allFolders: action.data.folders.reduce((acc, f) => {
+          acc[f.id] = {
+            ...f,
+            workspaces: f.topics,
+          };
           return acc;
         }, {}),
       };

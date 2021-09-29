@@ -31,6 +31,8 @@ import {
   updateWorkspace as updateWorkspaceService,
   putChannel as putChannelService,
   toggleShowAbout as toggleShowAboutService,
+  getAllWorkspaceFolders as getAllWorkspaceFoldersService,
+  getExistingFolder as getExistingFolderService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -275,6 +277,15 @@ export function getTodayWorkspaceRemindersCallback(payload, callback) {
 export function getWorkspaceAndSetToFavorites(payload, callback) {
   return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_SET_TO_FAV_START", "GET_WORKSPACE_SET_TO_FAV_SUCCESS", "GET_WORKSPACE_SET_TO_FAV_FAIL", callback);
 }
+
 export function toggleShowAbout(payload, callback) {
   return dispatchActionToReducer(toggleShowAboutService(payload), "TOGGLE_SHOW_ABOUT_START", "TOGGLE_SHOW_ABOUT_SUCCESS", "TOGGLE_SHOW_ABOUT_FAILURE", callback);
+}
+
+export function getAllWorkspaceFolders(payload, callback) {
+  return dispatchActionToReducer(getAllWorkspaceFoldersService(payload), "GET_ALL_WORKSPACE_FOLDERS_START", "GET_ALL_WORKSPACE_FOLDERS_SUCCESS", "GET_ALL_WORKSPACE_FOLDERS_FAIL", callback);
+}
+
+export function getExistingFolder(payload, callback) {
+  return dispatchActionToReducer(getExistingFolderService(payload), "GET_EXISTING_WORKSPACE_FOLDER_START", "GET_EXISTING_WORKSPACE_FOLDER_SUCCESS", "GET_EXISTING_WORKSPACE_FOLDER_FAIL", callback);
 }
