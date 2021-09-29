@@ -157,7 +157,7 @@ const FavoriteChannels = (props) => {
   const { filterChannel, chatSettings } = useFilterChannelActions();
 
   const dictionary = {
-    showUnreadChats: _t("TOOLTIP.SHOW_UNREAD_CHATS", "Show unread chats"),
+    showUnreadChats: _t("TOOLTIP.SHOW_UNREAD_CHATS", "Filter on unread chat channels only "),
     hideUnreadChats: _t("TOOLTIP.HIDE_UNREAD_CHATS", "Hide unread chats"),
   };
   //const dispatch = useDispatch();
