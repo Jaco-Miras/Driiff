@@ -109,6 +109,9 @@ const WrapperDiv = styled(InputGroup)`
   }
   .react-select__control {
     background-color: #fff;
+    .dark & {
+      background-color: #191c20;
+    }
   }
 `;
 
