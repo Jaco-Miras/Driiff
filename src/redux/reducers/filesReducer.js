@@ -23,6 +23,7 @@ const INITIAL_STATE = {
     skip: 0,
     limit: 100,
     items: {},
+    driveLinks: {},
     favorite_files: {
       init: false,
       has_more: true,
@@ -1951,6 +1952,107 @@ export default (state = INITIAL_STATE, action) => {
           }, {}),
         },
       };
+    }
+    case "GET_TOPIC_DRIVE_LINKS_SUCCESS": {
+      if (action.data.length) {
+        const workspaceId = action.data[0].link_id;
+        return {
+          ...state,
+          workspaceFiles: {
+            ...state.workspaceFiles,
+            ...(state.workspaceFiles[workspaceId] && {
+              [workspaceId]: {
+                ...state.workspaceFiles[workspaceId],
+                driveLinks: action.data.reduce((acc, f) => {
+                  acc[f.id] = f;
+                  return acc;
+                }, {}),
+              },
+            }),
+          },
+        };
+      } else {
+        return state;
+      }
+    }
+    case "GET_DRIVE_LINKS_SUCCESS": {
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          driveLinks: action.data.data.reduce((acc, f) => {
+            acc[f.id] = f;
+            return acc;
+          }, {}),
+        },
+      };
+    }
+    case "PUT_DRIVE_LINK_SUCCESS":
+    case "INCOMING_UPDATED_DRIVE_LINK":
+    case "INCOMING_DRIVE_LINK":
+    case "POST_DRIVE_LINK_SUCCESS": {
+      if (action.data.data.link_id) {
+        return {
+          ...state,
+          workspaceFiles: {
+            ...state.workspaceFiles,
+            ...(state.workspaceFiles[action.data.data.link_id] && {
+              [action.data.data.link_id]: {
+                ...state.workspaceFiles[action.data.data.link_id],
+                driveLinks: {
+                  ...state.workspaceFiles[action.data.data.link_id].driveLinks,
+                  [action.data.data.id]: action.data.data,
+                },
+              },
+            }),
+          },
+        };
+      } else {
+        return {
+          ...state,
+          companyFiles: {
+            ...state.companyFiles,
+            driveLinks: {
+              ...state.companyFiles.driveLinks,
+              [action.data.data.id]: action.data.data,
+            },
+          },
+        };
+      }
+    }
+    case "INCOMING_DELETED_DRIVE_LINK": {
+      if (action.data.data.topic_id) {
+        return {
+          ...state,
+          workspaceFiles: {
+            ...state.workspaceFiles,
+            ...(state.workspaceFiles[action.data.data.topic_id] && {
+              [action.data.data.topic_id]: {
+                ...state.workspaceFiles[action.data.data.topic_id],
+                driveLinks: Object.values(state.workspaceFiles[action.data.data.topic_id].driveLinks)
+                  .filter((d) => d.id !== action.data.data.id)
+                  .reduce((acc, f) => {
+                    acc[f.id] = f;
+                    return acc;
+                  }, {}),
+              },
+            }),
+          },
+        };
+      } else {
+        return {
+          ...state,
+          companyFiles: {
+            ...state.companyFiles,
+            driveLinks: Object.values(state.companyFiles.driveLinks)
+              .filter((d) => d.id !== action.data.data.id)
+              .reduce((acc, f) => {
+                acc[f.id] = f;
+                return acc;
+              }, {}),
+          },
+        };
+      }
     }
     default:
       return state;

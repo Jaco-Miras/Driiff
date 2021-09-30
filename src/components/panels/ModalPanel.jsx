@@ -25,6 +25,7 @@ import {
   TrialEndedModal,
   CreateFilesFolderModal,
   AboutWorkspaceModal,
+  CreateExternalFileFolder,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -106,6 +107,8 @@ const ModalPanel = () => {
             return <CreateFilesFolderModal key={modal.type} data={modal} />;
           case "about_workspace":
             return <AboutWorkspaceModal key={modal.type} data={modal} />;
+          case "external_file_folder":
+            return <CreateExternalFileFolder key={modal.type} data={modal} />;
           default:
             return null;
         }

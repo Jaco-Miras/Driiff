@@ -572,3 +572,43 @@ export function removeFileDownload(payload) {
     data: payload,
   });
 }
+
+export function postDriveLink(payload) {
+  let url = "/v2/drive/links";
+  if (payload.topic_id) {
+    url = `/v2/drive/links?topic_id=${payload.topic_id}`;
+  }
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getDriveLinks(payload) {
+  let url = "/v2/drive/links";
+  if (payload.topic_id) {
+    url = `/v2/drive/links?topic_id=${payload.topic_id}`;
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function putDriveLink(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/drive/links/${payload.id}`,
+    data: payload,
+  });
+}
+
+export function deleteDriveLink(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/drive/links/${payload.id}`,
+    data: payload,
+  });
+}

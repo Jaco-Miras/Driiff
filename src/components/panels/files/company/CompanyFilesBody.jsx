@@ -6,6 +6,7 @@ import { DropDocument } from "../../../dropzone/DropDocument";
 import { MoreOptions } from "../../common";
 import { CompanyFilesBreadcrumb, CompanyImportantFiles, CompanyPopularFiles, CompanyRecentEditedFile, CompanyRemoveFiles } from "./index";
 import { CompanyFileListItem, CompanyFolderListItem } from "../../../list/file/item/company";
+import { DriveLinks } from "..";
 
 const Wrapper = styled.div`
   body & {
@@ -317,6 +318,7 @@ const CompanyFilesBody = (props) => {
                 ) : (
                   <>
                     <div className="row">
+                      <DriveLinks disableOptions={disableOptions} />
                       {files &&
                         fileIds.map((f) => {
                           if (files.files.hasOwnProperty(f)) {
