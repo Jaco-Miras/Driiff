@@ -106,14 +106,20 @@ const FolderListItem = (props) => {
   };
 
   useEffect(() => {
-    if (color !== "" && !showColorPicker) {
+    if (color !== "" && color !== folder.bg_color && !showColorPicker) {
       //update color
-      const payload = {
+      let payload = {
         id: folder.id,
         name: folder.search,
         bg_color: color,
         topic_id: params.workspaceId,
       };
+      if (folder.parent_folder) {
+        payload = {
+          ...payload,
+          folder_id: folder.parent_folder.id,
+        };
+      }
       actions.updateFolder(payload);
     }
   }, [showColorPicker, color]);

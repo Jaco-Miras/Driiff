@@ -104,13 +104,19 @@ const CompanyFolderListItem = (props) => {
   };
 
   useEffect(() => {
-    if (color !== "" && !showColorPicker) {
+    if (color !== "" && color !== folder.bg_color && !showColorPicker) {
       //update color
-      const payload = {
+      let payload = {
         id: folder.id,
         name: folder.search,
         bg_color: color,
       };
+      if (folder.parent_folder) {
+        payload = {
+          ...payload,
+          folder_id: folder.parent_folder.id,
+        };
+      }
       actions.updateCompanyFolders(payload);
     }
   }, [showColorPicker, color]);

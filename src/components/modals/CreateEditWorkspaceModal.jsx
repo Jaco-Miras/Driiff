@@ -379,6 +379,9 @@ const CreateEditWorkspaceModal = (props) => {
     sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
     publicWorkspace: _t("LABEL.PUBLIC_WORKSPACE", "Public workspace"),
     toasterGeneralError: _t("TOASTER.WORKSPACE_ICON_GENERAL_ERROR", "Error uploading workspace icon!"),
+    convertToInternalWorkspace: _t("MODAL_HEADER.CONVERT_TO_INTERNAL_WS", "Convert to internal workspace"),
+    removeExternals: _t("BUTTON.REMOVE_EXTERNALS", "Remove externals"),
+    removeExternalsBody: _t("MODAL_BODY.REMOVE_EXTERNALS", "There are existing external users. Remove the external users first before converting to internal workspace."),
   };
 
   const _validateName = useCallback(() => {
@@ -426,12 +429,41 @@ const CreateEditWorkspaceModal = (props) => {
     dispatch(clearModal({ type: type }));
   };
 
+  const handleShowRemoveExternalsConfirmation = () => {
+    const handleSubmit = () => {
+      setForm({
+        ...form,
+        selectedExternals: [],
+        has_externals: false,
+      });
+      setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+      setInvitedExternals([]);
+    };
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.convertToInternalWorkspace,
+      submitText: dictionary.removeExternals,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.removeExternalsBody,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+
+    dispatch(addToModals(confirmModal));
+  };
+
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
     const checked = !form[name];
-    setForm((prevState) => {
-      return { ...prevState, [name]: checked };
-    });
+    if (name === "has_externals" && !checked && (form.selectedExternals.length || invitedExternals.length)) {
+      //show confirmation modal
+      handleShowRemoveExternalsConfirmation();
+    } else {
+      setForm((prevState) => {
+        return { ...prevState, [name]: checked };
+      });
+    }
   };
 
   const toggleWorkspaceType = (e, value) => {

@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../../helpers/stringFormatter";
-import {SvgIconFeather} from "../../../common";
-import {CompanySubFolderList} from "./index";
+import { replaceChar } from "../../../../helpers/stringFormatter";
+import { SvgIconFeather } from "../../../common";
+import { CompanySubFolderList } from "./index";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -28,7 +28,7 @@ const Wrapper = styled.li`
     transform: rotate(0deg);
     margin-right: 2px;
     margin-left: 10px;
-    
+
     &.ti-minus {
       margin-left: 6px;
     }
@@ -60,10 +60,10 @@ const FolderNav = styled.ul`
 `;
 
 const CompanyFolderList = (props) => {
-  const {className = "", folder, folders, activeFolder, clearFilter} = props;
+  const { className = "", folder, folders, activeFolder, clearFilter } = props;
 
   const history = useHistory();
-  const {params, path, url} = useRouteMatch();
+  const { params, path, url } = useRouteMatch();
   const ref = {
     container: useRef(null),
     arrow: useRef(null),
@@ -127,32 +127,26 @@ const CompanyFolderList = (props) => {
   }, [params, activeFolder]);
 
   return (
-    <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`}
-             selected={activeFolder ? activeFolder.id === folder.id : false}>
+    <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`} selected={activeFolder ? activeFolder.id === folder.id : false}>
       <a onClick={handleSelectFolder}>
         {folder.search}
-        {folder.hasOwnProperty("payload") &&
-        <SvgIconFeather className={"ml-2"} icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000"
-                        opacity=".8"/>}
+        {folder.hasOwnProperty("payload") && <SvgIconFeather className={"ml-2"} icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8" />}
         {Object.values(folders).filter((f) => {
           return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
-        }).length > 0 &&
-        <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>}
+        }).length > 0 && <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`} />}
       </a>
       {Object.values(folders).filter((f) => {
         return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
       }).length > 0 && (
         <FolderNav ref={ref.nav} maxHeight={maxHeight} className={showFolders ? "enter-active" : "leave-active"}>
           {showFolders &&
-          Object.values(folders)
-            .filter((f) => {
-              return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
-            })
-            .map((f) => {
-              return <CompanySubFolderList
-                key={f.id} clearFilter={clearFilter} params={params} folderHeight={maxHeight}
-                activeFolder={activeFolder} folders={folders} folder={f}/>;
-            })}
+            Object.values(folders)
+              .filter((f) => {
+                return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
+              })
+              .map((f) => {
+                return <CompanySubFolderList key={f.id} clearFilter={clearFilter} params={params} folderHeight={maxHeight} activeFolder={activeFolder} folders={folders} folder={f} />;
+              })}
         </FolderNav>
       )}
     </Wrapper>
