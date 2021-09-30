@@ -1,15 +1,26 @@
 import React from "react";
+import { SvgIconFeather } from "../../common/SvgIcon";
 
 const DriveLinkIcons = (props) => {
   const { type } = props;
-  if (type.includes("word") || type.includes("document" || type.includes("form"))) {
-    return <i className="fa fa-file-word-o text-info" />;
-  } else if (type.includes("folder")) {
-    return <i className="fa fa-folder-o text-instagram" />;
-  } else if (type.includes("spreadsheet") || type.includes("excel")) {
-    return <i className="fa fa-file-excel-o text-success" />;
+  if (type.includes("document")) {
+    return <SvgIconFeather icon="gdoc" />;
+  } else if (type.includes("form")) {
+    return <SvgIconFeather icon="gforms" />;
+  } else if (type.includes("google_folder")) {
+    return <SvgIconFeather icon="google-drive" />;
+  } else if (type.includes("spreadsheet")) {
+    return <SvgIconFeather icon="gsheet" />;
+  } else if (type.includes("word")) {
+    return <SvgIconFeather icon="office-word" />;
+  } else if (type.includes("excel")) {
+    return <SvgIconFeather icon="office-excel" />;
   } else if (type.includes("ppt")) {
-    return <i className="fa fa-file-powerpoint-o text-secondary" />;
+    return <SvgIconFeather icon="office-ppt" />;
+  } else if (type.includes("office_folder")) {
+    return <SvgIconFeather icon="office-one-drive" />;
+  } else if (type.includes("dropbox")) {
+    return <SvgIconFeather icon="dropbox" />;
   } else if (type.includes("file")) {
     return <i className="fa fa-file-o text-info" />;
   } else {
