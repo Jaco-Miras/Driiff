@@ -10,3 +10,7 @@ export { default as FolderOptions } from "./FolderOptions";
 export { default as FolderList } from "./FolderList";
 export { default as GoogleDrive } from "./GoogleDrive";
 export { default as FilesBreadcrumb } from "./FilesBreadcrumb";
+export { default as DriveLinks } from "./DriveLinks";
+export { default as DriveLink } from "./DriveLink";
+export { default as DriveLinkOptions } from "./DriveLinkOptions";
+export { default as DriveLinkIcons } from "./DriveLinkIcons";

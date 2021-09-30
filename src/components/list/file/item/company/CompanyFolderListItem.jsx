@@ -25,12 +25,15 @@ const Wrapper = styled.div`
       white-space: nowrap;
     }
   }
-  .app-file-list .app-file-icon {
-    background-color: ${(props) => (props.color !== "" ? props.color : "#f5f5f5")};
-    .dark & {
-      background-color: ${(props) => (props.color !== "" ? props.color : "#ffffff14")};
+
+  ${(props) =>
+    props.color !== "" &&
+    `
+      .app-file-list .app-file-icon {
+      background-color: ${props.color}!important;
     }
-  }
+    `}
+
   .app-file-icon:hover {
     .color-picker {
       display: block;
