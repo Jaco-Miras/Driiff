@@ -653,6 +653,10 @@ const useChannelActions = () => {
    * @param {function} [callback]
    */
   const loadMore = ({ skip = 0, limit = 25 }, callback = () => {}) => {
+    if (chatSettings.filter_channel) {
+      if (callback) callback();
+      return;
+    }
     let params = {
       skip: skip,
       limit: limit,

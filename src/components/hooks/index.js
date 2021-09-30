@@ -71,4 +71,5 @@ export { default as useFilterAllWorkspaces } from "./useFilterAllWorkspaces";
 export { default as useTypingIndicator } from "./useTypingIndicator";
 export { default as useAdminActions } from "./useAdminActions";
 export { default as useSnoozeActions } from "./useSnoozeActions";
+export { default as useFilterChannelActions } from "./useFilterChannelActions";
 export { default as useShowDashboardModal } from "./useShowDashboardModal";

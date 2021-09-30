@@ -36,11 +36,18 @@ const INITIAL_STATE = {
     skip: 0,
     limit: 25,
     fetching: false,
-    hasMore: false,
+    hasMore: true,
   },
   searchArchivedChannels: false,
   snoozedHuddle: [],
   huddleBotsLoaded: false,
+  filterUnreadChannels: false,
+  unreadChannels: {
+    skip: 0,
+    limit: 25,
+    hasMore: true,
+    fetching: false,
+  },
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -165,28 +172,38 @@ export default function (state = INITIAL_STATE, action) {
     //   };
     // }
     case "ADD_CHANNELS": {
-      let fetchedChannels = {};
-      action.data.channels
-        .filter((r) => r.id !== null)
-        .filter((r) => {
-          return !(state.selectedChannel && state.selectedChannel.id === r.id);
-        })
-        .forEach((r) => {
-          fetchedChannels[r.id] = {
-            ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
-            ...r,
-            hasMore: true,
-            skip: 0,
-            replies: [],
-            selected: false,
-            isFetching: false,
-          };
-        });
+      // let fetchedChannels = {};
+      // action.data.channels
+      //   .filter((r) => r.id !== null)
+      //   .filter((r) => {
+      //     return !(state.selectedChannel && state.selectedChannel.id === r.id);
+      //   })
+      //   .forEach((r) => {
+      //     fetchedChannels[r.id] = {
+      //       ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
+      //       ...r,
+      //       hasMore: true,
+      //       skip: 0,
+      //       replies: [],
+      //       selected: false,
+      //       isFetching: false,
+      //     };
+      //   });
       return {
         ...state,
         channels: {
           ...state.channels,
-          ...fetchedChannels,
+          ...(action.data.channels.length > 0 && {
+            ...Object.values(action.data.channels).reduce((acc, c) => {
+              if (state.channels[c.id]) {
+                acc[c.id] = { ...state.channels[c.id] };
+              } else {
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+              }
+              return acc;
+            }, {}),
+          }),
+          //...fetchedChannels,
         },
         fetch: {
           skip: action.data.channels.length + state.fetch.skip,
@@ -2548,6 +2565,45 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+      };
+    }
+    case "SHOW_UNREAD_CHANNELS": {
+      return {
+        ...state,
+        filterUnreadChannels: !state.filterUnreadChannels,
+      };
+    }
+    case "GET_UNREAD_CHANNELS_START": {
+      return {
+        ...state,
+        unreadChannels: {
+          ...state.unreadChannels,
+          fetching: true,
+        },
+      };
+    }
+    case "GET_UNREAD_CHANNELS_SUCCESS": {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...(action.data.results.length > 0 && {
+            ...Object.values(action.data.results).reduce((acc, c) => {
+              if (state.channels[c.id]) {
+                acc[c.id] = { ...state.channels[c.id] };
+              } else {
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+              }
+              return acc;
+            }, {}),
+          }),
+        },
+        unreadChannels: {
+          ...state.unreadChannels,
+          skip: state.unreadChannels.skip + action.data.results.length,
+          hasMore: action.data.results.length === state.unreadChannels.limit,
+          fetching: false,
+        },
       };
     }
     case "INCOMING_DEACTIVATED_USER": {
