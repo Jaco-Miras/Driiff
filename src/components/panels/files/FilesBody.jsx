@@ -6,7 +6,7 @@ import { DropDocument } from "../../dropzone/DropDocument";
 import { useToaster } from "../../hooks";
 import { FileListItem, FolderListItem } from "../../list/file/item";
 import { MoreOptions } from "../common";
-import { FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles, TeamChatFiles, ClientChatFiles, PrivatePostFiles, ClientPostFiles } from "./index";
+import { FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles, TeamChatFiles, ClientChatFiles, PrivatePostFiles, ClientPostFiles, DriveLinks } from "./index";
 
 const Wrapper = styled.div`
   body & {
@@ -287,6 +287,7 @@ const FilesBody = (props) => {
             ) : (
               <>
                 <div className="row">
+                  <DriveLinks disableOptions={disableOptions} params={params} />
                   {fileIds.map((f) => {
                     if (wsFiles.files.hasOwnProperty(f)) {
                       return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} folders={folders} disableOptions={disableOptions} />;

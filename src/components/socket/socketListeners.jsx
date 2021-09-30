@@ -73,6 +73,9 @@ import {
   incomingRestoreFolder,
   incomingRemoveFileAfterDownload,
   incomingRemoveFileAutomatically,
+  incomingDriveLink,
+  incomingDeletedDriveLink,
+  incomingUpdatedDriveLink,
 } from "../../redux/actions/fileActions";
 import {
   addToModals,
@@ -1040,6 +1043,15 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".create-drive-link", (e) => {
+        this.props.incomingDriveLink(e);
+      })
+      .listen(".remove-drive-link", (e) => {
+        this.props.incomingDeletedDriveLink(e);
+      })
+      .listen(".update-drive-link", (e) => {
+        this.props.incomingUpdatedDriveLink(e);
+      })
       .listen(".upload-company-logo", (e) => {
         this.props.incomingUpdatedCompanyLogo(e);
       })
@@ -1506,6 +1518,15 @@ class SocketListeners extends Component {
           });
           this.props.incomingZoomData({ ...e.zoom_data.data });
         }
+      })
+      .listen(".create-drive-link", (e) => {
+        this.props.incomingDriveLink(e);
+      })
+      .listen(".remove-drive-link", (e) => {
+        this.props.incomingDeletedDriveLink(e);
+      })
+      .listen(".update-drive-link", (e) => {
+        this.props.incomingUpdatedDriveLink(e);
       })
       .listen(".favourite-workspace-notification", (e) => {
         this.props.incomingFavouriteWorkspace(e);
@@ -2168,6 +2189,9 @@ function mapDispatchToProps(dispatch) {
     incomingUpdatedSubscription: bindActionCreators(incomingUpdatedSubscription, dispatch),
     incomingUpdatedCompanyLogo: bindActionCreators(incomingUpdatedCompanyLogo, dispatch),
     getWorkspaceAndSetToFavorites: bindActionCreators(getWorkspaceAndSetToFavorites, dispatch),
+    incomingDriveLink: bindActionCreators(incomingDriveLink, dispatch),
+    incomingDeletedDriveLink: bindActionCreators(incomingDeletedDriveLink, dispatch),
+    incomingUpdatedDriveLink: bindActionCreators(incomingUpdatedDriveLink, dispatch),
   };
 }
 

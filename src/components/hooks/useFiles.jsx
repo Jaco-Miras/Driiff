@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useFileActions } from "../hooks";
+import { useFileActions, useDriveLinkActions } from "../hooks";
 
 const useFiles = (triggerFetch = false) => {
   const params = useParams();
   const fileActions = useFileActions(params);
+  const { fetchTopicDriveLinks } = useDriveLinkActions();
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
@@ -32,6 +33,7 @@ const useFiles = (triggerFetch = false) => {
             fileActions.fetchPrivatePostFiles({ topic_id: activeTopic.id, filter_by: "privatePost" });
             fileActions.fetchClientPostFiles({ topic_id: activeTopic.id, filter_by: "clientPost" });
           }
+          fetchTopicDriveLinks({ topic_id: activeTopic.id });
         };
         setFetchingFiles(true);
         fileActions.getFiles({ topic_id: activeTopic.id }, cb);

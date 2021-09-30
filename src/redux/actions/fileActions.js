@@ -56,6 +56,10 @@ import {
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
   uploadWorkspaceFiles as uploadWorkspaceFilesService,
+  postDriveLink as postDriveLinkService,
+  getDriveLinks as getDriveLinksService,
+  putDriveLink as putDriveLinkService,
+  deleteDriveLink as deleteDriveLinkService,
 } from "../services";
 
 export function getFiles(payload, callback) {
@@ -494,4 +498,36 @@ export function incomingRemoveFileAfterDownload(payload, callback) {
 
 export function incomingRemoveFileAutomatically(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMOVED_FILE_AUTOMATICALLY", payload, callback);
+}
+
+export function getTopicDriveLinks(payload, callback) {
+  return dispatchActionToReducer(getDriveLinksService(payload), "GET_TOPIC_DRIVE_LINKS_START", "GET_TOPIC_DRIVE_LINKS_SUCCESS", "GET_TOPIC_DRIVE_LINKS_FAIL", callback);
+}
+
+export function getDriveLinks(payload, callback) {
+  return dispatchActionToReducer(getDriveLinksService(payload), "GET_DRIVE_LINKS_START", "GET_DRIVE_LINKS_SUCCESS", "GET_DRIVE_LINKS_FAIL", callback);
+}
+
+export function postDriveLink(payload, callback) {
+  return dispatchActionToReducer(postDriveLinkService(payload), "POST_DRIVE_LINK_START", "POST_DRIVE_LINK_SUCCESS", "POST_DRIVE_LINK_FAIL", callback);
+}
+
+export function putDriveLink(payload, callback) {
+  return dispatchActionToReducer(putDriveLinkService(payload), "PUT_DRIVE_LINK_START", "PUT_DRIVE_LINK_SUCCESS", "PUT_DRIVE_LINK_FAIL", callback);
+}
+
+export function deleteDriveLink(payload, callback) {
+  return dispatchActionToReducer(deleteDriveLinkService(payload), "DELETE_DRIVE_LINK_START", "DELETE_DRIVE_LINK_SUCCESS", "DELETE_DRIVE_LINK_FAIL", callback);
+}
+
+export function incomingDriveLink(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DRIVE_LINK", payload, callback);
+}
+
+export function incomingUpdatedDriveLink(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_DRIVE_LINK", payload, callback);
+}
+
+export function incomingDeletedDriveLink(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_DRIVE_LINK", payload, callback);
 }

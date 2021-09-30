@@ -26,3 +26,4 @@ export { default as UpdateAdminBotModal } from "./UpdateAdminBotModal";
 export { default as TrialEndedModal } from "./TrialEndedModal";
 export { default as CreateFilesFolderModal } from "./CreateFilesFolderModal";
 export { default as AboutWorkspaceModal } from "./AboutWorkspaceModal";
+export { default as CreateExternalFileFolder } from "./CreateExternalFileFolder";

@@ -200,6 +200,10 @@ export {
   getCompanyGoogleAttachmentsFile,
   getCompanyGoogleAttachmentsFolder,
   removeFileDownload,
+  getDriveLinks,
+  postDriveLink,
+  putDriveLink,
+  deleteDriveLink,
 } from "./files";
 
 export {

@@ -14,3 +14,7 @@ export { default as TeamChatFiles } from "./TeamChatFiles";
 export { default as ClientChatFiles } from "./ClientChatFiles";
 export { default as PrivatePostFiles } from "./PrivatePostFiles";
 export { default as ClientPostFiles } from "./ClientPostFiles";
+export { default as DriveLinks } from "./DriveLinks";
+export { default as DriveLink } from "./DriveLink";
+export { default as DriveLinkOptions } from "./DriveLinkOptions";
+export { default as DriveLinkIcons } from "./DriveLinkIcons";
