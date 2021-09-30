@@ -25,7 +25,6 @@ const Wrapper = styled.div`
       white-space: nowrap;
     }
   }
-
   ${(props) =>
     props.color !== "" &&
     `
@@ -33,7 +32,6 @@ const Wrapper = styled.div`
       background-color: ${props.color}!important;
     }
     `}
-
   .app-file-icon:hover {
     .color-picker {
       display: block;
