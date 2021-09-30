@@ -432,3 +432,21 @@ export function toggleShowAbout(payload) {
     data: payload,
   });
 }
+
+export function getAllWorkspaceFolders(payload) {
+  let url = "/v2/workspace/folders/all";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getExistingFolder(payload) {
+  let url = `/v2/workspace/folder/exists?name=${payload.name}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

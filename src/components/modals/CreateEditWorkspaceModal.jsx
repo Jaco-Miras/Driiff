@@ -226,7 +226,7 @@ const CreateEditWorkspaceModal = (props) => {
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const folders = useSelector((state) => state.workspaces.folders);
+  const folders = useSelector((state) => state.workspaces.allFolders);
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
