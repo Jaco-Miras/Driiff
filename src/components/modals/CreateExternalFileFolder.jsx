@@ -182,7 +182,7 @@ const CreateExternalFileFolder = (props) => {
     if (mode !== "create" && link) {
       setNameValue(link.name);
       setLinkValue(link.link);
-      setLinkType(typeOptions.find((o) => link.type));
+      setLinkType(typeOptions.find((o) => o.id === link.type));
     }
   }, []);
 
