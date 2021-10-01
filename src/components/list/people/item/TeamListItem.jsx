@@ -277,8 +277,8 @@ const TeamListItem = (props) => {
           {member.workspace_role === "WATCHER" && <div onClick={handleRemoveRole}>{dictionary.revokeAsWatcher}</div>}
           {member.id === loggedUser.id && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.leave}</div>}
           {member.id !== loggedUser.id && loggedUser.type === "internal" && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>}
-          {member.active === 0 && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
-          {!member.has_accepted && member.active === 0 && member.type === "external" && member.invite_link && <div onClick={handleCopyInviteLink}>{dictionary.sendInviteManually}</div>}
+          {!member.has_accepted && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
+          {!member.has_accepted && member.type === "external" && member.invite_link && <div onClick={handleCopyInviteLink}>{dictionary.sendInviteManually}</div>}
         </MoreOptions>
       )}
     </Wrapper>
