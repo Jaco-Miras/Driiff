@@ -15,8 +15,6 @@ export const SvgIconFeather = React.memo(
       case "gdoc":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#2196f3" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z" />
@@ -29,8 +27,6 @@ export const SvgIconFeather = React.memo(
       case "gsheet":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <linearGradient id="PTsiEfj2THKtO9xz06mlla" x1="24" x2="24" y1="5" y2="43" gradientUnits="userSpaceOnUse">
@@ -59,8 +55,6 @@ export const SvgIconFeather = React.memo(
       case "gforms":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#43a047" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z" />
@@ -73,8 +67,6 @@ export const SvgIconFeather = React.memo(
       case "office-word":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <linearGradient id="Q7XamDf1hnh~bz~vAO7C6a" x1="28" x2="28" y1="14.966" y2="6.45" gradientUnits="userSpaceOnUse">
@@ -112,8 +104,6 @@ export const SvgIconFeather = React.memo(
       case "office-excel":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#169154" d="M29,6H15.744C14.781,6,14,6.781,14,7.744v7.259h15V6z" />
@@ -134,8 +124,6 @@ export const SvgIconFeather = React.memo(
       case "office-ppt":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#dc4c2c" d="M8,24c0,9.941,8.059,18,18,18s18-8.059,18-18H26H8z" />
@@ -152,8 +140,6 @@ export const SvgIconFeather = React.memo(
       case "dropbox":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#1E88E5" d="M42 13.976L31.377 7.255 24 13.314 35.026 19.732zM6 25.647L16.933 32.055 24 26.633 13.528 19.969zM16.933 7.255L6 14.301 13.528 19.969 24 13.314zM24 26.633L31.209 32.055 42 25.647 35.026 19.732z" />
@@ -164,8 +150,6 @@ export const SvgIconFeather = React.memo(
       case "google-drive":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#1e88e5" d="M38.59,39c-0.535,0.93-0.298,1.68-1.195,2.197C36.498,41.715,35.465,42,34.39,42H13.61 c-1.074,0-2.106-0.285-3.004-0.802C9.708,40.681,9.945,39.93,9.41,39l7.67-9h13.84L38.59,39z" />
@@ -186,8 +170,6 @@ export const SvgIconFeather = React.memo(
       case "office-one-drive":
         viewBox = "0 0 48 48";
         stroke = "none";
-        height = 48;
-        width = 48;
         content = (
           <>
             <path fill="#084593" d="M24.5 8A14.5 14.5 0 1 0 24.5 37A14.5 14.5 0 1 0 24.5 8Z" />

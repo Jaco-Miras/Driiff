@@ -22,12 +22,12 @@ const SelectOption = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)`
-  min-width: 1.75rem;
-  min-height: 1.75rem;
+  min-width: 24px;
+  min-height: 24px;
   margin: -2px 10px 0 0;
   border: none;
-  width: 2rem;
-  height: 2rem;
+  width: 24px;
+  height: 24px;
 `;
 
 const LockIcon = styled(SvgIconFeather)`

@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions, useToaster, useDriveLinkActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import Select from "react-select";
 import { validURL } from "../../helpers/urlContentHelper";
+import { FolderSelect } from "../forms";
 
 const Wrapper = styled(Modal)`
   ${(props) =>
@@ -62,56 +62,67 @@ const CreateExternalFileFolder = (props) => {
       id: "google_document",
       value: "google_document",
       label: "Google Document",
+      icon: "gdoc",
     },
     {
       id: "google_spreadsheet",
       value: "google_spreadsheet",
       label: "Google Spreadsheet",
+      icon: "gsheet",
     },
     {
       id: "google_form",
       value: "google_form",
       label: "Google Form",
+      icon: "gforms",
     },
     {
       id: "google_folder",
       value: "google_folder",
       label: "Google Folder",
+      icon: "google-drive",
     },
     {
       id: "office_word",
       value: "office_word",
       label: "Office365 Word doc",
+      icon: "office-word",
     },
     {
       id: "office_excel",
       value: "office_excel",
       label: "Office365 Excel",
+      icon: "office-excel",
     },
     {
       id: "office_ppt",
       value: "office_ppt",
       label: "Office365 Powerpoint",
+      icon: "office-ppt",
     },
     {
       id: "office_folder",
       value: "office_folder",
       label: "Office365 Folder",
+      icon: "office-one-drive",
     },
     {
       id: "dropbox_file",
       value: "dropbox_file",
       label: "Dropbox File",
+      icon: "dropbox",
     },
     {
       id: "dropbox_folder",
       value: "dropbox_folder",
       label: "Dropbox Folder",
+      icon: "dropbox",
     },
     {
       id: "other_link",
       value: "other_link",
       label: "Other external link",
+      icon: "file",
     },
   ];
 
@@ -197,7 +208,7 @@ const CreateExternalFileFolder = (props) => {
             <Input innerRef={inputRef} autoFocus defaultValue={""} value={linkValue} onChange={handleLinkInputChange} />
           </div>
           <Label className={"modal-label"}>{dictionary.typeLabel}</Label>
-          <Select className={"react-select-container mb-2"} classNamePrefix="react-select" isMulti={false} options={typeOptions} value={linkType} placeholder={"Select type"} onChange={handleSelectLinkType} />
+          <FolderSelect className={"react-select-container mb-2"} classNamePrefix="react-select" isMulti={false} options={typeOptions} value={linkType} placeholder={"Select type"} onChange={handleSelectLinkType} />
           <Label className={"modal-label"}>{dictionary.fileFolderName}</Label>
           <div className="d-flex align-items-center mb-2">
             <Input defaultValue={""} value={nameValue} onChange={handleNameInputChange} />
