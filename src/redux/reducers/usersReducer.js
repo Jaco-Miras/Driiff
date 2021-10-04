@@ -31,7 +31,6 @@ export default (state = INITIAL_STATE, action) => {
         designation: "",
         external_company_name: "",
         external_id: null,
-        first_name: "",
         is_favourite: false,
         place: "",
         profile_image_link: null,
