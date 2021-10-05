@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const TeamItem = (props) => {
-  const { className = "", loggedUser, team, dictionary } = props;
+  const { className = "", loggedUser, team, dictionary, _t } = props;
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -67,7 +67,7 @@ const TeamItem = (props) => {
   const handleRemoveTeam = () => {
     const callback = (err, res) => {
       if (err) return;
-      toaster.success("Successfully deleted team");
+      toaster.success(_t("TOASTER.TEAM_DELETE_SUCCESS", "Successfully removed ::name:: team", { name: team.name }));
     };
     const handleRemove = () => {
       dispatch(deleteTeam({ id: team.id }, callback));
@@ -85,6 +85,8 @@ const TeamItem = (props) => {
 
     dispatch(addToModals(confirmModal));
   };
+
+  const membersLengthLabel = _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: team.members.length });
 
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
@@ -105,7 +107,9 @@ const TeamItem = (props) => {
                 <div className="user-info-wrapper ml-3">
                   <h6 className="user-name mb-0">
                     <ToolTip content={team.name}>
-                      <div className="mr-2 people-text-truncate">{team.name}</div>
+                      <div className="mr-2 people-text-truncate">
+                        {team.name} {team.members.length > 0 && membersLengthLabel}
+                      </div>
                     </ToolTip>
                   </h6>
                 </div>

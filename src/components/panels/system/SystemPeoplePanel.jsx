@@ -461,7 +461,7 @@ const SystemPeoplePanel = (props) => {
             {showTeams &&
               Object.values(teams).length > 0 &&
               Object.values(teams).map((team) => {
-                return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} />;
+                return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} />;
               })}
             {userSort.map((user) => {
               return (
