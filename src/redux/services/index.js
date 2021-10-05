@@ -113,6 +113,7 @@ export {
   postTeam,
   putTeam,
   deleteTeam,
+  addTeamMember,
 } from "./user";
 
 export {

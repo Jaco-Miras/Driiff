@@ -36,6 +36,7 @@ import {
   postTeam as postTeamService,
   putTeam as putTeamService,
   deleteTeam as deleteTeamService,
+  addTeamMember as addTeamMemberService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -236,4 +237,12 @@ export function incomingUpdatedTeam(payload, callback) {
 
 export function incomingDeletedTeam(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_TEAM", payload, callback);
+}
+
+export function addTeamMember(payload, callback) {
+  return dispatchActionToReducer(addTeamMemberService(payload), "ADD_TEAM_MEMBER_START", "ADD_TEAM_MEMBER_SUCCESS", "ADD_TEAM_MEMBER_FAILURE", callback);
+}
+
+export function incomingTeamMember(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_TEAM_MEMBER", payload, callback);
 }
