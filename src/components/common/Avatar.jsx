@@ -10,6 +10,7 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import ProfileSlider from "./ProfileSlider";
 import { CSSTransition } from "react-transition-group";
 import { setProfileSlider } from "../../redux/actions/globalActions";
+import { SvgIconFeather } from ".";
 
 const Wrapper = styled.div`
   position: relative;
@@ -82,6 +83,14 @@ const Wrapper = styled.div`
   }
   .fade-exit-done {
     opacity: 0;
+  }
+  &.TEAM > div {
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f1f2f7;
   }
 `;
 
@@ -251,10 +260,12 @@ const Avatar = (props) => {
   }
 
   return (
-    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} ref={avatarRef}>
+    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
-        {isBot ? (
+        {type === "TEAM" ? (
+          <SvgIconFeather icon="users" />
+        ) : isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleBotImageError} src={errorBotImage ? botIcon : imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
           <Initials className="rounded-circle" avatarColor={avatarColor(name)} onClick={handleOnClick}>

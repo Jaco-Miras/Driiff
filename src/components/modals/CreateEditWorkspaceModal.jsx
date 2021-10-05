@@ -223,10 +223,12 @@ const CreateEditWorkspaceModal = (props) => {
   const userSettings = useSelector((state) => state.settings.user);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
+  const teams = useSelector((state) => state.users.teams);
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.allFolders);
+
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -1390,8 +1392,17 @@ const CreateEditWorkspaceModal = (props) => {
         label: u.name,
       };
     });
-    setUserOptions(userOptions);
-  }, [Object.values(users).length]);
+    const teamOptions = Object.values(teams).map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: u.name,
+        useLabel: true,
+        type: "TEAM",
+      };
+    });
+    setUserOptions([...teamOptions, ...userOptions]);
+  }, [Object.values(users).length, Object.values(teams).length]);
 
   useEffect(() => {
     if (externalUsers.length) {

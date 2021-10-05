@@ -32,6 +32,10 @@ const StyledAvatar = styled(Avatar)`
   color: #505050 !important;
   max-width: 2rem;
   max-height: 2rem;
+  .feather-users {
+    width: 1rem;
+    height: 1rem;
+  }
 `;
 
 const Option = (props) => {
@@ -46,6 +50,7 @@ const Option = (props) => {
               imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
               name={props.data.name}
               partialName={props.data.partial_name}
+              type={props.data.type && props.data.type === "TEAM" ? "TEAM" : "USER"}
             />
             <div>
               {props.children}
@@ -76,7 +81,7 @@ const MultiValueLabel = ({ children, selectProps, ...props }) => {
 const MultiValueContainer = ({ children, selectProps, ...props }) => {
   let newChildren = children.map((c, i) => {
     if (i === 0) {
-      const valueLabel = props.data.name.trim() !== "" ? `${props.data.first_name} ${props.data.middle_name} ${props.data.last_name}` : props.data.email;
+      const valueLabel = props.data.useLabel ? props.data.label : props.data.name.trim() !== "" ? `${props.data.first_name} ${props.data.middle_name} ${props.data.last_name}` : props.data.email;
       return {
         ...c,
         props: {

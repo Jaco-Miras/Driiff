@@ -144,6 +144,9 @@ import {
   incomingOnlineUsers,
   incomingDeletedUser,
   incomingAcceptedInternal,
+  incomingTeam,
+  incomingUpdatedTeam,
+  incomingDeletedTeam,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -1020,6 +1023,15 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".create-team", (e) => {
+        this.props.incomingTeam(e);
+      })
+      .listen(".update-team", (e) => {
+        this.props.incomingUpdatedTeam(e);
+      })
+      .listen(".remove-team", (e) => {
+        this.props.incomingDeletedTeam(e);
+      })
       .listen(".create-drive-link", (e) => {
         this.props.incomingDriveLink(e);
       })
@@ -2157,6 +2169,9 @@ function mapDispatchToProps(dispatch) {
     incomingDriveLink: bindActionCreators(incomingDriveLink, dispatch),
     incomingDeletedDriveLink: bindActionCreators(incomingDeletedDriveLink, dispatch),
     incomingUpdatedDriveLink: bindActionCreators(incomingUpdatedDriveLink, dispatch),
+    incomingTeam: bindActionCreators(incomingTeam, dispatch),
+    incomingUpdatedTeam: bindActionCreators(incomingUpdatedTeam, dispatch),
+    incomingDeletedTeam: bindActionCreators(incomingDeletedTeam, dispatch),
   };
 }
 
