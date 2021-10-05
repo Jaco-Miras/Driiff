@@ -106,6 +106,7 @@ const CreateEditTeamModal = (props) => {
   const handleCreateTeam = () => {
     const payload = {
       name: inputNameValue,
+      member_ids: selectedUsers.map((m) => m.value),
     };
     const cb = (err, res) => {
       if (err) return;
@@ -118,6 +119,7 @@ const CreateEditTeamModal = (props) => {
     const payload = {
       name: inputNameValue,
       id: team.id,
+      member_ids: selectedUsers.map((m) => m.value),
     };
     const cb = (err, res) => {
       if (err) return;
@@ -151,6 +153,7 @@ const CreateEditTeamModal = (props) => {
       ...u,
       value: u.id,
       label: u.name,
+      useLabel: true,
     };
   });
 
@@ -168,6 +171,18 @@ const CreateEditTeamModal = (props) => {
 
   useEffect(() => {
     setMounted(true);
+    if (mode === "edit") {
+      setSelectedUsers(
+        team.members.map((m) => {
+          return {
+            ...m,
+            value: m.id,
+            label: m.name,
+            useLabel: true,
+          };
+        })
+      );
+    }
   }, []);
 
   useEffect(() => {

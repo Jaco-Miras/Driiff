@@ -645,3 +645,11 @@ export function deleteTeam(payload) {
     data: payload,
   });
 }
+
+export function addTeamMember(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/team/add-member",
+    data: payload,
+  });
+}

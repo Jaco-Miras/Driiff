@@ -34,6 +34,8 @@ const AddToTeamModal = (props) => {
   };
   const dispatch = useDispatch();
 
+  const { addMember } = useTeamActions();
+
   const refs = {
     main: useRef(null),
     name: useRef(null),
@@ -51,14 +53,15 @@ const AddToTeamModal = (props) => {
   };
 
   const handleAddToTeam = () => {
-    // const payload = {
-    //   name: inputNameValue,
-    // };
-    // const cb = (err, res) => {
-    //   if (err) return;
-    //   toaster.success(dictionary.teamCreateSuccess);
-    // };
-    // createTeam(payload, cb);
+    const payload = {
+      member_ids: [user.id],
+      team_id: selectedTeam.id,
+    };
+    const cb = (err, res) => {
+      if (err) return;
+      toaster.success(_t("TOASTER.ADDED_TO_TEAM_SUCCESS", "Successfullly added ::userName:: to ::teamName::", { userName: user.name, teamName: selectedTeam.name }));
+    };
+    addMember(payload, cb);
   };
 
   const handleConfirm = () => {
@@ -74,14 +77,16 @@ const AddToTeamModal = (props) => {
     }
   };
 
-  const userOptions = Object.values(teams).map((u) => {
-    return {
-      ...u,
-      value: u.id,
-      label: u.name,
-      type: "TEAM",
-    };
-  });
+  const teamOptions = Object.values(teams)
+    .filter((t) => !t.member_ids.some((id) => id === user.id))
+    .map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: u.name,
+        type: "TEAM",
+      };
+    });
 
   const handleSelectTeam = (e) => {
     if (e === null) {
@@ -99,7 +104,7 @@ const AddToTeamModal = (props) => {
         <WrapperDiv>
           <Label className={"modal-label"}>{dictionary.teams}</Label>
           <div className="d-flex align-items-center mb-2">
-            <SelectPeople options={userOptions} value={selectedTeam} onChange={handleSelectTeam} isSearchable isMulti={false} />
+            <SelectPeople options={teamOptions} value={selectedTeam} onChange={handleSelectTeam} isSearchable isMulti={false} />
           </div>
         </WrapperDiv>
       </ModalBody>

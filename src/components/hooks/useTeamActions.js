@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { getTeams, postTeam, putTeam, deleteTeam } from "../../redux/actions/userAction";
+import { getTeams, postTeam, putTeam, deleteTeam, addTeamMember } from "../../redux/actions/userAction";
 
 const useTeamActions = () => {
   const dispatch = useDispatch();
@@ -15,8 +15,13 @@ const useTeamActions = () => {
   const updateTeam = (payload, callback) => {
     dispatch(putTeam(payload, callback));
   };
+
   const removeTeam = (payload, callback) => {
     dispatch(deleteTeam(payload, callback));
+  };
+
+  const addMember = (payload, callback) => {
+    dispatch(addTeamMember(payload, callback));
   };
 
   return {
@@ -24,6 +29,7 @@ const useTeamActions = () => {
     createTeam,
     updateTeam,
     removeTeam,
+    addMember,
   };
 };
 
