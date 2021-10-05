@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
-import { getUsers, getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
+import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, adjustHuddleDate, getUnpublishedAnswers, getSkippedAnswers, addHasUnpublishedAnswers } from "../../redux/actions/chatActions";
 import { getAllWorkspaceFolders } from "../../redux/actions/workspaceActions";
@@ -33,6 +33,7 @@ const useInitialLoad = () => {
       dispatch(
         getUsers({}, () => {
           dispatch(getArchivedUsers());
+          dispatch(getTeams());
         })
       );
       dispatch(getExternalUsers());

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { useToaster, useTranslationActions, useUserChannels } from "../../hooks";
-import { PeopleListItem } from "../../list/people/item";
+import { PeopleListItem, TeamItem } from "../../list/people/item";
 import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   }
 
   .people-search {
-    flex: 0 0 80%;
+    flex: 0 0 100%;
     justify-content: flex-start;
     padding-left: 0;
     flex-flow: row wrap;
@@ -48,6 +48,7 @@ const SystemPeoplePanel = (props) => {
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
   const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
+  const teams = useSelector((state) => state.users.teams);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ const SystemPeoplePanel = (props) => {
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
   const [showInvited, setShowInvited] = useState(false);
+  const [showTeams, setShowTeams] = useState(false);
 
   const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
   const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
@@ -153,6 +155,14 @@ const SystemPeoplePanel = (props) => {
     deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),
     deleteInvitedConfirmationText: _t("PEOPLE.DELETE_INVITED_CONFIRMATION_TEXT", "Are you sure you want to remove this invited user?"),
     toasterRemoveInvited: _t("TOASTER.REMOVE_INVITED_USER", "Removed invited user"),
+    btnTeam: _t("BUTTON.TEAM", "Team"),
+    showTeams: _t("PEOPLE.SHOW_TEAMS", "Show teams"),
+    editTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Edit team"),
+    removeTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Remove team"),
+    removeTeamHeader: _t("TEAM_MODAL.REMOVE_TEAM_HEADER", "Remove team"),
+    removeTeamBtn: _t("BUTTON.REMOVE_TEAM", "Remove team"),
+    removeTeamConfirmation: _t("TEAM_MODAL.REMOVE_TEAM_BODY", "Are you sure you want to remove this team?"),
+    addUserToTeam: _t("PEOPLE.ADD_USER_TEAM", "Add user to team"),
   };
 
   const handleInviteUsers = () => {
@@ -217,6 +227,15 @@ const SystemPeoplePanel = (props) => {
     };
 
     dispatch(addToModals(payload));
+  };
+
+  const handleAddTeam = () => {
+    const modal = {
+      mode: "create",
+      type: "team",
+      team: null,
+    };
+    dispatch(addToModals(modal));
   };
 
   const toaster = useToaster();
@@ -377,6 +396,20 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleShowTeamsToggle = () => {
+    setShowTeams(!showTeams);
+    setShowInvited(false);
+    setShowInactive(false);
+  };
+
+  const handleAddUserToTeam = (user) => {
+    const modal = {
+      type: "add-to-team",
+      user: user,
+    };
+    dispatch(addToModals(modal));
+  };
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -404,14 +437,32 @@ const SystemPeoplePanel = (props) => {
                 //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
                 label={<span>{dictionary.showInvited}</span>}
               />
+              <CustomInput
+                className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
+                checked={showTeams}
+                id="show_teams"
+                name="show_teams"
+                type="switch"
+                onChange={handleShowTeamsToggle}
+                //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
+                label={<span>{dictionary.showTeams}</span>}
+              />
             </div>
             <div>
+              <button className="btn btn-primary mr-2" onClick={handleAddTeam}>
+                <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnTeam}
+              </button>
               <button className="btn btn-primary" onClick={handleInviteUsers}>
                 <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
               </button>
             </div>
           </div>
           <div className="row">
+            {showTeams &&
+              Object.values(teams).length > 0 &&
+              Object.values(teams).map((team) => {
+                return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} />;
+              })}
             {userSort.map((user) => {
               return (
                 <PeopleListItem
@@ -432,6 +483,7 @@ const SystemPeoplePanel = (props) => {
                   onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
                   showInactive={showInactive}
                   usersWithoutActivity={usersWithoutActivity}
+                  onAddUserToTeam={handleAddUserToTeam}
                 />
               );
             })}

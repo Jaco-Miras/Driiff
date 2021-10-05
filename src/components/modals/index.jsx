@@ -27,3 +27,5 @@ export { default as TrialEndedModal } from "./TrialEndedModal";
 export { default as CreateFilesFolderModal } from "./CreateFilesFolderModal";
 export { default as AboutWorkspaceModal } from "./AboutWorkspaceModal";
 export { default as CreateExternalFileFolder } from "./CreateExternalFileFolder";
+export { default as CreateEditTeamModal } from "./CreateEditTeamModal";
+export { default as AddToTeamModal } from "./AddToTeamModal";

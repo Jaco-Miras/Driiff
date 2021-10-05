@@ -6,12 +6,13 @@ const useWorkspaceAndUserOptions = (props) => {
 
   const recipients = useSelector((state) => state.global.recipients);
   const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
-  const { users: actualUsers } = useSelector((state) => state.users);
+  const actualUsers = useSelector((state) => state.users.users);
 
   const r = recipients.filter((r) => typeof r.name !== "undefined").sort((a, b) => a.name.localeCompare(b.name));
   const company = r.find((r) => r.main_department === true);
   const workspaces = r.filter((r) => r.type === "TOPIC");
   const users = r.filter((r) => r.type === "USER" && r.active === 1).sort((a, b) => a.name.localeCompare(b.name));
+  const teams = useSelector((state) => state.users.teams);
 
   const internalUsers = Object.values(actualUsers).filter((u) => u.active === 1 && u.type === "internal");
 
@@ -98,6 +99,16 @@ const useWorkspaceAndUserOptions = (props) => {
           });
         }
       });
+      const teamOptions = Object.values(teams).map((u) => {
+        return {
+          ...u,
+          value: u.id,
+          label: u.name,
+          useLabel: true,
+          type: "TEAM",
+          icon: "users",
+        };
+      });
 
       const options = [...workspaceOptions, ...userOptions];
       const companyOption = company
@@ -114,9 +125,9 @@ const useWorkspaceAndUserOptions = (props) => {
           ]
         : [];
 
-      setOptions([...companyOption, ...options]);
+      setOptions([...companyOption, ...teamOptions, ...options]);
     }
-  }, [options, recipients, actualUsers, actualWorkspaces, setOptions]);
+  }, [options, recipients, actualUsers, actualWorkspaces, teams, setOptions]);
 
   let responsible_ids = [];
   let user_ids = [];

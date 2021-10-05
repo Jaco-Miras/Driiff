@@ -15,6 +15,8 @@ const INITIAL_STATE = {
   profileSlider: null,
   usersWithoutActivity: [],
   usersWithoutActivityLoaded: false,
+  teams: {},
+  teamsLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -362,6 +364,38 @@ export default (state = INITIAL_STATE, action) => {
           }
           return acc;
         }, {}),
+      };
+    }
+    case "GET_TEAMS_SUCCESS": {
+      return {
+        ...state,
+        teamsLoaded: true,
+        teams: action.data.teams.reduce((acc, team) => {
+          acc[team.id] = team;
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_UPDATED_TEAM":
+    case "INCOMING_TEAM":
+    case "CREATE_TEAM_SUCCESS": {
+      return {
+        ...state,
+        teams: {
+          ...state.teams,
+          [action.data.id]: action.data,
+        },
+      };
+    }
+    case "INCOMING_DELETED_TEAM": {
+      return {
+        ...state,
+        teams: Object.values(state.teams)
+          .filter((t) => t.id !== action.data.id)
+          .reduce((acc, team) => {
+            acc[team.id] = team;
+            return acc;
+          }, {}),
       };
     }
     default:

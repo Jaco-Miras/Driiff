@@ -109,6 +109,10 @@ export {
   getUsersWithoutActivity,
   resendInvitation,
   deleteInvitedUser,
+  getTeams,
+  postTeam,
+  putTeam,
+  deleteTeam,
 } from "./user";
 
 export {

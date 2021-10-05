@@ -105,6 +105,7 @@ const PeopleListItem = (props) => {
     showInactive = false,
     showWorkspaceRole = false,
     usersWithoutActivity = [],
+    onAddUserToTeam = null,
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
@@ -234,6 +235,10 @@ const PeopleListItem = (props) => {
     copyTextToClipboard(toaster, user.invite_link);
   };
 
+  const handleAddUserToTeam = () => {
+    if (onAddUserToTeam) onAddUserToTeam(user);
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
@@ -315,6 +320,7 @@ const PeopleListItem = (props) => {
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
+                      {!showInactive && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
                     </MoreOptions>
                   )}
                 </div>

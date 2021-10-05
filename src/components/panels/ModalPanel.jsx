@@ -27,6 +27,8 @@ import {
   CreateFilesFolderModal,
   AboutWorkspaceModal,
   CreateExternalFileFolder,
+  CreateEditTeamModal,
+  AddToTeamModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -112,6 +114,10 @@ const ModalPanel = () => {
             return <AboutWorkspaceModal key={modal.type} data={modal} />;
           case "external_file_folder":
             return <CreateExternalFileFolder key={modal.type} data={modal} />;
+          case "team":
+            return <CreateEditTeamModal key={modal.type} data={modal} />;
+          case "add-to-team":
+            return <AddToTeamModal key={modal.type} data={modal} />;
           default:
             return null;
         }
