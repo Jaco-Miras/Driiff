@@ -81,7 +81,7 @@ const CompanyPeoplePanel = (props) => {
       if (user.type !== "internal") return false;
       if (user.active !== 1) return false;
 
-      if (search !== "") {
+      if (search !== "" && !structureView) {
         if (user.name.toLowerCase().search(search.toLowerCase()) === -1 && user.email.toLowerCase().search(search.toLowerCase()) === -1) return false;
       }
 

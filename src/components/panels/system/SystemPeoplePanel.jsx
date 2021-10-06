@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CustomInput } from "reactstrap";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
+import AllUsersStructure from "./AllUsersStructure";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -104,7 +105,7 @@ const SystemPeoplePanel = (props) => {
         }
       }
 
-      if (search !== "") {
+      if (search !== "" && !showTeams) {
         if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
         else return false;
       }
@@ -241,6 +242,7 @@ const SystemPeoplePanel = (props) => {
   const toaster = useToaster();
 
   const handleShowInactiveToggle = () => {
+    setShowTeams(false);
     setShowInactive((prevState) => {
       const newState = !prevState;
 
@@ -324,6 +326,7 @@ const SystemPeoplePanel = (props) => {
   };
 
   const handleShowInvitedToggle = () => {
+    setShowTeams(false);
     setShowInvited((prevState) => {
       const newState = !prevState;
 
@@ -458,6 +461,7 @@ const SystemPeoplePanel = (props) => {
             </div>
           </div>
           <div className="row">
+            {showTeams && <AllUsersStructure users={userSort} />}
             {showTeams &&
               Object.values(teams).length > 0 &&
               Object.values(teams).map((team) => {
