@@ -413,6 +413,8 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
@@ -452,9 +454,12 @@ const SystemPeoplePanel = (props) => {
               />
             </div>
             <div>
-              <button className="btn btn-primary mr-2" onClick={handleAddTeam}>
-                <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnTeam}
-              </button>
+              {isAdmin && (
+                <button className="btn btn-primary mr-2" onClick={handleAddTeam}>
+                  <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnTeam}
+                </button>
+              )}
+
               <button className="btn btn-primary" onClick={handleInviteUsers}>
                 <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
               </button>
@@ -465,7 +470,7 @@ const SystemPeoplePanel = (props) => {
             {showTeams &&
               Object.values(teams).length > 0 &&
               Object.values(teams).map((team) => {
-                return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} />;
+                return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />;
               })}
             {userSort.map((user) => {
               return (
@@ -477,7 +482,7 @@ const SystemPeoplePanel = (props) => {
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
                   onUpdateRole={userActions.updateUserRole}
-                  showOptions={(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && usersWithoutActivityLoaded}
+                  showOptions={isAdmin && usersWithoutActivityLoaded}
                   roles={roles}
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}

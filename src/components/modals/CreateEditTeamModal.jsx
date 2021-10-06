@@ -69,6 +69,7 @@ const CreateEditTeamModal = (props) => {
     teamCreateSuccess: _t("TOASTER.TEAM_CREATE_SUCCESS", "Successfully created new team"),
     teamUpdateSuccess: _t("TOASTER.TEAM_UPDATE_SUCCESS", "Successfuly updated team"),
     feedbackTeamTaken: _t("FEEDBACK.TEAM_NAME_TAKEN", "Team name already taken"),
+    parentTeam: _t("TEAM_MODAL.PARENT_TEAM", "Parent team"),
   };
   const dispatch = useDispatch();
 
@@ -84,6 +85,7 @@ const CreateEditTeamModal = (props) => {
   const [inputNameValue, setInputNameValue] = useState(team ? team.name : "");
   const [teamInputValue, setTeamInputValue] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedParentTeam, setSelectedParentTeam] = useState(null);
   const [mounted, setMounted] = useState(false);
   const [valid, setValid] = useState({
     isValid: null,
@@ -104,10 +106,17 @@ const CreateEditTeamModal = (props) => {
   };
 
   const handleCreateTeam = () => {
-    const payload = {
+    let payload = {
       name: inputNameValue,
       member_ids: selectedUsers.map((m) => m.value),
+      parent_team: 0,
     };
+    if (selectedParentTeam) {
+      payload = {
+        ...payload,
+        parent_team: selectedParentTeam.value,
+      };
+    }
     const cb = (err, res) => {
       if (err) return;
       toaster.success(dictionary.teamCreateSuccess);
@@ -116,11 +125,18 @@ const CreateEditTeamModal = (props) => {
   };
 
   const handleUpdateTeam = () => {
-    const payload = {
+    let payload = {
       name: inputNameValue,
       id: team.id,
       member_ids: selectedUsers.map((m) => m.value),
+      parent_team: 0,
     };
+    if (selectedParentTeam) {
+      payload = {
+        ...payload,
+        parent_team: selectedParentTeam.value,
+      };
+    }
     const cb = (err, res) => {
       if (err) return;
       toaster.success(dictionary.teamUpdateSuccess);
@@ -182,6 +198,14 @@ const CreateEditTeamModal = (props) => {
           };
         })
       );
+
+      if (team.parent_team) {
+        const parent = Object.values(teams).find((t) => t.id === team.parent_team);
+        if (parent) {
+          let parentTeam = { ...parent, value: parent.id, label: parent.name, type: "TEAM" };
+          setSelectedParentTeam(parentTeam);
+        }
+      }
     }
   }, []);
 
@@ -206,6 +230,19 @@ const CreateEditTeamModal = (props) => {
     return () => clearTimeout(timeOutId);
   }, [inputNameValue]);
 
+  const teamOptions = Object.values(teams).map((u) => {
+    return {
+      ...u,
+      value: u.id,
+      label: u.name,
+      type: "TEAM",
+    };
+  });
+
+  const handleSelectParentTeam = (e) => {
+    setSelectedParentTeam(e);
+  };
+
   return (
     <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered onOpened={onOpened} className={"single-input-modal"}>
       <ModalHeaderSection toggle={toggle}>{mode === "create" ? dictionary.createNewTeam : dictionary.updateTeam}</ModalHeaderSection>
@@ -217,6 +254,12 @@ const CreateEditTeamModal = (props) => {
             <Input valid={valid.isValid} invalid={valid.isValid === false} innerRef={inputRef} autoFocus defaultValue={mode === "create" ? "" : team.name} onChange={handleInputNameChange} />
           </div>
           <InputFeedback valid={valid.isValid}>{valid.feedback}</InputFeedback>
+        </WrapperDiv>
+        <WrapperDiv>
+          <Label className={"modal-label"}>{dictionary.parentTeam}</Label>
+          <div className="d-flex align-items-center mb-2">
+            <SelectPeople options={teamOptions} value={selectedParentTeam} onChange={handleSelectParentTeam} isSearchable isMulti={false} isClearable={true} />
+          </div>
         </WrapperDiv>
         <WrapperDiv>
           <Label className={"modal-label"}>{dictionary.teamMembers}</Label>
