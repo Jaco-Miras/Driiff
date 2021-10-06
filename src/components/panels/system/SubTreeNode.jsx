@@ -25,12 +25,15 @@ const StyledNode = styled.div`
 `;
 
 const SubTreeNode = (props) => {
-  const { team, allTeams } = props;
+  const { team, allTeams, onSelectTeam } = props;
+  const handleSelectTeam = () => {
+    onSelectTeam(team);
+  };
   return (
     <TreeNode
       key={team.id}
       label={
-        <StyledNode>
+        <StyledNode onClick={handleSelectTeam}>
           <div className="team-name mb-1">{team.name}</div>
           <div className="mb-2">{team.members.length} accounts</div>
           <MemberLists members={team.members} />
@@ -41,7 +44,7 @@ const SubTreeNode = (props) => {
         ? allTeams
             .filter((t) => t.parent_team === team.id)
             .map((t) => {
-              return <ParentTreeNode key={t.id} team={t} allTeams={allTeams} />;
+              return <ParentTreeNode key={t.id} team={t} allTeams={allTeams} onSelectTeam={onSelectTeam} />;
             })
         : null}
     </TreeNode>
