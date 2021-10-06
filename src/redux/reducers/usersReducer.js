@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   user: null,
   users: {},
+  usersLoaded: false,
   getUserFilter: {
     hasMore: false,
     limit: 1000,
@@ -106,6 +107,7 @@ export default (state = INITIAL_STATE, action) => {
           limit: action.data.limit,
           skip: action.data.next_skip,
         },
+        usersLoaded: true,
       };
     }
     case "GET_EXTERNAL_USERS_SUCCESS": {

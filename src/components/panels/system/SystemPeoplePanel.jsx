@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { useToaster, useTranslationActions, useUserChannels } from "../../hooks";
-import { PeopleListItem, TeamItem } from "../../list/people/item";
 import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +10,8 @@ import { CustomInput } from "reactstrap";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
 import AllUsersStructure from "./AllUsersStructure";
+import TeamBody from "./TeamBody";
+import AllPeople from "./AllPeople";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -58,6 +59,7 @@ const SystemPeoplePanel = (props) => {
   const [showInactive, setShowInactive] = useState(false);
   const [showInvited, setShowInvited] = useState(false);
   const [showTeams, setShowTeams] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
   const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
@@ -89,7 +91,9 @@ const SystemPeoplePanel = (props) => {
   const userSort = allUsers
     .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
-
+      if (selectedTeam) {
+        return selectedTeam.member_ids.some((id) => id === user.id);
+      }
       if (showInactive) {
         if (user.active === 1) {
           return false;
@@ -400,6 +404,12 @@ const SystemPeoplePanel = (props) => {
   };
 
   const handleShowTeamsToggle = () => {
+    if (!showTeams) {
+      history.push("/system/people/teams");
+      setSelectedTeam(null);
+    } else {
+      history.push("/system/people");
+    }
     setShowTeams(!showTeams);
     setShowInvited(false);
     setShowInactive(false);
@@ -411,6 +421,12 @@ const SystemPeoplePanel = (props) => {
       user: user,
     };
     dispatch(addToModals(modal));
+  };
+
+  const handleSelectTeam = (team) => {
+    setShowTeams(false);
+    setSelectedTeam(team);
+    history.push(`/system/people/teams/${team.id}/${team.name}`);
   };
 
   const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
@@ -465,19 +481,16 @@ const SystemPeoplePanel = (props) => {
               </button>
             </div>
           </div>
-          <div className="row">
-            {showTeams && <AllUsersStructure users={userSort} />}
-            {showTeams &&
-              Object.values(teams).length > 0 &&
-              Object.values(teams).map((team) => {
-                return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />;
-              })}
-            {userSort.map((user) => {
-              return (
-                <PeopleListItem
+
+          <Switch>
+            <Route
+              render={() => (
+                <TeamBody
+                  setSelectedTeam={setSelectedTeam}
+                  selectedTeam={selectedTeam}
+                  teams={teams}
+                  users={userSort}
                   loggedUser={loggedUser}
-                  key={user.id}
-                  user={user}
                   onNameClick={handleUserNameClick}
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
@@ -494,9 +507,40 @@ const SystemPeoplePanel = (props) => {
                   usersWithoutActivity={usersWithoutActivity}
                   onAddUserToTeam={handleAddUserToTeam}
                 />
-              );
-            })}
-          </div>
+              )}
+              path={["/system/people/teams/:teamId/:teamName"]}
+            />
+            <Route
+              render={() => <AllUsersStructure users={userSort} onSelectTeam={handleSelectTeam} setShowTeams={setShowTeams} loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />}
+              path={["/system/people/teams"]}
+            />
+            <Route
+              render={() => (
+                <AllPeople
+                  users={userSort}
+                  loggedUser={loggedUser}
+                  onNameClick={handleUserNameClick}
+                  onChatClick={handleUserChat}
+                  dictionary={dictionary}
+                  onUpdateRole={userActions.updateUserRole}
+                  showOptions={isAdmin && usersWithoutActivityLoaded}
+                  roles={roles}
+                  onArchiveUser={handleArchiveUser}
+                  onActivateUser={handleActivateUser}
+                  onChangeUserType={userActions.updateType}
+                  onDeleteUser={handleDeleteUser}
+                  onResendInvite={handleResendInvite}
+                  onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
+                  showInactive={showInactive}
+                  usersWithoutActivity={usersWithoutActivity}
+                  onAddUserToTeam={handleAddUserToTeam}
+                  setSelectedTeam={setSelectedTeam}
+                  setShowTeams={setShowTeams}
+                />
+              )}
+              path={["/system/people"]}
+            />
+          </Switch>
         </div>
       </div>
     </Wrapper>

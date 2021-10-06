@@ -30,6 +30,8 @@ const MainNavigationPanel = (props) => {
           "/chat/:code",
           "/posts/:postId/:postTitle/:postCommentCode?",
           "/files/folder/:folderId/:folderName",
+          "/system/people/teams/:teamId/:teamName",
+          "/system/people/teams",
           "/system/people",
           "/magic-link/:token",
           "/admin-settings/:page/:subpage",
