@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const TeamItem = (props) => {
-  const { className = "", loggedUser, team, dictionary, _t, isAdmin } = props;
+  const { className = "", loggedUser, team, dictionary, _t, isAdmin, onSelectTeam } = props;
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -86,6 +86,8 @@ const TeamItem = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleSelectTeam = () => onSelectTeam(team);
+
   const membersLengthLabel = _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: team.members.length });
 
   return (
@@ -107,7 +109,7 @@ const TeamItem = (props) => {
                 <div className="user-info-wrapper ml-3">
                   <h6 className="user-name mb-0">
                     <ToolTip content={team.name}>
-                      <div className="mr-2 people-text-truncate">
+                      <div className="mr-2 people-text-truncate" onClick={handleSelectTeam}>
                         {team.name} {team.members.length > 0 && membersLengthLabel}
                       </div>
                     </ToolTip>

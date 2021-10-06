@@ -94,7 +94,7 @@ const AllUsersStructure = (props) => {
       {Object.values(teams).length > 0 && (
         <div className="row mt-2">
           {Object.values(teams).map((team) => {
-            return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={showOptions} />;
+            return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={showOptions} onSelectTeam={onSelectTeam} />;
           })}
         </div>
       )}
