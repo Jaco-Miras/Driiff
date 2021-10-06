@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { Tree, TreeNode } from "react-organizational-chart";
+import { Tree } from "react-organizational-chart";
 import { MemberLists } from "../../list/members";
 import { SvgIconFeather } from "../../common";
+import { ParentTreeNode } from ".";
 
 const Wrapper = styled.div`
   padding: 2rem;
@@ -42,11 +43,13 @@ const AllUsersStructure = (props) => {
       id: "internal",
       name: "Accounts",
       members: internalUsers,
+      parent_team: 0,
     },
     {
       id: "external",
       name: "Guest accounts",
       members: externalUsers,
+      parent_team: 0,
     },
   ];
   const allTeams = [...internalAndExternalTeam, ...Object.values(teams)];
@@ -67,20 +70,11 @@ const AllUsersStructure = (props) => {
           </StyledNode>
         }
       >
-        {allTeams.map((team) => {
-          return (
-            <TreeNode
-              key={team.id}
-              label={
-                <StyledNode>
-                  <div className="team-name mb-1">{team.name}</div>
-                  <div className="mb-2">{team.members.length} accounts</div>
-                  <MemberLists members={team.members} />
-                </StyledNode>
-              }
-            ></TreeNode>
-          );
-        })}
+        {allTeams
+          .filter((t) => t.parent_team === 0)
+          .map((team) => {
+            return <ParentTreeNode key={team.id} team={team} allTeams={allTeams} />;
+          })}
       </Tree>
     </Wrapper>
   );

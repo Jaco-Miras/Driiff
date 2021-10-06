@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const TeamItem = (props) => {
-  const { className = "", loggedUser, team, dictionary, _t } = props;
+  const { className = "", loggedUser, team, dictionary, _t, isAdmin } = props;
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -117,10 +117,12 @@ const TeamItem = (props) => {
               {loggedUser.type !== "external" && (
                 <div className="button-wrapper">
                   <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
-                  <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
-                    <div onClick={handleEditTeam}>{dictionary.editTeam}</div>
-                    <div onClick={handleRemoveTeam}>{dictionary.removeTeam}</div>
-                  </MoreOptions>
+                  {isAdmin && (
+                    <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
+                      <div onClick={handleEditTeam}>{dictionary.editTeam}</div>
+                      <div onClick={handleRemoveTeam}>{dictionary.removeTeam}</div>
+                    </MoreOptions>
+                  )}
                 </div>
               )}
             </div>

@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { Tree, TreeNode } from "react-organizational-chart";
+import { Tree } from "react-organizational-chart";
 import { MemberLists } from "../../list/members";
 import { SvgIconFeather } from "../../common";
+import { ParentTreeNode } from "../system";
 
 const Wrapper = styled.div`
   padding: 2rem;
@@ -50,20 +51,11 @@ const CompanyStructure = (props) => {
           </StyledNode>
         }
       >
-        {Object.values(teams).map((team) => {
-          return (
-            <TreeNode
-              key={team.id}
-              label={
-                <StyledNode>
-                  <div className="team-name mb-1">{team.name}</div>
-                  <div className="mb-2">{team.members.length} accounts</div>
-                  <MemberLists members={team.members} />
-                </StyledNode>
-              }
-            ></TreeNode>
-          );
-        })}
+        {Object.values(teams)
+          .filter((t) => t.parent_team === 0)
+          .map((team) => {
+            return <ParentTreeNode key={team.id} team={team} allTeams={Object.values(teams)} />;
+          })}
       </Tree>
     </Wrapper>
   );
