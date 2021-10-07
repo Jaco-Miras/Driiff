@@ -35,6 +35,7 @@ const MemberTimeline = (props) => {
   // const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const teams = useSelector((state) => state.users.teams);
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
 
@@ -92,6 +93,39 @@ const MemberTimeline = (props) => {
     }
   };
 
+  const renderAddedTeams = () => {
+    if (message.author === null) {
+      if (message.added_teams) {
+        let members = Object.values(teams).filter((t) => message.added_teams.some((id) => id === t.id));
+        if (members.length) {
+          return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
+        }
+      } else {
+        return "";
+      }
+    } else {
+      if (message.added_teams) {
+        let members = Object.values(teams).filter((t) => message.added_teams.some((id) => id === t.id));
+        if (members.length) {
+          return members.map((m) => m.name).join(", ") + ` ${dictionary.isAdded}.`;
+        }
+      }
+    }
+  };
+
+  const renderRemovedTeams = () => {
+    if (message.author === null) {
+      return "";
+    } else {
+      if (message.removed_teams) {
+        let members = Object.values(teams).filter((t) => message.removed_teams.some((id) => id === t.id));
+        if (members.length) {
+          return members.map((m) => m.name).join(", ") + ` ${dictionary.isRemoved}.`;
+        }
+      }
+    }
+  };
+
   const renderRemovedMembers = () => {
     if (message.author === null) {
       return "";
@@ -129,12 +163,14 @@ const MemberTimeline = (props) => {
               </span>
               <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
             </h6>
-            {message.added_members.length || message.removed_members.length ? (
+            {message.added_members.length || message.removed_members.length || (message.added_teams && message.added_teams.length) || (message.removed_teams && message.removed_teams.length) ? (
               <div className="mb-3 border p-3 border-radius-1">
                 {/* <p className="action-text">{message.added_members.length > 0 && renderAddedMembers(true)}</p> */}
                 <p className="action-text">{message.added_members.length > 0 && renderAddedMembers()}</p>
                 {/* <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers(true)}</p> */}
                 <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers()}</p>
+                <p className="action-text">{message.added_teams && message.added_teams.length > 0 && renderAddedTeams()}</p>
+                <p className="action-text">{message.removed_teams && message.removed_teams.length > 0 && renderRemovedTeams()}</p>
               </div>
             ) : null}
           </>

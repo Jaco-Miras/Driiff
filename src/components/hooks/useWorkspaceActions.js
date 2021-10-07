@@ -163,6 +163,7 @@ const useWorkspaceActions = () => {
       };
       dispatch(putChannel(archivePayload));
     } else {
+      const isUser = member.type === "internal" || member.type === "external";
       let payload = {
         name: workspace.name,
         description: workspace.description,
@@ -184,7 +185,8 @@ const useWorkspaceActions = () => {
         },
         title: "",
         added_members: [],
-        removed_members: [member.id],
+        removed_members: isUser ? [member.id] : [],
+        removed_teams: isUser ? [] : [member.id],
       })}`;
       if (member.id === loggedUser.id) {
         dispatch(leaveWorkspace({ workspace_id: workspace.id, channel_id: workspace.channel.id }, callback));
