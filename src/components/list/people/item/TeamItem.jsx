@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const TeamItem = (props) => {
-  const { className = "", loggedUser, team, dictionary, _t, isAdmin, onSelectTeam } = props;
+  const { className = "", loggedUser, team, dictionary, _t, onSelectTeam } = props;
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -89,6 +89,8 @@ const TeamItem = (props) => {
   const handleSelectTeam = () => onSelectTeam(team);
 
   const membersLengthLabel = _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: team.members.length });
+
+  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
 
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>

@@ -870,10 +870,16 @@ const CreateEditWorkspaceModal = (props) => {
 
     if (mode === "edit") {
       const activeMembers = item.members.filter((m) => m.active === 1);
+      const activeTeams = item.members.filter((m) => m.hasOwnProperty("members"));
+      const teamIds = activeTeams.map((t) => t.id);
 
       const removed_members = item.members.filter((m) => !member_ids.some((id) => m.id === id));
 
+      const removed_teams = teamIds.length ? item.members.filter((m) => teamIds.some((id) => m.id === id)) : [];
+
       const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
+
+      const added_teams = form.selectedUsers.filter((m) => m.hasOwnProperty("members") && !teamIds.some((id) => id === m.id));
 
       const invitedIds = selectedMembers.filter((m) => !m.has_accepted).map((m) => m.id);
 
@@ -884,7 +890,13 @@ const CreateEditWorkspaceModal = (props) => {
         remove_member_ids: removed_members.map((m) => m.id),
         new_member_ids: added_members,
       };
-      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length || item.name !== form.name) {
+      if (
+        removed_members.filter((rm) => rm.has_accepted).length ||
+        payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length ||
+        item.name !== form.name ||
+        removed_teams.length ||
+        added_teams.length
+      ) {
         payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
           author: {
             id: user.id,
@@ -895,7 +907,9 @@ const CreateEditWorkspaceModal = (props) => {
           },
           title: form.name === item.name ? "" : form.name,
           added_members: added_members.filter((mid) => !invitedIds.some((id) => id === mid) && !inactiveMembers.some((m) => m.id === mid)),
-          removed_members: removed_members.filter((rm) => rm.has_accepted).map((m) => m.id),
+          removed_members: removed_members.filter((rm) => rm.has_accepted && (rm.type === "internal" || rm.type === "external")).map((m) => m.id),
+          removed_teams: removed_teams.map((t) => t.id),
+          added_teams: added_teams.map((t) => t.id),
         })}`;
       }
 
@@ -1371,8 +1385,20 @@ const CreateEditWorkspaceModal = (props) => {
     if (mode === "edit") {
       let members = [];
       let externalMembers = [];
+      let teamMembers = [];
       let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
       if (item.members.length) {
+        teamMembers = item.members
+          .filter((m) => m.type !== "internal" && m.type !== "external")
+          .map((m) => {
+            return {
+              ...m,
+              value: m.id,
+              label: m.name,
+              useLabel: true,
+              type: "TEAM",
+            };
+          });
         members = item.members
           .filter((m) => m.active === 1 && m.type === "internal")
           .map((m) => {
@@ -1412,7 +1438,7 @@ const CreateEditWorkspaceModal = (props) => {
       setForm({
         ...form,
         has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
-        selectedUsers: members,
+        selectedUsers: [...members, ...teamMembers],
         selectedFolder: item.folder_id
           ? {
               value: item.folder_id,

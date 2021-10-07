@@ -200,6 +200,8 @@ const TeamListItem = (props) => {
     }
   };
 
+  const isUser = member.type === "internal" || member.type === "external";
+
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
@@ -249,7 +251,7 @@ const TeamListItem = (props) => {
           </span>
         </ShowMoreBtn>
       )}
-      {!hideOptions && (
+      {!hideOptions && isUser && (
         <MoreOptions moreButton="more-horizontal" width={250}>
           {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}
@@ -279,6 +281,11 @@ const TeamListItem = (props) => {
           {member.id !== loggedUser.id && loggedUser.type === "internal" && <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>}
           {!member.has_accepted && member.type === "external" && <div onClick={handleResendInvite}>{dictionary.resendInvite}</div>}
           {!member.has_accepted && member.type === "external" && member.invite_link && <div onClick={handleCopyInviteLink}>{dictionary.sendInviteManually}</div>}
+        </MoreOptions>
+      )}
+      {!isUser && (
+        <MoreOptions moreButton="more-horizontal" width={250}>
+          <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>
         </MoreOptions>
       )}
     </Wrapper>
