@@ -30,7 +30,7 @@ const StyledBadge = styled(Badge)`
 `;
 
 const WorkspaceIcon = (props) => {
-  const { avatarClassName = "", onSelectWorkspace = null, workspace } = props;
+  const { avatarClassName = "", onSelectWorkspace = null, workspace, isCompanyWs, companyName } = props;
   return (
     <Wrapper className="workspace-icon mr-3">
       {/* <StarIcon icon="star" /> */}
@@ -43,7 +43,7 @@ const WorkspaceIcon = (props) => {
         type={"TOPIC"}
         imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null}
         id={workspace.id}
-        name={workspace.name}
+        name={isCompanyWs && companyName ? companyName : workspace.name}
         onClick={onSelectWorkspace}
         noDefaultClick={onSelectWorkspace ? false : true}
         showSlider={false}
