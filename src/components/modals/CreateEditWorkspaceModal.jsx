@@ -210,6 +210,13 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
+const LabelWrapper = styled.div`
+  display: flex;
+  label {
+    min-width: auto;
+  }
+`;
+
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
@@ -382,6 +389,9 @@ const CreateEditWorkspaceModal = (props) => {
     convertToInternalWorkspace: _t("MODAL_HEADER.CONVERT_TO_INTERNAL_WS", "Convert to internal workspace"),
     removeExternals: _t("BUTTON.REMOVE_EXTERNALS", "Remove externals"),
     removeExternalsBody: _t("MODAL_BODY.REMOVE_EXTERNALS", "There are existing external users. Remove the external users first before converting to internal workspace."),
+    folderTooltip: _t("WORKSPACE.TOOLTIP_FOLDER", "You can add this WorkSpace to a folder for some extra structure in your WorkSpace list"),
+    teamMembersTooltip: _t("WORKSPACE.TOOLTIP_TEAM_MEMBERS", "Decide which members of your company should be added to this WorkSpace"),
+    guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
   };
 
   const _validateName = useCallback(() => {
@@ -1633,25 +1643,40 @@ const CreateEditWorkspaceModal = (props) => {
                 </div>
               }
             >
-              <SvgIconFeather icon="alert-circle" width="16" height="16" />
+              <SvgIconFeather icon="info" width="16" height="16" />
             </ToolTip>
           </div>
         </WrapperDiv>
         {form.has_folder === true && (
           <WrapperDiv className={"modal-input"}>
-            <Label for="people">{dictionary.folder}</Label>
+            <LabelWrapper className="mb-1">
+              <Label for="people">{dictionary.folder}</Label>
+              <ToolTip content={dictionary.folderTooltip}>
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </LabelWrapper>
             <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
             <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
           </WrapperDiv>
         )}
         <WrapperDiv className={"modal-input"}>
-          <Label for="people">{dictionary.team}</Label>
+          <LabelWrapper className="mb-1">
+            <Label for="people">{dictionary.team}</Label>
+            <ToolTip content={dictionary.teamMembersTooltip}>
+              <SvgIconFeather icon="info" width="16" height="16" />
+            </ToolTip>
+          </LabelWrapper>
           <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
         {form.has_externals === true && (
           <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
-            <Label for="people">{dictionary.externalGuest}</Label>
+            <LabelWrapper className="mb-1">
+              <Label for="people">{dictionary.externalGuest}</Label>
+              <ToolTip content={dictionary.guestTooltip}>
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </LabelWrapper>
             <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
             <SelectPeople
               creatable={true}
