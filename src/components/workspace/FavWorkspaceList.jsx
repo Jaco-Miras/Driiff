@@ -52,16 +52,16 @@ const WorkspaceFolder = styled.div`
 `;
 
 const FavWorkspaceList = (props) => {
-  const { isExternal, onSelectWorkspace, workspace } = props;
+  const { isExternal, onSelectWorkspace, workspace, isCompanyWs, companyName } = props;
   const handleSelectWorkspace = () => {
     onSelectWorkspace(workspace);
   };
   return (
     <Wrapper onClick={handleSelectWorkspace}>
-      <WorkspaceIcon avatarClassName="avatar-sm" workspace={workspace} />
+      <WorkspaceIcon avatarClassName="avatar-sm" workspace={workspace} isCompanyWs={isCompanyWs} companyName={companyName} />
       <WorkspaceTitleFolder>
         <WorkspaceTitle>
-          <span className="text-truncate">{workspace.name}</span>
+          <span className="text-truncate">{isCompanyWs && companyName ? companyName : workspace.name}</span>
           {workspace.is_lock === 1 && <Icon icon="lock" />}
           {workspace.is_shared && !isExternal && <Icon icon="eye" />}
         </WorkspaceTitle>
