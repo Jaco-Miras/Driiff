@@ -44,7 +44,14 @@ const EyeIcon = styled(SvgIconFeather)`
 const WorkspaceSearchResult = (props) => {
   const { dictionary, onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
   const { topic, workspace } = item;
-  const isMember = useIsMember(item.members.map((m) => m.id));
+  const workspaceMembers = item.members
+    .map((m) => {
+      if (m.member_ids) {
+        return m.member_ids;
+      } else return m.id;
+    })
+    .flat();
+  const isMember = useIsMember([...new Set(workspaceMembers)]);
   const handleRedirect = () => {
     let payload = {
       id: topic.id,

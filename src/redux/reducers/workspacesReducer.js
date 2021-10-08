@@ -3514,6 +3514,113 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    case "INCOMING_UPDATED_TEAM":
+    case "INCOMING_TEAM": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+            acc[ws.id] = {
+              ...ws,
+              members: ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return action.data;
+                } else {
+                  return m;
+                }
+              }),
+            };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic:
+          state.activeTopic && state.activeTopic.members.some((m) => m.members && m.id === action.data.id)
+            ? {
+                ...state.activeTopic,
+                members: state.activeTopic.members.map((m) => {
+                  if (m.id === action.data.id) {
+                    return action.data;
+                  } else {
+                    return m;
+                  }
+                }),
+              }
+            : state.activeTopic,
+      };
+    }
+    case "INCOMING_DELETED_TEAM": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+            acc[ws.id] = {
+              ...ws,
+              members: ws.members.filter((m) => {
+                if (m.id === action.data.id) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }),
+            };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic:
+          state.activeTopic && state.activeTopic.members.some((m) => m.members && m.id === action.data.id)
+            ? {
+                ...state.activeTopic,
+                members: state.activeTopic.members.filter((m) => {
+                  if (m.id === action.data.id) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                }),
+              }
+            : state.activeTopic,
+      };
+    }
+    case "INCOMING_TEAM_MEMBER":
+    case "ADD_TEAM_MEMBER_SUCCESS": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+            acc[ws.id] = {
+              ...ws,
+              members: ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return { ...m, member_ids: action.data.member_ids, members: action.data.members };
+                } else {
+                  return m;
+                }
+              }),
+            };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic:
+          state.activeTopic && state.activeTopic.members.some((m) => m.members && m.id === action.data.id)
+            ? {
+                ...state.activeTopic,
+                members: state.activeTopic.members.map((m) => {
+                  if (m.id === action.data.id) {
+                    return { ...m, member_ids: action.data.member_ids, members: action.data.members };
+                  } else {
+                    return m;
+                  }
+                }),
+              }
+            : state.activeTopic,
+      };
+    }
     default:
       return state;
   }

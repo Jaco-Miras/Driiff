@@ -125,11 +125,13 @@ const CreateEditTeamModal = (props) => {
   };
 
   const handleUpdateTeam = () => {
+    const removedMemberIds = team.member_ids.filter((id) => !selectedUsers.some((u) => u.value === id));
     let payload = {
       name: inputNameValue,
       id: team.id,
       member_ids: selectedUsers.map((m) => m.value),
       parent_team: 0,
+      remove_member_ids: removedMemberIds,
     };
     if (selectedParentTeam) {
       payload = {
