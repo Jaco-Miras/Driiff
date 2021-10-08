@@ -154,7 +154,17 @@ const SettingsLink = (props) => {
 
   useOutsideClick(wrapperRef, toggle, show);
 
-  const isMember = useIsMember(topic ? topic.member_ids : []);
+  const workspaceMembers = topic
+    ? topic.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
+
+  const isMember = useIsMember(topic && topic.member_ids.length ? [...new Set(workspaceMembers)] : []);
 
   if (!isMember) return null;
 

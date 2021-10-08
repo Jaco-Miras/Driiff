@@ -76,7 +76,17 @@ const WorkspaceContentPanel = (props) => {
   if (Object.keys(workspaceTimeline).length && workspace && workspaceTimeline[workspace.id]) {
     timeline = workspaceTimeline[workspace.id];
   }
-  const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
+  const workspaceMembers = workspace
+    ? workspace.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
+
+  const isMember = useIsMember(workspace && workspace.member_ids.length ? [...new Set(workspaceMembers)] : []);
 
   const handleShowWorkspaceModal = () => {
     let payload = {

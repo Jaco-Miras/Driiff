@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions } from "../../hooks";
+import { useToaster, useTranslationActions, useIsMember } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
@@ -456,6 +456,18 @@ const WorspaceHeaderPanel = (props) => {
     );
   };
 
+  const workspaceMembers = activeTopic
+    ? activeTopic.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
+
+  const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -597,7 +609,7 @@ const WorspaceHeaderPanel = (props) => {
                 <div className="nav-item-avatars-wrap">
                   <MemberLists members={activeTopic.members} />
                 </div>
-                {activeTopic.member_ids.includes(user.id) && !isExternal ? (
+                {isMember && !isExternal ? (
                   <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus" />
                     {dictionary.actionWorkspaceInvite}

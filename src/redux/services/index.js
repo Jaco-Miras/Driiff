@@ -114,6 +114,7 @@ export {
   putTeam,
   deleteTeam,
   addTeamMember,
+  removeTeamMember,
 } from "./user";
 
 export {

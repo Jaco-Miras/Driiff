@@ -7,8 +7,9 @@ import { MoreOptions } from "../../../panels/common";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { postResendInvite } from "../../../../redux/actions/workspaceActions";
-import { useToaster } from "../../../hooks";
+import { useToaster, useTranslationActions } from "../../../hooks";
 import { copyTextToClipboard } from "../../../../helpers/commonFunctions";
+import { Viewers } from "../../post/item";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -41,6 +42,65 @@ const Wrapper = styled.li`
   &:hover {
     .more-options-tooltip {
       display: block;
+    }
+  }
+  .user-reads-container {
+    position: relative;
+    display: inline-flex;
+    margin-right: 0.5rem;
+
+    .not-read-users-container,
+    .read-users-container {
+      transition: all 0.5s ease;
+      position: absolute;
+      right: 0;
+      top: 30px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      background-color: #fff;
+      overflow: auto;
+      opacity: 0;
+      max-height: 0;
+      z-index: 2;
+
+      &:hover {
+        opacity: 1;
+        max-height: 165px;
+      }
+
+      .dark & {
+        background-color: #25282c;
+        border: 1px solid #25282c;
+      }
+
+      .avatar {
+        min-width: 2.7rem;
+        min-height: 2.7rem;
+      }
+
+      > span {
+        padding: 0.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        .name {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;
+        }
+      }
+    }
+  }
+
+  .user-reads-container {
+    span.not-readers:hover ~ span.not-read-users-container,
+    .no-readers:hover ~ span.read-users-container {
+      opacity: 1;
+      max-height: 165px;
+      z-index: 2;
     }
   }
 `;
@@ -110,6 +170,8 @@ const TeamListItem = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const toaster = useToaster();
+
+  const { _t } = useTranslationActions();
 
   const handleClickName = () => {
     if (member.has_accepted) {
@@ -215,12 +277,24 @@ const TeamListItem = (props) => {
             hasAccepted={member.has_accepted}
             showSlider={true}
             scrollRef={scrollRef}
+            type={isUser ? "USER" : "TEAM"}
           />
         </div>
         <div>
-          <h6 className="profile-name" onClick={handleClickName}>
-            {!member.has_accepted && member.name === "" ? member.email : member.name}
-          </h6>
+          {isUser && (
+            <h6 className="profile-name" onClick={handleClickName}>
+              {!member.has_accepted && member.name === "" ? member.email : member.name}
+            </h6>
+          )}
+          {!isUser && (
+            <div className="user-reads-container">
+              <h6 className="no-readers profile-name">
+                {member.name} {!isUser && _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: member.members.length })}
+              </h6>
+              <Viewers users={member.members} />
+            </div>
+          )}
+
           {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
           {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
         </div>
@@ -283,7 +357,7 @@ const TeamListItem = (props) => {
           {!member.has_accepted && member.type === "external" && member.invite_link && <div onClick={handleCopyInviteLink}>{dictionary.sendInviteManually}</div>}
         </MoreOptions>
       )}
-      {!isUser && (
+      {!hideOptions && !isUser && (
         <MoreOptions moreButton="more-horizontal" width={250}>
           <div onClick={() => onLeaveWorkspace(workspace, member)}>{dictionary.remove}</div>
         </MoreOptions>

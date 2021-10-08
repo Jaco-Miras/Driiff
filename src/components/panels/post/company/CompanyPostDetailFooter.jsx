@@ -335,7 +335,6 @@ const CompanyPostDetailFooter = (props) => {
       }
     })
     .flat();
-  //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
   let approverOptions = [
     ...Object.values(users)
       .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
