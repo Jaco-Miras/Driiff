@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions } from "../../hooks";
+import { useToaster, useTranslationActions, useWorkspaceActions } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
@@ -289,7 +289,9 @@ const WorspaceHeaderPanel = (props) => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
   //const history = useHistory();
-  const { activeTopic, folders, workspacesLoaded } = useSelector((state) => state.workspaces);
+  const folders = useSelector((state) => state.workspaces.folders);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
   const {
     driff,
     user: {
@@ -330,9 +332,14 @@ const WorspaceHeaderPanel = (props) => {
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
     workspaces: _t("WORKSPACES", "Workspces"),
+    buttonLeave: _t("BUTTON.LEAVE", "Leave"),
+    leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
+    leaveWorkspaceHeader: _t("CONFIRMATION.LEAVE_WORKSPACE_HEADER", "Leave workspace"),
+    leaveWorkspaceBody: _t("CONFIRMATION.LEAVE_WORKSPACE_BODY", "Are you sure that you want to leave this workspace?"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
   };
 
-  //const actions = useWorkspaceSearchActions();
+  const actions = useWorkspaceActions();
 
   //const search = useSelector((state) => state.workspaces.search);
 
@@ -454,6 +461,34 @@ const WorspaceHeaderPanel = (props) => {
         }
       })
     );
+  };
+
+  const handleLeaveWorkspace = () => {
+    const leaveWorkspace = () => {
+      let callback = (err, res) => {
+        if (err) return;
+        toaster.success(
+          <>
+            {dictionary.leaveWorkspace}
+            <b>{activeTopic.name}</b>
+          </>
+        );
+      };
+      actions.leave(activeTopic, user, callback);
+    };
+
+    let payload = {
+      type: "confirmation",
+      headerText: dictionary.leaveWorkspaceHeader,
+      submitText: dictionary.buttonLeave,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.leaveWorkspaceBody,
+      actions: {
+        onSubmit: leaveWorkspace,
+      },
+    };
+
+    dispatch(addToModals(payload));
   };
 
   return (
@@ -598,10 +633,15 @@ const WorspaceHeaderPanel = (props) => {
                   <MemberLists members={activeTopic.members} />
                 </div>
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (
-                  <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                    <SvgIconFeather icon="user-plus" />
-                    {dictionary.actionWorkspaceInvite}
-                  </button>
+                  <>
+                    <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                      <SvgIconFeather icon="user-plus" />
+                      {dictionary.actionWorkspaceInvite}
+                    </button>
+                    <button onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
+                      {dictionary.buttonLeave}
+                    </button>
+                  </>
                 ) : !isExternal ? (
                   <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus" />
