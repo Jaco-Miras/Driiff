@@ -47,12 +47,12 @@ const CompanyGoogleDrive = (props) => {
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
         {localStorage.getItem("gdrive") === null ? (
           <GooglePicker
-            clientId={process.env.REACT_APP_google_client_id}
-            developerKey={process.env.REACT_APP_google_key}
+            clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
+            developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
             scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
             onChange={(data) => onChange(data)}
             onAuthenticate={(token) => handleAuthenticate(token)}
-            //onAuthFailed={(data) => console.log("on auth failed:", data)}
+            onAuthFailed={(data) => console.log("on auth failed:", data)}
             multiselect={true}
             navHidden={true}
             authImmediate={false}
@@ -63,8 +63,8 @@ const CompanyGoogleDrive = (props) => {
         ) : (
           <>
             <GooglePicker
-              clientId={process.env.REACT_APP_google_client_id}
-              developerKey={process.env.REACT_APP_google_key}
+              clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
+              developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
               scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               onChange={(data) => onChange(data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
@@ -77,8 +77,8 @@ const CompanyGoogleDrive = (props) => {
               <div className="dropdown-item">{dictionary.gDriveAttachFile}</div>
             </GooglePicker>
             <GooglePicker
-              clientId={process.env.REACT_APP_google_client_id}
-              developerKey={process.env.REACT_APP_google_key}
+              clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
+              developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
               scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               //onChange={(data) => console.log("on change:", data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
@@ -94,7 +94,7 @@ const CompanyGoogleDrive = (props) => {
                 const picker = new window.google.picker.PickerBuilder()
                   .addView(docsView)
                   .setOAuthToken(oauthToken)
-                  .setDeveloperKey(process.env.REACT_APP_google_key)
+                  .setDeveloperKey("AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ")
                   .setCallback((data) => {
                     onChange(data);
                   });
