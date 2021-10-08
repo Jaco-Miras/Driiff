@@ -49,7 +49,7 @@ const CompanyGoogleDrive = (props) => {
           <GooglePicker
             clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
             developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
-            scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
+            scope={["https://www.googleapis.com/auth/drive.file"]}
             onChange={(data) => onChange(data)}
             onAuthenticate={(token) => handleAuthenticate(token)}
             onAuthFailed={(data) => console.log("on auth failed:", data)}
@@ -65,7 +65,7 @@ const CompanyGoogleDrive = (props) => {
             <GooglePicker
               clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
               developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
-              scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
+              scope={["https://www.googleapis.com/auth/drive.file"]}
               onChange={(data) => onChange(data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
               //onAuthFailed={(data) => console.log("on auth failed:", data)}
@@ -79,7 +79,7 @@ const CompanyGoogleDrive = (props) => {
             <GooglePicker
               clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
               developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
-              scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
+              scope={["https://www.googleapis.com/auth/drive.file"]}
               //onChange={(data) => console.log("on change:", data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
               //onAuthFailed={(data) => console.log("on auth failed:", data)}
