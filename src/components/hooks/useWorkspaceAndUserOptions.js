@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslationActions } from ".";
 
 const useWorkspaceAndUserOptions = (props) => {
   const { addressTo } = props;
-
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
+  };
   const recipients = useSelector((state) => state.global.recipients);
   const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
   const actualUsers = useSelector((state) => state.users.users);
@@ -103,7 +107,7 @@ const useWorkspaceAndUserOptions = (props) => {
         return {
           ...u,
           value: u.id,
-          label: u.name,
+          label: `${dictionary.teamLabel} ${u.name}`,
           useLabel: true,
           type: "TEAM",
           icon: "users",

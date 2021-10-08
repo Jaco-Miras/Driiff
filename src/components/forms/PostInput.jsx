@@ -371,7 +371,7 @@ const PostInput = forwardRef((props, ref) => {
             if (m.insert.mention && m.insert.mention.type !== "external") return true;
             else return false;
           })
-          .map((i) => i.insert.mention.id)
+          .map((i) => i.insert.mention.type_id)
       );
     }
     textOnly.trim() === "" && !hasMention && !hasImage ? onActive(false) : onActive(true);
@@ -389,6 +389,18 @@ const PostInput = forwardRef((props, ref) => {
     };
     dispatch(removeUserToPostRecipients(payload));
   };
+
+  const workspaceMembers = workspace
+    ? workspace.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
+
+  // const isMember = useIsMember(workspace && workspace.member_ids.length ? [...new Set(workspaceMembers)] : []);
 
   const handleMentionUser = (mention_ids) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
@@ -416,17 +428,12 @@ const PostInput = forwardRef((props, ref) => {
         })
         .map((r) => r.id);
       const postRecipientIds = post.recipients.map((pr) => pr.id);
-      let ignoreIds = [...new Set([...postRecipientIds, ...userRecipientIds, ...ignoredMentionedUserIds])];
+      let ignoreIds = [...new Set([...postRecipientIds, ...userRecipientIds, ...ignoredMentionedUserIds, ...workspaceMembers])];
+
       //let ignoreIds = [...new Set([user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ingoredExternalIds, ...ignoredWorkspaceIds])];
       // ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
       let userIds = mention_ids.filter((id) => {
-        let userFound = false;
-        ignoreIds.forEach((pid) => {
-          if (pid === parseInt(id)) {
-            userFound = true;
-          }
-        });
-        return !userFound;
+        return !ignoreIds.some((iid) => iid === id);
       });
       setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
     } else {

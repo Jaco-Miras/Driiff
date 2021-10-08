@@ -6,7 +6,7 @@ import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useCountRenders } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";

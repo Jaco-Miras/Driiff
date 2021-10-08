@@ -61,6 +61,7 @@ const usePostModalDictionary = (props) => {
     sendingPost: _t("TOASTER.SENDING_POST", "Sending post"),
     updatingPost: _t("TOASTER.UPDATING_POST", "Updating post"),
     uploadingAndSending: _t("TOASTER.SENDING_POST_WITH_FILE", "Uploading file and sending post"),
+    teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
   };
 
   return {
