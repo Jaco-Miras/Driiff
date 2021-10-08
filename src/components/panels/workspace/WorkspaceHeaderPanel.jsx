@@ -334,6 +334,9 @@ const WorspaceHeaderPanel = (props) => {
     workspaces: _t("WORKSPACES", "Workspces"),
     buttonLeave: _t("BUTTON.LEAVE", "Leave"),
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
+    leaveWorkspaceHeader: _t("CONFIRMATION.LEAVE_WORKSPACE_HEADER", "Leave workspace"),
+    leaveWorkspaceBody: _t("CONFIRMATION.LEAVE_WORKSPACE_BODY", "Are you sure that you want to leave this workspace?"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
   };
 
   const actions = useWorkspaceActions();
@@ -461,16 +464,31 @@ const WorspaceHeaderPanel = (props) => {
   };
 
   const handleLeaveWorkspace = () => {
-    let callback = (err, res) => {
-      if (err) return;
-      toaster.success(
-        <>
-          {dictionary.leaveWorkspace}
-          <b>{activeTopic.name}</b>
-        </>
-      );
+    const leaveWorkspace = () => {
+      let callback = (err, res) => {
+        if (err) return;
+        toaster.success(
+          <>
+            {dictionary.leaveWorkspace}
+            <b>{activeTopic.name}</b>
+          </>
+        );
+      };
+      actions.leave(activeTopic, user, callback);
     };
-    actions.leave(activeTopic, user, callback);
+
+    let payload = {
+      type: "confirmation",
+      headerText: dictionary.leaveWorkspaceHeader,
+      submitText: dictionary.buttonLeave,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.leaveWorkspaceBody,
+      actions: {
+        onSubmit: leaveWorkspace,
+      },
+    };
+
+    dispatch(addToModals(payload));
   };
 
   return (
