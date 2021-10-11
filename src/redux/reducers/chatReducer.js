@@ -2744,6 +2744,26 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
+    case "INCOMING_DELETED_TEAM": {
+      return {
+        ...state,
+        channels: Object.values(state.channels)
+          .filter((c) => {
+            if (c.type === "TEAM" || c.type === "DIRECT_TEAM") {
+              return c.id !== action.data.id;
+            } else {
+              return true;
+            }
+          })
+          .reduce((acc, channel) => {
+            acc[channel.id] = channel;
+            return acc;
+          }, {}),
+        selectedChannel: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannel,
+        selectedChannelId: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannelId,
+        lastVisitedChannel: state.lastVisitedChannel && state.lastVisitedChannel.entity_id === parseInt(action.data.id) ? null : state.lastVisitedChannel,
+      };
+    }
     default:
       return state;
   }

@@ -79,6 +79,7 @@ const TeamItem = (props) => {
           ...res.data.channel,
           hasMore: true,
           selected: true,
+          entity_id: team.id,
         });
         history.push(`/chat/${res.data.channel.code}`);
       }
