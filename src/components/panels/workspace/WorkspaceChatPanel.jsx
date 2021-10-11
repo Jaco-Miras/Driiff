@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { ChatContentPanel } from "../chat";
 import { useRouteMatch } from "react-router-dom";
 import { SvgEmptyState } from "../../common";
-import { createTeamChannel } from "../../../redux/actions/workspaceActions";
+import { createWorkspaceTeamChannel } from "../../../redux/actions/workspaceActions";
 import { useFetchWsCount } from "../../hooks";
 
 const Wrapper = styled.div``;
@@ -43,7 +43,7 @@ const WorkspaceChatPanel = (props) => {
     if (!activating) {
       setActivating(true);
       dispatch(
-        createTeamChannel({ id: workspace.id }, (err, res) => {
+        createWorkspaceTeamChannel({ id: workspace.id }, (err, res) => {
           setActivating(false);
         })
       );
@@ -61,7 +61,8 @@ const WorkspaceChatPanel = (props) => {
             </button>
           </EmptyState>
         )}
-        {((route.path.startsWith("/workspace/chat") && selectedChannel && workspace.is_shared && selectedChannel.id === workspace.channel.id) || (route.path.startsWith("/workspace/chat") && selectedChannel && !workspace.is_shared && selectedChannel.id === workspace.team_channel.id) ||
+        {((route.path.startsWith("/workspace/chat") && selectedChannel && workspace.is_shared && selectedChannel.id === workspace.channel.id) ||
+          (route.path.startsWith("/workspace/chat") && selectedChannel && !workspace.is_shared && selectedChannel.id === workspace.team_channel.id) ||
           (route.path.startsWith("/workspace/team-chat") && workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.id === workspace.team_channel.id)) && (
           <ChatContentPanel className={"col-lg-12"} isWorkspace={true} selectedChannel={selectedChannel} />
         )}

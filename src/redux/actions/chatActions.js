@@ -505,3 +505,7 @@ export function showUnreadChannels(payload, callback) {
 export function getUnreadChannels(payload, callback) {
   return dispatchActionToReducer(getChannelsService(payload), "GET_UNREAD_CHANNELS_START", "GET_UNREAD_CHANNELS_SUCCESS", "GET_UNREAD_CHANNELS_FAIL", callback);
 }
+
+export function addSelectChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_SELECT_CHANNEL", payload, callback);
+}

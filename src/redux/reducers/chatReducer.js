@@ -2943,6 +2943,92 @@ export default function (state = INITIAL_STATE, action) {
     //         : state.selectedChannel,
     //   };
     // }
+    case "ADD_SELECT_CHANNEL": {
+      return {
+        ...state,
+        selectedChannel: state.channels[action.data.id] ? { ...state.channels[action.data.id], selected: true } : { ...action.data, skip: 0, replies: [], selected: true, isFetching: false },
+        selectedChannelId: action.data.id,
+        channels: {
+          ...state.channels,
+          ...(!state.channels[action.data.id] && {
+            [action.data.id]: {
+              ...action.data,
+              skip: 0,
+              replies: [],
+              selected: true,
+              isFetching: false,
+            },
+          }),
+          ...(state.channels[action.data.id] && {
+            [action.data.id]: { ...state.channels[action.data.id], selected: true },
+          }),
+        },
+        lastVisitedChannel: !state.channels[action.data.id]
+          ? {
+              ...action.data,
+              skip: 0,
+              replies: [],
+              selected: true,
+              isFetching: false,
+            }
+          : { ...state.channels[action.data.id], selected: true },
+      };
+    }
+    case "INCOMING_REMOVED_TEAM_MEMBER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
+            acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)
+            ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) }
+            : state.selectedChannel,
+      };
+    }
+    case "INCOMING_TEAM_MEMBER":
+    case "INCOMING_UPDATED_TEAM": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
+            acc[channel.id] = {
+              ...channel,
+              members: [
+                ...channel.members,
+                ...action.data.members
+                  .filter((m) => !channel.members.some((cm) => cm.id === m.id))
+                  .map((m) => {
+                    return { ...m, last_visited_at: null };
+                  }),
+              ],
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)
+            ? {
+                ...state.selectedChannel,
+                members: [
+                  ...state.selectedChannel.members,
+                  ...action.data.members
+                    .filter((m) => !state.selectedChannel.members.some((cm) => cm.id === m.id))
+                    .map((m) => {
+                      return { ...m, last_visited_at: null };
+                    }),
+                ],
+              }
+            : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }

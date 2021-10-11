@@ -216,6 +216,7 @@ const ChatSidebarPanel = (props) => {
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
     withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
     withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
+    team: _t("TEAM", "Team"),
   };
 
   const handleOpenGroupChatModal = () => {

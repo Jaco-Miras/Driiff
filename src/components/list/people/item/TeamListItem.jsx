@@ -289,7 +289,7 @@ const TeamListItem = (props) => {
           {!isUser && (
             <div className="user-reads-container">
               <h6 className="no-readers profile-name">
-                {member.name} {!isUser && _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: member.members.length })}
+                {dictionary.team} {member.name} {!isUser && _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: member.members.length })}
               </h6>
               <Viewers users={member.members} />
             </div>

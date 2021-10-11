@@ -400,12 +400,14 @@ export default (state = INITIAL_STATE, action) => {
           }, {}),
       };
     }
+    case "INCOMING_REMOVED_TEAM_MEMBER":
+    case "REMOVE_TEAM_MEMBER_SUCCESS":
     case "INCOMING_TEAM_MEMBER":
     case "ADD_TEAM_MEMBER_SUCCESS": {
       return {
         ...state,
         teams: Object.values(state.teams).reduce((acc, team) => {
-          if (team.id === action.data.id) {
+          if (team.id === parseInt(action.data.id)) {
             acc[team.id] = { ...team, member_ids: action.data.member_ids, members: action.data.members };
           } else {
             acc[team.id] = team;

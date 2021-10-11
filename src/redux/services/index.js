@@ -115,6 +115,7 @@ export {
   deleteTeam,
   addTeamMember,
   removeTeamMember,
+  createTeamChannel,
 } from "./user";
 
 export {
@@ -265,7 +266,7 @@ export {
 
 export {
   createWorkspace,
-  createTeamChannel,
+  createWorkspaceTeamChannel,
   deleteWorkspace,
   deleteWorkspaceRole,
   deleteWorkspaceFolder,

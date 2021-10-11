@@ -92,7 +92,8 @@ const SystemPeoplePanel = (props) => {
     .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
       if (selectedTeam) {
-        return selectedTeam.member_ids.some((id) => id === user.id);
+        //return selectedTeam.member_ids.some((id) => id === user.id);
+        return true;
       }
       if (showInactive) {
         if (user.active === 1) {
@@ -168,6 +169,8 @@ const SystemPeoplePanel = (props) => {
     removeTeamBtn: _t("BUTTON.REMOVE_TEAM", "Remove team"),
     removeTeamConfirmation: _t("TEAM_MODAL.REMOVE_TEAM_BODY", "Are you sure you want to remove this team?"),
     addUserToTeam: _t("PEOPLE.ADD_USER_TEAM", "Add user to team"),
+    removeTeamMember: _t("PEOPLE.REMOVE_TEAM_MEMBER", "Remove team member"),
+    team: _t("TEAM", "Team"),
   };
 
   const handleInviteUsers = () => {

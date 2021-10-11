@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
-import { getTeams, postTeam, putTeam, deleteTeam, addTeamMember, removeTeamMember } from "../../redux/actions/userAction";
+import { getTeams, postTeam, putTeam, deleteTeam, addTeamMember, removeTeamMember, createTeamChannel } from "../../redux/actions/userAction";
+import { addSelectChannel } from "../../redux/actions/chatActions";
 
 const useTeamActions = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,14 @@ const useTeamActions = () => {
     dispatch(removeTeamMember(payload, callback));
   };
 
+  const createChannel = (payload, callback) => {
+    dispatch(createTeamChannel(payload, callback));
+  };
+
+  const addAndSelectChannel = (channel, callback) => {
+    dispatch(addSelectChannel(channel, callback));
+  };
+
   return {
     fetchTeams,
     createTeam,
@@ -35,6 +44,8 @@ const useTeamActions = () => {
     removeTeam,
     addMember,
     removeMember,
+    createChannel,
+    addAndSelectChannel,
   };
 };
 

@@ -413,7 +413,7 @@ const CreateEditWorkspaceModal = (props) => {
     folderTooltip: _t("WORKSPACE.TOOLTIP_FOLDER", "You can add this WorkSpace to a folder for some extra structure in your WorkSpace list"),
     teamMembersTooltip: _t("WORKSPACE.TOOLTIP_TEAM_MEMBERS", "Decide which members of your company should be added to this WorkSpace"),
     guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
-    teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
+    teamLabel: _t("LABEL.TEAM", "Team"),
   };
 
   const _validateName = useCallback(() => {

@@ -127,6 +127,7 @@ const ChannelIcon = (props) => {
           onClick={onSelectChannel}
         />
       )}
+      {channel && (channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && <Avatar imageLink={null} name={channel.title} type="TEAM" showSlider={false} onClick={onSelectChannel} />}
       {channel &&
         channel.type === "GROUP" &&
         (channel.icon_link ? (

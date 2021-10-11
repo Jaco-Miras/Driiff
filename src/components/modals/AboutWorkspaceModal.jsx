@@ -223,6 +223,7 @@ const AboutWorkspaceModal = (props) => {
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
     lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
+    teamLabel: _t("LABEL.TEAM", "Team"),
   };
 
   const toggle = () => {
@@ -256,7 +257,18 @@ const AboutWorkspaceModal = (props) => {
         label: u.name,
       };
     });
-    setUserOptions(userOptions);
+    const teamMembers = workspace.members
+      .filter((m) => m.type !== "internal" && m.type !== "external")
+      .map((m) => {
+        return {
+          ...m,
+          value: m.id,
+          label: `${dictionary.teamLabel} ${m.name}`,
+          useLabel: true,
+          type: "TEAM",
+        };
+      });
+    setUserOptions([...userOptions, ...teamMembers]);
   }, [Object.values(users).length]);
 
   useEffect(() => {

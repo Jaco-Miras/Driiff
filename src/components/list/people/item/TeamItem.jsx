@@ -1,11 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Avatar, SvgIconFeather, ToolTip } from "../../../common";
+import { Avatar, SvgIconFeather, ToolTip, Loader } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { deleteTeam } from "../../../../redux/actions/userAction";
-import { useToaster } from "../../../hooks";
+import { useToaster, useTeamActions } from "../../../hooks";
 
 const Wrapper = styled.div`
   .avatar {
@@ -43,6 +44,11 @@ const Wrapper = styled.div`
   }
 `;
 
+const StyledLoader = styled(Loader)`
+  width: 1rem;
+  height: 1rem;
+`;
+
 const TeamItem = (props) => {
   const { className = "", loggedUser, team, dictionary, _t, onSelectTeam } = props;
 
@@ -53,7 +59,32 @@ const TeamItem = (props) => {
     content: useRef(null),
   };
 
-  const handleOnChatClick = () => {};
+  const [loading, setLoading] = useState(false);
+
+  const history = useHistory();
+
+  const actions = useTeamActions();
+
+  const handleOnChatClick = () => {
+    setLoading(true);
+    const payload = {
+      type: "team",
+      recipient_id: team.id,
+    };
+    const cb = (err, res) => {
+      setLoading(false);
+      if (err) return;
+      if (res) {
+        actions.addAndSelectChannel({
+          ...res.data.channel,
+          hasMore: true,
+          selected: true,
+        });
+        history.push(`/chat/${res.data.channel.code}`);
+      }
+    };
+    actions.createChannel(payload, cb);
+  };
 
   const handleEditTeam = () => {
     const modal = {
@@ -112,7 +143,7 @@ const TeamItem = (props) => {
                   <h6 className="user-name mb-0">
                     <ToolTip content={team.name}>
                       <div className="mr-2 people-text-truncate" onClick={handleSelectTeam}>
-                        {team.name} {team.members.length > 0 && membersLengthLabel}
+                        {dictionary.team} {team.name} {team.members.length > 0 && membersLengthLabel}
                       </div>
                     </ToolTip>
                   </h6>
@@ -120,7 +151,8 @@ const TeamItem = (props) => {
               </div>
               {loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                  {loading && <StyledLoader />}
+                  {!loading && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
                   {isAdmin && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       <div onClick={handleEditTeam}>{dictionary.editTeam}</div>
