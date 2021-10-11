@@ -402,6 +402,16 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaces: updatedWorkspaces,
         folders: updatedFolders,
+        allFolders: action.data.workspace
+          ? Object.values(state.allFolders).reduce((acc, folder) => {
+              if (folder.id === action.data.workspace.id) {
+                acc[folder.id] = { ...folder, workspaces: [...folder.workspaces, { id: action.data.id, name: action.data.topic.name, active: 1, description: action.data.topic.description }] };
+              } else {
+                acc[folder.id] = folder;
+              }
+              return acc;
+            }, {})
+          : state.allFolders,
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {

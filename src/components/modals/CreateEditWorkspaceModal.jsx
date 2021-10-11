@@ -19,6 +19,7 @@ import { debounce } from "lodash";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
+import { getExistingFolder } from "../../redux/services/workspace";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -116,6 +117,9 @@ const WrapperDiv = styled(InputGroup)`
         color: #a7abc3;
       }
     }
+    .invalid-feedback {
+      display: block;
+    }
   }
   &.checkboxes {
     flex-flow: row !important;
@@ -210,6 +214,13 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
+const LabelWrapper = styled.div`
+  display: flex;
+  label {
+    min-width: auto;
+  }
+`;
+
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
@@ -234,6 +245,20 @@ const CreateEditWorkspaceModal = (props) => {
   const [inputValue, setInputValue] = useState("");
   //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
+  const [folderInput, setFolderInput] = useState("");
+  const [creatingFolder, setCreatingFolder] = useState(false);
+  const [folderOptions, setFolderOptions] = useState(
+    Object.values(folders)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((ws) => {
+        return {
+          ...ws,
+          icon: "folder",
+          value: ws.id,
+          label: ws.name,
+        };
+      })
+  );
   const [form, setForm] = useState({
     is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
@@ -352,6 +377,7 @@ const CreateEditWorkspaceModal = (props) => {
     feedbackWorkspaceNameIsRequired: _t("FEEDBACK.WORKSPACE_NAME_IS_REQUIRED", "Workspace name is required."),
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
+    feedbackWorkspaceTypeIsRequired: _t("FEEDBACK.WORKSPACE_TYPE_IS_REQUIRED", "Workspace type is required."),
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", "::workspace_name:: workspace is created.", {
       workspace_name: `<b>${form.name}</b>`,
     }),
@@ -385,6 +411,9 @@ const CreateEditWorkspaceModal = (props) => {
     removeExternals: _t("BUTTON.REMOVE_EXTERNALS", "Remove externals"),
     removeExternalsBody: _t("MODAL_BODY.REMOVE_EXTERNALS", "There are existing external users. Remove the external users first before converting to internal workspace."),
     teamLabel: _t("LABEL.TEAM", "Team"),
+    folderTooltip: _t("WORKSPACE.TOOLTIP_FOLDER", "You can add this WorkSpace to a folder for some extra structure in your WorkSpace list"),
+    teamMembersTooltip: _t("WORKSPACE.TOOLTIP_TEAM_MEMBERS", "Decide which members of your company should be added to this WorkSpace"),
+    guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
   };
 
   const _validateName = useCallback(() => {
@@ -485,16 +514,16 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
-  const folderOptions = Object.values(folders)
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((ws) => {
-      return {
-        ...ws,
-        icon: "folder",
-        value: ws.id,
-        label: ws.name,
-      };
-    });
+  // const folderOptions = Object.values(folders)
+  //   .sort((a, b) => a.name.localeCompare(b.name))
+  //   .map((ws) => {
+  //     return {
+  //       ...ws,
+  //       icon: "folder",
+  //       value: ws.id,
+  //       label: ws.name,
+  //     };
+  //   });
 
   const handleSelectUser = (e) => {
     if (e === null) {
@@ -655,6 +684,66 @@ const CreateEditWorkspaceModal = (props) => {
       return false;
     }
   };
+
+  const handleFolderValidation = (inputValue, selectValue, selectOptions) => {
+    if (inputValue && inputValue.trim() !== "" && folderOptions.some((f) => f.label.trim().toLowerCase() === inputValue.trim().toLowerCase())) return false;
+    if (inputValue && inputValue.trim() !== "" && selectOptions.length === 0) return true;
+  };
+
+  const handleFolderInputChange = (e) => {
+    setFolderInput(e);
+  };
+
+  const handleCreateFolderOption = (inputValue) => {
+    const folderName = inputValue.trim();
+    setCreatingFolder(true);
+    const tempId = require("shortid").generate();
+    setFolderOptions([...folderOptions, { id: tempId, label: folderName, value: folderName }]);
+    setForm({
+      ...form,
+      selectedFolder: { id: tempId, label: folderName, value: folderName },
+    });
+    let payload = {
+      name: folderName,
+      description: "<div></div>",
+      is_external: 0,
+      is_folder: 1,
+      is_lock: 0,
+    };
+    dispatch(
+      createWorkspace(payload, (err, res) => {
+        setCreatingFolder(false);
+        if (err) return;
+        if (res) {
+          setFolderOptions([...folderOptions, { id: res.data.workspace.id, label: folderName, value: res.data.workspace.id }]);
+          setForm({
+            ...form,
+            selectedFolder: { id: res.data.workspace.id, label: folderName, value: res.data.workspace.id },
+          });
+        }
+      })
+    );
+  };
+
+  const promiseOptions = (value) =>
+    new Promise((resolve) => {
+      resolve(getExistingFolder({ name: value }));
+    })
+      .then((result) => {
+        if (result.data.exists) {
+          return folderOptions.filter((f) => {
+            return f.label.toLowerCase().trim().includes(value.toLowerCase().trim());
+          });
+        } else {
+          return [];
+          // return folderOptions.filter((f) => {
+          //   return f.id === "";
+          // });
+        }
+      })
+      .catch((error) => {
+        //error
+      });
 
   const handleSelectFolder = (e) => {
     setForm((prevState) => ({
@@ -1549,6 +1638,21 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  useEffect(() => {
+    setFolderOptions(
+      Object.values(folders)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((ws) => {
+          return {
+            ...ws,
+            icon: "folder",
+            value: ws.id,
+            label: ws.name,
+          };
+        })
+    );
+  }, [Object.values(folders).length]);
+
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
@@ -1671,29 +1775,57 @@ const CreateEditWorkspaceModal = (props) => {
                 </div>
               }
             >
-              <SvgIconFeather icon="alert-circle" width="16" height="16" />
+              <SvgIconFeather icon="info" width="16" height="16" />
             </ToolTip>
           </div>
         </WrapperDiv>
         {form.has_folder === true && (
           <WrapperDiv className={"modal-input"}>
-            <Label for="people">{dictionary.folder}</Label>
-            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
+            <LabelWrapper className="mb-1">
+              <Label for="people">{dictionary.folder}</Label>
+              <ToolTip content={dictionary.folderTooltip}>
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </LabelWrapper>
+            <SelectFolder
+              creatable={true}
+              defaultOptions={folderOptions}
+              value={form.selectedFolder}
+              onChange={handleSelectFolder}
+              isMulti={false}
+              isClearable={true}
+              inputValue={folderInput}
+              isValidNewOption={handleFolderValidation}
+              onCreateOption={handleCreateFolderOption}
+              onInputChange={handleFolderInputChange}
+              formatCreateLabel={formatCreateLabel}
+              loadOptions={promiseOptions}
+              isSearchable
+            />
             <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
           </WrapperDiv>
         )}
         <WrapperDiv className={"modal-input"}>
-          <Label for="people">{dictionary.team}</Label>
+          <LabelWrapper className="mb-1">
+            <Label for="people">{dictionary.team}</Label>
+            <ToolTip content={dictionary.teamMembersTooltip}>
+              <SvgIconFeather icon="info" width="16" height="16" />
+            </ToolTip>
+          </LabelWrapper>
           <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
         {form.has_externals === true && (
           <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
-            <Label for="people">{dictionary.externalGuest}</Label>
+            <LabelWrapper className="mb-1">
+              <Label for="people">{dictionary.externalGuest}</Label>
+              <ToolTip content={dictionary.guestTooltip}>
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </LabelWrapper>
             <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
             <SelectPeople
               creatable={true}
-              //valid={valid.team}
               options={externalUserOptions}
               value={form.selectedExternals}
               inputValue={externalInput}
@@ -1704,7 +1836,6 @@ const CreateEditWorkspaceModal = (props) => {
               filterOption={filterOptions}
               formatCreateLabel={formatCreateLabel}
               isSearchable
-              classNamePrefix="react-select"
               onMenuClose={handleMenuClose}
               onEmailClick={handleEmailClick}
             />
@@ -1735,7 +1866,6 @@ const CreateEditWorkspaceModal = (props) => {
           </WrapperDiv>
         )}
         <WrapperDiv className="action-wrapper">
-          <Label />
           <RadioInputWrapper className="workspace-radio-input">
             <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
               {dictionary.lockWorkspace}
@@ -1744,10 +1874,11 @@ const CreateEditWorkspaceModal = (props) => {
               {dictionary.publicWorkspace}
             </RadioInput>
           </RadioInputWrapper>
+          <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null}>
+          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>

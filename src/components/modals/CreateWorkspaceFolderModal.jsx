@@ -152,13 +152,23 @@ const CreateWorkspaceFolderModal = (props) => {
             feedback: dictionary.folderNameTaken,
             validating: false,
           });
-        } else {
-          setValid({
-            ...valid,
-            isValid: true,
-            feedback: "",
-            validating: false,
-          });
+        }
+        if (res.data) {
+          if (res.data.exists) {
+            setValid({
+              ...valid,
+              isValid: false,
+              feedback: dictionary.folderNameTaken,
+              validating: false,
+            });
+          } else {
+            setValid({
+              ...valid,
+              isValid: true,
+              feedback: "",
+              validating: false,
+            });
+          }
         }
       })
     );
