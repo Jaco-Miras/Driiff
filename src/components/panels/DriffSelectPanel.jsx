@@ -113,6 +113,13 @@ const Wrapper = styled.div`
   }
 `;
 
+const PrivacyTermsWrapper = styled.div`
+  margin-left: -9px;
+  a {
+    color: #7a1b8b;
+  }
+`;
+
 const DriffSelectPanel = (props) => {
   const { className = "" } = props;
 
@@ -152,6 +159,17 @@ const DriffSelectPanel = (props) => {
           </Link>
         </div>
       </Form>
+      <PrivacyTermsWrapper className="mt-2">
+        <span>
+          <a href="https://getdriff.com/privacy-policy/" target="_blank" rel="noopener noreferrer">
+            Privacy
+          </a>{" "}
+          |{" "}
+          <a href="https://getdriff.com/terms-of-use-of-driff/" target="_blank" rel="noopener noreferrer">
+            Terms
+          </a>
+        </span>
+      </PrivacyTermsWrapper>
     </Wrapper>
   );
 };
