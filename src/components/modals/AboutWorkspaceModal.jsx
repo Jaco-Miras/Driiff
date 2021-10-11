@@ -223,7 +223,7 @@ const AboutWorkspaceModal = (props) => {
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
     lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
-    teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
+    teamLabel: _t("LABEL.TEAM", "Team"),
   };
 
   const toggle = () => {

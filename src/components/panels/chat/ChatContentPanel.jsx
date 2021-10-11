@@ -194,6 +194,7 @@ const ChatContentPanel = (props) => {
     restrictedLink: _t("GOOGLE_DRIVE.RESTRICTED_LINK", "Restricted link, try another account"),
     editHuddle: _t("CHAT.EDIT_HUDDLE", "Edit huddle"),
     discussOnTeamChat: _t("CHAT.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
+    team: _t("TEAM", "Team"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

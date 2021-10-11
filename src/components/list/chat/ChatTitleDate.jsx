@@ -67,6 +67,9 @@ const ChatTitleDate = (props) => {
     if (channel.type === "DIRECT" && channel.profile) {
       newTitle = channel.profile.name;
     }
+    if (channel.type === "DIRECT_TEAM" || channel.type === "TEAM") {
+      newTitle = `${dictionary.team} ${channel.title}`;
+    }
     if (search === "") {
       return newTitle;
     } else {

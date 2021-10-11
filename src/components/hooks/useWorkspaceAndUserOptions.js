@@ -6,7 +6,7 @@ const useWorkspaceAndUserOptions = (props) => {
   const { addressTo } = props;
   const { _t } = useTranslationActions();
   const dictionary = {
-    teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
+    teamLabel: _t("TEAM", "Team"),
   };
   const recipients = useSelector((state) => state.global.recipients);
   const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);

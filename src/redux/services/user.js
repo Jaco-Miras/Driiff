@@ -661,3 +661,11 @@ export function removeTeamMember(payload) {
     data: payload,
   });
 }
+
+export function createTeamChannel(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/team-chat-channel/create",
+    data: payload,
+  });
+}

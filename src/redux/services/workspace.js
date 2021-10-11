@@ -347,7 +347,7 @@ export function postResendInvite(payload) {
  * @param {string} payload.id
  * @returns {Promise<*>}
  */
-export function createTeamChannel(payload) {
+export function createWorkspaceTeamChannel(payload) {
   let url = `/v2/workspace/${payload.id}/team-channel`;
   return apiCall({
     method: "POST",

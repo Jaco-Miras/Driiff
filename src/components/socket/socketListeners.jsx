@@ -148,6 +148,7 @@ import {
   incomingUpdatedTeam,
   incomingDeletedTeam,
   incomingTeamMember,
+  incomingRemovedTeamMember,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
@@ -1035,6 +1036,9 @@ class SocketListeners extends Component {
       })
       .listen(".add-team-member", (e) => {
         this.props.incomingTeamMember(e);
+      })
+      .listen(".remove-team-member", (e) => {
+        this.props.incomingRemovedTeamMember(e);
       })
       .listen(".create-drive-link", (e) => {
         this.props.incomingDriveLink(e);
@@ -2177,6 +2181,7 @@ function mapDispatchToProps(dispatch) {
     incomingUpdatedTeam: bindActionCreators(incomingUpdatedTeam, dispatch),
     incomingDeletedTeam: bindActionCreators(incomingDeletedTeam, dispatch),
     incomingTeamMember: bindActionCreators(incomingTeamMember, dispatch),
+    incomingRemovedTeamMember: bindActionCreators(incomingRemovedTeamMember, dispatch),
   };
 }
 

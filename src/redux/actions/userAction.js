@@ -38,6 +38,7 @@ import {
   deleteTeam as deleteTeamService,
   addTeamMember as addTeamMemberService,
   removeTeamMember as removeTeamMemberService,
+  createTeamChannel as createTeamChannelService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -250,4 +251,12 @@ export function incomingTeamMember(payload, callback) {
 
 export function removeTeamMember(payload, callback) {
   return dispatchActionToReducer(removeTeamMemberService(payload), "REMOVE_TEAM_MEMBER_START", "REMOVE_TEAM_MEMBER_SUCCESS", "REMOVE_TEAM_MEMBER_FAILURE", callback);
+}
+
+export function createTeamChannel(payload, callback) {
+  return dispatchActionToReducer(createTeamChannelService(payload), "CREATE_TEAM_CHANNEL_START", "CREATE_TEAM_CHANNEL_SUCCESS", "CREATE_TEAM_CHANNEL_FAILURE", callback);
+}
+
+export function incomingRemovedTeamMember(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_TEAM_MEMBER", payload, callback);
 }

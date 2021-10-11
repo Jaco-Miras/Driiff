@@ -298,6 +298,11 @@ const ChatHeaderPanel = (props) => {
     history.push(`/profile/${profile.id}/${replaceChar(profile.name)}`);
   };
 
+  const handleRedirectToTeam = (e) => {
+    e.preventDefault();
+    history.push(`/system/people/teams/${chatChannel.entity_id}/${chatChannel.title}`);
+  };
+
   const getChannelTitle = () => {
     switch (chatChannel.type) {
       case "TOPIC": {
@@ -330,6 +335,24 @@ const ChatHeaderPanel = (props) => {
           <>
             <a onClick={(e) => handleRedirectToProfile(e, chatChannel.profile)} data-href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`} href={`/profile/${chatChannel.profile.id}/${chatChannel.profile.name}`}>
               {chatChannel.profile ? chatChannel.profile.name : chatChannel.title}
+            </a>
+          </>
+        );
+      }
+      case "DIRECT_TEAM": {
+        return (
+          <>
+            <a onClick={handleRedirectToTeam} data-href={`/system/people/teams/${chatChannel.entity_id}/${chatChannel.title}`} href={`/system/people/teams/${chatChannel.entity_id}/${chatChannel.title}`}>
+              {dictionary.team} {chatChannel.title}
+            </a>
+          </>
+        );
+      }
+      case "TEAM": {
+        return (
+          <>
+            <a onClick={handleRedirectToTeam} data-href={`/system/people/teams/${chatChannel.entity_id}/${chatChannel.title}`} href={`/system/people/teams/${chatChannel.entity_id}/${chatChannel.title}`}>
+              {dictionary.team} {chatChannel.title}
             </a>
           </>
         );

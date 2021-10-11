@@ -384,7 +384,7 @@ const CreateEditWorkspaceModal = (props) => {
     convertToInternalWorkspace: _t("MODAL_HEADER.CONVERT_TO_INTERNAL_WS", "Convert to internal workspace"),
     removeExternals: _t("BUTTON.REMOVE_EXTERNALS", "Remove externals"),
     removeExternalsBody: _t("MODAL_BODY.REMOVE_EXTERNALS", "There are existing external users. Remove the external users first before converting to internal workspace."),
-    teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
+    teamLabel: _t("LABEL.TEAM", "Team"),
   };
 
   const _validateName = useCallback(() => {
