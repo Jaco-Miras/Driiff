@@ -155,13 +155,15 @@ const useWorkspaceActions = () => {
 
   const leave = (workspace, member, callback) => {
     if (workspace.members.length === 1 && workspace.is_lock === 1) {
-      let archivePayload = {
-        id: workspace.channel.id,
-        is_archived: true,
-        is_muted: false,
-        is_pinned: false,
-      };
-      dispatch(putChannel(archivePayload));
+      if (workspace.team_channel) {
+        let archivePayload = {
+          id: workspace.team_channel.id,
+          is_archived: true,
+          is_muted: false,
+          is_pinned: false,
+        };
+        dispatch(putChannel(archivePayload));
+      }
     } else {
       const isUser = member.type === "internal" || member.type === "external";
       let payload = {

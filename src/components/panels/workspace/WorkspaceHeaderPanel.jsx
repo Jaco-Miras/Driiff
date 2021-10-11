@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions, useIsMember, useWorkspaceActions } from "../../hooks";
+import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 
