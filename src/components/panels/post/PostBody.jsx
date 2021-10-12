@@ -342,7 +342,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -427,6 +427,10 @@ const PostBody = (props) => {
         history.push(`/profile/${id}/${replaceChar(e.target.innerHTML)}`);
         break;
       }
+      case "TEAM": {
+        history.push(`/system/people/teams/${id}/${replaceChar(e.target.innerHTML)}`);
+        break;
+      }
       default: {
         //console.log(id, type);
       }
@@ -434,10 +438,10 @@ const PostBody = (props) => {
   };
 
   const renderUserResponsibleNames = () => {
-    const hasMe = postRecipients.some((r) => r.type_id === user.id);
+    const hasMe = post.recipients.some((r) => r.type_id === user.id);
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
-    const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
+    const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
     // if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
     //   recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
     // } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
@@ -451,7 +455,7 @@ const PostBody = (props) => {
             return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
               r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
             }</span>`;
-          else return `<span class="receiver mb-1">${r.name}</span>`;
+          else return `<span class="receiver mb-1" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join(", ");
     }
@@ -473,7 +477,7 @@ const PostBody = (props) => {
             return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
               r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
             }</span>`;
-          else return `<span class="receiver">${r.name}</span>`;
+          else return `<span class="receiver" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join("");
 
@@ -485,7 +489,7 @@ const PostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -494,7 +498,7 @@ const PostBody = (props) => {
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isMultipleApprovers = post.users_approval.length > 1;
-  const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
+  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
 
   return (
     <Wrapper ref={refs.container} className="card-body">
@@ -520,7 +524,7 @@ const PostBody = (props) => {
             <Avatar className="author-avatar mr-2 post-author" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} />
             <div>
               <span className="author-name">{post.author.first_name}</span>
-              <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
+              <AuthorRecipients>{<span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
               {/* {postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />} */}
             </div>
           </div>

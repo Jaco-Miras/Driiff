@@ -208,6 +208,7 @@ const CompanyPostsPanel = (props) => {
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
+    teamLabel: _t("TEAM", "Team"),
   };
 
   const handleLoadMore = () => {
