@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import { setSelectedChannel, clearHuddleAnswers } from "../../../redux/actions/chatActions";
 import SnoozeItem from "../../list/snooze/SnoozeItem";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   .snooze-container {
@@ -131,6 +132,7 @@ const MainSnooze = (props) => {
     open: _t("SNOOZE.OPEN", "Open"),
     snooze: _t("SNOOZE.SNOOZE", "Snooze"),
     closeNotification: _t("NOTIFICATION.CLOSE", "Notification will not be shown again."),
+    addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
   };
 
   const notifCLean = () => {
@@ -138,6 +140,7 @@ const MainSnooze = (props) => {
       .filter(
         (n) =>
           n.type === "POST_MENTION" ||
+          n.type === "WORKSPACE_ADD_MEMBER" ||
           n.type === "POST_REQST_APPROVAL" ||
           n.type === "POST_REJECT_APPROVAL" ||
           n.type === "PST_CMT_REJCT_APPRVL" ||
@@ -281,9 +284,16 @@ const MainSnooze = (props) => {
           focusOnMessage = { focusOnMessage: n.data.comment_id };
         }
       }
-      redirect.toPost({ workspace, post }, focusOnMessage);
+      if (n.type === "WORKSPACE_ADD_MEMBER") {
+        if (n.data.workspace_folder_id) {
+          history.push(`/workspace/chat/${n.data.workspace_folder_id}/${replaceChar(n.data.workspace_folder_name)}/${n.data.id}/${replaceChar(n.data.title)}`);
+        } else {
+          history.push(`/workspace/chat/${n.data.id}/${replaceChar(n.data.title)}`);
+        }
+      } else {
+        redirect.toPost({ workspace, post }, focusOnMessage);
+      }
     }
-
     actions.snooze({ id: n.id, is_snooze: false });
   };
 
@@ -435,6 +445,12 @@ const MainSnooze = (props) => {
       const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
       if (type === "notification") {
         if (n.type === "POST_MENTION") {
+          if (!n.is_read && !n.is_snooze) {
+            snooze.push(data);
+          } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
+            toast.dismiss(elemId);
+          }
+        } else if (n.type === "WORKSPACE_ADD_MEMBER") {
           if (!n.is_read && !n.is_snooze) {
             snooze.push(data);
           } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
