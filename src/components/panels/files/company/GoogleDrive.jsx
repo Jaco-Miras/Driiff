@@ -30,8 +30,8 @@ const CompanyGoogleDrive = (props) => {
   };
 
   const handleAuthenticate = (token) => {
-    if (localStorage.getItem("gdrive") === null) {
-      localStorage.setItem("gdrive", token);
+    if (localStorage.getItem("gdrivePicker") === null) {
+      localStorage.setItem("gdrivePicker", token);
     }
   };
 
