@@ -436,8 +436,8 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_WORKSPACE": {
-      if (state.user && state.user.id === action.data.channel.user_id) return state;
-      let author = action.data.members.find((m) => m.id === action.data.channel.user_id);
+      if (state.user && state.user.id === action.data.team_channel.user_id) return state;
+      let author = action.data.members.find((m) => m.id === action.data.team_channel.user_id);
 
       return {
         ...state,

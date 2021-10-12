@@ -127,7 +127,9 @@ export const NotificationTimelineItem = (props) => {
   const handleAuthorNameClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
+    if (notification.author) {
+      history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
+    }
   };
 
   const dictionary = {
@@ -254,7 +256,7 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span onClick={handleAuthorNameClick} className="author-name text-link">
-              {notification.author.name}{" "}
+              {notification.author ? notification.author.name : null}{" "}
             </span>
             <span>{dictionary.addedYouInWorkspace}</span>
           </>
