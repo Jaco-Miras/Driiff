@@ -740,7 +740,8 @@ const ChatInput = (props) => {
           if (res) {
             setMentionData({
               ...mentionData,
-              ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.id)],
+              ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
+              mentionedUserIds: [],
             });
             //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
           }
