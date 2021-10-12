@@ -118,12 +118,6 @@ export const NotificationTimelineItem = (props) => {
     }
   };
 
-  /*const handleRemove = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      actions.remove({ id: notification.id });
-    };*/
-
   const handleAuthorNameClick = (e) => {
     e.preventDefault();
     e.stopPropagation();

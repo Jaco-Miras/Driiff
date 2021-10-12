@@ -38,14 +38,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_ALL_NOTIFICATION_REDUCER": {
-      // let updatedNotifications = { ...state.notifications };
-      // Object.values(updatedNotifications).forEach((n) => {
-      //   updatedNotifications[n.id].is_read = 1;
-      //   if (updatedNotifications[n.data.id].type === "POST_MENTION") {
-      //     updatedNotifications[n.id].is_snooze = false;
-      //     updatedNotifications[n.id].snooze_time = getCurrentTimestamp();
-      //   }
-      // });
       return {
         ...state,
         notifications: Object.values(state.notifications).reduce((acc, notif) => {
