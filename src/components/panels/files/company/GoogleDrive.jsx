@@ -45,14 +45,14 @@ const CompanyGoogleDrive = (props) => {
     <Wrapper className={`google-drive dropdown ${className}`} onClick={toggle} disabled={disableOptions}>
       <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8" /> Google Drive
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
-        {localStorage.getItem("gdrive") === null ? (
+        {localStorage.getItem("gdrivePicker") === null ? (
           <GooglePicker
-            clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
-            developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
-            scope={["https://www.googleapis.com/auth/drive.file"]}
+            clientId={process.env.REACT_APP_google_client_id}
+            developerKey={process.env.REACT_APP_google_key}
+            scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
             onChange={(data) => onChange(data)}
             onAuthenticate={(token) => handleAuthenticate(token)}
-            onAuthFailed={(data) => console.log("on auth failed:", data)}
+            //onAuthFailed={(data) => console.log("on auth failed:", data)}
             multiselect={true}
             navHidden={true}
             authImmediate={false}
@@ -63,9 +63,9 @@ const CompanyGoogleDrive = (props) => {
         ) : (
           <>
             <GooglePicker
-              clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
-              developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
-              scope={["https://www.googleapis.com/auth/drive.file"]}
+              clientId={process.env.REACT_APP_google_client_id}
+              developerKey={process.env.REACT_APP_google_key}
+              scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               onChange={(data) => onChange(data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
               //onAuthFailed={(data) => console.log("on auth failed:", data)}
@@ -77,9 +77,9 @@ const CompanyGoogleDrive = (props) => {
               <div className="dropdown-item">{dictionary.gDriveAttachFile}</div>
             </GooglePicker>
             <GooglePicker
-              clientId={"952653985523-0jc6q38tqpkvklhh87j1tauvdb3eo1sd.apps.googleusercontent.com"}
-              developerKey={"AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ"}
-              scope={["https://www.googleapis.com/auth/drive.file"]}
+              clientId={process.env.REACT_APP_google_client_id}
+              developerKey={process.env.REACT_APP_google_key}
+              scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               //onChange={(data) => console.log("on change:", data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
               //onAuthFailed={(data) => console.log("on auth failed:", data)}
@@ -94,7 +94,7 @@ const CompanyGoogleDrive = (props) => {
                 const picker = new window.google.picker.PickerBuilder()
                   .addView(docsView)
                   .setOAuthToken(oauthToken)
-                  .setDeveloperKey("AIzaSyCvnzC_Z4AQLTjalzkPvyFqtqxgTkjSPyQ")
+                  .setDeveloperKey(process.env.REACT_APP_google_key)
                   .setCallback((data) => {
                     onChange(data);
                   });
