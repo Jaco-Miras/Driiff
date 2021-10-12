@@ -330,7 +330,7 @@ const TodosList = (props) => {
                   <Avatar
                     name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
                     tooltipName={dictionary.reminderAssignedTo}
-                    imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace ? todo.workspace.channel.icon_link : null}
+                    imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace && todo.workspace.channel ? todo.workspace.channel.icon_link : null}
                     id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
                     type={todo.assigned_to ? "USER" : "TOPIC"}
                     noDefaultClick={todo.assigned_to ? false : true}
