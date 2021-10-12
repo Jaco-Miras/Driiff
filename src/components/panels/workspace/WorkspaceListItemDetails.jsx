@@ -49,7 +49,7 @@ const CheckIconContainer = styled.span`
 `;
 
 const WorkspaceListItemDetails = (props) => {
-  const { dictionary, isExternal, isMember, item, onRedirect } = props;
+  const { dictionary, isExternal, isMember, item, onRedirect, members } = props;
   return (
     <Wrapper className="workspace-details">
       <div className="title-labels">
@@ -77,7 +77,7 @@ const WorkspaceListItemDetails = (props) => {
         )}
         <span className="mr-2">
           <Icon icon="user" />
-          {item.members.length}
+          {members.length}
         </span>
         {item.workspace && (
           <span className="mr-2">

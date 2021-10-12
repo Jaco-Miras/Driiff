@@ -200,6 +200,7 @@ const CompanyPostsPanel = (props) => {
     remove: _t("BUTTON.REMOVE", "Remove"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
     inProgress: _t("POST.IN_PROGRESS", "In progress"),
+    teamLabel: _t("TEAM", "Team"),
   };
 
   const handleLoadMore = () => {

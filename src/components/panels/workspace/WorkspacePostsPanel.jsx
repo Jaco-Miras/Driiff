@@ -232,6 +232,7 @@ const WorkspacePostsPanel = (props) => {
     remove: _t("BUTTON.REMOVE", "Remove"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
     inProgress: _t("POST.IN_PROGRESS", "In progress"),
+    teamLabel: _t("TEAM", "Team"),
   };
 
   useEffect(() => {
@@ -250,7 +251,7 @@ const WorkspacePostsPanel = (props) => {
               history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
             } else {
               history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            } 
+            }
             toaster.error(dictionary.errorLoadingPost);
           }
         }

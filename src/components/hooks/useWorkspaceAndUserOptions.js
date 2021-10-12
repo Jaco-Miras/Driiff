@@ -27,7 +27,7 @@ const useWorkspaceAndUserOptions = (props) => {
     return postRecipients.map((r) => {
       return {
         ...r,
-        icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
+        icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : r.type === "TEAM" ? "users" : "user-avatar",
         ...(r.type === "DEPARTMENT" && {
           participant_ids: internalUsers.map((u) => u.id),
           member_ids: internalUsers.map((u) => u.id),
@@ -41,7 +41,9 @@ const useWorkspaceAndUserOptions = (props) => {
           is_shared: r.is_shared,
         }),
         value: r.id,
-        label: r.name,
+        label: r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name,
+        type: r.type,
+        useLabel: r.type === "TEAM",
       };
     });
   };

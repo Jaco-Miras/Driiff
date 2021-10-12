@@ -86,7 +86,7 @@ const PostRecipients = (props) => {
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
-          else return `<span class="receiver">${r.name}</span>`;
+          else return `<span class="receiver">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join(", ");
     }
@@ -106,7 +106,7 @@ const PostRecipients = (props) => {
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
             return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
-          else return `<span class="receiver">${r.name}</span>`;
+          else return `<span class="receiver">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join("");
 
