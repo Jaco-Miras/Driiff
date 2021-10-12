@@ -2750,7 +2750,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: Object.values(state.channels)
           .filter((c) => {
             if (c.type === "TEAM" || c.type === "DIRECT_TEAM") {
-              return c.id !== action.data.id;
+              return c.entity_id !== action.data.id;
             } else {
               return true;
             }

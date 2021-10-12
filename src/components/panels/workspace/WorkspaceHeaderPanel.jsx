@@ -644,7 +644,7 @@ const WorspaceHeaderPanel = (props) => {
                 <div className="nav-item-avatars-wrap">
                   <MemberLists members={activeTopic.members} />
                 </div>
-                {activeTopic.member_ids.includes(user.id) && !isExternal ? (
+                {isMember && !isExternal ? (
                   <>
                     <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                       <SvgIconFeather icon="user-plus" />
