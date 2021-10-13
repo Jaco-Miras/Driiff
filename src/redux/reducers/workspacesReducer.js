@@ -3560,6 +3560,90 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
+    case "INCOMING_REMOVED_TEAM_MEMBER":
+    case "REMOVE_TEAM_MEMBER_SUCCESS": {
+      const resetActiveTopic =
+        state.activeTopic &&
+        state.activeTopic.is_lock === 1 &&
+        state.activeTopic.members.some((m) => m.members && m.id === action.data.id && m.members.some((mem) => mem.id === state.user.id)) &&
+        state.user &&
+        action.data.remove_member_ids.some((id) => id === state.user.id) &&
+        !state.activeTopic.members.some((m) => (m.type === "internal" || m.type === "external") && state.user.id === m.id);
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces)
+          .filter((ws) => {
+            if (ws.is_lock === 0) return true;
+            if (ws.members.some((m) => m.members && m.id === action.data.id && m.members.some((mem) => mem.id === state.user.id)) && !ws.members.some((m) => (m.type === "internal" || m.type === "external") && state.user.id === m.id)) {
+              return false;
+            } else {
+              return true;
+            }
+          })
+          .reduce((acc, ws) => {
+            if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+              acc[ws.id] = {
+                ...ws,
+                members: ws.members.map((m) => {
+                  if (m.id === action.data.id) {
+                    return action.data;
+                  } else {
+                    return m;
+                  }
+                }),
+              };
+            } else {
+              acc[ws.id] = ws;
+            }
+            return acc;
+          }, {}),
+        activeTopic: resetActiveTopic ? null : state.activeTopic,
+        selectedWorkspaceId: resetActiveTopic ? null : state.selectedWorkspaceId,
+        workspacePosts: Object.keys(state.workspacePosts).reduce((acc, id) => {
+          acc[id] = {
+            ...state.workspacePosts[id],
+            posts: state.workspacePosts[id].posts
+              ? Object.values(state.workspacePosts[id].posts)
+                  .filter((post) => {
+                    if (
+                      post.recipients.some((r) => r.type === "DEPARTMENT") ||
+                      post.recipients.some((r) => r.type === "USER" && r.type_id === state.user.id) ||
+                      post.recipients.some((r) => r.type === "TOPIC" && r.participant_ids.some((id) => id === state.user.id))
+                    ) {
+                      return true;
+                    }
+                    if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+                      return true;
+                    }
+                    if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  })
+                  .reduce((wp, post) => {
+                    if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
+                      wp[post.id] = {
+                        ...post,
+                        recipients: post.recipients.filter((r) => {
+                          if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        }),
+                      };
+                    } else {
+                      wp[post.id] = post;
+                    }
+                    return wp;
+                  }, {})
+              : {},
+          };
+          return acc;
+        }, {}),
+      };
+    }
     case "INCOMING_DELETED_TEAM": {
       return {
         ...state,
@@ -3593,6 +3677,49 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               }
             : state.activeTopic,
+        workspacePosts: Object.keys(state.workspacePosts).reduce((acc, id) => {
+          acc[id] = {
+            ...state.workspacePosts[id],
+            posts: state.workspacePosts[id].posts
+              ? Object.values(state.workspacePosts[id].posts)
+                  .filter((post) => {
+                    if (
+                      post.recipients.some((r) => r.type === "DEPARTMENT") ||
+                      post.recipients.some((r) => r.type === "USER" && r.type_id === state.user.id) ||
+                      post.recipients.some((r) => r.type === "TOPIC" && r.participant_ids.some((id) => id === state.user.id))
+                    ) {
+                      return true;
+                    }
+                    if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+                      return true;
+                    }
+                    if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  })
+                  .reduce((wp, post) => {
+                    if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
+                      wp[post.id] = {
+                        ...post,
+                        recipients: post.recipients.filter((r) => {
+                          if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        }),
+                      };
+                    } else {
+                      wp[post.id] = post;
+                    }
+                    return wp;
+                  }, {})
+              : {},
+          };
+          return acc;
+        }, {}),
       };
     }
     case "INCOMING_TEAM_MEMBER":
@@ -3629,6 +3756,31 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               }
             : state.activeTopic,
+        workspacePosts: Object.keys(state.workspacePosts).reduce((acc, id) => {
+          acc[id] = {
+            ...state.workspacePosts[id],
+            posts: state.workspacePosts[id].posts
+              ? Object.values(state.workspacePosts[id].posts).reduce((wp, post) => {
+                  if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
+                    wp[post.id] = {
+                      ...post,
+                      recipients: post.recipients.map((r) => {
+                        if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
+                          return { ...r, participant_ids: action.data.member_ids };
+                        } else {
+                          return r;
+                        }
+                      }),
+                    };
+                  } else {
+                    wp[post.id] = post;
+                  }
+                  return wp;
+                }, {})
+              : {},
+          };
+          return acc;
+        }, {}),
       };
     }
     default:

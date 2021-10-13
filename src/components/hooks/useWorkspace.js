@@ -91,8 +91,9 @@ const useWorkspace = () => {
                       actions.redirectTo(workspaces[activeTopicSettings.id]);
                     }
                   }
+                  return;
                 }
-                if (res.data) {
+                if (res && res.data) {
                   let ws = {
                     ...res.data.workspace_data,
                     channel: res.data.workspace_data.topic_detail.channel,
