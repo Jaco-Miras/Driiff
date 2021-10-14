@@ -9,7 +9,8 @@ const useWorkspaceAndUserOptions = (props) => {
     teamLabel: _t("TEAM", "Team"),
   };
   const recipients = useSelector((state) => state.global.recipients);
-  const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
+  const actualWorkspaces = useSelector((state) => state.workspaces.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.workspaces);
   const actualUsers = useSelector((state) => state.users.users);
 
   const r = recipients.filter((r) => typeof r.name !== "undefined").sort((a, b) => a.name.localeCompare(b.name));
@@ -49,11 +50,17 @@ const useWorkspaceAndUserOptions = (props) => {
   };
 
   const getDefaultAddressTo = () => {
+    const workspaceMembers = activeTopic.members
+      .map((m) => {
+        if (m.member_ids) {
+          return m.member_ids;
+        } else return m.id;
+      })
+      .flat();
     return [
       {
-        ...workspaces.filter((w) => w.type_id === activeTopic.id),
         ...activeTopic,
-        participant_ids: activeTopic.member_ids,
+        participant_ids: workspaceMembers,
         icon: "compass",
         value: activeTopic.id,
         label: activeTopic.name,
@@ -190,6 +197,7 @@ const useWorkspaceAndUserOptions = (props) => {
         user_type: u.type,
       };
     });
+  console.log(addressTo, addressIds, user_options);
 
   return {
     addressIds,
