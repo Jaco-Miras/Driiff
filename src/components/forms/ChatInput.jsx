@@ -813,7 +813,7 @@ const ChatInput = (props) => {
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
-      {mentionData.mentionedUserIds.length > 0 && (
+      {mentionData.mentionedUserIds.length > 0 && selectedChannel && selectedChannel.type !== "TEAM" && selectedChannel.type !== "DIRECT_TEAM" && (
         <BodyMention
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}

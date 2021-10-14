@@ -162,6 +162,8 @@ const useWorkspaceAndUserOptions = (props) => {
     .map((ad) => {
       if (ad.type === "USER") {
         return ad.type_id;
+      } else if (ad.type === "TEAM") {
+        return ad.member_ids;
       } else {
         return ad.participant_ids;
         // if (ad.main_department) {

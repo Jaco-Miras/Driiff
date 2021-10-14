@@ -1396,10 +1396,10 @@ export default (state = INITIAL_STATE, action) => {
                 ) {
                   return true;
                 }
-                if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+                if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
                   return true;
                 }
-                if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+                if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
                   return false;
                 } else {
                   return true;
@@ -1468,10 +1468,10 @@ export default (state = INITIAL_STATE, action) => {
               ) {
                 return true;
               }
-              if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+              if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
                 return true;
               }
-              if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids.some((id) => id === state.user.id))) {
+              if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
                 return false;
               } else {
                 return true;
