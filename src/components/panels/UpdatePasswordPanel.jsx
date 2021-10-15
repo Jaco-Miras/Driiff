@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
-//import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { usePageLoader, useUserActions } from "../hooks";
 import { FormInput, PasswordInput } from "../forms";
+import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
 const Wrapper = styled.form``;
 
@@ -15,6 +16,8 @@ const UpdatePasswordPanel = (props) => {
   const userActions = useUserActions();
   //const toaster = useToaster();
   const pageLoader = usePageLoader();
+
+  const driffSettings = useSelector((state) => state.settings.driff);
 
   const ref = {
     password: useRef(),
@@ -98,11 +101,19 @@ const UpdatePasswordPanel = (props) => {
       <hr />
       <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
-        <li className="list-inline-item">
+        {driffSettings.settings.google_login && (
+          <li className="list-inline-item">
+            <img className="google-signin" src={GoogleIcon} alt="Google signin" onClick={userActions.googleLogin} />
+            {/* <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
+                  <i className="fa fa-google" />
+                </span> */}
+          </li>
+        )}
+        {/* <li className="list-inline-item">
           <span nClick={handleGoogleLogIn} className="btn btn-floating btn-google">
             <i className="fa fa-google" />
           </span>
-        </li>
+        </li> */}
       </ul>
       <hr />
       <p className="text-muted">{dictionary.noAccount}</p>
