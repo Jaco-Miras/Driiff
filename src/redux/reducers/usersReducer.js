@@ -385,7 +385,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         teams: {
           ...state.teams,
-          [action.data.id]: action.data,
+          [action.data.id]: { ...action.data, is_shared: null },
         },
       };
     }
