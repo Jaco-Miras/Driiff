@@ -10,7 +10,7 @@ const useWorkspaceAndUserOptions = (props) => {
   };
   const recipients = useSelector((state) => state.global.recipients);
   const actualWorkspaces = useSelector((state) => state.workspaces.workspaces);
-  const activeTopic = useSelector((state) => state.workspaces.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const actualUsers = useSelector((state) => state.users.users);
 
   const r = recipients.filter((r) => typeof r.name !== "undefined").sort((a, b) => a.name.localeCompare(b.name));
