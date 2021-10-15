@@ -279,7 +279,7 @@ const InvitedUsersModal = (props) => {
                 <th>{dictionary.name}</th>
               )}
               <th>{dictionary.email}</th>
-              {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && <th className="team-th">{dictionary.addUserToteams}</th>}
+              {(!fromRegister || user.role.name === "owner" || user.role.name === "admin") && <th className="team-th">{dictionary.addUserToteams}</th>}
               <th>
                 <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
               </th>
@@ -337,7 +337,7 @@ const InvitedUsersModal = (props) => {
                       onChange={handleInputChange}
                     />
                   </td>
-                  {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
+                  {(!fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
                     <td>
                       <SelectPeople options={teamOptions} value={item.teams} onChange={(e) => handleSelectTeam(e, key)} isSearchable isMulti={true} isClearable={true} />
                     </td>

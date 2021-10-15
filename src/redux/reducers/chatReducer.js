@@ -3049,6 +3049,58 @@ export default function (state = INITIAL_STATE, action) {
         lastVisitedChannel: state.lastVisitedChannel && state.lastVisitedChannel.entity_id === parseInt(action.data.id) ? null : state.lastVisitedChannel,
       };
     }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      if (action.data.team_ids.length) {
+        const newUser = {
+          bot_profile_image_link: null,
+          code: action.data.code,
+          email: action.data.email,
+          first_name: action.data.first_name,
+          has_accepted: true,
+          id: action.data.id,
+          last_visited_at: null,
+          name: action.data.name,
+          partial_name: action.data.partial_name,
+          profile_image_link: action.data.profile_image_link,
+          profile_image_thumbnail_link: action.data.profile_image_thumbnail_link,
+        };
+        return {
+          ...state,
+          channels: Object.values(state.channels).reduce((acc, channel) => {
+            if ((channel.type === "TEAM" || channel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === channel.entity_id)) {
+              acc[channel.id] = {
+                ...channel,
+                members: channel.members.some((m) => m.id === action.data.id)
+                  ? channel.members.map((m) => {
+                      if (action.data.id === m.id) {
+                        return { ...m, has_accepted: true };
+                      } else return m;
+                    })
+                  : [...channel.members, newUser],
+              };
+            } else {
+              acc[channel.id] = channel;
+            }
+            return acc;
+          }, {}),
+          selectedChannel:
+            state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)
+              ? {
+                  ...state.selectedChannel,
+                  members: state.selectedChannel.members.some((m) => m.id === action.data.id)
+                    ? state.selectedChannel.members.map((m) => {
+                        if (action.data.id === m.id) {
+                          return { ...m, has_accepted: true };
+                        } else return m;
+                      })
+                    : [...state.selectedChannel.members, newUser],
+                }
+              : state.selectedChannel,
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }
