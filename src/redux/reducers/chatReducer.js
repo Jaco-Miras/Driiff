@@ -2793,13 +2793,25 @@ export default function (state = INITIAL_STATE, action) {
                     })
                   : [...channel.members, newUser],
               };
+            } else if (channel.type === "TOPIC" && action.data.team_ids.some((id) => channel.team_ids.some((cid) => cid === id))) {
+              acc[channel.id] = {
+                ...channel,
+                members: channel.members.some((m) => m.id === action.data.id)
+                  ? channel.members.map((m) => {
+                      if (action.data.id === m.id) {
+                        return { ...m, has_accepted: true };
+                      } else return m;
+                    })
+                  : [...channel.members, newUser],
+              };
             } else {
               acc[channel.id] = channel;
             }
             return acc;
           }, {}),
           selectedChannel:
-            state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)
+            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
+            (state.selectedChannel.type === "TOPIC" && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
               ? {
                   ...state.selectedChannel,
                   members: state.selectedChannel.members.some((m) => m.id === action.data.id)

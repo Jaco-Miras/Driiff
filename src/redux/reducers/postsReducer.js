@@ -1459,6 +1459,35 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      if (action.data.team_ids.length) {
+        return {
+          ...state,
+          companyPosts: {
+            ...state.companyPosts,
+            posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+              if (post.recipients.some((r) => r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id))) {
+                acc[post.id] = {
+                  ...post,
+                  recipients: post.recipients.map((r) => {
+                    if (r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id)) {
+                      return { ...r, participant_ids: [...r.participant_ids, action.data.id] };
+                    } else {
+                      return r;
+                    }
+                  }),
+                };
+              } else {
+                acc[post.id] = post;
+              }
+              return acc;
+            }, {}),
+          },
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }
