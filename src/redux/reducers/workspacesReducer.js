@@ -3846,6 +3846,31 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 }
               : state.activeTopic,
+          workspacePosts: Object.keys(state.workspacePosts).reduce((acc, id) => {
+            acc[id] = {
+              ...state.workspacePosts[id],
+              posts: state.workspacePosts[id].posts
+                ? Object.values(state.workspacePosts[id].posts).reduce((wp, post) => {
+                    if (post.recipients.some((r) => r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id))) {
+                      wp[post.id] = {
+                        ...post,
+                        recipients: post.recipients.map((r) => {
+                          if (r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id)) {
+                            return { ...r, participant_ids: [...r.participant_ids, action.data.id] };
+                          } else {
+                            return r;
+                          }
+                        }),
+                      };
+                    } else {
+                      wp[post.id] = post;
+                    }
+                    return wp;
+                  }, {})
+                : {},
+            };
+            return acc;
+          }, {}),
         };
       } else {
         return state;

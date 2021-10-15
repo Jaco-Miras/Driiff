@@ -197,7 +197,6 @@ const useWorkspaceAndUserOptions = (props) => {
         user_type: u.type,
       };
     });
-  console.log(addressTo, addressIds, user_options);
 
   return {
     addressIds,
