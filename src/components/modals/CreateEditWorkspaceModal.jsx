@@ -187,8 +187,9 @@ const SelectPeople = styled(PeopleSelect)`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${(props) => props.height}px;
-    max-height: 300px;
+    // height: ${(props) => props.height}px;
+    // max-height: 300px;
+    height: calc(100% - 50px);
   }
 
   label {
