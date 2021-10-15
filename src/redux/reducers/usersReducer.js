@@ -192,7 +192,7 @@ export default (state = INITIAL_STATE, action) => {
           contact: action.data.contact,
           company: action.data.company,
           designation: action.data.designation,
-          partial_name: action.data.partian_name,
+          partial_name: action.data.partial_name,
           import_from: action.data.import_from,
           place: action.data.place,
           address: action.data.address,
@@ -356,6 +356,19 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      const newUser = {
+        active: 1,
+        email: action.data.email,
+        first_name: action.data.first_name,
+        has_accepted: true,
+        id: action.data.id,
+        name: action.data.name,
+        partial_name: action.data.partial_name,
+        profile_image_link: action.data.profile_image_link,
+        profile_image_thumbnail_link: action.data.profile_image_thumbnail_link,
+        slug: null,
+        type: "internal",
+      };
       return {
         ...state,
         users: Object.values(state.users).reduce((acc, user) => {
@@ -366,6 +379,26 @@ export default (state = INITIAL_STATE, action) => {
           }
           return acc;
         }, {}),
+        teams: action.data.team_ids.length
+          ? Object.values(state.teams).reduce((acc, t) => {
+              if (action.data.team_ids.some((id) => id === t.id)) {
+                acc[t.id] = {
+                  ...t,
+                  member_ids: t.member_ids.some((mid) => mid === action.data.id) ? t.member_ids : [...t.member_ids, action.data.id],
+                  members: t.member_ids.some((mid) => mid === action.data.id)
+                    ? t.members.map((m) => {
+                        if (action.data.id === m.id) {
+                          return { ...m, has_accepted: true };
+                        } else return m;
+                      })
+                    : [...t.members, newUser],
+                };
+              } else {
+                acc[t.id] = t;
+              }
+              return acc;
+            }, {})
+          : state.teams,
       };
     }
     case "GET_TEAMS_SUCCESS": {

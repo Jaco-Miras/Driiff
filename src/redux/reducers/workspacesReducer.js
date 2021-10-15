@@ -3783,6 +3783,74 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      if (action.data.team_ids.length) {
+        const newUser = {
+          active: 1,
+          email: action.data.email,
+          first_name: action.data.first_name,
+          has_accepted: true,
+          id: action.data.id,
+          name: action.data.name,
+          partial_name: action.data.partial_name,
+          profile_image_link: action.data.profile_image_link,
+          profile_image_thumbnail_link: action.data.profile_image_thumbnail_link,
+          slug: null,
+          type: "internal",
+        };
+        return {
+          ...state,
+          workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+            if (ws.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))) {
+              acc[ws.id] = {
+                ...ws,
+                members: ws.members.map((mem) => {
+                  if (action.data.team_ids.some((id) => id === mem.id)) {
+                    return {
+                      ...mem,
+                      member_ids: mem.member_ids.some((id) => id === action.data.id) ? mem.member_ids : [...mem.member_ids, action.data.id],
+                      members: mem.members.some((m) => m.id === action.data.id)
+                        ? mem.members.map((m) => {
+                            if (action.data.id === m.id) {
+                              return { ...m, has_accepted: true };
+                            } else return m;
+                          })
+                        : [...mem.members, newUser],
+                    };
+                  } else return mem;
+                }),
+              };
+            } else {
+              acc[ws.id] = ws;
+            }
+            return acc;
+          }, {}),
+          activeTopic:
+            state.activeTopic && state.activeTopic.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))
+              ? {
+                  ...state.activeTopic,
+                  members: state.activeTopic.members.map((mem) => {
+                    if (action.data.team_ids.some((id) => id === mem.id)) {
+                      return {
+                        ...mem,
+                        member_ids: mem.member_ids.some((id) => id === action.data.id) ? mem.member_ids : [...mem.member_ids, action.data.id],
+                        members: mem.members.some((m) => m.id === action.data.id)
+                          ? mem.members.map((m) => {
+                              if (action.data.id === m.id) {
+                                return { ...m, has_accepted: true };
+                              } else return m;
+                            })
+                          : [...mem.members, newUser],
+                      };
+                    } else return mem;
+                  }),
+                }
+              : state.activeTopic,
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }
