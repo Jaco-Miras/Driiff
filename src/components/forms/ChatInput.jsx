@@ -171,6 +171,7 @@ const ChatInput = (props) => {
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
   const [answerId, setAnswerId] = useState(null);
+  const [addMembersPayload, setAddMembersPayload] = useState(null);
 
   const [quote] = useSelectQuote();
 
@@ -377,6 +378,11 @@ const ChatInput = (props) => {
       dispatch(addChatMessage(obj));
     }
 
+    if (addMembersPayload) {
+      if (selectedChannel.type !== "DIRECT") dispatch(postChannelMembers(addMembersPayload));
+      setAddMembersPayload(null);
+    }
+
     if (editMode) {
       let payloadEdit = {
         ...payload,
@@ -481,7 +487,8 @@ const ChatInput = (props) => {
       //check for recipients/type
       if (selectedChannel.type === "PERSONAL_BOT") return;
       const ingoredExternalIds = selectedChannel.type === "TOPIC" ? activeExternalUsers.map((m) => m.id) : [];
-      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...mentionData.ignoredMentionedUserIds, ...ingoredExternalIds];
+      const membersPayloadIds = addMembersPayload ? addMembersPayload.recipient_ids : [];
+      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...mentionData.ignoredMentionedUserIds, ...ingoredExternalIds, ...membersPayloadIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -723,35 +730,40 @@ const ChatInput = (props) => {
           return selectedChannel.members.some((m) => m.id === r.type_id);
         })
         .map((r) => r.id);
+      const usersRecipientIds = recipients
+        .filter((r) => r.type === "USER")
+        .filter((r) => users.some((u) => u.type_id === r.type_id))
+        .map((r) => r.id);
+      // adding member using mention in direct channel will create a new channel, use recipient id
       let payload = {
-        recipient_ids: [...recipient_ids, ...users.map((u) => u.type_id)],
+        recipient_ids: [...recipient_ids, ...usersRecipientIds],
         title: title,
       };
       create(payload, createCallback);
     } else {
-      let memberPayload = {
+      // adding member in channel - use user id
+      let membersPayload = {
         channel_id: selectedChannel.id,
-        recipient_ids: users.map((u) => u.type_id),
+        recipient_ids: addMembersPayload ? [...addMembersPayload.recipient_ids, ...users.map((u) => u.type_id)] : users.map((u) => u.type_id),
       };
-      dispatch(
-        postChannelMembers(memberPayload, (err, res) => {
-          if (err) return;
-
-          if (res) {
-            setMentionData({
-              ...mentionData,
-              ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
-              mentionedUserIds: [],
-            });
-            //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
-          }
-        })
-      );
-
+      setAddMembersPayload(membersPayload);
       setMentionData({
-        ...mentionData,
         mentionedUserIds: [],
+        ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
       });
+      // dispatch(
+      //   postChannelMembers(memberPayload, (err, res) => {
+      //     if (err) return;
+
+      //     if (res) {
+      //       setMentionData({
+      //         mentionedUserIds: [],
+      //         ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
+      //       });
+      //       //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+      //     }
+      //   })
+      // );
     }
   };
 
@@ -810,6 +822,7 @@ const ChatInput = (props) => {
     quillData.textOnly.trim() === "" ? onActive(false) : onActive(true);
   }, [quillData.textOnly]);
 
+  console.log(mentionData);
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
