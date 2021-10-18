@@ -10,6 +10,15 @@ import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
   flex-flow: column;
+  @media (max-width: 414px) {
+    padding-bottom: 30px !important;
+    .post-badge {
+      position: absolute;
+      bottom: 5px;
+      flex-flow: row wrap;
+      display: flex;
+    }
+  }
   .post-recipients {
     margin-bottom: 0.5rem;
   }
