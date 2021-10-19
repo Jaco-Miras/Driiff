@@ -241,7 +241,8 @@ const MoreOption = styled.div`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${(props) => (props.height > 80 ? props.height : 80)}px;
+    // height: ${(props) => (props.height > 80 ? props.height : 80)}px;
+    height: calc(100% - 50px);
   }
 
   label {
