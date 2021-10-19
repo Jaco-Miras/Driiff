@@ -240,6 +240,19 @@ const SnoozeItem = (props) => {
             />
           </span>
         );
+      } else if (n.type === "WORKSPACE_ADD_MEMBER") {
+        header = `${firstName} ${dictionary.addedYouInWorkspace} ${n.data.title}`;
+        body = (
+          <span className="d-flex align-items-center post-mention-body">
+            {n.data.title}
+            <OpenIcon
+              icon="external-link"
+              onClick={(e) => {
+                handleRedirect(type, item, e);
+              }}
+            />
+          </span>
+        );
       } else if (n.type === "POST_CREATE") {
         header = `${firstName} ${dictionary.notificationNewPost}`;
         //n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
