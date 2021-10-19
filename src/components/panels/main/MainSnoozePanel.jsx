@@ -469,16 +469,16 @@ const MainSnooze = (props) => {
           if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_COMMENT") {
-          if (
-            n.data.post_approval_label &&
-            n.data.post_approval_label === "NEED_ACTION" &&
-            n.data.comment_body &&
-            !n.data.comment_body.startsWith("COMMENT_APPROVAL::") &&
-            n.data.users_approval.some((u) => user.id === u.id && !u.is_approved) &&
-            !n.is_snooze
-          )
-            snooze.push(data);
-          else toast.isActive(elemId) && toast.dismiss(elemId);
+          // if (
+          //   n.data.post_approval_label &&
+          //   n.data.post_approval_label === "NEED_ACTION" &&
+          //   n.data.comment_body &&
+          //   !n.data.comment_body.startsWith("COMMENT_APPROVAL::") &&
+          //   n.data.users_approval.some((u) => user.id === u.id && !u.is_approved && u.ip_address === null) &&
+          //   !n.is_snooze
+          // )
+          //   snooze.push(data);
+          // else toast.isActive(elemId) && toast.dismiss(elemId);
         }
       } else if (type === "todo") {
         n.status !== "DONE" && !n.is_snooze ? snooze.push(data) : toast.isActive(elemId) && toast.dismiss(elemId);
