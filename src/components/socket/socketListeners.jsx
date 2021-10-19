@@ -173,6 +173,7 @@ import {
   updateWorkspaceCounter,
   updateWorkspacePostCount,
   setActiveTopic,
+  getAllWorkspaceFolders,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -1466,6 +1467,7 @@ class SocketListeners extends Component {
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         if (e.type === "WORKSPACE") {
+          this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
             if (isMember) {
@@ -1717,6 +1719,7 @@ class SocketListeners extends Component {
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         if (e.type === "WORKSPACE") {
+          this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
             if (isMember) {
@@ -2217,6 +2220,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedTeam: bindActionCreators(incomingDeletedTeam, dispatch),
     incomingTeamMember: bindActionCreators(incomingTeamMember, dispatch),
     incomingRemovedTeamMember: bindActionCreators(incomingRemovedTeamMember, dispatch),
+    getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
   };
 }
 
