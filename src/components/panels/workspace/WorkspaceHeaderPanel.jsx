@@ -10,6 +10,7 @@ import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/worksp
 import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
+import MainBackButton from "../main/MainBackButton";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -514,6 +515,7 @@ const WorspaceHeaderPanel = (props) => {
                   <SvgIconFeather icon="menu" />
                 </a>
               </li>
+              <MainBackButton />
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
                 <SvgIconFeather className="mr-2" icon="compass" />
                 <WorkspacePageTitle>{dictionary.allWorkspaces}</WorkspacePageTitle>
@@ -528,6 +530,7 @@ const WorspaceHeaderPanel = (props) => {
                       <SvgIconFeather icon="menu" />
                     </a>
                   </li>
+                  <MainBackButton />
                   {activeTopic.folder_id === null ? (
                     <>
                       {!isExternal && (

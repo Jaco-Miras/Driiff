@@ -111,6 +111,8 @@ const NotificationBadge = styled.span`
   }
 `;
 
+const GiftIcon = styled(SvgIconFeather)``;
+
 const HomeProfileNavigation = (props) => {
   const { className = "", dictionary } = props;
 
@@ -123,6 +125,8 @@ const HomeProfileNavigation = (props) => {
   const {
     generalSettings: { dark_mode },
     setGeneralSetting,
+    driffSettings,
+    userSettings,
   } = useSettings();
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
@@ -198,8 +202,19 @@ const HomeProfileNavigation = (props) => {
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
+  const handleGiftClick = () => {
+    history.push("/releases");
+  };
+
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
+      {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
+        <li className="nav-item dropdown">
+          <a href="/" className={"nav-link"} onClick={handleGiftClick}>
+            <SvgIconFeather icon="gift" />
+          </a>
+        </li>
+      )}
       <li className="nav-item dropdown">
         <a href="/" className="nav-link" data-toggle="search" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalSearch}>

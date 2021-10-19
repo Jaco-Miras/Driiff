@@ -1,15 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Tree } from "react-organizational-chart";
 import { MemberLists } from "../../list/members";
 import { SvgIconFeather } from "../../common";
 import { ParentTreeNode } from ".";
-import { TeamItem } from "../../list/people/item";
+//import { TeamItem } from "../../list/people/item";
 
 const Wrapper = styled.div`
-  padding: 2rem;
+  padding: 1rem;
   width: 100%;
+  overflow: auto;
 `;
 
 const StyledNode = styled.div`
@@ -33,9 +35,9 @@ const StyledNode = styled.div`
 `;
 
 const AllUsersStructure = (props) => {
-  const { users, onSelectTeam, setShowTeams, loggedUser, dictionary, _t, showOptions } = props;
-  const internalUsers = users.filter((u) => u.type === "internal");
-  const externalUsers = users.filter((u) => u.type === "external");
+  const users = useSelector((state) => state.users.users);
+  const internalUsers = Object.values(users).filter((u) => u.type === "internal");
+  const externalUsers = Object.values(users).filter((u) => u.type === "external");
 
   const teams = useSelector((state) => state.users.teams);
   const teamsLoaded = useSelector((state) => state.users.teamsLoaded);
@@ -61,9 +63,11 @@ const AllUsersStructure = (props) => {
 
   const allTeams = [...internalAndExternalTeam, ...Object.values(teams)];
 
-  useEffect(() => {
-    setShowTeams(true);
-  }, []);
+  const history = useHistory();
+
+  const handleSelectTeam = (team) => {
+    history.push(`/system/people/teams/${team.id}/${team.name}`);
+  };
 
   return (
     <Wrapper>
@@ -78,26 +82,26 @@ const AllUsersStructure = (props) => {
                 <SvgIconFeather className="mr-2" icon="home" />
                 {companyName}
               </div>
-              <div className="mb-2">{users.length} accounts</div>
-              <MemberLists members={users} />
+              <div className="mb-2">{Object.values(users).length} accounts</div>
+              <MemberLists members={Object.values(users)} />
             </StyledNode>
           }
         >
           {allTeams
             .filter((t) => t.parent_team === 0)
             .map((team) => {
-              return <ParentTreeNode key={team.id} team={team} allTeams={allTeams} onSelectTeam={onSelectTeam} />;
+              return <ParentTreeNode key={team.id} team={team} allTeams={allTeams} onSelectTeam={handleSelectTeam} />;
             })}
         </Tree>
       )}
 
-      {Object.values(teams).length > 0 && (
+      {/* {Object.values(teams).length > 0 && (
         <div className="row mt-2">
           {Object.values(teams).map((team) => {
             return <TeamItem key={team.id} team={team} loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={showOptions} onSelectTeam={onSelectTeam} />;
           })}
         </div>
-      )}
+      )} */}
     </Wrapper>
   );
 };

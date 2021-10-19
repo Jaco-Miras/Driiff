@@ -42,6 +42,13 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
   }
+  .team-title {
+    display: flex;
+    flex-flow: row wrap;
+  }
+  .button-wrapper {
+    margin-left: auto;
+  }
 `;
 
 const StyledLoader = styled(Loader)`
@@ -50,7 +57,7 @@ const StyledLoader = styled(Loader)`
 `;
 
 const TeamItem = (props) => {
-  const { className = "", loggedUser, team, dictionary, _t, onSelectTeam } = props;
+  const { className = "", loggedUser, team, dictionary, _t } = props;
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -118,7 +125,9 @@ const TeamItem = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
-  const handleSelectTeam = () => onSelectTeam(team);
+  const handleSelectTeam = () => {
+    history.push(`/system/people/teams/${team.id}/${team.name}`);
+  };
 
   const membersLengthLabel = _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: team.members.length });
 
@@ -129,8 +138,8 @@ const TeamItem = (props) => {
       <div className="col-12">
         <div className="card border" key={team.id}>
           <div className="card-body" ref={refs.cardBody}>
-            <div ref={refs.content} className="d-flex align-items-center justify-content-between">
-              <div className="d-flex justify-content-start align-items-center">
+            <div ref={refs.content} className="d-flex align-items-center">
+              <div className="d-flex align-items-center">
                 <Avatar
                   id={team.id}
                   name={team.name}
@@ -140,15 +149,16 @@ const TeamItem = (props) => {
                   showSlider={false}
                   type={"TEAM"}
                 />
-                <div className="user-info-wrapper ml-3">
-                  <h6 className="user-name mb-0">
-                    <ToolTip content={team.name}>
-                      <div className="mr-2 people-text-truncate" onClick={handleSelectTeam}>
-                        {dictionary.team} {team.name} {team.members.length > 0 && membersLengthLabel}
-                      </div>
-                    </ToolTip>
-                  </h6>
-                </div>
+              </div>
+              <div className="user-info-wrapper ml-3">
+                <ToolTip content={team.name}>
+                  <div className="mr-2 team-title" onClick={handleSelectTeam}>
+                    <span>
+                      {dictionary.team} {team.name}
+                    </span>
+                    <span>{team.members.length > 0 && membersLengthLabel}</span>
+                  </div>
+                </ToolTip>
               </div>
               {loggedUser.type !== "external" && (
                 <div className="button-wrapper">

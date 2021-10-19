@@ -1,41 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PeopleListItem } from "../../list/people/item";
 import { useTeamActions, useTranslationActions, useToaster } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 
 const TeamBody = (props) => {
-  const {
-    users,
-    loggedUser,
-    onNameClick,
-    onChatClick,
-    dictionary,
-    onUpdateRole,
-    showOptions,
-    roles,
-    onArchiveUser,
-    onActivateUser,
-    onChangeUserType,
-    onDeleteUser,
-    onResendInvite,
-    onDeleteInvitedInternalUser,
-    showInactive,
-    usersWithoutActivity,
-    onAddUserToTeam,
-    teams,
-    selectedTeam,
-    setSelectedTeam,
-  } = props;
+  const { loggedUser, onNameClick, onChatClick, dictionary, onUpdateRole, showOptions, onArchiveUser, onActivateUser, onChangeUserType, onDeleteUser, onResendInvite, onDeleteInvitedInternalUser, onAddUserToTeam } = props;
 
   const params = useParams();
 
-  useEffect(() => {
-    if (selectedTeam === null && teams[params.teamId]) {
-      setSelectedTeam(teams[params.teamId]);
-    }
-  }, [selectedTeam, teams]);
+  const teams = useSelector((state) => state.users.teams);
+  const users = useSelector((state) => state.users.users);
+  const roles = useSelector((state) => state.users.roles);
+  const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
 
   const dispatch = useDispatch();
 
@@ -69,7 +47,7 @@ const TeamBody = (props) => {
     dispatch(addToModals(modal));
   };
 
-  if (users && teams[params.teamId]) {
+  if (Object.values(users).length && teams[params.teamId]) {
     return (
       <>
         <div className="col-lg-12">
@@ -78,7 +56,7 @@ const TeamBody = (props) => {
           </h4>
         </div>
         <div className="row">
-          {users
+          {Object.values(users)
             .filter((u) => teams[params.teamId].members.some((m) => m.id === u.id))
             .map((user) => {
               return (
@@ -98,7 +76,6 @@ const TeamBody = (props) => {
                   onDeleteUser={onDeleteUser}
                   onResendInvite={onResendInvite}
                   onDeleteInvitedInternalUser={onDeleteInvitedInternalUser}
-                  showInactive={showInactive}
                   usersWithoutActivity={usersWithoutActivity}
                   onAddUserToTeam={onAddUserToTeam}
                   onDeleteTeamMember={handleDeleteTeamMember}
