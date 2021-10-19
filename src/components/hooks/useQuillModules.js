@@ -28,7 +28,7 @@ const useQuillModules = ({
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
   const recipients = useSelector((state) => state.global.recipients);
-  const userMentions = useSelector((state) => state.users.mentions);
+  const userMentions = useSelector((state) => state.users.users);
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const previousChannel = usePreviousValue(selectedChannel);
