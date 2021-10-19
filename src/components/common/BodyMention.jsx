@@ -25,7 +25,7 @@ const BodyMention = (props) => {
   const { _t } = useTranslationActions();
   const user = useSelector((state) => state.session.user);
   const isExternalUser = user.type === "external";
-  const users = useSelector((state) => state.users.mentions);
+  const users = useSelector((state) => state.users.users);
   //const workspaces = useSelector((state) => state.workspaces.workspaces);
   const recipients = useSelector((state) => state.global.recipients);
   //const toMention = Object.assign({}, users, workspaces);
@@ -39,6 +39,7 @@ const BodyMention = (props) => {
         return {
           ...r,
           type: users[r.type_id] ? users[r.type_id].type : "internal",
+          first_name: users[r.type_id] ? users[r.type_id].first_name : "",
         };
       } else return r;
     });
