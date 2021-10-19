@@ -211,7 +211,22 @@ const AuthorRecipients = styled.div`
 `;
 
 const PostBadgeWrapper = styled.div`
-  min-width: 150px;
+  //min-width: 150px;
+  margin-left: auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  @media (max-width: 414px) {
+    .post-badge {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      .mr-3 {
+        margin-left: 1rem;
+        margin-right: 0 !important;
+      }
+    }
+  }
 `;
 
 const SharedBadge = styled.span`
@@ -516,7 +531,7 @@ const PostBody = (props) => {
       )}
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
-          <div className="d-inline-flex justify-content-center align-items-start">
+          <div className="d-inline-flex align-items-start">
             <Avatar className="author-avatar mr-2 post-author" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} />
             <div>
               <span className="author-name">{post.author.first_name}</span>
@@ -524,15 +539,17 @@ const PostBody = (props) => {
               {/* {postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />} */}
             </div>
           </div>
-          <PostBadgeWrapper className="d-inline-flex">
+          <PostBadgeWrapper>
             <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
-            {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
-            <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
-            {!disableOptions && !disableMarkAsRead() && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
-            <div className={"time-stamp"}>
-              <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
-                <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
-              </StyledTooltip>
+            <div className="d-inline-flex">
+              {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
+              <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
+              {!disableOptions && !disableMarkAsRead() && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
+              <div className={"time-stamp"}>
+                <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
+                  <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
+                </StyledTooltip>
+              </div>
             </div>
           </PostBadgeWrapper>
         </div>
