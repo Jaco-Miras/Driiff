@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { useSettings, useTranslationActions } from "../../hooks";
-import { FavoriteWorkspacesPanel, MainSidebarLinks, MainBackButton, MainLogo } from "./index";
+import { useSettings, useTranslationActions, useWorkspaceActions } from "../../hooks";
+import { FavoriteWorkspacesPanel, MainSidebarLinks, MainLogo } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
 const Wrapper = styled.div`
@@ -162,37 +162,40 @@ const NavNewWorkspace = styled.button`
   }
 `;
 
-const GiftWrapper = styled.span`
-  cursor: pointer;
-  position: absolute;
-  left: 30px;
-  :before {
-    content: "";
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    right: -6px;
-    border-radius: 50%;
-    top: -2px;
-    background: #f44;
-  }
-`;
-
-const GiftIcon = styled(SvgIconFeather)``;
-
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
-  const history = useHistory();
-  // const params = useParams();
-  // const location = useLocation();
-  //const dispatch = useDispatch();
 
   const count = useSelector((state) => state.global.todos.count);
-  const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
+  const { updateCompanyName, driffSettings, generalSettings } = useSettings();
   const user = useSelector((state) => state.session.user);
-  // const workspaces = useSelector((state) => state.workspaces.workspaces);
-  // const folders = useSelector((state) => state.workspaces.folders);
   const { _t } = useTranslationActions();
+
+  const params = useParams();
+  const actions = useWorkspaceActions();
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const channels = useSelector((state) =>
+    Object.values(state.chat.channels).map((channel) => {
+      return { id: channel.id, code: channel.code };
+    })
+  );
+
+  useEffect(() => {
+    if (params.workspaceId && activeTopic) {
+      if (parseInt(params.workspaceId) !== activeTopic.id && workspaces[params.workspaceId]) {
+        // if url params of workspace id is not equal to active workspace id then set workspace and channel
+        actions.selectWorkspace(workspaces[params.workspaceId]);
+      }
+    }
+    if (params.code && selectedChannel) {
+      if (selectedChannel.code !== params.code) {
+        // if active channel code is not equal to chat url channel code then set channel
+        let channel = channels.find((c) => c.code === params.code);
+        if (channel) actions.selectChannel({ id: channel.id });
+      }
+    }
+  }, [params, workspaces, activeTopic, selectedChannel]);
 
   const [showButtons, setShowbuttons] = useState(false);
 
@@ -230,10 +233,6 @@ const MainNavigationTabPanel = (props) => {
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
   };
 
-  const handleGiftClick = () => {
-    history.push("/releases");
-  };
-
   const handleShowModalButtons = () => {
     setShowbuttons((prevState) => !prevState);
   };
@@ -241,14 +240,9 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-        {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
-          <GiftWrapper>
-            <GiftIcon icon="gift" color="#fff" onClick={handleGiftClick} />
-          </GiftWrapper>
-        )}
         <MainLogo />
 
-        <MainBackButton />
+        {/* <MainBackButton /> */}
       </div>
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
 
