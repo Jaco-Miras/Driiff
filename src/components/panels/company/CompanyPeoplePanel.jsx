@@ -22,7 +22,7 @@ const Wrapper = styled.div`
     padding-left: 0;
   }
   .card {
-    min-height: 40%;
+    min-height: calc(100% - 40px);
     overflow: unset;
   }
   .card-body {

@@ -32,6 +32,9 @@ const Wrapper = styled.div`
     padding-left: 0;
     flex-flow: row wrap;
   }
+  .card {
+    min-height: calc(100% - 40px);
+  }
 `;
 
 const SystemPeoplePanel = (props) => {

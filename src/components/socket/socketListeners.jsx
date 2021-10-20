@@ -1035,6 +1035,41 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedTeam(e);
       })
       .listen(".remove-team", (e) => {
+        Array.from(Object.values(this.props.workspaces)).map((ws) => {
+          if (ws.members.some((m) => m.members && m.id === e.id && m.members.some((mem) => mem.id === this.props.user.id))) {
+            //check if user is still a member of the workspace
+
+            if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id)) {
+              //user is not part of workspace members
+              const teamMembers = ws.members
+                .filter((m) => m.members && m.id !== e.id)
+                .map((m) => m.member_ids)
+                .flat();
+              if (!teamMembers.some((id) => id === this.props.user.id)) {
+                //user is not part of any teams
+                //check if user is not part of workspace member
+                if (ws.is_lock) {
+                  let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+                  if (channels.some((id) => this.props.selectedChannel && id === this.props.selectedChannel.id) && this.props.match.url.startsWith("/chat")) {
+                    this.props.history.push("/chat");
+                  }
+                  this.props.removeWorkspaceChannel({ channels: channels });
+                } else {
+                  //remove channel members
+                  const removedTeamMembers = ws.members
+                    .filter((m) => m.members && m.id === e.id)
+                    .map((m) => m.member_ids)
+                    .flat();
+                  let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+                  this.props.removeWorkspaceChannelMembers({ channels: channels, remove_member_ids: removedTeamMembers });
+                }
+              }
+            }
+            return ws;
+          } else {
+            return ws;
+          }
+        });
         this.props.incomingDeletedTeam(e);
       })
       .listen(".add-team-member", (e) => {
@@ -1043,7 +1078,7 @@ class SocketListeners extends Component {
       .listen(".remove-team-member", (e) => {
         //remove member ids
         //get all workspace with user as part of the removed members
-        Array.from(Object.values(this.props.workspaces)).map((ws, i) => {
+        Array.from(Object.values(this.props.workspaces)).map((ws) => {
           if (ws.members.some((m) => m.members && m.id === e.id && m.members.some((mem) => mem.id === this.props.user.id))) {
             //if user is no longer member of workspace or team and workspace is private
             if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id) && ws.is_lock === 1) {
