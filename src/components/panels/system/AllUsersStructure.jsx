@@ -41,6 +41,7 @@ const StyledNode = styled.div`
 `;
 
 const AllUsersStructure = (props) => {
+  const { dictionary } = props;
   const users = useSelector((state) => state.users.users);
   const internalUsers = Object.values(users).filter((u) => u.type === "internal");
   const externalUsers = Object.values(users).filter((u) => u.type === "external");
@@ -53,14 +54,14 @@ const AllUsersStructure = (props) => {
   const internalAndExternalTeam = [
     {
       id: "internal",
-      name: "Accounts",
+      name: dictionary.internalAccounts,
       members: internalUsers,
       member_ids: internalUsers.map((m) => m.id),
       parent_team: 0,
     },
     {
       id: "external",
-      name: "Guest accounts",
+      name: dictionary.guestAccounts,
       members: externalUsers,
       member_ids: externalUsers.map((m) => m.id),
       parent_team: 0,

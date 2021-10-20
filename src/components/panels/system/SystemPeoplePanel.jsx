@@ -103,6 +103,8 @@ const SystemPeoplePanel = (props) => {
     addUserToTeam: _t("PEOPLE.ADD_USER_TEAM", "Add user to team"),
     removeTeamMember: _t("PEOPLE.REMOVE_TEAM_MEMBER", "Remove team member"),
     team: _t("TEAM", "Team"),
+    internalAccounts: _t("CHART.INTERNAL_ACCOUNTS", "Accounts"),
+    guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
   };
 
   const toaster = useToaster();
@@ -267,7 +269,7 @@ const SystemPeoplePanel = (props) => {
               )}
               path={["/system/people/teams/:teamId/:teamName"]}
             />
-            <Route render={() => <AllUsersStructure loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />} path={["/system/people/organization"]} />
+            <Route render={() => <AllUsersStructure loggedUser={loggedUser} dictionary={dictionary} />} path={["/system/people/organization"]} />
             <Route render={() => <AllTeams loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />} path={["/system/people/teams"]} />
             <Route
               render={() => (
