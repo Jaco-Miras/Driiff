@@ -2715,8 +2715,20 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if (((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) || (channel.type === "TOPIC" && channel.team_ids && channel.team_ids.some((id) => id === action.data.id))) {
+            let title = channel.title;
+            let icon_link = channel.icon_link;
+            if (channel.type === "TEAM") {
+              title = action.data.name;
+              if (action.data.icon_link) icon_link = action.data.icon_link;
+            } else if (channel.type === "DIRECT_TEAM") {
+              const otherUser = title.split("&")[1];
+              title = `${action.data.name} & ${otherUser}`;
+              if (action.data.icon_link) icon_link = action.data.icon_link;
+            }
             acc[channel.id] = {
               ...channel,
+              title: title,
+              icon_link: icon_link,
               members: [
                 ...channel.members,
                 ...action.data.members
