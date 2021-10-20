@@ -5,6 +5,7 @@ import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../
 import { SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 import { useHistory, useLocation } from "react-router-dom";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.ul`
   padding-left: 5px;
@@ -184,7 +185,12 @@ const HomeProfileNavigation = (props) => {
     if (selectedUser.hasOwnProperty("loaded")) {
       setForm(selectedUser);
     } else {
-      fetchById(loggedUser.id);
+      fetchById(loggedUser.id, (err, res) => {
+        if (err) return;
+        if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
+          sessionService.saveUser({ ...res.data });
+        }
+      });
     }
   }, []);
 

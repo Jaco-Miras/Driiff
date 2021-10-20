@@ -100,9 +100,9 @@ const Wrapper = styled.li`
 
     .read-users-container {
       position: absolute;
-      left: 22px;
+      left: 0;
       z-index: 1;
-      bottom: 0;
+      bottom: 20px;
       border-radius: 8px;
       opacity: 0;
       max-height: 0;
@@ -343,7 +343,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

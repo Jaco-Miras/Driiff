@@ -99,6 +99,7 @@ const FavoriteWorkspacesPanel = (props) => {
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
   const companyChannel = useSelector((state) => state.chat.companyChannel);
+  const companyName = useSelector((state) => state.settings.driff.company_name);
 
   // need to revisit
   // const [defaultTopic, setDefaultTopic] = useState(null);
@@ -230,7 +231,7 @@ const FavoriteWorkspacesPanel = (props) => {
             <>
               <ul>
                 {favoriteWorkspaces.map((ws) => {
-                  return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} />;
+                  return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
                 })}
               </ul>
               <BrowseAll onClick={handleBrowseAll}>{dictionary.browseAll}</BrowseAll>

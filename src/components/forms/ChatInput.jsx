@@ -171,6 +171,7 @@ const ChatInput = (props) => {
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
   const [answerId, setAnswerId] = useState(null);
+  const [addMembersPayload, setAddMembersPayload] = useState(null);
 
   const [quote] = useSelectQuote();
 
@@ -375,6 +376,22 @@ const ChatInput = (props) => {
       dispatch(addChatMessage(obj));
     }
 
+    if (addMembersPayload) {
+      if (selectedChannel.type !== "DIRECT") {
+        dispatch(postChannelMembers({ channel_id: addMembersPayload.payload.channel_id, recipient_ids: addMembersPayload.payload.recipient_ids }));
+      }
+      if (selectedChannel.type === "DIRECT") {
+        create(
+          {
+            recipient_ids: addMembersPayload.payload.recipient_ids,
+            title: addMembersPayload.payload.title,
+          },
+          addMembersPayload.callback
+        );
+      }
+      setAddMembersPayload(null);
+    }
+
     if (editMode) {
       let payloadEdit = {
         ...payload,
@@ -479,7 +496,8 @@ const ChatInput = (props) => {
       //check for recipients/type
       if (selectedChannel.type === "PERSONAL_BOT") return;
       const ingoredExternalIds = selectedChannel.type === "TOPIC" ? activeExternalUsers.map((m) => m.id) : [];
-      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...mentionData.ignoredMentionedUserIds, ...ingoredExternalIds];
+      const membersPayloadIds = addMembersPayload ? addMembersPayload.payload.user_ids : [];
+      let ignoreIds = [user.id, ...selectedChannel.members.map((m) => m.id), ...mentionData.ignoredMentionedUserIds, ...ingoredExternalIds, ...membersPayloadIds];
       let userIds = mention_ids.filter((id) => {
         let userFound = false;
         ignoreIds.forEach((pid) => {
@@ -665,12 +683,30 @@ const ChatInput = (props) => {
       let placeholderId = require("shortid").generate();
       let timestamp = Math.round(+new Date() / 1000);
       let members = [...selectedChannel.members, ...users];
-      let title = members.map((m) => m.first_name).join(", ");
+      //let title = members.map((m) => m.first_name).join(", ");
+      let recipient_ids = recipients
+        .filter((r) => r.type === "USER")
+        .filter((r) => {
+          return selectedChannel.members.some((m) => m.id === r.type_id);
+        })
+        .map((r) => r.id);
+      const usersRecipientIds = recipients
+        .filter((r) => r.type === "USER")
+        .filter((r) => users.some((u) => u.type_id === r.type_id))
+        .map((r) => r.id);
+      // adding member using mention in direct channel will create a new channel, use recipient id
+      const newTitle = members.map((m) => m.first_name).join(", ");
+      let payload = {
+        recipient_ids: addMembersPayload ? [...addMembersPayload.payload.recipient_ids, ...usersRecipientIds] : [...recipient_ids, ...usersRecipientIds],
+        title: newTitle,
+        user_ids: addMembersPayload ? [...addMembersPayload.payload.user_ids, ...users.map((u) => u.type_id)] : users.map((u) => u.type_id),
+      };
+
       let channel = {
         id: placeholderId,
         entity_id: 0,
         type: "GROUP",
-        title: title,
+        title: newTitle,
         code: placeholderId,
         is_archived: false,
         is_pinned: false,
@@ -715,40 +751,37 @@ const ChatInput = (props) => {
         dispatch(setSelectedChannel(payload));
         history.push(`/chat/${res.data.code}`);
       };
-      let recipient_ids = recipients
-        .filter((r) => r.type === "USER")
-        .filter((r) => {
-          return selectedChannel.members.some((m) => m.id === r.type_id);
-        })
-        .map((r) => r.id);
-      let payload = {
-        recipient_ids: [...recipient_ids, ...users.map((u) => u.type_id)],
-        title: title,
-      };
-      create(payload, createCallback);
-    } else {
-      let memberPayload = {
-        channel_id: selectedChannel.id,
-        recipient_ids: users.map((u) => u.type_id),
-      };
-      dispatch(
-        postChannelMembers(memberPayload, (err, res) => {
-          if (err) return;
-
-          if (res) {
-            setMentionData({
-              ...mentionData,
-              ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.id)],
-            });
-            //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
-          }
-        })
-      );
-
+      //create(payload, createCallback);
+      setAddMembersPayload({ payload: payload, callback: createCallback });
       setMentionData({
-        ...mentionData,
         mentionedUserIds: [],
+        ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
       });
+    } else {
+      // adding member in channel - use user id
+      let membersPayload = {
+        channel_id: selectedChannel.id,
+        recipient_ids: addMembersPayload ? [...addMembersPayload.payload.recipient_ids, ...users.map((u) => u.type_id)] : users.map((u) => u.type_id),
+        user_ids: addMembersPayload ? [...addMembersPayload.payload.user_ids, ...users.map((u) => u.type_id)] : users.map((u) => u.type_id),
+      };
+      setAddMembersPayload({ payload: membersPayload });
+      setMentionData({
+        mentionedUserIds: [],
+        ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
+      });
+      // dispatch(
+      //   postChannelMembers(memberPayload, (err, res) => {
+      //     if (err) return;
+
+      //     if (res) {
+      //       setMentionData({
+      //         mentionedUserIds: [],
+      //         ignoredMentionedUserIds: [...mentionData.ignoredMentionedUserIds, ...users.map((u) => u.type_id)],
+      //       });
+      //       //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
+      //     }
+      //   })
+      // );
     }
   };
 

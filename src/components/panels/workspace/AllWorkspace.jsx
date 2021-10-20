@@ -38,45 +38,48 @@ const AllWorkspace = (props) => {
 
   useEffect(() => {
     document.body.classList.add("stretch-layout");
-    actions.getFilterCount((err, res) => {
-      if (err) return;
-      if (res.data) {
-        if (results.length === 0 && componentIsMounted.current) setLoading(true);
-        const all = res.data.reduce((acc, val) => {
-          if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
-            acc = acc + val.count;
-          }
-          return acc;
-        }, 0);
-        actions.search(
-          {
-            //search: value,
-            search: "",
-            skip: 0,
-            limit: all,
-            filter_by: "all",
-          },
-          (err, res) => {
-            if (componentIsMounted.current) setLoading(false);
-            if (err) {
-              actions.updateSearch({
-                searching: false,
-              });
-            } else {
-              actions.updateSearch({
-                filterBy: filterBy,
-                searching: false,
-                count: res.data.total_count,
-                hasMore: res.data.has_more,
-                results: res.data.workspaces,
-                loaded: true,
-                //maxPage: Math.ceil(res.data.total_count / 25),
-              });
+    if (!loaded) {
+      actions.getFilterCount((err, res) => {
+        if (err) return;
+        if (res.data) {
+          if (results.length === 0 && componentIsMounted.current) setLoading(true);
+          const all = res.data.reduce((acc, val) => {
+            if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
+              acc = acc + val.count;
             }
-          }
-        );
-      }
-    });
+            return acc;
+          }, 0);
+          actions.search(
+            {
+              //search: value,
+              search: "",
+              skip: 0,
+              limit: all,
+              filter_by: "all",
+            },
+            (err, res) => {
+              if (componentIsMounted.current) setLoading(false);
+              if (err) {
+                actions.updateSearch({
+                  searching: false,
+                });
+              } else {
+                actions.updateSearch({
+                  filterBy: filterBy,
+                  searching: false,
+                  count: res.data.total_count,
+                  hasMore: res.data.has_more,
+                  results: res.data.workspaces,
+                  loaded: true,
+                  //maxPage: Math.ceil(res.data.total_count / 25),
+                });
+              }
+            }
+          );
+        }
+      });
+    }
+
     return () => {
       componentIsMounted.current = false;
       actions.updateSearch({

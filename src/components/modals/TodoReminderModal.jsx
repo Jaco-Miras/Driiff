@@ -54,8 +54,9 @@ const RadioInputContainer = styled.div`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${(props) => (props.height > 80 ? props.height : 80)}px;
-    max-height: 400px;
+    // height: ${(props) => (props.height > 80 ? props.height : 80)}px;
+    // max-height: 400px;
+    height: calc(100% - 50px);
   }
 
   label {

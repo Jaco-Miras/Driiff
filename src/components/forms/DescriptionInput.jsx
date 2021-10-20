@@ -27,7 +27,7 @@ const WrapperDiv = styled(InputGroup)`
   }
   .description-wrapper {
     margin-bottom: 25px;
-    min-height: 133px;
+    min-height: 200px;
     &.is-invalid {
       border-color: #dc3545;
       padding-right: calc(1.5em + 0.75rem);
@@ -110,8 +110,8 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
-  height: ${(props) => props.height}px;
-
+  //height: ${(props) => props.height}px;
+  min-height: 150px;
   &.description-input {
     // overflow: auto;
     // overflow-x: hidden;
@@ -168,6 +168,8 @@ const DescriptionInputWrapper = styled.div`
   @media all and (max-width: 480px) {
     width: 100%;
   }
+  resize: vertical;
+  overflow: auto;
 `;
 
 const Buttons = styled.div`

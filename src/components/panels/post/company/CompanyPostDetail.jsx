@@ -515,7 +515,7 @@ const CompanyPostDetail = (props) => {
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
-            <MarkAsRead className="d-sm-inline d-none">
+            <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>

@@ -543,7 +543,7 @@ const PostDetail = (props) => {
         />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
-            <MarkAsRead className="d-sm-inline d-none">
+            <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
               </button>

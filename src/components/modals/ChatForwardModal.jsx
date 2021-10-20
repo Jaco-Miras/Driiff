@@ -227,7 +227,7 @@ const ChatForwardModal = (props) => {
                 return (
                   <StlyedList key={channel.id} onClick={() => handleChosenChannel(channel)} chosen={chosenChannel && chosenChannel.id === channel.id}>
                     <StyledChannelIcon className={"message-forward-popup"} channel={channel} />
-                    {channel.title}
+                    {channel.type === "DIRECT" && channel.profile ? channel.profile.name : channel.title}
                   </StlyedList>
                 );
               })}

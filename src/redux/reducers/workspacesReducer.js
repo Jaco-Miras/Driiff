@@ -25,6 +25,7 @@ const INITIAL_STATE = {
   folderToDelete: null,
   isOnClientChat: null,
   search: {
+    loaded: false,
     folders: {},
     filterByFolder: null,
     results: [],
