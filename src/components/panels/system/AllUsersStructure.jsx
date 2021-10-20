@@ -32,6 +32,12 @@ const StyledNode = styled.div`
   :hover {
     border-color: #7a1b8b;
   }
+  .TEAM {
+    .feather {
+      height: 1rem;
+      width: 1rem;
+    }
+  }
 `;
 
 const AllUsersStructure = (props) => {
@@ -69,6 +75,15 @@ const AllUsersStructure = (props) => {
     history.push(`/system/people/teams/${team.id}/${team.name}`);
   };
 
+  const companyAvatar = {
+    id: null,
+    name: companyName,
+    members: Object.values(users),
+    icon_link: null,
+    icon: "home",
+  };
+  const AllUsersWithCompany = [companyAvatar, ...Object.values(users)];
+
   return (
     <Wrapper>
       {usersLoaded && teamsLoaded && (
@@ -83,7 +98,7 @@ const AllUsersStructure = (props) => {
                 {companyName}
               </div>
               <div className="mb-2">{Object.values(users).length} accounts</div>
-              <MemberLists members={Object.values(users)} />
+              <MemberLists members={AllUsersWithCompany} />
             </StyledNode>
           }
         >

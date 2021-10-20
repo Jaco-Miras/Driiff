@@ -22,6 +22,12 @@ const StyledNode = styled.div`
   :hover {
     border-color: #7a1b8b;
   }
+  .TEAM {
+    .feather {
+      height: 1rem;
+      width: 1rem;
+    }
+  }
 `;
 
 const ParentTreeNode = (props) => {
@@ -29,6 +35,13 @@ const ParentTreeNode = (props) => {
   const handleSelectTeam = () => {
     onSelectTeam(team);
   };
+  const teamAvatar = {
+    id: team.id,
+    name: team.name,
+    members: team.members,
+    icon_link: team.icon_link,
+  };
+  const teamMembersWithIcon = [teamAvatar, ...team.members];
   return (
     <TreeNode
       key={team.id}
@@ -36,7 +49,7 @@ const ParentTreeNode = (props) => {
         <StyledNode onClick={handleSelectTeam}>
           <div className="team-name mb-1">{team.name}</div>
           <div className="mb-2">{team.members.length} accounts</div>
-          <MemberLists members={team.members} />
+          <MemberLists members={teamMembersWithIcon} />
         </StyledNode>
       }
     >
