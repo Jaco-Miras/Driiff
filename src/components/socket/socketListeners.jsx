@@ -35,6 +35,8 @@ import {
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
   transferChannelMessages,
+  removeWorkspaceChannel,
+  removeWorkspaceChannelMembers,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -1038,6 +1040,28 @@ class SocketListeners extends Component {
         this.props.incomingTeamMember(e);
       })
       .listen(".remove-team-member", (e) => {
+        //remove member ids
+        //get all workspace with user as part of the removed members
+        Array.from(Object.values(this.props.workspaces)).map((ws, i) => {
+          if (ws.members.some((m) => m.members && m.id === e.id && m.members.some((mem) => mem.id === this.props.user.id))) {
+            //if user is no longer member of workspace or team and workspace is private
+            if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id) && ws.is_lock === 1) {
+              //remove channel
+              let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+              if (channels.some((id) => this.props.selectedChannel && id === this.props.selectedChannel.id) && this.props.match.url.startsWith("/chat")) {
+                this.props.history.push("/chat");
+              }
+              this.props.removeWorkspaceChannel({ channels: channels });
+            } else if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id)) {
+              //remove channel members
+              let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+              this.props.removeWorkspaceChannelMembers({ channels: channels, remove_member_ids: e.remove_member_ids });
+            }
+            return ws;
+          } else {
+            return ws;
+          }
+        });
         this.props.incomingRemovedTeamMember(e);
       })
       .listen(".create-drive-link", (e) => {
@@ -2182,6 +2206,8 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedTeam: bindActionCreators(incomingDeletedTeam, dispatch),
     incomingTeamMember: bindActionCreators(incomingTeamMember, dispatch),
     incomingRemovedTeamMember: bindActionCreators(incomingRemovedTeamMember, dispatch),
+    removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
+    removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
   };
 }
 
