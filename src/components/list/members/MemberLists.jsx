@@ -7,6 +7,12 @@ const MembersListContainer = styled.div`
   .people-list {
     right: 0;
   }
+  .company.TEAM > div:first-child {
+    background-color: #7a1b8b;
+    .feather-home {
+      color: #fff;
+    }
+  }
 `;
 
 const StyledAvatar = styled(Avatar)`
@@ -35,13 +41,14 @@ const MembersLists = (props) => {
           <StyledAvatar
             id={m.id}
             firstUser={i === 0}
-            className="chat-members"
             key={m.id}
             name={m.name ? m.name : m.email}
             imageLink={m.hasOwnProperty("members") ? m.icon_link : m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link}
             hasAccepted={m.has_accepted}
             type={m.hasOwnProperty("members") ? "TEAM" : "USER"}
             showSlider={m.hasOwnProperty("members") ? false : true}
+            icon={m.icon ? m.icon : null}
+            className={m.icon ? "chat-members company" : "chat-members"}
           />
         );
       })}

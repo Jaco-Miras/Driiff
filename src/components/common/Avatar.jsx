@@ -131,6 +131,7 @@ const Avatar = (props) => {
     fromSlider = false,
     showSlider = true,
     tooltipName = null,
+    icon = null,
     ...rest
   } = props;
 
@@ -267,7 +268,7 @@ const Avatar = (props) => {
           imageLink ? (
             <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} onClick={handleOnClick} />
           ) : (
-            <SvgIconFeather icon="users" />
+            <SvgIconFeather icon={icon ? icon : "users"} />
           )
         ) : isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleBotImageError} src={errorBotImage ? botIcon : imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
