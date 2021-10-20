@@ -2980,13 +2980,16 @@ export default function (state = INITIAL_STATE, action) {
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
             acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
+          } else if (channel.type === "TOPIC" && channel.team_ids && channel.team_ids.some((id) => id === action.data.id)) {
+            acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
           } else {
             acc[channel.id] = channel;
           }
           return acc;
         }, {}),
         selectedChannel:
-          state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)
+          (state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)) ||
+          (state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.team_ids && state.selectedChannel.team_ids.some((id) => id === action.data.id))
             ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) }
             : state.selectedChannel,
       };
@@ -2996,7 +2999,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
-          if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
+          if (((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) || (channel.type === "TOPIC" && channel.team_ids && channel.team_ids.some((id) => id === action.data.id))) {
             acc[channel.id] = {
               ...channel,
               members: [
@@ -3014,7 +3017,8 @@ export default function (state = INITIAL_STATE, action) {
           return acc;
         }, {}),
         selectedChannel:
-          state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)
+          (state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)) ||
+          (state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.team_ids && state.selectedChannel.team_ids.some((id) => id === action.data.id))
             ? {
                 ...state.selectedChannel,
                 members: [
@@ -3036,6 +3040,10 @@ export default function (state = INITIAL_STATE, action) {
           .filter((c) => {
             if (c.type === "TEAM" || c.type === "DIRECT_TEAM") {
               return c.entity_id !== action.data.id;
+            } else if (c.type === "TOPIC") {
+              if (c.team_ids) {
+                return !c.team_ids.some((id) => id === action.data.id);
+              } else return true;
             } else {
               return true;
             }
@@ -3044,9 +3052,21 @@ export default function (state = INITIAL_STATE, action) {
             acc[channel.id] = channel;
             return acc;
           }, {}),
-        selectedChannel: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannel,
-        selectedChannelId: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannelId,
-        lastVisitedChannel: state.lastVisitedChannel && state.lastVisitedChannel.entity_id === parseInt(action.data.id) ? null : state.lastVisitedChannel,
+        selectedChannel:
+          (state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)) ||
+          (state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.team_ids && state.selectedChannel.team_ids.some((id) => id === action.data.id))
+            ? null
+            : state.selectedChannel,
+        selectedChannelId:
+          (state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)) ||
+          (state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.team_ids && state.selectedChannel.team_ids.some((id) => id === action.data.id))
+            ? null
+            : state.selectedChannelId,
+        lastVisitedChannel:
+          (state.lastVisitedChannel && state.lastVisitedChannel.entity_id === parseInt(action.data.id)) ||
+          (state.lastVisitedChannel && state.lastVisitedChannel.type === "TOPIC" && state.lastVisitedChannel.team_ids && state.lastVisitedChannel.team_ids.some((id) => id === action.data.id))
+            ? null
+            : state.lastVisitedChannel,
       };
     }
     case "INCOMING_ACCEPTED_INTERNAL_USER": {
