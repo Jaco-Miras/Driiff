@@ -509,3 +509,11 @@ export function getUnreadChannels(payload, callback) {
 export function addSelectChannel(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_SELECT_CHANNEL", payload, callback);
 }
+
+export function removeWorkspaceChannelMembers(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_CHANNEL_MEMBERS", payload, callback);
+}
+
+export function removeWorkspaceChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_CHANNEL", payload, callback);
+}
