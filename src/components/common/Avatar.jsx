@@ -85,12 +85,18 @@ const Wrapper = styled.div`
     opacity: 0;
   }
   &.TEAM > div {
-    border: 1px solid #dee2e6;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #f1f2f7;
+    // background-color: #f1f2f7;
+    background-color: #7a1b8b;
+    border-color: transparent;
+    .feather {
+      color: #fff;
+      background-color: #7a1b8b;
+    }
+    ${(props) => props.hasTeamIcon && "background: transparent"}
   }
 `;
 
@@ -261,7 +267,7 @@ const Avatar = (props) => {
   }
 
   return (
-    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} ref={avatarRef}>
+    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} hasTeamIcon={type === "TEAM" && imageLink !== null} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
         {type === "TEAM" ? (
