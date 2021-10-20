@@ -264,7 +264,11 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
         {type === "TEAM" ? (
-          <SvgIconFeather icon="users" />
+          imageLink ? (
+            <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} onClick={handleOnClick} />
+          ) : (
+            <SvgIconFeather icon="users" />
+          )
         ) : isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleBotImageError} src={errorBotImage ? botIcon : imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (

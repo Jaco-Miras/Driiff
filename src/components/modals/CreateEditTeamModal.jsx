@@ -7,12 +7,38 @@ import { useTranslationActions, useTeamActions, useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { InputFeedback, PeopleSelect } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
+import { DropDocument } from "../dropzone/DropDocument";
+import { Avatar, SvgIconFeather } from "../common";
+import { addToModals } from "../../redux/actions/globalActions";
+import { uploadBulkDocument } from "../../redux/services/global";
 
 const Wrapper = styled(Modal)``;
 
 const WrapperDiv = styled(FormGroup)`
   .invalid-feedback {
     display: block;
+  }
+  .icon-wrapper {
+    width: 60px;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+
+    .btn {
+      background: #fff;
+      position: absolute;
+      right: 5px;
+      bottom: -5px;
+      padding: 3px;
+
+      &:hover {
+        background: #fff !important;
+      }
+    }
+  }
+  .name-wrapper {
+    width: 100%;
   }
 `;
 
@@ -78,8 +104,10 @@ const CreateEditTeamModal = (props) => {
   const refs = {
     main: useRef(null),
     name: useRef(null),
+    iconDropZone: useRef(null),
   };
 
+  const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const teams = useSelector((state) => state.users.teams);
   const [inputNameValue, setInputNameValue] = useState(team ? team.name : "");
@@ -93,6 +121,9 @@ const CreateEditTeamModal = (props) => {
     feedback: "",
   });
 
+  const [showIconDropzone, setShowIconDropzone] = useState(false);
+  const [iconLink, setIconLink] = useState(null);
+
   const toggle = () => {
     dispatch(clearModal({ type: type }));
   };
@@ -103,53 +134,6 @@ const CreateEditTeamModal = (props) => {
 
   const handleInputNameChange = (e) => {
     setInputNameValue(e.target.value);
-  };
-
-  const handleCreateTeam = () => {
-    let payload = {
-      name: inputNameValue,
-      member_ids: selectedUsers.map((m) => m.value),
-      parent_team: 0,
-    };
-    if (selectedParentTeam) {
-      payload = {
-        ...payload,
-        parent_team: selectedParentTeam.value,
-      };
-    }
-    const cb = (err, res) => {
-      if (err) return;
-      toaster.success(dictionary.teamCreateSuccess);
-    };
-    createTeam(payload, cb);
-  };
-
-  const handleUpdateTeam = () => {
-    const removedMemberIds = team.member_ids.filter((id) => !selectedUsers.some((u) => u.value === id));
-    let payload = {
-      name: inputNameValue,
-      id: team.id,
-      member_ids: selectedUsers.map((m) => m.value),
-      parent_team: 0,
-      remove_member_ids: removedMemberIds,
-    };
-    if (selectedParentTeam) {
-      payload = {
-        ...payload,
-        parent_team: selectedParentTeam.value,
-      };
-    }
-    const cb = (err, res) => {
-      if (err) return;
-      toaster.success(dictionary.teamUpdateSuccess);
-    };
-    updateTeam(payload, cb);
-  };
-
-  const handleConfirm = () => {
-    toggle();
-    if (mode === "create") handleCreateTeam();
-    else handleUpdateTeam();
   };
 
   const inputRef = useRef();
@@ -245,17 +229,159 @@ const CreateEditTeamModal = (props) => {
     setSelectedParentTeam(e);
   };
 
+  const handleTeamIconClick = () => {
+    refs.iconDropZone.current.open();
+  };
+
+  const handleHideIconDropzone = () => {
+    setShowIconDropzone(false);
+  };
+
+  const handleUseTeamIcon = (file, fileUrl) => {
+    setIconLink({ file: file, icon_link: fileUrl });
+  };
+
+  const dropIconAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toaster.error("File type not allowed. Please use an image file.");
+    } else if (uploadedFiles.length > 1) {
+      toaster.warning("Multiple files detected. First selected image will be used.");
+    }
+
+    let modal = {
+      type: "file_crop_upload",
+      imageFile: uploadedFiles[0],
+      mode: "profile",
+      handleSubmit: handleUseTeamIcon,
+    };
+
+    dispatch(
+      addToModals(modal, () => {
+        handleHideIconDropzone();
+      })
+    );
+  };
+
+  async function uploadFiles(file, payload, cb) {
+    let formData = new FormData();
+    formData.append("files[0]", file);
+    let uploadPayload = {
+      user_id: user.id,
+      file_type: "private",
+      folder_id: null,
+      fileOption: null,
+      // options: {
+      //   config: {
+      //     onUploadProgress: handleOnUploadProgress,
+      //   },
+      // },
+    };
+    uploadPayload["files"] = formData;
+
+    await new Promise((resolve, reject) => {
+      resolve(uploadBulkDocument(uploadPayload));
+    })
+      .then((result) => {
+        if (result.data) {
+          if (mode === "create") {
+            createTeam({ ...payload, file_id: result.data[0].id }, cb);
+          } else {
+            updateTeam({ ...payload, file_id: result.data[0].id }, cb);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  const handleCreateTeam = () => {
+    let payload = {
+      name: inputNameValue,
+      member_ids: selectedUsers.map((m) => m.value),
+      parent_team: 0,
+    };
+    if (selectedParentTeam) {
+      payload = {
+        ...payload,
+        parent_team: selectedParentTeam.value,
+      };
+    }
+    const cb = (err, res) => {
+      if (err) return;
+      toaster.success(dictionary.teamCreateSuccess);
+    };
+    if (iconLink) {
+      uploadFiles(iconLink.file, payload, cb);
+    } else {
+      createTeam(payload, cb);
+    }
+  };
+
+  const handleUpdateTeam = () => {
+    const removedMemberIds = team.member_ids.filter((id) => !selectedUsers.some((u) => u.value === id));
+    let payload = {
+      name: inputNameValue,
+      id: team.id,
+      member_ids: selectedUsers.map((m) => m.value),
+      parent_team: 0,
+      remove_member_ids: removedMemberIds,
+    };
+    if (selectedParentTeam) {
+      payload = {
+        ...payload,
+        parent_team: selectedParentTeam.value,
+      };
+    }
+    const cb = (err, res) => {
+      if (err) return;
+      toaster.success(dictionary.teamUpdateSuccess);
+    };
+
+    if (iconLink) {
+      uploadFiles(iconLink.file, payload, cb);
+    } else {
+      updateTeam(payload, cb);
+    }
+  };
+
+  const handleConfirm = () => {
+    toggle();
+    if (mode === "create") handleCreateTeam();
+    else handleUpdateTeam();
+  };
+
   return (
     <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered onOpened={onOpened} className={"single-input-modal"}>
       <ModalHeaderSection toggle={toggle}>{mode === "create" ? dictionary.createNewTeam : dictionary.updateTeam}</ModalHeaderSection>
       <ModalBody>
         <Label className={"modal-info mb-3"}>{dictionary.teamDescription}</Label>
         <WrapperDiv>
-          <Label className={"modal-label"}>{dictionary.teamName}</Label>
-          <div className="d-flex align-items-center mb-2">
-            <Input valid={valid.isValid} invalid={valid.isValid === false} innerRef={inputRef} autoFocus defaultValue={mode === "create" ? "" : team.name} onChange={handleInputNameChange} />
+          <div className="d-flex justify-content-start align-items-center">
+            <div className="icon-wrapper" onClick={handleTeamIconClick}>
+              <DropDocument
+                acceptType="imageOnly"
+                hide={!showIconDropzone}
+                ref={refs.iconDropZone}
+                onDragLeave={handleHideIconDropzone}
+                onDrop={({ acceptedFiles }) => {
+                  dropIconAction(acceptedFiles);
+                }}
+                onCancel={handleHideIconDropzone}
+              />
+              {<Avatar imageLink={iconLink ? iconLink.icon_link : team ? team.icon_link : null} name={inputNameValue} noDefaultClick={true} forceThumbnail={false} type="TEAM" />}
+              <span className="btn btn-outline-light btn-sm">
+                <SvgIconFeather icon="pencil" />
+              </span>
+            </div>
+            <div className="name-wrapper">
+              <Label className={"modal-label"}>{dictionary.teamName}</Label>
+              <div className="d-flex align-items-center mb-2">
+                <Input valid={valid.isValid} invalid={valid.isValid === false} innerRef={inputRef} autoFocus defaultValue={mode === "create" ? "" : team.name} onChange={handleInputNameChange} />
+              </div>
+              <InputFeedback valid={valid.isValid}>{valid.feedback}</InputFeedback>
+            </div>
           </div>
-          <InputFeedback valid={valid.isValid}>{valid.feedback}</InputFeedback>
         </WrapperDiv>
         <WrapperDiv>
           <Label className={"modal-label"}>{dictionary.parentTeam}</Label>

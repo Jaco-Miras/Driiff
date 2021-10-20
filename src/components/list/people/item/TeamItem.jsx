@@ -145,7 +145,7 @@ const TeamItem = (props) => {
                   name={team.name}
                   // onClick={handleOnNameClick}
                   noDefaultClick={true}
-                  imageLink={null}
+                  imageLink={team.icon_link}
                   showSlider={false}
                   type={"TEAM"}
                 />

@@ -38,9 +38,10 @@ const MembersLists = (props) => {
             className="chat-members"
             key={m.id}
             name={m.name ? m.name : m.email}
-            imageLink={m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link}
+            imageLink={m.hasOwnProperty("members") ? m.icon_link : m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link}
             hasAccepted={m.has_accepted}
             type={m.hasOwnProperty("members") ? "TEAM" : "USER"}
+            showSlider={m.hasOwnProperty("members") ? false : true}
           />
         );
       })}
