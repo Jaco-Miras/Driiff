@@ -11,7 +11,7 @@ import { ParentTreeNode } from ".";
 const Wrapper = styled.div`
   padding: 1rem;
   width: 100%;
-  overflow: auto;
+  // overflow: auto;
 `;
 
 const StyledNode = styled.div`
@@ -62,7 +62,13 @@ const AllUsersStructure = (props) => {
     {
       id: "external",
       name: dictionary.guestAccounts,
-      members: externalUsers,
+      members: externalUsers.map((m) => {
+        if (m.name && m.name.trim() === "") {
+          return { ...m, name: m.email };
+        } else {
+          return m;
+        }
+      }),
       member_ids: externalUsers.map((m) => m.id),
       parent_team: 0,
     },
