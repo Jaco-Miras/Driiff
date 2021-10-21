@@ -835,6 +835,7 @@ const CreateEditWorkspaceModal = (props) => {
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
       new_team_member_ids: [],
+      team_member_ids: team_ids,
     };
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
@@ -873,7 +874,7 @@ const CreateEditWorkspaceModal = (props) => {
     }
 
     if (mode === "edit") {
-      const activeMembers = item.members.filter((m) => m.active === 1);
+      const activeMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.active === 1);
       const activeTeams = item.members.filter((m) => m.hasOwnProperty("members"));
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
@@ -896,6 +897,7 @@ const CreateEditWorkspaceModal = (props) => {
         new_member_ids: added_members,
         new_team_member_ids: added_teams.map((t) => t.id),
         remove_team_member_ids: removed_teams.map((t) => t.id),
+        team_member_ids: activeTeams.map((t) => t.id),
       };
       if (
         removed_members.filter((rm) => rm.has_accepted).length ||
@@ -1026,10 +1028,6 @@ const CreateEditWorkspaceModal = (props) => {
         handleSubmit();
       }
     } else {
-      payload = {
-        ...payload,
-        team_member_ids: team_ids,
-      };
       const handleSubmit = () => {
         setLoading(true);
         dispatch(
