@@ -1736,14 +1736,25 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-lock-workspace", (e) => {
+        let members = [];
         if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
           this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
+        if (e.type === "WORKSPACE") {
+          members = e.members
+            .map((m) => {
+              if (m.member_ids) {
+                return m.members;
+              } else return m;
+            })
+            .flat();
         }
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
+        //get the updated members
         if (e.type === "WORKSPACE") {
           this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
@@ -1769,7 +1780,7 @@ class SocketListeners extends Component {
             }
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
-            if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
+            if (e.remove_member_ids.some((id) => id === this.props.user.id) && !members.some((m) => m.id === this.props.user.id)) {
               //redirect to first favorite workspace
               let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
               if (favoriteWorkspaces.length) {
