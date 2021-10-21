@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
-import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
 import { useSettings, useWorkspaceActions } from "../../hooks";
