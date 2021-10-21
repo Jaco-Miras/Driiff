@@ -11,7 +11,7 @@ import { MoreOptions } from "../../panels/common";
 import { useSettings, useWorkspaceActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
-import { ChatTranslateActionsMenu } from "./index";
+import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
 
 const Wrapper = styled.div`
   position: relative;
@@ -474,7 +474,8 @@ const ChatHeaderPanel = (props) => {
         {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
-      <div className="chat-header-right">
+      <ChatHeaderMembers channel={channel} />
+      {/* <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li>
@@ -482,7 +483,7 @@ const ChatHeaderPanel = (props) => {
             </li>
           )}
         </ul>
-      </div>
+      </div> */}
     </Wrapper>
   );
 };
