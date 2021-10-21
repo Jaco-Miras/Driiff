@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { TreeNode } from "react-organizational-chart";
 import { MemberLists } from "../../list/members";
 import { ParentTreeNode } from ".";
+import { useTranslationActions } from "../../hooks";
 
 const StyledNode = styled.div`
   padding: 8px;
@@ -32,6 +33,10 @@ const StyledNode = styled.div`
 
 const SubTreeNode = (props) => {
   const { team, allTeams, onSelectTeam } = props;
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    accounts: _t("CHART.ACCOUNTS", "accounts"),
+  };
   const handleSelectTeam = () => {
     onSelectTeam(team);
   };
@@ -48,7 +53,9 @@ const SubTreeNode = (props) => {
       label={
         <StyledNode onClick={handleSelectTeam}>
           <div className="team-name mb-1">{team.name}</div>
-          <div className="mb-2">{team.members.length} accounts</div>
+          <div className="mb-2">
+            {team.members.length} {dictionary.accounts}
+          </div>
           <MemberLists members={teamMembersWithIcon} />
         </StyledNode>
       }

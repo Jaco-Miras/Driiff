@@ -1332,6 +1332,14 @@ export default function (state = INITIAL_STATE, action) {
       // if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
       //   teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
       // }
+      let updatedMembers = action.data.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.members;
+          } else return m;
+        })
+        .flat();
+      updatedMembers = [...new Map(updatedMembers.map((item) => [item["id"], item])).values()];
       const sysMessage =
         action.data.type === "WORKSPACE" && action.data.system_message
           ? [
@@ -1381,7 +1389,7 @@ export default function (state = INITIAL_STATE, action) {
                 }),
                 icon_link: action.data.channel.icon_link,
                 title: action.data.name,
-                members: action.data.members.map((m) => {
+                members: updatedMembers.map((m) => {
                   return {
                     ...m,
                     bot_profile_image_link: null,
@@ -1403,7 +1411,7 @@ export default function (state = INITIAL_STATE, action) {
                     : [...state.channels[action.data.team_channel.id].replies, ...sysMessage],
                 icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
-                members: action.data.members
+                members: updatedMembers
                   .filter((m) => m.type !== "external")
                   .map((m) => {
                     return {
@@ -1444,7 +1452,7 @@ export default function (state = INITIAL_STATE, action) {
               }),
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
-              members: action.data.members.map((m) => {
+              members: updatedMembers.map((m) => {
                 return {
                   ...m,
                   bot_profile_image_link: null,
@@ -1464,7 +1472,7 @@ export default function (state = INITIAL_STATE, action) {
                   : [...state.selectedChannel.replies, ...sysMessage],
               icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
-              members: action.data.members
+              members: updatedMembers
                 .filter((m) => m.type !== "external")
                 .map((m) => {
                   return {

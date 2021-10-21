@@ -823,7 +823,8 @@ const CreateEditWorkspaceModal = (props) => {
     if (loading) return;
 
     const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
-    const member_ids = selectedMembers.map((u) => u.id);
+    const member_ids = selectedMembers.filter((m) => m.type !== "TEAM").map((m) => m.id);
+    const team_ids = selectedMembers.filter((m) => m.type === "TEAM").map((m) => m.id);
 
     let payload = {
       name: form.name,
@@ -833,6 +834,7 @@ const CreateEditWorkspaceModal = (props) => {
       is_lock: form.is_private ? 1 : 0,
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
+      new_team_member_ids: [],
     };
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
@@ -876,7 +878,7 @@ const CreateEditWorkspaceModal = (props) => {
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
 
-      const removed_members = item.members.filter((m) => !member_ids.some((id) => m.id === id));
+      const removed_members = item.members.filter((m) => !m.hasOwnProperty("members") && !member_ids.some((id) => m.id === id));
 
       const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
 
@@ -892,6 +894,8 @@ const CreateEditWorkspaceModal = (props) => {
         topic_id: item.id,
         remove_member_ids: removed_members.map((m) => m.id),
         new_member_ids: added_members,
+        new_team_member_ids: added_teams.map((t) => t.id),
+        remove_team_member_ids: removed_teams.map((t) => t.id),
       };
       if (
         removed_members.filter((rm) => rm.has_accepted).length ||
@@ -1022,6 +1026,10 @@ const CreateEditWorkspaceModal = (props) => {
         handleSubmit();
       }
     } else {
+      payload = {
+        ...payload,
+        team_member_ids: team_ids,
+      };
       const handleSubmit = () => {
         setLoading(true);
         dispatch(

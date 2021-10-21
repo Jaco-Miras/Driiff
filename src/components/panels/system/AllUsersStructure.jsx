@@ -11,7 +11,7 @@ import { ParentTreeNode } from ".";
 const Wrapper = styled.div`
   padding: 1rem;
   width: 100%;
-  overflow: auto;
+  // overflow: auto;
 `;
 
 const StyledNode = styled.div`
@@ -41,6 +41,7 @@ const StyledNode = styled.div`
 `;
 
 const AllUsersStructure = (props) => {
+  const { dictionary } = props;
   const users = useSelector((state) => state.users.users);
   const internalUsers = Object.values(users).filter((u) => u.type === "internal");
   const externalUsers = Object.values(users).filter((u) => u.type === "external");
@@ -53,15 +54,21 @@ const AllUsersStructure = (props) => {
   const internalAndExternalTeam = [
     {
       id: "internal",
-      name: "Accounts",
+      name: dictionary.internalAccounts,
       members: internalUsers,
       member_ids: internalUsers.map((m) => m.id),
       parent_team: 0,
     },
     {
       id: "external",
-      name: "Guest accounts",
-      members: externalUsers,
+      name: dictionary.guestAccounts,
+      members: externalUsers.map((m) => {
+        if (m.name && m.name.trim() === "") {
+          return { ...m, name: m.email };
+        } else {
+          return m;
+        }
+      }),
       member_ids: externalUsers.map((m) => m.id),
       parent_team: 0,
     },

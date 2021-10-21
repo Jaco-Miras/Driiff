@@ -47,7 +47,7 @@ const Option = (props) => {
             <StyledAvatar
               className="react-select-avatar"
               key={props.data.id}
-              imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
+              imageLink={props.data.type && props.data.type === "TEAM" ? props.data.icon_link : props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
               name={props.data.name}
               partialName={props.data.partial_name}
               type={props.data.type && props.data.type === "TEAM" ? "TEAM" : "USER"}

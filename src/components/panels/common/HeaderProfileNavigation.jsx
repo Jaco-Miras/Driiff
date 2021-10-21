@@ -112,8 +112,6 @@ const NotificationBadge = styled.span`
   }
 `;
 
-const GiftIcon = styled(SvgIconFeather)``;
-
 const HomeProfileNavigation = (props) => {
   const { className = "", dictionary } = props;
 
@@ -208,7 +206,8 @@ const HomeProfileNavigation = (props) => {
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
-  const handleGiftClick = () => {
+  const handleGiftClick = (e) => {
+    e.preventDefault();
     history.push("/releases");
   };
 
