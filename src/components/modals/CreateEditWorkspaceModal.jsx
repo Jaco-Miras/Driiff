@@ -874,7 +874,7 @@ const CreateEditWorkspaceModal = (props) => {
     }
 
     if (mode === "edit") {
-      const activeMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.active === 1);
+      const activeMembers = item.members.filter((m) => !m.hasOwnProperty("members"));
       const activeTeams = item.members.filter((m) => m.hasOwnProperty("members"));
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
@@ -883,7 +883,8 @@ const CreateEditWorkspaceModal = (props) => {
 
       const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
 
-      const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
+      // const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
+      const added_members = selectedMembers.filter((m) => m.type !== "TEAM" && !activeMembers.some((am) => am.id === m.id));
 
       const added_teams = form.selectedUsers.filter((m) => m.hasOwnProperty("members") && !teamIds.some((id) => id === m.id));
 

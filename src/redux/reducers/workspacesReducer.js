@@ -322,6 +322,7 @@ export default (state = INITIAL_STATE, action) => {
           is_shared: action.data.workspace_data.topic_detail.is_shared,
           show_about: action.data.workspace_data.topic_detail.show_about,
           active: action.data.workspace_data.topic_detail.active,
+          is_favourite: action.data.workspace_data.topic_detail.is_favourite,
         };
         return {
           ...state,

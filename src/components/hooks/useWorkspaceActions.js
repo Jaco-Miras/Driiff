@@ -110,7 +110,17 @@ const useWorkspaceActions = () => {
   };
 
   const selectWorkspace = (workspace, callback = () => {}) => {
-    if (workspace.members && workspace.is_lock === 1 && !workspace.members.some((m) => m.id === loggedUser.id)) return;
+    let members = [];
+    if (workspace.members) {
+      members = workspace.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.members;
+          } else return m;
+        })
+        .flat();
+    }
+    if (workspace.members && workspace.is_lock === 1 && !members.some((m) => m.id === loggedUser.id)) return;
     dispatch(
       setActiveTopic(workspace, (err, res) => {
         setGeneralSetting({
