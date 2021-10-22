@@ -22,7 +22,6 @@ const useWorkspaceAndUserOptions = (props) => {
   const internalUsers = Object.values(actualUsers).filter((u) => u.active === 1 && u.type === "internal");
 
   const [options, setOptions] = useState([]);
-  const [progress, setProgress] = useState(false);
 
   const getAddressTo = (postRecipients) => {
     return postRecipients.map((r) => {
@@ -82,65 +81,126 @@ const useWorkspaceAndUserOptions = (props) => {
     ];
   };
 
+  // useEffect(() => {
+  //   if (!progress && Object.values(actualUsers).length > 1) {
+  //     setProgress(true);
+
+  //     let workspaceOptions = [];
+  //     workspaces.forEach((ws) => {
+  //       if (typeof actualWorkspaces[ws.type_id] !== "undefined" && actualWorkspaces[ws.type_id].type === "WORKSPACE") {
+  //         workspaceOptions.push({
+  //           ...ws,
+  //           ...actualWorkspaces[ws.type_id],
+  //           icon: "compass",
+  //           value: ws.id,
+  //           label: ws.name,
+  //         });
+  //       }
+  //     });
+
+  //     let userOptions = [];
+  //     users.forEach((u) => {
+  //       if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
+  //         userOptions.push({
+  //           ...u,
+  //           //...actualUsers,
+  //           icon: "user-avatar",
+  //           value: u.id,
+  //           label: u.name ? u.name : u.email,
+  //           type: "USER",
+  //         });
+  //       }
+  //     });
+  //     const teamOptions = Object.values(teams).map((u) => {
+  //       return {
+  //         ...u,
+  //         value: u.id,
+  //         label: `${dictionary.teamLabel} ${u.name}`,
+  //         useLabel: true,
+  //         type: "TEAM",
+  //         icon: "users",
+  //       };
+  //     });
+
+  //     const options = [...workspaceOptions, ...userOptions];
+  //     const companyOption = company
+  //       ? [
+  //           {
+  //             ...company,
+  //             participant_ids: internalUsers.map((u) => u.id),
+  //             member_ids: internalUsers.map((u) => u.id),
+  //             members: internalUsers.map((u) => u),
+  //             icon: "home",
+  //             value: company.id,
+  //             label: company.name,
+  //           },
+  //         ]
+  //       : [];
+
+  //     setOptions([...companyOption, ...teamOptions, ...options]);
+  //   }
+  // }, [options, recipients, actualUsers, actualWorkspaces, teams, setOptions]);
+
   useEffect(() => {
-    if (!progress && Object.values(actualUsers).length > 1) {
-      setProgress(true);
-
-      let workspaceOptions = [];
-      workspaces.forEach((ws) => {
+    let workspaceOptions = Array.from(workspaces)
+      .filter((ws) => {
         if (typeof actualWorkspaces[ws.type_id] !== "undefined" && actualWorkspaces[ws.type_id].type === "WORKSPACE") {
-          workspaceOptions.push({
-            ...ws,
-            ...actualWorkspaces[ws.type_id],
-            icon: "compass",
-            value: ws.id,
-            label: ws.name,
-          });
-        }
-      });
-
-      let userOptions = [];
-      users.forEach((u) => {
-        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
-          userOptions.push({
-            ...u,
-            //...actualUsers,
-            icon: "user-avatar",
-            value: u.id,
-            label: u.name ? u.name : u.email,
-            type: "USER",
-          });
-        }
-      });
-      const teamOptions = Object.values(teams).map((u) => {
+          return true;
+        } else return false;
+      })
+      .map((ws) => {
         return {
-          ...u,
-          value: u.id,
-          label: `${dictionary.teamLabel} ${u.name}`,
-          useLabel: true,
-          type: "TEAM",
-          icon: "users",
+          ...ws,
+          ...actualWorkspaces[ws.type_id],
+          icon: "compass",
+          value: ws.id,
+          label: ws.name,
         };
       });
 
-      const options = [...workspaceOptions, ...userOptions];
-      const companyOption = company
-        ? [
-            {
-              ...company,
-              participant_ids: internalUsers.map((u) => u.id),
-              member_ids: internalUsers.map((u) => u.id),
-              members: internalUsers.map((u) => u),
-              icon: "home",
-              value: company.id,
-              label: company.name,
-            },
-          ]
-        : [];
+    let userOptions = Array.from(users)
+      .filter((u) => {
+        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
+          return true;
+        } else return false;
+      })
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
+      });
 
-      setOptions([...companyOption, ...teamOptions, ...options]);
-    }
-  }, [options, recipients, actualUsers, actualWorkspaces, teams, setOptions]);
+    const teamOptions = Object.values(teams).map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: `${dictionary.teamLabel} ${u.name}`,
+        useLabel: true,
+        type: "TEAM",
+        icon: "users",
+      };
+    });
+
+    const companyOption = company
+      ? [
+          {
+            ...company,
+            participant_ids: internalUsers.map((u) => u.id),
+            member_ids: internalUsers.map((u) => u.id),
+            members: internalUsers.map((u) => u),
+            icon: "home",
+            value: company.id,
+            label: company.name,
+          },
+        ]
+      : [];
+
+    setOptions([...companyOption, ...workspaceOptions, ...teamOptions, ...userOptions]);
+  }, [r.length, Object.keys(actualUsers).length, Object.keys(actualWorkspaces).length, Object.keys(teams).length]);
 
   let responsible_ids = [];
   let user_ids = [];
