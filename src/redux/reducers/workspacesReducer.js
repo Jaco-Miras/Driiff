@@ -244,7 +244,7 @@ export default (state = INITIAL_STATE, action) => {
               folder_id: ws.id,
               folder_name: ws.name,
               team_channel: t.team_channel,
-              is_favourite: t.is_favourite,
+              is_favourite: true,
               type: "WORKSPACE",
             };
           });
@@ -252,7 +252,7 @@ export default (state = INITIAL_STATE, action) => {
         } else if (ws.type === "WORKSPACE") {
           updatedWorkspaces[ws.id] = {
             ...ws,
-            is_favourite: ws.topic_detail.is_favourite,
+            is_favourite: true,
             is_shared: ws.topic_detail.is_shared,
             active: ws.topic_detail.active,
             channel: { ...ws.topic_detail.channel, loaded: false },
