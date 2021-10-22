@@ -35,6 +35,11 @@ const Wrapper = styled.div`
   .card {
     min-height: calc(100% - 40px);
   }
+  .card-body.structure {
+    overflow: auto;
+    margin: 1.5rem;
+    padding: 0;
+  }
 `;
 
 const SystemPeoplePanel = (props) => {
@@ -99,7 +104,7 @@ const SystemPeoplePanel = (props) => {
     btnTeam: _t("BUTTON.TEAM", "Team"),
     showTeams: _t("PEOPLE.SHOW_TEAMS", "Show teams"),
     editTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Edit team"),
-    removeTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Remove team"),
+    removeTeam: _t("TEAM_OPTIONS.REMOVE_TEAM", "Remove team"),
     removeTeamHeader: _t("TEAM_MODAL.REMOVE_TEAM_HEADER", "Remove team"),
     removeTeamBtn: _t("BUTTON.REMOVE_TEAM", "Remove team"),
     removeTeamConfirmation: _t("TEAM_MODAL.REMOVE_TEAM_BODY", "Are you sure you want to remove this team?"),
@@ -250,10 +255,10 @@ const SystemPeoplePanel = (props) => {
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
-        <div className="card-body">
-          <Switch>
-            <Route
-              render={() => (
+        <Switch>
+          <Route
+            render={() => (
+              <div className="card-body">
                 <TeamBody
                   loggedUser={loggedUser}
                   onNameClick={handleUserNameClick}
@@ -269,13 +274,29 @@ const SystemPeoplePanel = (props) => {
                   onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
                   onAddUserToTeam={handleAddUserToTeam}
                 />
-              )}
-              path={["/system/people/teams/:teamId/:teamName"]}
-            />
-            <Route render={() => <AllUsersStructure loggedUser={loggedUser} dictionary={dictionary} />} path={["/system/people/organization"]} />
-            <Route render={() => <AllTeams loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />} path={["/system/people/teams"]} />
-            <Route
-              render={() => (
+              </div>
+            )}
+            path={["/system/people/teams/:teamId/:teamName"]}
+          />
+          <Route
+            render={() => (
+              <div className="card-body structure">
+                <AllUsersStructure loggedUser={loggedUser} dictionary={dictionary} />
+              </div>
+            )}
+            path={["/system/people/organization"]}
+          />
+          <Route
+            render={() => (
+              <div className="card-body">
+                <AllTeams loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />
+              </div>
+            )}
+            path={["/system/people/teams"]}
+          />
+          <Route
+            render={() => (
+              <div className="card-body">
                 <AllPeople
                   loggedUser={loggedUser}
                   onNameClick={handleUserNameClick}
@@ -291,11 +312,11 @@ const SystemPeoplePanel = (props) => {
                   onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
                   onAddUserToTeam={handleAddUserToTeam}
                 />
-              )}
-              path={["/system/people"]}
-            />
-          </Switch>
-        </div>
+              </div>
+            )}
+            path={["/system/people"]}
+          />
+        </Switch>
       </div>
     </Wrapper>
   );

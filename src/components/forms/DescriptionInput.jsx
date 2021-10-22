@@ -255,7 +255,7 @@ const DescriptionInput = (props) => {
 
   const { modules } = useQuillModules({
     mode: "description",
-    mentionOrientation: "top",
+    mentionOrientation: "bottom",
     quillRef: reactQuillRef,
     members,
     workspaces,

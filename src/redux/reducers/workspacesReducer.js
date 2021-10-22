@@ -175,16 +175,18 @@ export default (state = INITIAL_STATE, action) => {
             };
           }
           ws.topics.forEach((t) => {
-            updatedWorkspaces[t.id] = {
-              ...t,
-              channel: { ...t.channel, loaded: false },
-              is_lock: t.private,
-              folder_id: ws.id,
-              folder_name: ws.name,
-              team_channel: t.team_channel,
-              is_favourite: t.is_favourite,
-              type: "WORKSPACE",
-            };
+            if (!state.workspaces[t.id]) {
+              updatedWorkspaces[t.id] = {
+                ...t,
+                channel: { ...t.channel, loaded: false },
+                is_lock: t.private,
+                folder_id: ws.id,
+                folder_name: ws.name,
+                team_channel: t.team_channel,
+                is_favourite: t.is_favourite,
+                type: "WORKSPACE",
+              };
+            }
           });
           delete updatedFolders[ws.id].topics;
         } else if (ws.type === "WORKSPACE") {
@@ -244,7 +246,7 @@ export default (state = INITIAL_STATE, action) => {
               folder_id: ws.id,
               folder_name: ws.name,
               team_channel: t.team_channel,
-              is_favourite: t.is_favourite,
+              is_favourite: true,
               type: "WORKSPACE",
             };
           });
@@ -252,7 +254,7 @@ export default (state = INITIAL_STATE, action) => {
         } else if (ws.type === "WORKSPACE") {
           updatedWorkspaces[ws.id] = {
             ...ws,
-            is_favourite: ws.topic_detail.is_favourite,
+            is_favourite: true,
             is_shared: ws.topic_detail.is_shared,
             active: ws.topic_detail.active,
             channel: { ...ws.topic_detail.channel, loaded: false },
@@ -322,6 +324,7 @@ export default (state = INITIAL_STATE, action) => {
           is_shared: action.data.workspace_data.topic_detail.is_shared,
           show_about: action.data.workspace_data.topic_detail.show_about,
           active: action.data.workspace_data.topic_detail.active,
+          is_favourite: action.data.workspace_data.topic_detail.is_favourite,
         };
         return {
           ...state,
@@ -457,7 +460,14 @@ export default (state = INITIAL_STATE, action) => {
         if (state.activeTopic && state.activeTopic.id === workspace.id) {
           updatedTopic = workspace;
         }
-        if (!action.data.member_ids.some((id) => id === state.user.id)) {
+        let members = action.data.members
+          .map((m) => {
+            if (m.member_ids) {
+              return m.members;
+            } else return m;
+          })
+          .flat();
+        if (!members.some((m) => m.id === state.user.id)) {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
             // if (Object.values(updatedWorkspaces).length) {
@@ -483,45 +493,46 @@ export default (state = INITIAL_STATE, action) => {
               }
             }
           } else {
-            if (state.activeTopic && state.activeTopic.id === action.data.id) {
-              workspaceToDelete = action.data.id;
-              //check if workspace is under a folder
-              //then check if the user is a member in other workspace under the same folder
-              // if user is no longer a member then set the folderToDelete id
-              if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
-                let isMember = false;
-                updatedFolders[action.data.workspace_id].workspace_ids
-                  .filter((id) => id !== action.data.id)
-                  .forEach((wsid) => {
-                    if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
-                      if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
-                        isMember = true;
-                      }
-                    }
-                  });
-                if (!isMember) {
-                  folderToDelete = action.data.workspace_id;
-                }
-              }
-            } else {
-              delete updatedWorkspaces[action.data.id];
-              //check if workspace is under a folder
-              //then check if the user is a member in other workspace under the same folder
-              // if user is no longer a member then delete the folder
-              if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
-                let isMember = false;
-                updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
-                  if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
-                    if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
-                      isMember = true;
-                    }
-                  }
-                });
-                if (!isMember) {
-                  delete updatedFolders[action.data.workspace_id];
-                }
-              }
-            }
+            // check if still needed
+            // if (state.activeTopic && state.activeTopic.id === action.data.id) {
+            //   workspaceToDelete = action.data.id;
+            //   //check if workspace is under a folder
+            //   //then check if the user is a member in other workspace under the same folder
+            //   // if user is no longer a member then set the folderToDelete id
+            //   if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
+            //     let isMember = false;
+            //     updatedFolders[action.data.workspace_id].workspace_ids
+            //       .filter((id) => id !== action.data.id)
+            //       .forEach((wsid) => {
+            //         if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
+            //           if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
+            //             isMember = true;
+            //           }
+            //         }
+            //       });
+            //     if (!isMember) {
+            //       folderToDelete = action.data.workspace_id;
+            //     }
+            //   }
+            // } else {
+            //   delete updatedWorkspaces[action.data.id];
+            //   //check if workspace is under a folder
+            //   //then check if the user is a member in other workspace under the same folder
+            //   // if user is no longer a member then delete the folder
+            //   if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
+            //     let isMember = false;
+            //     updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
+            //       if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
+            //         if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
+            //           isMember = true;
+            //         }
+            //       }
+            //     });
+            //     if (!isMember) {
+            //       delete updatedFolders[action.data.workspace_id];
+            //     }
+            //   }
+            // }
           }
         }
         if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
