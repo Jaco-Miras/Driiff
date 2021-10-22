@@ -175,16 +175,18 @@ export default (state = INITIAL_STATE, action) => {
             };
           }
           ws.topics.forEach((t) => {
-            updatedWorkspaces[t.id] = {
-              ...t,
-              channel: { ...t.channel, loaded: false },
-              is_lock: t.private,
-              folder_id: ws.id,
-              folder_name: ws.name,
-              team_channel: t.team_channel,
-              is_favourite: t.is_favourite,
-              type: "WORKSPACE",
-            };
+            if (!state.workspaces[t.id]) {
+              updatedWorkspaces[t.id] = {
+                ...t,
+                channel: { ...t.channel, loaded: false },
+                is_lock: t.private,
+                folder_id: ws.id,
+                folder_name: ws.name,
+                team_channel: t.team_channel,
+                is_favourite: t.is_favourite,
+                type: "WORKSPACE",
+              };
+            }
           });
           delete updatedFolders[ws.id].topics;
         } else if (ws.type === "WORKSPACE") {
