@@ -225,7 +225,7 @@ const SnoozeItem = (props) => {
     let header = "",
       body = "";
     if (type === "notification") {
-      var firstName = users[n.author.id] ? users[n.author.id].first_name : "";
+      var firstName = n.author && users[n.author.id] ? users[n.author.id].first_name : "";
       if (n.type === "POST_MENTION") {
         header = `${firstName} ${dictionary.notificationMention} ${n.data.title}`;
         //n.data.workspaces && n.data.workspaces.length > 0 && n.data.workspaces[0].workspace_name && (header += <Icon icon="folder" />);
