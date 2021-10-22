@@ -295,8 +295,10 @@ const ChatHeaderPanel = (props) => {
     }
 
     document.body.classList.remove("navigation-show");
-    workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
-    workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+    if (workspaces[chatChannel.entity_id]) {
+      workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
+      workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+    }
   };
 
   const handleRedirectToProfile = (e, profile) => {

@@ -1551,23 +1551,24 @@ class SocketListeners extends Component {
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.props.user.id)) {
+              this.props.history.push("/workspace/search");
               //redirect to first favorite workspace
-              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
-              if (favoriteWorkspaces.length) {
-                let workspace = favoriteWorkspaces[0];
-                this.props.setActiveTopic(workspace);
-                if (workspace.folder_id) {
-                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                } else {
-                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                }
-                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
-                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
-                    this.props.history.push(`/chat/${workspace.channel.code}`);
-                  }
-                }
-              }
+              // let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              // if (favoriteWorkspaces.length) {
+              //   let workspace = favoriteWorkspaces[0];
+              //   this.props.setActiveTopic(workspace);
+              //   if (workspace.folder_id) {
+              //     this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   } else {
+              //     this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   }
+              //   if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+              //     if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+              //       this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+              //       this.props.history.push(`/chat/${workspace.channel.code}`);
+              //     }
+              //   }
+              // }
             }
           }
         }
@@ -1814,23 +1815,24 @@ class SocketListeners extends Component {
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (e.remove_member_ids.some((id) => id === this.props.user.id) && !members.some((m) => m.id === this.props.user.id)) {
+              this.props.history.push("/workspace/search");
               //redirect to first favorite workspace
-              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
-              if (favoriteWorkspaces.length) {
-                let workspace = favoriteWorkspaces[0];
-                this.props.setActiveTopic(workspace);
-                if (workspace.folder_id) {
-                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                } else {
-                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                }
-                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
-                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
-                    this.props.history.push(`/chat/${workspace.channel.code}`);
-                  }
-                }
-              }
+              // let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              // if (favoriteWorkspaces.length) {
+              //   let workspace = favoriteWorkspaces[0];
+              //   this.props.setActiveTopic(workspace);
+              //   if (workspace.folder_id) {
+              //     this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   } else {
+              //     this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   }
+              //   if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+              //     if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+              //       this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+              //       this.props.history.push(`/chat/${workspace.channel.code}`);
+              //     }
+              //   }
+              // }
             }
           }
         }

@@ -104,7 +104,7 @@ const SystemPeoplePanel = (props) => {
     btnTeam: _t("BUTTON.TEAM", "Team"),
     showTeams: _t("PEOPLE.SHOW_TEAMS", "Show teams"),
     editTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Edit team"),
-    removeTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Remove team"),
+    removeTeam: _t("TEAM_OPTIONS.REMOVE_TEAM", "Remove team"),
     removeTeamHeader: _t("TEAM_MODAL.REMOVE_TEAM_HEADER", "Remove team"),
     removeTeamBtn: _t("BUTTON.REMOVE_TEAM", "Remove team"),
     removeTeamConfirmation: _t("TEAM_MODAL.REMOVE_TEAM_BODY", "Are you sure you want to remove this team?"),
