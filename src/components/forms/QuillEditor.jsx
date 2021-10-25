@@ -13,7 +13,7 @@ const QuillEditor = forwardRef((props, ref) => {
 
   const appliedPlaceholder = placeholder !== "" ? placeholder : _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...");
 
-  return <ReactQuill className={`quill-editor ${className}`} theme={theme} {...otherProps} ref={ref} placeholder={appliedPlaceholder} />;
+  return <ReactQuill className={`quill-editor ${className}`} theme={theme} {...otherProps} bounds={".quill-editor"} ref={ref} placeholder={appliedPlaceholder} />;
 });
 export default QuillEditor;
 
@@ -44,3 +44,14 @@ Quill.register("modules/magicUrl", MagicUrl);
 Quill.register("modules/clipboard", QuillPasteSmart);
 
 Quill.register("modules/imageUploader", ImageUploader);
+var Link = Quill.import("formats/link");
+var builtInFunc = Link.sanitize;
+Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+  var val = linkValueInput;
+
+  // do nothing, since this implies user's already using a custom protocol
+  if (/^\w+:/.test(val));
+  else if (!/^https?:/.test(val)) val = "https://" + val;
+
+  return builtInFunc.call(this, val); // retain the built-in logic
+};
