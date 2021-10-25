@@ -81,66 +81,6 @@ const useWorkspaceAndUserOptions = (props) => {
     ];
   };
 
-  // useEffect(() => {
-  //   if (!progress && Object.values(actualUsers).length > 1) {
-  //     setProgress(true);
-
-  //     let workspaceOptions = [];
-  //     workspaces.forEach((ws) => {
-  //       if (typeof actualWorkspaces[ws.type_id] !== "undefined" && actualWorkspaces[ws.type_id].type === "WORKSPACE") {
-  //         workspaceOptions.push({
-  //           ...ws,
-  //           ...actualWorkspaces[ws.type_id],
-  //           icon: "compass",
-  //           value: ws.id,
-  //           label: ws.name,
-  //         });
-  //       }
-  //     });
-
-  //     let userOptions = [];
-  //     users.forEach((u) => {
-  //       if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
-  //         userOptions.push({
-  //           ...u,
-  //           //...actualUsers,
-  //           icon: "user-avatar",
-  //           value: u.id,
-  //           label: u.name ? u.name : u.email,
-  //           type: "USER",
-  //         });
-  //       }
-  //     });
-  //     const teamOptions = Object.values(teams).map((u) => {
-  //       return {
-  //         ...u,
-  //         value: u.id,
-  //         label: `${dictionary.teamLabel} ${u.name}`,
-  //         useLabel: true,
-  //         type: "TEAM",
-  //         icon: "users",
-  //       };
-  //     });
-
-  //     const options = [...workspaceOptions, ...userOptions];
-  //     const companyOption = company
-  //       ? [
-  //           {
-  //             ...company,
-  //             participant_ids: internalUsers.map((u) => u.id),
-  //             member_ids: internalUsers.map((u) => u.id),
-  //             members: internalUsers.map((u) => u),
-  //             icon: "home",
-  //             value: company.id,
-  //             label: company.name,
-  //           },
-  //         ]
-  //       : [];
-
-  //     setOptions([...companyOption, ...teamOptions, ...options]);
-  //   }
-  // }, [options, recipients, actualUsers, actualWorkspaces, teams, setOptions]);
-
   useEffect(() => {
     let workspaceOptions = Array.from(workspaces)
       .filter((ws) => {
@@ -158,9 +98,24 @@ const useWorkspaceAndUserOptions = (props) => {
         };
       });
 
+    const botCodes = [
+      "gripp_bot_account",
+      "gripp_account_activation",
+      "gripp_offerte_bot",
+      "gripp_bot_invoice",
+      "gripp_invoice_bot",
+      "gripp_bot_offerte",
+      "gripp_bot_project",
+      "gripp_project_bot",
+      "gripp_bot_account",
+      "gripp_account_bot",
+      "driff_webhook_bot",
+      "huddle_bot",
+      "default_bot",
+    ];
     let userOptions = Array.from(users)
       .filter((u) => {
-        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
+        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1 && !botCodes.includes(actualUsers[u.type_id].email)) {
           return true;
         } else return false;
       })
