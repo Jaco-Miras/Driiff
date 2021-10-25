@@ -133,6 +133,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 5px;
+    min-height: 150px;
   }
 `;
 
@@ -245,6 +246,11 @@ const DescriptionInput = (props) => {
     handleShowEmojiPicker();
   };
 
+  const handleFocus = (e) => {
+    e.stopPropagation();
+    if (reactQuillRef.current) reactQuillRef.current.focus();
+  };
+
   /*useEffect(() => {
     if (mode === "edit" && defaultValue) {
       const editor = reactQuillRef.current.getEditor();
@@ -266,7 +272,7 @@ const DescriptionInput = (props) => {
   });
 
   return (
-    <WrapperDiv className={`description-input ${className}`}>
+    <WrapperDiv className={`description-input ${className}`} onClick={handleFocus}>
       <Label for="firstMessage">{dictionary.description}</Label>
       <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} readOnly={readOnly} {...otherProps} />

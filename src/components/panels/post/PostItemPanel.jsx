@@ -309,7 +309,7 @@ const PostItemPanel = (props) => {
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-              {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+              <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
               {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
             </MoreOptions>
           )}

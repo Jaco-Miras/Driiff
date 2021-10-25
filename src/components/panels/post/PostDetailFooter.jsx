@@ -719,7 +719,7 @@ const PostDetailFooter = (props) => {
         <ClosedLabel className="d-flex align-items-center">
           <div className="alert alert-warning">
             <span>{dictionary.creatorClosedPost}</span>
-            {(post.author.id === user.id || (post.author.type === "external" && user.type === "internal")) && <span onClick={handleReopen}>{dictionary.reopen}</span>}
+            <span onClick={handleReopen}>{dictionary.reopen}</span>
           </div>
         </ClosedLabel>
       )}
