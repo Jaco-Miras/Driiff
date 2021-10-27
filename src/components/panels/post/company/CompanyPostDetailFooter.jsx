@@ -309,6 +309,7 @@ const CompanyPostDetailFooter = (props) => {
     archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
     send: _t("TOOLTIP.SEND", "Send"),
     closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
+    userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post.post_close.initiator.name }),
   };
 
   const handleQuillImage = () => {
@@ -624,7 +625,7 @@ const CompanyPostDetailFooter = (props) => {
       {post.is_close && mainInput && (
         <ClosedLabel className="d-flex align-items-center">
           <div className="alert alert-warning">
-            <span>{dictionary.creatorClosedPost}</span>
+            <span>{dictionary.userClosedPost}</span>
             <span onClick={handleReopen}>{dictionary.reopen}</span>
           </div>
         </ClosedLabel>
