@@ -969,6 +969,9 @@ export default (state = INITIAL_STATE, action) => {
               [action.data.post.id]: {
                 ...state.companyPosts.posts[action.data.post.id],
                 is_close: action.data.is_close,
+                post_close: {
+                  initiator: action.data.initiator,
+                },
               },
             }),
           },
