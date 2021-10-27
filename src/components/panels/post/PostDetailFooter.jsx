@@ -343,6 +343,7 @@ const PostDetailFooter = (props) => {
     disagree: _t("POST.DISAGREE", "Disagree"),
     overview: _t("POST.OVERVIEW", "Overview"),
     archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
+    userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post.post_close.initiator.name }),
   };
 
   const handleUnarchive = () => {
@@ -718,8 +719,8 @@ const PostDetailFooter = (props) => {
       {post.is_close && mainInput && (
         <ClosedLabel className="d-flex align-items-center">
           <div className="alert alert-warning">
-            <span>{dictionary.creatorClosedPost}</span>
-            {(post.author.id === user.id || (post.author.type === "external" && user.type === "internal")) && <span onClick={handleReopen}>{dictionary.reopen}</span>}
+            <span>{dictionary.userClosedPost}</span>
+            <span onClick={handleReopen}>{dictionary.reopen}</span>
           </div>
         </ClosedLabel>
       )}

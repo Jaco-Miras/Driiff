@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { useFiles, useGoogleApis, useRedirect, useTimeFormat, useWindowSize } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
-import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
-import { PostBadge, PostVideos, PostChangeAccept } from "../index";
+import { PostBadge, PostVideos, PostChangeAccept, PostBodyButtons } from "../index";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { renderToString } from "react-dom/server";
 import { sessionService } from "redux-react-session";
@@ -88,40 +87,12 @@ const Wrapper = styled.div`
   }
 `;
 
-const toggleTooltip = () => {
-  let tooltips = document.querySelectorAll("span.react-tooltip-lite");
-  tooltips.forEach((tooltip) => {
-    tooltip.parentElement.classList.toggle("tooltip-active");
-  });
-};
-
-const StyledTooltip = styled(Tooltip)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
-  cursor: pointer;
-`;
-
 const LockIcon = styled(SvgIconFeather)`
   width: 12px;
   vertical-align: top;
   margin-right: 0;
 `;
 
-// const ApprovedText = styled.div`
-//   span.approve-ip {
-//     display: none;
-//   }
-//   :hover {
-//     span.approve-ip {
-//       display: block;
-//     }
-//   }
-// `;
 const AuthorRecipients = styled.div`
   display: flex;
   align-items: center;
@@ -185,22 +156,6 @@ const AuthorRecipients = styled.div`
       margin-left: 5px;
     }
   }
-  // .receiver.client-shared {
-  //   background: #ffdb92;
-  //   color: #212529;
-  //   margin-right: 5px;
-  //   .feather {
-  //     margin-right: 5px;
-  //   }
-  // }
-  // .receiver.client-not-shared {
-  //   background: #d6edff;
-  //   color: #212529;
-  //   margin-right: 5px;
-  //   .feather {
-  //     margin-right: 5px;
-  //   }
-  // }
 `;
 
 const PostBadgeWrapper = styled.div`
@@ -264,57 +219,17 @@ const CompanyPostBody = (props) => {
     body: useRef(null),
   };
 
-  const componentIsMounted = useRef(true);
-
   const {
     fileBlobs,
     actions: { setFileSrc },
   } = useFiles();
   const redirect = useRedirect();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const postRecipients = useSelector((state) =>
-    state.global.recipients
-      .filter((r) => post.recipient_ids.includes(r.id))
-      .sort((a, b) => {
-        if (a.type !== b.type) {
-          if (a.type === "TOPIC") return -1;
-          if (b.type === "TOPIC") return 1;
-        }
-        return a.name.localeCompare(b.name);
-      })
-  );
-
-  const [star, setStar] = useState(post.is_favourite);
   const [approving, setApproving] = useState({ approve: false, change: false });
-  const { fromNow, localizeDate } = useTimeFormat();
+  const { fromNow } = useTimeFormat();
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
   const history = useHistory();
-  const [archivedClicked, setArchivedClicked] = useState(false);
-  const [starClicked, setStarClicked] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      componentIsMounted.current = false;
-    };
-  }, []);
-
-  const handleStarPost = () => {
-    if (disableOptions || starClicked) return;
-    setStarClicked(true);
-    postActions.starPost(post, () => {
-      if (componentIsMounted.current) setStarClicked(false);
-    });
-    if (componentIsMounted.current) setStar(!star);
-  };
-
-  const handleArchivePost = () => {
-    if (archivedClicked) return;
-    setArchivedClicked(true);
-    postActions.archivePost(post, () => {
-      if (componentIsMounted.current) setArchivedClicked(false);
-    });
-  };
 
   const handleInlineImageClick = (e) => {
     let id = null;
@@ -337,7 +252,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -482,7 +397,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -522,16 +437,7 @@ const CompanyPostBody = (props) => {
           </div>
           <PostBadgeWrapper>
             <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
-            <div className="d-inline-flex">
-              {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
-              <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
-              {!disableOptions && !disableMarkAsRead() && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
-              <div className={"time-stamp"}>
-                <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
-                  <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
-                </StyledTooltip>
-              </div>
-            </div>
+            <PostBodyButtons dictionary={dictionary} post={post} disableMarkAsRead={disableMarkAsRead} disableOptions={disableOptions} />
           </PostBadgeWrapper>
         </div>
       </div>

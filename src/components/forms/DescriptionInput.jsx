@@ -36,7 +36,7 @@ const WrapperDiv = styled(InputGroup)`
       background-position: right 0.5rem top 0.5rem;
       background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 
-      .action-wrapper {
+      .btns {
         margin-right: -32px;
       }
     }
@@ -48,7 +48,7 @@ const WrapperDiv = styled(InputGroup)`
       background-position: right 0.5rem top 0.5rem;
       background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 
-      .action-wrapper {
+      .btns {
         margin-right: -32px;
       }
     }
@@ -133,6 +133,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 5px;
+    min-height: 150px;
   }
 `;
 
@@ -175,7 +176,10 @@ const DescriptionInputWrapper = styled.div`
 const Buttons = styled.div`
   padding: 5px;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 1rem;
 `;
 
 const PickerContainer = styled(CommonPicker)`
@@ -245,6 +249,11 @@ const DescriptionInput = (props) => {
     handleShowEmojiPicker();
   };
 
+  const handleFocus = (e) => {
+    e.stopPropagation();
+    if (reactQuillRef.current) reactQuillRef.current.focus();
+  };
+
   /*useEffect(() => {
     if (mode === "edit" && defaultValue) {
       const editor = reactQuillRef.current.getEditor();
@@ -272,7 +281,7 @@ const DescriptionInput = (props) => {
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} readOnly={readOnly} {...otherProps} />
         {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} />}
         {!readOnly && (
-          <Buttons className="action-wrapper">
+          <Buttons className="btns" onClick={handleFocus}>
             <IconButton onClick={handleShowEmojiPicker} icon="smile" />
             {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
           </Buttons>
