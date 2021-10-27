@@ -394,7 +394,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
   }
 
   // replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
-  replyBody = parseSystemMessage(stripGif(replyBody));
+  replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
 
   let quoteAuthor = "";
   let quoteBody = "";
