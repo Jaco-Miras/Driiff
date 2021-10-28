@@ -20,6 +20,8 @@ import {
   setPostRead,
   clearApprovingState,
   setChangeRequestedComment,
+  fetchPost,
+  fetchCommentsOnVisit,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTodoActions, useTranslationActions } from "./index";
@@ -195,6 +197,21 @@ const useCommentActions = () => {
     dispatch(setChangeRequestedComment(payload, callback));
   };
 
+  const fetchPostAndComments = (post, callback) => {
+    dispatch(
+      fetchPost({ post_id: post.id }, (err, res) => {
+        if (err) return;
+        if (res) {
+          let url = `/v1/messages?post_id=${post.id}&skip=${0}&limit=${res.data.reply_count}`;
+          let payload = {
+            url,
+          };
+          dispatch(fetchCommentsOnVisit(payload));
+        }
+      })
+    );
+  };
+
   return {
     add,
     addQuote,
@@ -216,6 +233,7 @@ const useCommentActions = () => {
     setPostReadComments,
     clearApprovingStatus,
     setRequestForChangeComment,
+    fetchPostAndComments,
   };
 };
 

@@ -480,3 +480,7 @@ export function readNotification(payload, callback) {
 export function refetchUnreadCompanyPosts(payload, callback) {
   return dispatchActionToReducer(getCompanyPostsService(payload), "REFETCH_UNREAD_COMPANY_POSTS_START", "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS", "REFETCH_UNREAD_COMPANY_POSTS_FAIL", callback);
 }
+
+export function fetchCommentsOnVisit(payload, callback) {
+  return dispatchActionToReducer(fetchCommentsService(payload), "FETCH_COMMENTS_ON_VISIT_START", "FETCH_COMMENTS_ON_VISIT_SUCCESS", "FETCH_COMMENTS_ON_VISIT_FAIL", callback);
+}

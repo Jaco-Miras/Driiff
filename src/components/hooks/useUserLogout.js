@@ -6,6 +6,7 @@ import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { userLogout } from "../../redux/actions/userAction";
 import reduxPersist from "../../redux/store/configStore";
+import { browserName, deviceType } from "react-device-detect";
 
 const useUserLogout = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,9 @@ const useUserLogout = () => {
           .then(() => {
             history.push("/login");
             dispatch(toggleLoading(false));
+            if (deviceType === "mobile" && browserName === "WebKit") {
+              window.webkit.messageHandlers.driffLogout.postMessage({ slug: "24", status: "OK" });
+            }
           });
       })
     );
