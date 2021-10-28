@@ -309,7 +309,7 @@ const CompanyPostDetailFooter = (props) => {
     archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
     send: _t("TOOLTIP.SEND", "Send"),
     closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
-    userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post.post_close.initiator.name }),
+    userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post && typeof post.post_close === "object" && post.post_close.initiator ? post.post_close.initiator.name : "" }),
   };
 
   const handleQuillImage = () => {
