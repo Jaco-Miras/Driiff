@@ -266,7 +266,7 @@ const InvitedUsersModal = (props) => {
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
         {dictionary.userInvitations}
       </ModalHeaderSection>
-      {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
+      {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalBody>
           <StyledTable className="table table-responsive">
             <tr>
@@ -279,7 +279,7 @@ const InvitedUsersModal = (props) => {
                 <th>{dictionary.name}</th>
               )}
               <th>{dictionary.email}</th>
-              {(!fromRegister || user.role.name === "owner" || user.role.name === "admin") && <th className="team-th">{dictionary.addUserToteams}</th>}
+              {!fromRegister && <th className="team-th">{dictionary.addUserToteams}</th>}
               <th>
                 <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
               </th>
@@ -337,7 +337,7 @@ const InvitedUsersModal = (props) => {
                       onChange={handleInputChange}
                     />
                   </td>
-                  {(!fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
+                  {!fromRegister && (user.role.name === "owner" || user.role.name === "admin") && (
                     <td>
                       <SelectPeople options={teamOptions} value={item.teams} onChange={(e) => handleSelectTeam(e, key)} isSearchable isMulti={true} isClearable={true} />
                     </td>
@@ -358,12 +358,7 @@ const InvitedUsersModal = (props) => {
           </StyledTable>
         </ModalBody>
       )}
-      {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
-        <ModalBody>
-          <div>{dictionary.availableToAdmin}</div>
-        </ModalBody>
-      )}
-      {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
+      {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalFooter>
           <Button outline color="secondary" onClick={toggle}>
             {cancelText}
@@ -375,11 +370,16 @@ const InvitedUsersModal = (props) => {
         </ModalFooter>
       )}
       {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
-        <ModalFooter>
-          <Button outline color="secondary" onClick={toggle}>
-            {dictionary.closeButton}
-          </Button>
-        </ModalFooter>
+        <>
+          <ModalBody>
+            <div>{dictionary.availableToAdmin}</div>
+          </ModalBody>
+          <ModalFooter>
+            <Button outline color="secondary" onClick={toggle}>
+              {dictionary.closeButton}
+            </Button>
+          </ModalFooter>
+        </>
       )}
     </Modal>
   );
