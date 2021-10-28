@@ -3891,6 +3891,37 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "FETCH_COMMENTS_ON_VISIT_SUCCESS": {
+      let postComments = { ...state.postComments };
+      if (action.data.messages.length) {
+        const comments = action.data.messages.reduce((acc, c) => {
+          acc[c.id] = {
+            ...c,
+            clap_user_ids: [],
+            replies: convertArrayToObject(
+              c.replies.map((r) => {
+                return { ...r, clap_user_ids: [] };
+              }),
+              "id"
+            ),
+            skip: c.replies.length,
+            hasMore: c.replies.length === 10,
+            limit: 10,
+          };
+          return acc;
+        }, {});
+        postComments[action.data.post_id] = {
+          ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id]),
+          comments: { ...comments, ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id].comments) },
+        };
+        return {
+          ...state,
+          postComments: postComments,
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }

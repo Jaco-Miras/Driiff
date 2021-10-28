@@ -13,6 +13,10 @@ const useComments = (post) => {
   const componentIsMounted = useRef(true);
 
   useEffect(() => {
+    if (postComments.hasOwnProperty(post.id)) {
+      commentActions.fetchPostAndComments(post);
+    }
+
     return () => {
       componentIsMounted.current = null;
     };
