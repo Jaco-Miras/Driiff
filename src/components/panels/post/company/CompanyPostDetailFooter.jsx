@@ -300,7 +300,7 @@ const CompanyPostDetailFooter = (props) => {
     disagree: _t("POST.DISAGREE", "Disagree"),
     overview: _t("POST.OVERVIEW", "Overview"),
     archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
-    userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post.post_close.initiator.name }),
+    userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post && typeof post.post_close === "object" && post.post_close.initiator ? post.post_close.initiator.name : "" }),
   };
 
   const handleQuillImage = () => {

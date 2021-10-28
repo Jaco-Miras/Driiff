@@ -36,6 +36,7 @@ import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
+import { browserName, deviceType } from "react-device-detect";
 
 export const userForceLogout = () => {
   if (localStorage.getItem("userAuthToken")) {
@@ -394,6 +395,9 @@ const useUserActions = () => {
           .deleteSession()
           .then(() => sessionService.deleteUser())
           .then(() => {
+            if (deviceType === "mobile" && browserName === "WebKit") {
+              window.webkit.messageHandlers.driffLogout.postMessage({ slug: "24", status: "OK" });
+            }
             dispatch(
               toggleLoading(false, () => {
                 toaster.success("You are logged out");
