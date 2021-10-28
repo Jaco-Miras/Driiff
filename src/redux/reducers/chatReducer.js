@@ -633,21 +633,7 @@ export default function (state = INITIAL_STATE, action) {
                   };
                 }
               })
-            : // .sort((a, b) => {
-              //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-              //     return a.id - b.id;
-              //   } else {
-              //     return a.created_at.timestamp - b.created_at.timestamp;
-              //   }
-              // })
-              [...channel.replies, action.data],
-          // .sort((a, b) => {
-          //     if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-          //       return a.id - b.id;
-          //     } else {
-          //       return a.created_at.timestamp - b.created_at.timestamp;
-          //     }
-          //   })
+            : [...channel.replies, action.data],
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
@@ -1658,7 +1644,8 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...action.data.channel_detail,
           icon_link: channels[action.data.channel_detail.id].icon_link,
-          replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
+          //replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
+          replies: [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)), //remove placeholder chat messages
           //.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1682,7 +1669,8 @@ export default function (state = INITIAL_STATE, action) {
             return { ...m, channel_id: c.channel_id };
           });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
-          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          //channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp); //remove placeholder chat messages
           // channels[c.channel_id].last_reply = newMessages[0];
         }
       });
