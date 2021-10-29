@@ -176,6 +176,7 @@ import {
   updateWorkspacePostCount,
   setActiveTopic,
   getAllWorkspaceFolders,
+  incomingWorkpaceNotificationStatus,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -268,6 +269,10 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".workspace-active", (e) => {
+        console.log(e);
+        this.props.incomingWorkpaceNotificationStatus(e);
+      })
       .listen(".notification-read", (e) => {
         this.props.incomingReadNotifications(e);
       })
@@ -2295,6 +2300,7 @@ function mapDispatchToProps(dispatch) {
     getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
     removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
     removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
+    incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
   };
 }
 

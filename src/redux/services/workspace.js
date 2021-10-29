@@ -450,3 +450,12 @@ export function getExistingFolder(payload) {
     data: payload,
   });
 }
+
+export function putWorkspaceNotification(payload) {
+  let url = `/v2/workspace-active/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}

@@ -409,8 +409,11 @@ const useUserActions = () => {
           .deleteSession()
           .then(() => sessionService.deleteUser())
           .then(() => {
+            const host = window.location.host.split(".");
             if (deviceType === "mobile" && browserName === "WebKit") {
-              window.webkit.messageHandlers.driffLogout.postMessage({ slug: "24", status: "OK" });
+              if (host.length === 3) {
+                window.webkit.messageHandlers.driffLogout.postMessage({ slug: host[0], status: "OK" });
+              }
             }
             dispatch(
               toggleLoading(false, () => {

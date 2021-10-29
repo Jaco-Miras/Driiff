@@ -33,6 +33,7 @@ import {
   toggleShowAbout as toggleShowAboutService,
   getAllWorkspaceFolders as getAllWorkspaceFoldersService,
   getExistingFolder as getExistingFolderService,
+  putWorkspaceNotification as putWorkspaceNotificationService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -288,4 +289,12 @@ export function getAllWorkspaceFolders(payload, callback) {
 
 export function getExistingFolder(payload, callback) {
   return dispatchActionToReducer(getExistingFolderService(payload), "GET_EXISTING_WORKSPACE_FOLDER_START", "GET_EXISTING_WORKSPACE_FOLDER_SUCCESS", "GET_EXISTING_WORKSPACE_FOLDER_FAIL", callback);
+}
+
+export function putWorkspaceNotification(payload, callback) {
+  return dispatchActionToReducer(putWorkspaceNotificationService(payload), "TOGGLE_WORKSPACE_NOTIFICATION_START", "TOGGLE_WORKSPACE_NOTIFICATION_SUCCESS", "TOGGLE_WORKSPACE_NOTIFICATION_FAIL", callback);
+}
+
+export function incomingWorkpaceNotificationStatus(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_NOTIFICATION_STATUS", payload, callback);
 }
