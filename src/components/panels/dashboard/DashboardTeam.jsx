@@ -127,7 +127,7 @@ const DashboardTeam = (props) => {
                   key={member.id}
                   member={member}
                   //parentRef={scrollRef}
-                  onEditClick={onEditClick}
+                  //onEditClick={onEditClick}
                   onLeaveWorkspace={onLeaveWorkspace}
                   onAddRole={onAddRole}
                   hideOptions={hideOptions}
