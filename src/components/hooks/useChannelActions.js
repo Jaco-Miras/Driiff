@@ -73,7 +73,7 @@ const useChannelActions = () => {
     dispatch(
       postCreateChannel(payload, (err, res) => {
         if (err) {
-          toaster.success(dictionary.toasterGeneraError);
+          toaster.error(dictionary.toasterGeneraError);
         }
         if (res) {
           const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? (res.data.channel.profile ? res.data.channel.profile.name : "") : "";
