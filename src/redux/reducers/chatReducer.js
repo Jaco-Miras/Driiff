@@ -607,50 +607,75 @@ export default function (state = INITIAL_STATE, action) {
     }
 
     case "INCOMING_CHAT_MESSAGE": {
-      let haveReference = false;
-      let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
-        if (channel.id === action.data.channel_id && action.data.user.id === state.user.id) {
-          if (action.data.reference_id) haveReference = channel.replies.some((r) => r.reference_id === action.data.reference_id);
-        }
-        channel = {
-          ...channel,
-          is_hidden: false,
-          replies: haveReference
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  return {
-                    ...r,
-                    id: action.data.id,
-                    created_at: action.data.created_at,
-                    updated_at: action.data.created_at,
-                  };
-                } else {
-                  return {
-                    ...r,
-                    is_read: true,
-                  };
-                }
-              })
-            : [...channel.replies, action.data],
-          last_visited_at_timestamp: getCurrentTimestamp(),
-          last_reply: action.data,
-          total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
-          replyCount: (channel.replyCount && action.data.user && action.data.user.id !== state.user.id) || (channel.replyCount && !action.data.user) ? channel.replyCount + 1 : channel.replyCount ? channel.replyCount : 1000,
-        };
-      }
       return {
         ...state,
         lastReceivedMessage: action.data,
-        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
-        channels:
-          channel !== null
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
+                ...state.selectedChannel,
+                replies: action.data.hasOwnProperty("reference_id")
+                  ? state.selectedChannel.replies.map((r) => {
+                      if (r.id === action.data.reference_id) {
+                        return {
+                          ...r,
+                          id: action.data.id,
+                          created_at: action.data.created_at,
+                          updated_at: action.data.created_at,
+                        };
+                      } else {
+                        return {
+                          ...r,
+                          is_read: true,
+                        };
+                      }
+                    })
+                  : [...state.selectedChannel.replies, action.data],
+                last_visited_at_timestamp: getCurrentTimestamp(),
+                last_reply: action.data,
+                total_unread: action.data.is_read ? 0 : state.selectedChannel.total_unread + 1,
+                replyCount:
+                  (state.selectedChannel.replyCount && action.data.user && state.user && action.data.user.id !== state.user.id) || (state.selectedChannel.replyCount && !action.data.user)
+                    ? state.selectedChannel.replyCount + 1
+                    : state.selectedChannel.replyCount
+                    ? state.selectedChannel.replyCount
+                    : 1000,
               }
-            : state.channels,
+            : state.selectedChannel,
+        channels: {
+          ...state.channels,
+          ...(state.channels[action.data.channel_id] && {
+            [action.data.channel_id]: {
+              ...state.channels[action.data.channel_id],
+              replies: action.data.hasOwnProperty("reference_id")
+                ? state.channels[action.data.channel_id].replies.map((r) => {
+                    if (r.id === action.data.reference_id) {
+                      return {
+                        ...r,
+                        id: action.data.id,
+                        created_at: action.data.created_at,
+                        updated_at: action.data.created_at,
+                      };
+                    } else {
+                      return {
+                        ...r,
+                        is_read: true,
+                      };
+                    }
+                  })
+                : [...state.channels[action.data.channel_id].replies, action.data],
+              last_visited_at_timestamp: getCurrentTimestamp(),
+              last_reply: action.data,
+              total_unread: action.data.is_read ? 0 : state.channels[action.data.channel_id].total_unread + 1,
+              replyCount:
+                (state.channels[action.data.channel_id].replyCount && action.data.user && state.user && action.data.user.id !== state.user.id) || (state.channels[action.data.channel_id].replyCount && !action.data.user)
+                  ? state.channels[action.data.channel_id].replyCount + 1
+                  : state.channels[action.data.channel_id].replyCount
+                  ? state.channels[action.data.channel_id].replyCount
+                  : 1000,
+            },
+          }),
+        },
       };
     }
     case "INCOMING_CHAT_MESSAGE_FROM_OTHERS": {
