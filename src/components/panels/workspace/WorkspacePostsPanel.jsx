@@ -233,6 +233,7 @@ const WorkspacePostsPanel = (props) => {
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
     inProgress: _t("POST.IN_PROGRESS", "In progress"),
     teamLabel: _t("TEAM", "Team"),
+    new: _t("POST.NEW", "New"),
   };
 
   useEffect(() => {
