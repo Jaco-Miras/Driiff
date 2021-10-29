@@ -267,6 +267,11 @@ const Icon = styled(SvgIconFeather)`
   height: 14px !important;
   width: 14px !important;
   margin-left: 5px;
+  cursor: pointer;
+  &.feather-bell,
+  &.feather-bell-off {
+    color: #64625c;
+  }
 `;
 
 const StarIcon = styled(SvgIconFeather)`
@@ -274,6 +279,7 @@ const StarIcon = styled(SvgIconFeather)`
   width: 14px !important;
   margin-left: 5px;
   cursor: pointer;
+  color: #64625c;
   ${(props) =>
     props.isFav &&
     `
@@ -504,6 +510,14 @@ const WorspaceHeaderPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const handleWorkspaceNotification = () => {
+    const payload = {
+      id: activeTopic.id,
+      is_active: false,
+    };
+    actions.toggleWorkspaceNotification(payload);
+  };
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -568,6 +582,9 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       <li className="nav-item">
+                        <Icon icon="bell" onClick={handleWorkspaceNotification} />
+                      </li>
+                      <li className="nav-item">
                         <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
                       </li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
@@ -614,7 +631,9 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
-
+                      <li className="nav-item">
+                        <Icon icon="bell" onClick={handleWorkspaceNotification} />
+                      </li>
                       <li className="nav-item">
                         <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
                       </li>

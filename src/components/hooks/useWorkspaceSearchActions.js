@@ -3,7 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
-import { getWorkspaceFitlerCount, getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
+import {
+  getWorkspaceFitlerCount,
+  getAllWorkspace,
+  favouriteWorkspace,
+  joinWorkspace,
+  leaveWorkspace,
+  updateWorkspace,
+  updateWorkspaceSearch,
+  setActiveTopic,
+  getWorkspace,
+  setWorkspaceToDelete,
+  putWorkspaceNotification,
+} from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTranslationActions } from "./index";
 
@@ -248,6 +260,14 @@ const useWorkspaceSearchActions = () => {
     dispatch(getWorkspaceFitlerCount({}, callback));
   };
 
+  const toggleWorkspaceNotification = (item) => {
+    const payload = {
+      id: item.topic.id,
+      is_active: false,
+    };
+    dispatch(putWorkspaceNotification(payload));
+  };
+
   return {
     edit,
     favourite,
@@ -259,6 +279,7 @@ const useWorkspaceSearchActions = () => {
     showWorkspaceModal,
     toWorkspace,
     updateSearch,
+    toggleWorkspaceNotification,
   };
 };
 
