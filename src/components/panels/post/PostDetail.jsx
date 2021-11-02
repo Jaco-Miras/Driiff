@@ -414,7 +414,7 @@ const PostDetail = (props) => {
   useEffect(() => {
     readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed && !disableMarkAsRead()) {
+    if (!viewed) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
@@ -432,7 +432,7 @@ const PostDetail = (props) => {
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed && !disableMarkAsRead()) {
+    if (!viewed) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,

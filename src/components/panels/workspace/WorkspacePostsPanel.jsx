@@ -231,6 +231,7 @@ const WorkspacePostsPanel = (props) => {
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
     teamLabel: _t("TEAM", "Team"),
+    new: _t("POST.NEW", "New"),
   };
 
   useEffect(() => {

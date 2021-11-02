@@ -287,7 +287,7 @@ const CompanyPostItemPanel = (props) => {
               </HoverButtons>
             </div>
             <PostReplyCounter>
-              {/* {post.author.id !== user.id && post.reply_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">New</div>} */}
+              {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
               {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
               <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
               <span className="time-stamp text-muted">
