@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
-import { clearModal } from "../../redux/actions/globalActions";
+import { clearModal, setDontShowIds } from "../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../common";
 import { CheckBox } from "../forms";
 import { useTranslationActions } from "../hooks";
@@ -150,6 +150,7 @@ const AboutWorkspaceModal = (props) => {
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
+    dispatch(setDontShowIds(workspace.id));
     sessionService.saveUser({ ...loggedUser, dontShowIds: loggedUser.dontShowIds ? [...loggedUser.dontShowIds, workspace.id] : [workspace.id] });
     if (dontShowPopUp) {
       dispatch(toggleShowAbout({ id: workspace.id, show_about: false }));
@@ -246,11 +247,14 @@ const AboutWorkspaceModal = (props) => {
             <WorkspaceTeamSection showAll={showAll}>
               <div className="d-flex align-items-center mb-2">
                 <h5 className="m-0">{dictionary.workspaceTeam}</h5>
-                {members.length > 4 && !showAll && (
+                {/* {members.length > 4 && !showAll && (
                   <span className="ml-auto cursor-pointer" onClick={handleShowAll}>
                     {dictionary.showAll}
                   </span>
-                )}
+                )} */}
+                <span className="ml-auto cursor-pointer" onClick={handleShowAll}>
+                  {dictionary.showAll}
+                </span>
               </div>
               <div className="members-list">
                 {slicedUsers().map((member) => {
