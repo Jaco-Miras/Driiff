@@ -668,7 +668,7 @@ const ChatInput = (props) => {
     if (draft === null) {
       setDraftId(null);
     } else {
-      reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.text);
+      if (reactQuillRef.current) reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.text);
       setDraftId(draft.draft_id);
       //setText(draft.text);
       setQuillData({
