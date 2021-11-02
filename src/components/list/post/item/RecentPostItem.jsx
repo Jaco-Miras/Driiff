@@ -67,7 +67,7 @@ const RecentPostItem = (props) => {
         <div className="post-date-comments">
           <div className="text-muted mr-2">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
           <span className="time-stamp text-muted">
-            <span>{fromNow(post.updated_at.timestamp)}</span>
+            <span>{fromNow(post.created_at.timestamp)}</span>
           </span>
         </div>
       </div>

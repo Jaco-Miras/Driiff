@@ -159,7 +159,7 @@ const MainBody = styled.div`
 
       &:hover {
         opacity: 1;
-        max-height: 165px;
+        max-height: 175px;
       }
 
       .dark & {
@@ -194,7 +194,7 @@ const MainBody = styled.div`
     span.not-readers:hover ~ span.not-read-users-container,
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
-      max-height: 165px;
+      max-height: 175px;
     }
   }
 `;

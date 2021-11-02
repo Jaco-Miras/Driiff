@@ -129,7 +129,6 @@ const AboutWorkspaceModal = (props) => {
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const loggedUser = useSelector((state) => state.session.user);
   const recentPosts = useSelector((state) => state.posts.recentPosts);
-  const workspacePosts = useSelector((state) => state.workspaces.workspacePosts);
 
   const dictionary = {
     description: _t("LABEL.DESCRIPTION", "Description"),
@@ -172,10 +171,24 @@ const AboutWorkspaceModal = (props) => {
   };
 
   let posts = [];
-  if (workspacePosts[workspace.id] && recentPosts[workspace.id]) {
-    if (recentPosts[workspace.id].posts && Object.values(recentPosts[workspace.id].posts).length) {
-      posts = Object.values(workspacePosts[workspace.id].posts).filter((p) => Object.values(recentPosts[workspace.id].posts).some((rp) => rp.id === p.id));
-    }
+  // if (workspacePosts[workspace.id] && recentPosts[workspace.id]) {
+  //   if (recentPosts[workspace.id].posts && Object.values(recentPosts[workspace.id].posts).length) {
+  //     posts = Object.values(workspacePosts[workspace.id].posts).filter((p) => Object.values(recentPosts[workspace.id].posts).some((rp) => rp.id === p.id));
+  //   }
+  // }
+  if (recentPosts[workspace.id]) {
+    posts = Object.values(recentPosts[workspace.id].posts).map((p) => {
+      return {
+        ...p,
+        author: p.post_author,
+        is_must_read: !!p.must_read,
+        is_must_reply: !!p.must_reply,
+        users_approval: p.users_approval ? p.users_approval : [],
+        must_read_users: p.must_read_users ? p.must_read_users : [],
+        must_reply_users: p.must_reply_users ? p.must_reply_users : [],
+        is_close: !!p.is_close,
+      };
+    });
   }
   const members = workspace.members;
 
@@ -187,10 +200,18 @@ const AboutWorkspaceModal = (props) => {
     }
   };
 
-  const handleShowAll = () => setShowAll(!showAll);
+  const handleShowAll = () => {
+    //setShowAll(!showAll);
+    toggle();
+    if (workspace.folder_id) {
+      history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+    } else {
+      history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
+    }
+  };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size="lg">
+    <Modal isOpen={modal} toggle={toggle} centered size="xl">
       <ModalHeaderSection toggle={toggle}>
         <ModalHeaderTitle>
           <Avatar imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null} name={workspace.name} noDefaultClick={true} forceThumbnail={false} />
@@ -226,7 +247,7 @@ const AboutWorkspaceModal = (props) => {
               <div className="d-flex align-items-center mb-2">
                 <h5 className="m-0">{dictionary.workspaceTeam}</h5>
                 {members.length > 4 && !showAll && (
-                  <span className="ml-auto" onClick={handleShowAll}>
+                  <span className="ml-auto cursor-pointer" onClick={handleShowAll}>
                     {dictionary.showAll}
                   </span>
                 )}
