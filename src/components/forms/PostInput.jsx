@@ -199,8 +199,10 @@ const PostInput = forwardRef((props, ref) => {
         }
       })
       .flat();
+    let hasMention = false;
 
     if (quillContents.ops && quillContents.ops.length > 0) {
+      hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
       let mentionIds = quillContents.ops
         .filter((m) => m.insert.mention)
         .filter((m) => {
@@ -226,7 +228,7 @@ const PostInput = forwardRef((props, ref) => {
       });
     }
 
-    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif && !hasMention) return;
 
     let payload = {
       post_id: post.id,
