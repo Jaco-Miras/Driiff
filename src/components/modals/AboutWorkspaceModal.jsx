@@ -99,7 +99,7 @@ const QuickLinksSection = styled.div`
   .quick-links {
     display: flex;
     flex-flow: column;
-    color: #b8b8b8;
+    //color: #b8b8b8;
     span {
       display: flex;
       align-items: center;
@@ -107,7 +107,7 @@ const QuickLinksSection = styled.div`
       cursor: pointer;
     }
     span:hover {
-      color: #505050;
+      color: #7a1b8b;
     }
   }
   .feather {
