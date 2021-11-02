@@ -65,7 +65,7 @@ const Wrapper = styled.li`
 
       &:hover {
         opacity: 1;
-        max-height: 165px;
+        max-height: 175px;
       }
 
       .dark & {
@@ -99,7 +99,7 @@ const Wrapper = styled.li`
     span.not-readers:hover ~ span.not-read-users-container,
     .no-readers:hover ~ span.read-users-container {
       opacity: 1;
-      max-height: 165px;
+      max-height: 175px;
       z-index: 2;
     }
   }

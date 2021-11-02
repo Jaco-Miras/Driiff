@@ -1,229 +1,150 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import { useHistory } from "react-router-dom";
+import { Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
-import { Avatar } from "../common";
-import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect } from "../forms";
+import { Avatar, SvgIconFeather } from "../common";
+import { CheckBox } from "../forms";
 import { useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { toggleShowAbout } from "../../redux/actions/workspaceActions";
 import { sessionService } from "redux-react-session";
+import TeamListItem from "../list/people/item/TeamListItem";
+import RecentPostItem from "../list/post/item/RecentPostItem";
+import { replaceChar } from "../../helpers/stringFormatter";
 
-const WrapperDiv = styled(InputGroup)`
+const ModalHeaderTitle = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-
-  .icon-wrapper {
-    width: 60px;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    display: grid;
-
-    .btn {
-      background: #fff;
-      position: absolute;
-      right: 5px;
-      bottom: -5px;
-      padding: 3px;
-
-      &:hover {
-        background: #fff !important;
-      }
-    }
-  }
-
-  .name-wrapper {
-    width: calc(100% - 40px);
-  }
-
-  > .form-control:not(:first-child) {
-    border-radius: 5px;
-  }
-
-  .input-feedback {
-    margin-left: 130px;
-    @media all and (max-width: 480px) {
-      margin-left: 0;
-    }
-  }
-  label {
-    margin: 0 20px 0 0;
-    min-width: 530px;
-  }
-  .react-select-container {
-    width: 100%;
-    // z-index: 2;
-  }
-  .react-select__multi-value__label {
-    align-self: center;
-  }
-
-  &.action-wrapper {
-    z-index: 0;
-    margin-top: 40px;
-
-    .action-archive-wrapper {
-      display: flex;
-      width: 100%;
-
-      .btn-archive {
-        display: flex;
-        margin-left: auto;
-        text-decoration: underline;
-        color: #a7abc3;
-      }
-    }
-    label {
-      margin: 0 20px 0 0;
-      min-width: 200px;
-    }
-  }
-  &.checkboxes {
-    flex-flow: row !important;
-    label {
-      min-width: 0;
-    }
-  }
-  &.external-select {
-    .invalid-feedback {
-      display: block;
-    }
-    .react-select__control {
-      border-color: ${(props) => (props.valid === false ? "red" : "#cccccc")}!important;
-    }
-  }
-  .workspace-radio-input {
-    display: flex;
-    > div:first-child {
-      margin-right: 1rem;
-    }
-  }
-  .react-select__multi-value__remove svg {
-    display: none;
-  }
-  .react-select__indicators {
-    display: none;
-  }
-  .react-select__control {
-    background-color: #fff;
-    .dark & {
-      background-color: #191c20;
-    }
+  h4 {
+    margin: 0;
   }
 `;
 
-const SelectFolder = styled(FolderSelect)`
-  flex: 1 0 0;
-  width: 1%;
-  @media all and (max-width: 480px) {
-    width: 100%;
+const MainBody = styled.div`
+  display: flex;
+  width: 100%;
+  //flex-flow: row wrap;
+  min-height: 400px;
+  h5 {
+    font-size: 15px;
+  }
+  @media (max-width: 991.99px) {
+    flex-flow: column;
   }
 `;
 
-const SelectPeople = styled(PeopleSelect)`
-  flex: 1 0 0;
-  width: 1%;
-  .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
-    box-shadow: none;
-  }
-  .react-select__option {
-    background-color: #ffffff;
-  }
-  .react-select__menu-list--is-multi > div {
-    &:hover {
-      background: #8c3b9b;
-      color: #ffffff;
-      cursor: pointer;
-      .react-select__option {
-        background: #8c3b9b;
-        cursor: pointer;
-      }
-    }
-  }
-  .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
-    box-shadow: none;
-  }
-  .has-not-accepted .react-select__multi-value__label {
-    background: #33b5e5;
-    color: #fff;
-  }
-  @media all and (max-width: 480px) {
-    width: 100%;
-  }
-`;
-
-const StyledDescriptionInput = styled(DescriptionInput)`
-  .description-input {
-    height: ${(props) => props.height}px;
-    max-height: 300px;
-  }
-
-  label {
+const LeftBody = styled.div`
+  min-width: 60%;
+  display: flex;
+  flex-flow: column;
+  padding-right: 1rem;
+  @media (max-width: 991.99px) {
     min-width: 100%;
-    font-weight: 500;
+    padding: 0;
   }
+`;
 
-  .ql-toolbar {
-    bottom: 30px;
-    left: 40px;
+const RightBody = styled.div`
+  min-width: 40%;
+  display: flex;
+  flex-flow: column;
+  padding-left: 1rem;
+  border-left: 1px solid #ebebeb;
+  @media (max-width: 991.99px) {
+    min-width: 100%;
+    border: none;
+    padding: 0;
   }
+`;
 
-  .invalid-feedback {
-    position: absolute;
-    bottom: 0;
-    top: auto;
+const Footer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+`;
+
+const WorkspaceDescriptionSection = styled.div`
+  min-height: 200px;
+  margin-bottom: 1rem;
+  @media (max-width: 991.99px) {
+    min-height: 100px;
+  }
+`;
+
+const RecentPostSection = styled.div`
+  ul.list-group > div:last-child {
+    border: none;
+  }
+  max-height: 320px;
+  overflow: auto;
+`;
+
+const WorkspaceTeamSection = styled.div`
+  margin-bottom: 1rem;
+  li {
+    border: none;
+    padding: 0.25rem 0 !important;
+  }
+  // .members-list {
+  //   max-height: 320px;
+  //   ${(props) => props.showAll && "overflow: auto"}
+  // }
+`;
+
+const QuickLinksSection = styled.div`
+  display: flex;
+  flex-flow: column;
+  .quick-links {
+    display: flex;
+    flex-flow: column;
+    //color: #b8b8b8;
+    span {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    span:hover {
+      color: #7a1b8b;
+    }
+  }
+  .feather {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 1rem;
   }
 `;
 
 const AboutWorkspaceModal = (props) => {
-  const { type, mode } = props.data;
+  const { type } = props.data;
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [modal, setModal] = useState(true);
   const [dontShowPopUp, setDontShowPopUp] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const workspace = useSelector((state) => state.workspaces.activeTopic);
-  const users = useSelector((state) => state.users.users);
-  const externalUsers = useSelector((state) => state.users.externalUsers);
-  const folders = useSelector((state) => state.workspaces.folders);
   const loggedUser = useSelector((state) => state.session.user);
-
-  const [userOptions, setUserOptions] = useState([]);
-  const [externalUserOptions, setExternalUserOptions] = useState([]);
+  const recentPosts = useSelector((state) => state.posts.recentPosts);
 
   const dictionary = {
-    externalGuest: _t("WORKSPACE.EXTERNAL_GUEST", "External guest"),
-    folder: _t("LABEL.FOLDER", "Folder"),
-    team: _t("LABEL.TEAM", "Team"),
     description: _t("LABEL.DESCRIPTION", "Description"),
     aboutThisWorkspace: _t("MODAL.ABOUT_THIS_WORKSPACE_HEADER", "About this workspace"),
     goToWorkspace: _t("BUTTON.GO_TO_WORKSPACE", "Go to workspace"),
     checkboxLabel: _t("CHECKBOX.DONT_SHOW_POP_UP_AGAIN", "Don't show this pop up again"),
-
-    workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Name"),
-    workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
-    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
-    lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
-    archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
-    unArchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
-
-    addToFolder: _t("CHECKBOX.ADD_TO_FOLDER", "Add to folder"),
-
-    archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
-    archive: _t("BUTTON.ARCHIVE", "Archive"),
-    unArchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Un-archive workspace"),
-    cancel: _t("BUTTON.CANCEL", "Cancel"),
-    archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
-    unArchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
-    confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
-    lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
-    lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
-    teamLabel: _t("LABEL.TEAM", "Team"),
+    noRecentPosts: _t("DASHBOARD.NO_RECENT_POSTS", "No recent posts."),
+    recentPosts: _t("DASHBOARD.RECENT_POSTS", "Recent posts"),
+    chats: _t("ABOUT_WORKSPACE.CHATS", "Chats"),
+    posts: _t("ABOUT_WORKSPACE.POSTS", "Posts"),
+    reminders: _t("ABOUT_WORKSPACE.REMINDERS", "Reminders"),
+    files: _t("ABOUT_WORKSPACE.FILES", "Files"),
+    people: _t("ABOUT_WORKSPACE.PEOPLE", "People"),
+    quickLinks: _t("ABOUT_WORKSPACE.QUICK_LINKS", "Quick links"),
+    workspaceTeam: _t("ABOUT_WORKSPACE.WORKSPACE_TEAM", "Workspace team"),
+    showAll: _t("ABOUT_WORKSPACE.SHOW_ALL", "Show all"),
   };
 
   const toggle = () => {
@@ -235,115 +156,144 @@ const AboutWorkspaceModal = (props) => {
     }
   };
 
-  const folderOptions = Object.values(folders)
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((ws) => {
-      return {
-        ...ws,
-        icon: "folder",
-        value: ws.id,
-        label: ws.name,
-      };
-    });
-
-  useEffect(() => {
-    const internalUsers = Object.values(users).filter((u) => {
-      return u.type === "internal" && u.active === 1 && workspace.members.some((m) => m.id === u.id);
-    });
-    const userOptions = internalUsers.map((u) => {
-      return {
-        ...u,
-        value: u.id,
-        label: u.name,
-      };
-    });
-    const teamMembers = workspace.members
-      .filter((m) => m.type !== "internal" && m.type !== "external")
-      .map((m) => {
-        return {
-          ...m,
-          value: m.id,
-          label: `${dictionary.teamLabel} ${m.name}`,
-          useLabel: true,
-          type: "TEAM",
-        };
-      });
-    setUserOptions([...userOptions, ...teamMembers]);
-  }, [Object.values(users).length]);
-
-  useEffect(() => {
-    if (externalUsers.length) {
-      const externalUserOptions = externalUsers
-        .filter((u) => {
-          return u.type === "external" && workspace.members.some((m) => m.id === u.id);
-        })
-        .map((u) => {
-          return {
-            ...u,
-            value: u.id,
-            label: u.has_accepted ? `${u.email} | ${u.first_name} ${u.last_name} - ${u.external_company_name}` : `${u.email} `,
-            dictionary: {
-              peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
-              peopleInvited: _t("PEOPLE.INVITED", "Invited"),
-            },
-          };
-        });
-      setExternalUserOptions(externalUserOptions);
-    }
-  }, [externalUsers.length]);
-
   const toggleCheckBox = () => {
     setDontShowPopUp(!dontShowPopUp);
   };
 
+  const handleQuicklinks = (type) => {
+    toggle();
+
+    if (workspace.folder_id) {
+      history.push(`/workspace/${type}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+    } else {
+      history.push(`/workspace/${type}/${workspace.id}/${replaceChar(workspace.name)}`);
+    }
+  };
+
+  let posts = [];
+  // if (workspacePosts[workspace.id] && recentPosts[workspace.id]) {
+  //   if (recentPosts[workspace.id].posts && Object.values(recentPosts[workspace.id].posts).length) {
+  //     posts = Object.values(workspacePosts[workspace.id].posts).filter((p) => Object.values(recentPosts[workspace.id].posts).some((rp) => rp.id === p.id));
+  //   }
+  // }
+  if (recentPosts[workspace.id]) {
+    posts = Object.values(recentPosts[workspace.id].posts).map((p) => {
+      return {
+        ...p,
+        author: p.post_author,
+        is_must_read: !!p.must_read,
+        is_must_reply: !!p.must_reply,
+        users_approval: p.users_approval ? p.users_approval : [],
+        must_read_users: p.must_read_users ? p.must_read_users : [],
+        must_reply_users: p.must_reply_users ? p.must_reply_users : [],
+        is_close: !!p.is_close,
+      };
+    });
+  }
+  const members = workspace.members;
+
+  const slicedUsers = () => {
+    if (showAll) {
+      return members;
+    } else {
+      return members.slice(0, 4);
+    }
+  };
+
+  const handleShowAll = () => {
+    //setShowAll(!showAll);
+    toggle();
+    if (workspace.folder_id) {
+      history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+    } else {
+      history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
+    }
+  };
+
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size="lg">
-      <ModalHeaderSection toggle={toggle}>{dictionary.aboutThisWorkspace}</ModalHeaderSection>
+    <Modal isOpen={modal} toggle={toggle} centered size="xl">
+      <ModalHeaderSection toggle={toggle}>
+        <ModalHeaderTitle>
+          <Avatar imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null} name={workspace.name} noDefaultClick={true} forceThumbnail={false} />
+          <h4 className="ml-2">{workspace.name}</h4>
+        </ModalHeaderTitle>
+      </ModalHeaderSection>
       <ModalBody>
-        <WrapperDiv className={"modal-input mt-0"}>
-          <div>
-            <div className="d-flex justify-content-start align-items-center">
-              <Avatar imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null} name={workspace.name} noDefaultClick={true} forceThumbnail={false} />
-              <label className={"ml-2"}>{workspace.name}</label>
-            </div>
-          </div>
-        </WrapperDiv>
-        {workspace.folder_id !== null && (
-          <WrapperDiv className={"modal-input"}>
-            <Label for="people">{dictionary.folder}</Label>
-            <SelectFolder options={folderOptions} value={folderOptions} isMulti={false} isClearable={false} isDisabled={true} isOptionDisabled={true} />
-          </WrapperDiv>
-        )}
-        <WrapperDiv className={"modal-input"}>
-          <Label for="people">{dictionary.team}</Label>
-          <SelectPeople options={userOptions} value={userOptions} isDisabled={true} isOptionDisabled={true} isClearable={false} />
-        </WrapperDiv>
-        {workspace.is_shared && (
-          <WrapperDiv className={"modal-input external-select"}>
-            <Label for="people">{dictionary.externalGuest}</Label>
-            <SelectPeople options={externalUserOptions} value={externalUserOptions} isDisabled={true} isOptionDisabled={true} />
-          </WrapperDiv>
-        )}
-        <StyledDescriptionInput
-          className="modal-description"
-          height={window.innerHeight - 660}
-          required
-          showFileButton={true}
-          defaultValue={workspace.description}
-          mode={mode}
-          disableBodyMention={true}
-          modal={"workspace"}
-          mentionedUserIds={[]}
-          readOnly={true}
-        />
-        <WrapperDiv className="action-wrapper">
+        <MainBody>
+          <LeftBody>
+            <WorkspaceDescriptionSection>
+              <h4>{dictionary.aboutThisWorkspace}</h4>
+              <div dangerouslySetInnerHTML={{ __html: workspace.description }} />
+            </WorkspaceDescriptionSection>
+            <RecentPostSection>
+              <h5>{dictionary.recentPosts}</h5>
+              <div>
+                {Object.keys(posts).length ? (
+                  <ul className="list-group list-group-flush">
+                    {Object.values(posts)
+                      .sort((a, b) => (b.created_at.timestamp > a.created_at.timestamp ? 1 : -1))
+                      .map((post) => {
+                        return <RecentPostItem key={post.id} post={post} workspace={workspace} closeModal={toggle} />;
+                      })}
+                  </ul>
+                ) : (
+                  <span className="medium text-muted">{dictionary.noRecentPosts}</span>
+                )}
+              </div>
+            </RecentPostSection>
+          </LeftBody>
+          <RightBody>
+            <WorkspaceTeamSection showAll={showAll}>
+              <div className="d-flex align-items-center mb-2">
+                <h5 className="m-0">{dictionary.workspaceTeam}</h5>
+                {members.length > 4 && !showAll && (
+                  <span className="ml-auto cursor-pointer" onClick={handleShowAll}>
+                    {dictionary.showAll}
+                  </span>
+                )}
+              </div>
+              <div className="members-list">
+                {slicedUsers().map((member) => {
+                  return <TeamListItem key={member.id} member={member} hideOptions={true} workspace_id={workspace.id} dictionary={dictionary} showMoreButton={false} showLessButton={false} loggedUser={loggedUser} workspace={workspace} />;
+                })}
+              </div>
+            </WorkspaceTeamSection>
+            <QuickLinksSection>
+              <div>
+                <h5>{dictionary.quickLinks}</h5>
+              </div>
+              <div className="quick-links">
+                <span onClick={() => handleQuicklinks("chat")}>
+                  <SvgIconFeather icon="message-circle" /> {dictionary.chats}
+                </span>
+                <span onClick={() => handleQuicklinks("posts")}>
+                  <SvgIconFeather icon="file-text" />
+                  {dictionary.posts}
+                </span>
+                <span onClick={() => handleQuicklinks("reminders")}>
+                  <SvgIconFeather icon="check-circle" />
+                  {dictionary.reminders}
+                </span>
+                <span onClick={() => handleQuicklinks("files")}>
+                  <SvgIconFeather icon="folder" />
+                  {dictionary.files}
+                </span>
+                <span onClick={() => handleQuicklinks("people")}>
+                  <SvgIconFeather icon="user" />
+                  {dictionary.people}
+                </span>
+              </div>
+            </QuickLinksSection>
+          </RightBody>
+        </MainBody>
+        <Footer>
           <CheckBox name="pop_up" checked={dontShowPopUp} onClick={toggleCheckBox}>
             {dictionary.checkboxLabel}
           </CheckBox>
           <button className="btn btn-primary" onClick={toggle}>
             {dictionary.goToWorkspace}
           </button>
-        </WrapperDiv>
+        </Footer>
       </ModalBody>
     </Modal>
   );
