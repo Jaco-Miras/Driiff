@@ -329,7 +329,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     setQuillContents([]);
     setInlineImages([]);
     if (reactQuillRef.current) {
-      reactQuillRef.current.getEditor().setContents([]);
+      if (reactQuillRef.current.getEditor()) {
+        reactQuillRef.current.getEditor().setContents([]);
+      }
     }
     if (editPostComment !== null) {
       dispatch(setEditComment(null));
