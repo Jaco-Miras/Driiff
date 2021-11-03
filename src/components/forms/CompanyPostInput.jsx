@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PostInputMention from "../common/PostInputMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -588,7 +588,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   };
 
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
-  useQuillInput(handleClearQuillInput, reactQuillRef);
+  //useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
