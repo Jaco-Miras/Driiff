@@ -572,23 +572,24 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
                 ...state.selectedChannel,
-                replies: action.data.hasOwnProperty("reference_id")
-                  ? state.selectedChannel.replies.map((r) => {
-                      if (r.id === action.data.reference_id) {
-                        return {
-                          ...r,
-                          id: action.data.id,
-                          created_at: action.data.created_at,
-                          updated_at: action.data.created_at,
-                        };
-                      } else {
-                        return {
-                          ...r,
-                          is_read: true,
-                        };
-                      }
-                    })
-                  : [...state.selectedChannel.replies, action.data],
+                replies:
+                  action.data.hasOwnProperty("reference_id") && state.selectedChannel.replies.some((r) => r.id === action.data.reference_id)
+                    ? state.selectedChannel.replies.map((r) => {
+                        if (r.id === action.data.reference_id) {
+                          return {
+                            ...r,
+                            id: action.data.id,
+                            created_at: action.data.created_at,
+                            updated_at: action.data.created_at,
+                          };
+                        } else {
+                          return {
+                            ...r,
+                            is_read: true,
+                          };
+                        }
+                      })
+                    : [...state.selectedChannel.replies, action.data],
                 last_visited_at_timestamp: getCurrentTimestamp(),
                 last_reply: action.data,
                 total_unread: action.data.is_read ? 0 : state.selectedChannel.total_unread + 1,
@@ -605,23 +606,24 @@ export default function (state = INITIAL_STATE, action) {
           ...(state.channels[action.data.channel_id] && {
             [action.data.channel_id]: {
               ...state.channels[action.data.channel_id],
-              replies: action.data.hasOwnProperty("reference_id")
-                ? state.channels[action.data.channel_id].replies.map((r) => {
-                    if (r.id === action.data.reference_id) {
-                      return {
-                        ...r,
-                        id: action.data.id,
-                        created_at: action.data.created_at,
-                        updated_at: action.data.created_at,
-                      };
-                    } else {
-                      return {
-                        ...r,
-                        is_read: true,
-                      };
-                    }
-                  })
-                : [...state.channels[action.data.channel_id].replies, action.data],
+              replies:
+                action.data.hasOwnProperty("reference_id") && state.channels[action.data.channel_id].replies.some((r) => r.id === action.data.reference_id)
+                  ? state.channels[action.data.channel_id].replies.map((r) => {
+                      if (r.id === action.data.reference_id) {
+                        return {
+                          ...r,
+                          id: action.data.id,
+                          created_at: action.data.created_at,
+                          updated_at: action.data.created_at,
+                        };
+                      } else {
+                        return {
+                          ...r,
+                          is_read: true,
+                        };
+                      }
+                    })
+                  : [...state.channels[action.data.channel_id].replies, action.data],
               last_visited_at_timestamp: getCurrentTimestamp(),
               last_reply: action.data,
               total_unread: action.data.is_read ? 0 : state.channels[action.data.channel_id].total_unread + 1,
