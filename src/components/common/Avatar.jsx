@@ -10,6 +10,7 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import ProfileSlider from "./ProfileSlider";
 import { CSSTransition } from "react-transition-group";
 import { setProfileSlider } from "../../redux/actions/globalActions";
+import { SvgIconFeather } from ".";
 
 const Wrapper = styled.div`
   position: relative;
@@ -83,6 +84,20 @@ const Wrapper = styled.div`
   .fade-exit-done {
     opacity: 0;
   }
+  &.TEAM > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    // background-color: #f1f2f7;
+    background-color: #7a1b8b;
+    border-color: transparent;
+    .feather {
+      color: #fff;
+      background-color: #7a1b8b;
+    }
+    ${(props) => props.hasTeamIcon && "background: transparent"}
+  }
 `;
 
 const Image = styled.img`
@@ -108,7 +123,7 @@ const Initials = styled.span`
 const Avatar = (props) => {
   let {
     className = "",
-    imageLink,
+    imageLink = null,
     id,
     name = "",
     children,
@@ -122,6 +137,7 @@ const Avatar = (props) => {
     fromSlider = false,
     showSlider = true,
     tooltipName = null,
+    icon = null,
     ...rest
   } = props;
 
@@ -136,6 +152,7 @@ const Avatar = (props) => {
   const [showInitials, setShowInitials] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [orientation, setOrientation] = useState(null);
+  const [errorBotImage, setErrorBotImage] = useState(false);
 
   const toggleTooltip = () => {
     if (fromSlider) return;
@@ -229,6 +246,11 @@ const Avatar = (props) => {
     setShowInitials(true);
   };
 
+  const handleBotImageError = () => {
+    setIsLoaded(true);
+    setErrorBotImage(true);
+  };
+
   const handleInitials = (title) => {
     if (typeof title === "undefined") return "";
 
@@ -245,11 +267,17 @@ const Avatar = (props) => {
   }
 
   return (
-    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} ref={avatarRef}>
+    <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} hasTeamIcon={type === "TEAM" && imageLink !== null} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
-        {isBot ? (
-          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={isHuddleBot ? driffIcon : botIcon} alt={name} />
+        {type === "TEAM" ? (
+          imageLink ? (
+            <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} onClick={handleOnClick} />
+          ) : (
+            <SvgIconFeather icon={icon ? icon : "users"} />
+          )
+        ) : isBot ? (
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleBotImageError} src={errorBotImage ? botIcon : imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />
         ) : imageLink == null ? (
           <Initials className="rounded-circle" avatarColor={avatarColor(name)} onClick={handleOnClick}>
             {handleInitials(name)}

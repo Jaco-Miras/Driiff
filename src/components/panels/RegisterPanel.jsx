@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { FormInput, PasswordInput } from "../forms";
 import { useUserActions } from "../hooks";
 import { EmailRegex } from "../../helpers/stringFormatter";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.form``;
 
@@ -17,6 +18,7 @@ const RegisterPanel = (props) => {
 
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(false);
+  const allowedDomains = useSelector((state) => state.settings.driff.domains);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -71,7 +73,14 @@ const RegisterPanel = (props) => {
       valid.email = false;
       message.email = dictionary.invalidEmail;
     } else {
-      valid.email = true;
+      const email = form.email;
+      const domain = email.split("@");
+      if (allowedDomains.length > 0 && !allowedDomains.includes(domain[1])) {
+        valid.email = false;
+        message.email = dictionary.invalidDomain;
+      } else {
+        valid.email = true;
+      }
     }
 
     if (typeof form.password === "undefined" || form.password === "") {

@@ -16,7 +16,7 @@ import {
   getHuddleChatbot as getHuddleChatbotService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
-  getSearchChannels as getSearchChannelsService,
+  //getSearchChannels as getSearchChannelsService,
   getSelectChannel as getSelectChannelService,
   getUnpublishedAnswers as getUnpublishedAnswersService,
   getUserBots as getUserBotsService,
@@ -440,6 +440,10 @@ export function postChatMessageTranslate(payload, callback) {
   return dispatchActionToReducer(postChatMessageTranslateService(payload), "TRANSLATE_CHAT_MESSAGE_START", "TRANSLATE_CHAT_MESSAGE_SUCCESS", "TRANSLATE_CHAT_MESSAGE_FAILURE", callback);
 }
 
+export function transferChannelMessages(payload, callback) {
+  return SimpleDispatchActionToReducer("TRANSFER_CHANNEL_MESSAGES", payload, callback);
+}
+
 export function snoozeHuddle(payload, callback) {
   return SimpleDispatchActionToReducer("HUDDLE_SNOOZE", payload, callback);
 }
@@ -462,4 +466,24 @@ export function createZoomMeeting(payload, callback) {
 
 export function removeHuddleNotification(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_HUDDLE_NOTIFICATION", payload, callback);
+}
+
+export function showUnreadChannels(payload, callback) {
+  return SimpleDispatchActionToReducer("SHOW_UNREAD_CHANNELS", payload, callback);
+}
+
+export function getUnreadChannels(payload, callback) {
+  return dispatchActionToReducer(getChannelsService(payload), "GET_UNREAD_CHANNELS_START", "GET_UNREAD_CHANNELS_SUCCESS", "GET_UNREAD_CHANNELS_FAIL", callback);
+}
+
+export function addSelectChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_SELECT_CHANNEL", payload, callback);
+}
+
+export function removeWorkspaceChannelMembers(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_CHANNEL_MEMBERS", payload, callback);
+}
+
+export function removeWorkspaceChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_CHANNEL", payload, callback);
 }

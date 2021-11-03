@@ -969,8 +969,38 @@ export default (state = INITIAL_STATE, action) => {
               [action.data.post.id]: {
                 ...state.companyPosts.posts[action.data.post.id],
                 is_close: action.data.is_close,
+                post_close: {
+                  initiator: action.data.initiator,
+                },
               },
             }),
+          },
+        },
+      };
+    }
+    case "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
           },
         },
       };
@@ -1314,6 +1344,152 @@ export default (state = INITIAL_STATE, action) => {
           },
         }),
       };
+    }
+    case "INCOMING_REMOVED_TEAM_MEMBER":
+    case "REMOVE_TEAM_MEMBER_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.values(state.companyPosts.posts)
+            .filter((post) => {
+              if (state.user && action.data.remove_member_ids.some((id) => id === state.user.id)) {
+                if (
+                  post.recipients.some((r) => r.type === "DEPARTMENT") ||
+                  post.recipients.some((r) => r.type === "USER" && r.type_id === state.user.id) ||
+                  post.recipients.some((r) => r.type === "TOPIC" && r.participant_ids.some((id) => id === state.user.id))
+                ) {
+                  return true;
+                }
+                if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
+                  return true;
+                }
+                if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
+                  return false;
+                } else {
+                  return true;
+                }
+              } else {
+                return true;
+              }
+            })
+            .reduce((acc, post) => {
+              if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
+                acc[post.id] = {
+                  ...post,
+                  recipients: post.recipients.map((r) => {
+                    if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
+                      return { ...r, participant_ids: action.data.member_ids };
+                    } else {
+                      return r;
+                    }
+                  }),
+                };
+              } else {
+                acc[post.id] = post;
+              }
+              return acc;
+            }, {}),
+        },
+      };
+    }
+    case "INCOMING_TEAM_MEMBER":
+    case "ADD_TEAM_MEMBER_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
+              acc[post.id] = {
+                ...post,
+                recipients: post.recipients.map((r) => {
+                  if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
+                    return { ...r, participant_ids: action.data.member_ids };
+                  } else {
+                    return r;
+                  }
+                }),
+              };
+            } else {
+              acc[post.id] = post;
+            }
+            return acc;
+          }, {}),
+        },
+      };
+    }
+    case "INCOMING_DELETED_TEAM": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.values(state.companyPosts.posts)
+            .filter((post) => {
+              if (
+                post.recipients.some((r) => r.type === "DEPARTMENT") ||
+                post.recipients.some((r) => r.type === "USER" && r.type_id === state.user.id) ||
+                post.recipients.some((r) => r.type === "TOPIC" && r.participant_ids.some((id) => id === state.user.id))
+              ) {
+                return true;
+              }
+              if (post.recipients.some((r) => r.type === "TEAM" && r.id !== parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
+                return true;
+              }
+              if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id) && r.participant_ids && r.participant_ids.some((id) => id === state.user.id))) {
+                return false;
+              } else {
+                return true;
+              }
+            })
+            .reduce((acc, post) => {
+              if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
+                acc[post.id] = {
+                  ...post,
+                  recipients: post.recipients.filter((r) => {
+                    if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  }),
+                };
+              } else {
+                acc[post.id] = post;
+              }
+              return acc;
+            }, {}),
+        },
+      };
+    }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      if (action.data.team_ids.length) {
+        return {
+          ...state,
+          companyPosts: {
+            ...state.companyPosts,
+            posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+              if (post.recipients.some((r) => r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id))) {
+                acc[post.id] = {
+                  ...post,
+                  recipients: post.recipients.map((r) => {
+                    if (r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id)) {
+                      return { ...r, participant_ids: [...r.participant_ids, action.data.id] };
+                    } else {
+                      return r;
+                    }
+                  }),
+                };
+              } else {
+                acc[post.id] = post;
+              }
+              return acc;
+            }, {}),
+          },
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

@@ -9,6 +9,15 @@ import { TodoCheckBox } from "../../forms";
 
 const Wrapper = styled.li`
   flex-flow: column;
+  @media (max-width: 414px) {
+    padding-bottom: 30px !important;
+    .post-badge {
+      position: absolute;
+      bottom: 5px;
+      flex-flow: row wrap;
+      display: flex;
+    }
+  }
   .post-recipients {
     margin-bottom: 0.5rem;
   }
@@ -281,6 +290,7 @@ const PostItemPanel = (props) => {
               </HoverButtons>
             </div>
             <PostReplyCounter>
+              {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
               {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
               <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
               <span className="time-stamp text-muted">
@@ -299,7 +309,7 @@ const PostItemPanel = (props) => {
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-              {((post.author && post.author.id === user.id) || (post.author.type === "external" && user.type === "internal")) && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+              <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
               {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
             </MoreOptions>
           )}

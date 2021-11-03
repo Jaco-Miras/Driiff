@@ -126,7 +126,7 @@ const CreateEditChatModal = (props) => {
   const { searchExisting, create: createChannel, update: updateChannel } = useChannelActions();
   const { localizeDate } = useTimeFormat();
 
-  const users = useSelector((state) => state.users.mentions);
+  const users = useSelector((state) => state.users.users);
   const channel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients);
@@ -184,10 +184,13 @@ const CreateEditChatModal = (props) => {
       value:
         mode === "edit"
           ? channel.members.map((m) => {
+              const user = users[m.id];
               return {
                 ...m,
                 value: m.id,
-                label: m.first_name,
+                label: m.name,
+                middle_name: user ? user.middle_name : "",
+                last_name: user ? user.last_name : "",
               };
             })
           : defaultUser,

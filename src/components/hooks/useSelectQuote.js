@@ -170,6 +170,9 @@ const useSelectQuote = (props) => {
                 </PushLink>
               );
             }
+          } else if (selectedQuote.body.includes("CREATE_WORKSPACE::")) {
+            let parsedData = JSON.parse(selectedQuote.body.replace("CREATE_WORKSPACE::", ""));
+            selectedQuote.body = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
           } else if (selectedQuote.body.startsWith("UPLOAD_BULK::")) {
             const data = JSON.parse(selectedQuote.body.replace("UPLOAD_BULK::", ""));
             if (data.files && data.files.length === 1) {

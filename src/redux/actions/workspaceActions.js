@@ -1,6 +1,6 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
-  createTeamChannel as createTeamChannelService,
+  createWorkspaceTeamChannel as createWorkspaceTeamChannelService,
   createWorkspace as createWorkspaceService,
   deleteWorkspace as deleteWorkspaceService,
   deleteWorkspaceFolder as deleteWorkspaceFolderService,
@@ -29,7 +29,10 @@ import {
   postWorkspaceRole as postWorkspaceRoleService,
   updatePostStatus as updatePostStatusService,
   updateWorkspace as updateWorkspaceService,
-  putChannel as putChannelService
+  putChannel as putChannelService,
+  toggleShowAbout as toggleShowAboutService,
+  getAllWorkspaceFolders as getAllWorkspaceFoldersService,
+  getExistingFolder as getExistingFolderService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -208,8 +211,8 @@ export function postResendInvite(payload, callback) {
   return dispatchActionToReducer(postResendInviteService(payload), "POST_RESEND_INVITE_START", "POST_RESEND_INVITE_SUCCESS", "POST_RESEND_INVITE_FAIL", callback);
 }
 
-export function createTeamChannel(payload, callback) {
-  return dispatchActionToReducer(createTeamChannelService(payload), "CREATE_TEAM_CHANNEL_START", "CREATE_TEAM_CHANNEL_SUCCESS", "CREATE_TEAM_CHANNEL_FAIL", callback);
+export function createWorkspaceTeamChannel(payload, callback) {
+  return dispatchActionToReducer(createWorkspaceTeamChannelService(payload), "CREATE_WORKSPACE_TEAM_CHANNEL_START", "CREATE_WORKSPACE_TEAM_CHANNEL_SUCCESS", "CREATE_WORKSPACE_TEAM_CHANNEL_FAIL", callback);
 }
 
 export function incomingTeamChannel(payload, callback) {
@@ -270,4 +273,20 @@ export function setChannelIsTranslate(payload, callback) {
 
 export function updateChannelIsTranslate(payload, callback) {
   return dispatchActionToReducer(putChannelService(payload), "UPDATE_CHANNEL_IS_TRANSLATE", "UPDATE_CHANNEL_IS_TRANSLATE_SUCCESS", "UPDATE_CHANNEL_IS_TRANSLATE_FAILURE", callback);
+}
+
+export function getWorkspaceAndSetToFavorites(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_SET_TO_FAV_START", "GET_WORKSPACE_SET_TO_FAV_SUCCESS", "GET_WORKSPACE_SET_TO_FAV_FAIL", callback);
+}
+
+export function toggleShowAbout(payload, callback) {
+  return dispatchActionToReducer(toggleShowAboutService(payload), "TOGGLE_SHOW_ABOUT_START", "TOGGLE_SHOW_ABOUT_SUCCESS", "TOGGLE_SHOW_ABOUT_FAILURE", callback);
+}
+
+export function getAllWorkspaceFolders(payload, callback) {
+  return dispatchActionToReducer(getAllWorkspaceFoldersService(payload), "GET_ALL_WORKSPACE_FOLDERS_START", "GET_ALL_WORKSPACE_FOLDERS_SUCCESS", "GET_ALL_WORKSPACE_FOLDERS_FAIL", callback);
+}
+
+export function getExistingFolder(payload, callback) {
+  return dispatchActionToReducer(getExistingFolderService(payload), "GET_EXISTING_WORKSPACE_FOLDER_START", "GET_EXISTING_WORKSPACE_FOLDER_SUCCESS", "GET_EXISTING_WORKSPACE_FOLDER_FAIL", callback);
 }

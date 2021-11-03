@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
@@ -99,6 +99,7 @@ const FavoriteWorkspacesPanel = (props) => {
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
   const companyChannel = useSelector((state) => state.chat.companyChannel);
+  const companyName = useSelector((state) => state.settings.driff.company_name);
 
   // need to revisit
   // const [defaultTopic, setDefaultTopic] = useState(null);
@@ -208,7 +209,7 @@ const FavoriteWorkspacesPanel = (props) => {
       <FavWorkspacesLabel>
         <span>{dictionary.favoriteWorkspaces}</span>
         {!isExternal && (
-          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.newFolder}>
             <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
           </StyledTooltip>
         )}
@@ -230,7 +231,7 @@ const FavoriteWorkspacesPanel = (props) => {
             <>
               <ul>
                 {favoriteWorkspaces.map((ws) => {
-                  return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} />;
+                  return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
                 })}
               </ul>
               <BrowseAll onClick={handleBrowseAll}>{dictionary.browseAll}</BrowseAll>

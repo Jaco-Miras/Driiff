@@ -34,6 +34,9 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  transferChannelMessages,
+  removeWorkspaceChannel,
+  removeWorkspaceChannelMembers,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -71,6 +74,9 @@ import {
   incomingRestoreFolder,
   incomingRemoveFileAfterDownload,
   incomingRemoveFileAutomatically,
+  incomingDriveLink,
+  incomingDeletedDriveLink,
+  incomingUpdatedDriveLink,
 } from "../../redux/actions/fileActions";
 import {
   addToModals,
@@ -95,6 +101,7 @@ import {
   setUnreadNotificationCounterEntries,
   incomingDeletedAnnouncement,
   incomingZoomData,
+  setNewDriffData,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -140,11 +147,17 @@ import {
   incomingOnlineUsers,
   incomingDeletedUser,
   incomingAcceptedInternal,
+  incomingTeam,
+  incomingUpdatedTeam,
+  incomingDeletedTeam,
+  incomingTeamMember,
+  incomingRemovedTeamMember,
 } from "../../redux/actions/userAction";
 import {
   getFavoriteWorkspaceCounters,
   getUnreadWorkspacePostEntries,
   getWorkspace,
+  getWorkspaceAndSetToFavorites,
   getWorkspaceFolder,
   incomingArchivedWorkspaceChannel,
   incomingDeletedWorkspaceFolder,
@@ -161,12 +174,14 @@ import {
   updateWorkspaceCounter,
   updateWorkspacePostCount,
   setActiveTopic,
+  getAllWorkspaceFolders,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer } from "../../redux/actions/notificationActions";
+import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
+import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -182,7 +197,7 @@ class SocketListeners extends Component {
   }
 
   refetchPosts = () => {
-    this.props.refetchPosts();
+    this.props.refetchPosts({ skip: 0, limit: 10 });
   };
 
   refetchPostComments = () => {
@@ -252,6 +267,9 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".notification-read", (e) => {
+        this.props.incomingReadNotifications(e);
+      })
       .listen(".delete-notification", (e) => {
         const elemId = `notification__${e.notification_id}`;
         if (toast.isActive(elemId)) toast.dismiss(elemId);
@@ -752,6 +770,13 @@ class SocketListeners extends Component {
           }
           case "POST_DELETE": {
             this.props.incomingDeletedPost(e);
+            if (e.notification_ids) {
+              const ids = Array.from(e.notification_ids);
+              ids.forEach((id) => {
+                const elemId = "notification__" + id;
+                toast.isActive(elemId) && toast.dismiss(elemId);
+              });
+            }
             break;
           }
           case "POST_COMMENT_UPDATE": {
@@ -1004,6 +1029,103 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".create-team", (e) => {
+        this.props.incomingTeam(e);
+      })
+      .listen(".update-team", (e) => {
+        this.props.incomingUpdatedTeam(e);
+      })
+      .listen(".remove-team", (e) => {
+        Array.from(Object.values(this.props.workspaces)).map((ws) => {
+          if (ws.members.some((m) => m.members && m.id === e.id && m.members.some((mem) => mem.id === this.props.user.id))) {
+            //check if user is still a member of the workspace
+
+            if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id)) {
+              //user is not part of workspace members
+              const teamMembers = ws.members
+                .filter((m) => m.members && m.id !== e.id)
+                .map((m) => m.member_ids)
+                .flat();
+              if (!teamMembers.some((id) => id === this.props.user.id)) {
+                //user is not part of any teams
+                //check if user is not part of workspace member
+                if (ws.is_lock) {
+                  let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+                  if (channels.some((id) => this.props.selectedChannel && id === this.props.selectedChannel.id) && this.props.match.url.startsWith("/chat")) {
+                    this.props.history.push("/chat");
+                  }
+                  this.props.removeWorkspaceChannel({ channels: channels });
+                } else {
+                  //remove channel members
+                  const removedTeamMembers = ws.members
+                    .filter((m) => m.members && m.id === e.id)
+                    .map((m) => m.member_ids)
+                    .flat();
+                  let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+                  this.props.removeWorkspaceChannelMembers({ channels: channels, remove_member_ids: removedTeamMembers });
+                }
+              }
+            }
+            return ws;
+          } else {
+            return ws;
+          }
+        });
+        this.props.incomingDeletedTeam(e);
+      })
+      .listen(".add-team-member", (e) => {
+        this.props.incomingTeamMember(e);
+      })
+      .listen(".remove-team-member", (e) => {
+        //remove member ids
+        //get all workspace with user as part of the removed members
+        Array.from(Object.values(this.props.workspaces)).map((ws) => {
+          if (ws.members.some((m) => m.members && m.id === e.id && m.members.some((mem) => mem.id === this.props.user.id))) {
+            //if user is no longer member of workspace or team and workspace is private
+            if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id) && ws.is_lock === 1) {
+              //remove channel
+              let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+              if (channels.some((id) => this.props.selectedChannel && id === this.props.selectedChannel.id) && this.props.match.url.startsWith("/chat")) {
+                this.props.history.push("/chat");
+              }
+              this.props.removeWorkspaceChannel({ channels: channels });
+            } else if (!ws.members.some((m) => (m.type === "internal" || m.type === "external") && this.props.user.id === m.id)) {
+              //remove channel members
+              let channels = [ws.channel && ws.channel.id ? ws.channel.id : 0, ws.team_channel && ws.team_channel.id ? ws.team_channel.id : 0];
+              this.props.removeWorkspaceChannelMembers({ channels: channels, remove_member_ids: e.remove_member_ids });
+            }
+            return ws;
+          } else {
+            return ws;
+          }
+        });
+        this.props.incomingRemovedTeamMember(e);
+      })
+      .listen(".create-drive-link", (e) => {
+        this.props.incomingDriveLink(e);
+      })
+      .listen(".remove-drive-link", (e) => {
+        this.props.incomingDeletedDriveLink(e);
+      })
+      .listen(".update-drive-link", (e) => {
+        this.props.incomingUpdatedDriveLink(e);
+      })
+      .listen(".upload-company-logo", (e) => {
+        this.props.incomingUpdatedCompanyLogo(e);
+      })
+      .listen(".reset-company-logo", (e) => {
+        this.props.incomingUpdatedCompanyLogo({ files: { view_link: "" } });
+      })
+      .listen(".team-checkout-complete", (e) => {
+        this.props.incomingUpdatedSubscription(e);
+      })
+      .listen(".team-subscription-cancelled", (e) => {
+        console.log(e, "cancelled subs");
+        this.props.incomingUpdatedSubscription(e);
+      })
+      .listen(".team-subscription-will-end", (e) => {
+        console.log(e, "trial will end");
+      })
       .listen(".reset-password-notification", (e) => {
         this.props.incomingAcceptedInternal(e);
       })
@@ -1092,23 +1214,7 @@ class SocketListeners extends Component {
         const latestVersion = parseFloat(driffData.version.substr(2));
 
         if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && socketVersion > latestVersion) {
-          const handleReminder = () => {
-            // setTimeout(() => {
-            //   this.props.addToModals({
-            //     id: version,
-            //     type: "update_found",
-            //     requirement: requirement,
-            //     handleReminder: handleReminder,
-            //   });
-            // }, [30 * 60 * 1000]);
-          };
-
-          this.props.addToModals({
-            id: version,
-            type: "update_found",
-            requirement: requirement,
-            handleReminder: handleReminder,
-          });
+          this.props.setNewDriffData({ requirement: requirement, showNewDriffBar: true });
           localStorage.setItem("site_ver", version);
         }
       })
@@ -1326,27 +1432,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              },
+            });
           }
 
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1356,44 +1495,58 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-workspace", (e) => {
+        if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
+          this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
         this.props.incomingUpdatedWorkspaceFolder({
           ...e,
           is_shared: e.is_shared,
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         if (e.type === "WORKSPACE") {
+          this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
             if (isMember) {
               if (e.workspace_id !== 0 && !this.props.folders.hasOwnProperty(e.workspace_id)) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_id }, (err, res) => {
                   if (err) return;
-                  this.props.getWorkspace({ topic_id: e.id });
+                  if (this.props.user.type === "external") {
+                    this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                  } else {
+                    this.props.getWorkspace({ topic_id: e.id });
+                  }
                 });
               } else {
-                this.props.getWorkspace({ topic_id: e.id });
+                if (this.props.user.type === "external") {
+                  this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                } else {
+                  this.props.getWorkspace({ topic_id: e.id });
+                }
               }
               // get the folder if the workspace folder does not exists yet
             }
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.props.user.id)) {
+              this.props.history.push("/workspace/search");
               //redirect to first favorite workspace
-              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
-              if (favoriteWorkspaces.length) {
-                let workspace = favoriteWorkspaces[0];
-                this.props.setActiveTopic(workspace);
-                if (workspace.folder_id) {
-                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                } else {
-                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                }
-                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
-                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
-                    this.props.history.push(`/chat/${workspace.channel.code}`);
-                  }
-                }
-              }
+              // let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              // if (favoriteWorkspaces.length) {
+              //   let workspace = favoriteWorkspaces[0];
+              //   this.props.setActiveTopic(workspace);
+              //   if (workspace.folder_id) {
+              //     this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   } else {
+              //     this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   }
+              //   if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+              //     if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+              //       this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+              //       this.props.history.push(`/chat/${workspace.channel.code}`);
+              //     }
+              //   }
+              // }
             }
           }
         }
@@ -1426,6 +1579,15 @@ class SocketListeners extends Component {
           this.props.incomingZoomData({ ...e.zoom_data.data });
         }
       })
+      .listen(".create-drive-link", (e) => {
+        this.props.incomingDriveLink(e);
+      })
+      .listen(".remove-drive-link", (e) => {
+        this.props.incomingDeletedDriveLink(e);
+      })
+      .listen(".update-drive-link", (e) => {
+        this.props.incomingUpdatedDriveLink(e);
+      })
       .listen(".favourite-workspace-notification", (e) => {
         this.props.incomingFavouriteWorkspace(e);
         // switch (e.SOCKET_TYPE) {
@@ -1453,27 +1615,60 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              },
+            });
           }
 
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1491,27 +1686,59 @@ class SocketListeners extends Component {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
                 if (err) return;
-                this.props.incomingWorkspace(e);
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                });
               });
             } else {
-              this.props.incomingWorkspace(e);
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+              });
             }
           } else {
-            this.props.incomingWorkspace(e);
+            this.props.incomingWorkspace({
+              ...e,
+              channel: {
+                id: e.channel.id ? e.channel.id : 0,
+                code: e.channel.code ? e.channel.code : null,
+              },
+            });
           }
-
-          this.props.getChannel({ code: e.channel.code }, (err, res) => {
-            if (err) return;
-            let channel = {
-              ...res.data,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              selected: true,
-              isFetching: false,
-            };
-            this.props.addToChannels(channel);
-          });
+          if (e.channel.code) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
         } else {
           this.props.incomingWorkspaceFolder({
             ...e.workspace,
@@ -1521,41 +1748,69 @@ class SocketListeners extends Component {
         }
       })
       .listen(".update-lock-workspace", (e) => {
-        this.props.incomingUpdatedWorkspaceFolder(e);
+        let members = [];
+        if (e.type === "WORKSPACE" && this.props.workspaces[e.id] && this.props.workspaces[e.id].is_shared === false && e.is_shared) {
+          this.props.transferChannelMessages({ channel: e.channel, team_channel: e.team_channel, topic_id: e.id });
+        }
         if (e.type === "WORKSPACE") {
+          members = e.members
+            .map((m) => {
+              if (m.member_ids) {
+                return m.members;
+              } else return m;
+            })
+            .flat();
+        }
+        this.props.incomingUpdatedWorkspaceFolder({
+          ...e,
+          is_shared: e.is_shared,
+          channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
+        });
+        //get the updated members
+        if (e.type === "WORKSPACE") {
+          this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
             if (isMember) {
               if (e.workspace_id !== 0 && !this.props.folders.hasOwnProperty(e.workspace_id)) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_id }, (err, res) => {
                   if (err) return;
-                  this.props.getWorkspace({ topic_id: e.id });
+                  if (this.props.user.type === "external") {
+                    this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                  } else {
+                    this.props.getWorkspace({ topic_id: e.id });
+                  }
                 });
               } else {
-                this.props.getWorkspace({ topic_id: e.id });
+                if (this.props.user.type === "external") {
+                  this.props.getWorkspaceAndSetToFavorites({ topic_id: e.id });
+                } else {
+                  this.props.getWorkspace({ topic_id: e.id });
+                }
               }
               // get the folder if the workspace folder does not exists yet
             }
           }
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
-            if (e.remove_member_ids.some((id) => id === this.props.user.id)) {
+            if (e.remove_member_ids.some((id) => id === this.props.user.id) && !members.some((m) => m.id === this.props.user.id)) {
+              this.props.history.push("/workspace/search");
               //redirect to first favorite workspace
-              let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
-              if (favoriteWorkspaces.length) {
-                let workspace = favoriteWorkspaces[0];
-                this.props.setActiveTopic(workspace);
-                if (workspace.folder_id) {
-                  this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-                } else {
-                  this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-                }
-                if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-                  if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
-                    this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
-                    this.props.history.push(`/chat/${workspace.channel.code}`);
-                  }
-                }
-              }
+              // let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
+              // if (favoriteWorkspaces.length) {
+              //   let workspace = favoriteWorkspaces[0];
+              //   this.props.setActiveTopic(workspace);
+              //   if (workspace.folder_id) {
+              //     this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   } else {
+              //     this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+              //   }
+              //   if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
+              //     if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
+              //       this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
+              //       this.props.history.push(`/chat/${workspace.channel.code}`);
+              //     }
+              //   }
+              // }
             }
           }
         }
@@ -1571,7 +1826,11 @@ class SocketListeners extends Component {
           } else {
             //moved workspace to another folder
             if (e.original_workspace_id !== e.workspace_id) {
-              this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+              if (e.current_workspace_folder_name) {
+                this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+              } else {
+                this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+              }
             }
           }
         }
@@ -1680,10 +1939,18 @@ class SocketListeners extends Component {
               if (e.workspace_data.workspace && !this.props.folders.hasOwnProperty(e.workspace_data.workspace.id)) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_data.workspace.id }, (err, res) => {
                   if (err) return;
-                  this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                  if (this.props.user.type === "external") {
+                    this.props.getWorkspaceAndSetToFavorites({ topic_id: e.workspace_data.topic.id });
+                  } else {
+                    this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                  }
                 });
               } else {
-                this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                if (this.props.user.type === "external") {
+                  this.props.getWorkspaceAndSetToFavorites({ topic_id: e.workspace_data.topic.id });
+                } else {
+                  this.props.getWorkspace({ topic_id: e.workspace_data.topic.id });
+                }
               }
             }
           } else {
@@ -1984,10 +2251,27 @@ function mapDispatchToProps(dispatch) {
     incomingUnfollowPost: bindActionCreators(incomingUnfollowPost, dispatch),
     incomingAcceptedInternal: bindActionCreators(incomingAcceptedInternal, dispatch),
     incomingZoomData: bindActionCreators(incomingZoomData, dispatch),
+    transferChannelMessages: bindActionCreators(transferChannelMessages, dispatch),
     getNotifications: bindActionCreators(getNotifications, dispatch),
     incomingSnoozedNotification: bindActionCreators(incomingSnoozedNotification, dispatch),
     incomingSnoozedAllNotification: bindActionCreators(incomingSnoozedAllNotification, dispatch),
     removeNotificationReducer: bindActionCreators(removeNotificationReducer, dispatch),
+    setNewDriffData: bindActionCreators(setNewDriffData, dispatch),
+    incomingReadNotifications: bindActionCreators(incomingReadNotifications, dispatch),
+    incomingUpdatedSubscription: bindActionCreators(incomingUpdatedSubscription, dispatch),
+    incomingUpdatedCompanyLogo: bindActionCreators(incomingUpdatedCompanyLogo, dispatch),
+    getWorkspaceAndSetToFavorites: bindActionCreators(getWorkspaceAndSetToFavorites, dispatch),
+    incomingDriveLink: bindActionCreators(incomingDriveLink, dispatch),
+    incomingDeletedDriveLink: bindActionCreators(incomingDeletedDriveLink, dispatch),
+    incomingUpdatedDriveLink: bindActionCreators(incomingUpdatedDriveLink, dispatch),
+    incomingTeam: bindActionCreators(incomingTeam, dispatch),
+    incomingUpdatedTeam: bindActionCreators(incomingUpdatedTeam, dispatch),
+    incomingDeletedTeam: bindActionCreators(incomingDeletedTeam, dispatch),
+    incomingTeamMember: bindActionCreators(incomingTeamMember, dispatch),
+    incomingRemovedTeamMember: bindActionCreators(incomingRemovedTeamMember, dispatch),
+    removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
+    removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
+    getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
   };
 }
 

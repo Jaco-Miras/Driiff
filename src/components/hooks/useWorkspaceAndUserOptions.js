@@ -1,28 +1,33 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslationActions } from ".";
 
 const useWorkspaceAndUserOptions = (props) => {
   const { addressTo } = props;
-
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    teamLabel: _t("TEAM", "Team"),
+  };
   const recipients = useSelector((state) => state.global.recipients);
-  const { workspaces: actualWorkspaces, activeTopic } = useSelector((state) => state.workspaces);
-  const { users: actualUsers } = useSelector((state) => state.users);
+  const actualWorkspaces = useSelector((state) => state.workspaces.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const actualUsers = useSelector((state) => state.users.users);
 
   const r = recipients.filter((r) => typeof r.name !== "undefined").sort((a, b) => a.name.localeCompare(b.name));
   const company = r.find((r) => r.main_department === true);
   const workspaces = r.filter((r) => r.type === "TOPIC");
   const users = r.filter((r) => r.type === "USER" && r.active === 1).sort((a, b) => a.name.localeCompare(b.name));
+  const teams = useSelector((state) => state.users.teams);
 
   const internalUsers = Object.values(actualUsers).filter((u) => u.active === 1 && u.type === "internal");
 
   const [options, setOptions] = useState([]);
-  const [progress, setProgress] = useState(false);
 
   const getAddressTo = (postRecipients) => {
     return postRecipients.map((r) => {
       return {
         ...r,
-        icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
+        icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : r.type === "TEAM" ? "users" : "user-avatar",
         ...(r.type === "DEPARTMENT" && {
           participant_ids: internalUsers.map((u) => u.id),
           member_ids: internalUsers.map((u) => u.id),
@@ -36,17 +41,25 @@ const useWorkspaceAndUserOptions = (props) => {
           is_shared: r.is_shared,
         }),
         value: r.id,
-        label: r.name,
+        label: r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name,
+        type: r.type,
+        useLabel: r.type === "TEAM",
       };
     });
   };
 
   const getDefaultAddressTo = () => {
+    const workspaceMembers = activeTopic.members
+      .map((m) => {
+        if (m.member_ids) {
+          return m.member_ids;
+        } else return m.id;
+      })
+      .flat();
     return [
       {
-        ...workspaces.filter((w) => w.type_id === activeTopic.id),
         ...activeTopic,
-        participant_ids: activeTopic.member_ids,
+        participant_ids: workspaceMembers,
         icon: "compass",
         value: activeTopic.id,
         label: activeTopic.name,
@@ -69,54 +82,80 @@ const useWorkspaceAndUserOptions = (props) => {
   };
 
   useEffect(() => {
-    if (!progress && Object.values(actualUsers).length > 1) {
-      setProgress(true);
-
-      let workspaceOptions = [];
-      workspaces.forEach((ws) => {
+    let workspaceOptions = Array.from(workspaces)
+      .filter((ws) => {
         if (typeof actualWorkspaces[ws.type_id] !== "undefined" && actualWorkspaces[ws.type_id].type === "WORKSPACE") {
-          workspaceOptions.push({
-            ...ws,
-            ...actualWorkspaces[ws.type_id],
-            icon: "compass",
-            value: ws.id,
-            label: ws.name,
-          });
-        }
+          return true;
+        } else return false;
+      })
+      .map((ws) => {
+        return {
+          ...ws,
+          ...actualWorkspaces[ws.type_id],
+          icon: "compass",
+          value: ws.id,
+          label: ws.name,
+        };
       });
 
-      let userOptions = [];
-      users.forEach((u) => {
-        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
-          userOptions.push({
-            ...u,
-            //...actualUsers,
-            icon: "user-avatar",
-            value: u.id,
-            label: u.name ? u.name : u.email,
-            type: "USER",
-          });
-        }
+    const botCodes = [
+      "gripp_bot_account",
+      "gripp_account_activation",
+      "gripp_offerte_bot",
+      "gripp_bot_invoice",
+      "gripp_invoice_bot",
+      "gripp_bot_offerte",
+      "gripp_bot_project",
+      "gripp_project_bot",
+      "gripp_bot_account",
+      "gripp_account_bot",
+      "driff_webhook_bot",
+      "huddle_bot",
+      "default_bot",
+    ];
+    let userOptions = Array.from(users)
+      .filter((u) => {
+        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1 && !botCodes.includes(actualUsers[u.type_id].email)) {
+          return true;
+        } else return false;
+      })
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+        };
       });
 
-      const options = [...workspaceOptions, ...userOptions];
-      const companyOption = company
-        ? [
-            {
-              ...company,
-              participant_ids: internalUsers.map((u) => u.id),
-              member_ids: internalUsers.map((u) => u.id),
-              members: internalUsers.map((u) => u),
-              icon: "home",
-              value: company.id,
-              label: company.name,
-            },
-          ]
-        : [];
+    const teamOptions = Object.values(teams).map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: `${dictionary.teamLabel} ${u.name}`,
+        useLabel: true,
+        type: "TEAM",
+        icon: "users",
+      };
+    });
 
-      setOptions([...companyOption, ...options]);
-    }
-  }, [options, recipients, actualUsers, actualWorkspaces, setOptions]);
+    const companyOption = company
+      ? [
+          {
+            ...company,
+            participant_ids: internalUsers.map((u) => u.id),
+            member_ids: internalUsers.map((u) => u.id),
+            members: internalUsers.map((u) => u),
+            icon: "home",
+            value: company.id,
+            label: company.name,
+          },
+        ]
+      : [];
+
+    setOptions([...companyOption, ...workspaceOptions, ...teamOptions, ...userOptions]);
+  }, [r.length, Object.keys(actualUsers).length, Object.keys(actualWorkspaces).length, Object.keys(teams).length]);
 
   let responsible_ids = [];
   let user_ids = [];
@@ -145,6 +184,8 @@ const useWorkspaceAndUserOptions = (props) => {
     .map((ad) => {
       if (ad.type === "USER") {
         return ad.type_id;
+      } else if (ad.type === "TEAM") {
+        return ad.member_ids;
       } else {
         return ad.participant_ids;
         // if (ad.main_department) {

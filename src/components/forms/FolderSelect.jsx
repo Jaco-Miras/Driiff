@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../common";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { useSettings } from "../hooks";
+import AsyncCreatableSelect from "react-select/async-creatable";
 
 const SelectOption = styled.div`
   display: flex;
@@ -22,12 +23,12 @@ const SelectOption = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)`
-  min-width: 1.75rem;
-  min-height: 1.75rem;
+  min-width: 24px;
+  min-height: 24px;
   margin: -2px 10px 0 0;
   border: none;
-  width: 2rem;
-  height: 2rem;
+  width: 24px;
+  height: 24px;
 `;
 
 const LockIcon = styled(SvgIconFeather)`
@@ -143,7 +144,7 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
 };
 
 const FolderSelect = forwardRef((props, ref) => {
-  const { className = "", isMulti = false, isClearable = false, ...otherProps } = props;
+  const { className = "", isMulti = false, isClearable = false, creatable = false, ...otherProps } = props;
 
   const {
     generalSettings: { dark_mode },
@@ -155,7 +156,33 @@ const FolderSelect = forwardRef((props, ref) => {
     components = { Option, MultiValueContainer };
   }
 
-  return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={components} {...otherProps} />;
+  if (creatable) {
+    return (
+      <AsyncCreatableSelect
+        ref={ref}
+        className={`react-select-container ${className}`}
+        classNamePrefix="react-select"
+        styles={dark_mode === "0" ? lightTheme : darkTheme}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        components={components}
+        {...otherProps}
+      />
+    );
+  } else {
+    return (
+      <Select
+        ref={ref}
+        className={`react-select-container ${className}`}
+        classNamePrefix="react-select"
+        styles={dark_mode === "0" ? lightTheme : darkTheme}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        components={components}
+        {...otherProps}
+      />
+    );
+  }
 });
 
 export default FolderSelect;

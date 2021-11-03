@@ -32,6 +32,13 @@ import {
   updateUserType as updateUserTypeService,
   resendInvitation as resendInvitationService,
   deleteInvitedUser as deleteInvitedUserService,
+  getTeams as getTeamsService,
+  postTeam as postTeamService,
+  putTeam as putTeamService,
+  deleteTeam as deleteTeamService,
+  addTeamMember as addTeamMemberService,
+  removeTeamMember as removeTeamMemberService,
+  createTeamChannel as createTeamChannelService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -204,4 +211,52 @@ export function deleteInvitedUser(payload, callback) {
 
 export function incomingAcceptedInternal(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ACCEPTED_INTERNAL_USER", payload, callback);
+}
+
+export function getTeams(payload, callback) {
+  return dispatchActionToReducer(getTeamsService(payload), "GET_TEAMS_START", "GET_TEAMS_SUCCESS", "GET_TEAMS_FAILURE", callback);
+}
+
+export function postTeam(payload, callback) {
+  return dispatchActionToReducer(postTeamService(payload), "CREATE_TEAM_START", "CREATE_TEAM_SUCCESS", "CREATE_TEAM_FAILURE", callback);
+}
+
+export function putTeam(payload, callback) {
+  return dispatchActionToReducer(putTeamService(payload), "PUT_TEAM_START", "PUT_TEAM_SUCCESS", "PUT_TEAM_FAILURE", callback);
+}
+
+export function deleteTeam(payload, callback) {
+  return dispatchActionToReducer(deleteTeamService(payload), "DELETE_TEAM_START", "DELETE_TEAM_SUCCESS", "DELETE_TEAM_FAILURE", callback);
+}
+
+export function incomingTeam(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_TEAM", payload, callback);
+}
+
+export function incomingUpdatedTeam(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_TEAM", payload, callback);
+}
+
+export function incomingDeletedTeam(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_TEAM", payload, callback);
+}
+
+export function addTeamMember(payload, callback) {
+  return dispatchActionToReducer(addTeamMemberService(payload), "ADD_TEAM_MEMBER_START", "ADD_TEAM_MEMBER_SUCCESS", "ADD_TEAM_MEMBER_FAILURE", callback);
+}
+
+export function incomingTeamMember(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_TEAM_MEMBER", payload, callback);
+}
+
+export function removeTeamMember(payload, callback) {
+  return dispatchActionToReducer(removeTeamMemberService(payload), "REMOVE_TEAM_MEMBER_START", "REMOVE_TEAM_MEMBER_SUCCESS", "REMOVE_TEAM_MEMBER_FAILURE", callback);
+}
+
+export function createTeamChannel(payload, callback) {
+  return dispatchActionToReducer(createTeamChannelService(payload), "CREATE_TEAM_CHANNEL_START", "CREATE_TEAM_CHANNEL_SUCCESS", "CREATE_TEAM_CHANNEL_FAILURE", callback);
+}
+
+export function incomingRemovedTeamMember(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_TEAM_MEMBER", payload, callback);
 }

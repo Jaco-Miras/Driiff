@@ -106,8 +106,59 @@ const useGoogleApis = () => {
     });
   };
 
+  const getMetadata = (fileId, callback) => {
+    window.gapi.load("client:auth2", async () => {
+      window.gapi.client
+        .init({
+          clientId: CLIENT_ID,
+          apiKey: API_KEY,
+          scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
+          access_type: "offline",
+        })
+        .then(async () => {
+          const auth = await window.gapi.auth2.getAuthInstance();
+
+          window.gapi.auth.authorize(
+            {
+              client_id: CLIENT_ID,
+              api_key: API_KEY,
+              scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
+              immediate: true,
+            },
+            (response) => {
+              if (response.access_token) {
+                window.gapi.client.load("drive", "v2", function () {
+                  let file = window.gapi.client.drive.files.get({
+                    fileId: fileId,
+                    includePermissionsForView: "published",
+                    supportsAllDrives: true,
+                  });
+                  file.execute(function (resp) {
+                    if (resp.error) {
+                      callback(resp);
+                    } else {
+                      callback(resp);
+                    }
+                  });
+                });
+              } else {
+                //updateSigninStatus(null, e, fileId);
+              }
+            }
+          );
+
+          // Listen for sign-in state changes.
+          // auth.isSignedIn.listen(() => {
+          //   updateSigninStatus(auth.isSignedIn.get(), e, fileId);
+          // });
+        });
+    });
+  };
+
   return {
     init,
+    getFile,
+    getMetadata,
   };
 };
 

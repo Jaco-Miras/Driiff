@@ -5,6 +5,7 @@ import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../
 import { SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 import { useHistory, useLocation } from "react-router-dom";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.ul`
   padding-left: 5px;
@@ -123,6 +124,8 @@ const HomeProfileNavigation = (props) => {
   const {
     generalSettings: { dark_mode },
     setGeneralSetting,
+    driffSettings,
+    userSettings,
   } = useSettings();
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
@@ -180,7 +183,12 @@ const HomeProfileNavigation = (props) => {
     if (selectedUser.hasOwnProperty("loaded")) {
       setForm(selectedUser);
     } else {
-      fetchById(loggedUser.id);
+      fetchById(loggedUser.id, (err, res) => {
+        if (err) return;
+        if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
+          sessionService.saveUser({ ...res.data });
+        }
+      });
     }
   }, []);
 
@@ -198,8 +206,20 @@ const HomeProfileNavigation = (props) => {
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
+  const handleGiftClick = (e) => {
+    e.preventDefault();
+    history.push("/releases");
+  };
+
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
+      {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
+        <li className="nav-item dropdown">
+          <a href="/" className={"nav-link"} onClick={handleGiftClick}>
+            <SvgIconFeather icon="gift" />
+          </a>
+        </li>
+      )}
       <li className="nav-item dropdown">
         <a href="/" className="nav-link" data-toggle="search" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalSearch}>

@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   user: null,
   users: {},
+  usersLoaded: false,
   getUserFilter: {
     hasMore: false,
     limit: 1000,
@@ -15,6 +16,8 @@ const INITIAL_STATE = {
   profileSlider: null,
   usersWithoutActivity: [],
   usersWithoutActivityLoaded: false,
+  teams: {},
+  teamsLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -31,7 +34,6 @@ export default (state = INITIAL_STATE, action) => {
         designation: "",
         external_company_name: "",
         external_id: null,
-        first_name: "",
         is_favourite: false,
         place: "",
         profile_image_link: null,
@@ -105,6 +107,7 @@ export default (state = INITIAL_STATE, action) => {
           limit: action.data.limit,
           skip: action.data.next_skip,
         },
+        usersLoaded: true,
       };
     }
     case "GET_EXTERNAL_USERS_SUCCESS": {
@@ -189,7 +192,7 @@ export default (state = INITIAL_STATE, action) => {
           contact: action.data.contact,
           company: action.data.company,
           designation: action.data.designation,
-          partial_name: action.data.partian_name,
+          partial_name: action.data.partial_name,
           import_from: action.data.import_from,
           place: action.data.place,
           address: action.data.address,
@@ -353,6 +356,19 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      const newUser = {
+        active: 1,
+        email: action.data.email,
+        first_name: action.data.first_name,
+        has_accepted: true,
+        id: action.data.id,
+        name: action.data.name,
+        partial_name: action.data.partial_name,
+        profile_image_link: action.data.profile_image_link,
+        profile_image_thumbnail_link: action.data.profile_image_thumbnail_link,
+        slug: null,
+        type: "internal",
+      };
       return {
         ...state,
         users: Object.values(state.users).reduce((acc, user) => {
@@ -360,6 +376,74 @@ export default (state = INITIAL_STATE, action) => {
             acc[user.id] = { ...user, ...action.data, has_accepted: true };
           } else {
             acc[user.id] = user;
+          }
+          return acc;
+        }, {}),
+        teams: action.data.team_ids.length
+          ? Object.values(state.teams).reduce((acc, t) => {
+              if (action.data.team_ids.some((id) => id === t.id)) {
+                acc[t.id] = {
+                  ...t,
+                  member_ids: t.member_ids.some((mid) => mid === action.data.id) ? t.member_ids : [...t.member_ids, action.data.id],
+                  members: t.member_ids.some((mid) => mid === action.data.id)
+                    ? t.members.map((m) => {
+                        if (action.data.id === m.id) {
+                          return { ...m, has_accepted: true };
+                        } else return m;
+                      })
+                    : [...t.members, newUser],
+                };
+              } else {
+                acc[t.id] = t;
+              }
+              return acc;
+            }, {})
+          : state.teams,
+      };
+    }
+    case "GET_TEAMS_SUCCESS": {
+      return {
+        ...state,
+        teamsLoaded: true,
+        teams: action.data.teams.reduce((acc, team) => {
+          acc[team.id] = team;
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_UPDATED_TEAM":
+    case "INCOMING_TEAM":
+    case "CREATE_TEAM_SUCCESS": {
+      return {
+        ...state,
+        teams: {
+          ...state.teams,
+          [action.data.id]: { ...action.data, is_shared: null },
+        },
+      };
+    }
+    case "INCOMING_DELETED_TEAM": {
+      return {
+        ...state,
+        teams: Object.values(state.teams)
+          .filter((t) => t.id !== action.data.id)
+          .reduce((acc, team) => {
+            acc[team.id] = team;
+            return acc;
+          }, {}),
+      };
+    }
+    case "INCOMING_REMOVED_TEAM_MEMBER":
+    case "REMOVE_TEAM_MEMBER_SUCCESS":
+    case "INCOMING_TEAM_MEMBER":
+    case "ADD_TEAM_MEMBER_SUCCESS": {
+      return {
+        ...state,
+        teams: Object.values(state.teams).reduce((acc, team) => {
+          if (team.id === parseInt(action.data.id)) {
+            acc[team.id] = { ...team, member_ids: action.data.member_ids, members: action.data.members };
+          } else {
+            acc[team.id] = team;
           }
           return acc;
         }, {}),

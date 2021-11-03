@@ -24,3 +24,5 @@ export { default as ReminderNote } from "./ReminderNote";
 export { default as BlobGifPlayer } from "./BlobGifPlayer";
 export { default as ProfileSlider } from "./ProfileSlider";
 export { default as PostVisibility } from "./PostVisibility";
+export { default as TooltipInfo } from "./TooltipInfo";
+export { default as PostInputMention } from "./PostInputMention";

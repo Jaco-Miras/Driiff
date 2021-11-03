@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import BodyMention from "../common/BodyMention";
+import PostInputMention from "../common/PostInputMention";
 import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
@@ -132,12 +132,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
   const [quillContents, setQuillContents] = useState([]);
-  const [mentionedUserIds, setMentionedUserIds] = useState([]);
-  const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+  // const [mentionedUserIds, setMentionedUserIds] = useState([]);
+  // const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
   const [inlineImages, setInlineImages] = useState([]);
+  const [quillMentions, setQuillMentions] = useState([]);
 
   const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
   const [mentionUsers, setMentionUsers] = useState([]);
@@ -179,8 +180,10 @@ const CompanyPostInput = forwardRef((props, ref) => {
         }
       })
       .flat();
+    let hasMention = false;
 
     if (quillContents.ops && quillContents.ops.length > 0) {
+      hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
       let mentionIds = quillContents.ops
         .filter((m) => m.insert.mention)
         .filter((m) => {
@@ -206,7 +209,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       });
     }
 
-    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif && !hasMention) return;
 
     let payload = {
       post_id: post.id,
@@ -328,7 +331,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     setQuillContents([]);
     setInlineImages([]);
     if (reactQuillRef.current) {
-      reactQuillRef.current.getEditor().setContents([]);
+      if (reactQuillRef.current.getEditor()) {
+        reactQuillRef.current.getEditor().setContents([]);
+      }
     }
     if (editPostComment !== null) {
       dispatch(setEditComment(null));
@@ -367,15 +372,23 @@ const CompanyPostInput = forwardRef((props, ref) => {
     if (editor.getContents().ops && editor.getContents().ops.length) {
       hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length;
       hasImage = editor.getContents().ops.filter((m) => m.insert.image).length;
-      handleMentionUser(
-        editor
-          .getContents()
-          .ops.filter((m) => {
-            if (m.insert.mention && m.insert.mention.type !== "external") return true;
-            else return false;
-          })
-          .map((i) => i.insert.mention.id)
-      );
+      if (editor.getContents().ops && editor.getContents().ops.length) {
+        hasMention = editor.getContents().ops.filter((m) => m.insert.mention).length;
+        hasImage = editor.getContents().ops.filter((m) => m.insert.image).length;
+        if (hasMention) {
+          const qms = editor
+            .getContents()
+            .ops.filter((m) => {
+              if (m.insert.mention && m.insert.mention.type !== "external") return true;
+              else return false;
+            })
+            .map((i) => i.insert.mention);
+
+          setQuillMentions(qms);
+          setMentionUsers(qms.map((id) => parseInt(id)).filter((id) => !isNaN(id)));
+        }
+        if (!hasMention) setQuillMentions([]);
+      }
     }
     textOnly.trim() === "" && !hasMention && !hasImage ? onActive(false) : onActive(true);
   };
@@ -392,49 +405,49 @@ const CompanyPostInput = forwardRef((props, ref) => {
     dispatch(removeUserToPostRecipients(payload));
   };
 
-  const handleMentionUser = (mention_ids) => {
-    mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
-    setMentionUsers(mention_ids);
-    if (mention_ids.length) {
-      //check for recipients/type
-      // const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
-      // let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ignoredWorkspaceIds];
-      // ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
-      let addressIds = post.recipients
-        .map((ad) => {
-          if (ad.type === "USER") {
-            return ad.type_id;
-          } else {
-            return ad.participant_ids;
-          }
-        })
-        .flat();
-      const userRecipientIds = recipients
-        .filter((r) => {
-          if (r.type === "USER" && post.author.id === r.type_id) {
-            return true;
-          } else if (r.type === "USER" && addressIds.some((id) => id === r.type_id)) {
-            return true;
-          } else return false;
-        })
-        .map((r) => r.id);
-      const postRecipientIds = post.recipients.map((pr) => pr.id);
-      let ignoreIds = [...new Set([...postRecipientIds, ...userRecipientIds, ...ignoredMentionedUserIds])];
-      let userIds = mention_ids.filter((id) => {
-        let userFound = false;
-        ignoreIds.forEach((pid) => {
-          if (pid === parseInt(id)) {
-            userFound = true;
-          }
-        });
-        return !userFound;
-      });
-      setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
-    } else {
-      setIgnoredMentionedUserIds([]);
-      setMentionedUserIds([]);
-    }
-  };
+  // const handleMentionUser = (mention_ids) => {
+  //   mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+  //   setMentionUsers(mention_ids);
+  //   if (mention_ids.length) {
+  //     //check for recipients/type
+  //     // const ignoredWorkspaceIds = post.recipients.filter((w) => (w.type === "TOPIC" ? w : false)).map((w) => w.id);
+  //     // let ignoreIds = [user.id, ...ignoredMentionedUserIds, ...prioMentionIds, ...members.map((m) => m.id), ...ignoredWorkspaceIds];
+  //     // ignoreIds = ignoreIds.filter( (id) => post.recipients.some((r) => r.id === id) );
+  //     let addressIds = post.recipients
+  //       .map((ad) => {
+  //         if (ad.type === "USER") {
+  //           return ad.type_id;
+  //         } else {
+  //           return ad.participant_ids;
+  //         }
+  //       })
+  //       .flat();
+  //     const userRecipientIds = recipients
+  //       .filter((r) => {
+  //         if (r.type === "USER" && post.author.id === r.type_id) {
+  //           return true;
+  //         } else if (r.type === "USER" && addressIds.some((id) => id === r.type_id)) {
+  //           return true;
+  //         } else return false;
+  //       })
+  //       .map((r) => r.id);
+  //     const postRecipientIds = post.recipients.map((pr) => pr.id);
+  //     let ignoreIds = [...new Set([...postRecipientIds, ...userRecipientIds, ...ignoredMentionedUserIds])];
+  //     let userIds = mention_ids.filter((id) => {
+  //       let userFound = false;
+  //       ignoreIds.forEach((pid) => {
+  //         if (pid === parseInt(id)) {
+  //           userFound = true;
+  //         }
+  //       });
+  //       return !userFound;
+  //     });
+  //     setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
+  //   } else {
+  //     setIgnoredMentionedUserIds([]);
+  //     setMentionedUserIds([]);
+  //   }
+  // };
 
   const handleSetEditMessageStates = (reply) => {
     reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, reply.body);
@@ -543,11 +556,10 @@ const CompanyPostInput = forwardRef((props, ref) => {
   //     }
   // };
 
-  const handleAddMentionedUsers = (mentions) => {
+  const handleAddMentionsToPost = (mentions) => {
     //const userIds = users.map((u) => u.id);
     const types = ["USER", "WORKSPACE", "TOPIC"];
     const userRecipients = recipients.filter((r) => types.includes(r.type));
-
     const newRecipients = userRecipients.filter((r) => {
       return mentions.some((m) => m.id === r.id);
     });
@@ -557,20 +569,16 @@ const CompanyPostInput = forwardRef((props, ref) => {
       recipients: newRecipients,
     };
 
-    const postRecipientIds = post.recipients.map((pr) => pr.id);
+    //const postRecipientIds = post.recipients.map((pr) => pr.id);
     setMentionUsersPayload(payload);
-
-    //const ingoredExternalIds = excludeExternals ? activeExternalUsers.map((m) => m.id) : [];
-    //setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id), ...ingoredExternalIds]);
-    setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...mentions.map((u) => u.id)]);
-
-    setMentionedUserIds([]);
+    // setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...mentions.map((u) => u.id)]);
+    // setMentionedUserIds([]);
   };
 
-  const handleIgnoreMentionedUsers = (users) => {
-    setIgnoredMentionedUserIds(users.map((u) => u.id));
-    setMentionedUserIds([]);
-  };
+  // const handleIgnoreMentionedUsers = (users) => {
+  //   setIgnoredMentionedUserIds(users.map((u) => u.id));
+  //   setMentionedUserIds([]);
+  // };
 
   const handleEditReplyClose = () => {
     setEditMode(false);
@@ -610,7 +618,17 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {mentionedUserIds.length > 0 && !hasCompanyAsRecipient && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} basedOnId={false} />}
+      {quillMentions.length > 0 && !hasCompanyAsRecipient && (
+        <PostInputMention
+          onAddToPost={handleAddMentionsToPost}
+          //onDoNothing={handleIgnoreMentionedUsers}
+          //userIds={mentionedUserIds}
+          quillMentions={quillMentions}
+          postRecipients={post.recipients}
+          workspaceMembers={[]}
+          type="post"
+        />
+      )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {(savingDraft || draftSaved) && <SavingDraftIndicator className="text-muted">{draftSaved ? dictionary.draftSavedLabel : dictionary.savingDraftLabel}</SavingDraftIndicator>}
     </Wrapper>

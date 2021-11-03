@@ -36,11 +36,18 @@ const INITIAL_STATE = {
     skip: 0,
     limit: 25,
     fetching: false,
-    hasMore: false,
+    hasMore: true,
   },
   searchArchivedChannels: false,
   snoozedHuddle: [],
   huddleBotsLoaded: false,
+  filterUnreadChannels: false,
+  unreadChannels: {
+    skip: 0,
+    limit: 25,
+    hasMore: true,
+    fetching: false,
+  },
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -165,28 +172,38 @@ export default function (state = INITIAL_STATE, action) {
     //   };
     // }
     case "ADD_CHANNELS": {
-      let fetchedChannels = {};
-      action.data.channels
-        .filter((r) => r.id !== null)
-        .filter((r) => {
-          return !(state.selectedChannel && state.selectedChannel.id === r.id);
-        })
-        .forEach((r) => {
-          fetchedChannels[r.id] = {
-            ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
-            ...r,
-            hasMore: true,
-            skip: 0,
-            replies: [],
-            selected: false,
-            isFetching: false,
-          };
-        });
+      // let fetchedChannels = {};
+      // action.data.channels
+      //   .filter((r) => r.id !== null)
+      //   .filter((r) => {
+      //     return !(state.selectedChannel && state.selectedChannel.id === r.id);
+      //   })
+      //   .forEach((r) => {
+      //     fetchedChannels[r.id] = {
+      //       ...(typeof fetchedChannels[r.id] !== "undefined" && fetchedChannels[r.id]),
+      //       ...r,
+      //       hasMore: true,
+      //       skip: 0,
+      //       replies: [],
+      //       selected: false,
+      //       isFetching: false,
+      //     };
+      //   });
       return {
         ...state,
         channels: {
           ...state.channels,
-          ...fetchedChannels,
+          ...(action.data.channels.length > 0 && {
+            ...Object.values(action.data.channels).reduce((acc, c) => {
+              if (state.channels[c.id]) {
+                acc[c.id] = { ...state.channels[c.id] };
+              } else {
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+              }
+              return acc;
+            }, {}),
+          }),
+          //...fetchedChannels,
         },
         fetch: {
           skip: action.data.channels.length + state.fetch.skip,
@@ -548,64 +565,75 @@ export default function (state = INITIAL_STATE, action) {
     }
 
     case "INCOMING_CHAT_MESSAGE": {
-      let haveReference = false;
-      let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
-        if (channel.id === action.data.channel_id && action.data.user.id === state.user.id) {
-          if (action.data.reference_id) haveReference = channel.replies.some((r) => r.reference_id === action.data.reference_id);
-        }
-        channel = {
-          ...channel,
-          is_hidden: false,
-          replies: haveReference
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  return {
-                    ...r,
-                    id: action.data.id,
-                    created_at: action.data.created_at,
-                    updated_at: action.data.created_at,
-                  };
-                } else {
-                  return {
-                    ...r,
-                    is_read: true,
-                  };
-                }
-              })
-            : // .sort((a, b) => {
-              //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-              //     return a.id - b.id;
-              //   } else {
-              //     return a.created_at.timestamp - b.created_at.timestamp;
-              //   }
-              // })
-              [...channel.replies, action.data],
-          // .sort((a, b) => {
-          //     if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-          //       return a.id - b.id;
-          //     } else {
-          //       return a.created_at.timestamp - b.created_at.timestamp;
-          //     }
-          //   })
-          last_visited_at_timestamp: getCurrentTimestamp(),
-          last_reply: action.data,
-          total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
-          replyCount: (channel.replyCount && action.data.user && action.data.user.id !== state.user.id) || (channel.replyCount && !action.data.user) ? channel.replyCount + 1 : channel.replyCount ? channel.replyCount : 1000,
-        };
-      }
       return {
         ...state,
         lastReceivedMessage: action.data,
-        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
-        channels:
-          channel !== null
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
+                ...state.selectedChannel,
+                replies: action.data.hasOwnProperty("reference_id")
+                  ? state.selectedChannel.replies.map((r) => {
+                      if (r.id === action.data.reference_id) {
+                        return {
+                          ...r,
+                          id: action.data.id,
+                          created_at: action.data.created_at,
+                          updated_at: action.data.created_at,
+                        };
+                      } else {
+                        return {
+                          ...r,
+                          is_read: true,
+                        };
+                      }
+                    })
+                  : [...state.selectedChannel.replies, action.data],
+                last_visited_at_timestamp: getCurrentTimestamp(),
+                last_reply: action.data,
+                total_unread: action.data.is_read ? 0 : state.selectedChannel.total_unread + 1,
+                replyCount:
+                  (state.selectedChannel.replyCount && action.data.user && state.user && action.data.user.id !== state.user.id) || (state.selectedChannel.replyCount && !action.data.user)
+                    ? state.selectedChannel.replyCount + 1
+                    : state.selectedChannel.replyCount
+                    ? state.selectedChannel.replyCount
+                    : 1000,
               }
-            : state.channels,
+            : state.selectedChannel,
+        channels: {
+          ...state.channels,
+          ...(state.channels[action.data.channel_id] && {
+            [action.data.channel_id]: {
+              ...state.channels[action.data.channel_id],
+              replies: action.data.hasOwnProperty("reference_id")
+                ? state.channels[action.data.channel_id].replies.map((r) => {
+                    if (r.id === action.data.reference_id) {
+                      return {
+                        ...r,
+                        id: action.data.id,
+                        created_at: action.data.created_at,
+                        updated_at: action.data.created_at,
+                      };
+                    } else {
+                      return {
+                        ...r,
+                        is_read: true,
+                      };
+                    }
+                  })
+                : [...state.channels[action.data.channel_id].replies, action.data],
+              last_visited_at_timestamp: getCurrentTimestamp(),
+              last_reply: action.data,
+              total_unread: action.data.is_read ? 0 : state.channels[action.data.channel_id].total_unread + 1,
+              replyCount:
+                (state.channels[action.data.channel_id].replyCount && action.data.user && state.user && action.data.user.id !== state.user.id) || (state.channels[action.data.channel_id].replyCount && !action.data.user)
+                  ? state.channels[action.data.channel_id].replyCount + 1
+                  : state.channels[action.data.channel_id].replyCount
+                  ? state.channels[action.data.channel_id].replyCount
+                  : 1000,
+            },
+          }),
+        },
       };
     }
     case "INCOMING_CHAT_MESSAGE_FROM_OTHERS": {
@@ -1255,10 +1283,33 @@ export default function (state = INITIAL_STATE, action) {
       }
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      let teamPostNotif = [];
-      if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
-        teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
-      }
+      // let teamPostNotif = [];
+      // if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
+      //   teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
+      // }
+      let updatedMembers = action.data.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.members;
+          } else return m;
+        })
+        .flat();
+      updatedMembers = [...new Map(updatedMembers.map((item) => [item["id"], item])).values()];
+      const sysMessage =
+        action.data.type === "WORKSPACE" && action.data.system_message
+          ? [
+              {
+                ...action.data.system_message,
+                created_at: action.data.updated_at,
+                editable: false,
+                is_read: true,
+                is_deleted: false,
+                files: [],
+                reactions: [],
+                unfurls: [],
+              },
+            ]
+          : [];
       return {
         ...state,
         channels: {
@@ -1278,22 +1329,22 @@ export default function (state = INITIAL_STATE, action) {
                         return true;
                       }
                     }),
-                    {
-                      ...action.data.system_message,
-                      created_at: action.data.updated_at,
-                      editable: false,
-                      is_read: true,
-                      is_deleted: false,
-                      files: [],
-                      reactions: [],
-                      unfurls: [],
-                    },
-                    ...teamPostNotif,
+                    // {
+                    //   ...action.data.system_message,
+                    //   created_at: action.data.updated_at,
+                    //   editable: false,
+                    //   is_read: true,
+                    //   is_deleted: false,
+                    //   files: [],
+                    //   reactions: [],
+                    //   unfurls: [],
+                    // },
+                    //...teamPostNotif,
                   ],
                 }),
                 icon_link: action.data.channel.icon_link,
                 title: action.data.name,
-                members: action.data.members.map((m) => {
+                members: updatedMembers.map((m) => {
                   return {
                     ...m,
                     bot_profile_image_link: null,
@@ -1310,12 +1361,12 @@ export default function (state = INITIAL_STATE, action) {
                 //transfer the internal post notification here
                 ...state.channels[action.data.team_channel.id],
                 replies:
-                  action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
-                    ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                    : state.channels[action.data.team_channel.id].replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-                icon_link: action.data.channel.icon_link,
+                  action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
+                    ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client), ...sysMessage]
+                    : [...state.channels[action.data.team_channel.id].replies, ...sysMessage],
+                icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
-                members: action.data.members
+                members: updatedMembers
                   .filter((m) => m.type !== "external")
                   .map((m) => {
                     return {
@@ -1328,6 +1379,7 @@ export default function (state = INITIAL_STATE, action) {
             }),
         },
         ...(state.selectedChannel &&
+          action.data.channel &&
           state.selectedChannel.id === action.data.channel.id && {
             selectedChannel: {
               ...state.selectedChannel,
@@ -1340,22 +1392,22 @@ export default function (state = INITIAL_STATE, action) {
                       return true;
                     }
                   }),
-                  {
-                    ...action.data.system_message,
-                    created_at: action.data.updated_at,
-                    editable: false,
-                    is_read: true,
-                    is_deleted: false,
-                    files: [],
-                    reactions: [],
-                    unfurls: [],
-                  },
-                  ...teamPostNotif,
+                  // {
+                  //   ...action.data.system_message,
+                  //   created_at: action.data.updated_at,
+                  //   editable: false,
+                  //   is_read: true,
+                  //   is_deleted: false,
+                  //   files: [],
+                  //   reactions: [],
+                  //   unfurls: [],
+                  // },
+                  //...teamPostNotif,
                 ],
               }),
               icon_link: action.data.channel.icon_link,
               title: action.data.name,
-              members: action.data.members.map((m) => {
+              members: updatedMembers.map((m) => {
                 return {
                   ...m,
                   bot_profile_image_link: null,
@@ -1370,12 +1422,12 @@ export default function (state = INITIAL_STATE, action) {
             selectedChannel: {
               ...state.selectedChannel,
               replies:
-                action.data.type === "WORKSPACE" && state.channels[action.data.channel.id] && action.data.is_shared
-                  ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client)]
-                  : state.selectedChannel.replies.filter((r) => !r.body.startsWith("POST_CREATE::")),
-              icon_link: action.data.channel.icon_link,
+                action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
+                  ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client), ...sysMessage]
+                  : [...state.selectedChannel.replies, ...sysMessage],
+              icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
-              members: action.data.members
+              members: updatedMembers
                 .filter((m) => m.type !== "external")
                 .map((m) => {
                   return {
@@ -1561,7 +1613,8 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...action.data.channel_detail,
           icon_link: channels[action.data.channel_detail.id].icon_link,
-          replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
+          //replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
+          replies: [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)), //remove placeholder chat messages
           //.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1585,7 +1638,8 @@ export default function (state = INITIAL_STATE, action) {
             return { ...m, channel_id: c.channel_id };
           });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
-          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          //channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp); //remove placeholder chat messages
           // channels[c.channel_id].last_reply = newMessages[0];
         }
       });
@@ -2366,6 +2420,36 @@ export default function (state = INITIAL_STATE, action) {
           : state.selectedChannel,
       };
     }
+    case "TRANSFER_CHANNEL_MESSAGES": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel.id) {
+            acc[channel.id] = {
+              ...channel,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              isFetching: false,
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel.id
+            ? {
+                ...state.selectedChannel,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                isFetching: false,
+                selected: true,
+              }
+            : state.selectedChannel,
+      };
+    }
     case "HUDDLE_SNOOZE": {
       let huddleBots = Object.values(state.huddleBots).map((r) => {
         if (r.id === action.data.id) {
@@ -2504,6 +2588,62 @@ export default function (state = INITIAL_STATE, action) {
         }),
       };
     }
+    case "SHOW_UNREAD_CHANNELS": {
+      return {
+        ...state,
+        filterUnreadChannels: !state.filterUnreadChannels,
+      };
+    }
+    case "GET_UNREAD_CHANNELS_START": {
+      return {
+        ...state,
+        unreadChannels: {
+          ...state.unreadChannels,
+          fetching: true,
+        },
+      };
+    }
+    case "GET_UNREAD_CHANNELS_SUCCESS": {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...(action.data.results.length > 0 && {
+            ...Object.values(action.data.results).reduce((acc, c) => {
+              if (state.channels[c.id]) {
+                acc[c.id] = { ...state.channels[c.id] };
+              } else {
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+              }
+              return acc;
+            }, {}),
+          }),
+        },
+        unreadChannels: {
+          ...state.unreadChannels,
+          skip: state.unreadChannels.skip + action.data.results.length,
+          hasMore: action.data.results.length === state.unreadChannels.limit,
+          fetching: false,
+        },
+      };
+    }
+    case "INCOMING_DEACTIVATED_USER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, ch) => {
+          if (ch.type === "COMPANY") {
+            acc[ch.id] = { ...ch, members: ch.members.filter((m) => m.id !== action.data.user_id) };
+          } else {
+            acc[ch.id] = ch;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.user_id)
+            ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.user_id) }
+            : state.selectedChannel,
+      };
+    }
     // case "INCOMING_DELETED_POST": {
     //   return {
     //     ...state,
@@ -2539,6 +2679,226 @@ export default function (state = INITIAL_STATE, action) {
     //         : state.selectedChannel,
     //   };
     // }
+    case "ADD_SELECT_CHANNEL": {
+      return {
+        ...state,
+        selectedChannel: state.channels[action.data.id] ? { ...state.channels[action.data.id], selected: true } : { ...action.data, skip: 0, replies: [], selected: true, isFetching: false },
+        selectedChannelId: action.data.id,
+        channels: {
+          ...state.channels,
+          ...(!state.channels[action.data.id] && {
+            [action.data.id]: {
+              ...action.data,
+              skip: 0,
+              replies: [],
+              selected: true,
+              isFetching: false,
+            },
+          }),
+          ...(state.channels[action.data.id] && {
+            [action.data.id]: { ...state.channels[action.data.id], selected: true },
+          }),
+        },
+        lastVisitedChannel: !state.channels[action.data.id]
+          ? {
+              ...action.data,
+              skip: 0,
+              replies: [],
+              selected: true,
+              isFetching: false,
+            }
+          : { ...state.channels[action.data.id], selected: true },
+      };
+    }
+    case "INCOMING_REMOVED_TEAM_MEMBER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
+            acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)
+            ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) }
+            : state.selectedChannel,
+      };
+    }
+    case "INCOMING_TEAM_MEMBER":
+    case "INCOMING_UPDATED_TEAM": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
+            let title = channel.title;
+            let icon_link = channel.icon_link;
+            if (channel.type === "TEAM") {
+              title = action.data.name;
+              if (action.data.icon_link) icon_link = action.data.icon_link;
+            } else if (channel.type === "DIRECT_TEAM") {
+              const otherUser = title.split("&")[1];
+              title = `${action.data.name} & ${otherUser}`;
+              if (action.data.icon_link) icon_link = action.data.icon_link;
+            }
+            acc[channel.id] = {
+              ...channel,
+              title: title,
+              icon_link: icon_link,
+              members: [
+                ...channel.members,
+                ...action.data.members
+                  .filter((m) => !channel.members.some((cm) => cm.id === m.id))
+                  .map((m) => {
+                    return { ...m, last_visited_at: null };
+                  }),
+              ],
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id)
+            ? {
+                ...state.selectedChannel,
+                members: [
+                  ...state.selectedChannel.members,
+                  ...action.data.members
+                    .filter((m) => !state.selectedChannel.members.some((cm) => cm.id === m.id))
+                    .map((m) => {
+                      return { ...m, last_visited_at: null };
+                    }),
+                ],
+              }
+            : state.selectedChannel,
+      };
+    }
+    case "INCOMING_DELETED_TEAM": {
+      return {
+        ...state,
+        channels: Object.values(state.channels)
+          .filter((c) => {
+            if (c.type === "TEAM" || c.type === "DIRECT_TEAM") {
+              return c.entity_id !== action.data.id;
+            } else {
+              return true;
+            }
+            // else if (c.type === "TOPIC") {
+            //   if (c.team_ids) {
+            //     return !c.team_ids.some((id) => id === action.data.id);
+            //   } else return true;
+            // }
+          })
+          .reduce((acc, channel) => {
+            acc[channel.id] = channel;
+            return acc;
+          }, {}),
+        selectedChannel: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannel,
+        selectedChannelId: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannelId,
+        lastVisitedChannel: state.lastVisitedChannel && state.lastVisitedChannel.entity_id === parseInt(action.data.id) ? null : state.lastVisitedChannel,
+      };
+    }
+    case "INCOMING_ACCEPTED_INTERNAL_USER": {
+      if (action.data.team_ids.length) {
+        const newUser = {
+          bot_profile_image_link: null,
+          code: action.data.code,
+          email: action.data.email,
+          first_name: action.data.first_name,
+          has_accepted: true,
+          id: action.data.id,
+          last_visited_at: null,
+          name: action.data.name,
+          partial_name: action.data.partial_name,
+          profile_image_link: action.data.profile_image_link,
+          profile_image_thumbnail_link: action.data.profile_image_thumbnail_link,
+        };
+        return {
+          ...state,
+          channels: Object.values(state.channels).reduce((acc, channel) => {
+            if ((channel.type === "TEAM" || channel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === channel.entity_id)) {
+              acc[channel.id] = {
+                ...channel,
+                members: channel.members.some((m) => m.id === action.data.id)
+                  ? channel.members.map((m) => {
+                      if (action.data.id === m.id) {
+                        return { ...m, has_accepted: true };
+                      } else return m;
+                    })
+                  : [...channel.members, newUser],
+              };
+            } else if (channel.type === "TOPIC" && action.data.team_ids.some((id) => channel.team_ids.some((cid) => cid === id))) {
+              acc[channel.id] = {
+                ...channel,
+                members: channel.members.some((m) => m.id === action.data.id)
+                  ? channel.members.map((m) => {
+                      if (action.data.id === m.id) {
+                        return { ...m, has_accepted: true };
+                      } else return m;
+                    })
+                  : [...channel.members, newUser],
+              };
+            } else {
+              acc[channel.id] = channel;
+            }
+            return acc;
+          }, {}),
+          selectedChannel:
+            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
+            (state.selectedChannel.type === "TOPIC" && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
+              ? {
+                  ...state.selectedChannel,
+                  members: state.selectedChannel.members.some((m) => m.id === action.data.id)
+                    ? state.selectedChannel.members.map((m) => {
+                        if (action.data.id === m.id) {
+                          return { ...m, has_accepted: true };
+                        } else return m;
+                      })
+                    : [...state.selectedChannel.members, newUser],
+                }
+              : state.selectedChannel,
+        };
+      } else {
+        return state;
+      }
+    }
+    case "REMOVE_WORKSPACE_CHANNEL": {
+      return {
+        ...state,
+        channels: Object.values(state.channels)
+          .filter((channel) => {
+            return !action.data.channels.some((id) => id === channel.id);
+          })
+          .reduce((acc, channel) => {
+            acc[channel.id] = channel;
+            return acc;
+          }, {}),
+        selectedChannel: state.selectedChannel && action.data.channels.some((id) => id === state.selectedChannel.id) ? null : state.selectedChannel,
+        lastVisitedChannel: state.lastVisitedChannel && action.data.channels.some((id) => id === state.lastVisitedChannel.id) ? null : state.lastVisitedChannel,
+        selectedChannelId: state.selectedChannelId && action.data.channels.some((id) => id === state.selectedChannelId) ? null : state.selectedChannelId,
+      };
+    }
+    case "REMOVE_WORKSPACE_CHANNEL_MEMBERS": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (action.data.channels.some((id) => id === channel.id)) {
+            acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && action.data.channels.some((id) => id === state.selectedChannel.id)
+            ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) }
+            : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }

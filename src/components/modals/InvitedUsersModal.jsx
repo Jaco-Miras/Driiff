@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
-import { FormInput } from "../forms";
+import { FormInput, PeopleSelect } from "../forms";
 import { useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { SvgIconFeather } from "../common";
@@ -14,6 +14,21 @@ const MoreMemberButton = styled.span`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+`;
+
+const SelectPeople = styled(PeopleSelect)`
+  // flex: 1 0 0;
+  // width: 1%;
+`;
+
+const StyledTable = styled.table`
+  .form-group {
+    margin: 0;
+  }
+  .team-th {
+    min-width: 300px;
+  }
+  overflow: unset;
 `;
 
 const InvitedUsersModal = (props) => {
@@ -32,6 +47,7 @@ const InvitedUsersModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [binary, setBinary] = useState(false);
   const user = useSelector((state) => state.session.user);
+  const teams = useSelector((state) => state.users.teams);
 
   const dictionary = {
     closeButton: _t("BUTTON.CLOSE", "Close"),
@@ -41,7 +57,23 @@ const InvitedUsersModal = (props) => {
     lastName: _t("INVITE.LAST_NAME", "Last name"),
     email: _t("INVITE.EMAIL", "Email"),
     name: _t("INVITE.NAME", "Name"),
+    addUserToteams: _t("INVITE_USERS.ADD_USER_TO_TEAMS", "Add user to teams"),
+    teamLabel: _t("TEAM", "Team"),
   };
+
+  const teamOptions = !fromRegister
+    ? Object.values(teams)
+        .filter((t) => !t.member_ids.some((id) => id === user.id))
+        .map((u) => {
+          return {
+            ...u,
+            value: u.id,
+            label: `${dictionary.teamLabel} ${u.name}`,
+            useLabel: true,
+            type: "TEAM",
+          };
+        })
+    : [];
 
   const handleInputChange = (e) => {
     e.persist();
@@ -222,14 +254,21 @@ const InvitedUsersModal = (props) => {
     }
   }, []);
 
+  const handleSelectTeam = (e, key) => {
+    setInvitationItems((prevState) => {
+      prevState[key]["teams"] = e === null ? [] : e;
+      return prevState;
+    });
+  };
+
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
+    <Modal isOpen={modal} toggle={toggle} size={"xl"} centered>
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
         {dictionary.userInvitations}
       </ModalHeaderSection>
-      {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
+      {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalBody>
-          <table className="table table-responsive">
+          <StyledTable className="table table-responsive">
             <tr>
               {hasLastName ? (
                 <>
@@ -240,6 +279,7 @@ const InvitedUsersModal = (props) => {
                 <th>{dictionary.name}</th>
               )}
               <th>{dictionary.email}</th>
+              {!fromRegister && <th className="team-th">{dictionary.addUserToteams}</th>}
               <th>
                 <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
               </th>
@@ -297,6 +337,11 @@ const InvitedUsersModal = (props) => {
                       onChange={handleInputChange}
                     />
                   </td>
+                  {!fromRegister && (user.role.name === "owner" || user.role.name === "admin") && (
+                    <td>
+                      <SelectPeople options={teamOptions} value={item.teams} onChange={(e) => handleSelectTeam(e, key)} isSearchable isMulti={true} isClearable={true} />
+                    </td>
+                  )}
                   <td>
                     <SvgIconFeather data-id={key} className="cursor-pointer" icon="x" onClick={handleDeleteItem} />
                   </td>
@@ -310,31 +355,31 @@ const InvitedUsersModal = (props) => {
                 </MoreMemberButton>
               </td>
             </tr>
-          </table>
+          </StyledTable>
         </ModalBody>
       )}
-      {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
-        <ModalBody>
-          <div>{dictionary.availableToAdmin}</div>
-        </ModalBody>
-      )}
-      {(fromRegister || user.role.name === "owner" || user.role.name === "admin") && (
+      {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalFooter>
+          <Button outline color="secondary" onClick={toggle}>
+            {cancelText}
+          </Button>
           <Button color="primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {submitText}
           </Button>{" "}
-          <Button outline color="secondary" onClick={toggle}>
-            {cancelText}
-          </Button>
         </ModalFooter>
       )}
       {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
-        <ModalFooter>
-          <Button outline color="secondary" onClick={toggle}>
-            {dictionary.closeButton}
-          </Button>
-        </ModalFooter>
+        <>
+          <ModalBody>
+            <div>{dictionary.availableToAdmin}</div>
+          </ModalBody>
+          <ModalFooter>
+            <Button outline color="secondary" onClick={toggle}>
+              {dictionary.closeButton}
+            </Button>
+          </ModalFooter>
+        </>
       )}
     </Modal>
   );

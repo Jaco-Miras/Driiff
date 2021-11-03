@@ -93,12 +93,12 @@ const ChatTimeStamp = styled.div`
 `;
 
 const SystemMessageVirtualized = forwardRef((props, ref) => {
-  const { reply, selectedChannel, chatMessageActions, user, timeFormat, dictionary, users } = props;
+  const { reply, selectedChannel, chatMessageActions, user, timeFormat, dictionary } = props;
 
   const history = useHistory();
   const params = useParams();
 
-  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user, users });
+  const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user });
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {

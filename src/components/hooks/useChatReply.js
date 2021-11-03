@@ -317,7 +317,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       }
 
       return newBody;
-    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -360,6 +360,9 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
         const data = JSON.parse(str);
         newBody = data.message;
       }
+    } else if (message.includes("CREATE_WORKSPACE::")) {
+      let parsedData = JSON.parse(message.replace("CREATE_WORKSPACE::", ""));
+      newBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
     } else if (message.startsWith("UPLOAD_BULK::")) {
       const data = JSON.parse(message.replace("UPLOAD_BULK::", ""));
       if (data.files && data.files.length === 1) {
@@ -384,7 +387,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
   }
 
   // replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
-  replyBody = parseSystemMessage(stripGif(replyBody));
+  replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
 
   let quoteAuthor = "";
   let quoteBody = "";

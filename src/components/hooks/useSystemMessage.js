@@ -4,10 +4,22 @@ import { renderToString } from "react-dom/server";
 import quillHelper from "../../helpers/quillHelper";
 import { useSelector } from "react-redux";
 import { useTranslationActions } from "./index";
+import useChannelUpdateMessage from "./useChannelUpdateMessage";
 
 const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
   const users = useSelector((state) => state.users.users);
+  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
   const { _t } = useTranslationActions();
+  const channelUpdateMessage = useChannelUpdateMessage({ reply, dictionary, allUsers, user, selectedChannel });
   const parseMessage = () => {
     let parseBody = "";
     if (reply.body.includes("POST_CREATE::")) {
@@ -34,10 +46,13 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       } else {
         parseBody = "System message...";
       }
+    } else if (reply.body.includes("CREATE_WORKSPACE::")) {
+      let parsedData = JSON.parse(reply.body.replace("CREATE_WORKSPACE::", ""));
+      parseBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
     } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
       let extractedIds = reply.body.match(ids);
-      let newMembers = Object.values(users)
+      let newMembers = Object.values(allUsers)
         .filter((u) => extractedIds.some((id) => parseInt(id) === u.id))
         .map((user) => user.name);
       if (selectedChannel.type === "DIRECT") {
@@ -75,228 +90,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
         parseBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
       }
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
-      const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
-
-      let author = {
-        name: dictionary.someone,
-        id: null,
-      };
-
-      if (data.author && data.author.id === user.id) {
-        author = {
-          name: <b>{dictionary.you}</b>,
-          id: user.id,
-        };
-      } else if (data.author && data.author.id !== user.id) {
-        let sysAuthor = Object.values(users).find((u) => data.author.id === u.id);
-        if (sysAuthor) {
-          author = {
-            name: sysAuthor.name,
-            id: sysAuthor.id,
-          };
-        }
-      }
-
-      if (data.accepted_members && data.author) {
-        let sysAuthor = Object.values(users).find((u) => data.author === u.id);
-        if (sysAuthor) {
-          author = {
-            name: sysAuthor.name,
-            id: sysAuthor.id,
-          };
-        }
-      }
-
-      let newBody = "";
-      if (data.title !== "") {
-        newBody = (
-          <>
-            <SvgIconFeather width={16} icon="edit-3" /> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
-            <br />
-          </>
-        );
-      }
-
-      if (data.title === "" && data.added_members.length === 0 && data.removed_members.length === 0 && !data.hasOwnProperty("accepted_members")) {
-        newBody = (
-          <>
-            {user.id === data.author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} updated <b>#{selectedChannel.title}</b>
-          </>
-        );
-      }
-
-      if (data.added_members.length === 1 && data.removed_members.length === 0 && data.title === "") {
-        //for adding one member without changes in title and for user who join the channel / workspace
-        const am = Object.values(users).find((u) => data.added_members.includes(u.id));
-        if (am && author.id === am.id) {
-          newBody = (
-            <>
-              {user.id === author.id ? <b>{dictionary.you}</b> : <b>{author.name}</b>} {dictionary.joined} <b>#{selectedChannel.title}</b>
-            </>
-          );
-        } else if (am) {
-          newBody = (
-            <>
-              <b>{author.name}</b> {dictionary.added} <b>{am.name}</b>
-            </>
-          );
-        }
-      } else if (data.added_members.length >= 1) {
-        let am = Object.values(users).filter((u) => data.added_members.includes(u.id));
-        if (newBody === "") {
-          newBody = (
-            <>
-              <b>{author.name}</b> {dictionary.added}{" "}
-            </>
-          );
-        } else {
-          newBody = (
-            <>
-              {newBody} {dictionary.andAdded}
-            </>
-          );
-        }
-
-        if (data.added_members.includes(user.id)) {
-          am = am.filter((m) => m.type_id !== user.id);
-          if (am.length !== 0) {
-            newBody = (
-              <>
-                {newBody} <b>{dictionary.youAnd} </b>
-              </>
-            );
-          } else {
-            newBody = (
-              <>
-                {newBody} <b>{dictionary.you}</b>
-              </>
-            );
-          }
-        }
-
-        if (am.length !== 0) {
-          newBody = (
-            <>
-              {newBody} <b>{am.map((m) => m.name).join(", ")}</b>
-              <br />
-            </>
-          );
-        }
-      }
-
-      if (data.removed_members.length === 1) {
-        if (data.author && data.author.id === data.removed_members[0]) {
-          if (newBody === "") {
-            if (data.author.id === user.id && data.removed_members[0] === user.id) {
-              newBody = (
-                <>
-                  <b>{dictionary.you}</b> {selectedChannel.type === "TOPIC" ? dictionary.leftTheWorkspace : dictionary.leftTheChat}{" "}
-                </>
-              );
-            } else {
-              newBody = (
-                <>
-                  <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
-                </>
-              );
-            }
-          } else {
-            newBody = (
-              <>
-                {newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}
-              </>
-            );
-          }
-        } else {
-          let userLeft = Object.values(users).find((u) => data.removed_members.includes(u.id));
-          if (newBody === "") {
-            newBody = (
-              <>
-                {author.name} {dictionary.removed} <b>{userLeft ? userLeft.name : null}</b>
-              </>
-            );
-          } else {
-            newBody = (
-              <>
-                {newBody} {dictionary.andRemoved} <b>{userLeft ? userLeft.name : null}</b>
-              </>
-            );
-          }
-        }
-      } else if (data.removed_members.length > 1) {
-        let rm = Object.values(users).filter((u) => data.removed_members.includes(u.id));
-        if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
-          if (newBody === "") {
-            newBody = (
-              <>
-                <b>{author.name}</b> {dictionary.left}{" "}
-              </>
-            );
-          } else {
-            newBody = (
-              <>
-                {newBody} {dictionary.andLeft}
-              </>
-            );
-          }
-
-          if (rm.length !== 0) {
-            newBody = (
-              <>
-                {newBody} {dictionary.andRemoved} <b>{rm.map((m) => m.name).join(", ")}</b>
-                <br />
-              </>
-            );
-          }
-        } else {
-          if (newBody === "") {
-            newBody = (
-              <>
-                {author.name} {dictionary.removed}{" "}
-              </>
-            );
-          } else {
-            newBody = (
-              <>
-                {newBody} {dictionary.andRemoved}
-              </>
-            );
-          }
-
-          if (data.removed_members.includes(user.id)) {
-            if (rm.length !== 0) {
-              newBody = (
-                <>
-                  {newBody} <b>{dictionary.youAnd} </b>
-                </>
-              );
-            } else {
-              newBody = (
-                <>
-                  {newBody} <b>{dictionary.you}</b>
-                </>
-              );
-            }
-          }
-
-          if (rm.length !== 0) {
-            newBody = (
-              <>
-                {newBody} <b>{rm.map((m) => m.name).join(", ")}</b>
-                <br />
-              </>
-            );
-          }
-        }
-      } else if (data.accepted_members) {
-        const am = Object.values(users).find((u) => data.accepted_members[0] === u.id);
-        newBody = (
-          <>
-            <b>{author.name}</b> {dictionary.added} <b>{am && am.name}</b>
-          </>
-        );
-      }
-      parseBody = renderToString(newBody);
+      parseBody = renderToString(channelUpdateMessage);
     }
     return parseBody;
   };

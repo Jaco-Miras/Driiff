@@ -32,6 +32,10 @@ const StyledAvatar = styled(Avatar)`
   color: #505050 !important;
   max-width: 2rem;
   max-height: 2rem;
+  .feather-users {
+    width: 1rem;
+    height: 1rem;
+  }
 `;
 
 const Option = (props) => {
@@ -43,9 +47,10 @@ const Option = (props) => {
             <StyledAvatar
               className="react-select-avatar"
               key={props.data.id}
-              imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
+              imageLink={props.data.type && props.data.type === "TEAM" ? props.data.icon_link : props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
               name={props.data.name}
               partialName={props.data.partial_name}
+              type={props.data.type && props.data.type === "TEAM" ? "TEAM" : "USER"}
             />
             <div>
               {props.children}
@@ -76,7 +81,7 @@ const MultiValueLabel = ({ children, selectProps, ...props }) => {
 const MultiValueContainer = ({ children, selectProps, ...props }) => {
   let newChildren = children.map((c, i) => {
     if (i === 0) {
-      const valueLabel = props.data.name.trim() !== "" ? `${props.data.first_name} ${props.data.middle_name} ${props.data.last_name}` : props.data.email;
+      const valueLabel = props.data.useLabel ? props.data.label : props.data.name.trim() !== "" ? `${props.data.first_name} ${props.data.middle_name} ${props.data.last_name}` : props.data.email;
       return {
         ...c,
         props: {
@@ -100,6 +105,7 @@ const PeopleSelect = forwardRef((props, ref) => {
       <CreatableSelect
         ref={ref}
         className={`react-select-container ${className}`}
+        classNamePrefix="react-select"
         styles={dark_mode === "0" ? lightTheme : darkTheme}
         isMulti={isMulti}
         isClearable={isClearable}
@@ -110,7 +116,18 @@ const PeopleSelect = forwardRef((props, ref) => {
       />
     );
   } else {
-    return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={{ Option, MultiValueContainer }} {...otherProps} />;
+    return (
+      <Select
+        ref={ref}
+        className={`react-select-container ${className}`}
+        classNamePrefix="react-select"
+        styles={dark_mode === "0" ? lightTheme : darkTheme}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        components={{ Option, MultiValueContainer }}
+        {...otherProps}
+      />
+    );
   }
 });
 

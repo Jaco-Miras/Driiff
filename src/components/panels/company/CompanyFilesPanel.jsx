@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useCompanyFiles, useTranslationActions } from "../../hooks";
 import { CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar } from "../files/company";
@@ -12,10 +11,6 @@ const Wrapper = styled.div`
     overflow: hidden;
     outline: currentcolor none medium;
   }
-`;
-
-const CreateFolderLabel = styled.div`
-  padding-top: 10px;
 `;
 
 const CompanyFilesPanel = (props) => {
@@ -83,95 +78,19 @@ const CompanyFilesPanel = (props) => {
     removed: _t("FILES.REMOVED", "Removed"),
     searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search by file or folder name"),
     uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
+    driveLink: _t("BUTTON.DRIVE_LINK", "Drive link"),
   };
 
-  const folderName = useRef("");
-
-  const handleFolderClose = () => {
-    folderName.current = "";
-  };
-
-  const handleFolderNameChange = (e) => {
-    folderName.current = e.target.value.trim();
-  };
-
-  const handleAddEditFolder = (f, mode = "add") => {
-    const handleCreateFolder = () => {
-      let cb = (err, res) => {
-        if (err) return;
-        if (params.hasOwnProperty("folderId")) {
-          let pathname = history.location.pathname.split("/folder/")[0];
-          history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-        } else {
-          history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-        }
-      };
-      let payload = {
-        name: folderName.current,
-      };
-      if (params.hasOwnProperty("folderId")) {
-        payload = {
-          ...payload,
-          folder_id: params.folderId,
-        };
-      }
-      actions.createCompanyFolders(payload, cb);
+  const handleAddEditFolder = (f, mode = "create") => {
+    const modal = {
+      type: "files_folder",
+      folder: mode === "create" ? null : f,
+      params: params,
+      mode: mode,
+      parentFolder: folder ? folder : null,
     };
 
-    const handleUpdateFolder = () => {
-      let cb = (err, res) => {
-        if (err) return;
-        if (params.hasOwnProperty("folderId")) {
-          let pathname = history.location.pathname.split("/folder/")[0];
-          history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-        }
-      };
-      actions.updateCompanyFolders(
-        {
-          id: f.id,
-          name: folderName.current,
-          is_archived: true,
-        },
-        cb
-      );
-    };
-
-    let payload = {
-      type: "single_input",
-      defaultValue: "",
-      label: "Folder name",
-      postInputLabel:
-        folder === null ? (
-          ""
-        ) : (
-          <CreateFolderLabel>
-            The folder will be created inside <b>#{folder.search}</b>
-          </CreateFolderLabel>
-        ),
-      onChange: handleFolderNameChange,
-      onClose: handleFolderClose,
-    };
-    if (mode === "add") {
-      payload = {
-        ...payload,
-        title: dictionary.createFolder,
-        preInputLabel: "Folders help to organize your files. A file can only be connected to one folder.",
-        labelPrimaryAction: dictionary.create,
-        onPrimaryAction: handleCreateFolder,
-      };
-    } else {
-      folderName.current = f.search;
-      payload = {
-        ...payload,
-        defaultValue: f.search,
-        title: "Rename folder",
-        preInputLabel: "Renaming the folder will update the folder name for everyone.",
-        labelPrimaryAction: "Rename folder",
-        onPrimaryAction: handleUpdateFolder,
-      };
-    }
-
-    dispatch(addToModals(payload));
+    dispatch(addToModals(modal));
   };
 
   const clearFilter = () => {

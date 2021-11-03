@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
-import { getUsers, getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
+import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel } from "../../redux/actions/chatActions";
+import { getAllWorkspaceFolders } from "../../redux/actions/workspaceActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -20,9 +21,11 @@ const useInitialLoad = () => {
       dispatch(
         getUsers({}, () => {
           dispatch(getArchivedUsers());
+          dispatch(getTeams());
         })
       );
       dispatch(getExternalUsers());
+      dispatch(getAllWorkspaceFolders());
       dispatch(getDrafts());
       //dispatch(getUnreadPostEntries());
       if (Object.keys(notifications).length === 0) {

@@ -206,6 +206,7 @@ const ChatFooterPanel = (props) => {
 
   const onSelectGif = (e) => {
     setSelectedGif(e);
+    handleShowEmojiPicker();
   };
 
   const onClearEmoji = useCallback(() => {

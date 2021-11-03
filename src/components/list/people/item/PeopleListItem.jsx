@@ -39,6 +39,12 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
   }
+  .card-body {
+    padding: 1rem !important;
+    min-height: 90px;
+    width: 100%;
+    display: flex;
+  }
 `;
 
 const StyledBadge = styled(Badge)`
@@ -105,6 +111,8 @@ const PeopleListItem = (props) => {
     showInactive = false,
     showWorkspaceRole = false,
     usersWithoutActivity = [],
+    onAddUserToTeam = null,
+    onDeleteTeamMember = null,
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
@@ -234,12 +242,20 @@ const PeopleListItem = (props) => {
     copyTextToClipboard(toaster, user.invite_link);
   };
 
+  const handleAddUserToTeam = () => {
+    if (onAddUserToTeam) onAddUserToTeam(user);
+  };
+
+  const handleRemoveTeamMember = () => {
+    if (onDeleteTeamMember) onDeleteTeamMember(user);
+  };
+
   return (
-    <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
+    <Wrapper className={`workspace-user-item-list col-lg-4 col-md-6 ${className}`}>
       <div className="col-12">
         <div className="card border" key={user.id}>
           <div className="card-body" ref={refs.cardBody}>
-            <div ref={refs.content} className="d-flex align-items-center justify-content-between">
+            <div ref={refs.content} className="d-flex align-items-center justify-content-between w-100">
               <div className="d-flex justify-content-start align-items-center">
                 <Avatar
                   id={user.id}
@@ -315,6 +331,8 @@ const PeopleListItem = (props) => {
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
+                      {!showInactive && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
+                      {onDeleteTeamMember && <div onClick={handleRemoveTeamMember}>{dictionary.removeTeamMember}</div>}
                     </MoreOptions>
                   )}
                 </div>

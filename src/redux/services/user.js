@@ -614,3 +614,58 @@ export function deleteInvitedUser(payload) {
     url: `/users/invited/remove/${payload.user_id}`,
   });
 }
+
+export function getTeams(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/team",
+  });
+}
+
+export function postTeam(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/team",
+    data: payload,
+  });
+}
+
+export function putTeam(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/team/${payload.id}`,
+    data: payload,
+  });
+}
+
+export function deleteTeam(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/team/${payload.id}`,
+    data: payload,
+  });
+}
+
+export function addTeamMember(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/team/add-member",
+    data: payload,
+  });
+}
+
+export function removeTeamMember(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/team/remove-member",
+    data: payload,
+  });
+}
+
+export function createTeamChannel(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/team-chat-channel/create",
+    data: payload,
+  });
+}

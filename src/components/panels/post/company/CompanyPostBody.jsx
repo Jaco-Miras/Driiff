@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import { useFiles, useGoogleApis, useRedirect, useTimeFormat, useWindowSize } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
-import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
-import { PostBadge, PostVideos, PostChangeAccept } from "../index";
+import { PostBadge, PostVideos, PostChangeAccept, PostBodyButtons } from "../index";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { renderToString } from "react-dom/server";
 import { sessionService } from "redux-react-session";
@@ -88,40 +87,12 @@ const Wrapper = styled.div`
   }
 `;
 
-const toggleTooltip = () => {
-  let tooltips = document.querySelectorAll("span.react-tooltip-lite");
-  tooltips.forEach((tooltip) => {
-    tooltip.parentElement.classList.toggle("tooltip-active");
-  });
-};
-
-const StyledTooltip = styled(Tooltip)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
-  cursor: pointer;
-`;
-
 const LockIcon = styled(SvgIconFeather)`
   width: 12px;
   vertical-align: top;
   margin-right: 0;
 `;
 
-// const ApprovedText = styled.div`
-//   span.approve-ip {
-//     display: none;
-//   }
-//   :hover {
-//     span.approve-ip {
-//       display: block;
-//     }
-//   }
-// `;
 const AuthorRecipients = styled.div`
   display: flex;
   align-items: center;
@@ -185,26 +156,25 @@ const AuthorRecipients = styled.div`
       margin-left: 5px;
     }
   }
-  // .receiver.client-shared {
-  //   background: #ffdb92;
-  //   color: #212529;
-  //   margin-right: 5px;
-  //   .feather {
-  //     margin-right: 5px;
-  //   }
-  // }
-  // .receiver.client-not-shared {
-  //   background: #d6edff;
-  //   color: #212529;
-  //   margin-right: 5px;
-  //   .feather {
-  //     margin-right: 5px;
-  //   }
-  // }
 `;
 
 const PostBadgeWrapper = styled.div`
-  min-width: 150px;
+  //min-width: 150px;
+  margin-left: auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  @media (max-width: 414px) {
+    .post-badge {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      .mr-3 {
+        margin-left: 1rem;
+        margin-right: 0 !important;
+      }
+    }
+  }
 `;
 
 const SharedBadge = styled.span`
@@ -249,57 +219,17 @@ const CompanyPostBody = (props) => {
     body: useRef(null),
   };
 
-  const componentIsMounted = useRef(true);
-
   const {
     fileBlobs,
     actions: { setFileSrc },
   } = useFiles();
   const redirect = useRedirect();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const postRecipients = useSelector((state) =>
-    state.global.recipients
-      .filter((r) => post.recipient_ids.includes(r.id))
-      .sort((a, b) => {
-        if (a.type !== b.type) {
-          if (a.type === "TOPIC") return -1;
-          if (b.type === "TOPIC") return 1;
-        }
-        return a.name.localeCompare(b.name);
-      })
-  );
-
-  const [star, setStar] = useState(post.is_favourite);
   const [approving, setApproving] = useState({ approve: false, change: false });
-  const { fromNow, localizeDate } = useTimeFormat();
+  const { fromNow } = useTimeFormat();
   const googleApis = useGoogleApis();
   const winSize = useWindowSize();
   const history = useHistory();
-  const [archivedClicked, setArchivedClicked] = useState(false);
-  const [starClicked, setStarClicked] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      componentIsMounted.current = false;
-    };
-  }, []);
-
-  const handleStarPost = () => {
-    if (disableOptions || starClicked) return;
-    setStarClicked(true);
-    postActions.starPost(post, () => {
-      if (componentIsMounted.current) setStarClicked(false);
-    });
-    if (componentIsMounted.current) setStar(!star);
-  };
-
-  const handleArchivePost = () => {
-    if (archivedClicked) return;
-    setArchivedClicked(true);
-    postActions.archivePost(post, () => {
-      if (componentIsMounted.current) setArchivedClicked(false);
-    });
-  };
 
   const handleInlineImageClick = (e) => {
     let id = null;
@@ -380,6 +310,9 @@ const CompanyPostBody = (props) => {
                     blobUrl: imgObj,
                   },
                 });
+              })
+              .catch((error) => {
+                console.log(error, "error fetching image");
               });
           });
         }
@@ -403,17 +336,20 @@ const CompanyPostBody = (props) => {
         history.push(`/profile/${id}/${replaceChar(e.target.innerHTML)}`);
         break;
       }
+      case "TEAM": {
+        history.push(`/system/people/teams/${id}/${replaceChar(e.target.innerHTML)}`);
+        break;
+      }
       default: {
         //console.log(id, type);
       }
     }
   };
-
   const renderUserResponsibleNames = () => {
-    const hasMe = postRecipients.some((r) => r.type_id === user.id);
+    const hasMe = post.recipients.some((r) => r.type_id === user.id);
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
-    const otherPostRecipients = postRecipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
+    const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
     // if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
     //   recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
     // } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
@@ -427,7 +363,7 @@ const CompanyPostBody = (props) => {
             return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
               r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
             }</span>`;
-          else return `<span class="receiver mb-1">${r.name}</span>`;
+          else return `<span class="receiver mb-1" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join(", ");
     }
@@ -449,7 +385,7 @@ const CompanyPostBody = (props) => {
             return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
               r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
             }</span>`;
-          else return `<span class="receiver">${r.name}</span>`;
+          else return `<span class="receiver" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join("");
 
@@ -470,8 +406,8 @@ const CompanyPostBody = (props) => {
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   const isMultipleApprovers = post.users_approval.length > 1;
-  const hasExternalWorkspace = postRecipients.some((r) => r.type === "TOPIC" && r.is_shared);
-
+  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+  //check hasExternalWorkspace
   return (
     <Wrapper ref={refs.container} className="card-body">
       {hasExternalWorkspace && !isExternalUser && (
@@ -491,25 +427,17 @@ const CompanyPostBody = (props) => {
         </SharedBadge>
       )}
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
-        <div className="d-flex justify-content-between align-items-center text-muted w-100">
+        <div className="d-flex align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
             <Avatar className="mr-2 post-author" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} />
             <div>
               <span className="author-name">{post.author.first_name}</span>
-              <AuthorRecipients>{postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
-              {/* {postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />} */}
+              <AuthorRecipients>{<span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
             </div>
           </div>
-          <PostBadgeWrapper className="d-inline-flex">
+          <PostBadgeWrapper>
             <PostBadge post={post} isBadgePill={true} dictionary={dictionary} user={user} />
-            {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
-            <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
-            {!disableOptions && !disableMarkAsRead() && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />}
-            <div className={"time-stamp"}>
-              <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(post.created_at.timestamp)}`}>
-                <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
-              </StyledTooltip>
-            </div>
+            <PostBodyButtons dictionary={dictionary} post={post} disableMarkAsRead={disableMarkAsRead} disableOptions={disableOptions} />
           </PostBadgeWrapper>
         </div>
       </div>

@@ -4,15 +4,15 @@ import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 
 const Wrapper = styled.div`
   .chat-sidebar-panel {
-    max-width: 540px;
+    //max-width: 540px;
   }
   .chat-content-panel {
     padding-right: 1.5rem;
     flex-grow: 1;
     flex: 1 1 auto;
-    @media (min-width: 1920px) {
-      max-width: calc(100% - 540px);
-    }
+    // @media (min-width: 1920px) {
+    //   max-width: calc(100% - 540px);
+    // }
   }
   @media (max-width: 1550px) {
     .chat-sidebar-panel {

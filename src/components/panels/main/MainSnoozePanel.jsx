@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import { setSelectedChannel, clearHuddleAnswers } from "../../../redux/actions/chatActions";
 import SnoozeItem from "../../list/snooze/SnoozeItem";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   .snooze-container {
@@ -107,9 +108,9 @@ const MainSnooze = (props) => {
 
   const [triggerUnsnooze, setTriggerUnsnooze] = useState(false);
 
-  const snoozeTime = 60;
-  const snoozeCycle = 60;
-  const expTodo = 59; //mins
+  const snoozeTime = 180;
+  const snoozeCycle = 180;
+  const expTodo = 179; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
@@ -131,6 +132,7 @@ const MainSnooze = (props) => {
     open: _t("SNOOZE.OPEN", "Open"),
     snooze: _t("SNOOZE.SNOOZE", "Snooze"),
     closeNotification: _t("NOTIFICATION.CLOSE", "Notification will not be shown again."),
+    addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
   };
 
   const notifCLean = () => {
@@ -138,6 +140,7 @@ const MainSnooze = (props) => {
       .filter(
         (n) =>
           n.type === "POST_MENTION" ||
+          n.type === "WORKSPACE_ADD_MEMBER" ||
           n.type === "POST_REQST_APPROVAL" ||
           n.type === "POST_REJECT_APPROVAL" ||
           n.type === "PST_CMT_REJCT_APPRVL" ||
@@ -281,9 +284,16 @@ const MainSnooze = (props) => {
           focusOnMessage = { focusOnMessage: n.data.comment_id };
         }
       }
-      redirect.toPost({ workspace, post }, focusOnMessage);
+      if (n.type === "WORKSPACE_ADD_MEMBER") {
+        if (n.data.workspace_folder_id) {
+          history.push(`/workspace/chat/${n.data.workspace_folder_id}/${replaceChar(n.data.workspace_folder_name)}/${n.data.id}/${replaceChar(n.data.title)}`);
+        } else {
+          history.push(`/workspace/chat/${n.data.id}/${replaceChar(n.data.title)}`);
+        }
+      } else {
+        redirect.toPost({ workspace, post }, focusOnMessage);
+      }
     }
-
     actions.snooze({ id: n.id, is_snooze: false });
   };
 
@@ -440,6 +450,12 @@ const MainSnooze = (props) => {
           } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
             toast.dismiss(elemId);
           }
+        } else if (n.type === "WORKSPACE_ADD_MEMBER") {
+          if (!n.is_read && !n.is_snooze) {
+            snooze.push(data);
+          } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
+            toast.dismiss(elemId);
+          }
         } else if (n.type === "POST_CREATE") {
           if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) snooze.push({ ...data, update: true });
           else toast.isActive(elemId) && toast.dismiss(elemId);
@@ -453,16 +469,16 @@ const MainSnooze = (props) => {
           if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_COMMENT") {
-          if (
-            n.data.post_approval_label &&
-            n.data.post_approval_label === "NEED_ACTION" &&
-            n.data.comment_body &&
-            !n.data.comment_body.startsWith("COMMENT_APPROVAL::") &&
-            n.data.users_approval.some((u) => user.id === u.id && !u.is_approved) &&
-            !n.is_snooze
-          )
-            snooze.push(data);
-          else toast.isActive(elemId) && toast.dismiss(elemId);
+          // if (
+          //   n.data.post_approval_label &&
+          //   n.data.post_approval_label === "NEED_ACTION" &&
+          //   n.data.comment_body &&
+          //   !n.data.comment_body.startsWith("COMMENT_APPROVAL::") &&
+          //   n.data.users_approval.some((u) => user.id === u.id && !u.is_approved && u.ip_address === null) &&
+          //   !n.is_snooze
+          // )
+          //   snooze.push(data);
+          // else toast.isActive(elemId) && toast.dismiss(elemId);
         }
       } else if (type === "todo") {
         n.status !== "DONE" && !n.is_snooze ? snooze.push(data) : toast.isActive(elemId) && toast.dismiss(elemId);

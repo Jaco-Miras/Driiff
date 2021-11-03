@@ -19,6 +19,7 @@ import { debounce } from "lodash";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
+import { getExistingFolder } from "../../redux/services/workspace";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -116,6 +117,9 @@ const WrapperDiv = styled(InputGroup)`
         color: #a7abc3;
       }
     }
+    .invalid-feedback {
+      display: block;
+    }
   }
   &.checkboxes {
     flex-flow: row !important;
@@ -183,8 +187,9 @@ const SelectPeople = styled(PeopleSelect)`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${(props) => props.height}px;
-    max-height: 300px;
+    // height: ${(props) => props.height}px;
+    // max-height: 300px;
+    height: calc(100% - 50px);
   }
 
   label {
@@ -210,10 +215,12 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
-// const LockIcon = styled(SvgIconFeather)`
-//   width: 1rem;
-//   height: 1rem;
-// `;
+const LabelWrapper = styled.div`
+  display: flex;
+  label {
+    min-width: auto;
+  }
+`;
 
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
@@ -228,20 +235,36 @@ const CreateEditWorkspaceModal = (props) => {
   const userSettings = useSelector((state) => state.settings.user);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
+  const teams = useSelector((state) => state.users.teams);
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const folders = useSelector((state) => state.workspaces.folders);
+  const folders = useSelector((state) => state.workspaces.allFolders);
+
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
+  const [folderInput, setFolderInput] = useState("");
+  const [creatingFolder, setCreatingFolder] = useState(false);
+  const [folderOptions, setFolderOptions] = useState(
+    Object.values(folders)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((ws) => {
+        return {
+          ...ws,
+          icon: "folder",
+          value: ws.id,
+          label: ws.name,
+        };
+      })
+  );
   const [form, setForm] = useState({
     is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
-    icon_link: item && item.channel ? item.channel.icon_link : null,
+    icon_link: item && item.team_channel ? item.team_channel.icon_link : null,
     name: "",
     selectedUsers: [],
     selectedFolder:
@@ -355,10 +378,13 @@ const CreateEditWorkspaceModal = (props) => {
     feedbackWorkspaceNameIsRequired: _t("FEEDBACK.WORKSPACE_NAME_IS_REQUIRED", "Workspace name is required."),
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
+    feedbackWorkspaceTypeIsRequired: _t("FEEDBACK.WORKSPACE_TYPE_IS_REQUIRED", "Workspace type is required."),
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", "::workspace_name:: workspace is created.", {
       workspace_name: `<b>${form.name}</b>`,
     }),
     externalWorkspace: _t("WORKSPACE.EXTERNAL_WORKSPACE", "External workspace"),
+    newUsers: _t("WORKSPACE.NEW_USERS", "New users"),
+    internalUserConfirmation: _t("CONFIRMATION_INTERNAL_USER", "Are you sure you want to give new user/s access to this Workspace?"),
     externalUserConfirmation: _t("CONFIRMATION_EXTERNAL_USER", "Are you sure you want to give an external user access to this Workspace?"),
     workspaceWithExternals: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS", "Workspace with externals"),
     externalGuest: _t("WORKSPACE.EXTERNAL_GUEST", "External guest"),
@@ -381,6 +407,14 @@ const CreateEditWorkspaceModal = (props) => {
     sendMyself: _t("BUTTON.SEND_MYSELF", "Send the signup link myself"),
     sendTruDriff: _t("BUTTON.SEND_TRU_DRIFF", "Automatically send the signup link to the mail"),
     publicWorkspace: _t("LABEL.PUBLIC_WORKSPACE", "Public workspace"),
+    toasterGeneralError: _t("TOASTER.WORKSPACE_ICON_GENERAL_ERROR", "Error uploading workspace icon!"),
+    convertToInternalWorkspace: _t("MODAL_HEADER.CONVERT_TO_INTERNAL_WS", "Convert to internal workspace"),
+    removeExternals: _t("BUTTON.REMOVE_EXTERNALS", "Remove externals"),
+    removeExternalsBody: _t("MODAL_BODY.REMOVE_EXTERNALS", "There are existing external users. Remove the external users first before converting to internal workspace."),
+    teamLabel: _t("TEAM", "Team"),
+    folderTooltip: _t("WORKSPACE.TOOLTIP_FOLDER", "You can add this WorkSpace to a folder for some extra structure in your WorkSpace list"),
+    teamMembersTooltip: _t("WORKSPACE.TOOLTIP_TEAM_MEMBERS", "Decide which members of your company should be added to this WorkSpace"),
+    guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
   };
 
   const _validateName = useCallback(() => {
@@ -428,12 +462,41 @@ const CreateEditWorkspaceModal = (props) => {
     dispatch(clearModal({ type: type }));
   };
 
+  const handleShowRemoveExternalsConfirmation = () => {
+    const handleSubmit = () => {
+      setForm({
+        ...form,
+        selectedExternals: [],
+        has_externals: false,
+      });
+      setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+      setInvitedExternals([]);
+    };
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.convertToInternalWorkspace,
+      submitText: dictionary.removeExternals,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.removeExternalsBody,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+
+    dispatch(addToModals(confirmModal));
+  };
+
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
     const checked = !form[name];
-    setForm((prevState) => {
-      return { ...prevState, [name]: checked };
-    });
+    if (name === "has_externals" && !checked && (form.selectedExternals.length || invitedExternals.length)) {
+      //show confirmation modal
+      handleShowRemoveExternalsConfirmation();
+    } else {
+      setForm((prevState) => {
+        return { ...prevState, [name]: checked };
+      });
+    }
   };
 
   const toggleWorkspaceType = (e, value) => {
@@ -452,16 +515,16 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
-  const folderOptions = Object.values(folders)
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((ws) => {
-      return {
-        ...ws,
-        icon: "folder",
-        value: ws.id,
-        label: ws.name,
-      };
-    });
+  // const folderOptions = Object.values(folders)
+  //   .sort((a, b) => a.name.localeCompare(b.name))
+  //   .map((ws) => {
+  //     return {
+  //       ...ws,
+  //       icon: "folder",
+  //       value: ws.id,
+  //       label: ws.name,
+  //     };
+  //   });
 
   const handleSelectUser = (e) => {
     if (e === null) {
@@ -527,7 +590,6 @@ const CreateEditWorkspaceModal = (props) => {
         ...prevState,
         selectedExternals: externals,
       }));
-      //setInvitedEmails(externals.filter((e) => typeof e.id === "string").map((e) => e.email));
       setInvitedExternals(invitedExternals.filter((ex) => e.some((e) => e.email === ex.email)));
     }
   };
@@ -624,6 +686,66 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const handleFolderValidation = (inputValue, selectValue, selectOptions) => {
+    if (inputValue && inputValue.trim() !== "" && folderOptions.some((f) => f.label.trim().toLowerCase() === inputValue.trim().toLowerCase())) return false;
+    if (inputValue && inputValue.trim() !== "" && selectOptions.length === 0) return true;
+  };
+
+  const handleFolderInputChange = (e) => {
+    setFolderInput(e);
+  };
+
+  const handleCreateFolderOption = (inputValue) => {
+    const folderName = inputValue.trim();
+    setCreatingFolder(true);
+    const tempId = require("shortid").generate();
+    setFolderOptions([...folderOptions, { id: tempId, label: folderName, value: folderName }]);
+    setForm({
+      ...form,
+      selectedFolder: { id: tempId, label: folderName, value: folderName },
+    });
+    let payload = {
+      name: folderName,
+      description: "<div></div>",
+      is_external: 0,
+      is_folder: 1,
+      is_lock: 0,
+    };
+    dispatch(
+      createWorkspace(payload, (err, res) => {
+        setCreatingFolder(false);
+        if (err) return;
+        if (res) {
+          setFolderOptions([...folderOptions, { id: res.data.workspace.id, label: folderName, value: res.data.workspace.id }]);
+          setForm({
+            ...form,
+            selectedFolder: { id: res.data.workspace.id, label: folderName, value: res.data.workspace.id },
+          });
+        }
+      })
+    );
+  };
+
+  const promiseOptions = (value) =>
+    new Promise((resolve) => {
+      resolve(getExistingFolder({ name: value }));
+    })
+      .then((result) => {
+        if (result.data.exists) {
+          return folderOptions.filter((f) => {
+            return f.label.toLowerCase().trim().includes(value.toLowerCase().trim());
+          });
+        } else {
+          return [];
+          // return folderOptions.filter((f) => {
+          //   return f.id === "";
+          // });
+        }
+      })
+      .catch((error) => {
+        //error
+      });
+
   const handleSelectFolder = (e) => {
     setForm((prevState) => ({
       ...prevState,
@@ -681,6 +803,10 @@ const CreateEditWorkspaceModal = (props) => {
         files: formData,
       },
       (err, res) => {
+        if (err) {
+          toaster.error(dictionary.toasterGeneralError);
+          return;
+        }
         dispatch(
           updateWorkspace({
             ...payload,
@@ -693,24 +819,12 @@ const CreateEditWorkspaceModal = (props) => {
     );
   };
 
-  // const confirmExternalUsers = () => {
-  //   const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-  //   if (externalEmails.length) {
-  //     var answer = window.confirm(dictionary.externalUserConfirmation);
-  //     if (answer) {
-  //       handleConfirm();
-  //     }
-  //   } else {
-  //     handleConfirm();
-  //   }
-  // };
-
   const handleConfirm = () => {
     if (loading) return;
-    //if (Object.values(valid).filter((v) => !v).length) return;
 
     const selectedMembers = [...form.selectedUsers.filter((u) => typeof u.id === "number"), ...form.selectedExternals.filter((u) => typeof u.id === "number")];
-    const member_ids = selectedMembers.map((u) => u.id);
+    const member_ids = selectedMembers.filter((m) => m.type !== "TEAM").map((m) => m.id);
+    const team_ids = selectedMembers.filter((m) => m.type === "TEAM").map((m) => m.id);
 
     let payload = {
       name: form.name,
@@ -720,24 +834,9 @@ const CreateEditWorkspaceModal = (props) => {
       is_lock: form.is_private ? 1 : 0,
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
+      new_team_member_ids: [],
+      team_member_ids: team_ids,
     };
-
-    //const externalEmails = [...invitedEmails, ...form.selectedExternals.filter((u) => !u.has_accepted).map((u) => u.email)];
-    // if (invitedEmails.length && form.has_externals) {
-    //   if (mode === "edit") {
-    //     payload = {
-    //       ...payload,
-    //       new_external_emails: invitedEmails,
-    //       is_external: 1,
-    //     };
-    //   } else {
-    //     payload = {
-    //       ...payload,
-    //       external_emails: invitedEmails,
-    //       is_external: 1,
-    //     };
-    //   }
-    // }
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
         payload = {
@@ -775,11 +874,19 @@ const CreateEditWorkspaceModal = (props) => {
     }
 
     if (mode === "edit") {
-      const activeMembers = item.members.filter((m) => m.active === 1);
+      const activeMembers = item.members.filter((m) => !m.hasOwnProperty("members"));
+      const activeTeams = item.members.filter((m) => m.hasOwnProperty("members"));
+      const teamIds = activeTeams.map((t) => t.id);
+      const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
 
-      const removed_members = item.members.filter((m) => !member_ids.some((id) => m.id === id));
+      const removed_members = item.members.filter((m) => !m.hasOwnProperty("members") && !member_ids.some((id) => m.id === id));
 
-      const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
+      const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
+
+      // const added_members = member_ids.filter((id) => !activeMembers.some((m) => m.id === id));
+      const added_members = selectedMembers.filter((m) => m.type !== "TEAM" && !activeMembers.some((am) => am.id === m.id));
+
+      const added_teams = form.selectedUsers.filter((m) => m.hasOwnProperty("members") && !teamIds.some((id) => id === m.id));
 
       const invitedIds = selectedMembers.filter((m) => !m.has_accepted).map((m) => m.id);
 
@@ -788,9 +895,18 @@ const CreateEditWorkspaceModal = (props) => {
         workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
         topic_id: item.id,
         remove_member_ids: removed_members.map((m) => m.id),
-        new_member_ids: added_members,
+        new_member_ids: added_members.map((m) => m.id),
+        new_team_member_ids: added_teams.map((t) => t.id),
+        remove_team_member_ids: removed_teams.map((t) => t.id),
+        team_member_ids: activeTeams.map((t) => t.id),
       };
-      if (removed_members.filter((rm) => rm.has_accepted).length || payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length || item.name !== form.name) {
+      if (
+        removed_members.filter((rm) => rm.has_accepted).length ||
+        payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length ||
+        item.name !== form.name ||
+        removed_teams.length ||
+        added_teams.length
+      ) {
         payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
           author: {
             id: user.id,
@@ -800,8 +916,10 @@ const CreateEditWorkspaceModal = (props) => {
             profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           },
           title: form.name === item.name ? "" : form.name,
-          added_members: added_members.filter((mid) => !invitedIds.some((id) => id === mid) && !inactiveMembers.some((m) => m.id === mid)),
-          removed_members: removed_members.filter((rm) => rm.has_accepted).map((m) => m.id),
+          added_members: added_members.filter((mem) => !invitedIds.some((id) => id === mem.id) && !inactiveMembers.some((m) => m.id === mem.id)),
+          removed_members: removed_members.filter((rm) => rm.has_accepted && (rm.type === "internal" || rm.type === "external")).map((m) => m.id),
+          removed_teams: removed_teams.map((t) => t.id),
+          added_teams: added_teams.map((t) => t.id),
         })}`;
       }
 
@@ -867,19 +985,38 @@ const CreateEditWorkspaceModal = (props) => {
           dispatch(updateWorkspace(payload, cb));
         }
       };
-
       if (
         (item.is_lock !== payload.is_lock && payload.is_lock === 1) ||
         (form.has_externals && payload.new_externals && payload.new_externals.length) ||
-        (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length)
+        (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length) ||
+        payload.new_member_ids.length
       ) {
+        const hasExternals = (form.has_externals && payload.new_externals && payload.new_externals.length) || (form.has_externals && form.selectedExternals.filter((ex) => !item.member_ids.some((id) => id === ex.id)).length);
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
-            headerText: form.has_externals && payload.is_lock === 1 ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}` : form.has_externals ? dictionary.externalWorkspace : dictionary.lockedWorkspace,
+            headerText:
+              hasExternals && payload.is_lock === 1
+                ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}`
+                : payload.new_member_ids.length && payload.is_lock === 1
+                ? `${dictionary.lockedWorkspace} / ${dictionary.newUsers}`
+                : hasExternals
+                ? dictionary.externalWorkspace
+                : payload.new_member_ids.length
+                ? dictionary.newUsers
+                : dictionary.lockedWorkspace,
             submitText: dictionary.confirm,
             cancelText: dictionary.cancel,
-            bodyText: form.has_externals && payload.is_lock === 1 ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}` : form.has_externals ? dictionary.externalUserConfirmation : dictionary.lockedWorkspaceText,
+            bodyText:
+              hasExternals && payload.is_lock === 1
+                ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}`
+                : payload.new_member_ids.length && payload.is_lock === 1
+                ? `${dictionary.internalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}`
+                : hasExternals
+                ? dictionary.externalUserConfirmation
+                : payload.new_member_ids.length
+                ? dictionary.internalUserConfirmation
+                : dictionary.lockedWorkspaceText,
             actions: {
               onSubmit: handleSubmit,
             },
@@ -1115,15 +1252,10 @@ const CreateEditWorkspaceModal = (props) => {
     setShowIconDropzone(false);
   };
 
-  // const handleShowIconDropzone = () => {
-  //   setShowIconDropzone(true);
-  // };
-
   const dropAction = (acceptedFiles) => {
     let selectedFiles = [];
     acceptedFiles.forEach((file) => {
       let timestamp = Math.floor(Date.now());
-      //let shortFileId = require("shortid").generate();
       if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
         selectedFiles.push({
           rawFile: file,
@@ -1263,8 +1395,20 @@ const CreateEditWorkspaceModal = (props) => {
     if (mode === "edit") {
       let members = [];
       let externalMembers = [];
+      let teamMembers = [];
       let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
       if (item.members.length) {
+        teamMembers = item.members
+          .filter((m) => m.type !== "internal" && m.type !== "external")
+          .map((m) => {
+            return {
+              ...m,
+              value: m.id,
+              label: `${dictionary.teamLabel} ${m.name}`,
+              useLabel: true,
+              type: "TEAM",
+            };
+          });
         members = item.members
           .filter((m) => m.active === 1 && m.type === "internal")
           .map((m) => {
@@ -1304,7 +1448,7 @@ const CreateEditWorkspaceModal = (props) => {
       setForm({
         ...form,
         has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
-        selectedUsers: members,
+        selectedUsers: [...members, ...teamMembers],
         selectedFolder: item.folder_id
           ? {
               value: item.folder_id,
@@ -1373,8 +1517,17 @@ const CreateEditWorkspaceModal = (props) => {
         label: u.name,
       };
     });
-    setUserOptions(userOptions);
-  }, [Object.values(users).length]);
+    const teamOptions = Object.values(teams).map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: `${dictionary.teamLabel} ${u.name}`,
+        useLabel: true,
+        type: "TEAM",
+      };
+    });
+    setUserOptions([...teamOptions, ...userOptions]);
+  }, [Object.values(users).length, Object.values(teams).length]);
 
   useEffect(() => {
     if (externalUsers.length) {
@@ -1493,6 +1646,21 @@ const CreateEditWorkspaceModal = (props) => {
       refs.first_name.current.focus();
     }
   };
+
+  useEffect(() => {
+    setFolderOptions(
+      Object.values(folders)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((ws) => {
+          return {
+            ...ws,
+            icon: "folder",
+            value: ws.id,
+            label: ws.name,
+          };
+        })
+    );
+  }, [Object.values(folders).length]);
 
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
@@ -1616,29 +1784,57 @@ const CreateEditWorkspaceModal = (props) => {
                 </div>
               }
             >
-              <SvgIconFeather icon="alert-circle" width="16" height="16" />
+              <SvgIconFeather icon="info" width="16" height="16" />
             </ToolTip>
           </div>
         </WrapperDiv>
         {form.has_folder === true && (
           <WrapperDiv className={"modal-input"}>
-            <Label for="people">{dictionary.folder}</Label>
-            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
+            <LabelWrapper className="mb-1">
+              <Label for="people">{dictionary.folder}</Label>
+              <ToolTip content={dictionary.folderTooltip}>
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </LabelWrapper>
+            <SelectFolder
+              creatable={true}
+              defaultOptions={folderOptions}
+              value={form.selectedFolder}
+              onChange={handleSelectFolder}
+              isMulti={false}
+              isClearable={true}
+              inputValue={folderInput}
+              isValidNewOption={handleFolderValidation}
+              onCreateOption={handleCreateFolderOption}
+              onInputChange={handleFolderInputChange}
+              formatCreateLabel={formatCreateLabel}
+              loadOptions={promiseOptions}
+              isSearchable
+            />
             <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
           </WrapperDiv>
         )}
         <WrapperDiv className={"modal-input"}>
-          <Label for="people">{dictionary.team}</Label>
+          <LabelWrapper className="mb-1">
+            <Label for="people">{dictionary.team}</Label>
+            <ToolTip content={dictionary.teamMembersTooltip}>
+              <SvgIconFeather icon="info" width="16" height="16" />
+            </ToolTip>
+          </LabelWrapper>
           <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
         {form.has_externals === true && (
           <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
-            <Label for="people">{dictionary.externalGuest}</Label>
+            <LabelWrapper className="mb-1">
+              <Label for="people">{dictionary.externalGuest}</Label>
+              <ToolTip content={dictionary.guestTooltip}>
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </LabelWrapper>
             <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
             <SelectPeople
               creatable={true}
-              //valid={valid.team}
               options={externalUserOptions}
               value={form.selectedExternals}
               inputValue={externalInput}
@@ -1649,7 +1845,6 @@ const CreateEditWorkspaceModal = (props) => {
               filterOption={filterOptions}
               formatCreateLabel={formatCreateLabel}
               isSearchable
-              classNamePrefix="react-select"
               onMenuClose={handleMenuClose}
               onEmailClick={handleEmailClick}
             />
@@ -1680,7 +1875,6 @@ const CreateEditWorkspaceModal = (props) => {
           </WrapperDiv>
         )}
         <WrapperDiv className="action-wrapper">
-          <Label />
           <RadioInputWrapper className="workspace-radio-input">
             <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
               {dictionary.lockWorkspace}
@@ -1689,10 +1883,11 @@ const CreateEditWorkspaceModal = (props) => {
               {dictionary.publicWorkspace}
             </RadioInput>
           </RadioInputWrapper>
+          <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
           <div className={"lock-workspace-text-container pb-3"}>
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
-          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null}>
+          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>

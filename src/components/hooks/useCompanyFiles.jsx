@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useFileActions } from "../hooks";
+import { useFileActions, useDriveLinkActions } from "../hooks";
 
 const useFiles = () => {
   const params = useParams();
@@ -16,8 +16,10 @@ const useFiles = () => {
   const { init: initTrashFiles, has_more: hasMoreTrashFiles, skip: skipTrashFiles, limit: limitTrashFiles, items: itemsTrashFiles } = useSelector((state) => state.files.companyFiles.trash_files);
   const { init: initGoogleFiles, has_more: hasMoreGoogleFiles, skip: skipGoogleFiles, limit: limitGoogleFiles } = useSelector((state) => state.files.companyFiles.google_files);
   const { init: initGoogleFolders, skip: skipGoogleFolders, limit: limitGoogleFolders } = useSelector((state) => state.files.companyFolders.google_folders);
+  const driveLinks = useSelector((state) => state.files.companyFiles.driveLinks);
 
   const googleDriveApiFiles = useSelector((state) => state.files.googleDriveApiFiles);
+  const { fetchDriveLinks } = useDriveLinkActions();
 
   const [folder, setFolder] = useState(null);
   const [fetchingFolders, setFetchingFolders] = useState(false);
@@ -173,6 +175,7 @@ const useFiles = () => {
   useEffect(() => {
     fileActions.fetchCompanyFilesDetail();
 
+    fetchDriveLinks({});
     if (!init) {
       loadMoreFiles();
     }
@@ -257,13 +260,14 @@ const useFiles = () => {
       popular_files: itemsPopularFiles,
       favorite_files: itemsFavoriteFiles,
       trash_files: itemsTrashFiles,
+      driveLinks: driveLinks,
     },
     fileCount: count,
     actions: fileActions,
     topic: activeTopic,
     fileIds: fileIds,
     folders: folders,
-    subFolders: folder ? folder.subFolders : [],
+    subFolders: folder && folder.subFolders ? folder.subFolders : [],
     folder: folder,
     googleDriveApiFiles,
     loadMore: {

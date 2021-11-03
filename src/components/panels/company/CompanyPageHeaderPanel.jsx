@@ -12,16 +12,26 @@ const Navbar = styled.ul`
   li {
     display: inline-block;
     text-align: center;
+    margin-right: 1.5rem;
     &:last-child {
       display: inline-flex !important;
       justify-content: flex-end;
+    }
+    a {
+      white-space: nowrap;
+    }
+  }
+  li:first-child {
+    margin-left: 15px;
+    @media all and (max-width: 700px) {
+      margin-left: 0;
     }
   }
 `;
 
 const MainNavLink = styled(NavLink)`
   color: #828282;
-  margin: 0 1rem;
+  // margin: 0 1rem;
   transition: color 200ms ease 0ms;
   font-weight: 500;
   border-radius: 0;
@@ -100,9 +110,9 @@ const CompanyPageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
           </li>
-          {user.role && ["owner"].includes(user.role.name) && (
+          {user.role && ["owner", "admin"].includes(user.role.name) && (
             <li className="nav-item">
-              <MainNavLink to="/bot">{dictionary.bots}</MainNavLink>
+              <MainNavLink to="/admin-settings">{dictionary.adminSettings}</MainNavLink>
             </li>
           )}
           {/* <li className="nav-item">

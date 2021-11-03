@@ -6,7 +6,8 @@ import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { CheckBox, FormInput, PasswordInput } from "../forms";
-import { useSettings, useUserActions } from "../hooks";
+import { useSettings, useUserActions, useToaster } from "../hooks";
+import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
 const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 
@@ -15,8 +16,15 @@ const Wrapper = styled.form`
   max-width: 430px;
 
   .btn-magic-link {
-    background-color: #7a1b8b;
-    color: #fff;
+    background-color: #fff;
+    color: rgb(0, 0, 0, 60%);
+    box-shadow: 0 1px 2px 0px rgb(0 0 0 / 30%);
+    padding: 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .google-signin {
+    cursor: pointer;
   }
 `;
 
@@ -25,9 +33,10 @@ const LoginPanel = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { driffSettings } = useSettings();
+  //const subscriptions = useSelector((state) => state.admin.subscriptions);
 
   const userActions = useUserActions();
-
+  const toaster = useToaster();
   const refs = {
     email: useRef(),
     password: useRef(),
@@ -157,9 +166,31 @@ const LoginPanel = (props) => {
             // };
             //openModalAction(cb);
           } else {
-            const returnUrl =
-              typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
-            userActions.login(res.data, returnUrl);
+            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+              dispatch(toggleLoading(false));
+              toaster.info("Please login via your Google account.", { autoClose: false });
+            } else {
+              const returnUrl =
+                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
+              userActions.login(res.data, returnUrl);
+            }
+
+            //stripe code
+            // if (subscriptions && subscriptions.status === "canceled") {
+            //   if (res.data.user_auth.role && (res.data.user_auth.role.name === "owner" || res.data.user_auth.role.name === "admin")) {
+            //     userActions.login(res.data, "/admin-settings/subscription/subscribe");
+            //   } else {
+            //     dispatch(toggleLoading(false));
+            //     toaster.info("Driff trial subscription has ended. Please contact your administrator.", { autoClose: false });
+            //   }
+            // } else if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+            //   dispatch(toggleLoading(false));
+            //   toaster.info("Please login via your Google account.", { autoClose: false });
+            // } else {
+            //   const returnUrl =
+            //     typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
+            //   userActions.login(res.data, returnUrl);
+            // }
           }
         }
       });
@@ -177,38 +208,38 @@ const LoginPanel = (props) => {
   }
   return (
     <Wrapper className="fadeIn">
-      {driffSettings.settings.password_login && (
-        <>
-          <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
-          <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
-          <div className="form-group d-flex justify-content-between">
-            <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-              {dictionary.rememberMe}
-            </CheckBox>
-            <Link to="/reset-password">{dictionary.resetPassword}</Link>
-          </div>
-          <button className="btn btn-primary btn-block" onClick={handleSignIn}>
-            {dictionary.signIn}
-          </button>
-        </>
-      )}
+      <>
+        <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
+        <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
+        <div className="form-group d-flex justify-content-between">
+          <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
+            {dictionary.rememberMe}
+          </CheckBox>
+          <Link to="/reset-password">{dictionary.resetPassword}</Link>
+        </div>
+        <button className="btn btn-primary btn-block" onClick={handleSignIn}>
+          {dictionary.signIn}
+        </button>
+      </>
+
       {(driffSettings.settings.google_login || driffSettings.settings.magic_link) && (
         <>
           <hr />
           <p className="text-muted">{dictionary.loginSocialMedia}</p>
           <ul className="list-inline">
             {driffSettings.settings.magic_link && (
-              <li className="list-inline-item">
-                <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
-                  <i className="fa fa-magic" />
+              <li>
+                <span onClick={handleMagicLinkClick} className="btn-magic-link">
+                  <i className="fa fa-magic" /> Magic Link
                 </span>
               </li>
             )}
             {driffSettings.settings.google_login && (
               <li className="list-inline-item">
-                <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
+                <img className="google-signin" src={GoogleIcon} alt="Google signin" onClick={userActions.googleLogin} />
+                {/* <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
                   <i className="fa fa-google" />
-                </span>
+                </span> */}
               </li>
             )}
           </ul>

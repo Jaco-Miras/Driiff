@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
-import { createWorkspace, deleteWorkspaceFolder, updateWorkspace } from "../../redux/actions/workspaceActions";
+import { createWorkspace, deleteWorkspaceFolder, updateWorkspace, getExistingFolder } from "../../redux/actions/workspaceActions";
 import { CheckBox, InputFeedback } from "../forms";
 import { useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
@@ -86,14 +86,16 @@ const CreateWorkspaceFolderModal = (props) => {
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Private folder"),
     lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),
+    folderNameTaken: _t("FEEDBACK.WORKSPACE_FOLDER_NAME_TAKEN", "Folder name already taken"),
   };
   const toaster = useToaster();
   const inputRef = useRef();
   const dispatch = useDispatch();
-  const { activeTopic, folders } = useSelector((state) => state.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const activeTab = useSelector((state) => state.workspaces.activeTab);
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [form, setForm] = useState({
     is_private: false,
     name: "",
@@ -102,26 +104,23 @@ const CreateWorkspaceFolderModal = (props) => {
     workspace_id: null,
   });
   const [valid, setValid] = useState({
-    name: null,
+    isValid: null,
+    feedback: "",
+    validating: null,
   });
-  const [feedback, setFeedback] = useState({
-    name: "",
-  });
+
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
 
-  const toggleCheck = useCallback(
-    (e) => {
-      const name = e.target.dataset.name;
-      setForm((prevState) => ({
-        ...prevState,
-        [name]: !prevState[name],
-      }));
-    },
-    [setForm]
-  );
+  const toggleCheck = (e) => {
+    const name = e.target.dataset.name;
+    setForm((prevState) => ({
+      ...prevState,
+      [name]: !prevState[name],
+    }));
+  };
 
   useEffect(() => {
     if (mode === "edit") {
@@ -136,79 +135,58 @@ const CreateWorkspaceFolderModal = (props) => {
     }
   }, []);
 
-  const validateName = useCallback(() => {
+  const validateName = () => {
+    if (!mounted) return;
+    if (mode === "edit" && form.name.trim().toLowerCase() === item.name.trim().toLowerCase()) return;
     setValid({
       ...valid,
-      name: form.name !== "",
+      validating: true,
     });
 
-    if (mode === "edit") {
-      if (form.name === "") {
-        setFeedback({
-          ...feedback,
-          name: "Please provide a folder name.",
-        });
-      } else if (Object.values(folders).filter((f) => f.name.toLowerCase() === form.name.toLowerCase()).length) {
-        if (item.name !== form.name) {
-          setFeedback({
-            ...feedback,
-            name: "Folder name already exists.",
+    dispatch(
+      getExistingFolder({ name: form.name.trim().toLowerCase() }, (err, res) => {
+        if (err) {
+          setValid({
+            ...valid,
+            isValid: false,
+            feedback: dictionary.folderNameTaken,
+            validating: false,
           });
         }
-      } else {
-        setFeedback({
-          ...feedback,
-          name: "",
-        });
-      }
-    } else {
-      if (form.name === "") {
-        setFeedback({
-          ...feedback,
-          name: "Please provide a folder name.",
-        });
-      } else if (Object.values(folders).filter((f) => f.name.toLowerCase() === form.name.toLowerCase()).length) {
-        setFeedback({
-          ...feedback,
-          name: "Folder name already exists.",
-        });
-      } else {
-        setFeedback({
-          ...feedback,
-          name: "",
-        });
-      }
-    }
-  }, [form.name, valid, setValid, feedback, setFeedback, folders]);
+        if (res.data) {
+          if (res.data.exists) {
+            setValid({
+              ...valid,
+              isValid: false,
+              feedback: dictionary.folderNameTaken,
+              validating: false,
+            });
+          } else {
+            setValid({
+              ...valid,
+              isValid: true,
+              feedback: "",
+              validating: false,
+            });
+          }
+        }
+      })
+    );
+  };
 
-  const handleNameChange = useCallback(
-    (e) => {
-      e.persist();
-      if (valid.name !== null) {
-        setValid((prevState) => ({
-          ...prevState,
-          name: null,
-        }));
-      }
-      setForm((prevState) => ({
-        ...prevState,
-        name: e.target.value.trim(),
-      }));
+  const handleNameChange = (e) => {
+    e.persist();
+    setForm((prevState) => ({
+      ...prevState,
+      name: e.target.value,
+    }));
+  };
 
-      validateName();
-    },
-    [valid.name, setValid, setForm]
-  );
-
-  const handleNameBlur = useCallback(() => {
-    validateName();
-  }, [validateName]);
-
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = () => {
     if (loading) return;
 
     let payload = {
-      name: form.name,
+      name: form.name.trim(),
       description: form.description,
       is_external: activeTab === "extern" ? 1 : 0,
       is_folder: 1,
@@ -238,11 +216,7 @@ const CreateWorkspaceFolderModal = (props) => {
               );
             }
             if (res) {
-              toaster.success(
-                <span>
-                  <b>{form.name}</b> folder is updated
-                </span>
-              );
+              toaster.success(<span>{_t("TOASTER.UPDATE_WORKSPACE_FOLDER", "::folderName:: folder successfully updated", { folderName: form.name })}</span>);
               toggle();
             }
           })
@@ -285,11 +259,7 @@ const CreateWorkspaceFolderModal = (props) => {
               );
             }
             if (res) {
-              toaster.success(
-                <span>
-                  <b>{form.name}</b> folder is created
-                </span>
-              );
+              toaster.success(<span>{_t("TOASTER.CREATE_WORKSPACE_FOLDER", "::folderName:: folder successfully created", { folderName: form.name })}</span>);
               toggle();
             }
           })
@@ -316,7 +286,7 @@ const CreateWorkspaceFolderModal = (props) => {
         handleSubmit();
       }
     }
-  }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm, mode]);
+  };
 
   const handleRemoveFolder = () => {
     dispatch(
@@ -353,14 +323,21 @@ const CreateWorkspaceFolderModal = (props) => {
   const onOpened = () => {
     if (inputRef && inputRef.current) {
       inputRef.current.focus();
+      setMounted(true);
     }
   };
 
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      validateName();
+    }, 500);
+    return () => clearTimeout(timeOutId);
+  }, [form.name]);
+
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
+    <Modal isOpen={modal} toggle={toggle} size={"md"} onOpened={onOpened} centered>
       <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
-        {mode === "edit" ? "Edit  folder" : "Create new folder"}
-        {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
+        {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
       </ModalHeaderSection>
       <ModalBody>
         <WrapperDiv className={"modal-input"}>
@@ -371,15 +348,18 @@ const CreateWorkspaceFolderModal = (props) => {
             </Label>
           </div>
           <div className={"folder-searchbar-container"}>
-            <Input className={"folder-searchbar"} defaultValue={mode === "edit" ? item.name : ""} onChange={handleNameChange} onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name} innerRef={inputRef} />
-            <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+            <Input
+              className={"folder-searchbar"}
+              defaultValue={mode === "edit" ? item.name : ""}
+              onChange={handleNameChange}
+              //onBlur={handleNameBlur}
+              valid={valid.validating === false && valid.isValid}
+              invalid={valid.validating === false && valid.isValid === false}
+              innerRef={inputRef}
+            />
+            <InputFeedback valid={valid.isValid}>{valid.feedback}</InputFeedback>
           </div>
         </WrapperDiv>
-        {/* <StyledDescriptionInput
-              height={window.innerHeight - 660}
-              onChange={handleQuillChange}
-              defaultValue={mode === "edit" && item ? item.description : ""}
-              mode={mode}/> */}
         <WrapperDiv className="action-wrapper" style={{ marginTop: "40px" }}>
           <div>
             <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
@@ -390,7 +370,11 @@ const CreateWorkspaceFolderModal = (props) => {
             </div>
           </div>
           <div className={"create-folder-btn ml-auto"}>
-            <button className="btn btn-primary" disabled={valid.name === null || valid.name === false} onClick={handleConfirm}>
+            <button
+              className="btn btn-primary"
+              disabled={valid.validating || valid.isValid === false || (mode === "edit" && item.name.trim().toLowerCase() === form.name.trim().toLowerCase() && !!item.is_lock === form.is_private)}
+              onClick={handleConfirm}
+            >
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
             </button>

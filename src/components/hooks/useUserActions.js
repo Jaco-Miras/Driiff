@@ -36,6 +36,7 @@ import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
+import { browserName, deviceType } from "react-device-detect";
 
 export const userForceLogout = () => {
   if (localStorage.getItem("userAuthToken")) {
@@ -347,7 +348,8 @@ const useUserActions = () => {
 
         if (res) {
           toaster.success(<>Password is successfully updated. You are being logged in!</>);
-          login(res.data);
+          const redirectUrl = res.data.user_auth.type === "internal" ? "/chat" : "/workspace/chat";
+          login(res.data, redirectUrl);
         }
       })
     );
@@ -393,6 +395,12 @@ const useUserActions = () => {
           .deleteSession()
           .then(() => sessionService.deleteUser())
           .then(() => {
+            const host = window.location.host.split(".");
+            if (deviceType === "mobile" && browserName === "WebKit") {
+              if (host.length === 3) {
+                window.webkit.messageHandlers.driffLogout.postMessage({ slug: host[0], status: "OK" });
+              }
+            }
             dispatch(
               toggleLoading(false, () => {
                 toaster.success("You are logged out");

@@ -9,6 +9,7 @@ import { addToModals } from "../../redux/actions/globalActions";
 import { useDispatch } from "react-redux";
 //import ReactConfetti from "react-confetti";
 import { isIPAddress } from "../../helpers/commonFunctions";
+import { TodoCheckBox } from "../forms";
 const ReactConfetti = lazy(() => import("../lazy/ReactConfetti"));
 
 const Wrapper = styled.form`
@@ -34,6 +35,17 @@ const StyledFormGroup = styled(FormGroup)`
   }
 `;
 
+const CheckBoxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  .custom-checkbox {
+    height: 1rem;
+  }
+  a {
+    color: #7a1b8b;
+  }
+`;
+
 const DriffCreatePanel = (props) => {
   const { dictionary, setRegisteredDriff } = props;
   const history = useHistory();
@@ -42,6 +54,7 @@ const DriffCreatePanel = (props) => {
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
   const [loginLink, setLoginLink] = useState("/login");
+  const [agreed, setAgreed] = useState(false);
 
   const { REACT_APP_localDNSName, REACT_APP_apiProtocol } = process.env;
 
@@ -212,6 +225,10 @@ const DriffCreatePanel = (props) => {
     }
   }, [registered]);
 
+  const toggleCheck = () => {
+    setAgreed(!agreed);
+  };
+
   return (
     <Wrapper>
       {registered ? (
@@ -281,8 +298,20 @@ const DriffCreatePanel = (props) => {
               <>+ {dictionary.inviteUser}</>
             )}
           </button>
-
-          <button className="btn btn-primary btn-block" onClick={handleRegister}>
+          <CheckBoxWrapper className="mb-4">
+            <TodoCheckBox name="agree" checked={agreed} onClick={toggleCheck}></TodoCheckBox>
+            <span>
+              When creating this Driff you accept our{" "}
+              <a href="https://getdriff.com/privacy-policy/" target="_blank" rel="noopener noreferrer">
+                privacy policy
+              </a>{" "}
+              and{" "}
+              <a href="https://getdriff.com/terms-of-use-of-driff/" target="_blank" rel="noopener noreferrer">
+                terms of use
+              </a>{" "}
+            </span>
+          </CheckBoxWrapper>
+          <button className="btn btn-primary btn-block" onClick={handleRegister} disabled={!agreed}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.register}
           </button>
           <hr />

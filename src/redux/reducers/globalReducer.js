@@ -30,6 +30,7 @@ const INITIAL_STATE = {
   searching: false,
   tabs: {},
   links: [],
+  linksFetched: false,
   todos: {
     isLoaded: false,
     hasMore: true,
@@ -70,6 +71,11 @@ const INITIAL_STATE = {
   zoomData: null,
   snoozedReminders: [],
   snoozedRemindersLoaded: false,
+  newDriffData: {
+    showNewDriffBar: false,
+    requirement: "",
+  },
+  dontShowIds: [],
 };
 
 const getLink = (t) => {
@@ -273,6 +279,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         links: action.data,
+        linksFetched: true,
       };
     }
     case "GET_TO_DO_DETAIL_SUCCESS": {
@@ -787,6 +794,15 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "CREATE_QUICK_LINKS_SUCCESS":
+    case "PUT_QUICK_LINKS_SUCCESS": {
+      const links = [...state.links, ...action.data.quick_links];
+      let uniqLinks = [...new Map(links.map((item) => [item["id"], item])).values()];
+      return {
+        ...state,
+        links: uniqLinks,
+      };
+    }
     case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {
       const regex = /\s|\/|-|:/g;
       return {
@@ -874,6 +890,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         zoomData: null,
+      };
+    }
+    case "SHOW_NEW_DRIFF_BAR": {
+      return {
+        ...state,
+        newDriffData: action.data,
+      };
+    }
+    case "SET_DONT_SHOW_IDS": {
+      return {
+        ...state,
+        dontShowIds: [action.data],
       };
     }
     default:

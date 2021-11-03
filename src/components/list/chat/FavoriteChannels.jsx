@@ -2,6 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import ChannelIcon from "./ChannelIcon";
 import { SvgIconFeather } from "../../common";
+// import { useDispatch, useSelector } from "react-redux";
+// import { showUnreadChannels } from "../../../redux/actions/chatActions";
+import Tooltip from "react-tooltip-lite";
+import { useTranslationActions, useFilterChannelActions } from "../../hooks";
 //import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.div`
@@ -9,12 +13,11 @@ const Wrapper = styled.div`
   ul {
     margin: 0;
     padding-left: 0;
-    padding-bottom: 12px;
     overflow: auto;
     // overflow-y: hidden;
     // overflow-x: scroll;
     display: flex;
-    border-bottom: 1px solid #dee2e6;
+    flex-grow: 1;
     .dark & {
       border-bottom-color: rgba(155, 155, 155, 0.2) !important;
     }
@@ -127,37 +130,80 @@ const Badge = styled.div`
   }
 `;
 
+const FavoriteAndFilter = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 12px;
+`;
+
+const FilterWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  margin-left: auto;
+  svg {
+    cursor: pointer;
+  }
+`;
+
 const FavoriteChannels = (props) => {
   const { channels, onSelectChannel } = props;
+  const { _t } = useTranslationActions();
+
+  const { filterChannel, chatSettings } = useFilterChannelActions();
+
+  const dictionary = {
+    showUnreadChats: _t("TOOLTIP.SHOW_UNREAD_CHATS", "Filter on unread chat channels only "),
+    hideUnreadChats: _t("TOOLTIP.HIDE_UNREAD_CHATS", "Hide unread chats"),
+  };
+  //const dispatch = useDispatch();
+  //const filterUnreadChannels = useSelector((state) => state.chat.filterUnreadChannels);
   const handleSelectChannel = (channel) => {
     onSelectChannel(channel);
   };
-  //const [rect, setRect] = useState(null);
-  // const handleSelectOptions = (e) => {
-  //   setRect(e.target.getBoundingClientRect());
-  // };
+
+  const handleFilterClick = () => {
+    //dispatch(showUnreadChannels());
+    filterChannel();
+  };
+
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
 
   return (
     <Wrapper className="mb-2">
-      <ul>
-        {channels.map((c) => {
-          return (
-            <ChannelWrapper key={c.id}>
-              <ChannelIcon channel={c} className="fav-channel" onSelectChannel={() => handleSelectChannel(c)} showSlider={false}>
-                <SvgIconFeather icon="star" />
-                {c.is_muted && <SvgIconFeather icon="volume-x" />}
-                {!c.is_muted && (
-                  <Badge className={`badge badge-pill ml-1 ${!c.is_read && c.total_unread === 0 ? "unread" : ""}`}>{c.total_unread > 9 ? `${c.total_unread}+` : c.total_unread > 0 ? c.total_unread : !c.is_read ? "0" : null}</Badge>
-                )}
-              </ChannelIcon>
-              {/* <ChannelTitle className="text-truncate mt-1">
-                <span className="channel-title">{c.title}</span>
-              </ChannelTitle> */}
-              {/* <ChannelOptions channel={c} onSelectOptions={handleSelectOptions} /> */}
-            </ChannelWrapper>
-          );
-        })}
-      </ul>
+      <FavoriteAndFilter>
+        {channels.length > 0 && (
+          <ul>
+            {channels.map((c) => {
+              return (
+                <ChannelWrapper key={c.id}>
+                  <ChannelIcon channel={c} className="fav-channel" onSelectChannel={() => handleSelectChannel(c)} showSlider={false}>
+                    <SvgIconFeather icon="star" />
+                    {c.is_muted && <SvgIconFeather icon="volume-x" />}
+                    {!c.is_muted && (
+                      <Badge className={`badge badge-pill ml-1 ${!c.is_read && c.total_unread === 0 ? "unread" : ""}`}>{c.total_unread > 9 ? `${c.total_unread}+` : c.total_unread > 0 ? c.total_unread : !c.is_read ? "0" : null}</Badge>
+                    )}
+                  </ChannelIcon>
+                </ChannelWrapper>
+              );
+            })}
+          </ul>
+        )}
+        <FilterWrapper>
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.showUnreadChats}>
+            <SvgIconFeather icon={chatSettings.filter_channel ? "filter-active" : "filter"} onClick={handleFilterClick} />
+          </Tooltip>
+        </FilterWrapper>
+      </FavoriteAndFilter>
     </Wrapper>
   );
 };

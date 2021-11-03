@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { setNavMode } from "../../../redux/actions/globalActions";
-import { SvgIcon, SvgIconFeather } from "../../common";
-import { useSettings, useTranslationActions } from "../../hooks";
-import { FavoriteWorkspacesPanel, MainSidebarLinks, MainBackButton } from "./index";
+import { SvgIconFeather } from "../../common";
+import { useSettings, useTranslationActions, useWorkspaceActions } from "../../hooks";
+import { FavoriteWorkspacesPanel, MainSidebarLinks, MainLogo } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
 const Wrapper = styled.div`
@@ -139,13 +138,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const DriffLogo = styled(SvgIcon)`
-  width: 84px;
-  height: 56px;
-  filter: brightness(0) saturate(100%) invert(1);
-  cursor: pointer;
-`;
-
 const CirclePlus = styled(SvgIconFeather)`
   height: 14px;
   width: 14px;
@@ -170,44 +162,40 @@ const NavNewWorkspace = styled.button`
   }
 `;
 
-const GiftWrapper = styled.span`
-  cursor: pointer;
-  position: absolute;
-  left: 30px;
-  :before {
-    content: "";
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    right: -6px;
-    border-radius: 50%;
-    top: -2px;
-    background: #f44;
-  }
-`;
-
-const GiftIcon = styled(SvgIconFeather)``;
-
-// const BackWrapper = styled.span`
-//   cursor: pointer;
-//   position: absolute;
-//   ${(props) => (props.gift ? "top: 10px;" : "")}
-//   right: 10px;
-// `;
-
 const MainNavigationTabPanel = (props) => {
   const { className = "", isExternal } = props;
-  const history = useHistory();
-  // const params = useParams();
-  // const location = useLocation();
-  const dispatch = useDispatch();
 
   const count = useSelector((state) => state.global.todos.count);
-  const { updateCompanyName, driffSettings, generalSettings, userSettings } = useSettings();
+  const { updateCompanyName, driffSettings, generalSettings } = useSettings();
   const user = useSelector((state) => state.session.user);
-  // const workspaces = useSelector((state) => state.workspaces.workspaces);
-  // const folders = useSelector((state) => state.workspaces.folders);
   const { _t } = useTranslationActions();
+
+  const params = useParams();
+  const actions = useWorkspaceActions();
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const channels = useSelector((state) =>
+    Object.values(state.chat.channels).map((channel) => {
+      return { id: channel.id, code: channel.code };
+    })
+  );
+
+  useEffect(() => {
+    if (params.workspaceId && activeTopic) {
+      if (parseInt(params.workspaceId) !== activeTopic.id && workspaces[params.workspaceId]) {
+        // if url params of workspace id is not equal to active workspace id then set workspace and channel
+        actions.selectWorkspace(workspaces[params.workspaceId]);
+      }
+    }
+    if (params.code && selectedChannel) {
+      if (selectedChannel.code !== params.code) {
+        // if active channel code is not equal to chat url channel code then set channel
+        let channel = channels.find((c) => c.code === params.code);
+        if (channel) actions.selectChannel({ id: channel.id });
+      }
+    }
+  }, [params, workspaces, activeTopic, selectedChannel]);
 
   const [showButtons, setShowbuttons] = useState(false);
 
@@ -242,20 +230,7 @@ const MainNavigationTabPanel = (props) => {
     addNew: _t("SIDEBAR.ADD_NEW", "Add new"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
-  };
-
-  const handleIconClick = (e) => {
-    e.preventDefault();
-    if (e.target.dataset.link) {
-      dispatch(setNavMode({ mode: 3 }));
-    } else {
-      dispatch(setNavMode({ mode: 2 }));
-    }
-    history.push(e.target.dataset.link);
-  };
-
-  const handleGiftClick = () => {
-    history.push("/releases");
+    newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
   };
 
   const handleShowModalButtons = () => {
@@ -265,13 +240,9 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-        {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
-          <GiftWrapper>
-            <GiftIcon icon="gift" color="#fff" onClick={handleGiftClick} />
-          </GiftWrapper>
-        )}
-        <DriffLogo icon="driff-logo2" data-link="/" onClick={handleIconClick} />
-        <MainBackButton />
+        <MainLogo />
+
+        {/* <MainBackButton /> */}
       </div>
       <MainSidebarLinks count={count} dictionary={dictionary} isExternal={isExternal} driffSettings={driffSettings} user={user} updateCompanyName={updateCompanyName} />
 

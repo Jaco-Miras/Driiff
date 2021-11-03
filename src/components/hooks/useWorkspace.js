@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useRouteMatch, useHistory } from "react-router-dom";
-import { useSettings, useWorkspaceActions, useToaster } from "../hooks";
+import { useSettings, useWorkspaceActions, useToaster, useTranslationActions } from "../hooks";
 
 const useWorkspace = () => {
   const fetchingRef = useRef(null);
@@ -27,9 +27,23 @@ const useWorkspace = () => {
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    notAuthorized: _t("TOASTER.NOT_AUTHORIZED", "You are not authorized to view this workspace"),
+  };
+
   useEffect(() => {
     if (params.workspaceId) {
-      actions.fetchWorkspace(params.workspaceId);
+      actions.fetchWorkspace(params.workspaceId, (err, res) => {
+        if (err) {
+          if (err.response.status === 422) {
+            history.push("/chat");
+            if (err.response.data.errors.error_message && err.response.data.errors.error_message.includes("NOT_AUTHORIZED")) {
+              toaster.error(dictionary.notAuthorized);
+            }
+          }
+        }
+      });
     }
     actions.fetchFavoriteWorkspaces({}, () => {
       actions.fetchWorkspaces({
@@ -77,8 +91,9 @@ const useWorkspace = () => {
                       actions.redirectTo(workspaces[activeTopicSettings.id]);
                     }
                   }
+                  return;
                 }
-                if (res.data) {
+                if (res && res.data) {
                   let ws = {
                     ...res.data.workspace_data,
                     channel: res.data.workspace_data.topic_detail.channel,
@@ -111,23 +126,6 @@ const useWorkspace = () => {
     }
   }, [activeTopic, activeTopicSettings, params, workspaces, url, workspacesLoaded]);
 
-  // useEffect(() => {
-  //   workspace is already set and changing channel / workspace
-  //   if (activeTopic && Object.keys(channels).length && url.startsWith("/workspace")) {
-  //     //check params for team-chat
-  //     if (channels.hasOwnProperty(activeTopic.channel.id)) {
-  //       if ((activeChannelId && activeChannelId !== activeTopic.channel.id) || activeChannelId === null) {
-  //         actions.selectChannel(channels[activeTopic.channel.id]);
-  //       }
-  //     } else {
-  //       if (!fetchingChannel) {
-  //         setFetchingChannel(true);
-  //         actions.fetchChannel({ code: activeTopic.channel.code }, () => setFetchingChannel(false));
-  //       }
-  //     }
-  //   }
-  // }, [activeTopic, channels, activeChannelId, fetchingChannel, url]);
-
   useEffect(() => {
     //check if workspace is active and channel is not set yet
     const fetchingCallback = (err, res) => {
@@ -144,12 +142,19 @@ const useWorkspace = () => {
           }
         }
       } else {
-        if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
-          actions.selectChannel({ id: activeTopic.channel.id });
-        } else {
-          if (!fetchingChannel && activeTopic.channel.code) {
+        if (activeTopic.is_shared) {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
+            actions.selectChannel({ id: activeTopic.channel.id });
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
             setFetchingChannel(true);
             actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+          }
+        } else {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
+            actions.selectChannel({ id: activeTopic.team_channel.id });
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
+            setFetchingChannel(true);
+            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
           }
         }
       }
@@ -167,14 +172,19 @@ const useWorkspace = () => {
           }
         }
       } else {
-        if (activeTopic.channel.id !== selectedChannelId) {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id)) {
+        if (activeTopic.is_shared) {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
             actions.selectChannel({ id: activeTopic.channel.id });
-          } else {
-            if (!fetchingChannel && activeTopic.channel.code) {
-              setFetchingChannel(true);
-              actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
-            }
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
+            setFetchingChannel(true);
+            actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+          }
+        } else {
+          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
+            actions.selectChannel({ id: activeTopic.team_channel.id });
+          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
+            setFetchingChannel(true);
+            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
           }
         }
       }

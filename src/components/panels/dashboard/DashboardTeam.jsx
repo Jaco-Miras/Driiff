@@ -73,7 +73,8 @@ const DashboardTeam = (props) => {
   // };
 
   const hideOptions = !isMember || workspace.active === 0;
-  const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
+  // const members = workspace.members.filter((m) => m.active === 1 || !m.has_accepted);
+  const members = workspace.members;
 
   const handleToggleShow = () => {
     setShowMore((prevState) => !prevState);
@@ -126,7 +127,7 @@ const DashboardTeam = (props) => {
                   key={member.id}
                   member={member}
                   //parentRef={scrollRef}
-                  onEditClick={onEditClick}
+                  //onEditClick={onEditClick}
                   onLeaveWorkspace={onLeaveWorkspace}
                   onAddRole={onAddRole}
                   hideOptions={hideOptions}

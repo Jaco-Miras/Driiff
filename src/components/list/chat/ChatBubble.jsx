@@ -230,8 +230,8 @@ const QuoteContent = styled.div`
 //   }
 // `;
 const ReplyContent = styled.span`
-  // max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
-  // padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
+  max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
+  padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
   ul {
     list-style-type: none;
   }

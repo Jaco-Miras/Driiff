@@ -1,10 +1,11 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   getDriffCompSettings as getDriffCompSettingsService,
   getDriffSettings as getDriffSettingsService,
   getUserSettings as getUserSettingsService,
   putCompanyUpdateName as putCompanyUpdateNameService,
   updateUserSettings as updateUserSettingsService,
+  uploadDriffLogo as uploadDriffLogoService,
 } from "../services";
 
 export function getDriffCompSettings(payload, callback) {
@@ -53,4 +54,12 @@ export function updateReadAnnouncement(payload, callback) {
 
 export function updateCompanyPostAnnouncement(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMPANY_POST_ANNOUNCEMENT", payload, callback);
+}
+
+export function uploadDriffLogo(payload, callback) {
+  return dispatchActionToReducer(uploadDriffLogoService(payload), "UPLOAD_DRIFF_LOGO_START", "UPLOAD_DRIFF_LOGO_SUCCESS", "UPLOAD_DRIFF_LOGO_FAILURE", callback);
+}
+
+export function updateCustomTranslationSettings(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_CUSTOM_TRANSLATION_SETTINGS", payload, callback);
 }

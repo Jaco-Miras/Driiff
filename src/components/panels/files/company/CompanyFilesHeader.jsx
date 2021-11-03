@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { ButtonDropdown, SvgIconFeather } from "../../../common";
+import { addToModals } from "../../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -42,6 +44,8 @@ const Wrapper = styled.div`
 const CompanyFilesHeader = (props) => {
   const { className = "", dropZoneRef, onSearchChange, onSearch, onEnter, handleAddEditFolder, folders, history, params, clearFilter, dictionary, onClickEmpty, value } = props;
 
+  const dispatch = useDispatch();
+
   const handleClickAdd = () => {
     if (dropZoneRef.current) {
       dropZoneRef.current.open();
@@ -74,7 +78,7 @@ const CompanyFilesHeader = (props) => {
       {
         value: "folder",
         label: dictionary.folder,
-        onClick: () => handleAddEditFolder("add"),
+        onClick: () => handleAddEditFolder(null, "create"),
       },
       {
         value: "file",
@@ -102,6 +106,15 @@ const CompanyFilesHeader = (props) => {
     document.body.classList.toggle("mobile-modal-open");
   };
 
+  const showExternalFileFolderModal = () => {
+    const modal = {
+      type: "external_file_folder",
+      mode: "create",
+      topic_id: null,
+    };
+    dispatch(addToModals(modal));
+  };
+
   return (
     <Wrapper className={`files-header app-action ${className}`}>
       <div className="action-left">
@@ -114,6 +127,11 @@ const CompanyFilesHeader = (props) => {
               <ButtonDropdown dropdown={folderDropDown} />
             </li>
           )}
+          <li className="list-inline-item mb-0">
+            <button className="btn btn-outline-light" onClick={showExternalFileFolderModal}>
+              {dictionary.driveLink}
+            </button>
+          </li>
         </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
           <SvgIconFeather icon="menu" />

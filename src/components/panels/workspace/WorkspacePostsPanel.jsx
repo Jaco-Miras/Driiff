@@ -230,6 +230,8 @@ const WorkspacePostsPanel = (props) => {
     fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
     filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
+    teamLabel: _t("TEAM", "Team"),
+    new: _t("POST.NEW", "New"),
   };
 
   useEffect(() => {
@@ -248,7 +250,7 @@ const WorkspacePostsPanel = (props) => {
               history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
             } else {
               history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            } 
+            }
             toaster.error(dictionary.errorLoadingPost);
           }
         }

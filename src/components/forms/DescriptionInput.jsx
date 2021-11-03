@@ -27,7 +27,7 @@ const WrapperDiv = styled(InputGroup)`
   }
   .description-wrapper {
     margin-bottom: 25px;
-    min-height: 133px;
+    min-height: 200px;
     &.is-invalid {
       border-color: #dc3545;
       padding-right: calc(1.5em + 0.75rem);
@@ -36,7 +36,7 @@ const WrapperDiv = styled(InputGroup)`
       background-position: right 0.5rem top 0.5rem;
       background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 
-      .action-wrapper {
+      .btns {
         margin-right: -32px;
       }
     }
@@ -48,7 +48,7 @@ const WrapperDiv = styled(InputGroup)`
       background-position: right 0.5rem top 0.5rem;
       background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 
-      .action-wrapper {
+      .btns {
         margin-right: -32px;
       }
     }
@@ -110,8 +110,8 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
-  height: ${(props) => props.height}px;
-
+  //height: ${(props) => props.height}px;
+  min-height: 150px;
   &.description-input {
     // overflow: auto;
     // overflow-x: hidden;
@@ -119,6 +119,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     width: 100%;
   }
   .ql-toolbar {
+    display: ${(props) => (props.readOnly ? "none" : "block")};
     position: absolute;
     bottom: 0;
     padding: 0;
@@ -132,6 +133,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 5px;
+    min-height: 150px;
   }
 `;
 
@@ -167,12 +169,17 @@ const DescriptionInputWrapper = styled.div`
   @media all and (max-width: 480px) {
     width: 100%;
   }
+  resize: vertical;
+  overflow: auto;
 `;
 
 const Buttons = styled.div`
   padding: 5px;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 1rem;
 `;
 
 const PickerContainer = styled(CommonPicker)`
@@ -206,6 +213,7 @@ const DescriptionInput = (props) => {
     setInlineImages = null,
     setImageLoading = null,
     prioMentionIds = [],
+    readOnly = false,
     ...otherProps
   } = props;
 
@@ -238,6 +246,12 @@ const DescriptionInput = (props) => {
     const cursorPosition = editor.getSelection().index;
     editor.insertEmbed(cursorPosition, "image", e.images.downsized.url);
     editor.setSelection(cursorPosition + 5);
+    handleShowEmojiPicker();
+  };
+
+  const handleFocus = (e) => {
+    e.stopPropagation();
+    if (reactQuillRef.current) reactQuillRef.current.focus();
   };
 
   /*useEffect(() => {
@@ -250,7 +264,7 @@ const DescriptionInput = (props) => {
 
   const { modules } = useQuillModules({
     mode: "description",
-    mentionOrientation: "top",
+    mentionOrientation: "bottom",
     quillRef: reactQuillRef,
     members,
     workspaces,
@@ -264,15 +278,17 @@ const DescriptionInput = (props) => {
     <WrapperDiv className={`description-input ${className}`}>
       <Label for="firstMessage">{dictionary.description}</Label>
       <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
-        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} {...otherProps} />
+        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} readOnly={readOnly} {...otherProps} />
         {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} />}
-        <Buttons className="action-wrapper">
-          <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-          {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
-        </Buttons>
+        {!readOnly && (
+          <Buttons className="btns" onClick={handleFocus}>
+            <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+            {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
+          </Buttons>
+        )}
         <InputFeedback valid={valid}>{feedback}</InputFeedback>
       </DescriptionInputWrapper>
-      {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
+      {showEmojiPicker === true && !readOnly && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
     </WrapperDiv>
   );
 };

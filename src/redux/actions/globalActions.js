@@ -275,3 +275,11 @@ export function clearZoomData(payload, callback) {
 export function removeReminderNotification(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_REMINDER_NOTIFICATION", payload, callback);
 }
+
+export function setNewDriffData(payload, callback) {
+  return SimpleDispatchActionToReducer("SHOW_NEW_DRIFF_BAR", payload, callback);
+}
+
+export function setDontShowIds(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_DONT_SHOW_IDS", payload, callback);
+}

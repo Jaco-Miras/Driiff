@@ -30,8 +30,8 @@ const GoogleDrive = (props) => {
   };
 
   const handleAuthenticate = (token) => {
-    if (localStorage.getItem("gdrive") === null) {
-      localStorage.setItem("gdrive", token);
+    if (localStorage.getItem("gdrivePicker") === null) {
+      localStorage.setItem("gdrivePicker", token);
     }
   };
 
@@ -45,7 +45,7 @@ const GoogleDrive = (props) => {
     <Wrapper className={`google-drive dropdown ${className}`} onClick={toggle} disabled={disableOptions}>
       <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8" /> Google Drive
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
-        {localStorage.getItem("gdrive") === null ? (
+        {localStorage.getItem("gdrivePicker") === null ? (
           <GooglePicker
             clientId={process.env.REACT_APP_google_client_id}
             developerKey={process.env.REACT_APP_google_key}

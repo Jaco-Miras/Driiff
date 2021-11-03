@@ -157,7 +157,7 @@ const MainBody = styled.div`
 
       &:hover {
         opacity: 1;
-        max-height: 165px;
+        max-height: 175px;
       }
 
       .dark & {
@@ -192,7 +192,7 @@ const MainBody = styled.div`
     span.not-readers:hover ~ span.not-read-users-container,
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
-      max-height: 165px;
+      max-height: 175px;
     }
   }
 `;
@@ -260,7 +260,7 @@ const PostFilesTrashedContainer = styled.div`
 
 const PostDetail = (props) => {
   const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, isMember } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind, close } = postActions;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
@@ -412,8 +412,9 @@ const PostDetail = (props) => {
   //const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   useEffect(() => {
+    readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed && !disableMarkAsRead()) {
+    if (!viewed) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
@@ -431,7 +432,7 @@ const PostDetail = (props) => {
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed && !disableMarkAsRead()) {
+    if (!viewed) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
@@ -513,7 +514,7 @@ const PostDetail = (props) => {
                 <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-                {post.author.type === "external" && user.type === "internal" && <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>}
+                <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                 {/* <div onClick={handleSnooze}>Snooze this post</div> */}
               </StyledMoreOptions>
             </div>
@@ -542,7 +543,7 @@ const PostDetail = (props) => {
         />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
-            <MarkAsRead className="d-sm-inline d-none">
+            <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
               </button>

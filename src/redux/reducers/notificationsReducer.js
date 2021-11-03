@@ -135,7 +135,12 @@ export default (state = INITIAL_STATE, action) => {
                   personalized_for_id: null,
                   title: action.data.post.title,
                   users_approval: action.data.users_approval,
-                  post_approval_label: action.data.notification_approval.type === "POST_REJECT_APPROVAL" ? "REQUEST_UPDATE" : "", //need post author - should only show to post author
+                  //post_approval_label: "",
+                  post_author: action.data.post_author ? action.data.post_author : null,
+                  post_approval_label:
+                    action.data.notification_approval.type === "POST_REJECT_APPROVAL" && action.data.users_approval.length === 1 && state.user && action.data.post_author && action.data.post_author.id === state.user.id
+                      ? "REQUEST_UPDATE"
+                      : "",
                   workspaces: action.data.workspaces.map((ws) => {
                     return {
                       topic_id: ws.topic.id,
@@ -436,8 +441,8 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_WORKSPACE": {
-      if (state.user && state.user.id === action.data.channel.user_id) return state;
-      let author = action.data.members.find((m) => m.id === action.data.channel.user_id);
+      if (state.user && state.user.id === action.data.team_channel.user_id) return state;
+      let author = action.data.members.find((m) => m.id === action.data.team_channel.user_id);
 
       return {
         ...state,
@@ -605,6 +610,25 @@ export default (state = INITIAL_STATE, action) => {
               return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
             } else return sn;
           }),
+        };
+      } else {
+        return state;
+      }
+    }
+    case "READ_POST_NOTIFICATION_SUCCESS":
+    case "INCOMING_READ_NOTIFICATIONS": {
+      if (action.data.notification_id.length) {
+        const notificationIds = action.data.notification_id.map((n) => n.id);
+        return {
+          ...state,
+          notifications: Object.values(state.notifications).reduce((acc, n) => {
+            if (notificationIds.some((id) => id === n.id)) {
+              acc[n.id] = { ...n, is_read: 1 };
+            } else {
+              acc[n.id] = n;
+            }
+            return acc;
+          }, {}),
         };
       } else {
         return state;

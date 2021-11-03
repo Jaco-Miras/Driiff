@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useHistory, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
-import SearchForm from "../../forms/SearchForm";
 import { useToaster, useTranslationActions, useUserChannels } from "../../hooks";
-import { PeopleListItem } from "../../list/people/item";
-import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useDispatch, useSelector } from "react-redux";
-import { CustomInput } from "reactstrap";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
+import AllUsersStructure from "./AllUsersStructure";
+import TeamBody from "./TeamBody";
+import AllPeople from "./AllPeople";
+import AllTeams from "./AllTeams";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -27,55 +27,32 @@ const Wrapper = styled.div`
   }
 
   .people-search {
-    flex: 0 0 80%;
+    flex: 0 0 100%;
     justify-content: flex-start;
     padding-left: 0;
     flex-flow: row wrap;
   }
-`;
-
-const Search = styled(SearchForm)`
-  width: 50%;
-  margin-bottom: 1rem;
-  min-width: 250px;
+  .card {
+    min-height: calc(100% - 40px);
+  }
+  .card-body.structure {
+    overflow: auto;
+    margin: 1.5rem;
+    padding: 0;
+  }
 `;
 
 const SystemPeoplePanel = (props) => {
   const { className = "" } = props;
 
-  const { users, userActions, loggedUser, selectUserChannel } = useUserChannels();
+  const { userActions, loggedUser, selectUserChannel } = useUserChannels();
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
-  const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
+  //const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
   const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
 
   const history = useHistory();
   const dispatch = useDispatch();
-
-  const [search, setSearch] = useState("");
-  const [showInactive, setShowInactive] = useState(false);
-  const [showInvited, setShowInvited] = useState(false);
-
-  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
-  const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
-    if (u.email && botCodes.includes(u.email)) {
-      return false;
-    } else {
-      return true;
-    }
-  });
-
-  const refs = {
-    search: useRef(),
-  };
-
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const emptySearchInput = () => {
-    setSearch("");
-  };
 
   const handleUserNameClick = (user) => {
     history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
@@ -83,39 +60,10 @@ const SystemPeoplePanel = (props) => {
 
   const handleUserChat = (user) => selectUserChannel(user);
 
-  const userSort = allUsers
-    .filter((user) => {
-      if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
-
-      if (showInactive) {
-        if (user.active === 1) {
-          return false;
-        }
-        if (user.name.trim() === "") {
-          return false;
-        }
-      } else if (showInvited) {
-        return !user.has_accepted && user.active;
-      } else {
-        if (user.active !== 1) {
-          return false;
-        }
-      }
-
-      if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
-        else return false;
-      }
-
-      return true;
-    })
-    .sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    });
-
   const { _t } = useTranslationActions();
 
   const dictionary = {
+    searchTeamsPlaceholder: _t("PLACEHOLDER.SEARCH_TEAMS", "Search teams"),
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
@@ -153,92 +101,24 @@ const SystemPeoplePanel = (props) => {
     deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),
     deleteInvitedConfirmationText: _t("PEOPLE.DELETE_INVITED_CONFIRMATION_TEXT", "Are you sure you want to remove this invited user?"),
     toasterRemoveInvited: _t("TOASTER.REMOVE_INVITED_USER", "Removed invited user"),
-  };
-
-  const handleInviteUsers = () => {
-    let payload = {
-      type: "driff_invite_users",
-      hasLastName: true,
-      invitations: [],
-      fromRegister: false,
-      onPrimaryAction: (invitedUsers, callback, options) => {
-        if (invitedUsers.length === 0) {
-          options.closeModal();
-        }
-
-        let processed = 0;
-        invitedUsers.forEach((u, i) => {
-          if (!Object.values(users).some((user) => user.email === u.email)) {
-            userActions.inviteAsInternalUsers(
-              {
-                email: u.email,
-                first_name: u.first_name,
-                last_name: u.last_name,
-              },
-              (err, res) => {
-                if (err) {
-                  toaster.error(`Something went wrong with ${u.first_name} ${u.last_name}`);
-                  options.deleteItemByIndex(options.invitationItems.findIndex((i) => i.email === u.email));
-                }
-                if (res) {
-                  processed += 1;
-                  options.deleteItemByIndex(options.invitationItems.findIndex((i) => i.email === u.email));
-                  toaster.success(`You have invited ${u.first_name} ${u.last_name}`);
-                }
-
-                //last iteration
-                if (i === invitedUsers.length - 1) {
-                  if (processed === invitedUsers.length) {
-                    options.closeModal();
-                  }
-
-                  callback();
-                }
-              }
-            );
-          } else {
-            toaster.error(
-              <>
-                Email <b>{u.email}</b> is already taken!
-              </>
-            );
-
-            //last iteration
-            if (i === invitedUsers.length - 1) {
-              if (processed === invitedUsers.length) {
-                options.closeModal();
-              }
-
-              callback();
-            }
-          }
-        });
-      },
-    };
-
-    dispatch(addToModals(payload));
+    btnTeam: _t("BUTTON.TEAM", "Team"),
+    showTeams: _t("PEOPLE.SHOW_TEAMS", "Show teams"),
+    editTeam: _t("TEAM_OPTIONS.EDIT_TEAM", "Edit team"),
+    removeTeam: _t("TEAM_OPTIONS.REMOVE_TEAM", "Remove team"),
+    removeTeamHeader: _t("TEAM_MODAL.REMOVE_TEAM_HEADER", "Remove team"),
+    removeTeamBtn: _t("BUTTON.REMOVE_TEAM", "Remove team"),
+    removeTeamConfirmation: _t("TEAM_MODAL.REMOVE_TEAM_BODY", "Are you sure you want to remove this team?"),
+    addUserToTeam: _t("PEOPLE.ADD_USER_TEAM", "Add user to team"),
+    removeTeamMember: _t("PEOPLE.REMOVE_TEAM_MEMBER", "Remove team member"),
+    team: _t("TEAM", "Team"),
+    internalAccounts: _t("CHART.INTERNAL_ACCOUNTS", "Accounts"),
+    guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
   };
 
   const toaster = useToaster();
 
-  const handleShowInactiveToggle = () => {
-    setShowInactive((prevState) => {
-      const newState = !prevState;
-
-      if (newState) {
-        toaster.success("Showing inactive members");
-      } else {
-        toaster.success("Showing active members only");
-      }
-
-      return newState;
-    });
-    if (showInvited && !showInactive) setShowInvited(false);
-  };
-
   useEffect(() => {
     if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
-    refs.search.current.focus();
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
       userActions.fetchRoles();
@@ -304,21 +184,6 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
-  const handleShowInvitedToggle = () => {
-    setShowInvited((prevState) => {
-      const newState = !prevState;
-
-      // if (newState) {
-      //   toaster.success("Showing inactive members");
-      // } else {
-      //   toaster.success("Showing active members only");
-      // }
-
-      return newState;
-    });
-    if (showInactive && !showInvited) setShowInactive(false);
-  };
-
   const handleDeleteUser = (user) => {
     const handleSubmit = () => {
       userActions.deleteUserAccount({ user_id: user.id }, (err, res) => {
@@ -377,66 +242,81 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(confirmModal));
   };
 
+  const handleAddUserToTeam = (user) => {
+    const modal = {
+      type: "add-to-team",
+      user: user,
+    };
+    dispatch(addToModals(modal));
+  };
+
+  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
+
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
-        <div className="card-body">
-          <div className="people-header">
-            <div className="d-flex align-items-center people-search">
-              <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
-              <CustomInput
-                className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
-                checked={showInactive}
-                id="show_inactive"
-                name="show_inactive"
-                type="switch"
-                onChange={handleShowInactiveToggle}
-                data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
-                label={<span>{dictionary.showInactiveMembers}</span>}
-              />
-              <CustomInput
-                className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
-                checked={showInvited}
-                id="show_invited"
-                name="show_invited"
-                type="switch"
-                onChange={handleShowInvitedToggle}
-                //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
-                label={<span>{dictionary.showInvited}</span>}
-              />
-            </div>
-            <div>
-              <button className="btn btn-primary" onClick={handleInviteUsers}>
-                <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
-              </button>
-            </div>
-          </div>
-          <div className="row">
-            {userSort.map((user) => {
-              return (
-                <PeopleListItem
+        <Switch>
+          <Route
+            render={() => (
+              <div className="card-body">
+                <TeamBody
                   loggedUser={loggedUser}
-                  key={user.id}
-                  user={user}
                   onNameClick={handleUserNameClick}
                   onChatClick={handleUserChat}
                   dictionary={dictionary}
                   onUpdateRole={userActions.updateUserRole}
-                  showOptions={(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && usersWithoutActivityLoaded}
-                  roles={roles}
+                  showOptions={isAdmin && usersWithoutActivityLoaded}
                   onArchiveUser={handleArchiveUser}
                   onActivateUser={handleActivateUser}
                   onChangeUserType={userActions.updateType}
                   onDeleteUser={handleDeleteUser}
                   onResendInvite={handleResendInvite}
                   onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
-                  showInactive={showInactive}
-                  usersWithoutActivity={usersWithoutActivity}
+                  onAddUserToTeam={handleAddUserToTeam}
                 />
-              );
-            })}
-          </div>
-        </div>
+              </div>
+            )}
+            path={["/system/people/teams/:teamId/:teamName"]}
+          />
+          <Route
+            render={() => (
+              <div className="card-body structure">
+                <AllUsersStructure loggedUser={loggedUser} dictionary={dictionary} />
+              </div>
+            )}
+            path={["/system/people/organization"]}
+          />
+          <Route
+            render={() => (
+              <div className="card-body">
+                <AllTeams loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />
+              </div>
+            )}
+            path={["/system/people/teams"]}
+          />
+          <Route
+            render={() => (
+              <div className="card-body">
+                <AllPeople
+                  loggedUser={loggedUser}
+                  onNameClick={handleUserNameClick}
+                  onChatClick={handleUserChat}
+                  dictionary={dictionary}
+                  onUpdateRole={userActions.updateUserRole}
+                  showOptions={isAdmin && usersWithoutActivityLoaded}
+                  onArchiveUser={handleArchiveUser}
+                  onActivateUser={handleActivateUser}
+                  onChangeUserType={userActions.updateType}
+                  onDeleteUser={handleDeleteUser}
+                  onResendInvite={handleResendInvite}
+                  onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
+                  onAddUserToTeam={handleAddUserToTeam}
+                />
+              </div>
+            )}
+            path={["/system/people"]}
+          />
+        </Switch>
       </div>
     </Wrapper>
   );

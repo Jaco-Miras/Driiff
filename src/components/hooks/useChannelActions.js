@@ -73,7 +73,7 @@ const useChannelActions = () => {
     dispatch(
       postCreateChannel(payload, (err, res) => {
         if (err) {
-          toaster.success(dictionary.toasterGeneraError);
+          toaster.error(dictionary.toasterGeneraError);
         }
         if (res) {
           const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? (res.data.channel.profile ? res.data.channel.profile.name : "") : "";
@@ -509,7 +509,7 @@ const useChannelActions = () => {
     dispatch(
       putChannelUpdate(payload, (err, res) => {
         if (err) {
-          toaster.success(dictionary.toasterGeneraError);
+          toaster.error(dictionary.toasterGeneraError);
         }
         if (res) {
           const channelTitle = payload.channel_name !== undefined ? payload.channel_name : res.data.entity_type === "DIRECT" ? res.data.profile.name : "";
@@ -653,6 +653,10 @@ const useChannelActions = () => {
    * @param {function} [callback]
    */
   const loadMore = ({ skip = 0, limit = 25 }, callback = () => {}) => {
+    if (chatSettings.filter_channel) {
+      if (callback) callback();
+      return;
+    }
     let params = {
       skip: skip,
       limit: limit,

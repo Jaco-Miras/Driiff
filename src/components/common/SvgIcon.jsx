@@ -12,10 +12,220 @@ export const SvgIconFeather = React.memo(
     let content = "";
 
     switch (icon) {
-      case "external-link": 
+      case "gdoc":
+        viewBox = "0 0 48 48";
+        stroke = "none";
         content = (
           <>
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+            <path fill="#2196f3" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z" />
+            <path fill="#bbdefb" d="M40 13L30 13 30 3z" />
+            <path fill="#1565c0" d="M30 13L40 23 40 13z" />
+            <path fill="#e3f2fd" d="M15 23H33V25H15zM15 27H33V29H15zM15 31H33V33H15zM15 35H25V37H15z" />
+          </>
+        );
+        break;
+      case "gsheet":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <linearGradient id="PTsiEfj2THKtO9xz06mlla" x1="24" x2="24" y1="5" y2="43" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#21ad64" />
+              <stop offset="1" stop-color="#088242" />
+            </linearGradient>
+            <path fill="url(#PTsiEfj2THKtO9xz06mlla)" d="M39,16v25c0,1.105-0.895,2-2,2H11c-1.105,0-2-0.895-2-2V7c0-1.105,0.895-2,2-2h17L39,16z" />
+            <path fill="#61e3a7" d="M28,5v9c0,1.105,0.895,2,2,2h9L28,5z" />
+            <path fill="#107c42" d="M39,16h-9c-0.473,0-0.917-0.168-1.257-0.444L39,27V16z" />
+            <path
+              fill="#fff"
+              d="M32,23H16c-0.553,0-1,0.448-1,1v12c0,0.552,0.447,1,1,1h16c0.553,0,1-0.448,1-1V24	C33,23.448,32.553,23,32,23z M17,29h4v2h-4V29z M23,29h8v2h-8V29z M31,27h-8v-2h8V27z M21,25v2h-4v-2H21z M17,33h4v2h-4V33z M23,35	v-2h8v2H23z"
+            />
+            <path
+              d="M32,22.5c0.827,0,1.5,0.673,1.5,1.5v12c0,0.827-0.673,1.5-1.5,1.5H16c-0.827,0-1.5-0.673-1.5-1.5V24 c0-0.827,0.673-1.5,1.5-1.5H32 M32,22H16c-1.103,0-2,0.897-2,2v12c0,1.103,0.897,2,2,2h16c1.103,0,2-0.897,2-2V24 C34,22.897,33.103,22,32,22L32,22z"
+              opacity=".05"
+            />
+            <path
+              d="M32,23c0.553,0,1,0.448,1,1v12c0,0.552-0.447,1-1,1H16c-0.553,0-1-0.448-1-1V24c0-0.552,0.447-1,1-1	H32 M32,22.5H16c-0.827,0-1.5,0.673-1.5,1.5v12c0,0.827,0.673,1.5,1.5,1.5h16c0.827,0,1.5-0.673,1.5-1.5V24	C33.5,23.173,32.827,22.5,32,22.5L32,22.5z"
+              opacity=".07"
+            />
+          </>
+        );
+        break;
+
+      case "gforms":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <path fill="#43a047" d="M37,45H11c-1.657,0-3-1.343-3-3V6c0-1.657,1.343-3,3-3h19l10,10v29C40,43.657,38.657,45,37,45z" />
+            <path fill="#c8e6c9" d="M40 13L30 13 30 3z" />
+            <path fill="#2e7d32" d="M30 13L40 23 40 13z" />
+            <path fill="#e8f5e9" d="M19 23H33V25H19zM19 28H33V30H19zM19 33H33V35H19zM15 23H17V25H15zM15 28H17V30H15zM15 33H17V35H15z" />
+          </>
+        );
+        break;
+      case "office-word":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <linearGradient id="Q7XamDf1hnh~bz~vAO7C6a" x1="28" x2="28" y1="14.966" y2="6.45" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#42a3f2" />
+              <stop offset="1" stop-color="#42a4eb" />
+            </linearGradient>
+            <path fill="url(#Q7XamDf1hnh~bz~vAO7C6a)" d="M42,6H14c-1.105,0-2,0.895-2,2v7.003h32V8C44,6.895,43.105,6,42,6z" />
+            <linearGradient id="Q7XamDf1hnh~bz~vAO7C6b" x1="28" x2="28" y1="42" y2="33.054" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#11408a" />
+              <stop offset="1" stop-color="#103f8f" />
+            </linearGradient>
+            <path fill="url(#Q7XamDf1hnh~bz~vAO7C6b)" d="M12,33.054V40c0,1.105,0.895,2,2,2h28c1.105,0,2-0.895,2-2v-6.946H12z" />
+            <linearGradient id="Q7XamDf1hnh~bz~vAO7C6c" x1="28" x2="28" y1="-15.46" y2="-15.521" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#3079d6" />
+              <stop offset="1" stop-color="#297cd2" />
+            </linearGradient>
+            <path fill="url(#Q7XamDf1hnh~bz~vAO7C6c)" d="M12,15.003h32v9.002H12V15.003z" />
+            <linearGradient id="Q7XamDf1hnh~bz~vAO7C6d" x1="12" x2="44" y1="28.53" y2="28.53" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#1d59b3" />
+              <stop offset="1" stop-color="#195bbc" />
+            </linearGradient>
+            <path fill="url(#Q7XamDf1hnh~bz~vAO7C6d)" d="M12,24.005h32v9.05H12V24.005z" />
+            <path d="M22.319,13H12v24h10.319C24.352,37,26,35.352,26,33.319V16.681C26,14.648,24.352,13,22.319,13z" opacity=".05" />
+            <path d="M22.213,36H12V13.333h10.213c1.724,0,3.121,1.397,3.121,3.121v16.425	C25.333,34.603,23.936,36,22.213,36z" opacity=".07" />
+            <path d="M22.106,35H12V13.667h10.106c1.414,0,2.56,1.146,2.56,2.56V32.44C24.667,33.854,23.52,35,22.106,35z" opacity=".09" />
+            <linearGradient id="Q7XamDf1hnh~bz~vAO7C6e" x1="4.744" x2="23.494" y1="14.744" y2="33.493" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#256ac2" />
+              <stop offset="1" stop-color="#1247ad" />
+            </linearGradient>
+            <path fill="url(#Q7XamDf1hnh~bz~vAO7C6e)" d="M22,34H6c-1.105,0-2-0.895-2-2V16c0-1.105,0.895-2,2-2h16c1.105,0,2,0.895,2,2v16	C24,33.105,23.105,34,22,34z" />
+            <path fill="#fff" d="M18.403,19l-1.546,7.264L15.144,19h-2.187l-1.767,7.489L9.597,19H7.641l2.344,10h2.352l1.713-7.689	L15.764,29h2.251l2.344-10H18.403z" />
+          </>
+        );
+        break;
+      case "office-excel":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <path fill="#169154" d="M29,6H15.744C14.781,6,14,6.781,14,7.744v7.259h15V6z" />
+            <path fill="#18482a" d="M14,33.054v7.202C14,41.219,14.781,42,15.743,42H29v-8.946H14z" />
+            <path fill="#0c8045" d="M14 15.003H29V24.005000000000003H14z" />
+            <path fill="#17472a" d="M14 24.005H29V33.055H14z" />
+            <g>
+              <path fill="#29c27f" d="M42.256,6H29v9.003h15V7.744C44,6.781,43.219,6,42.256,6z" />
+              <path fill="#27663f" d="M29,33.054V42h13.257C43.219,42,44,41.219,44,40.257v-7.202H29z" />
+              <path fill="#19ac65" d="M29 15.003H44V24.005000000000003H29z" />
+              <path fill="#129652" d="M29 24.005H44V33.055H29z" />
+            </g>
+            <path fill="#0c7238" d="M22.319,34H5.681C4.753,34,4,33.247,4,32.319V15.681C4,14.753,4.753,14,5.681,14h16.638 C23.247,14,24,14.753,24,15.681v16.638C24,33.247,23.247,34,22.319,34z" />
+            <path fill="#fff" d="M9.807 19L12.193 19 14.129 22.754 16.175 19 18.404 19 15.333 24 18.474 29 16.123 29 14.013 25.07 11.912 29 9.526 29 12.719 23.982z" />
+          </>
+        );
+        break;
+      case "office-ppt":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <path fill="#dc4c2c" d="M8,24c0,9.941,8.059,18,18,18s18-8.059,18-18H26H8z" />
+            <path fill="#f7a278" d="M26,6v18h18C44,14.059,35.941,6,26,6z" />
+            <path fill="#c06346" d="M26,6C16.059,6,8,14.059,8,24h18V6z" />
+            <path fill="#9b341f" d="M22.319,34H5.681C4.753,34,4,33.247,4,32.319V15.681C4,14.753,4.753,14,5.681,14h16.638 C23.247,14,24,14.753,24,15.681v16.638C24,33.247,23.247,34,22.319,34z" />
+            <path
+              fill="#fff"
+              d="M14.673,19.012H10v10h2.024v-3.521H14.3c1.876,0,3.397-1.521,3.397-3.397v-0.058 C17.697,20.366,16.343,19.012,14.673,19.012z M15.57,22.358c0,0.859-0.697,1.556-1.556,1.556h-1.99v-3.325h1.99 c0.859,0,1.556,0.697,1.556,1.556V22.358z"
+            />
+          </>
+        );
+        break;
+      case "dropbox":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <path fill="#1E88E5" d="M42 13.976L31.377 7.255 24 13.314 35.026 19.732zM6 25.647L16.933 32.055 24 26.633 13.528 19.969zM16.933 7.255L6 14.301 13.528 19.969 24 13.314zM24 26.633L31.209 32.055 42 25.647 35.026 19.732z" />
+            <path fill="#1E88E5" d="M32.195 33.779L31.047 34.462 29.979 33.658 24 29.162 18.155 33.646 17.091 34.464 15.933 33.785 13 32.066 13 34.738 23.988 42 35 34.794 35 32.114z" />
+          </>
+        );
+        break;
+      case "google-drive":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <path fill="#1e88e5" d="M38.59,39c-0.535,0.93-0.298,1.68-1.195,2.197C36.498,41.715,35.465,42,34.39,42H13.61 c-1.074,0-2.106-0.285-3.004-0.802C9.708,40.681,9.945,39.93,9.41,39l7.67-9h13.84L38.59,39z" />
+            <path
+              fill="#fbc02d"
+              d="M27.463,6.999c1.073-0.002,2.104-0.716,3.001-0.198c0.897,0.519,1.66,1.27,2.197,2.201l10.39,17.996 c0.537,0.93,0.807,1.967,0.808,3.002c0.001,1.037-1.267,2.073-1.806,3.001l-11.127-3.005l-6.924-11.993L27.463,6.999z"
+            />
+            <path fill="#e53935" d="M43.86,30c0,1.04-0.27,2.07-0.81,3l-3.67,6.35c-0.53,0.78-1.21,1.4-1.99,1.85L30.92,30H43.86z" />
+            <path
+              fill="#4caf50"
+              d="M5.947,33.001c-0.538-0.928-1.806-1.964-1.806-3c0.001-1.036,0.27-2.073,0.808-3.004l10.39-17.996 c0.537-0.93,1.3-1.682,2.196-2.2c0.897-0.519,1.929,0.195,3.002,0.197l3.459,11.009l-6.922,11.989L5.947,33.001z"
+            />
+            <path fill="#1565c0" d="M17.08,30l-6.47,11.2c-0.78-0.45-1.46-1.07-1.99-1.85L4.95,33c-0.54-0.93-0.81-1.96-0.81-3H17.08z" />
+            <path fill="#2e7d32" d="M30.46,6.8L24,18L17.53,6.8c0.78-0.45,1.66-0.73,2.6-0.79L27.46,6C28.54,6,29.57,6.28,30.46,6.8z" />
+          </>
+        );
+        break;
+      case "office-one-drive":
+        viewBox = "0 0 48 48";
+        stroke = "none";
+        content = (
+          <>
+            <path fill="#084593" d="M24.5 8A14.5 14.5 0 1 0 24.5 37A14.5 14.5 0 1 0 24.5 8Z" />
+            <path fill="#0556ab" d="M16.155,15.972c-1.32-0.505-2.753-0.781-4.25-0.781C5.33,15.191,0,20.521,0,27.096 c0,2.476,0.757,4.774,2.05,6.678c0.061-0.026,16.445-6.889,26.406-10.888C22.952,19.568,17.903,16.641,16.155,15.972z" />
+            <path fill="#18b0ff" d="M48,29.373c0-5.317-4.31-9.627-9.627-9.627c-0.997,0-1.958,0.152-2.863,0.433 c-0.996,0.31-3.652,1.342-7.054,2.708c8.377,5.05,17.79,10.996,18.252,11.288C47.525,32.76,48,31.123,48,29.373z" />
+            <path fill="#2cceff" d="M46.709,34.175c-0.463-0.292-9.875-6.238-18.252-11.288C18.495,26.885,2.111,33.748,2.05,33.774 C2.467,34.388,5.627,39,11.904,39c5.03,0,16.176,0,26.354,0C43.669,39,46.148,35.146,46.709,34.175z" />
+          </>
+        );
+        break;
+      case "filter":
+        viewBox = "0 0 18 18";
+        height = 18;
+        width = 18;
+        content = (
+          <>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="menu" transform="translate(1.000000, 1.000000)" stroke="#E1E1E1">
+                <path d="M5,8.5 L10.75,8.5" id="Path" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M4,5.5 L12,5.5" id="Path" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7,11.5 L9.5,11.5" id="Path" stroke-linecap="round" stroke-linejoin="round"></path>
+                <rect id="Rectangle" x="0" y="0" width="16" height="16" rx="8"></rect>
+              </g>
+            </g>
+          </>
+        );
+        break;
+      case "filter-active":
+        viewBox = "0 0 18 18";
+        height = 18;
+        width = 18;
+        content = (
+          <>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="menu" transform="translate(1.000000, 1.000000)">
+                <rect id="Rectangle" stroke="#505050" fill="#505050" x="0" y="0" width="16" height="16" rx="8"></rect>
+                <path d="M5,8.5 L10.75,8.5" id="Path" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M4,5.5 L12,5.5" id="Path" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7,11.5 L9.5,11.5" id="Path" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+              </g>
+            </g>
+          </>
+        );
+        break;
+      case "admin-bot":
+        content = (
+          <>
+            <path d="M 25 3 C 22.793 3 21 4.79297 21 7 C 21 8.85938 22.2813 10.4102 24 10.8594 L 24 14 L 15.0313 14 C 10.6016 14 7 17.6016 7 22.0313 L 7 26 L 2 26 L 2 38 L 7 38 L 7 47 L 43 47 L 43 38 L 48 38 L 48 26 L 43 26 L 43 22.0313 C 43 17.6016 39.3984 14 34.9688 14 L 26 14 L 26 10.8594 C 27.7227 10.4102 29 8.85938 29 7 C 29 4.79297 27.207 3 25 3 Z M 25 5 C 26.1016 5 27 5.89844 27 7 C 27 8.10156 26.1016 9 25 9 C 23.8984 9 23 8.10156 23 7 C 23 5.89844 23.8984 5 25 5 Z M 15.0313 16 L 34.9688 16 C 38.293 16 41 18.707 41 22.0313 L 41 45 L 35 45 L 35 37 L 15 37 L 15 45 L 9 45 L 9 22.0313 C 9 18.707 11.707 16 15.0313 16 Z M 18.5 22 C 16.0195 22 14 24.0195 14 26.5 C 14 28.9805 16.0195 31 18.5 31 C 20.9805 31 23 28.9805 23 26.5 C 23 24.0195 20.9805 22 18.5 22 Z M 31.5 22 C 29.0195 22 27 24.0195 27 26.5 C 27 28.9805 29.0195 31 31.5 31 C 33.9805 31 36 28.9805 36 26.5 C 36 24.0195 33.9805 22 31.5 22 Z M 18.5 24 C 19.8789 24 21 25.1211 21 26.5 C 21 27.8789 19.8789 29 18.5 29 C 17.1211 29 16 27.8789 16 26.5 C 16 25.1211 17.1211 24 18.5 24 Z M 31.5 24 C 32.8789 24 34 25.1211 34 26.5 C 34 27.8789 32.8789 29 31.5 29 C 30.1211 29 29 27.8789 29 26.5 C 29 25.1211 30.1211 24 31.5 24 Z M 4 28 L 7 28 L 7 36 L 4 36 Z M 43 28 L 46 28 L 46 36 L 43 36 Z M 17 39 L 21 39 L 21 45 L 17 45 Z M 23 39 L 27 39 L 27 45 L 23 45 Z M 29 39 L 33 39 L 33 45 L 29 45 Z" />
+          </>
+        );
+        break;
+      case "external-link":
+        content = (
+          <>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
           </>
         );
         break;
@@ -118,6 +328,14 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "check-circle":
+        content = (
+          <>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </>
+        );
+        break;
       case "chevron-down":
         content = (
           <>
@@ -161,6 +379,15 @@ export const SvgIconFeather = React.memo(
         content = (
           <>
             <circle cx="12" cy="12" r="10" />
+          </>
+        );
+        break;
+      case "x-circle":
+        content = (
+          <>
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
           </>
         );
         break;
@@ -296,6 +523,16 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+
+      case "upload":
+        content = (
+          <>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </>
+        );
+        break;
       case "upload-cloud":
         strokeWidth = "2";
         content = (
@@ -353,6 +590,17 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "arrow-right-circle":
+        strokeWidth = "2";
+        content = (
+          <>
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 16 16 12 12 8"></polyline>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </>
+        );
+        break;
+
       case "arrow-down":
         strokeWidth = "2";
         content = (

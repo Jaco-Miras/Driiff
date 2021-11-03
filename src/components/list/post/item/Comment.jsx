@@ -100,9 +100,9 @@ const Wrapper = styled.li`
 
     .read-users-container {
       position: absolute;
-      left: 22px;
+      left: 0;
       z-index: 1;
-      bottom: 0;
+      bottom: 20px;
       border-radius: 8px;
       opacity: 0;
       max-height: 0;
@@ -403,6 +403,9 @@ const Comment = (props) => {
                     blobUrl: imgObj,
                   },
                 });
+              })
+              .catch((error) => {
+                console.log(error, "error fetching image");
               });
           });
         }

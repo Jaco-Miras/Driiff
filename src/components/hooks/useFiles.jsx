@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useFileActions } from "../hooks";
+import { useFileActions, useDriveLinkActions } from "../hooks";
 
 const useFiles = (triggerFetch = false) => {
   const params = useParams();
   const fileActions = useFileActions(params);
+  const { fetchTopicDriveLinks } = useDriveLinkActions();
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const { workspaceFiles, googleDriveApiFiles, gifBlobs, fileBlobs, fileThumbnailBlobs } = useSelector((state) => state.files);
@@ -25,6 +26,7 @@ const useFiles = (triggerFetch = false) => {
           fileActions.getTrashFiles(activeTopic.id);
           fileActions.getGoogleDriveFiles(activeTopic.id);
           fileActions.getGoogleDriveFolders(activeTopic.id);
+          fetchTopicDriveLinks({ topic_id: activeTopic.id });
         };
         setFetchingFiles(true);
         fileActions.getFiles({ topic_id: activeTopic.id }, cb);
@@ -81,7 +83,7 @@ const useFiles = (triggerFetch = false) => {
     topic: activeTopic,
     fileIds: fileIds,
     folders: hasActiveTopic ? workspaceFiles[activeTopic.id].folders : {},
-    subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && f.parent_folder.id == params.fileFolderId) : [],
+    subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && Number(f.parent_folder.id) === Number(params.fileFolderId)) : [],
     folder: hasActiveTopic ? workspaceFiles[activeTopic.id].folders[params.fileFolderId] : null,
     googleDriveApiFiles,
     gifBlobs,

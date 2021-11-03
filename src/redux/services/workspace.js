@@ -347,7 +347,7 @@ export function postResendInvite(payload) {
  * @param {string} payload.id
  * @returns {Promise<*>}
  */
-export function createTeamChannel(payload) {
+export function createWorkspaceTeamChannel(payload) {
   let url = `/v2/workspace/${payload.id}/team-channel`;
   return apiCall({
     method: "POST",
@@ -417,6 +417,33 @@ export function getWorkspaceRemindersCount(payload) {
 
 export function getFavoriteWorkspaces(payload) {
   let url = "/v2/workspace-favourites";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function toggleShowAbout(payload) {
+  let url = `/v2/workspace-about/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getAllWorkspaceFolders(payload) {
+  let url = "/v2/workspace/folders/all";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getExistingFolder(payload) {
+  let url = `/v2/workspace/folder/exists?name=${payload.name}`;
   return apiCall({
     method: "GET",
     url: url,

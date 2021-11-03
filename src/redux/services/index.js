@@ -3,6 +3,28 @@
 
 export { apiCall, apiNoTokenCall } from "./service";
 export {
+  getLoginSettings,
+  putLoginSettings,
+  postQuickLinks,
+  putQuickLinks,
+  getUserBot,
+  deleteUserBot,
+  putUserBot,
+  postUserBot,
+  getGrippBot,
+  putGrippBot,
+  postUploadUserBotIcon,
+  getGrippDetails,
+  getGrippUsers,
+  postSyncGrippUsers,
+  createCheckoutSession,
+  resetGrippUsersImage,
+  getStripePricing,
+  getStripeProducts,
+  cancelStripeSubscription,
+  resetCompanyLogo,
+} from "./admin";
+export {
   getGlobalRecipients,
   getChannels,
   getChannel,
@@ -49,7 +71,7 @@ export {
   createZoomMeeting,
 } from "./chat";
 
-export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName } from "./settings";
+export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";
 
 export {
   activateUser,
@@ -84,6 +106,13 @@ export {
   getUsersWithoutActivity,
   resendInvitation,
   deleteInvitedUser,
+  getTeams,
+  postTeam,
+  putTeam,
+  deleteTeam,
+  addTeamMember,
+  removeTeamMember,
+  createTeamChannel,
 } from "./user";
 
 export {
@@ -175,6 +204,10 @@ export {
   getCompanyGoogleAttachmentsFile,
   getCompanyGoogleAttachmentsFolder,
   removeFileDownload,
+  getDriveLinks,
+  postDriveLink,
+  putDriveLink,
+  deleteDriveLink,
 } from "./files";
 
 export {
@@ -225,11 +258,12 @@ export {
   postListConnect,
   postListDisconnect,
   postRequired,
+  readNotification,
 } from "./post";
 
 export {
   createWorkspace,
-  createTeamChannel,
+  createWorkspaceTeamChannel,
   deleteWorkspace,
   deleteWorkspaceRole,
   deleteWorkspaceFolder,
@@ -256,6 +290,9 @@ export {
   postResendInvite,
   updatePostStatus,
   updateWorkspace,
+  toggleShowAbout,
+  getAllWorkspaceFolders,
+  getExistingFolder,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";

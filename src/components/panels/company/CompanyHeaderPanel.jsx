@@ -8,6 +8,9 @@ import { CompanyPageHeaderPanel } from "../company";
 import { useTranslationActions } from "../../hooks";
 //import { putChannel, updateCompanyChannel } from "../../../redux/actions/chatActions";
 import { favouriteWorkspace } from "../../../redux/actions/workspaceActions";
+import AllPeoplePageHeader from "./AllPeoplePageHeader";
+import AllPeopleHeaderButtons from "./AllPeopleHeaderButtons";
+import MainBackButton from "../../panels/main/MainBackButton";
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,6 +60,7 @@ const Wrapper = styled.div`
             left: 0;
             width: 100%;
             padding: 0 16px;
+            overflow: auto;
           }
         }
       }
@@ -81,6 +85,9 @@ const Wrapper = styled.div`
   }
   @media all and (max-width: 700px) {
     align-items: start;
+  }
+  .nav-item-last {
+    list-style: none;
   }
 `;
 
@@ -154,6 +161,9 @@ const CompanyHeaderPanel = () => {
       mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode"),
     }),
     bots: _t("SIDEBAR.BOTS", "Bots"),
+    adminSettings: _t("PAGE_TITLE.ADMIN_SETTINGS", "Driff settings"),
+    btnTeam: _t("BUTTON.TEAM", "Team"),
+    btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
   };
 
   const dispatch = useDispatch();
@@ -299,6 +309,7 @@ const CompanyHeaderPanel = () => {
                   <SvgIconFeather icon="menu" />
                 </a>
               </li>
+              <MainBackButton />
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">{renderMainTitle()}</li>
             </div>
             {!["system", "notifications", "profile", "settings"].includes(match.params.page) && (
@@ -308,8 +319,16 @@ const CompanyHeaderPanel = () => {
                 </div>
               </div>
             )}
+            {["system"].includes(match.params.page) && (
+              <div className="navbar-bottom">
+                <div className="navbar-main">
+                  <AllPeoplePageHeader dictionary={dictionary} match={match} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
+        {["system"].includes(match.params.page) && <AllPeopleHeaderButtons dictionary={dictionary} />}
       </div>
 
       <div>

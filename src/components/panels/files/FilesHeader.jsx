@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { ButtonDropdown, SvgIconFeather } from "../../common";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -42,6 +44,9 @@ const Wrapper = styled.div`
 const FilesHeader = (props) => {
   const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, handleAddEditFolder, folders, history, params, clearFilter, dictionary, disableOptions, onClickEmpty, value } = props;
 
+  const dispatch = useDispatch();
+
+  const workspaceId = useSelector((state) => state.workspaces.selectedWorkspaceId);
   const handleClickAdd = () => {
     if (dropZoneRef.current) {
       dropZoneRef.current.open();
@@ -74,7 +79,7 @@ const FilesHeader = (props) => {
       {
         value: "folder",
         label: dictionary.folder,
-        onClick: () => handleAddEditFolder("add"),
+        onClick: () => handleAddEditFolder(null, "create"),
       },
       {
         value: "file",
@@ -105,6 +110,15 @@ const FilesHeader = (props) => {
     document.body.classList.toggle("mobile-modal-open");
   };
 
+  const showExternalFileFolderModal = () => {
+    const modal = {
+      type: "external_file_folder",
+      mode: "create",
+      topic_id: workspaceId,
+    };
+    dispatch(addToModals(modal));
+  };
+
   return (
     <Wrapper className={`files-header app-action ${className}`}>
       <div className="action-left">
@@ -117,6 +131,13 @@ const FilesHeader = (props) => {
           {isMember === true && Object.values(folders).filter((f) => !f.is_archived).length >= 1 && (
             <li className="list-inline-item mb-0">
               <ButtonDropdown dropdown={folderDropDown} />
+            </li>
+          )}
+          {isMember === true && (
+            <li className="list-inline-item mb-0">
+              <button className="btn btn-outline-light" onClick={showExternalFileFolderModal}>
+                {dictionary.driveLink}
+              </button>
             </li>
           )}
         </ul>

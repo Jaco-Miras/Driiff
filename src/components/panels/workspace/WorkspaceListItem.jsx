@@ -60,7 +60,17 @@ const StarIcon = styled(SvgIconFeather)`
 
 const WorkspaceListItem = (props) => {
   const { actions, dictionary, item } = props;
-  const isMember = useIsMember(item.members.map((m) => m.id));
+  const workspaceMembers = item.members
+    .map((m) => {
+      if (m.member_ids) {
+        return m.member_ids;
+      } else return m.id;
+    })
+    .flat();
+
+  const uniqueMembers = [...new Set(workspaceMembers)];
+
+  const isMember = useIsMember(uniqueMembers);
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
   const handleRedirect = (e, item) => {
@@ -78,7 +88,7 @@ const WorkspaceListItem = (props) => {
         {item.topic.is_favourite && <StarIcon icon="star" />}
         <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={item.topic.icon_link} id={item.topic.id} name={item.topic.name} onClick={(e) => handleRedirect(e, item)} showSlider={false} />
       </div>
-      <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} onRedirect={handleRedirect} />
+      <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} members={uniqueMembers} item={item} onRedirect={handleRedirect} />
       <WorkspaceListItemButtons actions={actions} dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
     </Wrapper>
   );
