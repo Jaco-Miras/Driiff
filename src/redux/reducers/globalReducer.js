@@ -890,15 +890,6 @@ export default (state = INITIAL_STATE, action) => {
         newDriffData: action.data,
       };
     }
-    case "CREATE_QUICK_LINKS_SUCCESS":
-    case "PUT_QUICK_LINKS_SUCCESS": {
-      const links = [...state.links, ...action.data.quick_links];
-      let uniqLinks = [...new Map(links.map((item) => [item["id"], item])).values()];
-      return {
-        ...state,
-        links: uniqLinks,
-      };
-    }
     case "SET_DONT_SHOW_IDS": {
       return {
         ...state,

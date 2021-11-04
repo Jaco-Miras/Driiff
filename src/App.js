@@ -152,6 +152,7 @@ function App() {
         </Suspense>
       )}
       {showNewDriffBar && <DriffUpdateModal />}
+      <div id="meetingSDKElement" style={{ zIndex: 99999 }}></div>
     </Wrapper>
   );
 }

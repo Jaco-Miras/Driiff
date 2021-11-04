@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 //import { useHistory } from "react-router-dom";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
+import { useZoomActions } from "../hooks";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -13,10 +14,12 @@ const ButtonsContainer = styled.div`
 `;
 
 const ZoomInviteModal = (props) => {
-  const { zoom_data, channel_id, type, title, host } = props.data;
+  const { zoom_data, type, title, host } = props.data;
   const dispatch = useDispatch();
   //const history = useHistory();
   const [modal, setModal] = useState(true);
+
+  const zoomActions = useZoomActions();
 
   const toggle = () => {
     setModal(!modal);
@@ -27,13 +30,12 @@ const ZoomInviteModal = (props) => {
     toggle();
     let payload = {
       meetingNumber: zoom_data.data.id,
-      role: "0",
+      role: 0,
       password: zoom_data.data.password,
-      host: false,
-      hasJoin: false,
     };
-    localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    window.open(`https://demo24.drevv.com/zoom/meeting/${channel_id}/${zoom_data.data.id}`, "_blank");
+    zoomActions.generateSignature(payload);
+    // localStorage.setItem("zoomConfig", JSON.stringify(payload));
+    // window.open(`https://demo24.drevv.com/zoom/meeting/${channel_id}/${zoom_data.data.id}`, "_blank");
     // dispatch(
     //   incomingZoomData({ ...zoom_data.data }, () => {
     //     history.push(`/zoom/${channel_id}?join=0`);

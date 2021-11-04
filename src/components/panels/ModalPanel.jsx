@@ -29,6 +29,7 @@ import {
   CreateExternalFileFolder,
   CreateEditTeamModal,
   AddToTeamModal,
+  ZoomInviteModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
