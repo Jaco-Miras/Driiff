@@ -317,7 +317,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       }
 
       return newBody;
-    } else if (message.startsWith("{\"Welk punt geef je ons\"") || message.startsWith("ZAP_SUBMIT::")) {
+    } else if (message.startsWith('{"Welk punt geef je ons"') || message.startsWith("ZAP_SUBMIT::")) {
       const renderStars = (num) => {
         let star = "";
         for (let i = 1; i <= 10; i++) {
@@ -348,22 +348,9 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       } catch (e) {
         return message;
       }
-    } else if (message.includes("ZOOM_MESSAGE::{")) {
-      // if (quote) {
-      //   const splitStr = reply.quote.body.split("::");
-      //   const str = `${splitStr[1]}`;
-      //   const data = JSON.parse(str);
-      //   newBody = data.message;
-      // } else {
-      //   const splitStr = message.split("::");
-      //   const str = `${splitStr[1]}`;
-      //   const data = JSON.parse(str);
-      //   newBody = data.message;
-      // }
-      // eslint-disable-next-line quotes
-      // const zmessage = message.replace('<span class="fancied"></span>', "");
-      // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
-      // newBody = data.message;
+    } else if (message.startsWith("ZOOM_MESSAGE::{")) {
+      const data = JSON.parse(message.replace("ZOOM_MESSAGE::", ""));
+      newBody = data.message;
     } else if (message.includes("CREATE_WORKSPACE::")) {
       let parsedData = JSON.parse(message.replace("CREATE_WORKSPACE::", ""));
       newBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;

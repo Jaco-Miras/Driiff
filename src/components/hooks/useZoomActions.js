@@ -89,7 +89,7 @@ const useZoomActions = () => {
     //let messageBody = `<div>I started a ZOOM meeting: <a href="https://demo24.drevv.com/zoom/meeting${userAuth.user_auth.name}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`;
     let messageBody = `ZOOM_MESSAGE::${JSON.stringify({
       // eslint-disable-next-line quotes
-      message: `<div>I started a ZOOM meeting: <a class="zoom-link" href="https://demo24.drevv.com/zoom/meeting/${id}/${config.meetingNumber}" rel="noopener noreferrer" target="_blank"><strong>Click here to join</strong></a></div>`,
+      message: `<div>I started a ZOOM meeting: <strong>Click here to join</strong></div>`,
       data: {
         passWord: config.password,
         meetingNumber: config.meetingNumber,

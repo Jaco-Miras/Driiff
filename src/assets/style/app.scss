@@ -22313,3 +22313,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .ql-tooltip {
   left: 0 !important;
 }
+div[role="dialog"] {
+  z-index: 1000 !important;
+}

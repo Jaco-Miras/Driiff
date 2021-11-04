@@ -188,6 +188,7 @@ const ChatFooterPanel = (props) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
+  const [startingZoom, setStartingZoom] = useState(false);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const user = useSelector((state) => state.session.user);
@@ -352,6 +353,8 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleGoogleMeet = () => {
+    if (startingZoom) return;
+    setStartingZoom(true);
     let payload = {
       channel_id: selectedChannel.id,
     };
@@ -377,6 +380,7 @@ const ChatFooterPanel = (props) => {
               if (r) {
                 console.log(r, zoomCreateConfig);
                 zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
+                setStartingZoom(false);
               }
             })
           );
@@ -466,6 +470,7 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
+                    startingZoom={startingZoom}
                   />
                 </Dflex>
               </ChatInputContainer>
