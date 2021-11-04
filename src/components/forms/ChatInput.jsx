@@ -121,14 +121,20 @@ const FileIcon = styled(SvgIconFeather)`
   }
 `;
 const getSlug = () => {
-  const host = window.location.host.split(".");
-  if (host.length === 3) {
-    localStorage.setItem("slug", host[0]);
-    return host[0];
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
   } else {
-    return null;
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
   }
 };
+
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
   const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;

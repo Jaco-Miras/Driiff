@@ -1,19 +1,20 @@
 import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, addChatMessage, postChatMessage, createZoomMeeting } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, addChatMessage, postChatMessage, createZoomMeeting, generateZoomSignature } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useZoomActions } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { ChatInputButtons } from "./index";
+//import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 
 const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 
@@ -173,7 +174,8 @@ const PickerContainer = styled(CommonPicker)`
 const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
 
-  const history = useHistory();
+  //const history = useHistory();
+  const zoomActions = useZoomActions();
   const { localizeChatDate, localizeDate } = useTimeFormat();
 
   const dispatch = useDispatch();
@@ -351,14 +353,45 @@ const ChatFooterPanel = (props) => {
 
   const handleGoogleMeet = () => {
     let payload = {
-      meetingNumber: "",
-      role: 1,
-      password: "",
-      host: true,
-      hasJoin: false,
+      channel_id: selectedChannel.id,
     };
-    localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}`, "_blank");
+
+    dispatch(
+      createZoomMeeting(payload, (err, res) => {
+        if (err) return;
+        if (res.data) {
+          let sigPayload = {
+            meetingNumber: res.data.zoom_data.data.id,
+            role: 1,
+          };
+          const zoomCreateConfig = {
+            password: res.data.zoom_data.data.password,
+            meetingNumber: res.data.zoom_data.data.id,
+            role: 1,
+          };
+          console.log(sigPayload);
+          //zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+          dispatch(
+            generateZoomSignature(sigPayload, (e, r) => {
+              if (e) return;
+              if (r) {
+                console.log(r, zoomCreateConfig);
+                zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
+              }
+            })
+          );
+        }
+      })
+    );
+    // let payload = {
+    //   meetingNumber: "",
+    //   role: 1,
+    //   password: "",
+    //   host: true,
+    //   hasJoin: false,
+    // };
+    // localStorage.setItem("zoomConfig", JSON.stringify(payload));
+    // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}`, "_blank");
     // dispatch(
     //   createZoomMeeting({ channel_id: selectedChannel.id }, (err, res) => {
     //     if (err) return;
