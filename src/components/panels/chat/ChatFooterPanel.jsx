@@ -376,8 +376,7 @@ const ChatFooterPanel = (props) => {
             meetingNumber: res.data.zoom_data.data.id,
             role: 1,
           };
-          console.log(sigPayload);
-          //zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+          zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
           dispatch(
             generateZoomSignature(sigPayload, (e, r) => {
               if (e) return;
