@@ -52,6 +52,12 @@ const Wrapper = styled.div`
   .mobile-slide-exit-done {
     opacity: 0;
   }
+  #meetingSDKElement .react-draggable {
+    z-index: 1000;
+  }
+  .react-draggable {
+    z-index: 1000;
+  }
 `;
 
 const ModalPanelContainer = styled.div`
@@ -152,7 +158,7 @@ function App() {
         </Suspense>
       )}
       {showNewDriffBar && <DriffUpdateModal />}
-      <div id="meetingSDKElement" style={{ zIndex: 99999 }}></div>
+      <div id="meetingSDKElement"></div>
     </Wrapper>
   );
 }

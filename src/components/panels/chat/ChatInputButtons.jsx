@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, Loader } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
 import zoomIcon from "../../../assets/icons/zoom.png";
 
@@ -15,6 +15,10 @@ const IconWrapper = styled.div`
   @media (max-width: 414px) {
     width: 30px;
     padding: 13px 2px;
+  }
+  .loading {
+    width: 1rem;
+    height: 1rem;
   }
 `;
 const Wrapper = styled.div`
@@ -60,7 +64,8 @@ const Wrapper = styled.div`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote, dictionary } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote, dictionary, startingZoom } = props;
+
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const [showButtons, setShowButtons] = useState(false);
@@ -98,7 +103,8 @@ const ChatInputButtons = (props) => {
       </IconWrapper>
       <IconWrapper className="btn-meet">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-          <img src={zoomIcon} onClick={handleGoogleMeet} />
+          {startingZoom && <Loader />}
+          {!startingZoom && <img src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />}
           {/* <SvgIconFeather onClick={handleGoogleMeet} icon="meet" /> */}
         </Tooltip>
       </IconWrapper>
