@@ -1,11 +1,11 @@
 //import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
-import { useChatReply } from "../../hooks";
+import { useChatReply, useZoomActions } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
@@ -482,6 +482,11 @@ const ChatBubble = (props) => {
 
   const history = useHistory();
 
+  const zoomActions = useZoomActions();
+
+  const componentIsMounted = useRef(true);
+  const [generatingSignature, setGeneratingSignature] = useState(false);
+
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
   useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions });
@@ -504,6 +509,7 @@ const ChatBubble = (props) => {
 
   const refs = {
     container: useRef(null),
+    replyRef: useRef(null),
   };
 
   const contentRef = useRef(null);
@@ -524,27 +530,45 @@ const ChatBubble = (props) => {
 
   const handleZoomLink = (e) => {
     e.preventDefault();
-    if (reply.body.includes("ZOOM_MESSAGE::{")) {
-      // eslint-disable-next-line quotes
-      const zmessage = reply.body.replace('<span class="fancied"></span>', "");
-      const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+    if (reply.body.startsWith("ZOOM_MESSAGE::{") && !generatingSignature) {
+      setGeneratingSignature(true);
+      const data = JSON.parse(reply.body.replace("ZOOM_MESSAGE::", ""));
       let payload = {
         meetingNumber: data.data.meetingNumber,
         role: 0,
         password: data.data.passWord,
-        host: false,
-        hasJoin: false,
       };
-      localStorage.setItem("zoomConfig", JSON.stringify(payload));
-      window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${payload.meetingNumber}`, "_blank");
+      const cb = () => {
+        if (componentIsMounted.current) setGeneratingSignature(false);
+      };
+      zoomActions.generateSignature(payload, cb);
+      // eslint-disable-next-line quotes
+      // const zmessage = reply.body.replace('<span class="fancied"></span>', "");
+      // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+      // let payload = {
+      //   meetingNumber: data.data.meetingNumber,
+      //   role: 0,
+      //   password: data.data.passWord,
+      //   host: false,
+      //   hasJoin: false,
+      // };
+      // localStorage.setItem("zoomConfig", JSON.stringify(payload));
+      // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${payload.meetingNumber}`, "_blank");
     }
 
     return false;
   };
 
   useEffect(() => {
-    const zoomLink = refs.container.current.querySelector("a.zoom-link");
-    if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
+    // const zoomLink = refs.container.current.querySelector("a.zoom-link");
+    // if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
+
+    let zLink = null;
+
+    if (reply.body.startsWith("ZOOM_MESSAGE::{")) {
+      zLink = refs.replyRef.current.querySelector("strong");
+      if (zLink) zLink.addEventListener("click", handleZoomLink, true);
+    }
 
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
 
@@ -552,7 +576,7 @@ const ChatBubble = (props) => {
 
     return () => {
       if (lnkChannelMessage) lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
-      if (zoomLink) zoomLink.removeEventListener("click", handleZoomLink, true);
+      if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
     };
   }, []);
 
@@ -663,10 +687,11 @@ const ChatBubble = (props) => {
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
                     //ref={handleContentRef}
+                    ref={refs.replyRef}
                     hasFiles={hasFiles}
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
-                    className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
+                    className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""} ${reply.body.startsWith("ZOOM_MESSAGE::{") ? "zoom-msg" : ""}`}
                     dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>

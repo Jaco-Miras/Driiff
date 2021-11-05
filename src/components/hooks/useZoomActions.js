@@ -1,6 +1,7 @@
 import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 import { useSelector, useDispatch } from "react-redux";
 import { postChatMessage, generateZoomSignature } from "../../redux/actions/chatActions";
+import { useToaster } from ".";
 
 const useZoomActions = () => {
   const dispatch = useDispatch();
@@ -10,26 +11,29 @@ const useZoomActions = () => {
     apiSecret: "VBrvh9uh41NLdZjkvpr5a4AgyI23DAPM1dyv",
   };
 
+  const toaster = useToaster();
+
   const client = ZoomMtgEmbedded.createClient();
   let meetingSDKElement = document.getElementById("meetingSDKElement");
   client.init({
     debug: true,
     zoomAppRoot: meetingSDKElement,
     language: "en-US",
-    // customize: {
-    //   meetingInfo: ["topic", "host", "mn", "pwd", "telPwd", "invite", "participant", "dc", "enctype"],
-    //   toolbar: {
-    //     buttons: [
-    //       {
-    //         text: "Custom Button",
-    //         className: "CustomButton",
-    //         onClick: () => {
-    //           console.log("custom button");
-    //         },
-    //       },
-    //     ],
-    //   },
-    // },
+    isSupportChat: false,
+    customize: {
+      meetingInfo: ["topic", "host", "mn", "pwd", "invite", "participant", "dc"],
+      toolbar: {
+        buttons: [
+          {
+            text: "Leave",
+            className: "LeaveBtn",
+            onClick: () => {
+              client.leaveMeeting();
+            },
+          },
+        ],
+      },
+    },
   });
 
   const getSlug = () => {
@@ -58,25 +62,29 @@ const useZoomActions = () => {
       host: true,
     };
 
-    client.join({
-      apiKey: apiKeys.apiKey,
-      signature: signature,
-      meetingNumber: config.meetingNumber,
-      password: config.passWord,
-      userName: config.userName,
-      userEmail: config.userEmail,
-      success: () => {
-        console.log("success");
-      },
-      error: () => {
-        console.log("error");
-      },
-    });
+    client
+      .join({
+        apiKey: apiKeys.apiKey,
+        signature: signature,
+        meetingNumber: config.meetingNumber,
+        password: config.passWord,
+        userName: config.userName,
+        userEmail: config.userEmail,
+      })
+      .then((e) => {
+        console.log("join success", e);
+      })
+      .catch((e) => {
+        console.log("join error", e);
+        if (e.reason) toaster.error(e.reason);
+        client.leaveMeeting();
+      });
   };
 
-  const generateSignature = (config) => {
+  const generateSignature = (config, callback) => {
     dispatch(
       generateZoomSignature(config, (e, r) => {
+        if (callback) callback();
         if (e) return;
         if (r) {
           startMeeting(r.data.signature, config);

@@ -22316,3 +22316,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 body > div[role="dialog"] {
   z-index: 1000 !important;
 }
+.zoom-msg strong {
+  cursor: pointer;
+}
