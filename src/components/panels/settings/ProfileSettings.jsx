@@ -631,21 +631,21 @@ const ProfileSettings = (props) => {
     });
   };
 
-  const handleViewReleasePage = () => {
-    history.push("/releases");
-  };
+  // const handleViewReleasePage = () => {
+  //   history.push("/releases");
+  // };
 
-  const handleTranslationToggle = (e) => {
-    const { dataset } = e.target;
-    const payload = {
-      ...loginSettings,
-      custom_translation: !driffSettings.settings.custom_translation,
-      domains: domains.toString(),
-    };
-    dispatch(putLoginSettings(payload));
-    dispatch(updateCustomTranslationSettings());
-    toaster.success(<span>{dataset.successMessage}</span>);
-  };
+  // const handleTranslationToggle = (e) => {
+  //   const { dataset } = e.target;
+  //   const payload = {
+  //     ...loginSettings,
+  //     custom_translation: !driffSettings.settings.custom_translation,
+  //     domains: domains.toString(),
+  //   };
+  //   dispatch(putLoginSettings(payload));
+  //   dispatch(updateCustomTranslationSettings());
+  //   toaster.success(<span>{dataset.successMessage}</span>);
+  // };
 
   return (
     <Wrapper className={`profile-settings ${className}`}>
@@ -890,7 +890,8 @@ const ProfileSettings = (props) => {
         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
       )}
       <span className="version-number mb-3">
-        Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;<ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink>
+        Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;
+        {/* <ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink> */}
       </span>
       {loggedUser && loggedUser.email === "nilo@makedevelopment.com" && (
         <span>
