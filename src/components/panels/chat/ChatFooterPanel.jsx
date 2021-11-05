@@ -381,7 +381,6 @@ const ChatFooterPanel = (props) => {
             generateZoomSignature(sigPayload, (e, r) => {
               if (e) return;
               if (r) {
-                console.log(r, zoomCreateConfig);
                 zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
                 setStartingZoom(false);
               }
