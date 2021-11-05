@@ -13,9 +13,9 @@ const Wrapper = styled.div`
   ul {
     margin: 0;
     padding-left: 0;
-    overflow: auto;
-    // overflow-y: hidden;
-    // overflow-x: scroll;
+    //overflow: auto;
+    overflow-y: hidden;
+    overflow-x: scroll;
     display: flex;
     flex-grow: 1;
     .dark & {
