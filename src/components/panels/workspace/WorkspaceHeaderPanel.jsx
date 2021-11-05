@@ -333,9 +333,10 @@ const WorspaceHeaderPanel = (props) => {
     statusWorkspacePrivate: _t("WORKSPACE.STATUS_PRIVATE", "Private"),
     statusWorkspaceArchived: _t("WORKSPACE.STATUS_ARCHIVED", "Archived"),
     statusNoWorkspaceExternal: _t("WORKSPACE.EXTERNAL_NO_WORKSPACES", "You currently don't have any workspaces."),
-    toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
-      topic_name: activeTopic ? "<b>#{activeTopic.name}</b>" : "",
-    }),
+    // toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
+    //   topic_name: activeTopic ? `<b>#${activeTopic.name}</b>` : "",
+    // }),
+    joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
     workspaces: _t("WORKSPACES", "Workspces"),
@@ -377,12 +378,12 @@ const WorspaceHeaderPanel = (props) => {
     dispatch(
       joinWorkspace(
         {
-          channel_id: activeTopic.channel.id,
+          channel_id: activeTopic.team_channel ? activeTopic.team_channel.id : 0,
           recipient_ids: [user.id],
         },
         (err, res) => {
           if (err) return;
-          toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterJoinWorkspace }} />);
+          toaster.success(`${dictionary.joinWorkspace} ${activeTopic.name}`);
         }
       )
     );
