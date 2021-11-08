@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useSearch, useSearchActions, useTranslationActions } from "../../hooks";
+import { useSearchActions, useTranslationActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 //import { ChatSearchItem, ChannelSearchItem, CommentSearchItem, FileSearchItem, PeopleSearchItem, PostSearchItem, WorkspaceSearchItem } from "../../list/search";
 
@@ -35,9 +35,9 @@ const Wrapper = styled.div`
 const SearchDropdown = (props) => {
   const dropdownRef = useRef();
   const actions = useSearchActions();
-  const { value } = useSearch();
+  // const { value } = useSearch();
   const history = useHistory();
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState("");
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
@@ -57,6 +57,7 @@ const SearchDropdown = (props) => {
         value: inputValue,
       });
       document.querySelector(".overlay").classList.remove("show");
+      setInputValue("");
       history.push("/search");
     }
   };
@@ -74,7 +75,7 @@ const SearchDropdown = (props) => {
   };
 
   const handleSearchChange = (e) => {
-    if (e.target.value.trim() === "" && value !== "") {
+    if (e.target.value.trim() === "") {
       actions.saveSearchValue({
         value: "",
       });
