@@ -330,7 +330,7 @@ const WorspaceHeaderPanel = (props) => {
     // toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
     //   topic_name: activeTopic ? `<b>#${activeTopic.name}</b>` : "",
     // }),
-    joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
+    joinWorkspace: _t("TOASTER.JOIN_WORKSPACE_SUCCESS", "You have joined #"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
     workspaces: _t("WORKSPACES", "Workspces"),
