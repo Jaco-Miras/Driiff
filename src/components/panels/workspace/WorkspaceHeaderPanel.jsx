@@ -378,7 +378,7 @@ const WorspaceHeaderPanel = (props) => {
     dispatch(
       joinWorkspace(
         {
-          channel_id: activeTopic.team_channel ? activeTopic.team_channel.id : 0,
+          channel_id: activeTopic.team_channel && activeTopic.team_channel.id !== 0 ? activeTopic.team_channel.id : activeTopic.channel && activeTopic.channel.id !== 0 ? activeTopic.channel.id : 0,
           recipient_ids: [user.id],
         },
         (err, res) => {
@@ -395,7 +395,7 @@ const WorspaceHeaderPanel = (props) => {
   };
 
   useEffect(() => {
-    const body = document.body;
+    //const body = document.body;
 
     let pageName = "";
     switch (match.params.page) {
