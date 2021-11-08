@@ -415,6 +415,8 @@ const CreateEditWorkspaceModal = (props) => {
     folderTooltip: _t("WORKSPACE.TOOLTIP_FOLDER", "You can add this WorkSpace to a folder for some extra structure in your WorkSpace list"),
     teamMembersTooltip: _t("WORKSPACE.TOOLTIP_TEAM_MEMBERS", "Decide which members of your company should be added to this WorkSpace"),
     guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
+    workspaceIsUnarchived: _t("TOASTER.WORKSPACE_IS_UNARCHIVED", "workpace is un-archived"),
+    workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
   };
 
   const _validateName = useCallback(() => {
@@ -1353,9 +1355,9 @@ const CreateEditWorkspaceModal = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const handleArchive = useCallback(() => {
+  const handleArchive = () => {
     let payload = {
-      id: item.channel.id,
+      id: item.team_channel ? item.team_channel.id : item.channel.id,
       is_archived: item.active === 1,
       is_muted: false,
       is_pinned: false,
@@ -1366,22 +1368,30 @@ const CreateEditWorkspaceModal = (props) => {
       payload.push_unarchived = 1;
     }
 
-    dispatch(putChannel(payload));
-    toaster.success(
-      <span>
-        <b>{item.name}</b> workspace is
-        {item.active === 1 ? <> unarchived</> : <> archived</>}
-        {form.selectedFolder !== null && (
-          <>
-            {" "}
-            <b>{form.selectedFolder.label}</b> under directory
-          </>
-        )}
-        .
-      </span>
+    dispatch(
+      putChannel(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.toasterGeneralError);
+          return;
+        }
+        toaster.success(
+          <span>
+            <b>{item.name}</b>
+            {item.active === 1 ? <> {dictionary.workspaceIsArchived}</> : <> {dictionary.workspaceIsUnarchived}</>}
+            {form.selectedFolder !== null && (
+              <>
+                {" "}
+                <b>{form.selectedFolder.label}</b> under directory
+              </>
+            )}
+            .
+          </span>
+        );
+      })
     );
+
     toggle();
-  }, []);
+  };
 
   useEffect(() => {
     let currentUser = null;
