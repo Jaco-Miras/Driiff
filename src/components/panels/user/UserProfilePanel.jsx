@@ -84,7 +84,7 @@ const Wrapper = styled.div`
     height: 68px;
     margin: 0 auto;
 
-    .btn {
+    .edit-avatar {
       position: absolute;
       bottom: 0;
       right: 0;
@@ -93,6 +93,24 @@ const Wrapper = styled.div`
       height: 25px;
       width: 25px;
       padding: 5px;
+      border-color: rgba(0, 0, 0, 0.2);
+      color: #a5aeb3;
+      border-width: 1px;
+      color: #212529;
+      svg {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+    :hover {
+      svg {
+        color: #7a1b8b;
+      }
+    }
+    .dark & {
+      svg {
+        color: #fff;
+      }
     }
   }
 
@@ -575,8 +593,8 @@ const UserProfilePanel = (props) => {
               <div className="avatar-container">
                 {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
                 {(isLoggedUser || isEditable) && (
-                  <span className="btn btn-outline-light btn-sm">
-                    <SvgIconFeather icon="pencil" onClick={handleAvatarClick} />
+                  <span className="btn edit-avatar" onClick={handleAvatarClick}>
+                    <SvgIconFeather icon="pencil" />
                   </span>
                 )}
               </div>
