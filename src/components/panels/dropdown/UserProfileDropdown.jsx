@@ -15,6 +15,9 @@ const Wrapper = styled.div`
   .list-group-item {
     color: #828282;
   }
+  .feather.feather-edit-2 {
+    color: #fff;
+  }
 `;
 
 const UserProfileDropdown = (props) => {
