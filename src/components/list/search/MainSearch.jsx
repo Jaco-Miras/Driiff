@@ -73,6 +73,14 @@ const MainSearch = (props) => {
     setInputValue(value);
   }, [value]);
 
+  useEffect(() => {
+    return () => {
+      actions.saveSearchValue({
+        value: "",
+      });
+    };
+  }, []);
+
   const { _t } = useTranslationActions();
 
   const dictionary = {
