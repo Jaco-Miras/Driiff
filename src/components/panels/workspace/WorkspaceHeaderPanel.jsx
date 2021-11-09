@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
@@ -307,6 +307,8 @@ const WorspaceHeaderPanel = (props) => {
   } = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
 
+  const [bellClicked, setBellClicked] = useState(false);
+
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -345,6 +347,8 @@ const WorspaceHeaderPanel = (props) => {
     leaveWorkspaceHeader: _t("CONFIRMATION.LEAVE_WORKSPACE_HEADER", "Leave workspace"),
     leaveWorkspaceBody: _t("CONFIRMATION.LEAVE_WORKSPACE_BODY", "Are you sure that you want to leave this workspace?"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
   };
 
   const actions = useWorkspaceActions();
@@ -512,11 +516,23 @@ const WorspaceHeaderPanel = (props) => {
   };
 
   const handleWorkspaceNotification = () => {
+    if (bellClicked) return;
     const payload = {
       id: activeTopic.id,
-      is_active: false,
+      is_active: !activeTopic.is_active,
     };
-    actions.toggleWorkspaceNotification(payload);
+    setBellClicked(true);
+    actions.toggleWorkspaceNotification(payload, (err, res) => {
+      setBellClicked(false);
+      if (err) {
+        return;
+      }
+      if (payload.is_active) {
+        toaster.success(dictionary.toasterBellNotificationOn);
+      } else {
+        toaster.success(dictionary.toasterBellNotificationOff);
+      }
+    });
   };
 
   return (
@@ -583,7 +599,7 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       <li className="nav-item">
-                        <Icon icon="bell" onClick={handleWorkspaceNotification} />
+                        <Icon icon={activeTopic.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
                       </li>
                       <li className="nav-item">
                         <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
@@ -633,7 +649,7 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       <li className="nav-item">
-                        <Icon icon="bell" onClick={handleWorkspaceNotification} />
+                        <Icon icon={activeTopic.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
                       </li>
                       <li className="nav-item">
                         <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />

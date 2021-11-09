@@ -37,6 +37,8 @@ const useWorkspaceSearchActions = () => {
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
   };
 
   const search = (payload, callback) => {
@@ -263,9 +265,21 @@ const useWorkspaceSearchActions = () => {
   const toggleWorkspaceNotification = (item) => {
     const payload = {
       id: item.topic.id,
-      is_active: false,
+      is_active: !item.topic.is_active,
     };
-    dispatch(putWorkspaceNotification(payload));
+    dispatch(
+      putWorkspaceNotification(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (payload.is_active) {
+          toaster.success(dictionary.toasterBellNotificationOn);
+        } else {
+          toaster.success(dictionary.toasterBellNotificationOff);
+        }
+      })
+    );
   };
 
   return {

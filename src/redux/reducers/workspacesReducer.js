@@ -325,6 +325,7 @@ export default (state = INITIAL_STATE, action) => {
           show_about: action.data.workspace_data.topic_detail.show_about,
           active: action.data.workspace_data.topic_detail.active,
           is_favourite: action.data.workspace_data.topic_detail.is_favourite,
+          is_active: action.data.workspace_data.topic_detail.is_active,
         };
         return {
           ...state,
@@ -3921,6 +3922,36 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_WORKSPACE_NOTIFICATION_STATUS": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.id === action.data.id && state.user && state.user.id === action.data.user.id) {
+            acc[ws.id] = { ...ws, is_active: action.data.is_active };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.id && state.user && state.user.id === action.data.user.id ? { ...state.activeTopic, is_active: action.data.is_active } : state.activeTopic,
+        search:
+          state.user && state.user.id === action.data.user.id
+            ? {
+                ...state.search,
+                results: state.search.results.map((ws) => {
+                  if (ws.topic.id === action.data.id) {
+                    return {
+                      ...ws,
+                      topic: { ...ws.topic, is_active: action.data.is_active },
+                    };
+                  } else {
+                    return ws;
+                  }
+                }),
+              }
+            : state.search,
+      };
     }
     default:
       return state;
