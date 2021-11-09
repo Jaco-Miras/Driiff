@@ -65,6 +65,15 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const RadioInputWrapper = styled.div`
+  .component-radio-input {
+    display: inline-flex;
+  }
+  input {
+    width: auto;
+  }
+`;
+
 const TodoReminderModal = (props) => {
   /**
    * @todo refactor
@@ -984,42 +993,50 @@ const TodoReminderModal = (props) => {
           <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
           <div className="col-12 mb-3">
             <InputContainer>
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSetReminder(e, "1h");
-                }}
-                checked={timeValue === "1h"}
-                value={"1h"}
-                name={"role"}
-              >
-                {dictionary.oneHour}
-              </RadioInput>
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSetReminder(e, "3h");
-                }}
-                checked={timeValue === "3h"}
-                value={"3h"}
-                name={"role"}
-              >
-                {dictionary.threeHours}
-              </RadioInput>
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSetReminder(e, "tomorrow");
-                }}
-                checked={timeValue === "tomorrow"}
-                value={"tomorrow"}
-                name={"role"}
-              >
-                {dictionary.tomorrow}
-              </RadioInput>
-              <RadioInput readOnly onClick={handleSelectPickDateTime} checked={timeValue === "pick_data"} value={"pick_data"} name={"role"}>
-                {dictionary.pickDateTime}
-              </RadioInput>
+              <RadioInputWrapper>
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSetReminder(e, "1h");
+                  }}
+                  checked={timeValue === "1h"}
+                  value={"1h"}
+                  name={"role"}
+                >
+                  {dictionary.oneHour}
+                </RadioInput>
+              </RadioInputWrapper>
+              <RadioInputWrapper>
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSetReminder(e, "3h");
+                  }}
+                  checked={timeValue === "3h"}
+                  value={"3h"}
+                  name={"role"}
+                >
+                  {dictionary.threeHours}
+                </RadioInput>
+              </RadioInputWrapper>
+              <RadioInputWrapper>
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSetReminder(e, "tomorrow");
+                  }}
+                  checked={timeValue === "tomorrow"}
+                  value={"tomorrow"}
+                  name={"role"}
+                >
+                  {dictionary.tomorrow}
+                </RadioInput>
+              </RadioInputWrapper>
+              <RadioInputWrapper>
+                <RadioInput readOnly onClick={handleSelectPickDateTime} checked={timeValue === "pick_data"} value={"pick_data"} name={"role"}>
+                  {dictionary.pickDateTime}
+                </RadioInput>
+              </RadioInputWrapper>
               {showDateTimePicker && (
                 <InputGroup>
                   <DateTimePicker minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language} format={`${date_format} ${time_format}`} disableClock={true} />
