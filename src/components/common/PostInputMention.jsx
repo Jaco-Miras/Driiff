@@ -61,7 +61,7 @@ const PostInputMention = (props) => {
     .filter((id) => !isNaN(id));
 
   const userMentionIds = quillMentions
-    .filter((m) => m.type !== "TOPIC" && !userRecipientIds.some((uid) => uid === m.type_id))
+    .filter((m) => m.type !== "TOPIC" && !userRecipientIds.some((uid) => uid === parseInt(m.type_id)))
     .map((m) => parseInt(m.type_id))
     .filter((id) => !isNaN(id));
 
