@@ -128,14 +128,23 @@ const TodoReminderModal = (props) => {
   const progressBar = useRef(0);
 
   const setAllUsersOptions = () => {
+    const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+    const allUsers = Object.values(users).filter((u) => {
+      if (u.email && botCodes.includes(u.email)) {
+        return false;
+      } else {
+        return true;
+      }
+    });
     setUserOptions(
-      Object.values(users).map((u) => {
+      allUsers.map((u) => {
         return {
           ...u,
           icon: "user-avatar",
           value: u.id,
-          label: u.name ? u.name : u.email,
+          label: u.name && u.name.trim() !== "" ? u.name : u.email,
           type: "USER",
+          useLabel: true,
         };
       })
     );
@@ -166,8 +175,9 @@ const TodoReminderModal = (props) => {
               ...u,
               icon: "user-avatar",
               value: u.id,
-              label: u.name ? u.name : u.email,
+              label: u.name && u.name.trim() !== "" ? u.name : u.email,
               type: "USER",
+              useLabel: true,
             };
           })
         );
@@ -190,8 +200,9 @@ const TodoReminderModal = (props) => {
               ...u,
               icon: "user-avatar",
               value: u.id,
-              label: u.name ? u.name : u.email,
+              label: u.name && u.name.trim() !== "" ? u.name : u.email,
               type: "USER",
+              useLabel: true,
             };
           })
         );
@@ -217,8 +228,9 @@ const TodoReminderModal = (props) => {
                 ...u,
                 icon: "user-avatar",
                 value: u.id,
-                label: u.name ? u.name : u.email,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
                 type: "USER",
+                useLabel: true,
               };
             })
           );
@@ -245,8 +257,9 @@ const TodoReminderModal = (props) => {
                 ...u,
                 icon: "user-avatar",
                 value: u.id,
-                label: u.name ? u.name : u.email,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
                 type: "USER",
+                useLabel: true,
               };
             })
           );
@@ -281,8 +294,9 @@ const TodoReminderModal = (props) => {
             ...u,
             icon: "user-avatar",
             value: u.id,
-            label: u.name ? u.name : u.email,
+            label: u.name && u.name.trim() !== "" ? u.name : u.email,
             type: "USER",
+            useLabel: true,
           };
         })
       );
@@ -298,6 +312,7 @@ const TodoReminderModal = (props) => {
           value: item.assigned_to.id,
           label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
           type: "USER",
+          useLabel: true,
         });
       }
     } else if (mode === "edit" && item && !item.workspace) {
@@ -313,6 +328,7 @@ const TodoReminderModal = (props) => {
           value: item.assigned_to.id,
           label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
           type: "USER",
+          useLabel: true,
         });
       }
       setAllUsersOptions();
@@ -673,7 +689,7 @@ const TodoReminderModal = (props) => {
         handleNetWorkError(error);
       });
   }
-
+  const userOnly = user.type === "external" && selectedWorkspace === null;
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -736,7 +752,16 @@ const TodoReminderModal = (props) => {
               <div className="col-lg-6 float-left">
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
                 <SelectedUserContainer className="mb-2">
-                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  <PeopleSelect
+                    options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                    value={selectedUser}
+                    inputValue={userInputValue}
+                    onChange={handleSelectUser}
+                    onInputChange={handleUserInputChange}
+                    isMulti={false}
+                    isClearable={true}
+                    isSearchable
+                  />
                 </SelectedUserContainer>
               </div>
             </div>
@@ -797,7 +822,16 @@ const TodoReminderModal = (props) => {
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.assignedToLabel}</div>
                   <SelectedUserContainer className="mb-2">
-                    <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                    <PeopleSelect
+                      options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                      value={selectedUser}
+                      inputValue={userInputValue}
+                      onChange={handleSelectUser}
+                      onInputChange={handleUserInputChange}
+                      isMulti={false}
+                      isClearable={true}
+                      isSearchable
+                    />
                   </SelectedUserContainer>
                 </div>
               </div>
@@ -860,7 +894,16 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
                 <SelectedUserContainer className="mb-2">
-                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  <PeopleSelect
+                    options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                    value={selectedUser}
+                    inputValue={userInputValue}
+                    onChange={handleSelectUser}
+                    onInputChange={handleUserInputChange}
+                    isMulti={false}
+                    isClearable={true}
+                    isSearchable
+                  />
                 </SelectedUserContainer>
               </div>
             </div>
@@ -922,7 +965,16 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
                 <SelectedUserContainer className="mb-2">
-                  <PeopleSelect options={userOptions} value={selectedUser} inputValue={userInputValue} onChange={handleSelectUser} onInputChange={handleUserInputChange} isMulti={false} isClearable={true} isSearchable />
+                  <PeopleSelect
+                    options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                    value={selectedUser}
+                    inputValue={userInputValue}
+                    onChange={handleSelectUser}
+                    onInputChange={handleUserInputChange}
+                    isMulti={false}
+                    isClearable={true}
+                    isSearchable
+                  />
                 </SelectedUserContainer>
               </div>
             </div>
