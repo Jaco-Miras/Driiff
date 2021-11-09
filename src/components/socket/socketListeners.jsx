@@ -269,10 +269,6 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
-      .listen(".workspace-active", (e) => {
-        console.log(e);
-        this.props.incomingWorkpaceNotificationStatus(e);
-      })
       .listen(".notification-read", (e) => {
         this.props.incomingReadNotifications(e);
       })
@@ -1605,6 +1601,9 @@ class SocketListeners extends Component {
           });
           this.props.incomingZoomData({ ...e.zoom_data.data });
         }
+      })
+      .listen(".workspace-active", (e) => {
+        this.props.incomingWorkpaceNotificationStatus(e);
       })
       .listen(".create-drive-link", (e) => {
         this.props.incomingDriveLink(e);
