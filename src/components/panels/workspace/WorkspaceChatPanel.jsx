@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { ChatContentPanel } from "../chat";
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, useParams } from "react-router-dom";
 import { SvgEmptyState } from "../../common";
 import { createWorkspaceTeamChannel } from "../../../redux/actions/workspaceActions";
 import { useFetchWsCount } from "../../hooks";
+import { fetchRecentPosts } from "../../../redux/actions/postActions";
 
 const Wrapper = styled.div``;
 
@@ -33,6 +34,7 @@ const EmptyState = styled.div`
 const WorkspaceChatPanel = (props) => {
   const { className = "", workspace } = props;
   const route = useRouteMatch();
+  const params = useParams();
   const dispatch = useDispatch();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
@@ -49,6 +51,12 @@ const WorkspaceChatPanel = (props) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (params.hasOwnProperty("workspaceId")) {
+      dispatch(fetchRecentPosts({ topic_id: params.workspaceId }));
+    }
+  }, [params.workspaceId]);
 
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>

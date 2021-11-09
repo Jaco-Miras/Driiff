@@ -8,10 +8,12 @@ const useShowDashboardModal = () => {
   const location = useLocation();
   const workspaceId = useSelector((state) => state.workspaces.selectedWorkspaceId);
   const showAboutModal = useSelector((state) => state.workspaces.showAboutModal);
+  const dontShowIds = useSelector((state) => state.global.dontShowIds);
   const user = useSelector((state) => state.session.user);
   useEffect(() => {
     if (!location.pathname.startsWith("/workspace/search") && workspaceId) {
       if (showAboutModal) {
+        if (dontShowIds.some((id) => id === workspaceId)) return;
         if (user.dontShowIds) {
           if (user.dontShowIds.some((id) => id === workspaceId)) return;
           else dispatch(addToModals({ type: "about_workspace" }));
@@ -20,7 +22,7 @@ const useShowDashboardModal = () => {
         }
       }
     }
-  }, [workspaceId, showAboutModal, location.pathname]);
+  }, [workspaceId, showAboutModal, location.pathname, user]);
 };
 
 export default useShowDashboardModal;

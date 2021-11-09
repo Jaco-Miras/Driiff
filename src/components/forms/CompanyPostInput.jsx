@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import PostInputMention from "../common/BodyMention";
-import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
+import PostInputMention from "../common/PostInputMention";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -180,8 +180,10 @@ const CompanyPostInput = forwardRef((props, ref) => {
         }
       })
       .flat();
+    let hasMention = false;
 
     if (quillContents.ops && quillContents.ops.length > 0) {
+      hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
       let mentionIds = quillContents.ops
         .filter((m) => m.insert.mention)
         .filter((m) => {
@@ -207,7 +209,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       });
     }
 
-    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif && !hasMention) return;
 
     let payload = {
       post_id: post.id,
@@ -329,7 +331,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     setQuillContents([]);
     setInlineImages([]);
     if (reactQuillRef.current) {
-      reactQuillRef.current.getEditor().setContents([]);
+      if (reactQuillRef.current.getEditor()) {
+        reactQuillRef.current.getEditor().setContents([]);
+      }
     }
     if (editPostComment !== null) {
       dispatch(setEditComment(null));
@@ -584,7 +588,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   };
 
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
-  useQuillInput(handleClearQuillInput, reactQuillRef);
+  //useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({

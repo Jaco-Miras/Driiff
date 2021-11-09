@@ -208,7 +208,8 @@ const HomeProfileNavigation = (props) => {
 
   const handleGiftClick = (e) => {
     e.preventDefault();
-    history.push("/releases");
+    window.open("https://support.getdriff.com/hc/en-us/categories/4409918500625-Software-updates", "_blank");
+    // history.push("/releases");
   };
 
   return (

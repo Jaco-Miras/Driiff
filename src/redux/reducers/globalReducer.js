@@ -74,6 +74,7 @@ const INITIAL_STATE = {
     showNewDriffBar: false,
     requirement: "",
   },
+  dontShowIds: [],
 };
 
 const getLink = (t) => {
@@ -882,6 +883,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         newDriffData: action.data,
+      };
+    }
+    case "SET_DONT_SHOW_IDS": {
+      return {
+        ...state,
+        dontShowIds: [action.data],
       };
     }
     default:

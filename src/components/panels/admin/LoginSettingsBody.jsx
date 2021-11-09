@@ -71,6 +71,7 @@ const LoginSettingsBody = () => {
     resetLogoSuccess: _t("TOAST.RESET_COMPANY_LOGO_SUCCESS", "Reset company logo success!"),
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
     customTranslationInfo: _t("SETTINGS.CUSTOM_TRANSLATION_INFO", "Use custom translation"),
+    toasterUpdateLoginError: _t("TOASTER.UPDATE_LOGIN_SETTINGS_ERROR", "Error updating login settings"),
   };
 
   const componentIsMounted = useRef(true);
@@ -225,7 +226,10 @@ const LoginSettingsBody = () => {
 
     updateLoginSettings(payload, (err, res) => {
       if (componentIsMounted.current) setSaving(false);
-      if (err) return;
+      if (err) {
+        toast.error(dictionary.toasterUpdateLoginError);
+        return;
+      }
       updateDomains(selectedDomains.map((d) => d.value));
       toast.success(dictionary.loginSettingsUpdated);
     });

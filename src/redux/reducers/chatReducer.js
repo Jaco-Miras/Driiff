@@ -565,64 +565,77 @@ export default function (state = INITIAL_STATE, action) {
     }
 
     case "INCOMING_CHAT_MESSAGE": {
-      let haveReference = false;
-      let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
-        if (channel.id === action.data.channel_id && action.data.user.id === state.user.id) {
-          if (action.data.reference_id) haveReference = channel.replies.some((r) => r.reference_id === action.data.reference_id);
-        }
-        channel = {
-          ...channel,
-          is_hidden: false,
-          replies: haveReference
-            ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  return {
-                    ...r,
-                    id: action.data.id,
-                    created_at: action.data.created_at,
-                    updated_at: action.data.created_at,
-                  };
-                } else {
-                  return {
-                    ...r,
-                    is_read: true,
-                  };
-                }
-              })
-            : // .sort((a, b) => {
-              //   if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-              //     return a.id - b.id;
-              //   } else {
-              //     return a.created_at.timestamp - b.created_at.timestamp;
-              //   }
-              // })
-              [...channel.replies, action.data],
-          // .sort((a, b) => {
-          //     if (a.created_at.timestamp - b.created_at.timestamp === 0) {
-          //       return a.id - b.id;
-          //     } else {
-          //       return a.created_at.timestamp - b.created_at.timestamp;
-          //     }
-          //   })
-          last_visited_at_timestamp: getCurrentTimestamp(),
-          last_reply: action.data,
-          total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
-          replyCount: (channel.replyCount && action.data.user && action.data.user.id !== state.user.id) || (channel.replyCount && !action.data.user) ? channel.replyCount + 1 : channel.replyCount ? channel.replyCount : 1000,
-        };
-      }
       return {
         ...state,
         lastReceivedMessage: action.data,
-        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
-        channels:
-          channel !== null
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
+                ...state.selectedChannel,
+                replies:
+                  action.data.hasOwnProperty("reference_id") && state.selectedChannel.replies.some((r) => r.id === action.data.reference_id)
+                    ? state.selectedChannel.replies.map((r) => {
+                        if (r.id === action.data.reference_id) {
+                          return {
+                            ...r,
+                            id: action.data.id,
+                            created_at: action.data.created_at,
+                            updated_at: action.data.created_at,
+                          };
+                        } else {
+                          return {
+                            ...r,
+                            is_read: true,
+                          };
+                        }
+                      })
+                    : [...state.selectedChannel.replies, action.data],
+                last_visited_at_timestamp: getCurrentTimestamp(),
+                last_reply: action.data,
+                total_unread: action.data.is_read ? 0 : state.selectedChannel.total_unread + 1,
+                replyCount:
+                  (state.selectedChannel.replyCount && action.data.user && state.user && action.data.user.id !== state.user.id) || (state.selectedChannel.replyCount && !action.data.user)
+                    ? state.selectedChannel.replyCount + 1
+                    : state.selectedChannel.replyCount
+                    ? state.selectedChannel.replyCount
+                    : 1000,
               }
-            : state.channels,
+            : state.selectedChannel,
+        channels: {
+          ...state.channels,
+          ...(state.channels[action.data.channel_id] && {
+            [action.data.channel_id]: {
+              ...state.channels[action.data.channel_id],
+              replies:
+                action.data.hasOwnProperty("reference_id") && state.channels[action.data.channel_id].replies.some((r) => r.id === action.data.reference_id)
+                  ? state.channels[action.data.channel_id].replies.map((r) => {
+                      if (r.id === action.data.reference_id) {
+                        return {
+                          ...r,
+                          id: action.data.id,
+                          created_at: action.data.created_at,
+                          updated_at: action.data.created_at,
+                        };
+                      } else {
+                        return {
+                          ...r,
+                          is_read: true,
+                        };
+                      }
+                    })
+                  : [...state.channels[action.data.channel_id].replies, action.data],
+              last_visited_at_timestamp: getCurrentTimestamp(),
+              last_reply: action.data,
+              total_unread: action.data.is_read ? 0 : state.channels[action.data.channel_id].total_unread + 1,
+              replyCount:
+                (state.channels[action.data.channel_id].replyCount && action.data.user && state.user && action.data.user.id !== state.user.id) || (state.channels[action.data.channel_id].replyCount && !action.data.user)
+                  ? state.channels[action.data.channel_id].replyCount + 1
+                  : state.channels[action.data.channel_id].replyCount
+                  ? state.channels[action.data.channel_id].replyCount
+                  : 1000,
+            },
+          }),
+        },
       };
     }
     case "INCOMING_CHAT_MESSAGE_FROM_OTHERS": {
@@ -1209,24 +1222,30 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let updatedChannels = { ...state.channels };
-      let updatedChannel = state.selectedChannel ? { ...state.selectedChannel } : null;
-      if (Object.keys(updatedChannels).length && updatedChannels.hasOwnProperty(action.data.channel_id)) {
-        let channel = {
-          ...updatedChannels[action.data.channel_id],
-          members: [...updatedChannels[action.data.channel_id].members, ...action.data.users],
-          replies: [...updatedChannels[action.data.channel_id].replies, action.data.message],
-        };
-        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, ...action.data.users];
-        updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
-        if (updatedChannel && channel.id === updatedChannel.id) {
-          updatedChannel = channel;
-        }
-      }
+      let channel_id = action.data.channel_id;
+      let workspace_id = action.data.data && action.data.data.workspace_data ? action.data.data.workspace_data.topic.id : null;
       return {
         ...state,
-        channels: updatedChannels,
-        selectedChannel: updatedChannel,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (workspace_id) {
+            if (channel.entity_id === workspace_id) {
+              acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+            } else {
+              acc[channel.id] = channel;
+            }
+          } else {
+            if (channel_id === channel.id) {
+              acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+            } else {
+              acc[channel.id] = channel;
+            }
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          (state.selectedChannel && state.selectedChannel.id === channel_id) || (workspace_id && state.selectedChannel && state.selectedChannel.entity_id === workspace_id)
+            ? { ...state.selectedChannel, members: [...state.selectedChannel.members, ...action.data.users], replies: [...state.selectedChannel.replies, action.data.message] }
+            : state.selectedChannel,
       };
     }
     case "UNREAD_CHANNEL_REDUCER": {
@@ -1602,7 +1621,8 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...action.data.channel_detail,
           icon_link: channels[action.data.channel_detail.id].icon_link,
-          replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
+          //replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
+          replies: [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)), //remove placeholder chat messages
           //.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           hasMore: channels[action.data.channel_detail.id].hasMore,
           skip: channels[action.data.channel_detail.id].skip,
@@ -1626,7 +1646,8 @@ export default function (state = INITIAL_STATE, action) {
             return { ...m, channel_id: c.channel_id };
           });
           let messages = [...channels[c.channel_id].replies, ...newMessages];
-          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          //channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          channels[c.channel_id].replies = [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp); //remove placeholder chat messages
           // channels[c.channel_id].last_reply = newMessages[0];
         }
       });

@@ -1960,53 +1960,53 @@ class SocketListeners extends Component {
           if (e.channel_data.status === "UNARCHIVED") {
             this.props.incomingUnArchivedWorkspaceChannel(e.channel_data);
           } else {
-            if (this.props.activeTopic && this.props.activeTopic.id === e.channel_data.topic_detail.id) {
-              let workspace = null;
-              if (e.channel_data.topic_detail.workspace_id !== null || e.channel_data.topic_detail.workspace_id !== 0) {
-                // set the workspace to the first workspace of the folder
-                // get the workspaces under the folder
-                if (this.props.folders.hasOwnProperty(e.channel_data.topic_detail.workspace_id) && this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.length > 1) {
-                  let otherWorkspaces = Object.values(this.props.workspaces)
-                    .filter((ws) => {
-                      return this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.some((id) => id === ws.id);
-                    })
-                    .sort((a, b) => a.name.localeCompare(b.name));
+            // if (this.props.activeTopic && this.props.activeTopic.id === e.channel_data.topic_detail.id) {
+            //   let workspace = null;
+            //   if (e.channel_data.topic_detail.workspace_id !== null || e.channel_data.topic_detail.workspace_id !== 0) {
+            //     // set the workspace to the first workspace of the folder
+            //     // get the workspaces under the folder
+            //     if (this.props.folders.hasOwnProperty(e.channel_data.topic_detail.workspace_id) && this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.length > 1) {
+            //       let otherWorkspaces = Object.values(this.props.workspaces)
+            //         .filter((ws) => {
+            //           return this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.some((id) => id === ws.id);
+            //         })
+            //         .sort((a, b) => a.name.localeCompare(b.name));
 
-                  if (otherWorkspaces[0].id === this.props.activeTopic.id) {
-                    workspace = otherWorkspaces[1];
-                  } else {
-                    workspace = otherWorkspaces[0];
-                  }
-                } else {
-                  //set the workspace to the first workspace of the general folder
-                  let workspaces = Object.values(this.props.workspaces)
-                    .filter((ws) => {
-                      return ws.folder_id === null;
-                    })
-                    .sort((a, b) => a.name.localeCompare(b.name));
+            //       if (otherWorkspaces[0].id === this.props.activeTopic.id) {
+            //         workspace = otherWorkspaces[1];
+            //       } else {
+            //         workspace = otherWorkspaces[0];
+            //       }
+            //     } else {
+            //       //set the workspace to the first workspace of the general folder
+            //       let workspaces = Object.values(this.props.workspaces)
+            //         .filter((ws) => {
+            //           return ws.folder_id === null;
+            //         })
+            //         .sort((a, b) => a.name.localeCompare(b.name));
 
-                  if (workspaces.length) {
-                    workspace = workspaces[0];
-                  }
-                }
-              } else {
-                //set the workspace to the first workspace of the general folder
-                let workspaces = Object.values(this.props.workspaces)
-                  .filter((ws) => {
-                    return ws.folder_id === null;
-                  })
-                  .sort((a, b) => a.name.localeCompare(b.name));
+            //       if (workspaces.length) {
+            //         workspace = workspaces[0];
+            //       }
+            //     }
+            //   } else {
+            //     //set the workspace to the first workspace of the general folder
+            //     let workspaces = Object.values(this.props.workspaces)
+            //       .filter((ws) => {
+            //         return ws.folder_id === null;
+            //       })
+            //       .sort((a, b) => a.name.localeCompare(b.name));
 
-                if (workspaces.length) {
-                  workspace = workspaces[0];
-                }
-              }
+            //     if (workspaces.length) {
+            //       workspace = workspaces[0];
+            //     }
+            //   }
 
-              if (workspace) {
-                this.props.workspaceActions.selectWorkspace(workspace);
-                this.props.workspaceActions.redirectTo(workspace);
-              }
-            }
+            //   if (workspace) {
+            //     this.props.workspaceActions.selectWorkspace(workspace);
+            //     this.props.workspaceActions.redirectTo(workspace);
+            //   }
+            // }
             this.props.incomingArchivedWorkspaceChannel(e.channel_data);
           }
         } else {
