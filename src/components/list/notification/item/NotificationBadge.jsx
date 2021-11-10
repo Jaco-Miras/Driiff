@@ -28,7 +28,7 @@ const NotificationBadge = (props) => {
 
   return (
     <>
-      {notification.type === "POST_CREATE" ? (
+      {notification.type === "POST_CREATE" && notification.data && !notification.data.is_close ? (
         fromSnooze ? (
           <p className={"d-flex"}>
             <span className={"badge badge-danger text-white mr-1"}>{getMustReadText(notification.data)}</span>
@@ -40,15 +40,27 @@ const NotificationBadge = (props) => {
             <span className={"badge badge-warning ml-1"}>{getMustReplyText(notification.data)}</span>
           </p>
         )
-      ) : notification.type === "POST_REQST_APPROVAL" && notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
+      ) : notification.type === "POST_REQST_APPROVAL" && notification.data && !notification.data.is_close && notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
         <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
-      ) : notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "PST_CMT_ACCPT_APPRVL" ? (
+      ) : (notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "PST_CMT_ACCPT_APPRVL") && notification.data && !notification.data.is_close ? (
         <span className={"badge badge-success text-white"}>{dictionary.accepted}</span>
-      ) : notification.type === "POST_REJECT_APPROVAL" && !hasCommentRejectApproval() && notification.data.post_approval_label && notification.data.post_approval_label === "REQUEST_UPDATE" ? (
+      ) : notification.type === "POST_REJECT_APPROVAL" &&
+        notification.data &&
+        !notification.data.is_close &&
+        !hasCommentRejectApproval() &&
+        notification.data.post_approval_label &&
+        notification.data.post_approval_label === "REQUEST_UPDATE" ? (
         <span className={"badge badge-primary text-white"}>{dictionary.changeRequested}</span>
-      ) : notification.type === "PST_CMT_REJCT_APPRVL" && !hasCommentRejectApproval() && notification.data.post_approval_label && notification.data.post_approval_label === "REQUEST_UPDATE" ? (
+      ) : notification.type === "PST_CMT_REJCT_APPRVL" &&
+        notification.data &&
+        !notification.data.is_close &&
+        !hasCommentRejectApproval() &&
+        notification.data.post_approval_label &&
+        notification.data.post_approval_label === "REQUEST_UPDATE" ? (
         <span className={"badge badge-primary text-white"}>{dictionary.changeRequested}</span>
       ) : notification.type === "POST_COMMENT" &&
+        notification.data &&
+        !notification.data.is_close &&
         notification.data.comment_body &&
         !notification.data.comment_body.startsWith("COMMENT_APPROVAL::") &&
         notification.data.post_approval_label &&
