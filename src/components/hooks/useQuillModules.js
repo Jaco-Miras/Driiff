@@ -280,8 +280,22 @@ const useQuillModules = ({
             metaKey: true,
             handler: function (range, context) {
               if (osName.includes("Mac") && mode === "chat") {
-                quillRef.current.getEditor().insertEmbed(range.index + 1, "block", true, "user");
-                quillRef.current.getEditor().setSelection(range.index + 1, Quill.sources.SILENT);
+                // this.quill.insertEmbed(range.index + 1, "block", true, Quill.sources.USER);
+                // this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+                // return false;
+                const currentLeaf = this.quill.getLeaf(range.index)[0];
+                const nextLeaf = this.quill.getLeaf(range.index + 1)[0];
+
+                // At the end of the editor, OR next leaf has a different parent (<p>)
+                if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
+                  //use block if end of editor
+                  this.quill.insertEmbed(range.index + 1, "block", true, "user");
+                } else {
+                  //use break line if in between text
+                  this.quill.insertEmbed(range.index, "breaker", true, "user");
+                }
+                // Now that we've inserted a line break, move the cursor forward
+                this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
               }
             },
           },
