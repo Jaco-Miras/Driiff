@@ -121,6 +121,7 @@ const useTimeFormat = () => {
         lastDay: `[Yesterday] ${time_format}`,
         sameDay: `[Today] ${time_format}`,
         sameElse: `dddd[,] ${time_format}`,
+        lastWeek: `dddd[,] ${time_format}`,
       },
     });
     moment.updateLocale("nl", {
@@ -128,6 +129,7 @@ const useTimeFormat = () => {
         lastDay: `[gisteren] ${time_format}`,
         sameDay: `[vandaag] ${time_format}`,
         sameElse: `dddd[,] ${time_format}`,
+        lastWeek: `dddd[,] ${time_format}`,
       },
     });
     const utc = moment(moment(timestamp, "X").toDate());

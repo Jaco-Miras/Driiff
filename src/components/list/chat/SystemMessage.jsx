@@ -131,7 +131,7 @@ const SystemMessage = (props) => {
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
       <SystemMessageContent id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
-        <span className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
+        <span className="reply-date created">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );
