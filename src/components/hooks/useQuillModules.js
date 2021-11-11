@@ -270,7 +270,7 @@ const useQuillModules = ({
           handleEnter: {
             key: 13,
             metaKey: osName.includes("Mac") && mode !== "chat" ? true : false,
-            ctrlKey: (osName.includes("Windows") || osName.includes("Linux")) && mode !== "chat" ? true : false,
+            ctrlKey: (osName.includes("Windows") || osName.includes("Linux") || osName.includes("Chromium OS")) && mode !== "chat" ? true : false,
             handler: () => {
               handleSubmit();
             },
