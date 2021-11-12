@@ -383,6 +383,7 @@ export default (state = INITIAL_STATE, action) => {
           member_ids: action.data.member_ids,
           members: action.data.members,
           team_unread_chats: 0,
+          is_active: true,
           channel: {
             code: action.data.channel.code,
             id: action.data.channel.id,
@@ -1320,21 +1321,27 @@ export default (state = INITIAL_STATE, action) => {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       let addUnreadPost = false;
+      const isApprover = action.data.users_approval.some((ua) => state.user && state.user.id === ua.id);
+      const mustRead = action.data.must_read_users && action.data.must_read_users.some((u) => state.user && state.user.id === u.id && !u.must_read);
+      const mustReply = action.data.must_reply_users && action.data.must_reply_users.some((u) => state.user && state.user.id === u.id && !u.must_reply);
+      const hasMentioned = action.data.mention_ids.some((id) => state.user && state.user.id === id);
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
-          newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
-          if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
-            newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
-          } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
-            newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
-          } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
-            newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
+          if ((typeof updatedWorkspaces[ws.topic_id] !== "undefined" && updatedWorkspaces[ws.topic_id].is_active) || isApprover || mustRead || mustReply || hasMentioned) newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
+          else {
+            if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
+              newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
+            } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
+              newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
+            } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
+              newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
+            }
           }
         }
         if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
-          updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+          if (updatedWorkspaces[ws.topic_id].is_active || isApprover || mustRead || mustReply || hasMentioned) updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
           if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
-            addUnreadPost = true;
+            if (state.activeTopic.is_active || isApprover || mustRead || mustReply || hasMentioned) addUnreadPost = true;
           }
           if (ws.workspace_id !== null) {
             updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
@@ -2110,7 +2117,7 @@ export default (state = INITIAL_STATE, action) => {
         let updatedWorkspaces = { ...state.workspaces };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
-            if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
+            if (state.activeTopic && state.activeTopic.id === action.data.workspace_id && action.data.is_active) {
               if (state.activeTopic.team_channel && state.activeTopic.team_channel.id === action.data.channel_id) {
                 updatedTopic.team_unread_chats = updatedTopic.team_unread_chats + 1;
                 updatedWorkspaces[action.data.workspace_id].team_unread_chats = updatedWorkspaces[action.data.workspace_id].team_unread_chats + 1;
@@ -2132,7 +2139,7 @@ export default (state = INITIAL_STATE, action) => {
         let updatedWorkspaces = { ...state.workspaces };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
-            if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
+            if (state.activeTopic && state.activeTopic.id === action.data.workspace_id && action.data.is_active) {
               if (state.activeTopic.team_channel && state.activeTopic.team_channel.id === action.data.channel_id) {
                 updatedTopic.team_unread_chats = 0;
                 updatedWorkspaces[action.data.workspace_id].team_unread_chats = 0;

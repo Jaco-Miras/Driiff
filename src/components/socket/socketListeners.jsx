@@ -680,12 +680,19 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CREATE": {
-            let post = { ...e, clap_user_ids: [] };
+            let post = { ...e, clap_user_ids: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [] };
             const isApprover = post.users_approval.some((ua) => ua.id === this.props.user.id);
+            const hasActiveWorkspace = post.workspaces.length > 0 && post.workspaces.some((ws) => this.props.workspaces[ws.topic_id] && this.props.workspaces[ws.topic_id].is_active);
+            const hasMentioned = post.mention_ids.some((id) => this.props.user.id === id);
+            const mustRead = post.must_read_users && post.must_read_users.some((u) => this.props.user.id === u.id && !u.must_read);
+            const mustReply = post.must_reply_users && post.must_reply_users.some((u) => this.props.user.id === u.id && !u.must_reply);
+            const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply;
+            post = { ...post, show_post: showPost };
             if (this.props.user.id !== post.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
-                  pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
+                  // chech the topic recipients if active
+                  if (showPost) pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
                 }
               }
             }
@@ -939,7 +946,7 @@ class SocketListeners extends Component {
             delete e.socket;
             if (e.user.id !== user.id) {
               if (!e.is_muted) {
-                if (this.props.notificationsOn && isSafari) {
+                if (this.props.notificationsOn && isSafari && e.is_active) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || isIdle || !isBrowserActive || !document.hasFocus()) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
                     pushBrowserNotification(`${e.reference_title}`, e.reference_title.includes("in a direct message") ? `${stripHtml(e.body)}` : `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
