@@ -254,7 +254,7 @@ export default (state = INITIAL_STATE, action) => {
                   required_users: action.data.required_users,
                   must_read_users: action.data.must_read_users,
                   must_reply_users: action.data.must_reply_users,
-                  is_close: false,
+                  is_close: 0,
                 },
               },
             }),
@@ -281,7 +281,7 @@ export default (state = INITIAL_STATE, action) => {
                   required_users: action.data.required_users,
                   must_read_users: action.data.must_read_users,
                   must_reply_users: action.data.must_reply_users,
-                  is_close: false,
+                  is_close: 0,
                 },
               },
             }),
@@ -379,7 +379,7 @@ export default (state = INITIAL_STATE, action) => {
           ...Object.values(state.notifications).reduce((acc, n) => {
             if (["POST_CREATE", "POST_COMMENT", "POST_MENTION", "POST_REQST_APPROVAL", "POST_REJECT_APPROVAL", "PST_CMT_REJCT_APPRVL"].includes(n.type)) {
               if (n.data && n.data.post_id === action.data.post.id) {
-                acc[n.id] = { ...n, data: { ...n.data, is_close: action.data.is_close } };
+                acc[n.id] = { ...n, data: { ...n.data, is_close: action.data.is_close ? 1 : 0 } };
               } else {
                 acc[n.id] = n;
               }
