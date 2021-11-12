@@ -28,6 +28,7 @@
     "memoize-one": "^5.2.1",
     "moment": "^2.25.3",
     "moment-timezone": "^0.5.31",
+    "newrelic": "^8.5.2",
     "node-sass": "^4.14.1",
     "prettier": "^2.0.5",
     "push.js": "^1.0.12",
