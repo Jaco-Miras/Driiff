@@ -9,7 +9,7 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: ['Drevv Frontend Node'],
+  app_name: ['DrevvFrontendNode'],
   /**
    * Your New Relic license key.
    */
