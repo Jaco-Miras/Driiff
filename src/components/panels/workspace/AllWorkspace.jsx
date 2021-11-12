@@ -27,57 +27,59 @@ const LoaderContainer = styled.div`
 
 const AllWorkspace = (props) => {
   const { search, filteredResults } = useFilterAllWorkspaces();
-  const { loaded, results, filterBy } = search;
+  const { loaded, results, filterBy, hasMore, count } = search;
   const { _t } = useTranslationActions();
   const actions = useWorkspaceSearchActions();
 
   // const [loadMore, setLoadMore] = useState(false);
   const [loading, setLoading] = useState(null);
+  const [initialFetch, setInitialFetch] = useState(null);
 
   const componentIsMounted = useRef(true);
 
   useEffect(() => {
     document.body.classList.add("stretch-layout");
+    actions.getFilterCount((err, res) => {
+      // if (err) return;
+      // if (res.data) {
+      //   if (results.length === 0 && componentIsMounted.current) setLoading(true);
+      //   const all = res.data.reduce((acc, val) => {
+      //     if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
+      //       acc = acc + val.count;
+      //     }
+      //     return acc;
+      //   }, 0);
+      // }
+    });
     if (!loaded) {
-      actions.getFilterCount((err, res) => {
-        if (err) return;
-        if (res.data) {
-          if (results.length === 0 && componentIsMounted.current) setLoading(true);
-          const all = res.data.reduce((acc, val) => {
-            if (val.entity_type === "NON_MEMBER" || val.entity_type === "MEMBER") {
-              acc = acc + val.count;
-            }
-            return acc;
-          }, 0);
-          actions.search(
-            {
-              //search: value,
-              search: "",
-              skip: 0,
-              limit: all,
-              filter_by: "all",
-            },
-            (err, res) => {
-              if (componentIsMounted.current) setLoading(false);
-              if (err) {
-                actions.updateSearch({
-                  searching: false,
-                });
-              } else {
-                actions.updateSearch({
-                  filterBy: filterBy,
-                  searching: false,
-                  count: res.data.total_count,
-                  hasMore: res.data.has_more,
-                  results: res.data.workspaces,
-                  loaded: true,
-                  //maxPage: Math.ceil(res.data.total_count / 25),
-                });
-              }
-            }
-          );
+      actions.search(
+        {
+          //search: value,
+          search: "",
+          skip: 0,
+          limit: 25,
+          filter_by: "all",
+        },
+        (err, res) => {
+          if (componentIsMounted.current) setLoading(false);
+          if (err) {
+            actions.updateSearch({
+              searching: false,
+            });
+          } else {
+            setInitialFetch(true);
+            actions.updateSearch({
+              filterBy: filterBy,
+              searching: false,
+              count: res.data.total_count,
+              hasMore: res.data.has_more,
+              results: res.data.workspaces,
+              loaded: true,
+              //maxPage: Math.ceil(res.data.total_count / 25),
+            });
+          }
         }
-      });
+      );
     }
 
     return () => {
@@ -89,38 +91,41 @@ const AllWorkspace = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   actions.updateSearch({
-  //     searching: true,
-  //     results: [],
-  //   });
-  //   setLoading(true);
-  //   actions.search(
-  //     {
-  //       search: value,
-  //       skip: 0,
-  //       limit: 25,
-  //       filter_by: filterBy,
-  //     },
-  //     (err, res) => {
-  //       setLoading(false);
-  //       if (err) {
-  //         actions.updateSearch({
-  //           searching: false,
-  //         });
-  //       } else {
-  //         actions.updateSearch({
-  //           filterBy: filterBy,
-  //           searching: false,
-  //           count: res.data.total_count,
-  //           hasMore: res.data.has_more,
-  //           results: res.data.workspaces,
-  //           maxPage: Math.ceil(res.data.total_count / 25),
-  //         });
-  //       }
-  //     }
-  //   );
-  // }, [filterBy, value]);
+  useEffect(() => {
+    if (initialFetch !== null && loaded) {
+      if (hasMore) {
+        actions.search(
+          {
+            //search: value,
+            search: "",
+            skip: results.length,
+            limit: count - results.length,
+            filter_by: "all",
+          },
+          (err, res) => {
+            if (componentIsMounted.current) setLoading(false);
+            if (err) {
+              actions.updateSearch({
+                searching: false,
+              });
+            } else {
+              let workspaces = [...results, ...res.data.workspaces];
+              let uniqWorkspaces = [...new Map(workspaces.map((item) => [item.topic["id"], item])).values()];
+              actions.updateSearch({
+                //filterBy: filterBy,
+                //searching: false,
+                count: res.data.total_count,
+                hasMore: res.data.has_more,
+                results: uniqWorkspaces,
+                //loaded: true,
+                //maxPage: Math.ceil(res.data.total_count / 25),
+              });
+            }
+          }
+        );
+      }
+    }
+  }, [initialFetch, loaded]);
 
   const dictionary = {
     notJoined: _t("ALL_WORKSPACE.NOT_JOINED", "Not joined"),

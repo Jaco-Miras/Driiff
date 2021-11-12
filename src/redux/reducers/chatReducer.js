@@ -1222,24 +1222,30 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let updatedChannels = { ...state.channels };
-      let updatedChannel = state.selectedChannel ? { ...state.selectedChannel } : null;
-      if (Object.keys(updatedChannels).length && updatedChannels.hasOwnProperty(action.data.channel_id)) {
-        let channel = {
-          ...updatedChannels[action.data.channel_id],
-          members: [...updatedChannels[action.data.channel_id].members, ...action.data.users],
-          replies: [...updatedChannels[action.data.channel_id].replies, action.data.message],
-        };
-        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, ...action.data.users];
-        updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
-        if (updatedChannel && channel.id === updatedChannel.id) {
-          updatedChannel = channel;
-        }
-      }
+      let channel_id = action.data.channel_id;
+      let workspace_id = action.data.data && action.data.data.workspace_data ? action.data.data.workspace_data.topic.id : null;
       return {
         ...state,
-        channels: updatedChannels,
-        selectedChannel: updatedChannel,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (workspace_id) {
+            if (channel.entity_id === workspace_id) {
+              acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+            } else {
+              acc[channel.id] = channel;
+            }
+          } else {
+            if (channel_id === channel.id) {
+              acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+            } else {
+              acc[channel.id] = channel;
+            }
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          (state.selectedChannel && state.selectedChannel.id === channel_id) || (workspace_id && state.selectedChannel && state.selectedChannel.entity_id === workspace_id)
+            ? { ...state.selectedChannel, members: [...state.selectedChannel.members, ...action.data.users], replies: [...state.selectedChannel.replies, action.data.message] }
+            : state.selectedChannel,
       };
     }
     case "UNREAD_CHANNEL_REDUCER": {

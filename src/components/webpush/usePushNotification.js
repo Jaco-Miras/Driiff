@@ -18,7 +18,6 @@ export default function usePushNotification() {
   //to manage the push server subscription
   const [error, setError] = useState(null);
   //to manage errors
-  const [loading, setLoading] = useState(true);
   //to manage async actions
   const [subscribing, setSubsubscribing] = useState(null);
   const [fetchingSubscription, setFetchingSubscription] = useState(null);
@@ -35,7 +34,6 @@ export default function usePushNotification() {
    * If the user denies the consent, an error is created with the setError hook
    */
   const onClickAskUserPermission = () => {
-    setLoading(true);
     setError(false);
     askUserPermission().then((consent) => {
       setSuserConsent(consent);
@@ -49,7 +47,6 @@ export default function usePushNotification() {
       } else {
         onClickSubscribeToPushNotification();
       }
-      setLoading(false);
     });
   };
   /**
@@ -57,7 +54,6 @@ export default function usePushNotification() {
    * Once the subscription is created, it uses the setUserSubscription hook
    */
   const onClickSubscribeToPushNotification = () => {
-    setLoading(true);
     setError(false);
     setSubsubscribing(true);
     createNotificationSubscription()
@@ -66,8 +62,8 @@ export default function usePushNotification() {
         dispatch(
           subscribePushNotifications(subscription, (err, res) => {
             if (err) {
+              dispatch(setPushNotification(false));
               setSubsubscribing(false);
-              setLoading(false);
               setError(err);
               return;
             }
@@ -75,12 +71,11 @@ export default function usePushNotification() {
             setPushServerSubscriptionId(res.data.id);
           })
         );
-        setLoading(false);
       })
       .catch((err) => {
         console.error("Couldn't create the notification subscription", "name:", err.name, "message:", err.message, "code:", err.code);
         setError(err);
-        setLoading(false);
+        dispatch(setPushNotification(false));
       });
   };
 
@@ -89,12 +84,10 @@ export default function usePushNotification() {
    * Once the subscription ics created on the server, it saves the id using the hook setPushServerSubscriptionId
    */
   const onClickSendSubscriptionToPushServer = () => {
-    setLoading(true);
     setError(false);
     dispatch(
       subscribePushNotifications(userSubscription, (err, res) => {
         if (err) {
-          setLoading(false);
           setError(err);
           return;
         }
@@ -107,11 +100,9 @@ export default function usePushNotification() {
    * define a click handler that requests the push server to send a notification, passing the id of the saved subscription
    */
   const onClickSendNotification = () => {
-    setLoading(true);
     setError(false);
     dispatch(
       getPushNotification({ sub_id: pushServerSubscriptionId }, (err, res) => {
-        setLoading(false);
         if (err) setError(err);
       })
     );
@@ -119,19 +110,17 @@ export default function usePushNotification() {
 
   useEffect(() => {
     if (pushNotificationSupported) {
-      setLoading(true);
       setError(false);
       registerServiceWorker().then(() => {
-        setLoading(false);
+        // setLoading(false);
       });
     }
-    setDidMount(true);
   }, []);
   //if the push notifications are supported, registers the service worker
   //this effect runs only the first render
 
   useEffect(() => {
-    setLoading(true);
+    setDidMount(true);
     setError(false);
     setFetchingSubscription(true);
     const getExistingSubscription = async () => {
@@ -140,18 +129,18 @@ export default function usePushNotification() {
         dispatch(
           getPushNotification({ endpoint: `${existingSubscription.endpoint}` }, (err, res) => {
             setFetchingSubscription(false);
-            setLoading(false);
             if (err) setError(err);
             if (res.data.data) {
               setUserSubscription(existingSubscription);
               dispatch(setPushNotification(true));
             } else {
-              dispatch(setPushNotification(false));
+              dispatch(setPushNotification(null));
             }
           })
         );
       } else {
-        dispatch(setPushNotification(false));
+        console.log("no subscription");
+        dispatch(setPushNotification(null));
       }
     };
     getExistingSubscription();
@@ -173,6 +162,7 @@ export default function usePushNotification() {
     if (pushNotificationSupported && hasSubscribed === null) {
       registerServiceWorker().then(() => {
         if (userConsent === "granted") {
+          console.log("subscribe");
           dispatch(setPushNotification(true));
           onClickSubscribeToPushNotification();
         }
@@ -200,7 +190,6 @@ export default function usePushNotification() {
     pushNotificationSupported,
     userSubscription,
     error,
-    loading,
     showNotificationBar: userConsent === "default" && userSubscription === null && (reminderTime === null || reminderTime < Math.floor(Date.now() / 1000)),
     mounted: didMount,
   };

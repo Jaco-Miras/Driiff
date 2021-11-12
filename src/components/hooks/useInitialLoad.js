@@ -9,6 +9,7 @@ import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
   const notifications = useSelector((state) => state.notifications.notifications);
+  const user = useSelector((state) => state.session.user);
 
   const channelActions = useChannelActions();
 
@@ -43,7 +44,7 @@ const useInitialLoad = () => {
       //dispatch(getDrafts());
     };
     dispatch(getAllRecipients());
-    dispatch(getCompanyChannel());
+    if (user && user.type === "internal") dispatch(getCompanyChannel());
     channelActions.loadMore({ skip: 0, limit: 25 }, fetchChannelCb);
   }, []);
 };
