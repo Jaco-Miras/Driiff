@@ -445,28 +445,32 @@ const MainSnooze = (props) => {
       const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
       if (type === "notification") {
         if (n.type === "POST_MENTION") {
-          if (!n.is_read && !n.is_snooze) {
+          if (!n.is_read && !n.is_snooze && n.data && !n.data.is_close) {
             snooze.push(data);
-          } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
+          } else if ((n.is_read || n.is_snooze || (n.data && n.data.is_close)) && toast.isActive(elemId)) {
             toast.dismiss(elemId);
           }
         } else if (n.type === "WORKSPACE_ADD_MEMBER") {
           if (!n.is_read && !n.is_snooze) {
             snooze.push(data);
-          } else if ((n.is_read || n.is_snooze) && toast.isActive(elemId)) {
+          } else if ((n.is_read || n.is_snooze || (n.data && n.data.is_close)) && toast.isActive(elemId)) {
             toast.dismiss(elemId);
           }
         } else if (n.type === "POST_CREATE") {
-          if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze) snooze.push({ ...data, update: true });
+          if (n.data && n.data.is_close && toast.isActive(elemId)) toast.dismiss(elemId);
+          else if ((hasMustReadAction(n) || hasMustReplyAction(n)) && !n.is_snooze && n.data && !n.data.is_close) snooze.push({ ...data, update: true });
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REQST_APPROVAL") {
-          if (hasApprovalAction(n) && !n.is_snooze) snooze.push(data);
+          if (n.data && n.data.is_close && toast.isActive(elemId)) toast.dismiss(elemId);
+          else if (hasApprovalAction(n) && !n.is_snooze && n.data && !n.data.is_close) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_REJECT_APPROVAL") {
-          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze) snooze.push(data);
+          if (n.data && n.data.is_close && toast.isActive(elemId)) toast.dismiss(elemId);
+          else if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze && n.data && !n.data.is_close) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "PST_CMT_REJCT_APPRVL") {
-          if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze) snooze.push(data);
+          if (n.data && n.data.is_close && toast.isActive(elemId)) toast.dismiss(elemId);
+          else if (!hasCommentRejectApproval(n) && n.data.post_approval_label && n.data.post_approval_label === "REQUEST_UPDATE" && !n.is_snooze && n.data && !n.data.is_close) snooze.push(data);
           else toast.isActive(elemId) && toast.dismiss(elemId);
         } else if (n.type === "POST_COMMENT") {
           // if (

@@ -64,12 +64,12 @@ const PostBadge = (props) => {
               <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
             </div>
           )}
-          {((post.author.id === user.id && post.is_must_read) || (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
+          {!post.is_close && ((post.author.id === user.id && post.is_must_read) || (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
             <div className={`${className} mr-3 d-sm-inline ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}
-          {((post.author.id === user.id && post.is_must_reply) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) && (
+          {!post.is_close && ((post.author.id === user.id && post.is_must_reply) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) && (
             <div className={`${className} mr-3 d-sm-inline ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>
@@ -81,7 +81,7 @@ const PostBadge = (props) => {
           )}
         </>
       )}
-      {post.post_approval_label && (
+      {post.post_approval_label && !post.is_close && (
         <div className={`${className} mr-3 d-sm-inline`}>
           <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
         </div>
