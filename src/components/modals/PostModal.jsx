@@ -450,6 +450,7 @@ const PostModal = (props) => {
       file_ids: inlineImages.map((i) => i.id),
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
+        mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
       },
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],

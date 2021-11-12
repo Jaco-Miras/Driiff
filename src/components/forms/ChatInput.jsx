@@ -334,6 +334,7 @@ const ChatInput = (props) => {
       reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
+      code_data: { mention_ids: mention_ids },
     };
 
     if (quote) {
