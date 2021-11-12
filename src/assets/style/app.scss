@@ -22319,3 +22319,7 @@ body > div[role="dialog"] {
 .zoom-msg strong {
   cursor: pointer;
 }
+body > div#transition-popper {
+  z-index: 1001;
+  //top: 160px!important;
+}
