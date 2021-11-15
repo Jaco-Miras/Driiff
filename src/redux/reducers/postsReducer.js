@@ -129,6 +129,7 @@ export default (state = INITIAL_STATE, action) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
                   clap_user_ids: [],
+                  last_visit: null,
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
@@ -789,7 +790,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.id]: { ...action.data, clap_user_ids: [] },
+            [action.data.id]: { ...action.data, clap_user_ids: [], last_visit: null },
           },
         },
       };
@@ -1490,6 +1491,25 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_LAST_VISIT_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            if (post.id && action.data.post_id) {
+              acc[post.id] = {
+                ...post,
+                last_visit: action.data.last_visit,
+              };
+            } else {
+              acc[post.id] = post;
+            }
+            return acc;
+          }, {}),
+        },
+      };
     }
     default:
       return state;

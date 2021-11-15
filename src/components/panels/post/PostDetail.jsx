@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
@@ -427,7 +427,11 @@ const PostDetail = (props) => {
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
     postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
-    return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+
+    return () => {
+      dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+      postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    };
   }, []);
 
   useEffect(() => {

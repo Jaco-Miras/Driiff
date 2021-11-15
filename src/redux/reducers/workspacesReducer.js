@@ -3922,6 +3922,38 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_LAST_VISIT_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(Object.keys(state.workspacePosts).length > 0 && {
+            ...Object.keys(state.workspacePosts).reduce((res, id) => {
+              res[id] = {
+                ...state.workspacePosts[id],
+                posts: {
+                  ...state.workspacePosts[id].posts,
+                  ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
+                    ...Object.values(state.workspacePosts[id].posts).reduce((pos, post) => {
+                      if (post.id && action.data.post_id) {
+                        pos[post.id] = {
+                          ...post,
+                          last_visit: action.data.last_visit,
+                        };
+                      } else {
+                        pos[post.id] = post;
+                      }
+                      return pos;
+                    }, {}),
+                  }),
+                },
+              };
+              return res;
+            }, {}),
+          }),
+        },
+      };
+    }
     default:
       return state;
   }

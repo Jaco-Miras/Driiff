@@ -552,6 +552,7 @@ const Comment = (props) => {
               />
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
+              {post.last_visit && comment.updated_at.timestamp > post.last_visit && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
             {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
