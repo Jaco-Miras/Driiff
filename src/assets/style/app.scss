@@ -22316,6 +22316,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 body > div[role="dialog"] {
   z-index: 1000 !important;
 }
+body > div[x-placement="bottom"] {
+  z-index: 1000 !important;
+}
 .zoom-msg strong {
   cursor: pointer;
 }
@@ -22326,14 +22329,14 @@ body > div#transition-popper {
 #meetingSDKElement {
   .react-draggable > div:first-child {
     padding: 0;
-    width: 350px;
+    min-width: 350px;
     > div:first-child {
-      width: 350px;
+      min-width: 350px;
       padding: 0;
       // height: 250px;
     }
     > div:last-child {
-      width: 350px;
+      min-width: 350px;
     }
   }
 }
