@@ -22323,3 +22323,29 @@ body > div#transition-popper {
   z-index: 1001;
   //top: 160px!important;
 }
+#meetingSDKElement {
+  .react-draggable > div:first-child {
+    > div:first-child {
+      width: 300px;
+      padding: 0;
+      // height: 250px;
+    }
+    > div:last-child {
+      width: 300px;
+    }
+    width: 300px;
+    //height: 250px;
+  }
+}
+
+#suspension-view-tabpanel-speaker > div.full-view1 {
+  min-width: 300px;
+  height: 173px;
+  li {
+    min-width: 300px;
+    min-height: 172px;
+  }
+  > div:last-child {
+    min-width: 300px;
+  }
+}

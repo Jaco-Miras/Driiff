@@ -61,6 +61,9 @@ const Wrapper = styled.div`
       display: block;
     }
   }
+  .zoom-icon {
+    cursor: pointer;
+  }
 `;
 
 const ChatInputButtons = (props) => {
@@ -103,7 +106,7 @@ const ChatInputButtons = (props) => {
       <IconWrapper className="btn-meet">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
           {startingZoom && <Loader />}
-          {!startingZoom && <img src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />}
+          {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />}
           {/* <SvgIconFeather onClick={handleGoogleMeet} icon="meet" /> */}
         </Tooltip>
       </IconWrapper>
