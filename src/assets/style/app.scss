@@ -22325,6 +22325,8 @@ body > div#transition-popper {
 }
 #meetingSDKElement {
   .react-draggable > div:first-child {
+    padding: 0;
+    width: 300px;
     > div:first-child {
       width: 300px;
       padding: 0;
@@ -22333,8 +22335,6 @@ body > div#transition-popper {
     > div:last-child {
       width: 300px;
     }
-    width: 300px;
-    //height: 250px;
   }
 }
 
@@ -22348,4 +22348,9 @@ body > div#transition-popper {
   > div:last-child {
     min-width: 300px;
   }
+}
+
+//fixed for the loader indicator in zoom
+.jss3 {
+  width: auto !important;
 }
