@@ -22326,27 +22326,27 @@ body > div#transition-popper {
 #meetingSDKElement {
   .react-draggable > div:first-child {
     padding: 0;
-    width: 300px;
+    width: 350px;
     > div:first-child {
-      width: 300px;
+      width: 350px;
       padding: 0;
       // height: 250px;
     }
     > div:last-child {
-      width: 300px;
+      width: 350px;
     }
   }
 }
 
 #suspension-view-tabpanel-speaker > div.full-view1 {
-  min-width: 300px;
-  height: 173px;
+  min-width: 350px;
+  height: 200px;
   li {
-    min-width: 300px;
-    min-height: 172px;
+    min-width: 350px;
+    min-height: 198px;
   }
   > div:last-child {
-    min-width: 300px;
+    min-width: 350px;
   }
 }
 
