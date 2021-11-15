@@ -21,6 +21,11 @@ const useWorkspaceAndUserOptions = (props) => {
 
   const internalUsers = Object.values(actualUsers).filter((u) => u.active === 1 && u.type === "internal");
 
+  const user = useSelector((state) => state.session.user);
+  const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
+  //const connectedTeamIds = useSelector((state) => state.workspaces.connectedTeamIds);
+  const isExternalUser = user.type === "external";
+
   const [options, setOptions] = useState([]);
 
   const getAddressTo = (postRecipients) => {
@@ -129,16 +134,31 @@ const useWorkspaceAndUserOptions = (props) => {
         };
       });
 
-    const teamOptions = Object.values(teams).map((u) => {
-      return {
-        ...u,
-        value: u.id,
-        label: `${dictionary.teamLabel} ${u.name}`,
-        useLabel: true,
-        type: "TEAM",
-        icon: "users",
-      };
-    });
+    const teamOptions =
+      isExternalUser && workspacesLoaded
+        ? []
+        : // Object.values(teams)
+          //     .filter((t) => connectedTeamIds.some((id) => id === t.id))
+          //     .map((u) => {
+          //       return {
+          //         ...u,
+          //         value: u.id,
+          //         label: `${dictionary.teamLabel} ${u.name}`,
+          //         useLabel: true,
+          //         type: "TEAM",
+          //         icon: "users",
+          //       };
+          //     })
+          Object.values(teams).map((u) => {
+            return {
+              ...u,
+              value: u.id,
+              label: `${dictionary.teamLabel} ${u.name}`,
+              useLabel: true,
+              type: "TEAM",
+              icon: "users",
+            };
+          });
 
     const companyOption = company
       ? [
