@@ -75,6 +75,7 @@ const INITIAL_STATE = {
     },
   },
   workspaceReminders: {},
+  connectedTeamIds: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -164,6 +165,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_WORKSPACES_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
+      let connectedTeamIds = [];
       action.data.workspaces.forEach((ws) => {
         if (ws.type === "FOLDER") {
           if (updatedFolders.hasOwnProperty(ws.id)) {
@@ -175,6 +177,10 @@ export default (state = INITIAL_STATE, action) => {
             };
           }
           ws.topics.forEach((t) => {
+            if (t.members.some((m) => m.hasOwnProperty("parent_team"))) {
+              const teams = t.members.filter((m) => m.hasOwnProperty("parent_team"));
+              connectedTeamIds.push(teams);
+            }
             if (!state.workspaces[t.id]) {
               updatedWorkspaces[t.id] = {
                 ...t,
@@ -190,6 +196,10 @@ export default (state = INITIAL_STATE, action) => {
           });
           delete updatedFolders[ws.id].topics;
         } else if (ws.type === "WORKSPACE") {
+          if (ws.members.some((m) => m.hasOwnProperty("parent_team"))) {
+            const teams = ws.members.filter((m) => m.hasOwnProperty("parent_team"));
+            connectedTeamIds.push(teams);
+          }
           updatedWorkspaces[ws.id] = {
             ...ws,
             is_favourite: ws.topic_detail.is_favourite,
@@ -210,6 +220,7 @@ export default (state = INITIAL_STATE, action) => {
       });
       return {
         ...state,
+        connectedTeamIds: [...new Set(connectedTeamIds.flat().map((t) => t.id))],
         workspaces: updatedWorkspaces,
         workspacesLoaded: true,
         externalWorkspacesLoaded: true,
