@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 import { useSelector, useDispatch } from "react-redux";
 import { postChatMessage, generateZoomSignature } from "../../redux/actions/chatActions";
@@ -12,29 +13,33 @@ const useZoomActions = () => {
   };
 
   const toaster = useToaster();
-
   const client = ZoomMtgEmbedded.createClient();
   let meetingSDKElement = document.getElementById("meetingSDKElement");
-  client.init({
-    debug: true,
-    zoomAppRoot: meetingSDKElement,
-    language: "en-US",
-    isSupportChat: false,
-    customize: {
-      meetingInfo: ["topic", "host", "mn", "pwd", "invite", "participant", "dc"],
-      toolbar: {
-        buttons: [
-          {
-            text: "Leave",
-            className: "LeaveBtn",
-            onClick: () => {
-              client.leaveMeeting();
+
+  client
+    .init({
+      debug: true,
+      zoomAppRoot: meetingSDKElement,
+      language: "en-US",
+      isSupportChat: false,
+      customize: {
+        meetingInfo: ["topic", "host", "mn", "pwd", "invite", "participant", "dc"],
+        toolbar: {
+          buttons: [
+            {
+              text: "Leave",
+              className: "LeaveBtn",
+              onClick: () => {
+                client.leaveMeeting();
+              },
             },
-          },
-        ],
+          ],
+        },
       },
-    },
-  });
+    })
+    .then((e) => {
+      console.log("init success", e);
+    });
 
   const getSlug = () => {
     let driff = localStorage.getItem("slug");

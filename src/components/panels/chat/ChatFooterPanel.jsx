@@ -372,11 +372,12 @@ const ChatFooterPanel = (props) => {
             meetingNumber: res.data.zoom_data.data.id,
             role: 1,
           };
-          zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+
           dispatch(
             generateZoomSignature(sigPayload, (e, r) => {
               if (e) return;
               if (r) {
+                zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
                 zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
                 setStartingZoom(false);
               }
@@ -385,46 +386,6 @@ const ChatFooterPanel = (props) => {
         }
       })
     );
-    // let payload = {
-    //   meetingNumber: "",
-    //   role: 1,
-    //   password: "",
-    //   host: true,
-    //   hasJoin: false,
-    // };
-    // localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}`, "_blank");
-    // dispatch(
-    //   createZoomMeeting({ channel_id: selectedChannel.id }, (err, res) => {
-    //     if (err) return;
-    //     if (res) {
-    //       console.log(res.data);
-    //       let payload = {
-    //         meetingNumber: res.data.zoom_data.data.id,
-    //         role: "1",
-    //         password: res.data.zoom_data.data.password,
-    //         host: true,
-    //       };
-    //       localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    //       setTimeout(() => {
-    //         window.open(`https://demo24.drevv.com/zoom/${selectedChannel.id}`, "_blank");
-    //       }, 500);
-    //     }
-    //   })
-    // );
-    //history.push(`/zoom/${selectedChannel.id}?join=1`);
-    // let modalPayload = {
-    //   type: "confirmation",
-    //   cancelText: dictionary.no,
-    //   headerText: dictionary.googleMeet,
-    //   submitText: dictionary.yes,
-    //   bodyText: dictionary.googleMeetConfirmation,
-    //   actions: {
-    //     onSubmit: handleStartGoogleMeet,
-    //   },
-    // };
-
-    // dispatch(addToModals(modalPayload));
   };
 
   return (
