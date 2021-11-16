@@ -47,6 +47,9 @@ const Wrapper = styled.div`
     .chat-buttons {
       display: block;
     }
+    .feather-meet {
+      height: 17px;
+    }
   }
 `;
 

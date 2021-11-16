@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useTimeFormat } from "../../hooks";
 import { Badge, ToolTip } from "../../common";
 //import { useSelector } from "react-redux";
-import { SvgIconFeather } from "../../common";
+//import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -12,21 +12,23 @@ const Wrapper = styled.div`
   }
   .title-data-chat-folder {
     display: inline-block;
-    height: 12px;
+    //height: 12px;
     color: #8b8b8b;
     font-family: Arial;
     font-size: 12px;
-    letter-spacing: 0;
-    line-height: 12px;
+    // letter-spacing: 0;
+    // line-height: 12px;
     font-weight: normal;
     margin-left: 5px;
+    vertical-align: bottom;
   }
 `;
 
-const IconFolder = styled(SvgIconFeather)`
-  width: 12px;
-  height: 10px;
-`;
+// const IconFolder = styled(SvgIconFeather)`
+//   width: 12px;
+//   height: 12px;
+//   margin-right: 0.25rem;
+// `;
 
 const ChannelTitleContainer = styled.h6`
   color: #363636;
@@ -36,7 +38,7 @@ const ChannelTitleContainer = styled.h6`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: calc(100% - 100px);
+  //max-width: calc(100% - 100px);
 
   &.is-unread {
     span {
@@ -95,7 +97,8 @@ const ChatTitleDate = (props) => {
         if (channel.workspace_folder) {
           return (
             <>
-              <IconFolder icon="folder" /> {channel.workspace_folder.name}{" "}
+              <i className="fa fa-folder-o" /> {channel.workspace_folder.name}
+              {/* <IconFolder icon="folder" /> {channel.workspace_folder.name}{" "} */}
             </>
           );
         } else {

@@ -199,7 +199,7 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 
   .ql-toolbar {
     bottom: 30px;
-    left: 40px;
+    left: 70px;
   }
 
   .invalid-feedback {
