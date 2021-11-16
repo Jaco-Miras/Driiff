@@ -304,7 +304,7 @@ body.dark {
     border: 0 solid #000 !important;
   }
 
-  .feather-paperclip {
+  .feather-paperclip, .feather-smile {
     border: 0;
     background-color: #25282c;
   }
@@ -22357,4 +22357,14 @@ body > div#transition-popper {
 .jss3 {
   width: auto !important;
   min-width: auto !important;
+}
+
+.Toastify__toast-container.top-toaster {
+  min-width: 350px;
+  max-width: 400px;
+  width: auto;
+  .Toastify__toast {
+    min-height: 80px;
+    min-height: 120px;
+  }
 }

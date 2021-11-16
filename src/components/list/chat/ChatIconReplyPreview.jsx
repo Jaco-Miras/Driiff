@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import quillHelper from "../../../helpers/quillHelper";
+//import quillHelper from "../../../helpers/quillHelper";
 import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
@@ -20,6 +20,8 @@ const LastReplyContent = styled.span`
 const DraftContent = styled.span``;
 const LastReplyName = styled.span``;
 const LastReplyBody = styled.div`
+  color: #363636;
+  font-size: 12px;
   min-width: 200px;
   max-height: 40px;
   min-height: 24px;
