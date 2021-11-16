@@ -1570,7 +1570,7 @@ class SocketListeners extends Component {
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
       .listen(".create-meeting-notification", (e) => {
-        console.log(e, "zoom meeting notif");
+        //console.log(e, "zoom meeting notif");
         if (this.props.user.id !== e.host.id) {
           this.props.addToModals({
             ...e,
