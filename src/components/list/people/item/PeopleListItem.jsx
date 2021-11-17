@@ -326,9 +326,10 @@ const PeopleListItem = (props) => {
                       {user.active && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
                       {!user.deactivate && user.active && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
                       {showInactive && user.deactivate && user.active === 0 && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
-                      {!showInactive && user.active && user.hasOwnProperty("has_accepted") && user.has_accepted && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser && (
+                      {(!showInactive && user.active && user.hasOwnProperty("has_accepted") && user.has_accepted && usersWithoutActivity.some((u) => u.user_id === user.id) && onDeleteUser) ||
+                      (user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external") ? (
                         <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>
-                      )}
+                      ) : null}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}

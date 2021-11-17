@@ -3941,6 +3941,20 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_DELETED_USER": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.members.some((m) => m.id === action.data.id)) {
+            acc[ws.id] = { ...ws, members: ws.members.filter((m) => m.id !== action.data.id) };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic: state.activeTopic && state.activeTopic.members.some((m) => m.id === action.data.id) ? { ...state.activeTopic, members: state.activeTopic.members.filter((m) => m.id !== action.data.id) } : state.activeTopic,
+      };
+    }
     case "INCOMING_WORKSPACE_NOTIFICATION_STATUS": {
       return {
         ...state,
@@ -3960,7 +3974,6 @@ export default (state = INITIAL_STATE, action) => {
                 results: state.search.results.map((ws) => {
                   if (ws.topic.id === action.data.id) {
                     return {
-                      ...ws,
                       topic: { ...ws.topic, is_active: action.data.is_active },
                     };
                   } else {
