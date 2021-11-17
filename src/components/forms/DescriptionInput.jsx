@@ -26,7 +26,7 @@ const WrapperDiv = styled(InputGroup)`
     align-self: center;
   }
   .description-wrapper {
-    margin-bottom: 25px;
+    //margin-bottom: 25px;
     min-height: 200px;
     &.is-invalid {
       border-color: #dc3545;
@@ -121,7 +121,8 @@ const StyledQuillEditor = styled(QuillEditor)`
   .ql-toolbar {
     display: ${(props) => (props.readOnly ? "none" : "block")};
     position: absolute;
-    bottom: 0;
+    bottom: 9px;
+    left: 68px;
     padding: 0;
     border: none;
     .ql-formats {

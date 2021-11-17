@@ -12,7 +12,7 @@ const Wrapper = styled.span`
   display: table;
   table-layout: fixed;
   width: 100%;
-  font-weight: ${(props) => (props.hasUnRead ? "bold" : "normal")};
+  font-weight: ${(props) => (props.hasUnRead ? "500" : "normal")};
 `;
 const LastReplyContent = styled.span`
   display: flex;
@@ -34,6 +34,9 @@ const LastReplyBody = styled.div`
   svg {
     margin-right: 4px;
     display: inline;
+  }
+  .dark & {
+    color: #c7c7c7;
   }
 `;
 const TextIcon = styled(SvgIcon)`
@@ -115,7 +118,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = stripImgTag(channel.last_reply.body);

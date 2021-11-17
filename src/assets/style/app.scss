@@ -304,7 +304,7 @@ body.dark {
     border: 0 solid #000 !important;
   }
 
-  .feather-paperclip, .feather-smile {
+  .feather-paperclip {
     border: 0;
     background-color: #25282c;
   }
@@ -22319,6 +22319,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   width: auto;
   .Toastify__toast {
     min-height: 80px;
-    min-height: 120px;
+    max-height: 120px;
   }
 }

@@ -18,6 +18,12 @@ const Wrapper = styled.ul`
   }
   > li {
     position: relative;
+    // svg {
+    //   stroke: #363636;
+    //   :hover {
+    //     stroke: #7a1b8b;
+    //   }
+    // }
     .nav-link {
       max-height: 45px;
       padding: 10px 10px !important;

@@ -160,6 +160,12 @@ const ChatBubbleContainer = styled.div`
             }
         `};
   }
+  .more-options:hover {
+    border: 1px solid #972c86 !important;
+    svg {
+      color: #972c86;
+    }
+  }
   .dark & {
     &:before {
       display: none;
@@ -178,7 +184,7 @@ const ChatActionsContainer = styled.div`
   align-items: center;
   top: 0;
   ${(props) => (props.isAuthor ? "right: 100%" : "left: 100%")};
-  height: calc(100% + 4px);
+  height: ${(props) => (props.hasReactions ? "calc(100% - 20px)" : "calc(100% + 4px)")};
   margin-top: -2px;
   transition: opacity 0.3s ease;
 `;
@@ -761,7 +767,7 @@ class ChatMessages extends React.PureComponent {
                                     translated_channels={this.props.translated_channels}
                                     chat_language={this.props.chat_language}
                                   />
-                                  <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                  <ChatActionsContainer isAuthor={isAuthor} className={`chat-actions-container ${reply.reactions.length && "has-reactions"}`} hasReactions={reply.reactions.length}>
                                     {<ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
                                     {!isNaN(reply.id) && !reply.is_deleted && (
                                       <ChatMessageOptions

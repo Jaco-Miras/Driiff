@@ -107,6 +107,7 @@ const StyledMoreOptions = styled(MoreOptions)`
   justify-content: center;
   &:hover {
     cursor: pointer;
+    color: #972c86;
     border: 1px solid #972c86 !important;
   }
   .dark & {
