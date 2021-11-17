@@ -261,6 +261,7 @@ export default (state = INITIAL_STATE, action) => {
                   required_users: action.data.required_users,
                   must_read_users: action.data.must_read_users,
                   must_reply_users: action.data.must_reply_users,
+                  is_close: 0,
                 },
               },
             }),
@@ -287,6 +288,7 @@ export default (state = INITIAL_STATE, action) => {
                   required_users: action.data.required_users,
                   must_read_users: action.data.must_read_users,
                   must_reply_users: action.data.must_reply_users,
+                  is_close: 0,
                 },
               },
             }),
@@ -378,36 +380,47 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_CLOSE_POST": {
-      if (action.data.notification) {
-        let postNotification = {
-          ...action.data.notification,
-          is_read: 0,
-          is_snooze: false,
-          snooze_time: null,
-          author: action.data.initiator,
-          created_at: { timestamp: Math.round(+new Date() / 1000) },
-          data: {
-            post_id: action.data.post.id,
-            title: action.data.post.title,
-            description: "",
-            created_at: { timestamp: Math.round(+new Date() / 1000) },
-            workspaces: action.data.workspaces.map((ws) => {
-              return {
-                topic_id: ws.topic.id,
-                topic_name: ws.topic.name,
-                workspace_id: ws.workspace ? ws.workspace.id : null,
-                workspace_name: ws.workspace ? ws.workspace.name : null,
-              };
-            }),
-          },
-        };
-        return {
-          ...state,
-          notifications: { ...state.notifications, [postNotification.id]: postNotification },
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        notifications: {
+          ...Object.values(state.notifications).reduce((acc, n) => {
+            if (["POST_CREATE", "POST_COMMENT", "POST_MENTION", "POST_REQST_APPROVAL", "POST_REJECT_APPROVAL", "PST_CMT_REJCT_APPRVL"].includes(n.type)) {
+              if (n.data && n.data.post_id === action.data.post.id) {
+                acc[n.id] = { ...n, data: { ...n.data, is_close: action.data.is_close ? 1 : 0 } };
+              } else {
+                acc[n.id] = n;
+              }
+            } else {
+              acc[n.id] = n;
+            }
+            return acc;
+          }, {}),
+          ...(action.data.notification && {
+            [action.data.notification.id]: {
+              ...action.data.notification,
+              is_read: 0,
+              is_snooze: false,
+              snooze_time: null,
+              author: action.data.initiator,
+              created_at: { timestamp: Math.round(+new Date() / 1000) },
+              data: {
+                post_id: action.data.post.id,
+                title: action.data.post.title,
+                description: "",
+                created_at: { timestamp: Math.round(+new Date() / 1000) },
+                workspaces: action.data.workspaces.map((ws) => {
+                  return {
+                    topic_id: ws.topic.id,
+                    topic_name: ws.topic.name,
+                    workspace_id: ws.workspace ? ws.workspace.id : null,
+                    workspace_name: ws.workspace ? ws.workspace.name : null,
+                  };
+                }),
+              },
+            },
+          }),
+        },
+      };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
       if (action.data.type === "WORKSPACE" && state.user && state.user.id !== action.data.user_id && action.data.new_member_ids.some((id) => id === state.user.id)) {
