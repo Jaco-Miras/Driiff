@@ -12,7 +12,7 @@ const Wrapper = styled.span`
   display: table;
   table-layout: fixed;
   width: 100%;
-  font-weight: ${(props) => (props.hasUnRead ? "bold" : "normal")};
+  font-weight: ${(props) => (props.hasUnRead ? "500" : "normal")};
 `;
 const LastReplyContent = styled.span`
   display: flex;
@@ -34,6 +34,9 @@ const LastReplyBody = styled.div`
   svg {
     margin-right: 4px;
     display: inline;
+  }
+  .dark & {
+    color: #c7c7c7;
   }
 `;
 const TextIcon = styled(SvgIcon)`

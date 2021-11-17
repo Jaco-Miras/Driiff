@@ -30,6 +30,7 @@ const Wrapper = styled.div`
     max-height: 255px;
     overflow: hidden;
     position: relative;
+    background-color: #f1f2f7a3;
 
     svg {
       cursor: pointer;
@@ -40,6 +41,9 @@ const Wrapper = styled.div`
       bottom: 6px;
       width: 16px;
       height: 16px;
+    }
+    .dark & {
+      background-color: #f1f2f712;
     }
   }
 `;

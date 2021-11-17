@@ -119,7 +119,7 @@ const PostFilterItem = (props) => {
         {dictionary.starred}
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "archive" ? "active" : ""}`} data-value="archive" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="archive" />
+        <SvgIconFeather className="mr-2" icon="clock" />
         {dictionary.archived}
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "draft" ? "active" : ""}`} data-value="draft" onClick={handleClickFilter}>

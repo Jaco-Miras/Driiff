@@ -191,6 +191,9 @@ const StyledDescriptionInput = styled(DescriptionInput)`
     // max-height: 300px;
     height: calc(100% - 50px);
   }
+  .description-wrapper {
+    margin-bottom: 20px;
+  }
 
   label {
     min-width: 100%;
@@ -198,7 +201,7 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 
   .ql-toolbar {
-    bottom: 30px;
+    bottom: 25px;
     left: 70px;
   }
 

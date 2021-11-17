@@ -7,6 +7,7 @@ import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
 import { TodoCheckBox } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -296,6 +297,13 @@ const PostItemPanel = (props) => {
 
   const isUnread = post.is_unread === 1;
 
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
+
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`} onClick={() => openPost(post)}>
       <PostRecipients post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
@@ -320,8 +328,16 @@ const PostItemPanel = (props) => {
                 </a>
               </span>
               <HoverButtons className="hover-btns ml-1">
-                {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}
-                {!disableOptions && !disableCheckbox() && <Icon icon="archive" onClick={handleArchivePost} />}
+                {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
+                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.editPost}>
+                    <Icon icon="pencil" onClick={handleEditPost} />
+                  </Tooltip>
+                )}
+                {!disableOptions && !disableCheckbox() && (
+                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.archived}>
+                    <Icon icon="clock" onClick={handleArchivePost} />
+                  </Tooltip>
+                )}
               </HoverButtons>
             </div>
             <PostReplyCounter>
