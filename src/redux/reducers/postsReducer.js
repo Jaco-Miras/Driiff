@@ -129,7 +129,6 @@ export default (state = INITIAL_STATE, action) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
                   clap_user_ids: [],
-                  last_visit: null,
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
@@ -790,7 +789,11 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.id]: { ...action.data, clap_user_ids: [], last_visit: null },
+            [action.data.id]: {
+              ...action.data,
+              clap_user_ids: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].clap_user_ids : [],
+              last_visited_at: state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
+            },
           },
         },
       };
@@ -1501,7 +1504,7 @@ export default (state = INITIAL_STATE, action) => {
             if (post.id && action.data.post_id) {
               acc[post.id] = {
                 ...post,
-                last_visit: action.data.last_visit,
+                last_visited_at: { timestamp: action.data.last_visit },
               };
             } else {
               acc[post.id] = post;
