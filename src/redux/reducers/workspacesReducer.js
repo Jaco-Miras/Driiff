@@ -1321,29 +1321,23 @@ export default (state = INITIAL_STATE, action) => {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       let addUnreadPost = false;
-      const isApprover = action.data.users_approval.some((ua) => state.user && state.user.id === ua.id);
-      const mustRead = action.data.must_read_users && action.data.must_read_users.some((u) => state.user && state.user.id === u.id && !u.must_read);
-      const mustReply = action.data.must_reply_users && action.data.must_reply_users.some((u) => state.user && state.user.id === u.id && !u.must_reply);
-      const hasMentioned = action.data.mention_ids.some((id) => state.user && state.user.id === id);
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
-          if ((typeof updatedWorkspaces[ws.topic_id] !== "undefined" && updatedWorkspaces[ws.topic_id].is_active) || isApprover || mustRead || mustReply || hasMentioned) newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
-          else {
-            if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
-              newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
-            } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
-              newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
-            } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
-              newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
-            }
+          newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
+          if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
+            newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
+          } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
+            newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
+          } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
+            newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
           }
         }
         if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
-          if (updatedWorkspaces[ws.topic_id].is_active || isApprover || mustRead || mustReply || hasMentioned) updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
-          if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
-            if (state.activeTopic.is_active || isApprover || mustRead || mustReply || hasMentioned) addUnreadPost = true;
+          updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+          if (state.activeTopic && state.activeTopic.id === ws.topic_id && typeof action.data.show_post !== "undefined" && action.data.show_post === true) {
+            addUnreadPost = true;
           }
-          if (ws.workspace_id !== null) {
+          if (ws.workspace_id !== null && typeof action.data.show_post !== "undefined" && action.data.show_post === true) {
             updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
           }
         }
@@ -1360,6 +1354,50 @@ export default (state = INITIAL_STATE, action) => {
           : state.activeTopic,
       };
     }
+    // case "INCOMING_POST": {
+    //   let newWorkspacePosts = { ...state.workspacePosts };
+    //   let updatedWorkspaces = { ...state.workspaces };
+    //   let updatedFolders = { ...state.folders };
+    //   let addUnreadPost = false;
+    //   const isApprover = action.data.users_approval.some((ua) => state.user && state.user.id === ua.id);
+    //   const mustRead = action.data.must_read_users && action.data.must_read_users.some((u) => state.user && state.user.id === u.id && !u.must_read);
+    //   const mustReply = action.data.must_reply_users && action.data.must_reply_users.some((u) => state.user && state.user.id === u.id && !u.must_reply);
+    //   const hasMentioned = action.data.mention_ids.some((id) => state.user && state.user.id === id);
+    //   action.data.workspaces.forEach((ws) => {
+    //     if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
+    //       if ((typeof updatedWorkspaces[ws.topic_id] !== "undefined" && updatedWorkspaces[ws.topic_id].is_active) || isApprover || mustRead || mustReply || hasMentioned) newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
+    //       else {
+    //         if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
+    //           newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
+    //         } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
+    //           newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
+    //         } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
+    //           newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
+    //         }
+    //       }
+    //     }
+    //     if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
+    //       if (updatedWorkspaces[ws.topic_id].is_active || isApprover || mustRead || mustReply || hasMentioned) updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+    //       if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
+    //         if (state.activeTopic.is_active || isApprover || mustRead || mustReply || hasMentioned) addUnreadPost = true;
+    //       }
+    //       if (ws.workspace_id !== null) {
+    //         updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
+    //       }
+    //     }
+    //   });
+    //   return {
+    //     ...state,
+    //     workspacePosts: newWorkspacePosts,
+    //     workspaces: updatedWorkspaces,
+    //     activeTopic: addUnreadPost
+    //       ? {
+    //           ...state.activeTopic,
+    //           unread_posts: state.activeTopic.unread_posts + 1,
+    //         }
+    //       : state.activeTopic,
+    //   };
+    // }
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
     case "INCOMING_DONE_TO_DO":
