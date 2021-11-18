@@ -128,7 +128,7 @@ const useCompanyPosts = () => {
         if (filter === "all") {
           return !p.hasOwnProperty("draft_type");
         } else if (filter === "inbox") {
-          return !p.hasOwnProperty("draft_type");
+          return !p.hasOwnProperty("draft_type") && !p.is_close;
         } else if (filter === "in_progress") {
           return (
             !p.hasOwnProperty("draft_type") &&
