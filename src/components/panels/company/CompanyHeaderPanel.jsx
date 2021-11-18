@@ -75,8 +75,10 @@ const Wrapper = styled.div`
     color: #7a1b8b !important;
   }
   svg.feather-home {
-    color: rgb(80, 80, 80);
-
+    //color: rgb(80, 80, 80);
+    color: #8b8b8b;
+    width: 20px;
+    height: 20px;
     .dark & {
       color: #fff;
     }

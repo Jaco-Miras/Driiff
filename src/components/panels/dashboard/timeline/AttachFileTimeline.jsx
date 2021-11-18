@@ -53,15 +53,16 @@ const AttachFileTimeline = (props) => {
       </div>
       {
         <div>
-          <h6 className="d-flex justify-content-between font-weight-bold mb-4">
-            <span>
-              <span className="font-weight-normal">{data.user.name}</span>{" "}
-              <span onClick={handleFilePreview} className="file-summary">
-                {dictionary.attachedFile}
-              </span>
+          <div>
+            <h6 className="d-flex justify-content-between font-weight-bold mb-0">
+              <span className="font-weight-normal">{data.user.name}</span> <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
+            </h6>
+          </div>
+          <div className="mb-3">
+            <span onClick={handleFilePreview} className="file-summary">
+              {dictionary.attachedFile}
             </span>
-            <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
-          </h6>
+          </div>
           {/* <div className="mb-3 border p-3 border-radius-1">
             <span onClick={handleFilePreview} className="timeline-file-icon">
               {fileHandler.getFileIcon(data.mime_type)} <span>{data.name}</span>

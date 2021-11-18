@@ -18,6 +18,9 @@ const Wrapper = styled.ul`
   }
   > li {
     position: relative;
+    svg {
+      stoke: #8b8b8b;
+    }
     // svg {
     //   stroke: #363636;
     //   :hover {

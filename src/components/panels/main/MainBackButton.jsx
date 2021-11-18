@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 const BackWrapper = styled.span`
   cursor: pointer;
   svg {
-    color: #828282;
+    color: #8b8b8b;
     width: 20px;
     height: 20px;
     :hover {

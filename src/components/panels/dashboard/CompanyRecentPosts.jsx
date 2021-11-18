@@ -8,6 +8,7 @@ import { usePostActions } from "../../hooks";
 const Wrapper = styled.div`
   .feather-refresh-ccw {
     cursor: pointer;
+    color: #8b8b8b;
   }
 
   .card-title {
