@@ -1,9 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, FileAttachments, SvgIconFeather } from "../../../../common";
+import { Avatar, FileAttachments } from "../../../../common";
 import { useTimeFormat } from "../../../../hooks";
 import Tooltip from "react-tooltip-lite";
+import { replaceChar } from "../../../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   .title {
@@ -27,11 +28,14 @@ const Wrapper = styled.div`
   .files {
   }
   .post-body {
-    max-height: 255px;
+    max-height: 300px;
     overflow: hidden;
     position: relative;
     background-color: #f1f2f7a3;
-
+    > div:first-child {
+      overflow: hidden;
+      max-height: 210px;
+    }
     svg {
       cursor: pointer;
       cursor: hand;
@@ -68,7 +72,7 @@ const CompanyPostTimeline = (props) => {
 
   const handleLinkClick = (e) => {
     e.preventDefault();
-    history.push(`/posts/${data.id}/${data.title}`);
+    history.push(`/posts/${data.id}/${replaceChar(data.title)}`);
   };
 
   return (
@@ -77,24 +81,28 @@ const CompanyPostTimeline = (props) => {
         <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
       </div>
       <div>
-        <h6 className="d-flex justify-content-between mb-4">
-          <span className="title">
-            {data.user.name}{" "}
-            <span className="post-title" onClick={handleLinkClick} title={data.title}>
-              {dictionary.sharedThePost} "{data.title}"
-            </span>
+        <div>
+          <h6 className="d-flex justify-content-between mb-0">
+            <span className="title">{data.user.name}</span>
+            <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(data.created_at.timestamp)}`}>
+              <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
+            </StyledTooltip>
+          </h6>
+        </div>
+        <div className="mb-3">
+          <span className="post-title" onClick={handleLinkClick} title={data.title}>
+            {dictionary.sharedThePost} "{data.title}"
           </span>
-          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(data.created_at.timestamp)}`}>
-            <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
-          </StyledTooltip>
-        </h6>
+        </div>
+
         {data.body.replace(/<\/?[^>]+(>|$)/g, "") && (
-          <span onClick={handleLinkClick}>
-            <div className="mb-3 border p-3 border-radius-1 post-body">
-              <SvgIconFeather icon="arrow-right" />
-              <div dangerouslySetInnerHTML={{ __html: data.body }} />
-            </div>
-          </span>
+          <div className="mb-3 border p-3 border-radius-1 post-body" onClick={handleLinkClick}>
+            {/* <SvgIconFeather icon="arrow-right" /> */}
+            <div dangerouslySetInnerHTML={{ __html: data.body }} />
+            <button className="btn btn-primary" onClick={handleLinkClick}>
+              {dictionary.openPost}
+            </button>
+          </div>
         )}
         {data.files && data.files.length >= 1 && (
           <>

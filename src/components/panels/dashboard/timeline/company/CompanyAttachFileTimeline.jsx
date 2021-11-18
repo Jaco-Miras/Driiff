@@ -6,6 +6,7 @@ import { setViewFiles } from "../../../../../redux/actions/fileActions";
 import { Avatar } from "../../../../common";
 import { useTimeFormat } from "../../../../hooks";
 import useFileActions from "../../../../hooks/useFileActions";
+import FilePill from "../../../../list/chat/Files/FilePill";
 
 const Wrapper = styled.div`
   .timeline-file-icon {
@@ -23,6 +24,12 @@ const Wrapper = styled.div`
   }
   .timeline-file-icon {
     cursor: pointer;
+  }
+  .file-pill-container {
+    background-color: #f1f2f7a3;
+    .dark & {
+      background-color: #f1f2f712;
+    }
   }
 `;
 
@@ -51,16 +58,18 @@ const CompanyAttachFileTimeline = (props) => {
       </div>
       {
         <div>
-          <h6 className="d-flex justify-content-between font-weight-bold mb-4">
-            <span>
-              <span className="font-weight-normal">{data.user.name}</span>{" "}
-              <span onClick={handleFilePreview} className="file-summary">
-                {dictionary.attachedFile}
-              </span>
+          <div>
+            <h6 className="d-flex justify-content-between font-weight-bold mb-0">
+              <span className="font-weight-normal">{data.user.name}</span> <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
+            </h6>
+          </div>
+          <div className="mb-3">
+            <span onClick={handleFilePreview} className="file-summary">
+              {dictionary.attachedFile}
             </span>
-            <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
-          </h6>
-          <div className="mb-3 border p-3 border-radius-1">
+          </div>
+          <div className="mb-3 border p-3 border-radius-1 file-pill-container">
+            <FilePill className="mb-2" file={data} dictionary={dictionary} />
             <span onClick={handleFilePreview} className="timeline-file-icon">
               {fileHandler.getFileIcon(data.mime_type)} <span>{data.name}</span>
             </span>

@@ -215,6 +215,9 @@ const WrapperDiv = styled(InputGroup)`
   &.file-attachment-wrapper .file-label {
     font-size: 0.8rem;
   }
+  &.addressed-to-container {
+    margin: 20px 0 10px 0;
+  }
 `;
 
 const MoreOption = styled.div`
@@ -977,13 +980,13 @@ const PostModal = (props) => {
             <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
-        <WrapperDiv className={"modal-input"}>
+        <WrapperDiv className={"modal-input addressed-to-container"}>
           <Label className={"modal-label"} for="workspace">
             {dictionary.addressedTo}
           </Label>
           <FolderSelect options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
         </WrapperDiv>
-        <WrapperDiv className={"mb-0 mt-1"}>
+        <WrapperDiv className={"m-0"}>
           <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
         </WrapperDiv>
         <StyledDescriptionInput
