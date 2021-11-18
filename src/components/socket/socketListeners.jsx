@@ -709,7 +709,7 @@ class SocketListeners extends Component {
             const hasMentioned = post.mention_ids.some((id) => this.props.user.id === id);
             const mustRead = post.must_read_users && post.must_read_users.some((u) => this.props.user.id === u.id && !u.must_read);
             const mustReply = post.must_reply_users && post.must_reply_users.some((u) => this.props.user.id === u.id && !u.must_reply);
-            const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply;
+            const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply || post.workspaces.length === 0;
             post = { ...post, show_post: showPost };
             if (this.props.user.id !== post.author.id) {
               if (isSafari) {
