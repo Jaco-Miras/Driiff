@@ -484,3 +484,7 @@ export function refetchUnreadCompanyPosts(payload, callback) {
 export function fetchCommentsOnVisit(payload, callback) {
   return dispatchActionToReducer(fetchCommentsService(payload), "FETCH_COMMENTS_ON_VISIT_START", "FETCH_COMMENTS_ON_VISIT_SUCCESS", "FETCH_COMMENTS_ON_VISIT_FAIL", callback);
 }
+
+export function incomingLastVisitPost(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_LAST_VISIT_POST", payload, callback);
+}
