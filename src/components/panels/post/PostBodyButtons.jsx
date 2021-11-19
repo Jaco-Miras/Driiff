@@ -73,7 +73,7 @@ const PostBodyButtons = (props) => {
       </StyledTooltip>
       {!disableOptions && !disableMarkAsRead() && (
         <StyledTooltip arrowSize={5} onToggle={toggleTooltip} content={dictionary.archive}>
-          <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />
+          <Icon className="mr-2" onClick={handleArchivePost} icon="clock" />
         </StyledTooltip>
       )}
       <div className={"time-stamp"}>

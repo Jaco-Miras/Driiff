@@ -317,8 +317,8 @@ const PostSettings = (props) => {
         </ApproveOptions>
       </Wrapper>
       {!isExternalUser && hasExternal && (
-        <Wrapper>
-          <ApproveOptions className="d-flex align-items-center">
+        <Wrapper className="mt-1">
+          <ApproveOptions className="d-flex align-items-center mb-1">
             <span>{dictionary.shareWithClient}</span>
           </ApproveOptions>
           <ApproveOptions className="d-flex align-items-center">

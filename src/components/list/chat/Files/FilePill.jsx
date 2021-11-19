@@ -88,7 +88,7 @@ const DocFile = styled.div`
 `;
 
 const FilePill = (props) => {
-  let { className = "", file, cbFilePreview, dictionary, ...otherProps } = props;
+  let { className = "", file, cbFilePreview = () => {}, dictionary, ...otherProps } = props;
   if (typeof file.type === "undefined") {
     file.type = file.mime_type;
   }
@@ -147,7 +147,7 @@ const FilePill = (props) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
       e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
-    } else if (e.currentTarget.dataset.attemp === "1") {
+    } else if (e.currentTarget.dataset.attempt === "1") {
       e.currentTarget.dataset.attempt = 2;
       e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}`;
     } else {
@@ -170,7 +170,8 @@ const FilePill = (props) => {
     if (!fileThumbnailBlobs[file.id] && file.type.toLowerCase().includes("image")) {
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
-        fetch(file.thumbnail_link, {
+        let link = file.thumbnail_link ? file.thumbnail_link : file.view_link;
+        fetch(link, {
           method: "GET",
           keepalive: true,
           headers: {
@@ -230,7 +231,7 @@ const FilePill = (props) => {
       ) : file.type.toLowerCase().includes("video") ? (
         <>
           <FileVideo data-attempt={0} width="320" height="240" controls playsInline onError={handleVideoOnError}>
-            <source src={file.view_link} type={file.type} />
+            <source src={`${file.view_link}?playsinline=1`} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
         </>

@@ -6,8 +6,8 @@ import { useOutsideClick, useTooltipOrientation } from "../../hooks";
 
 const ChatReactionButtonContainer = styled.div`
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 25px;
+  height: 25px;
   padding: 0;
   cursor: pointer;
   position: relative;

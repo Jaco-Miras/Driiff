@@ -11,6 +11,7 @@ import { useSettings, useWorkspaceActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
+import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div`
   position: relative;
@@ -88,12 +89,14 @@ const Wrapper = styled.div`
   }
   .chat-header-folder {
     flex: 1 1 100%;
-    height: 12px;
+    // height: 12px;
     color: #8b8b8b;
     font-family: Arial;
     font-size: 12px;
-    letter-spacing: 0;
-    line-height: 12px;
+    // letter-spacing: 0;
+    // line-height: 12px;
+    display: flex;
+    align-items: center;
   }
   @media (max-width: 414px) {
     .chat-header-folder {
@@ -115,7 +118,7 @@ const Wrapper = styled.div`
 const Icon = styled(SvgIconFeather)``;
 const IconFolder = styled(SvgIconFeather)`
   width: 12px;
-  height: 11px;
+  height: 12px;
 `;
 
 const EyeIcon = styled(SvgIconFeather)`
@@ -157,7 +160,10 @@ const StyledMoreOptions = styled(MoreOptions)`
 
   align-items: center;
   justify-content: center;
-
+  &:hover {
+    cursor: pointer;
+    border: 1px solid #972c86 !important;
+  }
   .dark & {
     border: 1px solid #25282c !important;
     background: #25282c;
@@ -267,6 +273,8 @@ const ChatHeaderPanel = (props) => {
 
   const goBackChannelSelect = () => {
     document.body.classList.remove("m-chat-channel-closed");
+    const snoozeContainer = document.getElementById("toastS");
+    if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
   };
   const workspaceAction = useWorkspaceActions();
 
@@ -370,7 +378,8 @@ const ChatHeaderPanel = (props) => {
         if (chatChannel.workspace_folder) {
           return (
             <>
-              <IconFolder icon="folder" /> {chatChannel.workspace_folder.name}{" "}
+              <i className="fa fa-folder-o mr-1" /> {chatChannel.workspace_folder.name}
+              {/* <IconFolder icon="folder" className="mr-1" /> {chatChannel.workspace_folder.name} */}
             </>
           );
         } else {

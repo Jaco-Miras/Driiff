@@ -9,7 +9,7 @@ const IconWrapper = styled.div`
   width: 40px;
   display: flex;
   align-items: center;
-  padding: 13px 10px;
+  padding: 12px 10px;
   align-self: flex-end;
   @media (max-width: 414px) {
     width: 30px;
@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   .feather {
     width: 18px;
     height: 18px;
+    cursor: pointer;
   }
   .chat-buttons {
     display: none;
@@ -47,6 +48,13 @@ const Wrapper = styled.div`
     .chat-buttons {
       display: block;
     }
+    .feather-meet {
+      height: 17px;
+    }
+  }
+  .feather-google-meet {
+    height: 20px;
+    width: 21px;
   }
 `;
 
@@ -90,7 +98,7 @@ const ChatInputButtons = (props) => {
       {!isClientChat && (
         <IconWrapper className="btn-meet">
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
-            <SvgIconFeather onClick={handleGoogleMeet} icon="meet" />
+            <SvgIconFeather onClick={handleGoogleMeet} icon="google-meet" />
           </Tooltip>
         </IconWrapper>
       )}

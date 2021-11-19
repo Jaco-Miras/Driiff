@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { InputGroup, Label } from "reactstrap";
 import styled from "styled-components";
 import { BodyMention, CommonPicker, SvgIconFeather } from "../common";
@@ -26,7 +26,7 @@ const WrapperDiv = styled(InputGroup)`
     align-self: center;
   }
   .description-wrapper {
-    margin-bottom: 25px;
+    //margin-bottom: 25px;
     min-height: 200px;
     &.is-invalid {
       border-color: #dc3545;
@@ -121,11 +121,21 @@ const StyledQuillEditor = styled(QuillEditor)`
   .ql-toolbar {
     display: ${(props) => (props.readOnly ? "none" : "block")};
     position: absolute;
-    bottom: 0;
+    bottom: 9px;
+    left: 68px;
     padding: 0;
     border: none;
     .ql-formats {
       margin-right: 10px;
+      button:hover {
+        color: #7a1b8b !important;
+        .ql-stroke {
+          stroke: #7a1b8b !important;
+        }
+        .ql-fill {
+          fill: #7a1b8b !important;
+        }
+      }
     }
   }
   .ql-container {
@@ -141,13 +151,13 @@ const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
   border: 1px solid #afb8bd;
   height: 1.5rem;
-  margin: -1px 8px;
+  margin: -1px 4px;
   width: 1.5rem;
   padding: 5px;
   border-radius: 8px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   &:hover {
-    background: #afb8bd;
+    background: #7a1b8b;
     color: #ffffff;
   }
   &.feather-send {
@@ -171,13 +181,14 @@ const DescriptionInputWrapper = styled.div`
   }
   resize: vertical;
   overflow: auto;
+  ${(props) => props.hasFocus && "border-color: rgba(122, 27, 139, 0.8);"}
 `;
 
 const Buttons = styled.div`
   padding: 5px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  //justify-content: space-between;
   align-items: flex-end;
   margin-top: 1rem;
 `;
@@ -220,12 +231,15 @@ const DescriptionInput = (props) => {
   const { _t } = useTranslationActions();
   const reactQuillRef = useRef();
   const pickerRef = useRef();
+  const wrapperRef = useRef(null);
+  const focusRef = useRef(false);
 
   const dictionary = {
     description: _t("POST.DESCRIPTION", "Description"),
   };
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [rerender, setRerender] = useState(false);
 
   const handleShowEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -274,10 +288,38 @@ const DescriptionInput = (props) => {
     prioMentionIds: [...new Set(prioMentionIds)],
   });
 
+  useEffect(() => {
+    let wrapperEl = null;
+    if (wrapperRef.current) {
+      wrapperEl = wrapperRef.current;
+      wrapperEl.addEventListener("focusin", () => {
+        setRerender(true);
+        focusRef.current = true;
+      });
+      wrapperEl.addEventListener("focusout", () => {
+        setRerender(false);
+        focusRef.current = false;
+      });
+    }
+
+    return () => {
+      if (wrapperEl) {
+        wrapperEl.removeEventListener("focusin", () => {
+          setRerender(true);
+          focusRef.current = true;
+        });
+        wrapperEl.removeEventListener("focusout", () => {
+          setRerender(false);
+          focusRef.current = false;
+        });
+      }
+    };
+  }, []);
+
   return (
     <WrapperDiv className={`description-input ${className}`}>
       <Label for="firstMessage">{dictionary.description}</Label>
-      <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
+      <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`} ref={wrapperRef} hasFocus={focusRef.current}>
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} readOnly={readOnly} {...otherProps} />
         {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} />}
         {!readOnly && (
