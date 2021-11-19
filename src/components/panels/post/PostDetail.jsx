@@ -432,7 +432,10 @@ const PostDetail = (props) => {
     postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
 
     return () => {
-      dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+      if (post.is_unread === 1 || post.unread_count > 0) {
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+      }
+
       postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
     };
   }, []);
