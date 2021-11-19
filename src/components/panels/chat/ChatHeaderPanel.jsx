@@ -11,6 +11,7 @@ import { useSettings, useWorkspaceActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
+import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div`
   position: relative;
@@ -272,6 +273,8 @@ const ChatHeaderPanel = (props) => {
 
   const goBackChannelSelect = () => {
     document.body.classList.remove("m-chat-channel-closed");
+    const snoozeContainer = document.getElementById("toastS");
+    if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
   };
   const workspaceAction = useWorkspaceActions();
 

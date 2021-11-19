@@ -8,6 +8,7 @@ import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
 import { useParams } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div`
   z-index: 2;
@@ -261,6 +262,11 @@ const ChatSidebarPanel = (props) => {
   useEffect(() => {
     if (params.messageId) {
       document.body.classList.add("m-chat-channel-closed");
+      const snoozeContainer = document.getElementById("toastS");
+      if (snoozeContainer && isMobile) snoozeContainer.classList.add("d-none");
+      return () => {
+        if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
+      };
     }
   }, []);
 

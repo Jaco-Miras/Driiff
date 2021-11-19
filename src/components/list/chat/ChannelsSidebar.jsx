@@ -6,6 +6,7 @@ import ChannelList from "./ChannelList";
 import { CustomInput } from "reactstrap";
 import FavoriteChannels from "./FavoriteChannels";
 import { useHistory } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 const ChannelsSidebarContainer = styled.div`
   display: flex;
@@ -72,6 +73,8 @@ const ChannelsSidebar = (props) => {
 
   const onSelectChannel = (channel) => {
     document.body.classList.add("m-chat-channel-closed");
+    const snoozeContainer = document.getElementById("toastS");
+    if (snoozeContainer && isMobile) snoozeContainer.classList.add("d-none");
 
     if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");

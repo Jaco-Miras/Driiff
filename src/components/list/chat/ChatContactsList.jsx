@@ -2,9 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-
 import useChannelActions from "../../hooks/useChannelActions";
 import { ChatContactIListItem } from "./item";
+import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div`
   .channel-number-new-group-wrapper {
@@ -33,6 +33,8 @@ const ChatContactsList = (props) => {
     channelAction.select(channel, (channel) => {
       document.body.classList.add("m-chat-channel-closed");
       history.push(`/chat/${channel.code}`);
+      const snoozeContainer = document.getElementById("toastS");
+      if (snoozeContainer && isMobile) snoozeContainer.classList.add("d-none");
     });
   };
 
