@@ -6,7 +6,7 @@ import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
 import { TodoCheckBox } from "../../forms";
-import Tooltip from "react-tooltip-lite";
+//import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -264,12 +264,12 @@ const PostItemPanel = (props) => {
 
   const isUnread = post.is_unread === 1;
 
-  const toggleTooltip = () => {
-    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
-    tooltips.forEach((tooltip) => {
-      tooltip.parentElement.classList.toggle("tooltip-active");
-    });
-  };
+  // const toggleTooltip = () => {
+  //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  //   tooltips.forEach((tooltip) => {
+  //     tooltip.parentElement.classList.toggle("tooltip-active");
+  //   });
+  // };
 
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`} onClick={() => openPost(post)}>
@@ -294,14 +294,14 @@ const PostItemPanel = (props) => {
               </span>
               <HoverButtons className="hover-btns ml-1">
                 {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
-                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.editPost}>
-                    <Icon icon="pencil" onClick={handleEditPost} />
-                  </Tooltip>
+                  // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.editPost}>
+                  <Icon icon="pencil" onClick={handleEditPost} />
+                  // </Tooltip>
                 )}
                 {!disableOptions && !disableCheckbox() && (
-                  <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.archived}>
-                    <Icon icon="clock" onClick={handleArchivePost} />
-                  </Tooltip>
+                  // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.archived}>
+                  <Icon icon="clock" onClick={handleArchivePost} />
+                  // </Tooltip>
                 )}
               </HoverButtons>
             </div>
