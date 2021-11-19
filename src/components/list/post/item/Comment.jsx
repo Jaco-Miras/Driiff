@@ -177,6 +177,9 @@ const CommentHeader = styled.div`
   }
 `;
 const CommentBody = styled.div`
+  &.ql-editor {
+    padding: 0;
+  }
   img {
     max-width: 50%;
     @media (max-width: 991.99px) {
@@ -571,7 +574,7 @@ const Comment = (props) => {
             </span>
           )}
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
-          <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
+          <CommentBody ref={refs.content} className="mt-2 mb-3 ql-editor" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (
             <Suspense fallback={<></>}>
               <Reward
