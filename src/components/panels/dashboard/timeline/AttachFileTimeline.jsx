@@ -5,7 +5,8 @@ import styled from "styled-components";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import { Avatar } from "../../../common";
 import { useTimeFormat } from "../../../hooks";
-//import useFileActions from "../../../hooks/useFileActions";
+import useFileActions from "../../../hooks/useFileActions";
+import FilePill from "../../../list/chat/Files/FilePill";
 
 const Wrapper = styled.div`
   .timeline-file-icon {
@@ -26,6 +27,12 @@ const Wrapper = styled.div`
     cursor: pointer;
     cursor: hand;
   }
+  .file-pill-container {
+    background-color: #f1f2f7a3;
+    .dark & {
+      background-color: #f1f2f712;
+    }
+  }
 `;
 
 const AttachFileTimeline = (props) => {
@@ -33,7 +40,7 @@ const AttachFileTimeline = (props) => {
   const { params } = useRouteMatch();
 
   const dispatch = useDispatch();
-  //const fileHandler = useFileActions();
+  const fileHandler = useFileActions();
   const { fromNow } = useTimeFormat();
 
   const handleFilePreview = () => {
@@ -61,6 +68,12 @@ const AttachFileTimeline = (props) => {
           <div className="mb-3">
             <span onClick={handleFilePreview} className="file-summary">
               {dictionary.attachedFile}
+            </span>
+          </div>
+          <div className="mb-3 border p-3 border-radius-1 file-pill-container">
+            <FilePill className="mb-2" file={data} dictionary={dictionary} cbFilePreview={handleFilePreview} />
+            <span onClick={handleFilePreview} className="timeline-file-icon">
+              {fileHandler.getFileIcon(data.mime_type)} <span>{data.name}</span>
             </span>
           </div>
           {/* <div className="mb-3 border p-3 border-radius-1">

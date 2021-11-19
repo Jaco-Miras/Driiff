@@ -69,7 +69,7 @@ const CompanyAttachFileTimeline = (props) => {
             </span>
           </div>
           <div className="mb-3 border p-3 border-radius-1 file-pill-container">
-            <FilePill className="mb-2" file={data} dictionary={dictionary} />
+            <FilePill className="mb-2" file={data} dictionary={dictionary} cbFilePreview={handleFilePreview} />
             <span onClick={handleFilePreview} className="timeline-file-icon">
               {fileHandler.getFileIcon(data.mime_type)} <span>{data.name}</span>
             </span>
