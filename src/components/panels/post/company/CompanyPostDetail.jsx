@@ -423,7 +423,10 @@ const CompanyPostDetail = (props) => {
 
     postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     return () => {
-      dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+      if (post.is_unread === 1 || post.unread_count > 0) {
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+      }
+
       postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     };
     // postActions.getUnreadPostsCount();
