@@ -212,6 +212,15 @@ const HomeProfileNavigation = (props) => {
     // history.push("/releases");
   };
 
+  const hideSearch = () => {
+    const name = "search";
+    setDropDown((prevState) => ({
+      ...prevState,
+      ...(prevState.name !== name && { name: name }),
+      value: prevState.name === name ? !prevState.value : true,
+    }));
+  };
+
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
       {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
@@ -227,7 +236,7 @@ const HomeProfileNavigation = (props) => {
             <SvgIconFeather icon="search" />
           </ToolTip>
         </a>
-        {dropDown.name === "search" && dropDown.value && <SearchDropDown />}
+        {dropDown.name === "search" && dropDown.value && <SearchDropDown hideSearch={hideSearch} />}
       </li>
       <li className="nav-item dropdown">
         <a href="/" className={`nav-link notif-bell ${location.pathname.split("/")[1] === "notifications" && "active"}`} data-toggle="notification" onClick={gotoNotifications}>
