@@ -298,3 +298,7 @@ export function putWorkspaceNotification(payload, callback) {
 export function incomingWorkpaceNotificationStatus(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_NOTIFICATION_STATUS", payload, callback);
 }
+
+export function setUnreadPostIds(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_UNREAD_POST_IDS", payload, callback);
+}

@@ -770,6 +770,22 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
+    case "SET_UNREAD_POST_IDS": {
+      if (state.workspacePosts.hasOwnProperty(action.data.topic_id)) {
+        return {
+          ...state,
+          workspacePosts: {
+            ...state.workspacePosts,
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              unreadPostIds: action.data.unreadPostIds,
+            },
+          },
+        };
+      } else {
+        return state;
+      }
+    }
     case "UPDATE_WORKSPACE_POST_FILTER_SORT": {
       return {
         ...state,
@@ -1335,6 +1351,14 @@ export default (state = INITIAL_STATE, action) => {
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
           newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
+          if (typeof action.data.show_post !== "undefined" && action.data.show_post === true) {
+            if (newWorkspacePosts[ws.topic_id].unreadPostIds) {
+              newWorkspacePosts[ws.topic_id].unreadPostIds = [...newWorkspacePosts[ws.topic_id].unreadPostIds, action.data.id];
+            } else {
+              newWorkspacePosts[ws.topic_id].unreadPostIds = [action.data.id];
+            }
+          }
+
           if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
             newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
           } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
@@ -2058,6 +2082,7 @@ export default (state = INITIAL_STATE, action) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
+                  unreadPostIds: state.workspacePosts[wsId].unreadPostIds && action.data.unread === 0 ? state.workspacePosts[wsId].unreadPostIds.filter((id) => action.data.post_id !== action.data.post_id) : [],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
