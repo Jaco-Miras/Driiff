@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     padding-left: 0;
     //overflow: auto;
     overflow-y: hidden;
-    overflow-x: scroll;
+    overflow-x: auto;
     display: flex;
     flex-grow: 1;
     .dark & {
