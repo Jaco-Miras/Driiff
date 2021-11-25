@@ -128,7 +128,7 @@ const WrapperDiv = styled(InputGroup)`
     transition: all 0.5s ease;
     position: absolute;
     bottom: 22px;
-    right: 0;
+    left: 0;
     background-color: #fff;
     border: 1px solid #dee2e6;
     padding: 0;
@@ -138,7 +138,7 @@ const WrapperDiv = styled(InputGroup)`
     overflow: auto;
     overflow-x: hidden;
     width: 230px;
-
+    z-index: 2;
     .dark & {
       background: #191c20;
     }
@@ -164,7 +164,7 @@ const WrapperDiv = styled(InputGroup)`
   .workspace-list {
     position: absolute;
     bottom: 22px;
-    right: 0;
+    left: 250px;
     background-color: #fff;
     border: 1px solid #dee2e6;
     padding: 0;
@@ -173,6 +173,7 @@ const WrapperDiv = styled(InputGroup)`
     max-height: 0;
     overflow: auto;
     width: 230px;
+    z-index: 2;
 
     .dark & {
       background: #191c20;
@@ -197,10 +198,10 @@ const WrapperDiv = styled(InputGroup)`
     .post-info {
       font-size: 0.8rem;
       flex-flow: wrap;
-      justify-content: flex-end;
-      @media all and (max-width: 480px) {
-        justify-content: flex-start;
-      }
+      // justify-content: flex-end;
+      // @media all and (max-width: 480px) {
+      //   justify-content: flex-start;
+      // }
     }
   }
   .dark & {
@@ -214,11 +215,14 @@ const WrapperDiv = styled(InputGroup)`
   &.file-attachment-wrapper .file-label {
     font-size: 0.8rem;
   }
+  &.addressed-to-container {
+    margin: 20px 0 10px 0;
+  }
 `;
 
 const MoreOption = styled.div`
   cursor: pointer;
-  margin-bottom: 5px;
+  // margin-bottom: 5px;
   &:hover {
     color: #972c86;
   }
@@ -977,11 +981,14 @@ const PostModal = (props) => {
             <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
-        <WrapperDiv className={"modal-input"}>
+        <WrapperDiv className={"modal-input addressed-to-container"}>
           <Label className={"modal-label"} for="workspace">
             {dictionary.addressedTo}
           </Label>
           <FolderSelect options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+        </WrapperDiv>
+        <WrapperDiv className={"m-0"}>
+          <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
         </WrapperDiv>
         <StyledDescriptionInput
           className="modal-description"
@@ -1031,7 +1038,7 @@ const PostModal = (props) => {
           </WrapperDiv>
         )}
         <WrapperDiv className="modal-label more-option">
-          <MoreOption>{dictionary.moreOptions}</MoreOption>
+          <MoreOption className="mb-1">{dictionary.moreOptions}</MoreOption>
           <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
@@ -1039,9 +1046,6 @@ const PostModal = (props) => {
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>
-        </WrapperDiv>
-        <WrapperDiv className={"mb-0 mt-1"}>
-          <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
         </WrapperDiv>
       </ModalBody>
     </Modal>

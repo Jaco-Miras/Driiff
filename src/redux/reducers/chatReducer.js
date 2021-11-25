@@ -2907,6 +2907,21 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
+    case "INCOMING_DELETED_USER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.members.some((m) => m.id === action.data.id)) {
+            acc[channel.id] = { ...channel, members: channel.members.filter((m) => m.id !== action.data.id) };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.id) ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.id) } : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }

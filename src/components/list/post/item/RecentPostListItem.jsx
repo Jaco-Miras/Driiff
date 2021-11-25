@@ -19,6 +19,7 @@ const Wrapper = styled.li`
     cursor: pointer;
   }
   .recent-post-timestamp {
+    color: #8b8b8b;
     @media only screen and (max-width: 480px) {
       display: none !important;
     }
@@ -43,7 +44,7 @@ const RecentPostListItem = (props) => {
   return (
     <Wrapper className={`recent-post-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`} onClick={handleOpenPost}>
       <div className="flex-grow-1 min-width-0" onClick={handleOpenPost}>
-        <div className="mb-1 d-flex align-items-center justify-content-between">
+        <div className="d-flex align-items-center justify-content-between">
           <div className={"app-list-title text-truncate"}>{post.title}</div>
           <div className={"pl-3 d-flex recent-post-timestamp align-items-center"}>{localizeChatDate(post.created_at.timestamp)}</div>
         </div>

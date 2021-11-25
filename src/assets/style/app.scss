@@ -22313,3 +22313,12 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .ql-tooltip {
   left: 0 !important;
 }
+.Toastify__toast-container.top-toaster {
+  min-width: 350px;
+  max-width: 400px;
+  width: auto;
+  .Toastify__toast {
+    min-height: 80px;
+    max-height: 120px;
+  }
+}

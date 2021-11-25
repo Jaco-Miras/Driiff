@@ -7,6 +7,7 @@ import { SvgEmptyState } from "../../common";
 import { createWorkspaceTeamChannel } from "../../../redux/actions/workspaceActions";
 import { useFetchWsCount } from "../../hooks";
 import { fetchRecentPosts } from "../../../redux/actions/postActions";
+import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div``;
 
@@ -51,6 +52,14 @@ const WorkspaceChatPanel = (props) => {
       );
     }
   };
+
+  useEffect(() => {
+    const snoozeContainer = document.getElementById("toastS");
+    if (snoozeContainer && isMobile) snoozeContainer.classList.add("d-none");
+    return () => {
+      if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
+    };
+  }, []);
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {

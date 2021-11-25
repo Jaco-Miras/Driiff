@@ -38,6 +38,14 @@ Quill.register(Block);
 //   }
 // }
 
+let Embed = Quill.import("blots/embed");
+
+class Breaker extends Embed {
+  static tagName = "br";
+  static blotName = "breaker";
+}
+
+Quill.register(Breaker);
 Quill.register("modules/magicUrl", MagicUrl);
 
 //Quill.register("modules/clipboard", QuillPlainClipboard, true);

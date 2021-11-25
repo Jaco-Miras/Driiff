@@ -51,6 +51,7 @@ const CompanyDashboardPanel = (props) => {
     remove: _t("TEAM.REMOVE", "Remove"),
     showMore: _t("SHOW_MORE", "Show more"),
     showLess: _t("SHOW_LESS", "Show less"),
+    openPost: _t("SYSTEM.OPEN_POST", "Open post"),
   };
 
   return (

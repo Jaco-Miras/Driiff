@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useSearchActions, useTranslationActions } from "../../hooks";
+import { useSearchActions, useTranslationActions, useOutsideClick } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 //import { ChatSearchItem, ChannelSearchItem, CommentSearchItem, FileSearchItem, PeopleSearchItem, PostSearchItem, WorkspaceSearchItem } from "../../list/search";
 
@@ -33,6 +33,7 @@ const Wrapper = styled.div`
 // `;
 
 const SearchDropdown = (props) => {
+  const { hideSearch } = props;
   const dropdownRef = useRef();
   const actions = useSearchActions();
   // const { value } = useSearch();
@@ -88,6 +89,8 @@ const SearchDropdown = (props) => {
   const dictionary = {
     searchGlobalPopupPlaceholder: _t("PLACEHOLDER.SEARCH_GLOBAL_POPUP", "Search for anything in this Driff"),
   };
+
+  useOutsideClick(dropdownRef, hideSearch, true);
 
   return (
     <Wrapper className="dropdown-menu p-2 dropdown-menu-right show" ref={dropdownRef}>

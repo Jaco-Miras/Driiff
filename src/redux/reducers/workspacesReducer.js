@@ -75,6 +75,7 @@ const INITIAL_STATE = {
     },
   },
   workspaceReminders: {},
+  connectedTeamIds: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -164,6 +165,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_WORKSPACES_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
+      let connectedTeamIds = [];
       action.data.workspaces.forEach((ws) => {
         if (ws.type === "FOLDER") {
           if (updatedFolders.hasOwnProperty(ws.id)) {
@@ -175,6 +177,10 @@ export default (state = INITIAL_STATE, action) => {
             };
           }
           ws.topics.forEach((t) => {
+            if (t.members.some((m) => m.hasOwnProperty("parent_team"))) {
+              const teams = t.members.filter((m) => m.hasOwnProperty("parent_team"));
+              connectedTeamIds.push(teams);
+            }
             if (!state.workspaces[t.id]) {
               updatedWorkspaces[t.id] = {
                 ...t,
@@ -190,6 +196,10 @@ export default (state = INITIAL_STATE, action) => {
           });
           delete updatedFolders[ws.id].topics;
         } else if (ws.type === "WORKSPACE") {
+          if (ws.members.some((m) => m.hasOwnProperty("parent_team"))) {
+            const teams = ws.members.filter((m) => m.hasOwnProperty("parent_team"));
+            connectedTeamIds.push(teams);
+          }
           updatedWorkspaces[ws.id] = {
             ...ws,
             is_favourite: ws.topic_detail.is_favourite,
@@ -210,6 +220,7 @@ export default (state = INITIAL_STATE, action) => {
       });
       return {
         ...state,
+        connectedTeamIds: [...new Set(connectedTeamIds.flat().map((t) => t.id))],
         workspaces: updatedWorkspaces,
         workspacesLoaded: true,
         externalWorkspacesLoaded: true,
@@ -1361,7 +1372,7 @@ export default (state = INITIAL_STATE, action) => {
           if (state.activeTopic && state.activeTopic.id === ws.topic_id && typeof action.data.show_post !== "undefined" && action.data.show_post === true) {
             addUnreadPost = true;
           }
-          // if (ws.workspace_id !== null && typeof action.data.show_post !== "undefined" && action.data.show_post === true) {
+          // if (ws.workspace_id !== null) {
           //   updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
           // }
         }
@@ -2479,10 +2490,12 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       let newWorkspacePosts = { ...state.workspacePosts };
-      let post = { ...action.data, clap_user_ids: [] };
+      let post = { ...action.data, clap_user_ids: [], last_visited_at: { timestamp: null } };
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
-          newWorkspacePosts[ws.topic_id].posts[post.id] = post;
+          if (newWorkspacePosts[ws.topic_id].posts[post.id]) {
+            newWorkspacePosts[ws.topic_id].posts[post.id] = { ...post, clap_user_ids: newWorkspacePosts[ws.topic_id].posts[post.id].clap_user_ids, last_visited_at: newWorkspacePosts[ws.topic_id].posts[post.id].last_visited_at };
+          } else newWorkspacePosts[ws.topic_id].posts[post.id] = post;
         } else {
           newWorkspacePosts[ws.topic_id] = {
             filters: {},
@@ -3993,6 +4006,20 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_DELETED_USER": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.members.some((m) => m.id === action.data.id)) {
+            acc[ws.id] = { ...ws, members: ws.members.filter((m) => m.id !== action.data.id) };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+        activeTopic: state.activeTopic && state.activeTopic.members.some((m) => m.id === action.data.id) ? { ...state.activeTopic, members: state.activeTopic.members.filter((m) => m.id !== action.data.id) } : state.activeTopic,
+      };
+    }
     case "INCOMING_WORKSPACE_NOTIFICATION_STATUS": {
       return {
         ...state,
@@ -4012,7 +4039,6 @@ export default (state = INITIAL_STATE, action) => {
                 results: state.search.results.map((ws) => {
                   if (ws.topic.id === action.data.id) {
                     return {
-                      ...ws,
                       topic: { ...ws.topic, is_active: action.data.is_active },
                     };
                   } else {
@@ -4021,6 +4047,38 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               }
             : state.search,
+      };
+    }
+    case "INCOMING_LAST_VISIT_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(Object.keys(state.workspacePosts).length > 0 && {
+            ...Object.keys(state.workspacePosts).reduce((res, id) => {
+              res[id] = {
+                ...state.workspacePosts[id],
+                posts: {
+                  ...state.workspacePosts[id].posts,
+                  ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
+                    ...Object.values(state.workspacePosts[id].posts).reduce((pos, post) => {
+                      if (post.id && action.data.post_id) {
+                        pos[post.id] = {
+                          ...post,
+                          last_visited_at: { timestamp: action.data.last_visit },
+                        };
+                      } else {
+                        pos[post.id] = post;
+                      }
+                      return pos;
+                    }, {}),
+                  }),
+                },
+              };
+              return res;
+            }, {}),
+          }),
+        },
       };
     }
     default:

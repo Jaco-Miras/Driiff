@@ -53,11 +53,15 @@ const FavWorkspacesLabel = styled.div`
   margin: 0 15px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   color: rgba(255, 255, 255, 0.6);
   border-top: 2px solid;
   padding: 15px 0;
   > span {
     margin-left: 15px;
+  }
+  svg {
+    margin-right: 8px;
   }
 `;
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost } from "../../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { DropDocument } from "../../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../../hooks";
@@ -422,7 +422,13 @@ const CompanyPostDetail = (props) => {
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
 
     postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    return () => {
+      if (post.is_unread === 1 || post.unread_count > 0) {
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+      }
+
+      postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    };
     // postActions.getUnreadPostsCount();
   }, []);
 
