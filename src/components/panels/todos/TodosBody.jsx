@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useFileActions, useTimeFormat, useRedirect } from "../../hooks";
 import { TodosList } from "./index";
 import ListContainer from "./ListContainer";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   flex: unset !important;
@@ -142,6 +143,8 @@ const TodosBody = (props) => {
     done: false,
   });
 
+  const [sortByDate, setSortByDate] = useState(true);
+
   const handleShowTodo = () => {
     // if (showList.todo) {
     //   // to false
@@ -217,6 +220,32 @@ const TodosBody = (props) => {
     redirect.toWorkspace(todo.workspace, "reminders");
   };
 
+  const handleSort = () => {
+    setSortByDate(!sortByDate);
+  };
+
+  const sortItems = (items) => {
+    return Object.values(items).sort((a, b) => {
+      if (sortByDate) {
+        if (a.remind_at && b.remind_at) {
+          return a.remind_at.timestamp - b.remind_at.timestamp;
+        }
+        if (a.remind_at && b.remind_at === null) {
+          return -1;
+        }
+
+        if (a.remind_at === null && b.remind_at) {
+          return 1;
+        }
+        if (a.remind_at === null && b.remind_at === null) {
+          return a.title.localeCompare(b.title);
+        }
+      } else {
+        return a.title.localeCompare(b.title);
+      }
+    });
+  };
+
   return (
     <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
       {!isLoaded && (
@@ -232,8 +261,12 @@ const TodosBody = (props) => {
             dictionary={dictionary}
             handleHeaderClick={handleShowTodo}
             headerText={dictionary.todo}
-            items={todoItems}
-            headerChild={params.hasOwnProperty("workspaceId") ? <span className="badge badge-light">{workspaceName}</span> : null}
+            items={sortItems(todoItems)}
+            params={params}
+            workspaceName={workspaceName}
+            sortByDate={sortByDate}
+            handleSort={handleSort}
+            //headerChild={params.hasOwnProperty("workspaceId") ? <span className="badge badge-light">{workspaceName}</span> : null}
             ItemList={(item) => (
               <TodosList
                 key={item.id}
@@ -256,7 +289,11 @@ const TodosBody = (props) => {
             listGroupClassname={"list-group-done"}
             handleHeaderClick={handleShowDone}
             headerText={dictionary.done}
-            items={doneTodoItems}
+            items={sortItems(doneTodoItems)}
+            params={params}
+            workspaceName={null}
+            sortByDate={sortByDate}
+            handleSort={handleSort}
             ItemList={(item) => (
               <TodosList
                 key={item.id}
