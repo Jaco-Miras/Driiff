@@ -1649,6 +1649,15 @@ export default (state = INITIAL_STATE, action) => {
             if (state.workspacePosts[ws.topic_id]) {
               res[ws.topic_id] = {
                 ...state.workspacePosts[ws.topic_id],
+                unreadPostIds:
+                  action.data.code_data &&
+                  action.data.code_data.mention_ids &&
+                  action.data.code_data.mention_ids.some((id) => id === state.user.id) &&
+                  isNewComment &&
+                  state.workspacePosts[ws.topic_id].unreadPostIds &&
+                  action.data.author !== state.user.id
+                    ? [...state.workspacePosts[ws.topic_id].unreadPostIds, action.data.post_id]
+                    : [],
                 posts: {
                   ...state.workspacePosts[ws.topic_id].posts,
                   ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
