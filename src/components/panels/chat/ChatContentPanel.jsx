@@ -195,6 +195,10 @@ const ChatContentPanel = (props) => {
     editHuddle: _t("CHAT.EDIT_HUDDLE", "Edit huddle"),
     discussOnTeamChat: _t("CHAT.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
     team: _t("TEAM", "Team"),
+    errorSendingChat: _t("CHAT.ERROR_SENDING", "Error sending chat"),
+    resend: _t("CHAT.FAIL_OPTIONS_RESEND", "Resend"),
+    delete: _t("CHAT.FAIL_OPTIONS_DELETE", "Delete"),
+    messageFailed: _t("CHAT.FAILED", "Message failed"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

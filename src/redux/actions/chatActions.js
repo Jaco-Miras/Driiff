@@ -481,3 +481,7 @@ export function removeWorkspaceChannel(payload, callback) {
 export function setChatMessageFail(payload, callback) {
   return SimpleDispatchActionToReducer("SET_CHAT_MESSAGE_FAIL", payload, callback);
 }
+
+export function removeChatMessage(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_FAILED_CHAT_MESSAGE", payload, callback);
+}
