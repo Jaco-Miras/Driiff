@@ -614,12 +614,12 @@ const ProfileSettings = (props) => {
     toaster.success(<span>You have successfully updated Time format</span>);
   }, []);
 
-  const handleSystemSettingsClick = () => {
-    let a = document.createElement("a");
-    a.href = `https://${getDriffName()}.driff.io/admin`;
-    a.target = "_blank";
-    a.click();
-  };
+  // const handleSystemSettingsClick = () => {
+  //   let a = document.createElement("a");
+  //   a.href = `https://${getDriffName()}.driff.io/admin`;
+  //   a.target = "_blank";
+  //   a.click();
+  // };
 
   const handleUpdateTranslationClick = () => {
     uploadTranslationToServer(() => {
@@ -674,7 +674,7 @@ const ProfileSettings = (props) => {
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
         <>
-          {loggedUser.role.name === "owner" && (
+          {/* {loggedUser.role.name === "owner" && (
             <div className="card">
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center mb-0">
@@ -682,7 +682,7 @@ const ProfileSettings = (props) => {
                 </h6>
               </div>
             </div>
-          )}
+          )} */}
           <div className="card">
             <div className="card-body">
               <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>

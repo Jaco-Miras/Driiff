@@ -9,6 +9,9 @@ const Wrapper = styled.div`
   .feather-edit {
     cursor: pointer;
   }
+  .feather-plus {
+    color: #8b8b8b;
+  }
   overflow: unset;
 
   .card-title {
