@@ -30,12 +30,10 @@ const ListGroup = styled.ul`
 `;
 
 const ListContainer = (props) => {
-  const { className = "", active, handleHeaderClick, headerText, headerChild, dictionary, items, ItemList, showEmptyState = true, listGroupClassname = "" } = props;
+  const { className = "", active, handleHeaderClick, headerText, dictionary, items, ItemList, showEmptyState = true, listGroupClassname = "", params, workspaceName, handleSort, sortByDate } = props;
   return (
     <Wrapper className={className}>
-      <ListHeader active={active} headerText={headerText} handleClick={handleHeaderClick}>
-        {headerChild}
-      </ListHeader>
+      <ListHeader active={active} headerText={headerText} handleClick={handleHeaderClick} params={params} workspaceName={workspaceName} handleSort={handleSort} sortByDate={sortByDate} dictionary={dictionary}/>
       {items.length === 0 && showEmptyState && active && <ListEmptyState dictionary={dictionary} />}
       {items.length > 0 && active && (
         <ListGroup className={listGroupClassname}>

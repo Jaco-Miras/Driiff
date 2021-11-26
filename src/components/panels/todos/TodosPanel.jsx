@@ -82,6 +82,8 @@ const TodosPanel = (props) => {
     addDate: _t("REMINDER.ADD_DATE", "Add date"),
     addedByMe: _t("REMINDER.ADDED_BY_ME", "Added by me"),
     addedByOthers: _t("REMINDER.ADDED_BY_OTHERS", "Added by others"),
+    sortAlpha: _t("TODO_SORT_OPTIONS.ALPHA", "Sort by alphabetical order"),
+    sortDate: _t("TODO_SORT_OPTIONS.DATE", "Sort by due date"),
   };
 
   const handleFilterFile = (e) => {
