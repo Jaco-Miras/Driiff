@@ -217,7 +217,7 @@ const HomeProfileNavigation = (props) => {
 
   const handleGiftClick = (e) => {
     e.preventDefault();
-    window.open("https://support.getdriff.com/hc/en-us/categories/4409918500625-Software-updates", "_blank");
+    window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
     // history.push("/releases");
   };
 
