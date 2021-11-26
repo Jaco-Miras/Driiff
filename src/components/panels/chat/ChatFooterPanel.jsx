@@ -263,6 +263,7 @@ const ChatFooterPanel = (props) => {
     send: _t("TOOLTIP.SEND", "Send"),
     attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
     closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
+    errorSendingChat: _t("CHAT.ERROR_SENDING", "Error sending chat"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -423,6 +424,7 @@ const ChatFooterPanel = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
+                    dictionary={dictionary}
                     //test
                   />
                   <ChatInputButtons

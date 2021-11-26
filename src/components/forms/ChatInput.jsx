@@ -14,6 +14,7 @@ import {
   setEditChatMessage,
   setSelectedChannel,
   incomingUpdatedChatMessage,
+  setChatMessageFail,
 } from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
@@ -137,7 +138,7 @@ const getSlug = () => {
 
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive, dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -379,6 +380,7 @@ const ChatInput = (props) => {
       quote: quote ? payload.quote : null,
       unfurls: [],
       g_date: localizeDate(timestamp, "YYYY-MM-DD"),
+      status: "pending",
     };
 
     if (!editMode) {
@@ -422,7 +424,14 @@ const ChatInput = (props) => {
         dispatch(setEditChatMessage(null));
       }
     } else {
-      dispatch(postChatMessage(payload));
+      dispatch(
+        postChatMessage(payload, (err, res) => {
+          if (err) {
+            toaster.error(dictionary.errorSendingChat);
+            dispatch(setChatMessageFail({ id: obj.id, channel_id: selectedChannel.id }));
+          }
+        })
+      );
     }
 
     if (quote) {
