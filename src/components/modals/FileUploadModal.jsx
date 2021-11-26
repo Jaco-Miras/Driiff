@@ -14,6 +14,7 @@ import { postComment, putComment, setEditComment, setParentIdForUpload, addComme
 import { osName } from "react-device-detect";
 import { FolderSelect } from "../forms";
 import _ from "lodash";
+import axios from "axios";
 
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
@@ -359,7 +360,10 @@ const FileUploadModal = (props) => {
     setFiles(files.filter((f) => f.id !== file.id));
   };
 
-  async function uploadFiles() {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const uploadFiles = () => {
     if (files.filter((f) => typeof f.id === "string").length) {
       // new endpint
       let formData = new FormData();
@@ -368,6 +372,7 @@ const FileUploadModal = (props) => {
         file_type: "private",
         folder_id: null,
         fileOption: fileOption,
+        cancelToken: source.token,
         options: {
           config: {
             onUploadProgress: handleOnUploadProgress,
@@ -382,9 +387,7 @@ const FileUploadModal = (props) => {
           formData.append(`files[${index}]`, file.bodyFormData.get("file"));
         });
       payload["files"] = formData;
-      await new Promise((resolve, reject) => {
-        resolve(uploadBulkDocument(payload));
-      })
+      uploadBulkDocument(payload)
         .then((result) => {
           const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
           handleSubmit(resFiles);
@@ -394,7 +397,47 @@ const FileUploadModal = (props) => {
           handleNetWorkError(error);
         });
     }
-  }
+  };
+
+  // async function uploadFiles() {
+  //   if (files.filter((f) => typeof f.id === "string").length) {
+  //     // new endpint
+  //     let formData = new FormData();
+  //     let payload = {
+  //       user_id: user.id,
+  //       file_type: "private",
+  //       folder_id: null,
+  //       fileOption: fileOption,
+  //       cancelToken: source.token,
+  //       options: {
+  //         config: {
+  //           onUploadProgress: handleOnUploadProgress,
+  //         },
+  //       },
+  //     };
+  //     files
+  //       .filter((f) => {
+  //         return typeof f.id === "string";
+  //       })
+  //       .map((file, index) => {
+  //         formData.append(`files[${index}]`, file.bodyFormData.get("file"));
+  //       });
+  //     payload["files"] = formData;
+  //     console.log(payload);
+  //     await new Promise((resolve, reject) => {
+  //       resolve(uploadBulkDocument(payload));
+  //     })
+  //       .then((result) => {
+  //         const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+  //         handleSubmit(resFiles);
+  //         //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
+  //       })
+  //       .catch((error) => {
+  //         console.log("error", error);
+  //         handleNetWorkError(error);
+  //       });
+  //   }
+  // }
 
   const handleNetWorkError = () => {
     if (toasterRef.curent !== null) {
@@ -405,10 +448,25 @@ const FileUploadModal = (props) => {
     }
   };
 
+  const CloseButton = ({ closeToast }) => (
+    <i
+      className="material-icons"
+      onClick={() => {
+        setTimeout(() => {
+          source.cancel();
+        }, 1000);
+        closeToast();
+        toasterRef.current = null;
+      }}
+    >
+      cancel
+    </i>
+  );
+
   const handleOnUploadProgress = (progressEvent) => {
     const progress = progressEvent.loaded / progressEvent.total;
     if (toasterRef.current === null) {
-      toasterRef.current = toaster.info(<div>{dictionary.uploading}.</div>, { progress: progressBar.current, autoClose: true });
+      toasterRef.current = toaster.info(<div>{dictionary.uploading}.</div>, { progress: progressBar.current, autoClose: true, closeButton: CloseButton });
     } else {
       toaster.update(toasterRef.current, { progress: progress, autoClose: true });
     }
