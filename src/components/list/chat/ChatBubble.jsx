@@ -721,7 +721,7 @@ const ChatBubble = (props) => {
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
             <span className="reply-date created">
-              {isNaN(reply.id) && reply.status === "failed" && <span className="msg-fail">message failed</span>}
+              {isNaN(reply.id) && reply.status === "failed" && <span className="msg-fail">{dictionary.messageFailed}</span>}
               {!isNaN(reply.id) && <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>}
               {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
             </span>

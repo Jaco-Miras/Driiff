@@ -14,6 +14,7 @@ import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import memoizeOne from "memoize-one";
+import FailChatOptions from "./FailChatOptions";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -789,6 +790,9 @@ class ChatMessages extends React.PureComponent {
                                         isExternalUser={this.props.user.type === "external"}
                                         chatMessageActions={this.props.chatMessageActions}
                                       />
+                                    )}
+                                    {isNaN(reply.id) && reply.status === "failed" && (
+                                      <FailChatOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} scrollComponent={this.scrollComponent.current} replyData={reply} />
                                     )}
                                   </ChatActionsContainer>
 

@@ -428,7 +428,7 @@ const ChatInput = (props) => {
         postChatMessage(payload, (err, res) => {
           if (err) {
             toaster.error(dictionary.errorSendingChat);
-            dispatch(setChatMessageFail({ id: obj.id, channel_id: selectedChannel.id }));
+            dispatch(setChatMessageFail({ id: obj.id, channel_id: selectedChannel.id, payload: payload }));
           }
         })
       );

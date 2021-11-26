@@ -3216,7 +3216,7 @@ export default function (state = INITIAL_STATE, action) {
               ...channel,
               replies: channel.replies.map((r) => {
                 if (r.id === action.data.id) {
-                  return { ...r, status: "failed" };
+                  return { ...r, status: "failed", payload: action.data.payload };
                 } else {
                   return r;
                 }
@@ -3233,10 +3233,37 @@ export default function (state = INITIAL_STATE, action) {
                 ...state.selectedChannel,
                 replies: state.selectedChannel.replies.map((r) => {
                   if (r.id === action.data.id) {
-                    return { ...r, status: "failed" };
+                    return { ...r, status: "failed", payload: action.data.payload };
                   } else {
                     return r;
                   }
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
+    case "REMOVE_FAILED_CHAT_MESSAGE": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel_id) {
+            acc[channel.id] = {
+              ...channel,
+              replies: channel.replies.filter((r) => {
+                return r.id !== action.data.id;
+              }),
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.filter((r) => {
+                  return r.id !== action.data.id;
                 }),
               }
             : state.selectedChannel,
