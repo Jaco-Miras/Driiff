@@ -2922,6 +2922,41 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.id) ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.id) } : state.selectedChannel,
       };
     }
+    case "SET_CHAT_MESSAGE_FAIL": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel_id) {
+            acc[channel.id] = {
+              ...channel,
+              replies: channel.replies.map((r) => {
+                if (r.id === action.data.id) {
+                  return { ...r, status: "failed" };
+                } else {
+                  return r;
+                }
+              }),
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.map((r) => {
+                  if (r.id === action.data.id) {
+                    return { ...r, status: "failed" };
+                  } else {
+                    return r;
+                  }
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }

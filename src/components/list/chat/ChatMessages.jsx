@@ -768,7 +768,7 @@ class ChatMessages extends React.PureComponent {
                                     chat_language={this.props.chat_language}
                                   />
                                   <ChatActionsContainer isAuthor={isAuthor} className={`chat-actions-container ${reply.reactions.length && "has-reactions"}`} hasReactions={reply.reactions.length}>
-                                    {<ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
+                                    {!isNaN(reply.id) && <ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
                                     {!isNaN(reply.id) && !reply.is_deleted && (
                                       <ChatMessageOptions
                                         dictionary={this.props.dictionary}

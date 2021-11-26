@@ -253,6 +253,7 @@ const ChatFooterPanel = (props) => {
     yes: _t("YES", "Yes"),
     no: _t("NO", "No"),
     googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
+    errorSendingChat: _t("CHAT.ERROR_SENDING", "Error sending chat"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -392,6 +393,7 @@ const ChatFooterPanel = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
+                    dictionary={dictionary}
                     //test
                   />
                   <ChatInputButtons
