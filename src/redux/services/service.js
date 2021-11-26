@@ -1,12 +1,12 @@
 import axios from "axios";
 import { sessionService } from "redux-react-session";
-//import {source} from "../../helpers/cancelRequest";
+// import { source } from "../../helpers/cancelRequest";
 //import {requireAxiosDebugLog} from "../../helpers/commonFunctions";
 import { getAPIUrl } from "../../helpers/slugHelper";
 
 //requireAxiosDebugLog();
 
-export const apiCall = async ({ method, url, data = null, register = false, mockServer = false, responseType, hasFile = false, is_shared = false, config = { timeout: 5000 } }) => {
+export const apiCall = async ({ method, url, data = null, register = false, mockServer = false, responseType, hasFile = false, is_shared = false, config = { timeout: 5000 }, cancelToken = null }) => {
   let userLang = navigator.language || navigator.userLanguage;
   let tzOffset = new Date().getTimezoneOffset();
   let tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -53,7 +53,7 @@ export const apiCall = async ({ method, url, data = null, register = false, mock
       data,
       responseType,
       crossDomain: true,
-      //cancelToken: source.token,
+      cancelToken: cancelToken,
       headers: {
         "Access-Control-Allow-Origin": "*",
         crossorigin: true,

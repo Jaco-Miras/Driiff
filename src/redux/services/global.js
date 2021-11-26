@@ -97,7 +97,7 @@ export function uploadBulkDocument(payload) {
     },
     payload.options ? payload.options : {}
   );
-  return apiCall(payloadRequest);
+  return apiCall({ ...payloadRequest, cancelToken: payload.cancelToken });
 }
 
 export function getTranslationObject(payload) {
