@@ -783,7 +783,7 @@ class ChatMessages extends React.PureComponent {
                                         dictionary={this.props.dictionary}
                                         className={"chat-message-options"}
                                         selectedChannel={this.props.selectedChannel}
-                                        scrollComponent={this.props.scrollComponent.current}
+                                        scrollComponent={this.scrollComponent.current}
                                         isAuthor={isAuthor}
                                         replyData={reply}
                                         teamChannelId={this.props.teamChannelId}
@@ -836,7 +836,7 @@ class ChatMessages extends React.PureComponent {
                                           isAuthor={isAuthor}
                                           reply={reply}
                                           //showEmojiSwitcher={this.state.showEmoji[reply.id]}
-                                          scrollComponent={this.props.scrollComponent.current}
+                                          scrollComponent={this.scrollComponent.current}
                                           chatMessageActions={this.props.chatMessageActions}
                                         />
                                       }
