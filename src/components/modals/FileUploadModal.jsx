@@ -510,37 +510,29 @@ const FileUploadModal = (props) => {
     }
     if (mode === "chat") {
       dispatch(setSidebarSearch({ value: "" }));
-      uFiles.forEach((file, k) => {
-        let payload = {};
-        let el = document.createElement("div");
-        el.innerHTML = body;
-        for (let i = el.childNodes.length - 1; i >= 0; i--) {
-          if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
-            el.removeChild(el.childNodes[i]);
-          } else {
-            el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
-            break;
-          }
-        }
-        if (k === uFiles.length - 1) {
-          payload = {
-            channel_id: selectedChannel.id,
-            body: el.innerHTML,
-            mention_ids: mention_ids,
-            file_ids: [file.id],
-            quote: null,
-            reference_id: require("shortid").generate(),
-            reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
-          };
-          setTimeout(() => {
-            dispatch(postChatMessage(payload));
-            toaster.dismiss(toasterRef.current);
-          }, 300);
-
-          //setUploadedFiles([]);
-          dispatch(saveInputData({ sent: true }));
+      let el = document.createElement("div");
+      el.innerHTML = body;
+      for (let i = el.childNodes.length - 1; i >= 0; i--) {
+        if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
+          el.removeChild(el.childNodes[i]);
         } else {
-          payload = {
+          el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
+          break;
+        }
+      }
+      let msgpayload = {
+        channel_id: selectedChannel.id,
+        body: el.innerHTML,
+        mention_ids: mention_ids,
+        file_ids: [],
+        quote: null,
+        reference_id: require("shortid").generate(),
+        reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
+      };
+      if (textOnly.trim() !== "" || mention_ids.length) dispatch(postChatMessage(msgpayload));
+      setTimeout(() => {
+        uFiles.forEach((file, k) => {
+          let payload = {
             channel_id: selectedChannel.id,
             body: "",
             mention_ids: [],
@@ -550,8 +542,37 @@ const FileUploadModal = (props) => {
             reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
           dispatch(postChatMessage(payload));
-        }
-      });
+          // if (k === uFiles.length - 1) {
+          //   payload = {
+          //     channel_id: selectedChannel.id,
+          //     body: el.innerHTML,
+          //     mention_ids: mention_ids,
+          //     file_ids: [file.id],
+          //     quote: null,
+          //     reference_id: require("shortid").generate(),
+          //     reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
+          //   };
+          //   setTimeout(() => {
+          //     dispatch(postChatMessage(payload));
+          //     toaster.dismiss(toasterRef.current);
+          //   }, 300);
+
+          //   //setUploadedFiles([]);
+          //   dispatch(saveInputData({ sent: true }));
+          // } else {
+          //   payload = {
+          //     channel_id: selectedChannel.id,
+          //     body: "",
+          //     mention_ids: [],
+          //     file_ids: [file.id],
+          //     quote: null,
+          //     reference_id: require("shortid").generate(),
+          //     reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
+          //   };
+          //   dispatch(postChatMessage(payload));
+          // }
+        });
+      }, 500);
     } else if (mode === "post") {
       let reference_id = require("shortid").generate();
       let payload = {
