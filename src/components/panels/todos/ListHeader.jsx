@@ -26,7 +26,7 @@ const ListHeader = (props) => {
         {headerText}
       </SpanTitle>
       {params.hasOwnProperty("workspaceId") ? (
-        <div>
+        <div className="d-flex">
           <span className="badge badge-light mr-1 ws-name">{workspaceName}</span>
           <ToolTip content={sortByDate ? dictionary.sortDate : dictionary.sortAlpha}>
           <span className={"badge badge-light"} onClick={handleSort}>

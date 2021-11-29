@@ -364,13 +364,13 @@ class ChatMessages extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
   }
 
   loadReplies = () => {
     const { selectedChannel, chatMessageActions } = this.props;
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
@@ -417,7 +417,7 @@ class ChatMessages extends React.PureComponent {
   componentDidMount() {
     const { selectedChannel, historicalPositions } = this.props;
 
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
 
     if (typeof this.props.history.location.state !== "object") {
       if (historicalPositions.length) {
@@ -442,7 +442,7 @@ class ChatMessages extends React.PureComponent {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     const { selectedChannel } = this.props;
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
     if (prevProps.selectedChannel) {
       if (prevProps.selectedChannel && prevProps.selectedChannel.replies && selectedChannel.replies && scrollComponent) {
         if ((selectedChannel.replies.length > 20) & (prevProps.selectedChannel.replies.length < selectedChannel.replies.length)) {
@@ -465,7 +465,7 @@ class ChatMessages extends React.PureComponent {
     //     mentionEl.classList.add("is-author");
     //   });
     // }
-    const scrollComponent = this.props.scrollComponent.current;
+    const scrollComponent = this.scrollComponent.current;
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
@@ -682,7 +682,7 @@ class ChatMessages extends React.PureComponent {
     const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
 
     return (
-      <ChatReplyContainer ref={this.props.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2">
+      <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2">
         {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
@@ -843,7 +843,7 @@ class ChatMessages extends React.PureComponent {
                                       {!isNaN(reply.id) && !reply.is_deleted && (
                                         <ChatMessageOptions
                                           dictionary={this.props.dictionary}
-                                          scrollComponent={this.props.scrollComponent.current}
+                                          scrollComponent={this.scrollComponent.current}
                                           replyData={reply}
                                           className={"chat-message-options"}
                                           selectedChannel={this.props.selectedChannel}

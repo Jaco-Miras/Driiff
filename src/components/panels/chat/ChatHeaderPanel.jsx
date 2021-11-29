@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather, ToolTip } from "../../common";
+import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
@@ -233,7 +233,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary, handleSearchChatPanel } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -489,7 +489,7 @@ const ChatHeaderPanel = (props) => {
           </ul>
         </div>
         {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
-        <SearchIcon icon="search" onClick={handleSearchChatPanel} />
+        {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
       <ChatHeaderMembers channel={channel} />

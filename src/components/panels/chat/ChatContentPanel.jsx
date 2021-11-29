@@ -1,4 +1,4 @@
-import React, { useRef, useState, lazy, Suspense, useEffect } from "react";
+import React, { useRef, useState, useEffect, Suspense, lazy } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
@@ -54,7 +54,6 @@ const ChatContentPanel = (props) => {
   const [showSearchPanel, setShowSearchPanel] = useState(false);
   const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
 
-  const scrollComponent = React.createRef();
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
@@ -220,6 +219,8 @@ const ChatContentPanel = (props) => {
     }
   }, [pP, selectedChannel]);
 
+  const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
+
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -231,7 +232,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} />}
       {selectedChannel !== null ? (
         virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>
@@ -258,7 +259,7 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      {selectedChannel !== null && (
+      {selectedChannel !== null && showSearchPanel && isAuthorizedUser && (
         <ChatSearchPanel
           newSeachToogle={newSeachToogle}
           chatMessageActions={chatMessageActions}
@@ -266,7 +267,7 @@ const ChatContentPanel = (props) => {
           setShowSearchPanel={setShowSearchPanel}
           handleSearchChatPanel={handleSearchChatPanel}
           selectedChannel={selectedChannel}
-          pP={pP}
+          user={user}
         />
       )}
     </Wrapper>
