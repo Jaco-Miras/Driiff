@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useRouteMatch, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { useUserActions, useToaster } from "../../hooks";
@@ -17,13 +18,16 @@ const Wrapper = styled.li`
 `;
 const AllPeopleHeaderButtons = (props) => {
   const { dictionary } = props;
-
+  const match = useRouteMatch();
+  const history = useHistory();
   const loggedUser = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
-
+  const teams = useSelector((state) => state.users.teams);
   const userActions = useUserActions();
   const toaster = useToaster();
   const dispatch = useDispatch();
+
+  console.log(match, history);
 
   const handleInviteUsers = () => {
     let payload = {
@@ -99,6 +103,18 @@ const AllPeopleHeaderButtons = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const handleUpdateTeam = () => {
+    const url = history.location.pathname.split("/system/people/teams/");
+    const teamId = url[1].split("/")[0];
+    const team = teams[teamId];
+    const modal = {
+      mode: "edit",
+      type: "team",
+      team: team,
+    };
+    if (team) dispatch(addToModals(modal));
+  };
+
   const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
 
   return (
@@ -108,10 +124,16 @@ const AllPeopleHeaderButtons = (props) => {
           <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnTeam}
         </button>
       )}
-
-      <button className="btn btn-primary" onClick={handleInviteUsers}>
-        <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
-      </button>
+      {history.location.pathname.startsWith("/system/people/teams/") && (
+        <button className="btn btn-primary" onClick={handleUpdateTeam}>
+          <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.updateTeam}
+        </button>
+      )}
+      {history.location.pathname === "/system/people" && (
+        <button className="btn btn-primary" onClick={handleInviteUsers}>
+          <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
+        </button>
+      )}
     </Wrapper>
   );
 };
