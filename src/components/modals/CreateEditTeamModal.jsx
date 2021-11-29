@@ -40,6 +40,18 @@ const WrapperDiv = styled(FormGroup)`
   .name-wrapper {
     width: 100%;
   }
+  .team-name-wrapper {
+    position: relative;
+  }
+  .dimensions-label {
+    position: absolute;
+    bottom: -17px;
+    font-size: 0.55rem;
+    text-align: center;
+    span {
+      display: block;
+    }
+  }
 `;
 
 const SelectPeople = styled(PeopleSelect)`
@@ -357,7 +369,7 @@ const CreateEditTeamModal = (props) => {
       <ModalBody>
         <Label className={"modal-info mb-3"}>{dictionary.teamDescription}</Label>
         <WrapperDiv>
-          <div className="d-flex justify-content-start align-items-center">
+          <div className="d-flex justify-content-start align-items-center team-name-wrapper">
             <div className="icon-wrapper" onClick={handleTeamIconClick}>
               <DropDocument
                 acceptType="imageOnly"
@@ -381,6 +393,10 @@ const CreateEditTeamModal = (props) => {
               </div>
               <InputFeedback valid={valid.isValid}>{valid.feedback}</InputFeedback>
             </div>
+            <span className="dimensions-label">
+              <span>120 px by 120 px</span>
+              <span>max: 3mb</span>
+            </span>
           </div>
         </WrapperDiv>
         <WrapperDiv>
