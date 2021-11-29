@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 //import SearchForm from "../../forms/SearchForm";
@@ -69,6 +69,9 @@ const ResultItem = styled.li`
     .dark & {
       color: #fff;
     }
+  }
+  :focus {
+    background-color: #f0f0f050;
   }
 `;
 const ResultDivWrapper = styled.div`
@@ -167,10 +170,12 @@ const SearchForm = styled.form`
 `;
 
 const ChatSearchPanel = (props) => {
-  const { className = "", showSearchPanel, handleSearchChatPanel, selectedChannel, newSeachToogle, user } = props;
+  const { showSearchPanel, handleSearchChatPanel, selectedChannel, newSeachToogle, user } = props;
   const [skip, setSkip] = useState(0);
   const limit = 20;
   const inputGroup = useRef();
+  const firstResult = useRef(null);
+  const inputRef = useRef();
   const { localizeChatDate } = useTimeFormat();
   const { _t } = useTranslationActions();
   const [query, setQuery] = useState("");
@@ -207,13 +212,27 @@ const ChatSearchPanel = (props) => {
     redirect.toChat(selectedChannel, topic);
   };
 
+  const handleResultKeydown = (e, k, item) => {
+    if (e.key === "Enter") {
+      handleRedirect(item);
+    }
+    if (e.key === "ArrowDown") {
+      e.currentTarget.nextSibling && e.currentTarget.nextSibling.focus();
+    }
+    if (e.key === "ArrowUp") {
+      if (e.currentTarget.previousSibling && k > 0) {
+        e.currentTarget.previousSibling.focus();
+      }
+    }
+  };
+
   const parseResult = (data) => {
     const resp = data.map((i) => {
-      return i.map((item) => {
+      return i.map((item, k) => {
         const isAuthor = item.user && item.user.id === user.id;
         //console.log(i);
         return (
-          <ResultItem onClick={(e) => handleRedirect(item)} key={item.id}>
+          <ResultItem onClick={(e) => handleRedirect(item)} key={item.id} ref={k === 0 ? firstResult : null} autoFocus={k === 0} onKeyDown={(e) => handleResultKeydown(e, k, item)} tabIndex={k + 1}>
             <div className="d-flex align-items-center chat-search-header">
               <div className="d-flex justify-content-between align-items-center text-muted w-100">
                 <div className="d-inline-flex justify-content-center align-items-start">
@@ -251,6 +270,9 @@ const ChatSearchPanel = (props) => {
       })
       .then((response) => {
         if (fresh) {
+          setTimeout(() => {
+            if (firstResult.current) firstResult.current.focus();
+          }, 500);
           setResults([response.data.results]);
           setSkip(0);
         } else setResults([...results, response.data.results]);
@@ -280,6 +302,7 @@ const ChatSearchPanel = (props) => {
       setSearching(true);
       const timeout = setTimeout(() => {
         getChatMsgs(query, 0, true);
+        if (inputRef.current) inputRef.current.blur();
       }, 1000);
       return () => clearTimeout(timeout);
     } else {
@@ -294,7 +317,7 @@ const ChatSearchPanel = (props) => {
         <BackIcon icon="chevron-left" onClick={handleSearchChatPanel} />
         <SearchForm className="chat-search-chat">
           <div className="input-group" ref={inputGroup}>
-            <input onChange={(e) => setQuery(e.target.value)} value={query} type="text" className="form-control" placeholder={"Search"} onKeyDown={handleSearchKeyDown} />
+            <input ref={inputRef} onChange={(e) => setQuery(e.target.value)} value={query} type="text" className="form-control" placeholder={"Search"} onKeyDown={handleSearchKeyDown} />
             <button onClick={clear} className="btn-cross" type="button">
               {searching ? <Loader /> : <SvgIconFeather icon="x" />}
             </button>

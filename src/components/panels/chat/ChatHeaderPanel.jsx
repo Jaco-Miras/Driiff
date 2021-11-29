@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather, ToolTip } from "../../common";
+import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
