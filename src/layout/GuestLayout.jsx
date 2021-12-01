@@ -143,6 +143,7 @@ const GuestLayout = (props) => {
     invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
     acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
     invalidDomain: _t("FEEDBACK.INVALID_DOMAIN", "Invalid domain"),
+    invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
