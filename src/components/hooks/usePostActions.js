@@ -401,7 +401,14 @@ const usePostActions = () => {
   };
 
   const sharePost = (post) => {
-    let link = `${getBaseUrl()}${location.pathname}/post/${post.id}/${replaceChar(post.title)}`;
+    let link = "";
+    if (params.folderId) {
+      link = `${getBaseUrl()}/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+    } else if (params.workspaceId) {
+      link = `${getBaseUrl()}/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+    } else {
+      link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+    }
     copyTextToClipboard(toaster, link);
   };
 
