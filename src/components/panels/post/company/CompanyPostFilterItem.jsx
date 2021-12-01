@@ -73,10 +73,10 @@ const CompanyPostFilterItem = (props) => {
         {dictionary.inbox}
         {unreadCounter.general_post > 0 && <span className="small ml-auto">{unreadCounter.general_post}</span>}
       </span>
-      {/* <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
+      <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="mail" />
         {dictionary.all}
-      </span> */}
+      </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "in_progress" ? "active" : ""}`} data-value="in_progress" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="clock" />
         {dictionary.inProgress}
