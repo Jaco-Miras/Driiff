@@ -116,22 +116,24 @@ const MainLayout = (props) => {
   return (
     <>
       <AudioStyle ref={refs.audio} controls>
-        <>
+        {/* <>
           <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg" />
           <source src={require("../assets/audio/appointed.mp3")} type="audio/mpeg" />
           <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r" />
-        </>
-        {/* {
-          notification_sound === "jingle-bells" ? <>
-            <source src={require(`../assets/audio/jingle-bells.ogg`)} type="audio/ogg"/>
-            <source src={require(`../assets/audio/jingle-bells.mp3`)} type="audio/mpeg"/>
-            <source src={require(`../assets/audio/jingle-bells.m4r`)} type="audio/m4r"/>
-          </> : <>
-            <source src={require(`../assets/audio/appointed.ogg`)} type="audio/ogg"/>
-            <source src={require(`../assets/audio/appointed.mp3`)} type="audio/mpeg"/>
-            <source src={require(`../assets/audio/appointed.m4r`)} type="audio/m4r"/>
+        </> */}
+        {notification_sound === "jingle-bells" ? (
+          <>
+            <source src={require("../assets/audio/jingle-bells.ogg")} type="audio/ogg" />
+            <source src={require("../assets/audio/jingle-bells.mp3")} type="audio/mpeg" />
+            <source src={require("../assets/audio/jingle-bells.m4r")} type="audio/m4r" />
           </>
-        } */}
+        ) : (
+          <>
+            <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg" />
+            <source src={require("../assets/audio/appointed.mp3")} type="audio/mpeg" />
+            <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r" />
+          </>
+        )}
         Your browser does not support the audio element.
       </AudioStyle>
       {showNotificationBar && mounted && <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater} />}
