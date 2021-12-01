@@ -65,11 +65,14 @@ const FavWorkspacesLabel = styled.div`
   }
 `;
 
-const BrowseAll = styled.span`
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: underline;
+const BrowseAll = styled.button`
+  //color: rgba(255, 255, 255, 0.6);
+  //text-decoration: underline;
+  color: #cbd4db;
+  border: 1px solid;
   :hover {
     cursor: pointer;
+    color: #cbd4db;
   }
 `;
 
@@ -238,7 +241,9 @@ const FavoriteWorkspacesPanel = (props) => {
                   return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
                 })}
               </ul>
-              <BrowseAll onClick={handleBrowseAll}>{dictionary.browseAll}</BrowseAll>
+              <BrowseAll className="btn" onClick={handleBrowseAll}>
+                {dictionary.browseAll}
+              </BrowseAll>
             </>
           )}
         </div>
