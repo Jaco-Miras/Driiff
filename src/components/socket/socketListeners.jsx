@@ -953,7 +953,7 @@ class SocketListeners extends Component {
             //     }
             //   );
             // }
-            if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
+            if (message.user === null || (message.user.id !== user.id && !message.is_muted) || e.is_active) {
               this.props.soundPlay();
             }
             if (message.user === null || this.props.user.id !== message.user.id) {
