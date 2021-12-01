@@ -69,7 +69,7 @@ const ChatBubbleContainer = styled.div`
     max-height: 300px;
   }
   span.reply-date {
-    color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles ? "#a7abc3" : "#0000")};
+    color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "#a7abc3" : "#0000")};
     font-style: italic;
     font-size: 11px;
     position: absolute;
@@ -587,6 +587,7 @@ const ChatBubble = (props) => {
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
+      hasFiles={hasFiles}
       theme={chatSettings.chat_message_theme}
       hasGif={showGifPlayer}
       hasRemoveOnDlFiles={hasRemoveOnDlFiles}
