@@ -930,9 +930,12 @@ class SocketListeners extends Component {
             //     }
             //   );
             // }
-            if (message.user === null || (message.user.id !== user.id && !message.is_muted) || e.is_active) {
-              this.props.soundPlay();
+            if (e.is_active) {
+              if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
+                this.props.soundPlay();
+              }
             }
+
             if (message.user === null || this.props.user.id !== message.user.id) {
               delete message.reference_id;
               message.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
