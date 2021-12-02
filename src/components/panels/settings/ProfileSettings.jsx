@@ -69,18 +69,22 @@ const Wrapper = styled.div`
     display: flex;
     place-content: center;
     font-size: 13px;
+    cursor: pointer;
+    :hover {
+      text-decoration: underline;
+    }
   }
 `;
 
-const ReleaseLink = styled.span`
-  font-weight: 500;
-  cursor: pointer;
-`;
+// const ReleaseLink = styled.span`
+//   font-weight: 500;
+//   cursor: pointer;
+// `;
 
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
-  const history = useHistory();
+  //const history = useHistory();
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -647,6 +651,11 @@ const ProfileSettings = (props) => {
   //   toaster.success(<span>{dataset.successMessage}</span>);
   // };
 
+  const handleVersionClick = (e) => {
+    e.preventDefault();
+    window.open("https://support.getdriff.com/hc/en-us", "_blank");
+  };
+
   return (
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
@@ -889,7 +898,7 @@ const ProfileSettings = (props) => {
       ) : (
         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
       )}
-      <span className="version-number mb-3">
+      <span className="version-number mb-3" onClick={handleVersionClick}>
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;
         {/* <ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink> */}
       </span>
