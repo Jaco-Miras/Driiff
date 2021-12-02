@@ -222,11 +222,18 @@ const StarIcon = styled(SvgIconFeather)`
     }`}
 `;
 
+const SearchIcon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  min-width: 14px;
+  margin-left: 5px;
+  cursor: pointer;
+`;
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -482,6 +489,7 @@ const ChatHeaderPanel = (props) => {
           </ul>
         </div>
         {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
+        {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
       <ChatHeaderMembers channel={channel} />

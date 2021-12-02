@@ -95,6 +95,14 @@ const ChatList = styled.li`
       opacity: 1;
     }
   }
+  &.pulsating div.chat-bubble {
+    animation: blinker 2s linear forwards;
+    @keyframes blinker {
+      50% {
+        opacity: 0.5;
+      }
+    }
+  }
 `;
 const TimestampDiv = styled.div`
   z-index: 2;

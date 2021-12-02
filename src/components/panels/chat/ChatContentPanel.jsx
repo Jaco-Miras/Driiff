@@ -1,11 +1,11 @@
-import React, { useRef, useState, lazy, Suspense } from "react";
+import React, { useRef, useState, useEffect, Suspense, lazy } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCountUnreadReplies, useTimeFormat, useTranslationActions } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
-import { ChatFooterPanel, ChatHeaderPanel } from "./index";
+import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
 import { useIdleTimer } from "react-idle-timer";
 
 const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
@@ -14,9 +14,10 @@ const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer")
 const Wrapper = styled.div`
   width: 100%;
   z-index: 2;
+  position: relative;
   @media (max-width: 992px) {
     z-index: 1;
-  }
+  } ;
 `;
 
 const ChatMessagesPlaceholder = styled.div`
@@ -49,9 +50,8 @@ const ChatContentPanel = (props) => {
     dropZoneRef: useRef(),
   };
 
-  // const handleBottomRefChange = (inView) => {
-  //   setBottomRefVisible(inView);
-  // };
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
+  const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
 
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
@@ -199,6 +199,22 @@ const ChatContentPanel = (props) => {
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
+  const handleSearchChatPanel = () => {
+    setShowSearchPanel(!showSearchPanel);
+  };
+
+  const [newSeachToogle, setNewSeachToogle] = useState(false);
+
+  useEffect(() => {
+    selectedChannel !== null && setPP(selectedChannel.id);
+    if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
+      setNewSeachToogle(!newSeachToogle);
+      setShowSearchPanel(false);
+    }
+  }, [pP, selectedChannel]);
+
+  const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
+
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
@@ -210,7 +226,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} />}
       {selectedChannel !== null ? (
         virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>
@@ -236,6 +252,17 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+      {selectedChannel !== null && showSearchPanel && isAuthorizedUser && (
+        <ChatSearchPanel
+          newSeachToogle={newSeachToogle}
+          chatMessageActions={chatMessageActions}
+          showSearchPanel={showSearchPanel}
+          setShowSearchPanel={setShowSearchPanel}
+          handleSearchChatPanel={handleSearchChatPanel}
+          selectedChannel={selectedChannel}
+          user={user}
+        />
+      )}
     </Wrapper>
   );
 };
