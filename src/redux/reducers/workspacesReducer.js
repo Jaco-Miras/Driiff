@@ -190,6 +190,7 @@ export default (state = INITIAL_STATE, action) => {
                 folder_name: ws.name,
                 team_channel: t.team_channel,
                 is_favourite: t.is_favourite,
+                is_active: t.is_active,
                 type: "WORKSPACE",
               };
             }
@@ -205,6 +206,7 @@ export default (state = INITIAL_STATE, action) => {
             is_favourite: ws.topic_detail.is_favourite,
             is_shared: ws.topic_detail.is_shared,
             active: ws.topic_detail.active,
+            is_active: ws.topic_detail.is_active,
             channel: { ...ws.topic_detail.channel, loaded: false },
             unread_chats: ws.topic_detail.unread_chats,
             unread_posts: ws.topic_detail.unread_posts,
