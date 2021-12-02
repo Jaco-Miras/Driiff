@@ -109,7 +109,7 @@ const ChatBubbleContainer = styled.div`
     }
   }
   .message-files div:first-child {
-    align-items: center;
+    align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   }
 `;
 
@@ -232,6 +232,8 @@ const QuoteContent = styled.div`
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
   padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
+  // // max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
+  // padding: ${(props) => (props.hasFiles ? "0px 3px" : "0")};
   ul {
     list-style-type: none;
   }
@@ -633,9 +635,6 @@ const ChatBubble = (props) => {
                   <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
-              {reply.files.length > 0 && !reply.is_deleted && (
-                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
-              )}
               {hasMessage && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
@@ -647,6 +646,9 @@ const ChatBubble = (props) => {
                     dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
+              )}
+              {reply.files.length > 0 && !reply.is_deleted && (
+                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
             </ChatContent>
