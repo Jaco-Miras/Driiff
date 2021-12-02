@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import ChannelIcon from "./ChannelIcon";
 import ChatTitleDate from "./ChatTitleDate";
@@ -111,14 +112,24 @@ const Wrapper = styled.li`
       overflow: auto;
     }
   }
+  &:focus {
+    background: #f1f2f7;
+  }
+  .dark & {
+    :focus {
+      background: #25282c;
+    }
+  }
 `;
 
 const ChannelList = (props) => {
-  const { className = "", channel, selectedChannel, channelDrafts, dictionary, addLoadRef, onLoadMore, onSelectChannel } = props;
+  const { className = "", channel, selectedChannel, channelDrafts, dictionary, addLoadRef, onLoadMore, onSelectChannel, onClearSearch, firstRef = null, tabIndex, index } = props;
 
-  const refs = {
-    container: useRef(null),
-  };
+  // const refs = {
+  //   container: useRef(null),
+  // };
+
+  const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
 
   const [loadRef, loadInView] = useInView({
     threshold: 1,
@@ -134,12 +145,34 @@ const ChannelList = (props) => {
     onSelectChannel(channel);
   };
 
+  const handleResultKeydown = (e, k) => {
+    if (chatSidebarSearch === "") return;
+    if (e.key === "Enter") {
+      onSelectChannel(channel);
+      onClearSearch();
+    }
+    if (e.key === "ArrowDown") {
+      const nextList = document.querySelector(`.channel-list[tabindex="${tabIndex + 1}"]`)
+      if (nextList) nextList.focus()
+      //e.currentTarget.nextSibling && e.currentTarget.nextSibling.focus();
+    }
+    if (e.key === "ArrowUp") {
+      if (e.currentTarget.previousSibling && tabIndex > 1) {
+        const prevList = document.querySelector(`.channel-list[tabindex="${tabIndex - 1}"]`)
+        if (prevList) prevList.focus()
+        //e.currentTarget.previousSibling.focus();
+      }
+    }
+  };
+
   return (
     <Wrapper
-      ref={refs.container}
+      ref={firstRef}
       className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
       selected={selectedChannel !== null && channel.id === selectedChannel.id}
       onClick={handleSelectChannel}
+      tabIndex={tabIndex}
+      onKeyDown={(e) => handleResultKeydown(e, index)}
     >
       <ChannelIcon channel={channel} />
       <div className="channel-info" ref={addLoadRef ? loadRef : null}>

@@ -156,6 +156,8 @@ const ChatSidebarPanel = (props) => {
     navTab: useRef(null),
   };
 
+  const searchRef = useRef(null);
+
   const onSearchChange = (e) => {
     setQuery(e.target.value);
   };
@@ -166,6 +168,11 @@ const ChatSidebarPanel = (props) => {
         value: query,
         searching: query.trim() !== "",
       });
+
+      // const firstChannel = document.querySelector(".first-channel");
+      // if (firstChannel) {
+      //   firstChannel.focus();
+      // }
       if (query.trim() !== "") {
         let payload = { search: query, skip: 0, limit: 25 };
         if (searchArchivedChannels) {
@@ -174,7 +181,12 @@ const ChatSidebarPanel = (props) => {
             filter: "archived",
           };
         }
-        channelActions.search(payload);
+        channelActions.search(payload, (err, res) => {
+          if (searchRef.current) searchRef.current.blur();
+          if (err) return;
+          const firstChannel = document.querySelector(".first-channel");
+          if (firstChannel) firstChannel.focus();
+        });
       }
     }, 300);
     return () => clearTimeout(timeOutId);
@@ -282,6 +294,7 @@ const ChatSidebarPanel = (props) => {
           searching={searchingChannels}
           className="chat-search"
           placeholder={dictionary.searchChatPlaceholder}
+          ref={searchRef}
         />
         <div className="d-flex justify-content-center align-items-center ml-2 chat-sidebar-options-container">
           <StyledMoreOptions role="tabList">
