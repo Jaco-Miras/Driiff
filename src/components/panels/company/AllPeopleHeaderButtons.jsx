@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useRouteMatch, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { useUserActions, useToaster } from "../../hooks";
@@ -18,7 +18,7 @@ const Wrapper = styled.li`
 `;
 const AllPeopleHeaderButtons = (props) => {
   const { dictionary } = props;
-  const match = useRouteMatch();
+  //const match = useRouteMatch();
   const history = useHistory();
   const loggedUser = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
@@ -26,8 +26,6 @@ const AllPeopleHeaderButtons = (props) => {
   const userActions = useUserActions();
   const toaster = useToaster();
   const dispatch = useDispatch();
-
-  console.log(match, history);
 
   const handleInviteUsers = () => {
     let payload = {
