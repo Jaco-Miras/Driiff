@@ -150,9 +150,18 @@ const ExternalRegisterPanel = (props) => {
       valid.last_name = true;
     }
 
-    if (form.password === "") {
+    if (typeof form.password === "undefined" || form.password === "") {
       valid.password = false;
       message.password = dictionary.passwordRequired;
+    } else if (typeof form.password !== "undefined" && form.password !== "") {
+      const specialChar = /[ -/:-@[-`{-~]/;
+      const hasNum = /\d/;
+      if (specialChar.test(form.password) && hasNum.test(form.password) && form.password.length >= 6) {
+        valid.password = true;
+      } else {
+        message.password = dictionary.invalidPassword;
+        valid.password = false;
+      }
     } else {
       valid.password = true;
     }
