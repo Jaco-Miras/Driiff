@@ -229,7 +229,9 @@ const FavoriteWorkspacesPanel = (props) => {
                 ✨
               </span>
               <span dangerouslySetInnerHTML={{ __html: dictionary.addYourFavWs }} />
-              <BrowseAll onClick={handleBrowseAll}>{dictionary.startBrowsing}</BrowseAll>
+              <BrowseAll className="btn" onClick={handleBrowseAll}>
+                {dictionary.startBrowsing}
+              </BrowseAll>
             </FavEmptyState>
           )}
 
