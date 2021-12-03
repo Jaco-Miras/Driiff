@@ -144,7 +144,7 @@ const ChatMessageOptions = (props) => {
       // for IE, which will otherwise only download the first file.
       setTimeout(function () {
         download_next(i + 1);
-      }, 1000);
+      }, 1200);
     }
     // Initiate the first download.
     download_next(0);
