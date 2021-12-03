@@ -67,8 +67,8 @@ const Hat = styled.div`
   position: absolute !important;
   z-index: 20;
   transform: rotate(-41deg) scaleX(-1);
-  left: 16px;
-  top: 3px;
+  left: 1px;
+  top: -6px;
   img {
     width: 26px;
   }
@@ -150,10 +150,13 @@ const MainSidebarLinks = (props) => {
               </NavInputContainer>
             ) : (
               <NavIconContainer active={["dashboard", "posts", "chat", "files", "people"].includes(params.page)} to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
-                <NavIcon icon={"home"} />
-                <Hat>
-                  <img src={christmas} alt="christmas hat" />
-                </Hat>
+                <div style={{ postion: "relative" }}>
+                  <NavIcon icon={"home"} />
+                  <Hat>
+                    <img src={christmas} alt="christmas hat" />
+                  </Hat>
+                </div>
+
                 {driffSettings.company_name}
                 {/* {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>} */}
               </NavIconContainer>
