@@ -5,6 +5,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
 import { QuickLinks } from "../../list/links";
 //import { Badge } from "reactstrap";
+import christmas from "../../../assets/img/christmas.png";
 
 const Wrapper = styled.div`
   .badge {
@@ -59,6 +60,17 @@ const NavIconContainer = styled(NavLink)`
   div {
     display: inline-block;
     position: relative;
+  }
+`;
+
+const Hat = styled.div`
+  position: absolute !important;
+  z-index: 20;
+  transform: rotate(-41deg) scaleX(-1);
+  left: 16px;
+  top: 3px;
+  img {
+    width: 26px;
   }
 `;
 
@@ -131,11 +143,15 @@ const MainSidebarLinks = (props) => {
             {editCompany ? (
               <NavInputContainer className="active">
                 <NavIcon icon={"home"} />
+
                 <input ref={companyNameRef} defaultValue={driffSettings.company_name} onChange={handleCompanyNameChange} onKeyDown={handleCompanyNameKeyDown} name="company-name" autoFocus={true} />
               </NavInputContainer>
             ) : (
               <NavIconContainer active={["dashboard", "posts", "chat", "files", "people"].includes(params.page)} to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
                 <NavIcon icon={"home"} />
+                <Hat>
+                  <img src={christmas} alt="christmas hat" />
+                </Hat>
                 {driffSettings.company_name}
                 {/* {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>} */}
               </NavIconContainer>
