@@ -46,8 +46,9 @@ const WrapperDiv = styled(FormGroup)`
   .dimensions-label {
     position: absolute;
     bottom: -17px;
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     text-align: center;
+    left: -4px;
     span {
       display: block;
     }
