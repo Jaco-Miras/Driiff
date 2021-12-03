@@ -47,7 +47,13 @@ const Wrapper = styled.div`
     bottom: 0;
     left: 0;
     fill: rgb(255, 193, 7);
-    color: rgb(255, 193, 7);
+    // color: rgb(255, 193, 7);
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    .dark & {
+      color: #191c20;
+    }
   }
   .feather-volume-x {
     bottom: 0;
