@@ -126,7 +126,7 @@ const Badge = styled.div`
   line-height: 0;
   position: absolute;
   right: 0px;
-  bottom: 0;
+  bottom: 1px;
   width: 18px;
   height: 18px;
   font-size: 11px;
