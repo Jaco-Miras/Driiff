@@ -38,6 +38,13 @@ const FilesLink = styled.div`
 const FilesContainer = styled.div`
   display: flex;
   flex-flow: column;
+  .app-file-list {
+    max-width: 180px;
+  }
+  .app-file-icon,
+  .p-2.small {
+    width: 100%;
+  }
 `;
 
 const MessageFiles = (props) => {
