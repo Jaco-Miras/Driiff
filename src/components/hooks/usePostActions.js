@@ -288,7 +288,7 @@ const usePostActions = () => {
             callback(err, res);
 
             if (err) {
-              toaster.success(<>Action failed.</>);
+              toaster.error(<>Action failed.</>);
               return;
             }
 
@@ -330,7 +330,7 @@ const usePostActions = () => {
     let count = post.unread_count;
     let cb = (err, res) => {
       if (err) {
-        toaster.success(<>Action failed.</>);
+        toaster.error(<>Action failed.</>);
         return;
       }
       payload = {
@@ -369,7 +369,7 @@ const usePostActions = () => {
     };
     let cb = (err, res) => {
       if (err) {
-        toaster.success(<>Action failed.</>);
+        toaster.error(<>Action failed.</>);
         return;
       }
       payload = {
