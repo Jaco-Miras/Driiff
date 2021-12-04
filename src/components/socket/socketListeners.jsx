@@ -957,6 +957,8 @@ class SocketListeners extends Component {
               if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
                 this.props.soundPlay();
               }
+            } else if (!e.is_active && e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => id === this.props.user.id)) {
+              this.props.soundPlay();
             }
 
             if (message.user === null || this.props.user.id !== message.user.id) {
@@ -1012,7 +1014,7 @@ class SocketListeners extends Component {
 
             //check if channel exist
             let channel = this.props.channels[e.channel_id];
-            if (typeof channel === "undefined") {
+            if ((typeof channel === "undefined" && e.is_active) || (typeof channel === "undefined" && !e.is_active && e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => id === this.props.user.id))) {
               this.props.getChannel({ code: e.channel_code });
             }
 

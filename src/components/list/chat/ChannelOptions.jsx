@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import useChannelActions from "../../hooks/useChannelActions";
 import { MoreOptions } from "../../panels/common";
-import { useTranslationActions } from "../../hooks";
+import { useTranslationActions, useToaster } from "../../hooks";
+import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled(MoreOptions)`
   position: relative;
@@ -30,9 +31,12 @@ const ChannelOptions = (props) => {
 
   const { _t } = useTranslationActions();
 
+  const toaster = useToaster();
+  const [bellClicked, setBellClicked] = useState(false);
+
   const dictionary = {
-    mute: _t("CHAT.MUTE", "Mute"),
-    unmute: _t("CHAT.UNMUTE", "Unmute"),
+    mute: _t("CHAT.MUTE", "Mute this channel"),
+    unmute: _t("CHAT.UNMUTE", "Unmute this channel"),
     hide: _t("CHAT.HIDE", "Hide"),
     unhide: _t("CHAT.UNHIDE", "Unhide"),
     favorite: _t("FAVORITE", "Favorite"),
@@ -46,6 +50,10 @@ const ChannelOptions = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     headerArchive: _t("HEADER.ARCHIVE", "Chat archive"),
     headerUnarchive: _t("HEADER.UNARCHIVE", "Un-archive channel"),
+    muteWS: _t("CHAT.MUTE_WS", "Mute this workspace"),
+    unmuteWS: _t("CHAT.UNMUTE_WS", "Unmute this workspace"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
   };
 
   const handlePinButton = () => {
@@ -124,12 +132,35 @@ const ChannelOptions = (props) => {
     }
   };
 
+  const handleMuteWSChannel = () => {
+    if (bellClicked) return;
+    const payload = {
+      id: channel.entity_id,
+      is_active: !channel.is_active,
+    };
+    setBellClicked(true);
+    dispatch(
+      putWorkspaceNotification(payload, (err, res) => {
+        setBellClicked(false);
+        if (err) {
+          return;
+        }
+        if (payload.is_active) {
+          toaster.success(dictionary.toasterBellNotificationOn);
+        } else {
+          toaster.success(dictionary.toasterBellNotificationOff);
+        }
+      })
+    );
+  };
+
   return (
     <>
       <Wrapper channel={channel} scrollRef={scrollEl} moreButton={moreButton} onClick={onSelectOptions}>
         <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
         <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
-        <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+        {channel.type === "TOPIC" && <div onClick={handleMuteWSChannel}>{channel.is_active ? dictionary.muteWS : dictionary.unmuteWS}</div>}
+        {channel.type !== "TOPIC" && <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>}
         {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
         {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
       </Wrapper>

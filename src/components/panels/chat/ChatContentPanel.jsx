@@ -201,6 +201,10 @@ const ChatContentPanel = (props) => {
     resend: _t("CHAT.FAIL_OPTIONS_RESEND", "Resend"),
     delete: _t("CHAT.FAIL_OPTIONS_DELETE", "Delete"),
     messageFailed: _t("CHAT.FAILED", "Message failed"),
+    notificationsOn: _t("TOOLTIP.NOTIFICATIONS_ON", "Notifications on"),
+    notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
