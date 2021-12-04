@@ -504,9 +504,11 @@ const ChatHeaderPanel = (props) => {
             </StyledBadge>
           )}
         </ChatHeaderBadgeContainer>
-        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOff : dictionary.notificationsOn}>
-          <Icon width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
-        </StyledTooltip>
+        {channel.type === "TOPIC" && (
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOff : dictionary.notificationsOn}>
+            <Icon width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+          </StyledTooltip>
+        )}
         <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}>
           <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
         </StyledTooltip>
