@@ -2095,7 +2095,7 @@ export default (state = INITIAL_STATE, action) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
-                  unreadPostIds: state.workspacePosts[wsId].unreadPostIds && action.data.unread === 0 ? state.workspacePosts[wsId].unreadPostIds.filter((id) => action.data.post_id !== action.data.post_id) : [],
+                  unreadPostIds: state.workspacePosts[wsId].unreadPostIds && action.data.unread === 0 ? state.workspacePosts[wsId].unreadPostIds.filter((id) => action.data.post_id !== id) : [],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
