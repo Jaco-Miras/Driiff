@@ -742,9 +742,10 @@ class ChatMessages extends React.PureComponent {
                           if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                             showGifPlayer = true;
                           }
-                          if ((reply.files.length > 0 && e[k + 1] && e[k + 1].user && e[k + 1].user.id === reply.user.id && e[k - 1] && e[k - 1].files.length === 0) || (showAvatar && reply.files.length > 0)) {
+                          if ((reply.files && reply.files.length > 0 && e[k + 1] && e[k + 1].user && e[k + 1].user.id === reply.user.id && e[k - 1] && e[k - 1].files.length === 0) || (showAvatar && reply.files && reply.files.length > 0)) {
                             showDownloadAll = true;
-                            downloadFiles = [...reply.files, ...e[k + 1].files];
+                            const nextFiles = e[k + 1] ? e[k + 1].files : [];
+                            downloadFiles = [...reply.files, ...nextFiles];
                             let inc = 2;
                             while (e[k + inc]) {
                               if (e[k + inc].user && e[k + inc].user.id !== reply.user.id) break;
