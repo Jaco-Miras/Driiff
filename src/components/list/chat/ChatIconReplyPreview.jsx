@@ -118,7 +118,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = stripImgTag(channel.last_reply.body);
@@ -223,6 +223,7 @@ const ReplyPreview = (props) => {
           </>
         )}
         {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
+        {channel.is_active === false && <Icon icon="bell-off" className={`${channel.is_pinned && "mr-1"}`} />}
       </div>
     </Wrapper>
   );
