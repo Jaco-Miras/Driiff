@@ -1620,6 +1620,7 @@ export default function (state = INITIAL_STATE, action) {
         ];
         channel = {
           ...action.data.channel_detail,
+          is_active: channels[action.data.channel_detail.id].is_active,
           icon_link: channels[action.data.channel_detail.id].icon_link,
           //replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
           replies: [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)), //remove placeholder chat messages
