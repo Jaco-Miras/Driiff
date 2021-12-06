@@ -212,9 +212,9 @@ const usePosts = () => {
               // const mustRead = p.must_read_users && p.must_read_users.some((u) => user.id === u.id && !u.must_read);
               // const mustReply = p.must_reply_users && p.must_reply_users.some((u) => user.id === u.id && !u.must_reply);
               // const showPost = hasMentioned || mustRead || mustReply || isApprover;
-              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id);
+              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
             } else {
-              return !p.hasOwnProperty("draft_type");
+              return !p.hasOwnProperty("draft_type") && !p.is_close;
             }
 
             // if (search !== "") {
