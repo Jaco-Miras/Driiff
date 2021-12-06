@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { SvgIconFeather, SvgIcon } from "../../common";
 import { setNavMode } from "../../../redux/actions/globalActions";
-import christmas from "../../../assets/img/christmas.png";
+//import christmas from "../../../assets/img/christmas.png";
 
 const LogoWrapper = styled.div`
   position: relative;
@@ -62,13 +62,13 @@ const SmallDriffLogo = styled(SvgIcon)`
   cursor: pointer;
 `;
 
-const Hat = styled.div`
-  position: absolute;
-  z-index: 20;
-  transform: rotate(-41deg) scaleX(-1);
-  left: ${(props) => (props.hasCompanyLogo ? "-9px" : "-7px")};
-  top: ${(props) => (props.hasCompanyLogo ? "2px" : "1px")};
-`;
+// const Hat = styled.div`
+//   position: absolute;
+//   z-index: 20;
+//   transform: rotate(-41deg) scaleX(-1);
+//   left: ${(props) => (props.hasCompanyLogo ? "-9px" : "-7px")};
+//   top: ${(props) => (props.hasCompanyLogo ? "2px" : "1px")};
+// `;
 
 const MainLogo = (props) => {
   const dispatch = useDispatch();
@@ -93,17 +93,17 @@ const MainLogo = (props) => {
           <SvgIconFeather icon="heart" />
           <div style={{ position: "relative" }}>
             <SmallDriffLogo icon="driff-logo2" />
-            <Hat>
+            {/* <Hat>
               <img width={"16px"} src={christmas} alt="christmas hat" />
-            </Hat>
+            </Hat> */}
           </div>
         </CompanyLogoWrapper>
       )}
       {companyLogo.trim() === "" && (
         <>
-          <Hat hasCompanyLogo={false}>
+          {/* <Hat hasCompanyLogo={false}>
             <img width={"34px"} src={christmas} alt="christmas hat" />
-          </Hat>
+          </Hat> */}
           <DriffLogo icon="driff-logo2" data-link="/chat" onClick={handleIconClick} />
         </>
       )}
