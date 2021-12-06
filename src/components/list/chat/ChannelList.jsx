@@ -147,19 +147,21 @@ const ChannelList = (props) => {
 
   const handleResultKeydown = (e, k) => {
     if (chatSidebarSearch === "") return;
+    e.preventDefault();
+    e.stopPropagation();
     if (e.key === "Enter") {
       onSelectChannel(channel);
       onClearSearch();
     }
     if (e.key === "ArrowDown") {
-      const nextList = document.querySelector(`.channel-list[tabindex="${tabIndex + 1}"]`)
-      if (nextList) nextList.focus()
+      const nextList = document.querySelector(`.channel-list[tabindex="${tabIndex + 1}"]`);
+      if (nextList) nextList.focus();
       //e.currentTarget.nextSibling && e.currentTarget.nextSibling.focus();
     }
     if (e.key === "ArrowUp") {
       if (e.currentTarget.previousSibling && tabIndex > 1) {
-        const prevList = document.querySelector(`.channel-list[tabindex="${tabIndex - 1}"]`)
-        if (prevList) prevList.focus()
+        const prevList = document.querySelector(`.channel-list[tabindex="${tabIndex - 1}"]`);
+        if (prevList) prevList.focus();
         //e.currentTarget.previousSibling.focus();
       }
     }
