@@ -129,11 +129,15 @@ const TodosBody = (props) => {
         id: todo.link_type === "POST_COMMENT" && todo.data ? todo.data.post.id : todo.link_id,
         title: todo.title,
       };
-      let workspace = {
-        ...todo.workspace,
-        folder_id: todo.folder ? todo.folder.id : null,
-        folder_name: todo.folder ? todo.folder.name : null,
-      };
+      let workspace = null;
+      if (todo.workspace) {
+        workspace = {
+          ...todo.workspace,
+          folder_id: todo.folder ? todo.folder.id : null,
+          folder_name: todo.folder ? todo.folder.name : null,
+        };
+      }
+
       redirect.toPost({ workspace, post });
     }
   };
