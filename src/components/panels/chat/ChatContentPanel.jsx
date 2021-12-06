@@ -195,6 +195,7 @@ const ChatContentPanel = (props) => {
     editHuddle: _t("CHAT.EDIT_HUDDLE", "Edit huddle"),
     discussOnTeamChat: _t("CHAT.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
     team: _t("TEAM", "Team"),
+    downloadAll: _t("CHAT.DOWNLOAD_ALL", "Download all"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

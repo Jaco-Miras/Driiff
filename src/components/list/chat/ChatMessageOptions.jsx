@@ -136,7 +136,6 @@ const ChatMessageOptions = (props) => {
       (document.body || document.documentElement).appendChild(a);
       if (a.click) {
         a.click(); // The click method is supported by most browsers.
-        console.log("trigger", files[i].filename);
       }
       // Delete the temporary link.
       a.parentNode.removeChild(a);
@@ -152,32 +151,6 @@ const ChatMessageOptions = (props) => {
 
   const handleDownloadAll = (e) => {
     download_files(downloadFiles);
-    // downloadFiles.forEach((file) => {
-    //   let iframe = document.createElement("iframe");
-    //   iframe.style.visibility = "collapse";
-    //   document.body.append(iframe);
-    //   iframe.contentDocument.write(`<form action="${file.download_link.replace(/\"/g, "\"")}" method="GET"></form>`);
-    //   iframe.contentDocument.forms[0].submit();
-    //   setTimeout(() => iframe.remove(), 2000);
-    // });
-    // var urls = downloadFiles.map((f) => f.download_link);
-    // var interval = setInterval(download, 300, urls);
-    // function download(urls) {
-    //   var url = urls.pop();
-    //   var a = document.createElement("a");
-    //   a.setAttribute("href", url);
-    //   a.setAttribute("download", "");
-    //   a.setAttribute("target", "_blank");
-    //   a.click();
-    //   if (urls.length === 0) {
-    //     clearInterval(interval);
-    //   }
-    // }
-    //download(urls);
-    // urls.forEach((url) => {
-    //   window.open(url, "_self");
-    // });
-    //multiDownload(urls);
   };
 
   /* dictionary initiated in ChatContentPanel.jsx */
@@ -198,7 +171,7 @@ const ChatMessageOptions = (props) => {
         <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
       )}
       {teamChannelId && !isExternalUser && <div onClick={handleDiscussInTeam}>{dictionary.discussOnTeamChat}</div>}
-      {showDownloadAll && <div onClick={handleDownloadAll}>Download all</div>}
+      {showDownloadAll && <div onClick={handleDownloadAll}>{dictionary.downloadAll}</div>}
     </MoreOptions>
   );
 };
