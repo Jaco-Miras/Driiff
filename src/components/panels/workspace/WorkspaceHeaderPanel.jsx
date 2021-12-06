@@ -670,7 +670,7 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       <li className="nav-item">
-                        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={activeTopic.is_active ? dictionary.notificationsOff : dictionary.notificationsOn}>
+                        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={activeTopic.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
                           <Icon icon={activeTopic.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
                         </StyledTooltip>
                       </li>

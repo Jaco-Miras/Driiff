@@ -204,28 +204,24 @@ const usePosts = () => {
           if (activeFilter === "all") {
             return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
+            const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
             if (activeTopic && !activeTopic.is_active) {
-              const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
               // return only post with action
               // const isApprover = p.users_approval.some((ua) => ua.id === user.id);
               // const hasMentioned = p.mention_ids && p.mention_ids.some((id) => user.id === id);
               // const mustRead = p.must_read_users && p.must_read_users.some((u) => user.id === u.id && !u.must_read);
               // const mustReply = p.must_reply_users && p.must_reply_users.some((u) => user.id === u.id && !u.must_reply);
               // const showPost = hasMentioned || mustRead || mustReply || isApprover;
-              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id);
+              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
             } else {
-              return !p.hasOwnProperty("draft_type") && !p.is_close;
+              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
             }
-          } else if (filter === "in_progress") {
-            return (
-              !p.hasOwnProperty("draft_type") &&
-              ((p.is_must_read && p.must_read_users.length > 0 && p.must_read_users.some((u) => u.id === user.id)) ||
-                (p.is_must_reply && p.must_reply_users.length > 0 && p.must_reply_users.some((u) => u.id === user.id)) ||
-                (p.users_approval.length > 0 && p.users_approval.some((u) => u.id === user.id)) ||
-                (p.author.id === user.id && p.is_must_read) ||
-                (p.author.id === user.id && p.is_must_reply) ||
-                (p.author.id === user.id && p.users_approval.length > 0))
-            );
+
+            // if (search !== "") {
+            //   return !p.hasOwnProperty("draft_type");
+            // } else {
+            //   return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
+            // }
           } else if (activeFilter === "my_posts") {
             if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
             else return false;

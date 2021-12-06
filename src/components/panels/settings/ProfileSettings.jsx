@@ -676,7 +676,7 @@ const ProfileSettings = (props) => {
 
   const handleVersionClick = (e) => {
     e.preventDefault();
-    window.open("https://support.getdriff.com/hc/en-us", "_blank");
+    window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
   };
 
   return (
