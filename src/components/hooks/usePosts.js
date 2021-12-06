@@ -204,8 +204,8 @@ const usePosts = () => {
           if (activeFilter === "all") {
             return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
+            const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
             if (activeTopic && !activeTopic.is_active) {
-              const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
               // return only post with action
               // const isApprover = p.users_approval.some((ua) => ua.id === user.id);
               // const hasMentioned = p.mention_ids && p.mention_ids.some((id) => user.id === id);
@@ -214,7 +214,7 @@ const usePosts = () => {
               // const showPost = hasMentioned || mustRead || mustReply || isApprover;
               return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
             } else {
-              return !p.hasOwnProperty("draft_type") && !p.is_close;
+              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
             }
 
             // if (search !== "") {
