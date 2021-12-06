@@ -506,7 +506,7 @@ const ChatHeaderPanel = (props) => {
         </ChatHeaderBadgeContainer>
         {channel.type === "TOPIC" && (
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
-            <Icon width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+            <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
           </StyledTooltip>
         )}
         <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favorite}>
