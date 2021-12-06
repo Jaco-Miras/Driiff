@@ -223,6 +223,7 @@ const ReplyPreview = (props) => {
           </>
         )}
         {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
+        {channel.is_active === false && channel.type === "TOPIC" && <Icon icon="bell-off" className={`${channel.is_pinned && "mr-1"}`} />}
       </div>
     </Wrapper>
   );

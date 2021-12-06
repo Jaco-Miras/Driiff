@@ -5,7 +5,8 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
   const user = useSelector((state) => state.session.user);
   const searchArchivedChannels = useSelector((state) => state.chat.searchArchivedChannels);
   const { chatSettings: settings } = useSettings();
-  const filterUnreadChannels = useSelector((state) => state.chat.filterUnreadChannels);
+  // const filterUnreadChannels = useSelector((state) => state.chat.filterUnreadChannels);
+  // const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
   // const getChannelTitle = (ac) => {
@@ -200,12 +201,47 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (settings.order_channel.order_by === "channel_date_updated") {
-        if (a.last_reply && b.last_reply) {
-          if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
-            return a.title.localeCompare(b.title);
+        if (!a.is_active) {
+          if (a.last_reply && a.last_reply.code_data && a.last_reply.code_data.mention_ids.some((id) => user.id === id)) {
+            if (a.last_reply && b.last_reply) {
+              if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+                return a.title.localeCompare(b.title);
+              } else {
+                return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
+              }
+            }
+
+            if (a.last_reply && !b.last_reply) {
+              return -1;
+            }
+
+            if (!a.last_reply && b.last_reply) {
+              return 1;
+            }
+
+            if (!a.last_reply && !b.last_reply) {
+              return a.title.localeCompare(b.title);
+            }
           } else {
-            return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
+            return 0;
           }
+        }
+        if (a.last_reply && b.last_reply) {
+          //if channel is active false
+          if (!a.is_active) {
+            return 0;
+          } else {
+            if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+              return a.title.localeCompare(b.title);
+            } else {
+              return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
+            }
+          }
+          // if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+          //   return a.title.localeCompare(b.title);
+          // } else {
+          //   return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
+          // }
           // if (settings.order_channel.sort_by === "DESC") {
           //   return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
           // } else {
@@ -227,7 +263,12 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (settings.order_channel.order_by === "channel_name") {
-        return a.title.localeCompare(b.title);
+        if (!a.is_active) {
+          return 0;
+        } else {
+          return a.title.localeCompare(b.title);
+        }
+
         // if (settings.order_channel.sort_by === "DESC") {
         //   return bTitle.localeCompare(aTitle);
         // } else {

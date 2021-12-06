@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -7,11 +7,13 @@ import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
-import { useSettings, useWorkspaceActions } from "../../hooks";
+import { useSettings, useWorkspaceActions, useToaster } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
 import { isMobile } from "react-device-detect";
+import Tooltip from "react-tooltip-lite";
+import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -116,10 +118,10 @@ const Wrapper = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)``;
-const IconFolder = styled(SvgIconFeather)`
-  width: 12px;
-  height: 12px;
-`;
+// const IconFolder = styled(SvgIconFeather)`
+//   width: 12px;
+//   height: 12px;
+// `;
 
 const EyeIcon = styled(SvgIconFeather)`
   width: 0.7rem;
@@ -229,6 +231,20 @@ const SearchIcon = styled(SvgIconFeather)`
   margin-left: 5px;
   cursor: pointer;
 `;
+
+const StyledTooltip = styled(Tooltip)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const toggleTooltip = () => {
+  let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  tooltips.forEach((tooltip) => {
+    tooltip.parentElement.classList.toggle("tooltip-active");
+  });
+};
+
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
@@ -244,6 +260,9 @@ const ChatHeaderPanel = (props) => {
 
   const { translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const chatMessageActions = useChatMessageActions();
+
+  const toaster = useToaster();
+  const [bellClicked, setBellClicked] = useState(false);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -446,6 +465,27 @@ const ChatHeaderPanel = (props) => {
     }
   };
 
+  const handleWorkspaceNotification = () => {
+    if (bellClicked) return;
+    const payload = {
+      id: channel.entity_id,
+      is_active: !channel.is_active,
+    };
+    dispatch(
+      putWorkspaceNotification(payload, (err, res) => {
+        setBellClicked(false);
+        if (err) {
+          return;
+        }
+        if (payload.is_active) {
+          toaster.success(dictionary.toasterBellNotificationOn);
+        } else {
+          toaster.success(dictionary.toasterBellNotificationOff);
+        }
+      })
+    );
+  };
+
   if (channel === null) return null;
 
   if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
@@ -472,7 +512,15 @@ const ChatHeaderPanel = (props) => {
             </StyledBadge>
           )}
         </ChatHeaderBadgeContainer>
-        <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
+        {channel.type === "TOPIC" && (
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
+            <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+          </StyledTooltip>
+        )}
+        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favorite}>
+          <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
+        </StyledTooltip>
+
         <div>
           <ul className="nav align-items-center justify-content-end">
             <li className="ml-2" style={{ height: "21px" }}>

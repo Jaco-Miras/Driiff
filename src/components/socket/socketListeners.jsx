@@ -174,6 +174,7 @@ import {
   updateWorkspacePostCount,
   setActiveTopic,
   getAllWorkspaceFolders,
+  incomingWorkpaceNotificationStatus,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -679,12 +680,19 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_CREATE": {
-            let post = { ...e, clap_user_ids: [] };
+            let post = { ...e, clap_user_ids: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [] };
             const isApprover = post.users_approval.some((ua) => ua.id === this.props.user.id);
+            const hasActiveWorkspace = post.workspaces.length > 0 && post.workspaces.some((ws) => this.props.workspaces[ws.topic_id] && this.props.workspaces[ws.topic_id].is_active);
+            const hasMentioned = post.mention_ids.some((id) => this.props.user.id === id);
+            const mustRead = post.must_read_users && post.must_read_users.some((u) => this.props.user.id === u.id && !u.must_read);
+            const mustReply = post.must_reply_users && post.must_reply_users.some((u) => this.props.user.id === u.id && !u.must_reply);
+            const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply || post.workspaces.length === 0;
+            post = { ...post, show_post: showPost };
             if (this.props.user.id !== post.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
-                  pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
+                  // chech the topic recipients if active
+                  if (showPost) pushBrowserNotification(`${post.author.first_name} shared a post`, post.title, post.author.profile_image_link, null);
                 }
               }
             }
@@ -922,9 +930,14 @@ class SocketListeners extends Component {
             //     }
             //   );
             // }
-            if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
+            if (e.is_active) {
+              if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
+                this.props.soundPlay();
+              }
+            } else if (!e.is_active && e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => id === this.props.user.id)) {
               this.props.soundPlay();
             }
+
             if (message.user === null || this.props.user.id !== message.user.id) {
               delete message.reference_id;
               message.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
@@ -938,7 +951,7 @@ class SocketListeners extends Component {
             delete e.socket;
             if (e.user.id !== user.id) {
               if (!e.is_muted) {
-                if (this.props.notificationsOn && isSafari) {
+                if (this.props.notificationsOn && isSafari && e.is_active) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || isIdle || !isBrowserActive || !document.hasFocus()) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
                     pushBrowserNotification(`${e.reference_title}`, e.reference_title.includes("in a direct message") ? `${stripHtml(e.body)}` : `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
@@ -978,7 +991,7 @@ class SocketListeners extends Component {
 
             //check if channel exist
             let channel = this.props.channels[e.channel_id];
-            if (typeof channel === "undefined") {
+            if ((typeof channel === "undefined" && e.is_active) || (typeof channel === "undefined" && !e.is_active && e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => id === this.props.user.id))) {
               this.props.getChannel({ code: e.channel_code });
             }
 
@@ -1568,6 +1581,9 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".workspace-active", (e) => {
+        this.props.incomingWorkpaceNotificationStatus(e);
+      })
       .listen(".create-drive-link", (e) => {
         this.props.incomingDriveLink(e);
       })
@@ -2260,6 +2276,7 @@ function mapDispatchToProps(dispatch) {
     removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
     removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
     getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
+    incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
   };
 }
 

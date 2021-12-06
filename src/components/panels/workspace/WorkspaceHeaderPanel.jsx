@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
@@ -11,6 +11,7 @@ import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } f
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 import MainBackButton from "../main/MainBackButton";
+import Tooltip from "react-tooltip-lite";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -267,6 +268,11 @@ const Icon = styled(SvgIconFeather)`
   height: 14px !important;
   width: 14px !important;
   margin-left: 5px;
+  cursor: pointer;
+  &.feather-bell,
+  &.feather-bell-off {
+    color: #64625c;
+  }
 `;
 
 const StarIcon = styled(SvgIconFeather)`
@@ -274,6 +280,7 @@ const StarIcon = styled(SvgIconFeather)`
   width: 14px !important;
   margin-left: 5px;
   cursor: pointer;
+  color: #64625c;
   ${(props) =>
     props.isFav &&
     `
@@ -283,6 +290,19 @@ const StarIcon = styled(SvgIconFeather)`
       color: rgb(255, 193, 7);
     }`}
 `;
+
+const StyledTooltip = styled(Tooltip)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const toggleTooltip = () => {
+  let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  tooltips.forEach((tooltip) => {
+    tooltip.parentElement.classList.toggle("tooltip-active");
+  });
+};
 
 const WorspaceHeaderPanel = (props) => {
   const { isExternal } = props;
@@ -300,6 +320,8 @@ const WorspaceHeaderPanel = (props) => {
     },
   } = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
+
+  const [bellClicked, setBellClicked] = useState(false);
 
   const { _t } = useTranslationActions();
 
@@ -339,6 +361,11 @@ const WorspaceHeaderPanel = (props) => {
     leaveWorkspaceHeader: _t("CONFIRMATION.LEAVE_WORKSPACE_HEADER", "Leave workspace"),
     leaveWorkspaceBody: _t("CONFIRMATION.LEAVE_WORKSPACE_BODY", "Are you sure that you want to leave this workspace?"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    notificationsOn: _t("TOOLTIP.NOTIFICATIONS_ON", "Notifications on"),
+    notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
+    favoriteWorkspace: _t("TOOLTIP.FAVORITE_WORKSPACE", "Favorite workspace"),
   };
 
   const actions = useWorkspaceActions();
@@ -505,6 +532,26 @@ const WorspaceHeaderPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const handleWorkspaceNotification = () => {
+    if (bellClicked) return;
+    const payload = {
+      id: activeTopic.id,
+      is_active: !activeTopic.is_active,
+    };
+    setBellClicked(true);
+    actions.toggleWorkspaceNotification(payload, (err, res) => {
+      setBellClicked(false);
+      if (err) {
+        return;
+      }
+      if (payload.is_active) {
+        toaster.success(dictionary.toasterBellNotificationOn);
+      } else {
+        toaster.success(dictionary.toasterBellNotificationOff);
+      }
+    });
+  };
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -569,7 +616,14 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       <li className="nav-item">
-                        <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={activeTopic.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
+                          <Icon icon={activeTopic.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+                        </StyledTooltip>
+                      </li>
+                      <li className="nav-item">
+                        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favoriteWorkspace}>
+                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                        </StyledTooltip>
                       </li>
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
@@ -615,9 +669,15 @@ const WorspaceHeaderPanel = (props) => {
                           </div>
                         </li>
                       )}
-
                       <li className="nav-item">
-                        <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={activeTopic.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
+                          <Icon icon={activeTopic.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+                        </StyledTooltip>
+                      </li>
+                      <li className="nav-item">
+                        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favoriteWorkspace}>
+                          <StarIcon icon="star" isFav={activeTopic.is_favourite} onClick={handleFavoriteWorkspace} />
+                        </StyledTooltip>
                       </li>
 
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>

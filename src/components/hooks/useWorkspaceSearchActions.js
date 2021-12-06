@@ -3,7 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { putChannel } from "../../redux/actions/chatActions";
-import { getWorkspaceFitlerCount, getAllWorkspace, favouriteWorkspace, joinWorkspace, leaveWorkspace, updateWorkspace, updateWorkspaceSearch, setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
+import {
+  getWorkspaceFitlerCount,
+  getAllWorkspace,
+  favouriteWorkspace,
+  joinWorkspace,
+  leaveWorkspace,
+  updateWorkspace,
+  updateWorkspaceSearch,
+  setActiveTopic,
+  getWorkspace,
+  setWorkspaceToDelete,
+  putWorkspaceNotification,
+} from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTranslationActions } from "./index";
 
@@ -25,6 +37,8 @@ const useWorkspaceSearchActions = () => {
     leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
     joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
   };
 
   const search = (payload, callback) => {
@@ -248,6 +262,26 @@ const useWorkspaceSearchActions = () => {
     dispatch(getWorkspaceFitlerCount({}, callback));
   };
 
+  const toggleWorkspaceNotification = (item) => {
+    const payload = {
+      id: item.topic.id,
+      is_active: !item.topic.is_active,
+    };
+    dispatch(
+      putWorkspaceNotification(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (payload.is_active) {
+          toaster.success(dictionary.toasterBellNotificationOn);
+        } else {
+          toaster.success(dictionary.toasterBellNotificationOff);
+        }
+      })
+    );
+  };
+
   return {
     edit,
     favourite,
@@ -259,6 +293,7 @@ const useWorkspaceSearchActions = () => {
     showWorkspaceModal,
     toWorkspace,
     updateSearch,
+    toggleWorkspaceNotification,
   };
 };
 

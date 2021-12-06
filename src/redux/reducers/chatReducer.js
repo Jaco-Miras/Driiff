@@ -2922,6 +2922,20 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.id) ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.id) } : state.selectedChannel,
       };
     }
+    case "INCOMING_WORKSPACE_NOTIFICATION_STATUS": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.type === "TOPIC" && action.data.id === channel.entity_id) {
+            acc[channel.id] = { ...channel, is_active: action.data.is_active };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }

@@ -426,6 +426,14 @@ const PostModal = (props) => {
     const hasExternal = form.selectedAddressTo.some((r) => {
       return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
     });
+    const rawMentionIds =
+      quillContents.ops && quillContents.ops.length > 0
+        ? quillContents.ops
+            .filter((id) => {
+              return id.insert.mention ? id : null;
+            })
+            .map((mid) => Number(mid.insert.mention.user_id))
+        : [];
     const mentionedIds =
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
@@ -454,6 +462,7 @@ const PostModal = (props) => {
       file_ids: inlineImages.map((i) => i.id),
       code_data: {
         base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`,
+        mention_ids: rawMentionIds.includes(NaN) ? addressIds : mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
       },
       approval_user_ids:
         form.showApprover && form.approvers.find((a) => a.value === "all") ? form.approvers.find((a) => a.value === "all").all_ids : form.showApprover ? form.approvers.map((a) => a.value).filter((id) => user.id !== id) : [],
@@ -465,11 +474,12 @@ const PostModal = (props) => {
       //     ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
       //     : [],
       shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
-      body_mention_ids: mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
+      body_mention_ids: rawMentionIds.includes(NaN) ? addressIds : mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
       must_read_user_ids: form.must_read && form.mustReadUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.must_read ? form.mustReadUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
       must_reply_user_ids:
         form.reply_required && form.mustReplyUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.reply_required ? form.mustReplyUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
     };
+
     if (mode === "edit") {
       payload = {
         ...payload,

@@ -12,9 +12,29 @@ const useFilterAllWorkspaces = (props) => {
         if (filterBy === "all" || filterBy === "new") {
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) : true;
         } else if (filterBy === "member") {
-          return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && ws.members.some((m) => m.id === user.id) : ws.members.some((m) => m.id === user.id);
+          const workspaceMembers = ws.members
+            .map((m) => {
+              if (m.member_ids) {
+                return m.member_ids;
+              } else return m.id;
+            })
+            .flat();
+
+          const uniqueMembers = [...new Set(workspaceMembers)];
+          const isMember = uniqueMembers.some((id) => id === user.id);
+          return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && isMember : isMember;
         } else if (filterBy === "nonMember") {
-          return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && !ws.members.some((m) => m.id === user.id) : !ws.members.some((m) => m.id === user.id);
+          const workspaceMembers = ws.members
+            .map((m) => {
+              if (m.member_ids) {
+                return m.member_ids;
+              } else return m.id;
+            })
+            .flat();
+
+          const uniqueMembers = [...new Set(workspaceMembers)];
+          const isMember = uniqueMembers.some((id) => id === user.id);
+          return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && !isMember : !isMember;
         } else if (filterBy === "favourites") {
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && ws.topic.is_favourite : ws.topic.is_favourite;
         } else if (filterBy === "external") {

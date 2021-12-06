@@ -240,6 +240,7 @@ export default (state = INITIAL_STATE, action) => {
         notifications: {
           ...state.notifications,
           ...(action.data.notification &&
+            action.data.show_post &&
             action.data.author.id !== state.user.id && {
               [action.data.notification.id]: {
                 id: action.data.notification.id,

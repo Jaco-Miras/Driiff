@@ -17,6 +17,7 @@ import {
   joinWorkspace,
   leaveWorkspace,
   updateWorkspace,
+  putWorkspaceNotification,
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, setSelectedChannel, putChannel } from "../../redux/actions/chatActions";
@@ -211,6 +212,10 @@ const useWorkspaceActions = () => {
     dispatch(getFavoriteWorkspaces(payload, callback));
   };
 
+  const toggleWorkspaceNotification = (payload, callback) => {
+    dispatch(putWorkspaceNotification(payload, callback));
+  };
+
   return {
     addPrimaryFilesToWorkspace,
     addRole,
@@ -232,6 +237,7 @@ const useWorkspaceActions = () => {
     selectWorkspace,
     showModal,
     updateTimelinePage,
+    toggleWorkspaceNotification,
   };
 };
 

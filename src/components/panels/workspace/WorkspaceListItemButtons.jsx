@@ -42,10 +42,14 @@ const WorkspaceListItemButtons = (props) => {
   const handleEdit = () => actions.edit(item);
   const handleFavorite = () => actions.favourite(item);
   const handleArchive = () => actions.showArchiveConfirmation(item);
+  const handleWorkspaceNotification = () => {
+    actions.toggleWorkspaceNotification(item);
+  };
   return (
     <Wrapper className="workspace-list-buttons">
       {isMember && !isExternal && <Icon icon="pencil" onClick={handleEdit} />}
       <Icon icon="star" className={`${item.topic.is_favourite && "favorite"}`} onClick={handleFavorite} />
+      {isMember && <Icon icon={item.topic.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />}
       {isMember && !isExternal && <Icon icon="trash" onClick={handleArchive} />}
       <StyledButton className={`btn ${isMember ? "btn-danger" : "btn-primary"}`} onClick={handleButtonClick}>
         {isMember ? dictionary.buttonLeave : dictionary.buttonJoin}

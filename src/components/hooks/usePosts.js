@@ -3,16 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToWorkspacePosts } from "../../redux/actions/postActions";
 import { usePostActions } from "./index";
+import { setUnreadPostIds } from "../../redux/actions/workspaceActions";
 
 const usePosts = () => {
   const actions = usePostActions();
   const dispatch = useDispatch();
   const params = useParams();
-  const { flipper, workspacePosts: wsPosts } = useSelector((state) => state.workspaces);
+  const wsPosts = useSelector((state) => state.workspaces.workspacePosts);
+  const flipper = useSelector((state) => state.workspaces.flipper);
   const recentPosts = useSelector((state) => state.posts.recentPosts);
   const user = useSelector((state) => state.session.user);
-  const { postsLists } = useSelector((state) => state.posts);
+  const postsLists = useSelector((state) => state.posts.postsLists);
   const [fetchingPost, setFetchingPost] = useState(false);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
   const componentIsMounted = useRef(true);
 
@@ -102,19 +105,25 @@ const usePosts = () => {
           if (files.length) {
             files = files.flat();
           }
+
           dispatch(
-            addToWorkspacePosts({
-              topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts,
-              filter: res.data.posts,
-              files,
-              filters: {
-                unreadPosts: {
-                  skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+            addToWorkspacePosts(
+              {
+                topic_id: parseInt(params.workspaceId),
+                posts: res.data.posts,
+                filter: res.data.posts,
+                files,
+                filters: {
+                  unreadPosts: {
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === 25,
+                  },
                 },
               },
-            })
+              () => {
+                dispatch(setUnreadPostIds({ topic_id: parseInt(params.workspaceId), unreadPostIds: res.data.posts.map((p) => p.id) }));
+              }
+            )
           );
         };
 
@@ -195,7 +204,19 @@ const usePosts = () => {
           if (activeFilter === "all") {
             return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
-            return !p.hasOwnProperty("draft_type");
+            if (activeTopic && !activeTopic.is_active) {
+              const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
+              // return only post with action
+              // const isApprover = p.users_approval.some((ua) => ua.id === user.id);
+              // const hasMentioned = p.mention_ids && p.mention_ids.some((id) => user.id === id);
+              // const mustRead = p.must_read_users && p.must_read_users.some((u) => user.id === u.id && !u.must_read);
+              // const mustReply = p.must_reply_users && p.must_reply_users.some((u) => user.id === u.id && !u.must_reply);
+              // const showPost = hasMentioned || mustRead || mustReply || isApprover;
+              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id);
+            } else {
+              return !p.hasOwnProperty("draft_type");
+            }
+
             // if (search !== "") {
             //   return !p.hasOwnProperty("draft_type");
             // } else {
