@@ -4052,6 +4052,7 @@ export default (state = INITIAL_STATE, action) => {
                 results: state.search.results.map((ws) => {
                   if (ws.topic.id === action.data.id) {
                     return {
+                      ...ws,
                       topic: { ...ws.topic, is_active: action.data.is_active },
                     };
                   } else {
