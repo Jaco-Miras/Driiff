@@ -3,7 +3,8 @@ import { Route } from "react-router-dom";
 import styled from "styled-components";
 import { MainNavigationTabPanel } from "./index";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+`;
 
 const MainNavigationPanel = (props) => {
   const { className = "", showNotificationBar } = props;

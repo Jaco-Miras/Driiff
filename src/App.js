@@ -17,8 +17,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
 import { sessionService } from "redux-react-session";
 import { DriffUpdateModal } from "./components/modals";
+import { ThemeProvider } from "styled-components";
 const FileViewer = lazy(() => import("./components/common/FileViewer"));
 const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
+
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -68,6 +70,18 @@ function App() {
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
+  const primarycolor = "#29323F"
+  const secondarycolor = "#4E5D72"
+  const thirdcolor = "#4E5D72"
+
+  const theme = {
+    colors: {
+      primary: primarycolor,
+      secondary: secondarycolor,
+      third: thirdcolor
+    }
+  }
+  
   //useHuddleNotification();
 
   useTranslation();
@@ -109,6 +123,7 @@ function App() {
   }
 
   return (
+    <ThemeProvider theme = {theme}>
     <Wrapper className="App">
       {imgAsLogin()}
       <ToastContainer className="top-toaster" enableMultiContainer containerId={"toastA"} transition={Slide} position={"top-center"} autoClose={3000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false} />
@@ -153,6 +168,7 @@ function App() {
       )}
       {showNewDriffBar && <DriffUpdateModal />}
     </Wrapper>
+    </ThemeProvider>
   );
 }
 

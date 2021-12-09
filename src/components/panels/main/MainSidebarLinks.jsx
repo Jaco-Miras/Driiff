@@ -12,6 +12,7 @@ const Wrapper = styled.div`
     padding: 4px 8px;
     font-size: 9px;
   }
+  background: ${({theme}) => theme.colors.secondary}
 `;
 
 const NavInputContainer = styled.div`
@@ -23,6 +24,7 @@ const NavInputContainer = styled.div`
   margin: 0 15px 10px 15px;
   border-radius: 8px;
   width: 100%;
+  
 
   &.active {
     background: #ffffff14;
@@ -30,6 +32,7 @@ const NavInputContainer = styled.div`
   div {
     display: inline-block;
     position: relative;
+    
   }
   input {
     width: calc(100% - 75px);
@@ -55,7 +58,7 @@ const NavIconContainer = styled(NavLink)`
   margin: 0 15px;
   border-radius: 8px;
   &.active {
-    background: #ffffff14;
+    background:${({theme}) => theme.colors.third};
   }
   div {
     display: inline-block;
