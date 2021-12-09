@@ -4,6 +4,9 @@ import styled from "styled-components";
 import { MainNavigationTabPanel } from "./index";
 
 const Wrapper = styled.div`
+  .navigation-menu-tab {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const MainNavigationPanel = (props) => {
