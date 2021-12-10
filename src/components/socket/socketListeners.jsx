@@ -970,7 +970,7 @@ class SocketListeners extends Component {
                   entity_type: "CHAT_REMINDER_MESSAGE",
                 };
               } else {
-                if (message.user.id !== user.id) {
+                if (message.user.id !== user.id && e.is_muted === false) {
                   notificationCounterEntryPayload = {
                     count: 1,
                     entity_type: "CHAT_MESSAGE",
