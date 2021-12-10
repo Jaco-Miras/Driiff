@@ -207,6 +207,7 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
+    this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
     }
