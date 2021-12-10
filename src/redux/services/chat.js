@@ -510,15 +510,6 @@ export function getSiteMetaData(payload) {
   });
 }
 
-export function getChatMsgsSearch(payload) {
-  let url = "/v2/search-on-chat";
-  return apiCall({
-    method: "POST",
-    url: url,
-    data: payload,
-  });
-}
-
 export function generateZoomSignature(payload) {
   let url = `/zoom/signature?${objToUrlParams(payload)}`;
   return apiCall({
@@ -532,6 +523,15 @@ export function createZoomMeeting(payload) {
   let url = `/zoom/meeting?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getChatMsgsSearch(payload) {
+  let url = "/v2/search-on-chat";
+  return apiCall({
+    method: "POST",
     url: url,
     data: payload,
   });

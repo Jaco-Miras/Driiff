@@ -38,7 +38,7 @@ const useZoomActions = () => {
       },
     })
     .then((e) => {
-      console.log("init success", e);
+      // console.log("init success", e);
     });
 
   const getSlug = () => {
@@ -77,7 +77,7 @@ const useZoomActions = () => {
         userEmail: config.userEmail,
       })
       .then((e) => {
-        console.log("join success", e);
+        //console.log("join success", e);
       })
       .catch((e) => {
         console.log("join error", e);
