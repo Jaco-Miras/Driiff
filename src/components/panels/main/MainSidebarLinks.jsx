@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     padding: 4px 8px;
     font-size: 9px;
   }
-  background: ${({theme}) => theme.colors.secondary}
+  background: ${({theme}) => theme.colors.primary}
 `;
 
 const NavInputContainer = styled.div`

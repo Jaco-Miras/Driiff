@@ -55,6 +55,11 @@ const Wrapper = styled.div`
   }
   .btn.btn-primary {
     background-color: ${({ theme }) => theme.colors.secondary}!important;
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+  .btn.btn-secondary {
+    background-color: ${({ theme }) => theme.colors.secondary}!important;
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
   }
   .badge.badge-pill {
     background-color: ${({ theme }) => theme.colors.secondary}!important;
@@ -69,8 +74,30 @@ const Wrapper = styled.div`
     :after {
       background-color: ${({ theme }) => theme.colors.secondary}!important;
     }
+  label.custom-control-label::before{
+    background-color: ${(props)=> props.theme.colors.primary};
   }
+  .form-control::focus{
+    border-color: ${(props)=> props.theme.colors.primary} !important;
+  }
+  .badge.badge-external{
+    background-color: ${(props)=> props.theme.colors.fifthcolor};
+  }
+  .kvCCQE.active:after{
+    background:  ${(props)=> props.theme.colors.primary}!important ;
+  }
+  .chat-date-icons{
+    color:  ${(props)=> props.theme.colors.primary}!important;
+  }
+  .feather.feather-send{
+  background:  ${(props)=> props.theme.colors.primary}!important ;
+  }
+  
+ 
+  
+
 `;
+
 
 const ModalPanelContainer = styled.div`
   z-index: 7;
@@ -86,18 +113,24 @@ function App() {
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
-  const primarycolor = "#29323F";
-  const secondarycolor = "#4E5D72";
-  const thirdcolor = "#4E5D72";
+  
+  const primarycolor = "#29323F" //primary blue //#a903fc to check if  color changes
+  const secondarycolor = "#4E5D72"
+  const thirdcolor = "#4E5D72" //lighter blue
+  const fourthcolor = "#192536" //dark top header blue
+  const fifthcolor = "#FFC856" //yellow
 
   const theme = {
     colors: {
       primary: primarycolor,
       secondary: secondarycolor,
       third: thirdcolor,
-    },
-  };
-
+      fourth: fourthcolor,
+      fourthcolor: fourthcolor,
+      fifthcolor: fifthcolor
+    }
+  }
+  
   //useHuddleNotification();
 
   useTranslation();

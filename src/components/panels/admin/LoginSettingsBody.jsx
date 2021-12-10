@@ -8,6 +8,7 @@ import { Loader, SvgIconFeather } from "../../common";
 import { DomainSelect } from "../../forms";
 import Tooltip from "react-tooltip-lite";
 import { DropDocument } from "../../dropzone/DropDocument";
+import StylingSettingsBody from "./StylingSettingsBody";
 const isValidDomain = require("is-valid-domain");
 
 const Wrapper = styled.div`
@@ -399,6 +400,9 @@ const LoginSettingsBody = () => {
             {dictionary.resetButton}
           </button>
         )}
+      </div>
+      <div>
+       <StylingSettingsBody></StylingSettingsBody>
       </div>
     </Wrapper>
   );
