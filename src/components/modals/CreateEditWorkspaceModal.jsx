@@ -1093,6 +1093,7 @@ const CreateEditWorkspaceModal = (props) => {
                 folder_name: res.data.workspace ? res.data.workspace.name : null,
                 member_ids: res.data.member_ids,
                 members: res.data.members,
+                is_active: true,
                 channel: {
                   code: res.data.channel.code,
                   id: res.data.channel.id,
