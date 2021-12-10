@@ -177,6 +177,9 @@ const CommentHeader = styled.div`
   }
 `;
 const CommentBody = styled.div`
+  &.ql-editor {
+    padding: 0;
+  }
   img {
     max-width: 50%;
     @media (max-width: 991.99px) {
@@ -184,7 +187,6 @@ const CommentBody = styled.div`
     }
   }
   ul {
-    padding-left: 40px;
     li {
       list-style: initial;
     }
@@ -343,7 +345,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -552,6 +554,7 @@ const Comment = (props) => {
               />
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
+              {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
             {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
@@ -565,7 +568,7 @@ const Comment = (props) => {
             )}
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
-          <CommentBody ref={refs.content} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
+          <CommentBody ref={refs.content} className="mt-2 mb-3 ql-editor" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (
             <Suspense fallback={<></>}>
               <Reward

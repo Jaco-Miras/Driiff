@@ -22358,3 +22358,13 @@ body > div#transition-popper {
   width: auto !important;
   min-width: auto !important;
 }
+
+.Toastify__toast-container.top-toaster {
+  min-width: 350px;
+  max-width: 400px;
+  width: auto;
+  .Toastify__toast {
+    min-height: 80px;
+    max-height: 120px;
+  }
+}

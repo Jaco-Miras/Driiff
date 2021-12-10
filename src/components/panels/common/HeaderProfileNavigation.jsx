@@ -18,6 +18,15 @@ const Wrapper = styled.ul`
   }
   > li {
     position: relative;
+    svg {
+      stoke: #8b8b8b;
+    }
+    // svg {
+    //   stroke: #363636;
+    //   :hover {
+    //     stroke: #7a1b8b;
+    //   }
+    // }
     .nav-link {
       max-height: 45px;
       padding: 10px 10px !important;
@@ -208,8 +217,17 @@ const HomeProfileNavigation = (props) => {
 
   const handleGiftClick = (e) => {
     e.preventDefault();
-    window.open("https://support.getdriff.com/hc/en-us/categories/4409918500625-Software-updates", "_blank");
+    window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
     // history.push("/releases");
+  };
+
+  const hideSearch = () => {
+    const name = "search";
+    setDropDown((prevState) => ({
+      ...prevState,
+      ...(prevState.name !== name && { name: name }),
+      value: prevState.name === name ? !prevState.value : true,
+    }));
   };
 
   return (
@@ -227,7 +245,7 @@ const HomeProfileNavigation = (props) => {
             <SvgIconFeather icon="search" />
           </ToolTip>
         </a>
-        {dropDown.name === "search" && dropDown.value && <SearchDropDown />}
+        {dropDown.name === "search" && dropDown.value && <SearchDropDown hideSearch={hideSearch} />}
       </li>
       <li className="nav-item dropdown">
         <a href="/" className={`nav-link notif-bell ${location.pathname.split("/")[1] === "notifications" && "active"}`} data-toggle="notification" onClick={gotoNotifications}>

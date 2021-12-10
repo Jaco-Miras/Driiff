@@ -120,7 +120,7 @@ const useTimeFormat = () => {
       calendar: {
         lastDay: `[Yesterday] ${time_format}`,
         sameDay: `[Today] ${time_format}`,
-        sameElse: `dddd[,] ${time_format}`,
+        sameElse: `MMM DD, YYYY[,] ${time_format}`,
         lastWeek: `dddd[,] ${time_format}`,
       },
     });
@@ -128,7 +128,7 @@ const useTimeFormat = () => {
       calendar: {
         lastDay: `[gisteren] ${time_format}`,
         sameDay: `[vandaag] ${time_format}`,
-        sameElse: `dddd[,] ${time_format}`,
+        sameElse: `MMM DD, YYYY[,] ${time_format}`,
         lastWeek: `dddd[,] ${time_format}`,
       },
     });

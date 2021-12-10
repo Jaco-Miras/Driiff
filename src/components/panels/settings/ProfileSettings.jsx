@@ -69,18 +69,22 @@ const Wrapper = styled.div`
     display: flex;
     place-content: center;
     font-size: 13px;
+    cursor: pointer;
+    :hover {
+      text-decoration: underline;
+    }
   }
 `;
 
-const ReleaseLink = styled.span`
-  font-weight: 500;
-  cursor: pointer;
-`;
+// const ReleaseLink = styled.span`
+//   font-weight: 500;
+//   cursor: pointer;
+// `;
 
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
-  const history = useHistory();
+  //const history = useHistory();
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -166,16 +170,16 @@ const ProfileSettings = (props) => {
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
   };
 
-  // const notificationSoundOptions = [
-  //   {
-  //     value: "appointed",
-  //     label: dictionary.notificationSoundDefault,
-  //   },
-  //   // {
-  //   //   value: "jingle-bells",
-  //   //   label: dictionary.notificationSoundJingleBells,
-  //   // },
-  // ];
+  const notificationSoundOptions = [
+    {
+      value: "appointed",
+      label: dictionary.notificationSoundDefault,
+    },
+    {
+      value: "jingle-bells",
+      label: dictionary.notificationSoundJingleBells,
+    },
+  ];
 
   const channelSortOptions = [
     {
@@ -607,12 +611,12 @@ const ProfileSettings = (props) => {
     toaster.success(<span>You have successfully updated Time format</span>);
   }, []);
 
-  const handleSystemSettingsClick = () => {
-    let a = document.createElement("a");
-    a.href = `https://${getDriffName()}.driff.io/admin`;
-    a.target = "_blank";
-    a.click();
-  };
+  // const handleSystemSettingsClick = () => {
+  //   let a = document.createElement("a");
+  //   a.href = `https://${getDriffName()}.driff.io/admin`;
+  //   a.target = "_blank";
+  //   a.click();
+  // };
 
   const handleUpdateTranslationClick = () => {
     uploadTranslationToServer(() => {
@@ -647,11 +651,16 @@ const ProfileSettings = (props) => {
   //   toaster.success(<span>{dataset.successMessage}</span>);
   // };
 
+  const handleVersionClick = (e) => {
+    e.preventDefault();
+    window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
+  };
+
   return (
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
         <>
-          {loggedUser.role.name === "owner" && (
+          {/* {loggedUser.role.name === "owner" && (
             <div className="card">
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center mb-0">
@@ -659,7 +668,7 @@ const ProfileSettings = (props) => {
                 </h6>
               </div>
             </div>
-          )}
+          )} */}
           <div className="card">
             <div className="card-body">
               <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>
@@ -820,12 +829,12 @@ const ProfileSettings = (props) => {
                   />
                 </div>
               </div>
-              {/* <div className="row mb-2">
+              <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.notificationSound}</div>
                 <div className="col-7">
                   <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={notificationSoundOptions.find((o) => o.value === notification_sound)} onChange={handleNotificationSoundChange} options={notificationSoundOptions} />
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
 
@@ -889,7 +898,7 @@ const ProfileSettings = (props) => {
       ) : (
         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
       )}
-      <span className="version-number mb-3">
+      <span className="version-number mb-3" onClick={handleVersionClick}>
         Driff version: {driffData.version} {localizeDate(driffData.timestamp)} &nbsp;
         {/* <ReleaseLink onClick={handleViewReleasePage}>{dictionary.viewRelease}</ReleaseLink> */}
       </span>

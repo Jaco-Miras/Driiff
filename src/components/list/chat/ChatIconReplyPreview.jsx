@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import quillHelper from "../../../helpers/quillHelper";
+//import quillHelper from "../../../helpers/quillHelper";
 import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
@@ -12,7 +12,7 @@ const Wrapper = styled.span`
   display: table;
   table-layout: fixed;
   width: 100%;
-  font-weight: ${(props) => (props.hasUnRead ? "bold" : "normal")};
+  font-weight: ${(props) => (props.hasUnRead ? "500" : "normal")};
 `;
 const LastReplyContent = styled.span`
   display: flex;
@@ -20,6 +20,8 @@ const LastReplyContent = styled.span`
 const DraftContent = styled.span``;
 const LastReplyName = styled.span``;
 const LastReplyBody = styled.div`
+  color: #363636;
+  font-size: 12px;
   min-width: 200px;
   max-height: 40px;
   min-height: 24px;
@@ -32,6 +34,9 @@ const LastReplyBody = styled.div`
   svg {
     margin-right: 4px;
     display: inline;
+  }
+  .dark & {
+    color: #c7c7c7;
   }
 `;
 const TextIcon = styled(SvgIcon)`
@@ -113,7 +118,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = stripImgTag(channel.last_reply.body);
@@ -226,6 +231,7 @@ const ReplyPreview = (props) => {
           </>
         )}
         {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
+        {channel.is_active === false && channel.type === "TOPIC" && <Icon icon="bell-off" className={`${channel.is_pinned && "mr-1"}`} />}
       </div>
     </Wrapper>
   );

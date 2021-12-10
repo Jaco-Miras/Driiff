@@ -108,7 +108,7 @@ const Wrapper = styled.li`
 const ShowMoreBtn = styled.div`
   text-align: center;
   position: absolute;
-  bottom: -10px;
+  bottom: -30px;
   z-index: 2;
   width: 100%;
   > span {
@@ -265,7 +265,7 @@ const TeamListItem = (props) => {
   const isUser = member.type === "internal" || member.type === "external";
 
   return (
-    <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
+    <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className} ${(showMoreButton || showLessButton) && "mb-3"}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
           <Avatar
@@ -313,16 +313,16 @@ const TeamListItem = (props) => {
       </div>
       {showMoreButton && (
         <ShowMoreBtn className="btn-toggle-show">
-          <span className="cursor-pointer" onClick={toggleShow}>
+          <button className="btn btn-primary cursor-pointer" onClick={toggleShow}>
             {dictionary.showMore}
-          </span>
+          </button>
         </ShowMoreBtn>
       )}
       {showLessButton && (
         <ShowMoreBtn className="btn-toggle-show">
-          <span className="cursor-pointer" onClick={toggleShow}>
+          <button className="btn btn-primary cursor-pointer" onClick={toggleShow}>
             {dictionary.showLess}
-          </span>
+          </button>
         </ShowMoreBtn>
       )}
       {!hideOptions && isUser && (

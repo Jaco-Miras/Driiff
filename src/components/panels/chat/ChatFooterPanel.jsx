@@ -82,7 +82,7 @@ const ChatInputContainer = styled.div`
     background: transparent;
     border-color: transparent;
     transition: color 0.15s ease-in-out;
-    color: #cacaca;
+    //color: #cacaca;
     &.active {
       color: #7a1b8b;
     }
@@ -94,7 +94,7 @@ const ChatInputContainer = styled.div`
     background: transparent;
     border-color: transparent;
     transition: color 0.15s ease-in-out;
-    color: #cacaca;
+    //color: #cacaca;
     &.active {
       color: #7a1b8b;
     }

@@ -147,7 +147,8 @@ const CirclePlus = styled(SvgIconFeather)`
 const NavNewWorkspace = styled.button`
   background: #fff3 !important;
   border: 0 !important;
-  margin: 15px 30px;
+  margin: 0;
+  width: 100%;
   height: 40px;
   justify-content: center;
   align-items: center;
@@ -160,6 +161,10 @@ const NavNewWorkspace = styled.button`
     justify-content: center;
     font-weight: 500;
   }
+`;
+
+const NewBtnWrapper = styled.div`
+  margin: 15px 30px;
 `;
 
 const MainNavigationTabPanel = (props) => {
@@ -249,14 +254,14 @@ const MainNavigationTabPanel = (props) => {
       <FavoriteWorkspacesPanel dictionary={dictionary} generalSettings={generalSettings} isExternal={isExternal} user={user} />
       <NewModalButtons dictionary={dictionary} isExternal={isExternal} onShowModalButtons={handleShowModalButtons} showButtons={showButtons} />
 
-      <div>
+      <NewBtnWrapper>
         <NavNewWorkspace onClick={handleShowModalButtons} className="btn btn-outline-light" type="button">
           <div>
             <CirclePlus icon="circle-plus" />
             {dictionary.addNew}
           </div>
         </NavNewWorkspace>
-      </div>
+      </NewBtnWrapper>
     </Wrapper>
   );
 };

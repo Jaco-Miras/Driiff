@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useSortChannels, useChannelActions } from "../../hooks";
@@ -6,6 +6,7 @@ import ChannelList from "./ChannelList";
 import { CustomInput } from "reactstrap";
 import FavoriteChannels from "./FavoriteChannels";
 import { useHistory } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 const ChannelsSidebarContainer = styled.div`
   display: flex;
@@ -48,6 +49,7 @@ const ChatHeader = styled.h4`
 const ChannelsSidebar = (props) => {
   const { className = "", search, workspace, dictionary } = props;
 
+  const firstResult = useRef(null);
   const channels = useSelector((state) => state.chat.channels);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   // const searchingChannels = useSelector((state) => state.chat.searchingChannels);
@@ -72,6 +74,8 @@ const ChannelsSidebar = (props) => {
 
   const onSelectChannel = (channel) => {
     document.body.classList.add("m-chat-channel-closed");
+    const snoozeContainer = document.getElementById("toastS");
+    if (snoozeContainer && isMobile) snoozeContainer.classList.add("d-none");
 
     if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");
@@ -87,10 +91,17 @@ const ChannelsSidebar = (props) => {
     }
   };
 
+  const handleClearSearch = () => {
+    actions.setSidebarSearch({
+      value: "",
+      searching: false,
+    });
+  };
+
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
       <FavoriteChannels channels={favoriteChannels} onSelectChannel={onSelectChannel} />
-      <Channels className={"list-group list-group-flush"}>
+      <Channels className={"list-group list-group-flush channels"}>
         {/* {searchingChannels && (
           <ChatHeaderContainer>
             <ChatHeader>{`Searching ${chatSidebarSearch}...`} </ChatHeader>
@@ -155,6 +166,10 @@ const ChannelsSidebar = (props) => {
                 </ChatHeaderContainer>
               )}
               <ChannelList
+                index={k}
+                className={k === 0 ? "first-channel channel-list" : "channel-list"}
+                firstRef={k === 0 ? firstResult : null}
+                tabIndex={k + 1}
                 channel={channel}
                 selectedChannel={selectedChannel}
                 channelDrafts={channelDrafts}
@@ -163,6 +178,7 @@ const ChannelsSidebar = (props) => {
                 addLoadRef={search === "" && k > sortedChannels.length - 5}
                 onLoadMore={handleLoadMore}
                 onSelectChannel={onSelectChannel}
+                onClearSearch={handleClearSearch}
               />
             </React.Fragment>
           );

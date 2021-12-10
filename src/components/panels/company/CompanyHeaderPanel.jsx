@@ -75,8 +75,10 @@ const Wrapper = styled.div`
     color: #7a1b8b !important;
   }
   svg.feather-home {
-    color: rgb(80, 80, 80);
-
+    //color: rgb(80, 80, 80);
+    color: #8b8b8b;
+    width: 20px;
+    height: 20px;
     .dark & {
       color: #fff;
     }
@@ -164,6 +166,7 @@ const CompanyHeaderPanel = () => {
     adminSettings: _t("PAGE_TITLE.ADMIN_SETTINGS", "Driff settings"),
     btnTeam: _t("BUTTON.TEAM", "Team"),
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
+    updateTeam: _t("TEAM_MODAL.UPDATE_TEAM_BTN", "Update team"),
   };
 
   const dispatch = useDispatch();

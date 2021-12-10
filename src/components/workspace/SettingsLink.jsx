@@ -68,6 +68,7 @@ const SettingsLink = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this workspace?"),
+    worskpaceSettings: _t("TOOLTIP.WORKSPACE_SETTINGS", "Workspace settings"),
   };
 
   const wrapperRef = useRef();
@@ -172,7 +173,7 @@ const SettingsLink = (props) => {
     <SettingsLinkList className={`nav-item ${className}`} ref={wrapperRef}>
       <div>
         <span className={`dropdown-toggle ${show ? "show" : ""}`} data-toggle="dropdown" onClick={handleToggle}>
-          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Workspace settings">
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.worskpaceSettings}>
             <SvgIconFeather icon="pencil" />
           </StyledTooltip>
         </span>

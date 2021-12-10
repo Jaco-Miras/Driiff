@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -7,10 +7,13 @@ import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
-import { useSettings, useWorkspaceActions } from "../../hooks";
+import { useSettings, useWorkspaceActions, useToaster } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
+import { isMobile } from "react-device-detect";
+import Tooltip from "react-tooltip-lite";
+import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -88,12 +91,14 @@ const Wrapper = styled.div`
   }
   .chat-header-folder {
     flex: 1 1 100%;
-    height: 12px;
+    // height: 12px;
     color: #8b8b8b;
     font-family: Arial;
     font-size: 12px;
-    letter-spacing: 0;
-    line-height: 12px;
+    // letter-spacing: 0;
+    // line-height: 12px;
+    display: flex;
+    align-items: center;
   }
   @media (max-width: 414px) {
     .chat-header-folder {
@@ -113,10 +118,10 @@ const Wrapper = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)``;
-const IconFolder = styled(SvgIconFeather)`
-  width: 12px;
-  height: 11px;
-`;
+// const IconFolder = styled(SvgIconFeather)`
+//   width: 12px;
+//   height: 12px;
+// `;
 
 const EyeIcon = styled(SvgIconFeather)`
   width: 0.7rem;
@@ -157,7 +162,10 @@ const StyledMoreOptions = styled(MoreOptions)`
 
   align-items: center;
   justify-content: center;
-
+  &:hover {
+    cursor: pointer;
+    border: 1px solid #972c86 !important;
+  }
   .dark & {
     border: 1px solid #25282c !important;
     background: #25282c;
@@ -216,11 +224,32 @@ const StarIcon = styled(SvgIconFeather)`
     }`}
 `;
 
+const SearchIcon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  min-width: 14px;
+  margin-left: 5px;
+  cursor: pointer;
+`;
+
+const StyledTooltip = styled(Tooltip)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const toggleTooltip = () => {
+  let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  tooltips.forEach((tooltip) => {
+    tooltip.parentElement.classList.toggle("tooltip-active");
+  });
+};
+
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -231,6 +260,9 @@ const ChatHeaderPanel = (props) => {
 
   const { translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const chatMessageActions = useChatMessageActions();
+
+  const toaster = useToaster();
+  const [bellClicked, setBellClicked] = useState(false);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -267,6 +299,8 @@ const ChatHeaderPanel = (props) => {
 
   const goBackChannelSelect = () => {
     document.body.classList.remove("m-chat-channel-closed");
+    const snoozeContainer = document.getElementById("toastS");
+    if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
   };
   const workspaceAction = useWorkspaceActions();
 
@@ -370,7 +404,8 @@ const ChatHeaderPanel = (props) => {
         if (chatChannel.workspace_folder) {
           return (
             <>
-              <IconFolder icon="folder" /> {chatChannel.workspace_folder.name}{" "}
+              <i className="fa fa-folder-o mr-1" /> {chatChannel.workspace_folder.name}
+              {/* <IconFolder icon="folder" className="mr-1" /> {chatChannel.workspace_folder.name} */}
             </>
           );
         } else {
@@ -430,6 +465,27 @@ const ChatHeaderPanel = (props) => {
     }
   };
 
+  const handleWorkspaceNotification = () => {
+    if (bellClicked) return;
+    const payload = {
+      id: channel.entity_id,
+      is_active: !channel.is_active,
+    };
+    dispatch(
+      putWorkspaceNotification(payload, (err, res) => {
+        setBellClicked(false);
+        if (err) {
+          return;
+        }
+        if (payload.is_active) {
+          toaster.success(dictionary.toasterBellNotificationOn);
+        } else {
+          toaster.success(dictionary.toasterBellNotificationOff);
+        }
+      })
+    );
+  };
+
   if (channel === null) return null;
 
   if (translated_channels.length > 0 && translated_channels.includes(chatChannel.id) && !chatChannel.is_translate) chatMessageActions.saveChannelTranslateState({ ...chatChannel, is_translate: true });
@@ -456,7 +512,15 @@ const ChatHeaderPanel = (props) => {
             </StyledBadge>
           )}
         </ChatHeaderBadgeContainer>
-        <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
+        {channel.type === "TOPIC" && channel.hasOwnProperty("is_active") && (
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
+            <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+          </StyledTooltip>
+        )}
+        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favorite}>
+          <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
+        </StyledTooltip>
+
         <div>
           <ul className="nav align-items-center justify-content-end">
             <li className="ml-2" style={{ height: "21px" }}>
@@ -473,6 +537,7 @@ const ChatHeaderPanel = (props) => {
           </ul>
         </div>
         {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
+        {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
       <ChatHeaderMembers channel={channel} />

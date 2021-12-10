@@ -103,6 +103,7 @@ const WorkspaceDashboardPanel = (props) => {
     roleTechnicalLead: _t("ROLE.TECHNICAL_LEAD", "Technical lead"),
     roleWatcher: _t("ROLE.WATCHER", "Watcher"),
     sendInviteManually: _t("TEAM.SEND_INVITE_MANUALLY", "Send invite manually"),
+    openPost: _t("SYSTEM.OPEN_POST", "Open post"),
   };
 
   let disableOptions = false;

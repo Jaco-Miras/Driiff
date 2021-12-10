@@ -9,6 +9,10 @@ const Wrapper = styled.div`
   border-bottom-left-radius: 4px;
   position: relative;
 
+  .feather-edit {
+    color: #8b8b8b;
+  }
+
   .bg-overlay {
     position: absolute;
     z-index: 0;

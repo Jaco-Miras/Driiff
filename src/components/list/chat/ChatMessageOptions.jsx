@@ -6,7 +6,7 @@ import useUserChannels from "../../hooks/useUserChannels";
 import { MoreOptions } from "../../panels/common";
 
 const ChatMessageOptions = (props) => {
-  const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250, teamChannelId = null, isExternalUser, scrollComponent, chatMessageActions } = props;
+  const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250, teamChannelId = null, isExternalUser, scrollComponent, chatMessageActions, showDownloadAll = false, downloadFiles = [] } = props;
   //const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const dispatch = useDispatch();
@@ -119,6 +119,40 @@ const ChatMessageOptions = (props) => {
   const handleImportant = () => {
     chatMessageActions.markImportant(replyData);
   };
+
+  function download_files(files) {
+    function download_next(i) {
+      if (i >= files.length) {
+        return;
+      }
+      var a = document.createElement("a");
+      a.href = files[i].download_link;
+      a.target = "_parent";
+      // Use a.download if available, it prevents plugins from opening.
+      if ("download" in a) {
+        a.download = files[i].filename;
+      }
+      // Add a to the doc for click to work.
+      (document.body || document.documentElement).appendChild(a);
+      if (a.click) {
+        a.click(); // The click method is supported by most browsers.
+      }
+      // Delete the temporary link.
+      a.parentNode.removeChild(a);
+      // Download the next file with a small timeout. The timeout is necessary
+      // for IE, which will otherwise only download the first file.
+      setTimeout(function () {
+        download_next(i + 1);
+      }, 1200);
+    }
+    // Initiate the first download.
+    download_next(0);
+  }
+
+  const handleDownloadAll = (e) => {
+    download_files(downloadFiles);
+  };
+
   /* dictionary initiated in ChatContentPanel.jsx */
   const isInternalUser = replyData.user && users[replyData.user.id] && users[replyData.user.id].type === "internal";
   const hasDeletedFile = replyData.files.some((f) => f.file_type === "trashed");
@@ -137,6 +171,7 @@ const ChatMessageOptions = (props) => {
         <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
       )}
       {teamChannelId && !isExternalUser && <div onClick={handleDiscussInTeam}>{dictionary.discussOnTeamChat}</div>}
+      {showDownloadAll && <div onClick={handleDownloadAll}>{dictionary.downloadAll}</div>}
     </MoreOptions>
   );
 };

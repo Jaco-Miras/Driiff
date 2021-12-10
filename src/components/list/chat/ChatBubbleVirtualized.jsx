@@ -111,7 +111,7 @@ const ChatBubbleContainer = styled.div`
     }
   }
   .message-files div:first-child {
-    align-items: center;
+    align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   }
 `;
 
@@ -235,7 +235,7 @@ const ChatMessageFiles = styled(MessageFiles)`
 `;
 const ReplyContent = styled.span`
   // max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
-  // padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "")};
+  padding: ${(props) => (props.hasFiles ? "0 3px" : "")};
   ul {
     list-style-type: none;
   }
@@ -604,18 +604,6 @@ const ChatBubbleVirtualized = (props) => {
                   <QuoteContent ref={handleQuoteContentRef} className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
-              {reply.files.length > 0 && !reply.is_deleted && (
-                <ChatMessageFiles
-                  dictionary={dictionary}
-                  hasMessage={hasMessage}
-                  isAuthor={isAuthor}
-                  theme={chatSettings.chat_message_theme}
-                  files={reply.files}
-                  reply={reply}
-                  type="chat"
-                  topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null}
-                />
-              )}
               {hasMessage && (
                 <span>
                   <ReplyContent
@@ -627,6 +615,18 @@ const ChatBubbleVirtualized = (props) => {
                     dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
+              )}
+              {reply.files.length > 0 && !reply.is_deleted && (
+                <ChatMessageFiles
+                  dictionary={dictionary}
+                  hasMessage={hasMessage}
+                  isAuthor={isAuthor}
+                  theme={chatSettings.chat_message_theme}
+                  files={reply.files}
+                  reply={reply}
+                  type="chat"
+                  topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null}
+                />
               )}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
             </ChatContent>

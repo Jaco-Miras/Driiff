@@ -10,7 +10,7 @@ const IconWrapper = styled.div`
   width: 40px;
   display: flex;
   align-items: center;
-  padding: 13px 10px;
+  padding: 12px 10px;
   align-self: flex-end;
   @media (max-width: 414px) {
     width: 30px;
@@ -27,6 +27,7 @@ const Wrapper = styled.div`
   .feather {
     width: 18px;
     height: 18px;
+    cursor: pointer;
   }
   .chat-buttons {
     display: none;
@@ -60,6 +61,13 @@ const Wrapper = styled.div`
     .chat-buttons {
       display: block;
     }
+    .feather-meet {
+      height: 17px;
+    }
+  }
+  .feather-google-meet {
+    height: 20px;
+    width: 21px;
   }
   .zoom-icon {
     cursor: pointer;

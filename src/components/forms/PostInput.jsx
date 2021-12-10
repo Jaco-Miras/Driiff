@@ -225,6 +225,7 @@ const PostInput = forwardRef((props, ref) => {
         push_title: `${user.name} replied in ${post.title}`,
         post_id: post.id,
         post_title: post.title,
+        mention_ids: mention_ids,
       },
       approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };

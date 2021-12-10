@@ -31,6 +31,7 @@ const UpdatePasswordPanel = (props) => {
 
   const [error, setError] = useState({
     password: "",
+    valid: null,
   });
 
   const [formMessage, setFormMessage] = useState({
@@ -54,6 +55,21 @@ const UpdatePasswordPanel = (props) => {
     if (form.password === "") {
       valid = false;
       errorData = { ...errorData, password: dictionary.passwordRequired };
+    }
+
+    if (form.password === "") {
+      valid = false;
+      errorData = { ...errorData, password: dictionary.passwordRequired, valid: false };
+    } else if (form.password !== "") {
+      const specialChar = /[ -/:-@[-`{-~]/;
+      const hasNum = /\d/;
+      if (specialChar.test(form.password) && hasNum.test(form.password) && form.password.length >= 6) {
+        valid = true;
+        errorData = { ...errorData, password: "", valid: true };
+      } else {
+        valid = false;
+        errorData = { ...errorData, password: dictionary.invalidPassword, valid: false };
+      }
     }
 
     setError(errorData);
@@ -94,7 +110,7 @@ const UpdatePasswordPanel = (props) => {
   return (
     <Wrapper>
       <FormInput onChange={handleInputChange} name="email" type="email" placeholder="Email" value={form.email} readOnly />
-      <PasswordInput ref={ref.password} onChange={handleInputChange} />
+      <PasswordInput ref={ref.password} onChange={handleInputChange} isValid={error.valid} feedback={error.password} />
       <button className="btn btn-primary btn-block" onClick={handleUpdatePassword}>
         {dictionary.updatePassword}
       </button>

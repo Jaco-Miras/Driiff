@@ -247,16 +247,20 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
-      return {
-        ...state,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            [action.data.id]: action.data,
+      if (action.data.show_post) {
+        return {
+          ...state,
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.id]: action.data,
+            },
           },
-        },
-      };
+        };
+      } else {
+        return state;
+      }
     }
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
@@ -789,7 +793,11 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.id]: { ...action.data, clap_user_ids: [] },
+            [action.data.id]: {
+              ...action.data,
+              clap_user_ids: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].clap_user_ids : [],
+              last_visited_at: state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
+            },
           },
         },
       };
@@ -1490,6 +1498,25 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_LAST_VISIT_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            if (post.id && action.data.post_id) {
+              acc[post.id] = {
+                ...post,
+                last_visited_at: { timestamp: action.data.last_visit },
+              };
+            } else {
+              acc[post.id] = post;
+            }
+            return acc;
+          }, {}),
+        },
+      };
     }
     default:
       return state;

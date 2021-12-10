@@ -95,6 +95,14 @@ const ChatList = styled.li`
       opacity: 1;
     }
   }
+  &.pulsating div.chat-bubble {
+    animation: blinker 2s linear forwards;
+    @keyframes blinker {
+      50% {
+        opacity: 0.5;
+      }
+    }
+  }
 `;
 const TimestampDiv = styled.div`
   z-index: 2;
@@ -160,6 +168,12 @@ const ChatBubbleContainer = styled.div`
             }
         `};
   }
+  .more-options:hover {
+    border: 1px solid #972c86 !important;
+    svg {
+      color: #972c86;
+    }
+  }
   .dark & {
     &:before {
       display: none;
@@ -178,7 +192,7 @@ const ChatActionsContainer = styled.div`
   align-items: center;
   top: 0;
   ${(props) => (props.isAuthor ? "right: 100%" : "left: 100%")};
-  height: calc(100% + 4px);
+  height: ${(props) => (props.hasReactions ? "calc(100% - 20px)" : "calc(100% + 4px)")};
   margin-top: -2px;
   transition: opacity 0.3s ease;
 `;
@@ -694,6 +708,8 @@ class ChatMessages extends React.PureComponent {
                         let showGifPlayer = false;
                         let isBot = false;
                         let showMessageLine = false;
+                        let showDownloadAll = false;
+                        let downloadFiles = [];
 
                         if (reply.user) {
                           if (reply.created_at.timestamp) {
@@ -724,6 +740,17 @@ class ChatMessages extends React.PureComponent {
 
                           if (typeof reply.body !== "undefined" && reply.body !== null && reply.body.match(FindGifRegex) !== null) {
                             showGifPlayer = true;
+                          }
+                          if ((reply.files && reply.files.length > 0 && e[k + 1] && e[k + 1].user && e[k + 1].user.id === reply.user.id && e[k - 1] && e[k - 1].files.length === 0) || (showAvatar && reply.files && reply.files.length > 0)) {
+                            showDownloadAll = true;
+                            const nextFiles = e[k + 1] ? e[k + 1].files : [];
+                            downloadFiles = [...reply.files, ...nextFiles];
+                            let inc = 2;
+                            while (e[k + inc]) {
+                              if (e[k + inc].user && e[k + inc].user.id !== reply.user.id) break;
+                              downloadFiles = [...downloadFiles, ...e[k + inc].files];
+                              inc++;
+                            }
                           }
                           let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
                           isBot = botCodes.includes(reply.user.code);
@@ -761,7 +788,7 @@ class ChatMessages extends React.PureComponent {
                                     translated_channels={this.props.translated_channels}
                                     chat_language={this.props.chat_language}
                                   />
-                                  <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                                  <ChatActionsContainer isAuthor={isAuthor} className={`chat-actions-container ${reply.reactions.length && "has-reactions"}`} hasReactions={reply.reactions.length}>
                                     {<ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
                                     {!isNaN(reply.id) && !reply.is_deleted && (
                                       <ChatMessageOptions
@@ -774,6 +801,8 @@ class ChatMessages extends React.PureComponent {
                                         teamChannelId={this.props.teamChannelId}
                                         isExternalUser={this.props.user.type === "external"}
                                         chatMessageActions={this.props.chatMessageActions}
+                                        showDownloadAll={showDownloadAll}
+                                        downloadFiles={downloadFiles}
                                       />
                                     )}
                                   </ChatActionsContainer>

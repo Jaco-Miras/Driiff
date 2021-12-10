@@ -293,6 +293,7 @@ export {
   toggleShowAbout,
   getAllWorkspaceFolders,
   getExistingFolder,
+  putWorkspaceNotification,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";

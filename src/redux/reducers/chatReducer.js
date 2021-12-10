@@ -1620,6 +1620,7 @@ export default function (state = INITIAL_STATE, action) {
         ];
         channel = {
           ...action.data.channel_detail,
+          is_active: channels[action.data.channel_detail.id].is_active,
           icon_link: channels[action.data.channel_detail.id].icon_link,
           //replies: [...new Map(messages.map((item) => [item["id"], item])).values()],
           replies: [...new Map(messages.map((item) => [item["id"], item])).values()].filter((m) => !isNaN(m.id)), //remove placeholder chat messages
@@ -2905,6 +2906,35 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && action.data.channels.some((id) => id === state.selectedChannel.id)
             ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) }
             : state.selectedChannel,
+      };
+    }
+    case "INCOMING_DELETED_USER": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.members.some((m) => m.id === action.data.id)) {
+            acc[channel.id] = { ...channel, members: channel.members.filter((m) => m.id !== action.data.id) };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.id) ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.id) } : state.selectedChannel,
+      };
+    }
+    case "INCOMING_WORKSPACE_NOTIFICATION_STATUS": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.type === "TOPIC" && action.data.id === channel.entity_id) {
+            acc[channel.id] = { ...channel, is_active: action.data.is_active };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
       };
     }
     default:
