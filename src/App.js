@@ -62,7 +62,7 @@ const Wrapper = styled.div`
     border-color: ${({ theme }) => theme.colors.secondary}!important;
   }
   .badge.badge-pill {
-    background-color: ${({ theme }) => theme.colors.secondary}!important;
+    background-color: ${({ theme }) => theme.colors.secondary};
   }
   .app-block .app-sidebar .app-sidebar-menu .list-group .list-group-item.active {
     color: ${({ theme }) => theme.colors.secondary}!important;
@@ -75,29 +75,33 @@ const Wrapper = styled.div`
       background-color: ${({ theme }) => theme.colors.secondary}!important;
     }
   label.custom-control-label::before{
-    background-color: ${(props)=> props.theme.colors.primary};
+    background-color: ${(props) => props.theme.colors.primary};
   }
-  .form-control::focus{
-    border-color: ${(props)=> props.theme.colors.primary} !important;
+  .form-control{
+    :focus{
+    border-color: ${(props) => props.theme.colors.primary} !important;}
   }
   .badge.badge-external{
-    background-color: ${(props)=> props.theme.colors.fifthcolor};
-  }
-  .kvCCQE.active:after{
-    background:  ${(props)=> props.theme.colors.primary}!important ;
+    background-color: ${(props) => props.theme.colors.fifth};
   }
   .chat-date-icons{
-    color:  ${(props)=> props.theme.colors.primary}!important;
+    color:  ${(props) => props.theme.colors.primary};
+    .dark & {
+      color: ${(props) => props.theme.colors.fifth};
+    }
   }
   .feather.feather-send{
-  background:  ${(props)=> props.theme.colors.primary}!important ;
+  background:  ${(props) => props.theme.colors.primary}!important ;
   }
+  .active{
+    :after{ background:  ${(props) => props.theme.colors.primary}!important ;}
+  }
+ 
   
  
   
 
 `;
-
 
 const ModalPanelContainer = styled.div`
   z-index: 7;
@@ -113,12 +117,12 @@ function App() {
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
-  
-  const primarycolor = "#29323F" //primary blue //#a903fc to check if  color changes
-  const secondarycolor = "#4E5D72"
-  const thirdcolor = "#4E5D72" //lighter blue
-  const fourthcolor = "#192536" //dark top header blue
-  const fifthcolor = "#FFC856" //yellow
+
+  const primarycolor = "#29323F"; //primary blue //#a903fc to check if  color changes
+  const secondarycolor = "#4E5D72";
+  const thirdcolor = "#4E5D72"; //lighter blue
+  const fourthcolor = "#192536"; //dark top header blue
+  const fifthcolor = "#FFC856"; //yellow
 
   const theme = {
     colors: {
@@ -126,11 +130,10 @@ function App() {
       secondary: secondarycolor,
       third: thirdcolor,
       fourth: fourthcolor,
-      fourthcolor: fourthcolor,
-      fifthcolor: fifthcolor
-    }
-  }
-  
+      fifth: fifthcolor,
+    },
+  };
+
   //useHuddleNotification();
 
   useTranslation();

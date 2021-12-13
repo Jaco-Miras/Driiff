@@ -7,6 +7,7 @@ import HuddleBotsBody from "./HuddleBotsBody";
 import AutomationBody from "./AutomationBody";
 import ContactBody from "./ContactBody";
 import SupportBody from "./SupportBody";
+import StylingSettingsBody from "./StylingSettingsBody"
 //import SubscriptionBody from "./SubscriptionBody";
 import SubscriptionBodyPlaceholder from "./SubscriptionBodyPlaceholder";
 
@@ -26,6 +27,7 @@ const AdminPanelBody = (props) => {
         <Route {...props} component={SubscriptionBodyPlaceholder} path={["/admin-settings/subscription"]} />
         <Route {...props} component={ContactBody} path={["/admin-settings/contact"]} />
         <Route {...props} component={SupportBody} path={["/admin-settings/support"]} />
+        <Route {...props} component={StylingSettingsBody} path={["/admin-settings/company-settings"]} />
         <Redirect
           from="*"
           to={{
