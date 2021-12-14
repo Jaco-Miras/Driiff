@@ -87,6 +87,14 @@ const useSelectQuote = (props) => {
           } catch (e) {
             return selectedQuote.body;
           }
+        } else if (selectedQuote.body.includes("ZOOM_MESSAGE::{")) {
+          // // eslint-disable-next-line quotes
+          // const zmessage = selectedQuote.body.replace('<span class="fancied"></span>', "");
+          // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+          const splitStr = selectedQuote.body.split("::");
+          const str = `${splitStr[1]}`;
+          const data = JSON.parse(str);
+          selectedQuoteBody += data.message;
         } else if (selectedQuote.user) {
           let div = document.createElement("div");
           div.innerHTML = selectedQuote.body;

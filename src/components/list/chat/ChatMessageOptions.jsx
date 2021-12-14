@@ -160,7 +160,7 @@ const ChatMessageOptions = (props) => {
   return (
     <MoreOptions width={width} className={className} scrollRef={scrollComponent}>
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleRemind}>{dictionary.remindMeAboutThis}</div>}
-      {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred && <div onClick={handleEditReply}>{dictionary.edit}</div>}
+      {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred && !replyData.body.startsWith("ZOOM_MESSAGE::{") && <div onClick={handleEditReply}>{dictionary.edit}</div>}
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleQuoteReply}>{dictionary.quote}</div>}
       {isAuthor && <div onClick={handleRemoveReply}>{dictionary.remove}</div>}
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>}

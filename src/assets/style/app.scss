@@ -22313,6 +22313,86 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .ql-tooltip {
   left: 0 !important;
 }
+body > div[role="dialog"] {
+  z-index: 1000 !important;
+}
+body > div[x-placement="bottom"] {
+  z-index: 1000 !important;
+}
+.zoom-msg strong {
+  cursor: pointer;
+}
+body > div#transition-popper {
+  z-index: 1001;
+  //top: 160px!important;
+}
+#meetingSDKElement {
+  .react-draggable > div:first-child {
+    padding: 0;
+    min-width: 350px;
+    > div:first-child {
+      min-width: 350px;
+      padding: 0;
+      // height: 250px;
+    }
+    > div:last-child {
+      min-width: 350px;
+    }
+  }
+}
+
+#suspension-view-tabpanel-speaker > div.full-view1 {
+  min-width: 350px;
+  height: 200px;
+  li {
+    min-width: 350px;
+    min-height: 198px;
+  }
+  > div:last-child {
+    min-width: 350px;
+  }
+}
+
+//fixed for the loader indicator in zoom
+.jss3 {
+  width: auto !important;
+  min-width: auto !important;
+}
+
+// div[role="tooltip"] div[role="menu"] div button:first-child {
+//   visibility: hidden;
+//   margin: 0;
+//   height: 0;
+//   padding: 0;
+//   width: 0;
+// }
+// div[role="tooltip"] div[role="menu"] div button:only-child {
+//   visibility: visible;
+//   width: 150px;
+//     margin: 5px 15px;
+//     max-width: 150px;
+//     height: auto;
+//     padding: 6px 8px;
+// }
+
+ul#menu-list-icon-more {
+  li:nth-child(2):nth-last-child(4) {
+    color: red;
+    display:none;
+  }
+  li:first-child:nth-last-child(3) {
+    color:blue;
+    display:none;
+  }
+}
+
+ul#menu-list-icon-security {
+  li:nth-child(6) {
+    color:blue;
+    display:none;
+  }
+}
+
 .Toastify__toast-container.top-toaster {
   min-width: 350px;
   max-width: 400px;

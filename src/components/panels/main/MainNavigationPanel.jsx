@@ -35,6 +35,8 @@ const MainNavigationPanel = (props) => {
           "/system/people/teams",
           "/system/people",
           "/magic-link/:token",
+          // "/zoom/:channelId",
+          // "/zoom",
           "/admin-settings/:page/:subpage",
           "/admin-settings/:page",
           "/:page",

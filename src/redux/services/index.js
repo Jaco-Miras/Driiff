@@ -67,6 +67,8 @@ export {
   getSearchChannels,
   getChatMsgsForFancy,
   postChatMessageTranslate,
+  generateZoomSignature,
+  createZoomMeeting,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";

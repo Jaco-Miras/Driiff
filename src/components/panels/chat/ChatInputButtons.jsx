@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, Loader } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
+import zoomIcon from "../../../assets/icons/zoom.png";
 
 const IconWrapper = styled.div`
   width: 40px;
@@ -14,6 +15,10 @@ const IconWrapper = styled.div`
   @media (max-width: 414px) {
     width: 30px;
     padding: 13px 2px;
+  }
+  .loading {
+    width: 1rem;
+    height: 1rem;
   }
 `;
 const Wrapper = styled.div`
@@ -26,6 +31,14 @@ const Wrapper = styled.div`
   }
   .chat-buttons {
     display: none;
+  }
+  .btn-meet {
+    img {
+      width: 24px;
+      height: 24px;
+      vertical-align: top;
+      margin-bottom: -5px;
+    }
   }
   @media (max-width: 414px) {
     min-width: ${(props) =>
@@ -56,10 +69,13 @@ const Wrapper = styled.div`
     height: 20px;
     width: 21px;
   }
+  .zoom-icon {
+    cursor: pointer;
+  }
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote, startingZoom } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const [showButtons, setShowButtons] = useState(false);
@@ -95,13 +111,13 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
       </IconWrapper>
-      {!isClientChat && (
-        <IconWrapper className="btn-meet">
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
-            <SvgIconFeather onClick={handleGoogleMeet} icon="google-meet" />
-          </Tooltip>
-        </IconWrapper>
-      )}
+      <IconWrapper className="btn-meet">
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+          {startingZoom && <Loader />}
+          {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />}
+          {/* <SvgIconFeather onClick={handleGoogleMeet} icon="meet" /> */}
+        </Tooltip>
+      </IconWrapper>
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />

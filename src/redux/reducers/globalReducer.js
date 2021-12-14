@@ -68,6 +68,7 @@ const INITIAL_STATE = {
     timestamp: null,
     items: [],
   },
+  zoomData: null,
   snoozedReminders: [],
   snoozedRemindersLoaded: false,
   newDriffData: {
@@ -877,6 +878,18 @@ export default (state = INITIAL_STATE, action) => {
             return acc;
           }, {}),
         },
+      };
+    }
+    case "INCOMING_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: action.data,
+      };
+    }
+    case "CLEAR_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: null,
       };
     }
     case "SHOW_NEW_DRIFF_BAR": {

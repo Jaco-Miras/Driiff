@@ -28,6 +28,7 @@ import {
   CreateExternalFileFolder,
   CreateEditTeamModal,
   AddToTeamModal,
+  ZoomInviteModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -99,6 +100,8 @@ const ModalPanel = () => {
             return <CreateEditPostListModal key={modal.type} data={modal} />;
           case "post_modal":
             return <PostModal key={modal.type} data={modal} />;
+          case "zoom_invite":
+            return <ZoomInviteModal key={modal.type} data={modal} />;
           case "create_bot":
             return <CreateAdminBotModal key={modal.type} />;
           case "update_bot":

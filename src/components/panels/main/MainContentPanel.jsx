@@ -23,6 +23,8 @@ const UserProfilePanel = lazy(() => import("../user/UserProfilePanel"));
 const UserSearchPanel = lazy(() => import("../user/UserSearchPanel"));
 const AdminPanel = lazy(() => import("../../panels/admin/AdminPanel"));
 
+//const ZoomPanel = lazy(() => import("../company/ZoomPanel"));
+
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
 `;
@@ -53,6 +55,7 @@ const MainContentPanel = (props) => {
           {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
+          {/* {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />} */}
           {(isOwner || isAdmin) && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
           <Redirect
             from="*"

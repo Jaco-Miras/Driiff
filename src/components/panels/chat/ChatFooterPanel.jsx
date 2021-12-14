@@ -1,18 +1,20 @@
 import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
+//import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, addChatMessage, postChatMessage } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, addChatMessage, postChatMessage, createZoomMeeting, generateZoomSignature } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useZoomActions } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { ChatInputButtons } from "./index";
+//import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 
 const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 
@@ -171,6 +173,9 @@ const PickerContainer = styled(CommonPicker)`
 
 const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
+
+  //const history = useHistory();
+  const zoomActions = useZoomActions();
   const { localizeChatDate, localizeDate } = useTimeFormat();
 
   const dispatch = useDispatch();
@@ -183,6 +188,7 @@ const ChatFooterPanel = (props) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
+  const [startingZoom, setStartingZoom] = useState(false);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const user = useSelector((state) => state.session.user);
@@ -347,18 +353,39 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleGoogleMeet = () => {
-    let modalPayload = {
-      type: "confirmation",
-      cancelText: dictionary.no,
-      headerText: dictionary.googleMeet,
-      submitText: dictionary.yes,
-      bodyText: dictionary.googleMeetConfirmation,
-      actions: {
-        onSubmit: handleStartGoogleMeet,
-      },
+    if (startingZoom) return;
+    setStartingZoom(true);
+    let payload = {
+      channel_id: selectedChannel.id,
     };
 
-    dispatch(addToModals(modalPayload));
+    dispatch(
+      createZoomMeeting(payload, (err, res) => {
+        if (err) return;
+        if (res.data) {
+          let sigPayload = {
+            meetingNumber: res.data.zoom_data.data.id,
+            role: 1,
+          };
+          const zoomCreateConfig = {
+            password: res.data.zoom_data.data.password,
+            meetingNumber: res.data.zoom_data.data.id,
+            role: 1,
+          };
+
+          dispatch(
+            generateZoomSignature(sigPayload, (e, r) => {
+              if (e) return;
+              if (r) {
+                zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+                zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
+                setStartingZoom(false);
+              }
+            })
+          );
+        }
+      })
+    );
   };
 
   return (
@@ -402,6 +429,7 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
+                    startingZoom={startingZoom}
                   />
                 </Dflex>
               </ChatInputContainer>

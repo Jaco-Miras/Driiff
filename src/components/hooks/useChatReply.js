@@ -38,7 +38,7 @@ const OriginalHtml = styled.div`
 
 const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, users, translated_channels }) => {
   const { _t } = useTranslationActions();
-  const parseSystemMessage = (message) => {
+  const parseSystemMessage = (message, quote = false) => {
     let newBody = "";
     if (message.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
@@ -348,6 +348,9 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       } catch (e) {
         return message;
       }
+    } else if (message.startsWith("ZOOM_MESSAGE::{")) {
+      const data = JSON.parse(message.replace("ZOOM_MESSAGE::", ""));
+      newBody = data.message;
     } else if (message.includes("CREATE_WORKSPACE::")) {
       let parsedData = JSON.parse(message.replace("CREATE_WORKSPACE::", ""));
       newBody = `<span>${_t("SYSTEM_MESSAGE.CREATE_WORKSPACE", "::author:: created ::workspaceName:: workspace", { author: parsedData.author.name, workspaceName: parsedData.workspace.title })}</span>`;
@@ -438,7 +441,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
     }
 
     quoteBody += quillHelper.parseEmoji(reply.quote.body);
-    quoteBody = parseSystemMessage(quoteBody);
+    quoteBody = parseSystemMessage(quoteBody, true);
     //console.log(quoteBody);
   }
 
