@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 import { useSelector, useDispatch } from "react-redux";
 import { postChatMessage, generateZoomSignature } from "../../redux/actions/chatActions";
@@ -66,24 +65,25 @@ const useZoomActions = () => {
       role: zoomCreateConfig.role,
       host: true,
     };
-
-    client
-      .join({
-        apiKey: apiKeys.apiKey,
-        signature: signature,
-        meetingNumber: config.meetingNumber,
-        password: config.passWord,
-        userName: config.userName,
-        userEmail: config.userEmail,
-      })
-      .then((e) => {
-        //console.log("join success", e);
-      })
-      .catch((e) => {
-        console.log("join error", e);
-        if (e.reason) toaster.error(e.reason);
-        client.leaveMeeting();
-      });
+    client.leaveMeeting().then(() => {
+      client
+        .join({
+          apiKey: apiKeys.apiKey,
+          signature: signature,
+          meetingNumber: config.meetingNumber,
+          password: config.passWord,
+          userName: config.userName,
+          userEmail: config.userEmail,
+        })
+        .then((e) => {
+          //console.log("join success", e);
+        })
+        .catch((e) => {
+          console.log("join error", e);
+          if (e.reason) toaster.error(e.reason);
+          client.leaveMeeting();
+        });
+    });
   };
 
   const generateSignature = (config, callback) => {

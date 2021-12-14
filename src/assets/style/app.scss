@@ -22359,20 +22359,38 @@ body > div#transition-popper {
   min-width: auto !important;
 }
 
-div[role="tooltip"] div[role="menu"] div button:first-child {
-  visibility: hidden;
-  margin: 0;
-  height: 0;
-  padding: 0;
-  width: 0;
+// div[role="tooltip"] div[role="menu"] div button:first-child {
+//   visibility: hidden;
+//   margin: 0;
+//   height: 0;
+//   padding: 0;
+//   width: 0;
+// }
+// div[role="tooltip"] div[role="menu"] div button:only-child {
+//   visibility: visible;
+//   width: 150px;
+//     margin: 5px 15px;
+//     max-width: 150px;
+//     height: auto;
+//     padding: 6px 8px;
+// }
+
+ul#menu-list-icon-more {
+  li:nth-child(2):nth-last-child(4) {
+    color: red;
+    display:none;
+  }
+  li:first-child:nth-last-child(3) {
+    color:blue;
+    display:none;
+  }
 }
-div[role="tooltip"] div[role="menu"] div button:only-child {
-  visibility: visible;
-  width: 150px;
-    margin: 5px 15px;
-    max-width: 150px;
-    height: auto;
-    padding: 6px 8px;
+
+ul#menu-list-icon-security {
+  li:nth-child(6) {
+    color:blue;
+    display:none;
+  }
 }
 
 .Toastify__toast-container.top-toaster {
