@@ -17,7 +17,7 @@ const useZoomActions = () => {
 
   client
     .init({
-      debug: true,
+      debug: false,
       zoomAppRoot: meetingSDKElement,
       language: "en-US",
       isSupportChat: false,
@@ -79,7 +79,7 @@ const useZoomActions = () => {
           //console.log("join success", e);
         })
         .catch((e) => {
-          console.log("join error", e);
+          //console.log("join error", e);
           if (e.reason) toaster.error(e.reason);
           client.leaveMeeting();
         });

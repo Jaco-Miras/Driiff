@@ -1586,11 +1586,13 @@ class SocketListeners extends Component {
       .listen(".create-meeting-notification", (e) => {
         //console.log(e, "zoom meeting notif");
         if (this.props.user.id !== e.host.id) {
-          this.props.addToModals({
-            ...e,
-            type: "zoom_invite",
-          });
-          this.props.incomingZoomData({ ...e.zoom_data.data });
+          setTimeout(() => {
+            this.props.addToModals({
+              ...e,
+              type: "zoom_invite",
+            });
+            this.props.incomingZoomData({ ...e.zoom_data.data });
+          }, 2000);
         }
       })
       .listen(".workspace-active", (e) => {
