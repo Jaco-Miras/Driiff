@@ -6,13 +6,14 @@ import styled from "styled-components";
 import { clearModal, setDontShowIds } from "../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../common";
 import { CheckBox } from "../forms";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { toggleShowAbout } from "../../redux/actions/workspaceActions";
+import { toggleShowAbout, favouriteWorkspace, putWorkspaceNotification } from "../../redux/actions/workspaceActions";
 import { sessionService } from "redux-react-session";
 import TeamListItem from "../list/people/item/TeamListItem";
 import RecentPostItem from "../list/post/item/RecentPostItem";
 import { replaceChar } from "../../helpers/stringFormatter";
+import Tooltip from "react-tooltip-lite";
 
 const ModalHeaderTitle = styled.div`
   display: flex;
@@ -117,18 +118,66 @@ const QuickLinksSection = styled.div`
   }
 `;
 
+const Icon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  margin-left: 5px;
+  cursor: pointer;
+  &.feather-bell,
+  &.feather-bell-off {
+    color: #64625c;
+  }
+  &.feather-eye {
+    height: 12px !important;
+    width: 12px !important;
+  }
+`;
+
+const StyledTooltip = styled(Tooltip)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StarIcon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  margin-left: 5px;
+  cursor: pointer;
+  color: #64625c;
+  ${(props) =>
+    props.isFav &&
+    `
+    color: rgb(255, 193, 7)!important;
+    fill: rgb(255, 193, 7);
+    :hover {
+      color: rgb(255, 193, 7);
+    }`}
+`;
+
+const toggleTooltip = () => {
+  let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  tooltips.forEach((tooltip) => {
+    tooltip.parentElement.classList.toggle("tooltip-active");
+  });
+};
+
 const AboutWorkspaceModal = (props) => {
   const { type } = props.data;
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
   const history = useHistory();
+  const toaster = useToaster();
 
   const [modal, setModal] = useState(true);
   const [dontShowPopUp, setDontShowPopUp] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [bellClicked, setBellClicked] = useState(false);
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const loggedUser = useSelector((state) => state.session.user);
   const recentPosts = useSelector((state) => state.posts.recentPosts);
+
+  const isExternal = loggedUser.type === "external";
 
   const dictionary = {
     description: _t("LABEL.DESCRIPTION", "Description"),
@@ -145,6 +194,14 @@ const AboutWorkspaceModal = (props) => {
     quickLinks: _t("ABOUT_WORKSPACE.QUICK_LINKS", "Quick links"),
     workspaceTeam: _t("ABOUT_WORKSPACE.WORKSPACE_TEAM", "Workspace team"),
     showAll: _t("ABOUT_WORKSPACE.SHOW_ALL", "Show all"),
+    toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
+    toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    notificationsOn: _t("TOOLTIP.NOTIFICATIONS_ON", "Notifications on"),
+    notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
+    favoriteWorkspace: _t("TOOLTIP.FAVORITE_WORKSPACE", "Favorite workspace"),
+    withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    statusWorkspacePrivate: _t("WORKSPACE.STATUS_PRIVATE", "Private"),
+    statusWorkspaceArchived: _t("WORKSPACE.STATUS_ARCHIVED", "Archived"),
   };
 
   const toggle = () => {
@@ -211,12 +268,76 @@ const AboutWorkspaceModal = (props) => {
     }
   };
 
+  const handleWorkspaceNotification = () => {
+    if (bellClicked) return;
+    const payload = {
+      id: workspace.id,
+      is_active: !workspace.is_active,
+    };
+    setBellClicked(true);
+    dispatch(
+      putWorkspaceNotification(payload, (err, res) => {
+        setBellClicked(false);
+        if (err) {
+          return;
+        }
+        if (payload.is_active) {
+          toaster.success(dictionary.toasterBellNotificationOn);
+        } else {
+          toaster.success(dictionary.toasterBellNotificationOff);
+        }
+      })
+    );
+  };
+
+  const handleFavoriteWorkspace = () => {
+    let payload = {
+      id: workspace.id,
+      workspace_id: workspace.folder_id ? workspace.folder_id : 0,
+      is_pinned: workspace.is_favourite ? 0 : 1,
+    };
+
+    dispatch(
+      favouriteWorkspace(payload, (err, res) => {
+        if (err) {
+          toaster.error(dictionary.somethingWentWrong);
+          return;
+        }
+        if (payload.is_pinned) {
+          toaster.success(_t("TOASTER.ADDED_TO_FAVORITES", "::title:: added to favorites", { title: workspace.name }));
+        } else {
+          toaster.success(_t("TOASTER.REMOVED_FROM_FAVORITES", "::title:: removed from favorites", { title: workspace.name }));
+        }
+      })
+    );
+  };
+
   return (
     <Modal isOpen={modal} toggle={toggle} centered size="xl">
       <ModalHeaderSection toggle={toggle}>
         <ModalHeaderTitle>
           <Avatar imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null} name={workspace.name} noDefaultClick={true} forceThumbnail={false} />
-          <h4 className="ml-2">{workspace.name}</h4>
+          <h4 className="ml-2 mr-2">{workspace.name}</h4>
+          {workspace.is_lock === 1 && (
+            <>
+              {/* <Icon icon="lock" className="mobile-private ml-1" /> */}
+              <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
+            </>
+          )}
+          {workspace.active === 0 && <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>}
+          {workspace.is_shared && !isExternal && (
+            <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+              <Icon icon="eye" /> {dictionary.withClient}
+            </div>
+          )}
+
+          <StyledTooltip arrowSize={5} distance={10} zIndex={9000} onToggle={toggleTooltip} content={workspace.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
+            <Icon icon={workspace.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+          </StyledTooltip>
+
+          <StyledTooltip arrowSize={5} distance={10} zIndex={9000} onToggle={toggleTooltip} content={dictionary.favoriteWorkspace}>
+            <StarIcon icon="star" isFav={workspace.is_favourite} onClick={handleFavoriteWorkspace} />
+          </StyledTooltip>
         </ModalHeaderTitle>
       </ModalHeaderSection>
       <ModalBody>
