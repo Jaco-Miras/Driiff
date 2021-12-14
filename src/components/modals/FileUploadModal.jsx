@@ -540,6 +540,11 @@ const FileUploadModal = (props) => {
             reference_id: require("shortid").generate(),
             reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
+          if (k === uFiles.length - 1) {
+            setTimeout(() => {
+              toaster.dismiss(toasterRef.current);
+            }, 300);
+          }
           dispatch(postChatMessage(payload));
           // if (k === uFiles.length - 1) {
           //   payload = {
