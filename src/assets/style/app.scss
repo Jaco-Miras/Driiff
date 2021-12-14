@@ -22341,7 +22341,18 @@ body > div#transition-popper {
   }
 }
 
-#suspension-view-tabpanel-speaker > div.full-view1 {
+#suspension-view-tabpanel-ribbon > div:first-child {
+  min-width: 350px;
+  // height: 200px;
+  // li {
+  //   min-width: 350px;
+  // }
+  > div:last-child {
+    min-width: 350px;
+  }
+}
+
+#suspension-view-tabpanel-speaker > div:first-child {
   min-width: 350px;
   height: 200px;
   li {
