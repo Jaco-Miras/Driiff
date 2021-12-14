@@ -2416,10 +2416,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zoomus/websdk@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@zoomus/websdk/-/websdk-2.1.0.tgz#bbd6f9f2f36287ba30299918be95497e7a10ced5"
-  integrity sha512-E7QxbSTz3bJszEnXU8n4VsMoKxte313NUucIxFWDb8x/stTyalH6RQFbY9YymHrjzvHgSVVcHmPh1o1jCeWMoQ==
+"@zoomus/websdk@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@zoomus/websdk/-/websdk-2.0.1.tgz#c3782f81505835913f726b28a43950068af09c88"
+  integrity sha512-IIWEufxcDthvTgGMS4pZH1+Ap2v5R4v6e6H6ICp5tarCPob3c+ChKo8uimCFF22qex4di89ESVRX9eBr5EjD1Q==
   dependencies:
     lodash "^4.17.21"
     react "16.8.6"
@@ -11511,7 +11511,7 @@ react-snowfall@^1.1.1:
   integrity sha512-SREER5iikqVY8Fu0BpaYllzGHB1iKZacXY76E/rW1n1zKUH5ClqVWG1UZS+3fR6OTg9GkeGG459juSnARVoNGQ==
   dependencies:
     react-fast-compare "^3.2.0"
-    
+
 react-time-picker@^4.1.1, react-time-picker@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-time-picker/-/react-time-picker-4.4.1.tgz#bc741f0a9c2a58dde07e094c9d207a7d72d50dd5"
