@@ -78,8 +78,6 @@ const Wrapper = styled.div`
 `;
 
 const ZoomIcon = styled(SvgIconFeather)`
-  width: 24px;
-  height: 24px;
   circle {
     fill: #cacaca;
   }
@@ -131,7 +129,7 @@ const ChatInputButtons = (props) => {
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
           {startingZoom && <Loader />}
           {/* {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />} */}
-          <ZoomIcon onClick={handleGoogleMeet} icon="zoom" />
+          <ZoomIcon onClick={handleGoogleMeet} icon="zoom" viewBox="0 0 48 48" />
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
