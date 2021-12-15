@@ -4,7 +4,7 @@ import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather, Loader } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
-import zoomIcon from "../../../assets/icons/zoom.png";
+//import zoomIcon from "../../../assets/icons/zoom.png";
 
 const IconWrapper = styled.div`
   width: 40px;
@@ -20,6 +20,9 @@ const IconWrapper = styled.div`
     width: 1rem;
     height: 1rem;
   }
+  &.btn-zoom {
+    padding: 10px;
+  }
 `;
 const Wrapper = styled.div`
   min-width: ${(props) => (props.editMode && !props.clientChat ? "160px" : props.editMode && props.clientChat ? "120px" : !props.editMode && props.clientChat ? "80px" : "120px")};
@@ -32,14 +35,14 @@ const Wrapper = styled.div`
   .chat-buttons {
     display: none;
   }
-  .btn-meet {
-    img {
-      width: 24px;
-      height: 24px;
-      vertical-align: top;
-      margin-bottom: -5px;
-    }
-  }
+  // .btn-meet {
+  //   img {
+  //     width: 24px;
+  //     height: 24px;
+  //     vertical-align: top;
+  //     margin-bottom: -5px;
+  //   }
+  // }
   @media (max-width: 414px) {
     min-width: ${(props) =>
       props.clientChat && props.showButtons && props.editMode
@@ -71,6 +74,23 @@ const Wrapper = styled.div`
   .feather-google-meet {
     height: 20px;
     width: 21px;
+  }
+  .feather-zoom {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+const ZoomIcon = styled(SvgIconFeather)`
+  width: 24px;
+  height: 24px;
+  circle {
+    fill: #cacaca;
+  }
+  :hover {
+    circle {
+      fill: #2196f3;
+    }
   }
 `;
 
@@ -112,11 +132,11 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
       </IconWrapper>
-      <IconWrapper className="btn-meet">
+      <IconWrapper className="btn-zoom">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
           {startingZoom && <Loader />}
-          {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />}
-          {/* <SvgIconFeather onClick={handleGoogleMeet} icon="meet" /> */}
+          {/* {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />} */}
+          <ZoomIcon onClick={handleGoogleMeet} icon="zoom" />
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">

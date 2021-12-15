@@ -993,7 +993,7 @@ class SocketListeners extends Component {
                   entity_type: "CHAT_REMINDER_MESSAGE",
                 };
               } else {
-                if (message.user.id !== user.id) {
+                if (message.user.id !== user.id && e.is_muted === false) {
                   notificationCounterEntryPayload = {
                     count: 1,
                     entity_type: "CHAT_MESSAGE",
@@ -1608,11 +1608,13 @@ class SocketListeners extends Component {
       .listen(".create-meeting-notification", (e) => {
         //console.log(e, "zoom meeting notif");
         if (this.props.user.id !== e.host.id) {
-          this.props.addToModals({
-            ...e,
-            type: "zoom_invite",
-          });
-          this.props.incomingZoomData({ ...e.zoom_data.data });
+          setTimeout(() => {
+            this.props.addToModals({
+              ...e,
+              type: "zoom_invite",
+            });
+            this.props.incomingZoomData({ ...e.zoom_data.data });
+          }, 2000);
         }
       })
       .listen(".workspace-active", (e) => {
