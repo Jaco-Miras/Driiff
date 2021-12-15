@@ -184,6 +184,7 @@ import { incomingReminderNotification, getNotifications, incomingSnoozedNotifica
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
+import { incomingWIP, incomingWIPSubject } from "../../redux/actions/wipActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -270,6 +271,13 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".proposal-notification", (e) => {
+        console.log(e);
+        this.props.incomingWIP({ ...e, clap_user_ids: [] });
+      })
+      .listen(".proposal-subject-notification", (e) => {
+        this.props.incomingWIPSubject({ ...e, clap_user_ids: [] });
+      })
       .listen(".notification-read", (e) => {
         this.props.incomingReadNotifications(e);
       })
@@ -2315,6 +2323,8 @@ function mapDispatchToProps(dispatch) {
     removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
     removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
     incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
+    incomingWIP: bindActionCreators(incomingWIP, dispatch),
+    incomingWIPSubject: bindActionCreators(incomingWIPSubject, dispatch),
   };
 }
 

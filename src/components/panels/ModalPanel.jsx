@@ -20,7 +20,6 @@ import {
   ReleaseModal,
   CreateEditPostListModal,
   PostModal,
-  ZoomInviteModal,
   CreateAdminBotModal,
   UpdateAdminBotModal,
   TrialEndedModal,
@@ -29,6 +28,8 @@ import {
   CreateExternalFileFolder,
   CreateEditTeamModal,
   AddToTeamModal,
+  ZoomInviteModal,
+  WIPModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -118,6 +119,8 @@ const ModalPanel = () => {
             return <CreateEditTeamModal key={modal.type} data={modal} />;
           case "add-to-team":
             return <AddToTeamModal key={modal.type} data={modal} />;
+          case "wip":
+            return <WIPModal key={modal.type} data={modal} />;
           default:
             return null;
         }
