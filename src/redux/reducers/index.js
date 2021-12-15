@@ -11,6 +11,7 @@ import tags from "./tagsReducer";
 import users from "./usersReducer";
 import workspaces from "./workspacesReducer";
 import admin from "./adminReducer";
+import wip from "./wipReducer";
 
 const appReducer = combineReducers({
   session: sessionReducer,
@@ -25,6 +26,7 @@ const appReducer = combineReducers({
   tags,
   users,
   workspaces,
+  wip,
 });
 
 const rootReducer = (state, action) => {

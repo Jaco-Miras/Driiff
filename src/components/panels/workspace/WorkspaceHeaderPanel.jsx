@@ -338,6 +338,7 @@ const WorspaceHeaderPanel = (props) => {
     pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search workspace"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
     pageTitleTodos: _t("PAGE_TITLE.TODOS", "Reminders"),
+    pageTitleWIP: _t("PAGE_TITLE.WORKSPACE_WIP", "W.I.P."),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
@@ -442,6 +443,10 @@ const WorspaceHeaderPanel = (props) => {
       }
       case "reminders": {
         pageName = dictionary.pageTitleWorkspaceReminders;
+        break;
+      }
+      case "wip": {
+        pageName = dictionary.pageTitleWIP;
         break;
       }
       default: {
@@ -691,6 +696,8 @@ const WorspaceHeaderPanel = (props) => {
                     exact={true}
                     render={(props) => <WorkspacePageHeaderPanel {...props} user={user} workspace={activeTopic} />}
                     path={[
+                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
+                      "/workspace/:page/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
