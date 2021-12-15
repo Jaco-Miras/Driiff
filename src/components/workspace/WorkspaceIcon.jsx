@@ -25,7 +25,7 @@ const StyledBadge = styled(Badge)`
   padding: 4px 8px;
   font-size: 10px;
   &.badge.badge-primary {
-    background: #3f034a;
+    background: ${(props) => props.theme.colors.secondary};
   }
 `;
 

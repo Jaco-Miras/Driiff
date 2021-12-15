@@ -51,7 +51,7 @@ const MainNavLink = styled(NavLink)`
       width: 100%;
       bottom: 0;
       left: 0;
-      background: #7a1b8b;
+      background: ${(props) => props.theme.colors.primary};
       position: absolute;
     }
   }

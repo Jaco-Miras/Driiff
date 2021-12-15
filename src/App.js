@@ -53,6 +53,17 @@ const Wrapper = styled.div`
   .mobile-slide-exit-done {
     opacity: 0;
   }
+  .channel-list .feather-eye, 
+  .channel-list .feather-eye-off,
+  .fav-channel .feather-eye, 
+  .fav-channel .feather-eye-off,
+  .feather-eye, feather-eye-off {
+    color:  ${(props) => props.theme.colors.primary};
+  }
+  .workspace-icon .badge.badge-pill.badge-primary {
+    background:  ${(props) => props.theme.colors.primary};
+  }
+
   .btn.btn-primary {
     background-color: ${({ theme }) => theme.colors.secondary}!important;
     border-color: ${({ theme }) => theme.colors.secondary}!important;
@@ -96,11 +107,6 @@ const Wrapper = styled.div`
   .active{
     :after{ background:  ${(props) => props.theme.colors.primary}!important ;}
   }
- 
-  
- 
-  
-
 `;
 
 const ModalPanelContainer = styled.div`
