@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-//import { useHistory } from "react-router-dom";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
-import { useZoomActions } from "../hooks";
+import { useZoomActions, useTranslationActions } from "../hooks";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -16,7 +15,12 @@ const ButtonsContainer = styled.div`
 const ZoomInviteModal = (props) => {
   const { zoom_data, type, title, host } = props.data;
   const dispatch = useDispatch();
-  //const history = useHistory();
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    zoomInvite: _t("ZOOM.INVITE_POP_UP", "::host:: has started a new Zoom Meeting for ::title::", { host: host.name, title: title }),
+    reject: _t("REJECT", "Reject"),
+    join: _t("JOIN", "Join"),
+  };
   const [modal, setModal] = useState(true);
 
   const zoomActions = useZoomActions();
@@ -34,27 +38,18 @@ const ZoomInviteModal = (props) => {
       password: zoom_data.data.password,
     };
     zoomActions.generateSignature(payload);
-    // localStorage.setItem("zoomConfig", JSON.stringify(payload));
-    // window.open(`https://demo24.drevv.com/zoom/meeting/${channel_id}/${zoom_data.data.id}`, "_blank");
-    // dispatch(
-    //   incomingZoomData({ ...zoom_data.data }, () => {
-    //     history.push(`/zoom/${channel_id}?join=0`);
-    //   })
-    // );
   };
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered>
       <ModalBody>
-        <h3>
-          {host.name} has started a new Zoom Meeting for {title}
-        </h3>
+        <h3>{dictionary.zoomInvite}</h3>
         <ButtonsContainer>
           <Button outline color="secondary" onClick={toggle}>
-            Reject
+            {dictionary.reject}
           </Button>
           <Button color="primary" onClick={handleJoin}>
-            Join
+            {dictionary.join}
           </Button>
         </ButtonsContainer>
       </ModalBody>
