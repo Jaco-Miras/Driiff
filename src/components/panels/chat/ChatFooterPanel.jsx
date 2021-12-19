@@ -263,7 +263,7 @@ const ChatFooterPanel = (props) => {
     zoomMeeting: _t("CONFIRMATION.ZOOM_MEETING", "Zoom meeting"),
     zoomMeetingConfirmation: _t("CONFIRMATION.ZOOM_MEETING_BODY", "This channel contains ::number:: members and ::online:: are online. Do you want to start this meeting?", {
       number: selectedChannel ? selectedChannel.members.length : "",
-      online: selectedChannel ? onlineUsers.filter((o) => selectedChannel.members.some((m) => m.id === o.user_id)).length + 1 : 1,
+      online: selectedChannel ? selectedChannel.members.filter((m) => user.id !== m.id && onlineUsers.some((o) => o.user_id === m.id)).length + 1 : 1,
     }),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
@@ -348,7 +348,7 @@ const ChatFooterPanel = (props) => {
     );
   };
 
-  const handleGoogleMeet = () => {
+  const handleZoomMeet = () => {
     let modalPayload = {
       type: "confirmation",
       cancelText: dictionary.no,
@@ -400,7 +400,7 @@ const ChatFooterPanel = (props) => {
                     channel={selectedChannel}
                     showEmojiPicker={showEmojiPicker}
                     handleShowEmojiPicker={handleShowEmojiPicker}
-                    handleGoogleMeet={handleGoogleMeet}
+                    handleZoomMeet={handleZoomMeet}
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
