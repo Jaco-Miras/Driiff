@@ -322,7 +322,7 @@ const WIPComment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -486,12 +486,11 @@ const WIPComment = (props) => {
           isMember={isMember}
           dictionary={dictionary}
           disableOptions={disableOptions}
-          postActions={postActions}
         />
       )}
       {showInput !== null && (
         <InputWrapper className="card">
-          <WIPDetailFooter item={wip} />
+          <WIPDetailFooter wip={wip} parentId={type === "main" ? comment.id : null} />
         </InputWrapper>
       )}
     </>

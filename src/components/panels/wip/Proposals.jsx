@@ -22,6 +22,7 @@ const Proposals = (props) => {
               fromModal={fromModal}
               isLink={item.link_versions.length > 0}
               item={item.link_versions.length ? item.link_versions[item.link_versions.length - 1] : item.file_versions[item.file_versions.length - 1]}
+              parentId={item.id}
               key={item.id}
               className="col-xl-3 col-lg-4 col-md-6 mb-2"
             />

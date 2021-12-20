@@ -216,16 +216,17 @@ const PostDetailFooter = (props) => {
     post,
     posts,
     filter,
+    commentId = null,
     parentId = null,
     commentActions,
     userMention = null,
     handleClearUserMention = null,
-    commentId = null,
     innerRef = null,
     workspace,
     isMember,
     disableOptions,
     mainInput,
+    wip,
   } = props;
   const history = useHistory();
   const dispatch = useDispatch();
@@ -413,7 +414,7 @@ const PostDetailFooter = (props) => {
       <>
         <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
           <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
-            <WIPDetailInput onActive={onActive} />
+            <WIPDetailInput onActive={onActive} wip={wip} parentId={parentId} commentId={commentId} />
             <WIPDetailInputButtons parentId={parentId} handleQuillImage={handleQuillImage} handleShowEmojiPicker={handleShowEmojiPicker} onShowFileDialog={onShowFileDialog} editPostComment={editPostComment} mainInput={mainInput} />
             {/* <PostInput
                 handleClearSent={handleClearSent}

@@ -78,3 +78,44 @@ export function getWIPDetail(payload) {
     url: url,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.wip_id
+ * @returns {Promise<*>}
+ */
+export function postWIPComment(payload) {
+  let url = "/v2/proposal/messages";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.proposal_id
+ * @returns {Promise<*>}
+ */
+export function getWIPComments(payload) {
+  let url = `/v2/proposal/messages?proposal_id=${payload.proposal_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.wip_id
+ * @returns {Promise<*>}
+ */
+export function postFileComment(payload) {
+  let url = "/v2/proposal/file/comments";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}

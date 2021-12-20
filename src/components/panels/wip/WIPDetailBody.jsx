@@ -62,39 +62,39 @@ const PostBadgeWrapper = styled.div`
 
 const WIPDetailBody = (props) => {
   const { item } = props;
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const wsFiles = useSelector((state) => state.files.workspaceFiles);
+  // const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  // const wsFiles = useSelector((state) => state.files.workspaceFiles);
 
   const refs = {
     container: useRef(null),
     body: useRef(null),
   };
 
-  const {
-    fileBlobs,
-    actions: { setFileSrc },
-  } = useFiles();
+  // const {
+  //   fileBlobs,
+  //   actions: { setFileSrc },
+  // } = useFiles();
 
-  const handleInlineImageClick = (e) => {
-    let id = null;
-    if (e.srcElement.currentSrc.startsWith("blob")) {
-      if (e.target.dataset.id) id = e.target.dataset.id;
-    } else {
-      let file = item.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-      if (file) id = file.id;
-    }
+  // const handleInlineImageClick = (e) => {
+  //   let id = null;
+  //   if (e.srcElement.currentSrc.startsWith("blob")) {
+  //     if (e.target.dataset.id) id = e.target.dataset.id;
+  //   } else {
+  //     let file = item.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
+  //     if (file) id = file.id;
+  //   }
 
-    if (id) {
-      dispatch(
-        setViewFiles({
-          file_id: parseInt(id),
-          files: item.files,
-        })
-      );
-    }
-  };
+  //   if (id) {
+  //     dispatch(
+  //       setViewFiles({
+  //         file_id: parseInt(id),
+  //         files: item.files,
+  //       })
+  //     );
+  //   }
+  // };
 
   const files = item.files;
   return (

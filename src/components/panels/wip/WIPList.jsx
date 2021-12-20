@@ -7,6 +7,13 @@ import WIPItem from "./WIPItem";
 const Wrapper = styled.div`
   background: none;
   box-shadow: none;
+  overflow: visible !important;
+  height: auto !important;
+  flex: unset !important;
+  min-height: auto !important;
+  .app-lists {
+    overflow: visible !important;
+  }
 `;
 
 const PostsBtnWrapper = styled.div`
@@ -193,7 +200,7 @@ const WIPList = (props) => {
           </button>
         </PostsBtnWrapper>
       )}
-      <Wrapper className="card card-body app-content-body mb-4 unset-flex">
+      <div className="card card-body app-content-body mb-4 unset-flex">
         <div className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
           {search !== "" && (
             <>
@@ -266,7 +273,8 @@ const WIPList = (props) => {
             </ul>
           )}
         </div>
-      </Wrapper>
+      </div>
+      <div className="mt-3 post-btm">&nbsp;</div>
     </>
   );
 };

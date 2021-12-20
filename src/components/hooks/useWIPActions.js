@@ -38,7 +38,13 @@ const useWIPActions = () => {
   };
 
   const goBack = () => {
-    if (params.hasOwnProperty("wipId")) {
+    if (params.hasOwnProperty("wipFileId")) {
+      if (params.hasOwnProperty("folderId")) {
+        history.push(`/workspace/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${params.wipId}/${replaceChar(params.wipTitle)}`);
+      } else {
+        history.push(`/workspace/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${params.wipId}/${replaceChar(params.wipTitle)}`);
+      }
+    } else if (params.hasOwnProperty("wipId")) {
       if (params.hasOwnProperty("folderId")) {
         history.push(`/workspace/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
       } else {
@@ -70,7 +76,7 @@ const useWIPActions = () => {
     openWIP,
     showModal,
     goBack,
-    storeWIPs
+    storeWIPs,
   };
 };
 

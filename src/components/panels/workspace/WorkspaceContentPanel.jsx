@@ -169,8 +169,10 @@ const WorkspaceContentPanel = (props) => {
                     exact={true}
                     render={() => <WorkspaceWorkInProgressPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
+                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
                       "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
                       "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/workspace/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
                       "/workspace/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
                       "/workspace/wip/:workspaceId/:workspaceName",
                       "/workspace/wip",

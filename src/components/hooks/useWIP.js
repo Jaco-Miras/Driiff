@@ -13,6 +13,7 @@ const useWIP = () => {
 
   let wip = null;
   let wips = {};
+  let showGallery = false;
 
   if (params.wipId && WIPs[params.workspaceId]) {
     const items = WIPs[params.workspaceId].items;
@@ -22,13 +23,22 @@ const useWIP = () => {
   if (WIPs[params.workspaceId]) {
     wips = WIPs[params.workspaceId].items;
   }
+  if (params.wipFileId) {
+    showGallery = true;
+  }
 
   useEffect(() => {
     dispatch(getSubjects({ group_id: params.workspaceId }));
     if (params.workspaceId && !WIPs[params.workspaceId]) {
-      actions.fetchWIPs({ topic_id: params.workspaceId }, (err,res) => {
+      actions.fetchWIPs({ topic_id: params.workspaceId }, (err, res) => {
         if (err) return;
-        actions.storeWIPs({...res.data, proposals: res.data.proposals.map((d) => {return {...d, clap_user_ids: []}}), topic_id: parseInt(params.workspaceId)})
+        actions.storeWIPs({
+          ...res.data,
+          proposals: res.data.proposals.map((d) => {
+            return { ...d, clap_user_ids: [] };
+          }),
+          topic_id: parseInt(params.workspaceId),
+        });
       });
     }
     if (params.wipId) {
@@ -39,6 +49,7 @@ const useWIP = () => {
   return {
     wip,
     wips,
+    showGallery,
   };
 };
 

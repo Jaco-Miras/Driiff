@@ -183,7 +183,7 @@ import { incomingReminderNotification, getNotifications, incomingSnoozedNotifica
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
-import { incomingWIP, incomingWIPSubject } from "../../redux/actions/wipActions";
+import { incomingWIP, incomingWIPSubject, incomingWIPComment } from "../../redux/actions/wipActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -270,6 +270,9 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".proposal-comment-notification", (e) => {
+        this.props.incomingWIPComment(e);
+      })
       .listen(".proposal-notification", (e) => {
         console.log(e);
         this.props.incomingWIP({ ...e, clap_user_ids: [] });
@@ -2302,6 +2305,7 @@ function mapDispatchToProps(dispatch) {
     incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
     incomingWIP: bindActionCreators(incomingWIP, dispatch),
     incomingWIPSubject: bindActionCreators(incomingWIPSubject, dispatch),
+    incomingWIPComment: bindActionCreators(incomingWIPComment, dispatch),
   };
 }
 
