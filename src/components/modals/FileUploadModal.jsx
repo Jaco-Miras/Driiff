@@ -477,6 +477,7 @@ const FileUploadModal = (props) => {
       setLoading(true);
       uploadFiles();
       dispatch(clearModal({ type: type }));
+      dispatch(saveInputData({ sent: true }));
     }
   };
 
