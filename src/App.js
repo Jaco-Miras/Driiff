@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { imgAsLogin } from "./helpers/slugHelper";
 import { sessionService } from "redux-react-session";
 import { DriffUpdateModal } from "./components/modals";
+import { ThemeProvider } from "styled-components";
 const FileViewer = lazy(() => import("./components/common/FileViewer"));
 const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
 
@@ -58,6 +59,60 @@ const Wrapper = styled.div`
   .react-draggable {
     z-index: 1000;
   }
+  .channel-list .feather-eye, 
+  .channel-list .feather-eye-off,
+  .fav-channel .feather-eye, 
+  .fav-channel .feather-eye-off,
+  .feather-eye, feather-eye-off {
+    color:  ${(props) => props.theme.colors.primary};
+  }
+  .workspace-icon .badge.badge-pill.badge-primary {
+    background:  ${(props) => props.theme.colors.primary};
+  }
+
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.secondary}!important;
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+  .btn.btn-secondary {
+    background-color: ${({ theme }) => theme.colors.secondary}!important;
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+  .badge.badge-pill {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .app-block .app-sidebar .app-sidebar-menu .list-group .list-group-item.active {
+    color: ${({ theme }) => theme.colors.secondary}!important;
+    :after {
+      background-color: ${({ theme }) => theme.colors.secondary}!important;
+    }
+  }
+  .channel-list {
+    :after {
+      background-color: ${({ theme }) => theme.colors.secondary}!important;
+    }
+  label.custom-control-label::before{
+    background-color: ${(props) => props.theme.colors.primary};
+  }
+  .form-control{
+    :focus{
+    border-color: ${(props) => props.theme.colors.primary} !important;}
+  }
+  .badge.badge-external{
+    background-color: ${(props) => props.theme.colors.fifth};
+  }
+  .chat-date-icons{
+    color:  ${(props) => props.theme.colors.primary};
+    .dark & {
+      color: ${(props) => props.theme.colors.fifth};
+    }
+  }
+  .feather.feather-send{
+  background:  ${(props) => props.theme.colors.primary}!important ;
+  }
+  .active{
+    :after{ background:  ${(props) => props.theme.colors.primary}!important ;}
+  }
 `;
 
 const ModalPanelContainer = styled.div`
@@ -74,6 +129,23 @@ function App() {
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
+
+  const primarycolor = "#29323F"; //primary blue //#a903fc to check if  color changes
+  const secondarycolor = "#4E5D72";
+  const thirdcolor = "#4E5D72"; //lighter blue
+  const fourthcolor = "#192536"; //dark top header blue
+  const fifthcolor = "#FFC856"; //yellow
+
+  const theme = {
+    colors: {
+      primary: primarycolor,
+      secondary: secondarycolor,
+      third: thirdcolor,
+      fourth: fourthcolor,
+      fifth: fifthcolor,
+    },
+  };
+
   //useHuddleNotification();
 
   useTranslation();
@@ -115,51 +187,53 @@ function App() {
   }
 
   return (
-    <Wrapper className="App">
-      {imgAsLogin()}
-      <ToastContainer className="top-toaster" enableMultiContainer containerId={"toastA"} transition={Slide} position={"top-center"} autoClose={3000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false} />
-      <PreLoader />
-      {location.pathname === "/driff" ? (
-        <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff} />
-      ) : location.pathname === "/driff-register" ? (
-        <Route render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff} />} path="/driff-register" exact />
-      ) : (
-        <>
-          {redirected === true ? (
-            <RedirectPanel redirectTo={driffActions.getBaseUrl} />
-          ) : registeredDriff === null ? (
-            <DriffSelectPanel />
-          ) : (
-            <>
-              <Switch>
-                <ScrollToTop>
-                  <AppRoute path="*" />
-                </ScrollToTop>
-              </Switch>
-            </>
-          )}
-        </>
-      )}
-      {userProfile && (
-        <CSSTransition appear in={userProfile !== null || userProfile !== undefined} timeout={300} classNames="mobile-slide">
-          <ProfileSlider profile={userProfile} onShowPopup={handleShowSlider} classNames={"mobile"} />
-        </CSSTransition>
-      )}
-      {Object.keys(modals).length > 0 && (
-        <Suspense fallback={<div></div>}>
-          <ModalPanel />
-        </Suspense>
-      )}
-      {viewFiles !== null && (
-        <Suspense fallback={<div></div>}>
-          <ModalPanelContainer>
-            <FileViewer />
-          </ModalPanelContainer>
-        </Suspense>
-      )}
-      {showNewDriffBar && <DriffUpdateModal />}
-      <div id="meetingSDKElement"></div>
-    </Wrapper>
+    <ThemeProvider theme={theme}>
+      <Wrapper className="App">
+        {imgAsLogin()}
+        <ToastContainer className="top-toaster" enableMultiContainer containerId={"toastA"} transition={Slide} position={"top-center"} autoClose={3000} pauseOnHover={false} draggable={false} pauseOnFocusLoss={false} />
+        <PreLoader />
+        {location.pathname === "/driff" ? (
+          <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff} />
+        ) : location.pathname === "/driff-register" ? (
+          <Route render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff} />} path="/driff-register" exact />
+        ) : (
+          <>
+            {redirected === true ? (
+              <RedirectPanel redirectTo={driffActions.getBaseUrl} />
+            ) : registeredDriff === null ? (
+              <DriffSelectPanel />
+            ) : (
+              <>
+                <Switch>
+                  <ScrollToTop>
+                    <AppRoute path="*" />
+                  </ScrollToTop>
+                </Switch>
+              </>
+            )}
+          </>
+        )}
+        {userProfile && (
+          <CSSTransition appear in={userProfile !== null || userProfile !== undefined} timeout={300} classNames="mobile-slide">
+            <ProfileSlider profile={userProfile} onShowPopup={handleShowSlider} classNames={"mobile"} />
+          </CSSTransition>
+        )}
+        {Object.keys(modals).length > 0 && (
+          <Suspense fallback={<div></div>}>
+            <ModalPanel />
+          </Suspense>
+        )}
+        {viewFiles !== null && (
+          <Suspense fallback={<div></div>}>
+            <ModalPanelContainer>
+              <FileViewer />
+            </ModalPanelContainer>
+          </Suspense>
+        )}
+        {showNewDriffBar && <DriffUpdateModal />}
+        <div id="meetingSDKElement"></div>
+      </Wrapper>
+    </ThemeProvider>
   );
 }
 
