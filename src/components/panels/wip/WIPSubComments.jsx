@@ -7,34 +7,12 @@ const Wrapper = styled.ul`
 `;
 
 const WIPSubComments = (props) => {
-  const { className = "", comments, wip, commentActions, parentId, user, onShowFileDialog, dropAction, parentShowInput, workspace, isMember, dictionary, disableOptions, postActions } = props;
-
+  const { className = "", comments, wip, parentId, user, onShowFileDialog, dropAction, parentShowInput, workspace, isMember, dictionary, disableOptions } = props;
   return (
-    comments.length > 0 && (
+    Object.values(comments).length > 0 && (
       <Wrapper className={`sub-comments ${className}`}>
         {Object.values(comments).map((c) => {
-          return (
-            <WIPComment key={c.id} type="sub" comment={c} wip={wip} dictionary={dictionary} />
-            // <Comment
-            //   key={c.id}
-            //   comment={c}
-            //   type="sub"
-            //   post={post}
-            //   user={user}
-            //   parentShowInput={() => {
-            //     parentShowInput(c.id);
-            //   }}
-            //   commentActions={commentActions}
-            //   parentId={parentId}
-            //   onShowFileDialog={onShowFileDialog}
-            //   dropAction={dropAction}
-            //   workspace={workspace}
-            //   isMember={isMember}
-            //   dictionary={dictionary}
-            //   disableOptions={disableOptions}
-            //   postActions={postActions}
-            // />
-          );
+          return <WIPComment key={c.id} type="sub" comment={c} wip={wip} dictionary={dictionary} parentId={parentId} />;
         })}
       </Wrapper>
     )

@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const WIPDetailComments = (props) => {
-  const { className = "", item, user, commentActions, onShowFileDialog, dropAction, workspace, isMember, disableOptions, postActions } = props;
+  const { className = "", item, comments, user, commentActions, onShowFileDialog, dropAction, workspace, isMember, disableOptions, postActions } = props;
 
   const { _t } = useTranslationActions();
 
@@ -107,66 +107,12 @@ const WIPDetailComments = (props) => {
     new: _t("POST.NEW", "New"),
   };
 
-  const comments = [
-    {
-      author: {
-        id: 1,
-        name: "nilo",
-        profile_image_link: null,
-      },
-      quote: null,
-      created_at: { timestamp: Math.floor(Date.now() / 1000) },
-      updated_at: { timestamp: Math.floor(Date.now() / 1000) },
-      body: "body comment",
-      files: [],
-      files_trashed: [],
-      id: 1,
-      clap_user_ids: [],
-      is_important: false,
-      todo_reminder: null,
-      replies: [
-        {
-          author: {
-            id: 1,
-            name: "nilo",
-            profile_image_link: null,
-          },
-          quote: null,
-          created_at: { timestamp: Math.floor(Date.now() / 1000) },
-          updated_at: { timestamp: Math.floor(Date.now() / 1000) },
-          body: "sub comment body",
-          files: [],
-          files_trashed: [],
-          id: 2,
-          clap_user_ids: [],
-          is_important: false,
-          todo_reminder: null,
-        },
-      ],
-    },
-  ];
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
       {comments && (
         <ul>
           {Object.values(comments).map((c) => {
-            return (
-              <WIPComment
-                key={c.id}
-                comment={c}
-                wip={item}
-                dictionary={dictionary}
-                // user={user}
-                // commentActions={commentActions}
-                // onShowFileDialog={onShowFileDialog}
-                // dropAction={dropAction}
-                // workspace={workspace}
-                // isMember={isMember}
-
-                // disableOptions={disableOptions}
-                // postActions={postActions}
-              />
-            );
+            return <WIPComment key={c.id} comment={c} wip={item} dictionary={dictionary} parentId={null} />;
           })}
         </ul>
       )}

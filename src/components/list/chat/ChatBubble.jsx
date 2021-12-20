@@ -637,7 +637,6 @@ const ChatBubble = (props) => {
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
-      hasFiles={hasFiles}
       theme={chatSettings.chat_message_theme}
       hasGif={showGifPlayer}
       hasRemoveOnDlFiles={hasRemoveOnDlFiles}
@@ -660,7 +659,7 @@ const ChatBubble = (props) => {
                 </>
               )}
 
-              {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
+              {reply.quote && reply.quote.hasOwnProperty("body") && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
                 <QuoteContainer
                   className={"quote-container"}
                   showAvatar={showAvatar}

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../../hooks";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useWIPCommentActions } from "../../hooks";
 import QuillEditor from "../../forms/QuillEditor";
-// import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
+import { postWIPComment } from "../../../redux/actions/wipActions";
 
 const Wrapper = styled.div``;
 
@@ -107,18 +107,17 @@ const WIPDetailInput = forwardRef((props, ref) => {
     userMention,
     handleClearUserMention,
     commentId,
-    members,
     workspace,
-    onClosePicker,
     onActive,
-    approvers,
     onClearApprovers,
     onSubmitCallback = () => {},
     mainInput,
     imageLoading = null,
     setImageLoading = null,
-    isApprover = false,
+    wip,
   } = props;
+
+  const actions = useWIPCommentActions();
 
   const prioMentionIds = [];
 
@@ -126,6 +125,7 @@ const WIPDetailInput = forwardRef((props, ref) => {
   const reactQuillRef = useRef();
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const recipients = useSelector((state) => state.global.recipients);
   const users = useSelector((state) => state.users.users);
@@ -169,63 +169,61 @@ const WIPDetailInput = forwardRef((props, ref) => {
     let mention_ids = [];
     let haveGif = false;
     let reference_id = require("shortid").generate();
-    let allIds = post.recipients
-      .map((ad) => {
-        if (ad.type === "USER") {
-          return ad.type_id;
-        } else {
-          return ad.participant_ids;
-        }
-      })
-      .flat();
+    // let allIds = post.recipients
+    //   .map((ad) => {
+    //     if (ad.type === "USER") {
+    //       return ad.type_id;
+    //     } else {
+    //       return ad.participant_ids;
+    //     }
+    //   })
+    //   .flat();
     let hasMention = false;
 
-    if (quillContents.ops && quillContents.ops.length > 0) {
-      hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
-      let mentionIds = quillContents.ops
-        .filter((m) => m.insert.mention)
-        .filter((m) => {
-          if (m.insert.mention.type === "internal" || m.insert.mention.type === "external") return true;
-          else return false;
-        })
-        .map((m) => Number(m.insert.mention.type_id));
+    // if (quillContents.ops && quillContents.ops.length > 0) {
+    //   hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
+    //   let mentionIds = quillContents.ops
+    //     .filter((m) => m.insert.mention)
+    //     .filter((m) => {
+    //       if (m.insert.mention.type === "internal" || m.insert.mention.type === "external") return true;
+    //       else return false;
+    //     })
+    //     .map((m) => Number(m.insert.mention.type_id));
 
-      mention_ids = [...new Set(mentionIds)];
+    //   mention_ids = [...new Set(mentionIds)];
 
-      if (mention_ids.includes(NaN)) {
-        if (allIds.length) {
-          mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...allIds])];
-        } else {
-          //remove the nan in mention ids
-          mention_ids = mention_ids.filter((id) => !isNaN(id));
-        }
-      }
-      quillContents.ops.forEach((op) => {
-        if (op.insert.image) {
-          haveGif = true;
-        }
-      });
-    }
+    //   if (mention_ids.includes(NaN)) {
+    //     if (allIds.length) {
+    //       mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...allIds])];
+    //     } else {
+    //       //remove the nan in mention ids
+    //       mention_ids = mention_ids.filter((id) => !isNaN(id));
+    //     }
+    //   }
+    //   quillContents.ops.forEach((op) => {
+    //     if (op.insert.image) {
+    //       haveGif = true;
+    //     }
+    //   });
+    // }
 
     if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif && !hasMention) return;
 
     let payload = {
-      post_id: post.id,
+      proposal_id: wip.id,
       body: text,
       mention_ids: mention_ids,
-      //mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
-      file_ids: inlineImages.map((i) => i.id),
-      post_file_ids: [],
+      attachment_ids: inlineImages.map((i) => i.id),
+      proposal_attachment_ids: [],
       reference_id: reference_id,
-      personalized_for_id: null,
       parent_id: parentId,
       code_data: {
-        push_title: `${user.name} replied in ${post.title}`,
-        post_id: post.id,
-        post_title: post.title,
+        push_title: `${user.name} replied in ${wip.title}`,
+        proposal_id: wip.id,
+        proposal_title: wip.title,
         mention_ids: mention_ids,
       },
-      approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
+      quote: null,
     };
 
     if (quote) {
@@ -247,6 +245,7 @@ const WIPDetailInput = forwardRef((props, ref) => {
         clap_count: 0,
         code: timestamp,
         created_at: { timestamp: timestamp },
+        file_version_id: null,
         files: [],
         files_trashed: [],
         id: reference_id,
@@ -254,26 +253,25 @@ const WIPDetailInput = forwardRef((props, ref) => {
         is_editable: true,
         is_edited: 0,
         is_favourite: false,
-        mention_ids: mention_ids,
+        is_important: false,
+        media_id: null,
         original_body: text,
         parent_id: parentId,
-        personalized_for_id: null,
-        post_id: post.id,
+        proposal_id: wip.id,
         quote: quote,
-        reference_id: reference_id,
         ref_quote: quote,
+        reference_id: reference_id,
         replies: {},
         todo_reminder: null,
+        topic_id: activeTopic.id,
         total_replies: 0,
         total_unread_replies: 0,
         updated_at: { timestamp: timestamp },
-        unfurls: [],
         user_clap_count: 0,
+        workspace_id: activeTopic.folder_id,
         clap_user_ids: [],
-        users_approval: [],
       };
-
-      commentActions.add(commentObj);
+      actions.addComment(commentObj);
     }
 
     if (editMode) {
@@ -283,22 +281,11 @@ const WIPDetailInput = forwardRef((props, ref) => {
         parent_id: editMessage.parent_id,
         reference_id: null,
       };
-      if (editPostComment) {
-        if (editPostComment.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
-          delete payload.approval_user_ids;
-        }
-      }
       commentActions.edit(payload);
       setEditMode(false);
       setEditMessage(null);
     } else {
-      if (isApprover && mainInput) {
-        payload.has_rejected = 1;
-      }
-      if (isApprover && !mainInput) {
-        payload.has_reject = 1;
-      }
-      commentActions.create(payload, onSubmitCallback);
+      actions.submitComment(payload);
     }
 
     if (quote) {
@@ -308,18 +295,9 @@ const WIPDetailInput = forwardRef((props, ref) => {
       //removeDraft(draftId);
       setDraftId(null);
     }
-
-    if (mentionUsersPayload.hasOwnProperty("post_id")) {
-      //   dispatch(
-      //     addPostRecipients(mentionUsersPayload, (err, res) => {
-      //       if (err) return;
-      //       dispatch(addUserToPostRecipients(mentionUsersPayload));
-      //     })
-      //   );
-    }
-    onClearApprovers();
+    // onClearApprovers();
     handleClearQuillInput();
-    onClosePicker();
+    // onClosePicker();
   };
 
   const handleClearQuillInput = () => {
@@ -383,19 +361,6 @@ const WIPDetailInput = forwardRef((props, ref) => {
       if (!hasMention) setQuillMentions([]);
     }
     textOnly.trim() === "" && !hasMention && !hasImage ? onActive(false) : onActive(true);
-  };
-
-  const handleRemoveMention = () => {
-    let to_remove = [];
-    if (post.hasOwnProperty("to_add")) {
-      to_remove = post.to_add.filter((id) => !mentionUsers.includes(id));
-    }
-    let payload = {
-      post_id: post.id,
-      topic_id: workspace.id,
-      remove_recipient_ids: to_remove,
-    };
-    //dispatch(removeUserToPostRecipients(payload));
   };
 
   const workspaceMembers = workspace
@@ -505,31 +470,6 @@ const WIPDetailInput = forwardRef((props, ref) => {
     }
   }, [sent]);
 
-  const handleAddMentionsToPost = (mentions) => {
-    //const userIds = users.map((u) => u.id);
-    const types = ["USER", "WORKSPACE", "TOPIC"];
-    const userRecipients = recipients.filter((r) => types.includes(r.type));
-    const newRecipients = userRecipients.filter((r) => {
-      return mentions.some((m) => m.id === r.id);
-    });
-    let payload = {
-      post_id: post.id,
-      topic_id: workspace.id,
-      recipient_ids: newRecipients.map((u) => u.id),
-      recipients: newRecipients,
-    };
-
-    //const postRecipientIds = post.recipients.map((pr) => pr.id);
-    setMentionUsersPayload(payload);
-    // setIgnoredMentionedUserIds([...postRecipientIds, ...ignoredMentionedUserIds, ...mentions.map((u) => u.id)]);
-    // setMentionedUserIds([]);
-  };
-
-  // const handleIgnoreMentionedUsers = (users) => {
-  //   setIgnoredMentionedUserIds(users.map((u) => u.id));
-  //   setMentionedUserIds([]);
-  // };
-
   const handleEditReplyClose = () => {
     setEditMode(false);
     setEditMessage(null);
@@ -549,21 +489,9 @@ const WIPDetailInput = forwardRef((props, ref) => {
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
-    removeMention: handleRemoveMention,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members:
-      user.type === "external"
-        ? members.filter((m) => m.id !== user.id)
-        : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
-              return true;
-            } else {
-              return false;
-            }
-          }),
+    members: workspaceMembers,
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,

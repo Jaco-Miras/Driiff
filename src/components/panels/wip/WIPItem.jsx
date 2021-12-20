@@ -269,7 +269,7 @@ const WIPItem = (props) => {
             <PostReplyCounter>
               {item.author.id !== user.id && item.unread_count === 0 && !item.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">New</div>}
               {item.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{item.unread_count} new</div>}
-              <div className="text-muted">{item.reply_count === 0 ? "no comment" : item.reply_count === 1 ? "1 comment" : dictionary.comments.replace("::comment_count::", item.reply_count)}</div>
+              {/* <div className="text-muted">{item.reply_count === 0 ? "no comment" : item.reply_count === 1 ? "1 comment" : dictionary.comments.replace("::comment_count::", item.reply_count)}</div> */}
               <span className="time-stamp text-muted">
                 <span>{fromNow(item.updated_at.timestamp)}</span>
               </span>
