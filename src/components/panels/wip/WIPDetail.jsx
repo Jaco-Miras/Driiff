@@ -7,8 +7,14 @@ import WIPDetailBody from "./WIPDetailBody";
 import WIPDetailCounters from "./WIPDetailCounters";
 import WIPDetailFooter from "./WIPDetailFooter";
 import WIPDetailComments from "./WIPDetailComments";
-import { useWIPActions } from "../../hooks";
+import { useWIPActions, useWIPComments } from "../../hooks";
 import moment from "moment";
+
+const Wrapper = styled.div`
+  min-height: auto;
+  overflow: visible !important;
+  height: auto !important;
+`;
 
 const WIPDetailWrapper = styled.div`
   min-height: 240px;
@@ -247,6 +253,7 @@ const MainBody = styled.div`
 const WIPDetail = (props) => {
   const { item } = props;
   const wipActions = useWIPActions();
+  const { comments } = useWIPComments();
   const user = useSelector((state) => state.session.user);
   const handleGoBack = () => {
     wipActions.goBack();
@@ -261,62 +268,63 @@ const WIPDetail = (props) => {
     }
   };
   return (
-    <div className="card card-body app-content-body mb-4">
-      <WIPDetailWrapper className="fadeBottom">
-        <MainHeader className="card-header d-flex justify-content-between">
-          <div className="d-flex flex-column align-items-start">
-            <div className="d-flex align-items-center">
-              <div>
-                <Icon className="close mr-2" icon="arrow-left" width="24" height="24" onClick={handleGoBack} />
-              </div>
-              <div>
-                <h5 className="post-title mb-0">
-                  <span>{item.title}</span>
-                </h5>
-                <span className="d-flex">
-                  <span className={`badge ${getPriorityColor()}`}>{item.priority}</span>
-                  <span className="deadline-label ml-2">
-                    <Icon className="mr-2" icon="calendar" />
-                    {moment(item.deadline.timestamp, "X").format("DD-MM-YYYY")}
+    <>
+      <Wrapper className="card card-body app-content-body mb-4">
+        <WIPDetailWrapper className="fadeBottom">
+          <MainHeader className="card-header d-flex justify-content-between">
+            <div className="d-flex flex-column align-items-start">
+              <div className="d-flex align-items-center">
+                <div>
+                  <Icon className="close mr-2" icon="arrow-left" width="24" height="24" onClick={handleGoBack} />
+                </div>
+                <div>
+                  <h5 className="post-title mb-0">
+                    <span>{item.title}</span>
+                  </h5>
+                  <span className="d-flex">
+                    <span className={`badge ${getPriorityColor()}`}>{item.priority}</span>
+                    <span className="deadline-label ml-2">
+                      <Icon className="mr-2" icon="calendar" />
+                      {moment(item.deadline.timestamp, "X").format("DD-MM-YYYY")}
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            {item.author.id === user.id && (
-              <ul>
-                <li>
-                  <span data-toggle="modal" data-target="#editTaskModal">
-                    <a className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
-                      <Icon icon="edit-3" />
+            <div>
+              {item.author.id === user.id && (
+                <ul>
+                  <li>
+                    <span data-toggle="modal" data-target="#editTaskModal">
+                      <a className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
+                        <Icon icon="edit-3" />
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <a className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
+                      <Icon icon="trash" />
                     </a>
-                  </span>
-                </li>
-                <li>
-                  <a className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
-                    <Icon icon="trash" />
-                  </a>
-                </li>
-                <li>
-                  <StyledMoreOptions className="ml-2" width={220} moreButton={"more-horizontal"}></StyledMoreOptions>
-                </li>
-              </ul>
-            )}
-            {item.author.id !== user.id && (
-              <div>
-                <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}></StyledMoreOptions>
-              </div>
-            )}
-          </div>
-        </MainHeader>
-        <MainBody>
-          <WIPDetailBody item={item} />
-          <hr className="m-0" />
-          <WIPDetailCounters item={item} />
-          {item.reply_count > 0 && <WIPDetailComments item={item} />}
-          <WIPDetailFooter item={item} />
-          {/* <DropDocument
+                  </li>
+                  <li>
+                    <StyledMoreOptions className="ml-2" width={220} moreButton={"more-horizontal"}></StyledMoreOptions>
+                  </li>
+                </ul>
+              )}
+              {item.author.id !== user.id && (
+                <div>
+                  <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}></StyledMoreOptions>
+                </div>
+              )}
+            </div>
+          </MainHeader>
+          <MainBody>
+            <WIPDetailBody item={item} />
+            <hr className="m-0" />
+            <WIPDetailCounters item={item} />
+            <WIPDetailComments item={item} comments={comments} />
+            <WIPDetailFooter wip={item} />
+            {/* <DropDocument
             hide={!showDropZone}
             ref={refs.dropZoneRef}
             onDragLeave={handleHideDropzone}
@@ -325,7 +333,7 @@ const WIPDetail = (props) => {
             }}
             onCancel={handleHideDropzone}
           /> */}
-          {/* <PostBody
+            {/* <PostBody
             post={post}
             user={user}
             postActions={postActions}
@@ -335,7 +343,7 @@ const WIPDetail = (props) => {
             workspaceId={workspace.id}
             disableMarkAsRead={disableMarkAsRead}
           /> */}
-          {/* {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
+            {/* {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
           <hr className="m-0" />
           <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
           {comments && Object.keys(comments).length > 0 && (
@@ -369,9 +377,11 @@ const WIPDetail = (props) => {
             disableOptions={disableOptions}
             mainInput={true}
           /> */}
-        </MainBody>
-      </WIPDetailWrapper>
-    </div>
+          </MainBody>
+        </WIPDetailWrapper>
+      </Wrapper>
+      <div className="mt-3 post-btm">&nbsp;</div>
+    </>
   );
 };
 

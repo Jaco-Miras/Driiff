@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   WIPs: {},
   subjects: [],
   activeSubject: null,
+  WIPComments: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -100,6 +101,181 @@ export default (state = INITIAL_STATE, action) => {
               },
             }),
           },
+        },
+      };
+    }
+    case "ADD_WIP_COMMENT": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          if (parseInt(wid) === action.data.topic_id) {
+            acc[wid] = {
+              ...state.WIPs[wid],
+              items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+                if (parseInt(pid) === action.data.proposal_id) {
+                  icc[pid] = { ...state.WIPs[wid].items[pid], reply_count: state.WIPs[wid].items[pid].reply_count + 1 };
+                } else {
+                  icc[pid] = state.WIPs[wid].items[pid];
+                }
+                return icc;
+              }, {}),
+            };
+          } else acc[wid] = state.WIPs[wid];
+
+          return acc;
+        }, {}),
+        WIPComments: {
+          ...state.WIPComments,
+          ...(state.WIPComments[action.data.proposal_id] && {
+            [action.data.proposal_id]: {
+              ...state.WIPComments[action.data.proposal_id],
+              comments: {
+                ...state.WIPComments[action.data.proposal_id].comments,
+                ...(action.data.parent_id === null && {
+                  [action.data.id]: action.data,
+                }),
+                ...(action.data.parent_id !== null && {
+                  [action.data.parent_id]: {
+                    ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id],
+                    replies: {
+                      ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies,
+                      [action.data.id]: action.data,
+                    },
+                  },
+                }),
+              },
+            },
+          }),
+          ...(!state.WIPComments[action.data.proposal_id] &&
+            action.data.parent_id === null && {
+              [action.data.proposal_id]: {
+                skip: 0,
+                limit: 20,
+                hasMore: true,
+                comments: {
+                  [action.data.id]: action.data,
+                },
+              },
+            }),
+        },
+      };
+    }
+    case "INCOMING_WIP_COMMENT": {
+      return {
+        ...state,
+        WIPComments: {
+          ...state.WIPComments,
+          ...(state.WIPComments[action.data.proposal_id] && {
+            [action.data.proposal_id]: {
+              ...state.WIPComments[action.data.proposal_id],
+              comments: {
+                ...Object.keys(state.WIPComments[action.data.proposal_id].comments).reduce((res, key) => {
+                  if (action.data.parent_id) {
+                    res[key] = {
+                      ...state.WIPComments[action.data.proposal_id].comments[key],
+                      replies: {
+                        ...Object.keys(state.WIPComments[action.data.proposal_id].comments[key].replies).reduce((rep, k) => {
+                          if (action.data.reference_id && k === action.data.reference_id) {
+                            rep[action.data.id] = {
+                              ...action.data,
+                              clap_user_ids: [],
+                              // clap_user_ids: state.WIPComments[action.data.proposal_id].comments[key].replies[action.data.reference_id].clap_user_ids,
+                            };
+                          } else {
+                            if (parseInt(k) === action.data.id) {
+                              rep[k] = { ...state.WIPComments[action.data.proposal_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                            } else {
+                              rep[k] = state.WIPComments[action.data.proposal_id].comments[key].replies[k];
+                            }
+                          }
+                          return rep;
+                        }, {}),
+                      },
+                    };
+                  } else {
+                    if (action.data.reference_id && key === action.data.reference_id) {
+                      res[action.data.id] = { ...action.data, clap_user_ids: [] };
+                    } else {
+                      if (parseInt(key) === action.data.id) {
+                        res[key] = { ...state.WIPComments[action.data.proposal_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                      } else {
+                        res[key] = state.WIPComments[action.data.proposal_id].comments[key];
+                      }
+                    }
+                  }
+                  return res;
+                }, {}),
+                ...(state.user.id !== action.data.author.id && {
+                  ...(action.data.parent_id &&
+                    state.WIPComments[action.data.proposal_id].comments[action.data.parent_id] && {
+                      [action.data.parent_id]: {
+                        ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id],
+                        replies: {
+                          ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies,
+                          [action.data.id]: action.data,
+                        },
+                      },
+                    }),
+                  ...(!action.data.parent_id && {
+                    [action.data.id]: action.data,
+                  }),
+                }),
+                ...(!action.data.hasOwnProperty("reference_id") && {
+                  ...(action.data.parent_id &&
+                    state.WIPComments[action.data.proposal_id].comments[action.data.parent_id] && {
+                      [action.data.parent_id]: {
+                        ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id],
+                        replies: {
+                          ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies,
+                          [action.data.id]: action.data,
+                        },
+                      },
+                    }),
+                  ...(!action.data.parent_id && {
+                    [action.data.id]: action.data,
+                  }),
+                }),
+              },
+            },
+          }),
+          ...(!state.WIPComments[action.data.proposal_id] && {
+            skip: 0,
+            limit: 20,
+            hasMore: true,
+            comments: {
+              [action.data.id]: action.data,
+            },
+          }),
+        },
+      };
+    }
+    case "GET_WIP_COMMENTS_SUCCESS": {
+      return {
+        ...state,
+        WIPComments: {
+          ...state.WIPComments,
+          ...(!state.WIPComments[action.data.proposal_id] && {
+            [action.data.proposal_id]: {
+              skip: 0,
+              limit: 10,
+              hasMore: true,
+              comments: convertArrayToObject(
+                action.data.messages.map((d) => {
+                  return {
+                    ...d,
+                    clap_user_ids: [],
+                    replies: convertArrayToObject(
+                      d.replies.map((sc) => {
+                        return { ...sc, clap_user_ids: [] };
+                      }),
+                      "id"
+                    ),
+                  };
+                }),
+                "id"
+              ),
+            },
+          }),
         },
       };
     }

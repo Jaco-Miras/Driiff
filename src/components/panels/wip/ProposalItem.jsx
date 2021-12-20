@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import { ToolTip, SvgIconFeather } from "../../common";
 import ProposalOptions from "./ProposalOptions";
 import ProposalVersionLabel from "./ProposalVersionLabel";
@@ -69,7 +70,8 @@ const Wrapper = styled.div`
 `;
 
 const ProposalItem = (props) => {
-  const { className = "", item, isLink = false, actions = {}, fromModal } = props;
+  const { className = "", item, isLink = false, fromModal, parentId } = props;
+  const history = useHistory();
 
   const getFileSizeUnit = (size) => {
     if (size) {
@@ -133,12 +135,16 @@ const ProposalItem = (props) => {
   };
   const fileSizeUnit = !isLink && getFileSizeUnit(item.hasOwnProperty("size") && typeof item.size === "number" ? item.size : 0);
 
-  const handleFileView = () => {
+  const handleFileView = (e) => {
     //actions.viewFiles(file);
+    e.stopPropagation();
+    if (!fromModal) {
+      history.push(history.location.pathname + `/file/${parentId}/${item.id}`);
+    }
   };
 
   return (
-    <Wrapper className={`file-list-item ${className}`} isApproved={item.is_approved}>
+    <Wrapper className={`file-list-item ${className}`} isApproved={item.is_approved} onClick={handleFileView}>
       <div className="card app-file-list mb-0">
         <div className="file-header">
           <ProposalVersionLabel />

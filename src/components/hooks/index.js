@@ -79,3 +79,5 @@ export { default as useChannelUpdateMessage } from "./useChannelUpdateMessage";
 export { default as useZoomActions } from "./useZoomActions";
 export { default as useWIPActions } from "./useWIPActions";
 export { default as useWIP } from "./useWIP";
+export { default as useWIPCommentActions } from "./useWIPCommentActions";
+export { default as useWIPComments } from "./useWIPComments";

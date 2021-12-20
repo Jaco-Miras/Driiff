@@ -46,7 +46,7 @@ const useQuillModules = ({
   };
 
   const handleRemoveMention = () => {
-    removeCallback.current();
+    if (removeMention !== null) removeCallback.current();
   };
 
   const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
