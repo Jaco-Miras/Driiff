@@ -56,7 +56,7 @@ const Wrapper = styled.div`
         : props.editMode
         ? "60px"
         : "30px"};
-    .btn-meet,
+    .btn-zoom,
     .btn-smile,
     .btn-paperclip {
       display: ${(props) => (props.showButtons ? "block" : "none")};
@@ -64,8 +64,8 @@ const Wrapper = styled.div`
     .chat-buttons {
       display: block;
     }
-    .feather-meet {
-      height: 17px;
+    .btn-zoom {
+      padding: 10px 0;
     }
   }
   .zoom-icon {
@@ -93,7 +93,7 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleGoogleMeet, onShowFileDialog, editChatMessage, quote, dictionary, startingZoom } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, handleZoomMeet, onShowFileDialog, editChatMessage, quote, dictionary, startingZoom } = props;
 
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -134,7 +134,7 @@ const ChatInputButtons = (props) => {
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
           {startingZoom && <Loader />}
           {/* {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />} */}
-          <ZoomIcon onClick={handleGoogleMeet} icon="zoom" viewBox="0 0 48 48" />
+          <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
