@@ -201,6 +201,9 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (settings.order_channel.order_by === "channel_date_updated") {
+        if (a.is_active === false && a.type === "TOPIC" && a.last_reply && a.last_reply.code_data && a.last_reply.code_data.mention_ids.some((id) => user.id === id)) {
+          return -1;
+        }
         if (a.is_active === false && a.type === "TOPIC" && b.is_active === false && b.type === "TOPIC") {
           if (a.last_reply && b.last_reply) {
             if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
