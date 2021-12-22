@@ -173,7 +173,7 @@ const GalleryView = (props) => {
   };
   const mainFile = item.files.find((f) => f.id === parseInt(params.wipFileId));
   const file = mainFile.file_versions.length ? mainFile.file_versions[mainFile.file_versions.length - 1] : mainFile.link_versions[mainFile.link_versions.length - 1];
-  console.log(file);
+
   const handleSelectImage = (fid, fvid) => {
     history.push(history.location.pathname.split("/file/")[0] + `/file/${fid}/${fvid}`);
   };

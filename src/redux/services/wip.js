@@ -1,6 +1,6 @@
 // import {getAPIUrl} from "../../helpers/slugHelper";
 import { apiCall } from "./service";
-//import { objToUrlParams } from "../../helpers/commonFunctions";
+import { objToUrlParams } from "../../helpers/commonFunctions";
 
 /**
  * @param {Object} payload
@@ -117,5 +117,18 @@ export function postFileComment(payload) {
     method: "POST",
     url: url,
     data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.file_version_id
+ * @returns {Promise<*>}
+ */
+export function getFileComments(payload) {
+  let url = `/v2/proposal/file/comments?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
   });
 }
