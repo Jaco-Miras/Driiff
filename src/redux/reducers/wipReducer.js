@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   subjects: [],
   activeSubject: null,
   WIPComments: {},
+  fileComments: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -274,6 +275,153 @@ export default (state = INITIAL_STATE, action) => {
                 }),
                 "id"
               ),
+            },
+          }),
+        },
+      };
+    }
+    case "ADD_FILE_COMMENT": {
+      return {
+        ...state,
+        fileComments: {
+          ...state.fileComments,
+          ...(!state.fileComments[action.data.file_version_id] &&
+            action.data.parent_id === null && {
+              [action.data.file_version_id]: {
+                skip: 0,
+                limit: 20,
+                hasMore: true,
+                comments: {
+                  [action.data.reference_id]: action.data,
+                },
+              },
+            }),
+          ...(state.fileComments[action.data.file_version_id] &&
+            action.data.parent_id === null && {
+              [action.data.file_version_id]: {
+                ...state.fileComments[action.data.file_version_id],
+                comments: {
+                  ...state.fileComments[action.data.file_version_id].comments,
+                  [action.data.reference_id]: action.data,
+                },
+              },
+            }),
+        },
+      };
+    }
+    case "GET_FILE_COMMENTS_SUCCESS": {
+      return {
+        ...state,
+        fileComments: {
+          ...state.fileComments,
+          ...(!state.fileComments[action.data.file_version_id] && {
+            [action.data.file_version_id]: {
+              skip: action.data.next_skip,
+              limit: 20,
+              hasMore: action.data.file_version_messages.length === 20,
+              comments: convertArrayToObject(
+                action.data.file_version_messages.map((d) => {
+                  return {
+                    ...d,
+                    clap_user_ids: [],
+                    replies: convertArrayToObject(
+                      d.replies.map((sc) => {
+                        return { ...sc, clap_user_ids: [] };
+                      }),
+                      "id"
+                    ),
+                  };
+                }),
+                "id"
+              ),
+            },
+          }),
+        },
+      };
+    }
+    case "INCOMING_WIP_FILE_COMMENT": {
+      return {
+        ...state,
+        fileComments: {
+          ...state.fileComments,
+          ...(state.fileComments[action.data.file_version_id] && {
+            [action.data.file_version_id]: {
+              ...state.fileComments[action.data.file_version_id],
+              comments: {
+                ...Object.keys(state.fileComments[action.data.file_version_id].comments).reduce((res, key) => {
+                  if (action.data.parent_id) {
+                    res[key] = {
+                      ...state.fileComments[action.data.file_version_id].comments[key],
+                      replies: {
+                        ...Object.keys(state.fileComments[action.data.file_version_id].comments[key].replies).reduce((rep, k) => {
+                          if (action.data.reference_id && k === action.data.reference_id) {
+                            rep[action.data.id] = {
+                              ...action.data,
+                              clap_user_ids: [],
+                            };
+                          } else {
+                            if (parseInt(k) === action.data.id) {
+                              rep[k] = { ...state.fileComments[action.data.file_version_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                            } else {
+                              rep[k] = state.fileComments[action.data.file_version_id].comments[key].replies[k];
+                            }
+                          }
+                          return rep;
+                        }, {}),
+                      },
+                    };
+                  } else {
+                    if (action.data.reference_id && key === action.data.reference_id) {
+                      res[action.data.id] = { ...action.data, clap_user_ids: [] };
+                    } else {
+                      if (parseInt(key) === action.data.id) {
+                        res[key] = { ...state.fileComments[action.data.file_version_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                      } else {
+                        res[key] = state.fileComments[action.data.file_version_id].comments[key];
+                      }
+                    }
+                  }
+                  return res;
+                }, {}),
+                ...(state.user.id !== action.data.author.id && {
+                  ...(action.data.parent_id &&
+                    state.fileComments[action.data.file_version_id].comments[action.data.parent_id] && {
+                      [action.data.parent_id]: {
+                        ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id],
+                        replies: {
+                          ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id].replies,
+                          [action.data.id]: action.data,
+                        },
+                      },
+                    }),
+                  ...(!action.data.parent_id && {
+                    [action.data.id]: action.data,
+                  }),
+                }),
+                ...(!action.data.hasOwnProperty("reference_id") && {
+                  ...(action.data.parent_id &&
+                    state.fileComments[action.data.file_version_id].comments[action.data.parent_id] && {
+                      [action.data.parent_id]: {
+                        ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id],
+                        replies: {
+                          ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id].replies,
+                          [action.data.id]: action.data,
+                        },
+                      },
+                    }),
+                  ...(!action.data.parent_id && {
+                    [action.data.id]: action.data,
+                  }),
+                }),
+              },
+            },
+          }),
+          ...(!state.fileComments[action.data.file_version_id] && {
+            skip: 0,
+            limit: 20,
+            hasMore: true,
+            comments: {
+              [action.data.id]: action.data,
             },
           }),
         },

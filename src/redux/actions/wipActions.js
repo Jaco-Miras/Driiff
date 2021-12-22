@@ -8,6 +8,7 @@ import {
   postWIPComment as postWIPCommentService,
   getWIPComments as getWIPCommentsService,
   postFileComment as postFileCommentService,
+  getFileComments as getFileCommentsService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -60,4 +61,16 @@ export function getWIPComments(payload, callback) {
 
 export function postFileComment(payload, callback) {
   return dispatchActionToReducer(postFileCommentService(payload), "POST_FILE_COMMENT_START", "POST_FILE_COMMENT_SUCCESS", "POST_FILE_COMMENT_FAIL", callback);
+}
+
+export function getFileComments(payload, callback) {
+  return dispatchActionToReducer(getFileCommentsService(payload), "GET_FILE_COMMENTS_START", "GET_FILE_COMMENTS_SUCCESS", "GET_FILE_COMMENTS_FAIL", callback);
+}
+
+export function addFileComment(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_FILE_COMMENT", payload, callback);
+}
+
+export function incomingWIPFileComment(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_WIP_FILE_COMMENT", payload, callback);
 }
