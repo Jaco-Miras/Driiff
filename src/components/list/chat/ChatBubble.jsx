@@ -9,8 +9,6 @@ import { useChatReply, useZoomActions } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
-import { useTheme } from "styled-components";
-
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -629,8 +627,8 @@ const ChatBubble = (props) => {
   };
 
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
-  const theme = useTheme()
-  
+  //const theme = useTheme()
+
   return (
     <ChatBubbleContainer
       ref={refs.container}
@@ -640,9 +638,6 @@ const ChatBubble = (props) => {
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
-      hasFiles={hasFiles}
-      // theme={chatSettings.chat_message_theme}
-      theme={theme}
       hasGif={showGifPlayer}
       hasRemoveOnDlFiles={hasRemoveOnDlFiles}
     >
@@ -664,7 +659,7 @@ const ChatBubble = (props) => {
                 </>
               )}
 
-              {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
+              {reply.quote && reply.quote.hasOwnProperty("body") && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
                 <QuoteContainer
                   className={"quote-container"}
                   showAvatar={showAvatar}

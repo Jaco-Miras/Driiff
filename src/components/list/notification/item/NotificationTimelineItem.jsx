@@ -11,7 +11,7 @@ const Icon = styled(SvgIconFeather)`
 const Wrapper = styled.div`
   cursor: pointer;
   padding: 1.5em 1.5em 0em 1.5em !important;
-  background: ${(props) => (props.isRead ? "transparent" : props.darkMode === "1" ? "#2a2f31" : "#F9F9F9")};
+  background: ${(props) => (props.isRead ? "transparent" : props.darkMode === "1" ? "#2a2f31" : "#F3F3F3")};
 
   border-bottom: ${(props) => (props.darkMode === "1" ? "1px solid #9b9b9b1a" : "1px solid #ebebeb;")};
   .avatar {

@@ -1666,6 +1666,7 @@ export default function (state = INITIAL_STATE, action) {
           icon_link: channels[action.data.id].icon_link,
           replies: channels[action.data.id].replies,
           hasMore: channels[action.data.id].hasMore,
+          is_active: channels[action.data.id].is_active,
           skip: channels[action.data.id].skip,
           isFetching: false,
         };
