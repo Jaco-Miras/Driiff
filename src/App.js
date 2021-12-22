@@ -71,15 +71,18 @@ const Wrapper = styled.div`
   }
 
   .btn.btn-primary {
-    background-color: ${({ theme }) => theme.colors.secondary}!important;
-    border-color: ${({ theme }) => theme.colors.secondary}!important;
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-primary:not(:disabled):not(.disabled):focus {
+    box-shadow: 0 0 0 0.2rem #4E5D72!important;
   }
   .btn.btn-secondary {
     background-color: ${({ theme }) => theme.colors.secondary}!important;
     border-color: ${({ theme }) => theme.colors.secondary}!important;
   }
   .badge.badge-pill {
-    background-color: ${({ theme }) => theme.colors.secondary};
+    background-color: ${({ theme }) => theme.colors.primary};
   }
   .app-block .app-sidebar .app-sidebar-menu .list-group .list-group-item.active {
     color: ${({ theme }) => theme.colors.secondary}!important;
@@ -129,22 +132,23 @@ function App() {
   const modals = useSelector((state) => state.global.modals);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
+  const theme = useSelector((state) => state.settings.driff.theme);
 
-  const primarycolor = "#29323F"; //primary blue //#a903fc to check if  color changes
-  const secondarycolor = "#4E5D72";
-  const thirdcolor = "#4E5D72"; //lighter blue
-  const fourthcolor = "#192536"; //dark top header blue
-  const fifthcolor = "#FFC856"; //yellow
+  // const primarycolor = "#29323F"; //primary blue //#a903fc to check if  color changes
+  // const secondarycolor = "#4E5D72";
+  // const thirdcolor = "#4E5D72"; //lighter blue
+  // const fourthcolor = "#192536"; //dark top header blue
+  // const fifthcolor = "#FFC856"; //yellow
 
-  const theme = {
-    colors: {
-      primary: primarycolor,
-      secondary: secondarycolor,
-      third: thirdcolor,
-      fourth: fourthcolor,
-      fifth: fifthcolor,
-    },
-  };
+  // const theme = {
+  //   colors: {
+  //     primary: primarycolor,
+  //     secondary: secondarycolor,
+  //     third: thirdcolor,
+  //     fourth: fourthcolor,
+  //     fifth: fifthcolor,
+  //   },
+  // };
 
   //useHuddleNotification();
 

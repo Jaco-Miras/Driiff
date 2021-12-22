@@ -10,6 +10,15 @@ const INITIAL_STATE = {
     company_name: "Driff communication",
     domains: [],
     logo: "",
+    theme: {
+      colors: {
+        primary: "#7a1b8b",
+        secondary: "#8c3b9b",
+        third: "#3f034a",
+        fourth: "#4d075a",
+        fifth: "#FFC856",
+      },
+    },
     settings: {
       maintenance_mode: false,
       google_login: true,
@@ -199,6 +208,16 @@ export default (state = INITIAL_STATE, action) => {
               driff = {
                 ...driff,
                 domains: value.split(","),
+              };
+
+              break;
+            }
+            case "themes": {
+              driff = {
+                ...driff,
+                theme: {
+                  ...JSON.parse(value),
+                },
               };
 
               break;
@@ -416,6 +435,15 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           logo: "",
+        },
+      };
+    }
+    case "UPDATE_THEME_COLORS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          theme: { colors: action.data.colors },
         },
       };
     }

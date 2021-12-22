@@ -5,8 +5,8 @@ import { MainNavigationTabPanel } from "./index";
 
 const Wrapper = styled.div`
   .navigation-menu-tab {
-    background-color: ${(props) => props.theme.colors.primary}
-  } 
+    background-color: ${(props) => props.theme.colors.fourth};
+  }
 `;
 
 const MainNavigationPanel = (props) => {

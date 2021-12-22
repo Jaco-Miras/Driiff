@@ -12,7 +12,6 @@
     "@zoomus/websdk": "2.1.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
-    "call-bind": "^1.0.2",
     "classnames": "^2.2.6",
     "device-uuid": "^1.0.4",
     "emoji-mart": "^3.0.0",

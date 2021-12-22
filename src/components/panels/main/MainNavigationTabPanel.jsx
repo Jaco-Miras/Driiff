@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     margin-bottom: 1rem;
     min-height: 74px;
     max-height: 74px;
-    background-color: ${({theme}) => theme.colors.fourth};
+    background-color: ${({ theme }) => theme.colors.third};
     .driff-logo {
       width: 90px;
       height: 90px;
