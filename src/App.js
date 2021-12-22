@@ -59,62 +59,109 @@ const Wrapper = styled.div`
   .react-draggable {
     z-index: 1000;
   }
-  .channel-list .feather-eye, 
+
+  .channel-list .feather-eye,
   .channel-list .feather-eye-off,
-  .fav-channel .feather-eye, 
+  .fav-channel .feather-eye,
   .fav-channel .feather-eye-off,
-  .feather-eye, feather-eye-off {
-    color:  ${(props) => props.theme.colors.primary};
+  .feather-eye,
+  .feather-eye-off {
+    color: ${(props) => props.theme.colors.primary};
   }
   .workspace-icon .badge.badge-pill.badge-primary {
-    background:  ${(props) => props.theme.colors.primary};
+    background: ${(props) => props.theme.colors.primary};
   }
 
   .btn.btn-primary {
     background-color: ${({ theme }) => theme.colors.primary}!important;
     border-color: ${({ theme }) => theme.colors.primary}!important;
   }
-  .btn.btn-primary:not(:disabled):not(.disabled):focus {
-    box-shadow: 0 0 0 0.2rem #4E5D72!important;
+
+  .btn.btn-outline-primary {
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
+
+  .btn.btn-primary:not(:disabled):not(.disabled):focus {
+    box-shadow: 0 0 0 0.2rem #4e5d72 !important;
+  }
+
   .btn.btn-secondary {
     background-color: ${({ theme }) => theme.colors.secondary}!important;
     border-color: ${({ theme }) => theme.colors.secondary}!important;
   }
+
   .badge.badge-pill {
     background-color: ${({ theme }) => theme.colors.primary};
   }
+
   .app-block .app-sidebar .app-sidebar-menu .list-group .list-group-item.active {
     color: ${({ theme }) => theme.colors.secondary}!important;
     :after {
       background-color: ${({ theme }) => theme.colors.secondary}!important;
     }
   }
+
   .channel-list {
     :after {
       background-color: ${({ theme }) => theme.colors.secondary}!important;
     }
-  label.custom-control-label::before{
+  }
+
+  label.custom-control-label::before {
     background-color: ${(props) => props.theme.colors.primary};
   }
-  .form-control{
-    :focus{
-    border-color: ${(props) => props.theme.colors.primary} !important;}
+
+  .form-control {
+    :focus {
+      border-color: ${(props) => props.theme.colors.primary} !important;
+    }
   }
-  .badge.badge-external{
+
+  .badge.badge-external {
     background-color: ${(props) => props.theme.colors.fifth};
   }
-  .chat-date-icons{
-    color:  ${(props) => props.theme.colors.primary};
+
+  .chat-date-icons {
+    color: ${(props) => props.theme.colors.primary};
     .dark & {
       color: ${(props) => props.theme.colors.fifth};
     }
   }
-  .feather.feather-send{
-  background:  ${(props) => props.theme.colors.primary}!important ;
+
+  .feather.feather-send {
+    background: ${(props) => props.theme.colors.primary}!important;
   }
-  .active{
-    :after{ background:  ${(props) => props.theme.colors.primary}!important ;}
+
+  .active {
+    :after {
+      background: ${(props) => props.theme.colors.primary}!important;
+    }
+  }
+
+  .post-item-panel {
+    .badge.badge-secondary {
+      background-color: ${({ theme }) => theme.colors.secondary};
+    }
+  }
+
+  .more-options:hover {
+    color: ${(props) => props.theme.colors.primary};
+    border: 1px solid ${(props) => props.theme.colors.primary} !important;
+  }
+
+  .more-options svg:hover {
+    color: ${(props) => props.theme.colors.primary};
+  }
+
+  .modal & {
+    .btn.btn-primary {
+      background-color: ${({ theme }) => theme.colors.primary}!important;
+      border-color: ${({ theme }) => theme.colors.primary}!important;
+    }
+    input.form-control:focus {
+      border-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 

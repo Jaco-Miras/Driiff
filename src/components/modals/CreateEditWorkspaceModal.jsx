@@ -141,6 +141,25 @@ const WrapperDiv = styled(InputGroup)`
       margin-right: 1rem;
     }
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .custom-control-label:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -155,7 +174,7 @@ const SelectPeople = styled(PeopleSelect)`
   flex: 1 0 0;
   width: 1%;
   .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
+    //border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .react-select__option {
@@ -163,17 +182,17 @@ const SelectPeople = styled(PeopleSelect)`
   }
   .react-select__menu-list--is-multi > div {
     &:hover {
-      background: #8c3b9b;
+      // background: #8c3b9b;
       color: #ffffff;
       cursor: pointer;
       .react-select__option {
-        background: #8c3b9b;
+        // background: #8c3b9b;
         cursor: pointer;
       }
     }
   }
   .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
+    //border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .has-not-accepted .react-select__multi-value__label {

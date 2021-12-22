@@ -181,7 +181,7 @@ const DescriptionInputWrapper = styled.div`
   }
   resize: vertical;
   overflow: auto;
-  ${(props) => props.hasFocus && "border-color: rgba(122, 27, 139, 0.8);"}
+  ${(props) => props.hasFocus && `border-color: ${props.theme.colors.primary};`}
 `;
 
 const Buttons = styled.div`
