@@ -16,7 +16,7 @@ const ChatBubbleContainer = styled.div`
   flex-flow: column;
   padding: ${(props) => (props.hasFiles ? "3px" : "6px 9px 8px 9px")};
   border-radius: 6px;
-  background: ${(props) => (props.isAuthor ? "#7A1B8B" : "#F0F0F0")};
+  background: ${(props) => (props.isAuthor ? props.theme.colors.primary : "#F0F0F0")};
   text-align: left;
   width: 100%;
   color: ${(props) => (props.isAuthor ? "#ffffff" : "#000000")};
@@ -647,6 +647,7 @@ const ChatBubble = (props) => {
   };
 
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
+  //const theme = useTheme()
 
   return (
     <ChatBubbleContainer
@@ -657,7 +658,6 @@ const ChatBubble = (props) => {
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
-      theme={chatSettings.chat_message_theme}
       hasGif={showGifPlayer}
       hasRemoveOnDlFiles={hasRemoveOnDlFiles}
     >

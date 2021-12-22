@@ -1,15 +1,19 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { MainNavigationTabPanel } from "./index";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  .navigation-menu-tab {
+    background-color: ${(props) => props.theme.colors.fourth};
+  }
+`;
 
 const MainNavigationPanel = (props) => {
   const { className = "", showNotificationBar } = props;
-
+  const theme = useTheme();
   return (
-    <Wrapper className={`navigation ${className} ${showNotificationBar && "notification-bar"}`}>
+    <Wrapper theme={theme} className={`navigation ${className} ${showNotificationBar && "notification-bar"}`}>
       <Route
         exact={true}
         render={() => <MainNavigationTabPanel {...props} />}

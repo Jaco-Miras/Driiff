@@ -8,6 +8,7 @@ import { Loader, SvgIconFeather } from "../../common";
 import { DomainSelect } from "../../forms";
 import Tooltip from "react-tooltip-lite";
 import { DropDocument } from "../../dropzone/DropDocument";
+
 const isValidDomain = require("is-valid-domain");
 
 const Wrapper = styled.div`
@@ -372,33 +373,9 @@ const LoginSettingsBody = () => {
           </div>
         </>
       )}
-      <h4>{dictionary.companyLogo}</h4>
-      <h6>{dictionary.companyLogoDescription}</h6>
+      
       <div>
-        <label className="mb-0">{dictionary.companyLogoRequirement}</label>
-        <br />
-        <label className="mb-0">{dictionary.companyLogoDimensions}</label>
-      </div>
-
-      <div>
-        <DropDocument
-          acceptType="imageOnly"
-          hide={!showIconDropzone}
-          ref={iconDropZone}
-          onDragLeave={handleHideIconDropzone}
-          onDrop={({ acceptedFiles }) => {
-            dropIconAction(acceptedFiles);
-          }}
-          onCancel={handleHideIconDropzone}
-        />
-        <button className="btn btn-primary" onClick={handleOpenDropzone}>
-          {dictionary.uploadLogoBtn}
-        </button>
-        {logo !== "" && (
-          <button className="ml-2 btn btn-secondary" onClick={handleRemoveLogo}>
-            {dictionary.resetButton}
-          </button>
-        )}
+     
       </div>
     </Wrapper>
   );

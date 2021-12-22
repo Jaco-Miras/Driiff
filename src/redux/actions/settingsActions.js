@@ -63,3 +63,7 @@ export function uploadDriffLogo(payload, callback) {
 export function updateCustomTranslationSettings(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_CUSTOM_TRANSLATION_SETTINGS", payload, callback);
 }
+
+export function updateThemeColors(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_THEME_COLORS", payload, callback);
+}

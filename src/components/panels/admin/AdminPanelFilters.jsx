@@ -30,6 +30,7 @@ const AdminPanelFilters = (props) => {
     subscription: _t("ADMIN.FILTER_SUBSCRIPTION", "Subscription"),
     contact: _t("ADMIN.FILTER_CONTACT", "Contact"),
     support: _t("ADMIN.FILTER_SUPPORT", "Support desk"),
+    company: _t("ADMIN.FILTER_COMPANYSETTINGS", "Company Settings")
   };
   const { setAdminFilter } = useAdminActions();
   const history = useHistory();
@@ -64,6 +65,9 @@ const AdminPanelFilters = (props) => {
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["support"] ? "active" : ""}`} data-value="support" onClick={handleClickFilter}>
         {dictionary.support}
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["company-settings"] ? "active" : ""}`} data-value="company-settings" onClick={handleClickFilter}>
+        {dictionary.company}
       </li>
     </Wrapper>
   );
