@@ -334,14 +334,32 @@ const ChatFooterPanel = (props) => {
           };
 
           dispatch(
-            generateZoomSignature(sigPayload, (e, r) => {
-              if (e) return;
-              if (r) {
-                zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
-                zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
-                //setStartingZoom(false);
+            generateZoomSignature(
+              {
+                ...sigPayload,
+                channel_id: selectedChannel.id,
+                system_message: `ZOOM_MEETING::${JSON.stringify({
+                  author: {
+                    id: user.id,
+                    name: user.name,
+                    first_name: user.first_name,
+                    partial_name: user.partial_name,
+                    profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+                  },
+                  password: res.data.zoom_data.data.password,
+                  meetingNumber: res.data.zoom_data.data.id,
+                  channel_id: selectedChannel.id,
+                })}`,
+              },
+              (e, r) => {
+                if (e) return;
+                if (r) {
+                  //zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+                  zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
+                  //setStartingZoom(false);
+                }
               }
-            })
+            )
           );
         }
       })

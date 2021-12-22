@@ -36,6 +36,7 @@ const ZoomInviteModal = (props) => {
       meetingNumber: zoom_data.data.id,
       role: 0,
       password: zoom_data.data.password,
+      channel_id: zoom_data.data.channel_id,
     };
     zoomActions.generateSignature(payload);
   };
