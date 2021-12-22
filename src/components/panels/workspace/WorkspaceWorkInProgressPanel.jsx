@@ -5,6 +5,7 @@ import WorkInProgressSearch from "../wip/WorkInProgressSearch";
 import GallerySidebarComments from "../wip/GallerySidebarComments";
 import GalleryView from "../wip/GalleryView";
 import GalleryViewPlaceholder from "../wip/GalleryViewPlaceholder";
+import WIPSidebarPlaceholder from "../wip/WIPSidebarPlaceholder";
 import WIPList from "../wip/WIPList";
 import WIPDetail from "../wip/WIPDetail";
 import { useWIP } from "../../hooks";
@@ -71,7 +72,8 @@ const WorkspaceWorkInProgressPanel = () => {
   return (
     <Wrapper className={"container-fluid fadeIn"} showGallery={showGallery}>
       <div className="row app-block">
-        {showGallery && <GallerySidebarComments />}
+        {showGallery && wip && <GallerySidebarComments item={wip} />}
+        {showGallery && !wip && <WIPSidebarPlaceholder />}
         {!showGallery && <WorkInProgressSidebar />}
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
