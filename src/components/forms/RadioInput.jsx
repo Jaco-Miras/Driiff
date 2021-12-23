@@ -38,14 +38,14 @@ const RadioInputContainer = styled.div`
 
   &:hover {
     input ~ .checkmark {
-      background-color: #972c86;
-      border-color: #972c86;
+      background-color: ${(props) => props.theme.colors.secondary};
+      border-color: ${(props) => props.theme.colors.secondary};
       box-shadow: 0 0 0 0.2rem rgba(170, 102, 204, 0.3);
     }
 
     input:checked ~ .checkmark {
-      background-color: #972c86;
-      border-color: #972c86;
+      background-color: ${(props) => props.theme.colors.secondary};
+      border-color: ${(props) => props.theme.colors.secondary};
     }
 
     input ~ .checkmark:after {
@@ -72,7 +72,7 @@ const RadioInputContainer = styled.div`
     top: 3px;
     width: 8px;
     height: 8px;
-    background-color: #972c86;
+    background-color: ${(props) => props.theme.colors.secondary};
     border-radius: 50%;
     transition: all 200ms ease;
   }

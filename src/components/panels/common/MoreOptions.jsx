@@ -62,8 +62,8 @@ const MoreTooltip = styled.div`
 
     &.active,
     &:hover {
-      background-color: #f0f0f0;
-      color: #7a1b8b;
+      background-color: ${(props) => props.theme.colors.primary};
+      color: #fff;
     }
   }
 

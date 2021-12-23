@@ -61,10 +61,10 @@ const ChatInputContainer = styled.div`
     transition: color 0.15s ease-in-out;
     color: #cacaca;
     &.active {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
     &:hover {
-      color: ${(props) => (props.disableButtons ? "inherit" : "#7a1b8b")};
+      color: ${(props) => props.theme.colors.primary};
     }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
@@ -74,10 +74,10 @@ const ChatInputContainer = styled.div`
     transition: color 0.15s ease-in-out;
     color: #cacaca;
     &.active {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
     &:hover {
-      color: ${(props) => (props.disableButtons ? "inherit" : "#7a1b8b")};
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 `;

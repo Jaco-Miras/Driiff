@@ -128,12 +128,12 @@ const StyledQuillEditor = styled(QuillEditor)`
     .ql-formats {
       margin-right: 10px;
       button:hover {
-        color: #7a1b8b !important;
+        color: ${({ theme }) => theme.colors.primary} !important;
         .ql-stroke {
-          stroke: #7a1b8b !important;
+          stroke: ${({ theme }) => theme.colors.primary} !important;
         }
         .ql-fill {
-          fill: #7a1b8b !important;
+          fill: ${({ theme }) => theme.colors.primary} !important;
         }
       }
     }
@@ -157,7 +157,7 @@ const IconButton = styled(SvgIconFeather)`
   border-radius: 8px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   &:hover {
-    background: #7a1b8b;
+    background: ${({ theme }) => theme.colors.primary};
     color: #ffffff;
   }
   &.feather-send {

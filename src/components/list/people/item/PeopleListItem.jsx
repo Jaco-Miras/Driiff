@@ -274,7 +274,7 @@ const PeopleListItem = (props) => {
                         <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
                       </ToolTip>
                       <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
-                      <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />
+                      <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info badge-external text-white" />
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
@@ -291,7 +291,7 @@ const PeopleListItem = (props) => {
                       </div>
 
                       <span className="label-wrapper d-inline-flex start align-items-center">
-                        {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
+                        {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info badge-external text-white" />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                         {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
                           <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />

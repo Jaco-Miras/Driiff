@@ -7,6 +7,13 @@ const Wrapper = styled.div`
   label {
     cursor: pointer;
   }
+  &.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  &.custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 0.2rem ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const CheckBox = forwardRef((props, ref) => {

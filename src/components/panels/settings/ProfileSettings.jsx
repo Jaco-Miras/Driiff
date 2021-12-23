@@ -774,14 +774,28 @@ const ProfileSettings = (props) => {
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
                 <div className="col-7">
-                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={ChatLanguageOptions.find((o) => o.value === chat_language)} onChange={handleChatLanguageChange} options={ChatLanguageOptions} />
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={ChatLanguageOptions.find((o) => o.value === chat_language)}
+                    onChange={handleChatLanguageChange}
+                    options={ChatLanguageOptions}
+                  />
                 </div>
               </div>
 
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
                 <div className="col-7">
-                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={channelSortOptions.find((o) => o.value === order_channel.order_by)} onChange={handleSortChannelChange} options={channelSortOptions} />
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={channelSortOptions.find((o) => o.value === order_channel.order_by)}
+                    onChange={handleSortChannelChange}
+                    options={channelSortOptions}
+                  />
                 </div>
               </div>
             </div>
@@ -792,7 +806,14 @@ const ProfileSettings = (props) => {
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.sortWorkspaceLabel}</div>
                 <div className="col-7">
-                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={channelSortOptions.find((o) => o.value === orderChannel.order_by)} onChange={handleSortWorkspaceChange} options={channelSortOptions} />
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={channelSortOptions.find((o) => o.value === orderChannel.order_by)}
+                    onChange={handleSortWorkspaceChange}
+                    options={channelSortOptions}
+                  />
                 </div>
               </div>
             </div>
@@ -804,21 +825,49 @@ const ProfileSettings = (props) => {
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.languageLabel}</div>
                 <div className="col-7">
-                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={languageOptions.find((o) => o.value === language)} onChange={handleLanguageChange} options={languageOptions} />
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={languageOptions.find((o) => o.value === language)}
+                    onChange={handleLanguageChange}
+                    options={languageOptions}
+                  />
                 </div>
               </div>
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.timezoneLabel}</div>
                 <div className="col-7">
-                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={TimezoneOptions.find((o) => o.value === timezone)} onChange={handleTimezoneChange} options={TimezoneOptions} />
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={TimezoneOptions.find((o) => o.value === timezone)}
+                    onChange={handleTimezoneChange}
+                    options={TimezoneOptions}
+                  />
                 </div>
               </div>
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
                 <div className="col-7 justify-content-center align-items-center">
                   <div className="row">
-                    <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
-                    <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
+                    <Select
+                      className={"react-select-container col-6"}
+                      classNamePrefix="react-select"
+                      styles={dark_mode === "0" ? lightTheme : darkTheme}
+                      value={DateFormatOptions.find((o) => o.value === date_format)}
+                      onChange={handleDateFormatChange}
+                      options={DateFormatOptions}
+                    />
+                    <Select
+                      className={"react-select-container col-6"}
+                      classNamePrefix="react-select"
+                      styles={dark_mode === "0" ? lightTheme : darkTheme}
+                      value={TimeFormatOptions.find((o) => o.value === time_format)}
+                      onChange={handleTimeFormatChange}
+                      options={TimeFormatOptions}
+                    />
                   </div>
                 </div>
               </div>
@@ -885,7 +934,14 @@ const ProfileSettings = (props) => {
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.notificationSound}</div>
                 <div className="col-7">
-                  <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={notificationSoundOptions.find((o) => o.value === notification_sound)} onChange={handleNotificationSoundChange} options={notificationSoundOptions} />
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={notificationSoundOptions.find((o) => o.value === notification_sound)}
+                    onChange={handleNotificationSoundChange}
+                    options={notificationSoundOptions}
+                  />
                 </div>
               </div>
             </div>
