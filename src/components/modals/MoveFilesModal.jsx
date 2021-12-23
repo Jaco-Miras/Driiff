@@ -10,7 +10,35 @@ import { ModalHeaderSection } from "./index";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { useSettings } from "../hooks";
 
-const Wrapper = styled(Modal)``;
+const Wrapper = styled(Modal)`
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 
 const MoveFilesModal = (props) => {
   const { className = "", type, file, topic_id, folder_id, ...otherProps } = props;
@@ -98,12 +126,12 @@ const MoveFilesModal = (props) => {
       <ModalHeaderSection toggle={toggle}>Move the file</ModalHeaderSection>
       <ModalBody>
         <div className="d-flex align-items-center">
-        <span className="pr-1 mb-3">Move</span>
-        <div className="folder-name mb-3">{file.search}</div>
-        <span className="pl-1 mb-3">to:</span>
+          <span className="pr-1 mb-3">Move</span>
+          <div className="folder-name mb-3">{file.search}</div>
+          <span className="pl-1 mb-3">to:</span>
         </div>
         <Label className={"folder-name"}>Select a folder</Label>
-        <Select styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
+        <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-secondary" data-dismiss="modal" onClick={handleClose}>

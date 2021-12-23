@@ -10,6 +10,21 @@ const ButtonsContainer = styled.div`
   button:first-child {
     margin-right: 1rem;
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const ZoomInviteModal = (props) => {
@@ -46,10 +61,10 @@ const ZoomInviteModal = (props) => {
       <ModalBody>
         <h3>{dictionary.zoomInvite}</h3>
         <ButtonsContainer>
-          <Button outline color="secondary" onClick={toggle}>
+          <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {dictionary.reject}
           </Button>
-          <Button color="primary" onClick={handleJoin}>
+          <Button className="btn btn-primary" color="primary" onClick={handleJoin}>
             {dictionary.join}
           </Button>
         </ButtonsContainer>

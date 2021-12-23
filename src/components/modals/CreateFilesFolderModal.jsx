@@ -19,6 +19,24 @@ const Wrapper = styled(Modal)`
         background-color: ${props.color};
         }
     `}
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const WrapperDiv = styled(FormGroup)``;
