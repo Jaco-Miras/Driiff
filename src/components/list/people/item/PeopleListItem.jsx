@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   .feather-message-circle {
     cursor: pointer;
     &:hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
   > .col-12 {

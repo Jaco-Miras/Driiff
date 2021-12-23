@@ -50,6 +50,13 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
 `;
 
 // const StyledDescriptionInput = styled(DescriptionInput)`

@@ -13,6 +13,9 @@ const Wrapper = styled.div`
       color: #972c86;
     }
   }
+  .text-primary {
+    color: ${(props) => props.theme.colors.third}!important;
+  }
 `;
 
 const UserSearchPanel = (props) => {

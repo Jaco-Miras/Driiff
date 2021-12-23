@@ -15,7 +15,18 @@ const Filter = styled.span`
     props.active &&
     `
         background: 0 0;
-        color: ${props.theme.colors.primary};
+        color: ${props.theme.colors.secondary};
+        &:after {
+          content: "";
+          width: 3px;
+          height: 100%;
+          background-color: ${props.theme.colors.secondary};
+          display: block;
+          position: absolute;
+          top: 0;
+          animation: fadeIn 0.15s linear;
+          left: 0;
+        }
     `}
 
   &.folder-list {

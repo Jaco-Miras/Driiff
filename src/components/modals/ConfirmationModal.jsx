@@ -1,10 +1,28 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
 import { SvgIconFeather } from "../common";
 
+const ModalWrapper = styled(Modal)`
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 const ConfirmationModal = (props) => {
   const { submitText, cancelText, headerText, bodyText, type, size = "m" } = props.data;
   const { onSubmit } = props.data.actions;
@@ -37,7 +55,7 @@ const ConfirmationModal = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={size} centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
       <ModalBody>
         <span dangerouslySetInnerHTML={{ __html: bodyText }} />
@@ -45,14 +63,14 @@ const ConfirmationModal = (props) => {
         {showConditionText && <div onMouseLeave={handleMouseLeave}>{props.data.generalConditionText}</div>}
       </ModalBody>
       <ModalFooter>
-        <Button outline color="secondary" onClick={toggle}>
+        <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
           {cancelText}
         </Button>
-        <Button color="primary" onClick={handleConfirm}>
+        <Button className="btn btn-primary" color="primary" onClick={handleConfirm}>
           {submitText}
         </Button>{" "}
       </ModalFooter>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

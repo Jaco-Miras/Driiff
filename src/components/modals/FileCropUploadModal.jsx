@@ -18,6 +18,21 @@ const Wrapper = styled(Modal)`
       }
     }
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const FileCropUploadModal = (props) => {
@@ -69,11 +84,11 @@ const FileCropUploadModal = (props) => {
         </Suspense>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={handleCropImage}>
-          Save
-        </Button>
-        <Button color="secondary" onClick={toggle}>
+        <Button className="btn btn-primary" color="secondary" onClick={toggle}>
           Discard
+        </Button>
+        <Button className="btn btn-outline-secondary" color="primary" onClick={handleCropImage}>
+          Save
         </Button>
       </ModalFooter>
     </Wrapper>

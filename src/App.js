@@ -60,6 +60,10 @@ const Wrapper = styled.div`
     z-index: 1000;
   }
 
+  .text-primary {
+    color: ${(props) => props.theme.colors.primary}!important;
+  }
+
   .channel-list .feather-eye,
   .channel-list .feather-eye-off,
   .fav-channel .feather-eye,
@@ -190,6 +194,16 @@ const Wrapper = styled.div`
     .cci.cci-active + .ccl span:first-child {
       background: ${(props) => props.theme.colors.primary};
     }
+  }
+  .pagination .page-item.active .page-link {
+    background-color: ${(props) => props.theme.colors.primary};
+    color: #fff;
+  }
+  .page-link {
+    color: ${(props) => props.theme.colors.primary};
+  }
+  .page-link:not(:disabled):not(.disabled):focus {
+    box-shadow: 0 0 0 0.2rem ${(props) => props.theme.colors.secondary};
   }
 `;
 

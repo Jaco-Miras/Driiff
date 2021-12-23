@@ -57,7 +57,7 @@ const Wrapper = styled.li`
       }
     }
     h6 {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
   h6 {

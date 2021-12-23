@@ -12,7 +12,38 @@ import { Avatar, SvgIconFeather } from "../common";
 import { addToModals } from "../../redux/actions/globalActions";
 import { uploadBulkDocument } from "../../redux/services/global";
 
-const Wrapper = styled(Modal)``;
+const Wrapper = styled(Modal)`
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 
 const WrapperDiv = styled(FormGroup)`
   .invalid-feedback {
@@ -59,7 +90,7 @@ const SelectPeople = styled(PeopleSelect)`
   flex: 1 0 0;
   width: 1%;
   .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
+    //border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .react-select__option {
@@ -71,13 +102,13 @@ const SelectPeople = styled(PeopleSelect)`
       color: #ffffff;
       cursor: pointer;
       .react-select__option {
-        background: #8c3b9b;
+        //background: #8c3b9b;
         cursor: pointer;
       }
     }
   }
   .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
+    //border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .has-not-accepted .react-select__multi-value__label {
