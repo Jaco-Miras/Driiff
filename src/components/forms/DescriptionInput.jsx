@@ -94,7 +94,7 @@ const WrapperDiv = styled(InputGroup)`
         padding-left: 1rem;
 
         &.selected {
-          background: #7a1b8b;
+          background: ${(props) => props.theme.colors.primary};
           color: #fff;
           cursor: pointer;
           span.all-pic > img {
@@ -105,7 +105,10 @@ const WrapperDiv = styled(InputGroup)`
     }
   }
   .mention {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
+  }
+  .ql-snow a {
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 

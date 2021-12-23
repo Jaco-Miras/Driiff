@@ -240,8 +240,8 @@ const ReplyContent = styled.span`
 
   a {
     cursor: pointer;
-    color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
-    color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
+    color: ${(props) => (props.isAuthor ? "#ffffff" : props.theme.colors.primary)};
+    //color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
     text-decoration: underline;
 
     // &.gdrive-link {
@@ -665,21 +665,12 @@ const ChatBubble = (props) => {
                   showAvatar={showAvatar}
                   isEmoticonOnly={isEmoticonOnly}
                   hasFiles={hasFiles}
-                  theme={chatSettings.chat_message_theme}
                   onClick={handleQuoteClick}
                   //onTouchEnd={handleQuoteClick}
                   isAuthor={isAuthor}
                 >
-                  {reply.quote.user_id === user.id ? (
-                    <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
-                      {"You"}
-                    </QuoteAuthor>
-                  ) : (
-                    <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={reply.quote.user_id === user.id}>
-                      {quoteAuthor}
-                    </QuoteAuthor>
-                  )}
-                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  {reply.quote.user_id === user.id ? <QuoteAuthor isAuthor={true}>{"You"}</QuoteAuthor> : <QuoteAuthor isAuthor={reply.quote.user_id === user.id}>{quoteAuthor}</QuoteAuthor>}
+                  <QuoteContent className={"quote-content"} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {hasMessage && (
@@ -688,16 +679,13 @@ const ChatBubble = (props) => {
                     //ref={handleContentRef}
                     ref={refs.replyRef}
                     hasFiles={hasFiles}
-                    theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""} ${reply.body.startsWith("ZOOM_MESSAGE::{") ? "zoom-msg" : ""}`}
                     dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
               )}
-              {reply.files.length > 0 && !reply.is_deleted && (
-                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
-              )}
+              {reply.files.length > 0 && !reply.is_deleted && <MessageFiles dictionary={dictionary} isAuthor={isAuthor} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
             </ChatContent>
           </ChatContentClap>

@@ -88,7 +88,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         padding-left: 1rem;
 
         &.selected {
-          background: #7a1b8b;
+          background: ${(props) => props.theme.colors.primary};
           color: #fff;
           cursor: pointer;
           span.all-pic > img {
@@ -97,6 +97,9 @@ const StyledQuillEditor = styled(QuillEditor)`
         }
       }
     }
+  }
+  .ql-snow a {
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 

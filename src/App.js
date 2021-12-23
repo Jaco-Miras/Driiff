@@ -205,6 +205,13 @@ const Wrapper = styled.div`
   .page-link:not(:disabled):not(.disabled):focus {
     box-shadow: 0 0 0 0.2rem ${(props) => props.theme.colors.secondary};
   }
+  .chat-left .mention,
+  .chat-left .mention a {
+    color: ${(props) => props.theme.colors.primary};
+    .dark & {
+      color: #fff;
+    }
+  }
 `;
 
 const ModalPanelContainer = styled.div`

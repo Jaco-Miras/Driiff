@@ -114,7 +114,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         padding-left: 1rem;
 
         &.selected {
-          background: #7a1b8b;
+          background: ${(props) => props.theme.colors.primary};
           color: #fff;
           span.all-pic > img {
             filter: brightness(0) saturate(100%) invert(1);
