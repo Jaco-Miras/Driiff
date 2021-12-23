@@ -435,7 +435,9 @@ const ChatFooterPanel = (props) => {
             Created by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
-            <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspaceChat}</button>
+            <button className="btn btn-primary" onClick={handleJoinWorkspace}>
+              {dictionary.joinWorkspaceChat}
+            </button>
           </div>
         </Dflex>
       )}

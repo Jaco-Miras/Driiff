@@ -21,7 +21,7 @@ const StyledNode = styled.div`
     font-weight: 500;
   }
   :hover {
-    border-color: #7a1b8b;
+    border-color: ${({ theme }) => theme.colors.primary};
   }
   .TEAM {
     .feather {
