@@ -71,11 +71,11 @@ const MainBody = styled.div`
   }
 
   a {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
     text-decoration: underline;
 
     .dark & {
-      color: #7a1b8b !important;
+      color: #fff;
     }
   }
 

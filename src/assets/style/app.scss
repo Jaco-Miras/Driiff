@@ -143,12 +143,12 @@ li[data-show_line="true"] {
 
 .mention {
   font-weight: bold;
-  color: $color-primary;
+  //color: $color-primary;
 }
 
 .mention a {
   text-decoration: none;
-  color: $color-primary !important;
+  //color: $color-primary !important;
 }
 
 .mention:hover {
@@ -163,9 +163,9 @@ li[data-show_line="true"] {
   font-weight: bold;
   cursor: default;
 
-  .dark & {
-    color: #7a1b8b !important;
-  }
+  // .dark & {
+  //   color: #7a1b8b !important;
+  // }
 }
 
 .chat-input-wrapper {
@@ -324,26 +324,26 @@ body.dark {
 
   .mention {
     font-weight: bold;
-    color: $color-primary;
+    color: #fff;
   }
 
-  .mention:hover {
-    color: $dm-text-color;
-  }
+  // .mention:hover {
+  //   color: $dm-text-color;
+  // }
 
   .mention a {
     font-weight: bold;
-    color: $color-primary;
+    color: #fff !important;
     text-decoration: none;
   }
 
   .chat-right .mention, .chat-right .mention a {
-    color: $color-primary !important;
+    color: #fff;
   }
 
   .ql-mention-denotation-char {
     //font-weight: normal;
-    color: $dm-text-color;
+    //color: $dm-text-color;
     // font-weight: bold;
     cursor: default;
   }

@@ -29,7 +29,7 @@ const Wrapper = styled.li`
 
   .mention {
     font-weight: bold;
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
     &[data-value="All"],
     &[data-id="${(props) => props.userId}"] {
       font-weight: normal;
@@ -159,8 +159,8 @@ const CommentWrapper = styled.div`
     cursor: pointer;
   }
   .clap-true {
-    color: #7a1b8b;
-    fill: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
   }
 `;
 
