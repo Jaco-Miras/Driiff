@@ -10,10 +10,53 @@ import { useTranslationActions, usePostActions, useSettings } from "../hooks";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { InputFeedback } from "../forms";
 
+const ModalWrapper = styled(Modal)`
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+
+  .btn.btn-outline-primary {
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  .btn.btn-primary:not(:disabled):not(.disabled):focus {
+    box-shadow: 0 0 0 0.2rem #4e5d72 !important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 const Wrapper = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  .form-control {
+    :focus {
+      border-color: ${(props) => props.theme.colors.primary} !important;
+    }
+  }
 `;
 
 const SelectOption = styled.div`
@@ -245,7 +288,7 @@ const CreateEditPostListModal = (props) => {
     );
   };
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
       <ModalHeaderSection toggle={toggle}>{mode === "add" ? dictionary.addToList : mode === "edit" ? dictionary.updateList : dictionary.newList}</ModalHeaderSection>
       <ModalBody>
         <Wrapper className={"modal-input mt-0"}>
@@ -272,7 +315,16 @@ const CreateEditPostListModal = (props) => {
                   </>
                 ) : (
                   <>
-                    <Select className={"react-select-container"} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={false} isClearable={true} components={{ Option }} options={mappedPostLists()} onChange={handleListChange} />
+                    <Select
+                      className={"react-select-container"}
+                      classNamePrefix="react-select"
+                      styles={dark_mode === "0" ? lightTheme : darkTheme}
+                      isMulti={false}
+                      isClearable={true}
+                      components={{ Option }}
+                      options={mappedPostLists()}
+                      onChange={handleListChange}
+                    />
                     <InputFeedback valid={valid.link_id}>{feedback.link_id}</InputFeedback>
                   </>
                 )}
@@ -295,7 +347,7 @@ const CreateEditPostListModal = (props) => {
           {mode === "add" ? dictionary.addPost : mode === "edit" ? dictionary.update : dictionary.saveList}
         </Button>
       </ModalFooter>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

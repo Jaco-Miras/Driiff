@@ -217,6 +217,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...driff,
                 theme: {
                   colors: {
+                    ...driff.theme.colors,
                     ...JSON.parse(value),
                   },
                 },

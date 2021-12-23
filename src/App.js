@@ -65,11 +65,17 @@ const Wrapper = styled.div`
   .fav-channel .feather-eye,
   .fav-channel .feather-eye-off,
   .chat-header-icon .feather-eye,
-  .chat-header-icon .feather-eye-off,
-  .feather-eye,
-  .feather-eye-off {
+  .chat-header-icon .feather-eye-off {
     color: ${(props) => props.theme.colors.primary};
   }
+  .custom-switch .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 0.2rem ${({ theme }) => theme.colors.secondary};
+  }
+  .custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
   .workspace-icon .badge.badge-pill.badge-primary {
     background: ${(props) => props.theme.colors.primary};
   }
@@ -137,7 +143,8 @@ const Wrapper = styled.div`
     }
   }
 
-  .post-item-panel {
+  .post-item-panel,
+  .post-comments {
     .badge.badge-secondary {
       background-color: ${({ theme }) => theme.colors.secondary};
     }
@@ -167,6 +174,22 @@ const Wrapper = styled.div`
 
   .chat-right .quote-container {
     background-color: ${({ theme }) => theme.colors.secondary};
+  }
+
+  .post-item-panel svg.feather-pencil,
+  .post-item-panel svg.feather-clock {
+    color: ${(props) => props.theme.colors.primary};
+  }
+  .post-item-panel svg.feather-eye,
+  .post-item-panel svg.feather-off {
+    :hover {
+      color: ${(props) => props.theme.colors.primary};
+    }
+  }
+  .post-item-panel {
+    .cci.cci-active + .ccl span:first-child {
+      background: ${(props) => props.theme.colors.primary};
+    }
   }
 `;
 

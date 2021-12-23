@@ -15,7 +15,7 @@ const Filter = styled.span`
     props.active &&
     `
         background: 0 0;
-        color: #7a1b8b;
+        color: ${props.theme.colors.primary};
     `}
 
   &.folder-list {
