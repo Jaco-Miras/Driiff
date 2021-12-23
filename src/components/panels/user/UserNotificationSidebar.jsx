@@ -76,7 +76,7 @@ const UserNotificationSidebar = (props) => {
         </div>
       </div>
       <p>{dictionary.improve}</p>
-      <span onClick={handleSettings} style={{ color: "#5B1269" }}>
+      <span className="text-primary" onClick={handleSettings}>
         {dictionary.viewSettings}
       </span>
     </Wrapper>

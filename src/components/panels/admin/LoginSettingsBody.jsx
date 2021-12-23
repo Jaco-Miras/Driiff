@@ -7,7 +7,7 @@ import { useAdminActions, useTranslationActions, useToaster } from "../../hooks"
 import { Loader, SvgIconFeather } from "../../common";
 import { DomainSelect } from "../../forms";
 import Tooltip from "react-tooltip-lite";
-import { DropDocument } from "../../dropzone/DropDocument";
+//import { DropDocument } from "../../dropzone/DropDocument";
 
 const isValidDomain = require("is-valid-domain");
 
@@ -301,7 +301,14 @@ const LoginSettingsBody = () => {
                 <SvgIconFeather icon="info" />
               </Tooltip>
             </LabelInfoWrapper>
-            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={passwordLoginOptions.find((o) => o.value === settings.password_login)} onChange={handleSelect} options={passwordLoginOptions} />
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={passwordLoginOptions.find((o) => o.value === settings.password_login)}
+              onChange={handleSelect}
+              options={passwordLoginOptions}
+            />
           </div>
           <div>
             <LabelInfoWrapper>
@@ -310,7 +317,14 @@ const LoginSettingsBody = () => {
                 <SvgIconFeather icon="info" />
               </Tooltip>
             </LabelInfoWrapper>
-            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={googleOptions.find((o) => o.value === settings.google_login)} onChange={handleSelect} options={googleOptions} />
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={googleOptions.find((o) => o.value === settings.google_login)}
+              onChange={handleSelect}
+              options={googleOptions}
+            />
           </div>
           <div>
             <LabelInfoWrapper>
@@ -319,7 +333,14 @@ const LoginSettingsBody = () => {
                 <SvgIconFeather icon="info" />
               </Tooltip>
             </LabelInfoWrapper>
-            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={magicOptions.find((o) => o.value === settings.magic_link)} onChange={handleSelect} options={magicOptions} />
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={magicOptions.find((o) => o.value === settings.magic_link)}
+              onChange={handleSelect}
+              options={magicOptions}
+            />
           </div>
           <div>
             <LabelInfoWrapper>
@@ -328,7 +349,14 @@ const LoginSettingsBody = () => {
                 <SvgIconFeather icon="info" />
               </Tooltip>
             </LabelInfoWrapper>
-            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={signUpOptions.find((o) => o.value === settings.sign_up)} onChange={handleSelect} options={signUpOptions} />
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={signUpOptions.find((o) => o.value === settings.sign_up)}
+              onChange={handleSelect}
+              options={signUpOptions}
+            />
           </div>
 
           {settings.sign_up && (
@@ -350,6 +378,7 @@ const LoginSettingsBody = () => {
                 onInputChange={handleDomainInputChange}
                 formatCreateLabel={formatCreateLabel}
                 isSearchable
+                className={"react-select-container"}
                 classNamePrefix="react-select"
                 placeholder="Domain..."
               />
@@ -363,7 +392,14 @@ const LoginSettingsBody = () => {
                 <SvgIconFeather icon="info" />
               </Tooltip>
             </LabelInfoWrapper>
-            <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={translationOptions.find((o) => o.value === settings.custom_translation)} onChange={handleSelect} options={translationOptions} />
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={translationOptions.find((o) => o.value === settings.custom_translation)}
+              onChange={handleSelect}
+              options={translationOptions}
+            />
           </div>
 
           <div className="mt-2">
@@ -373,10 +409,8 @@ const LoginSettingsBody = () => {
           </div>
         </>
       )}
-      
-      <div>
-     
-      </div>
+
+      <div></div>
     </Wrapper>
   );
 };

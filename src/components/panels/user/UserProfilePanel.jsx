@@ -104,7 +104,7 @@ const Wrapper = styled.div`
     }
     :hover {
       svg {
-        color: #7a1b8b;
+        color: ${({ theme }) => theme.colors.primary};
       }
     }
     .dark & {

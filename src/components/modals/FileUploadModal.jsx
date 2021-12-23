@@ -16,6 +16,39 @@ import { FolderSelect } from "../forms";
 import _ from "lodash";
 import axios from "axios";
 
+const ModalWrapper = styled(Modal)`
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
   width: 100%;
@@ -730,7 +763,7 @@ const FileUploadModal = (props) => {
   const { modules } = useQuillModules({ mode: mode, mentionOrientation: "bottom", quillRef: reactQuillRef, members, setImageLoading, setInlineImages });
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={"lg"} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.fileUpload}</ModalHeaderSection>
       <ModalBody>
         <DescriptionInputWrapper>
@@ -768,7 +801,7 @@ const FileUploadModal = (props) => {
           {dictionary.upload}
         </Button>
       </StyledModalFooter>
-    </Modal>
+    </ModalWrapper>
   );
 };
 
