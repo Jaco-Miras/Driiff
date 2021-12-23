@@ -9,6 +9,38 @@ import { SvgIconFeather } from "../common";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import styled from "styled-components";
 
+const ModalWrapper = styled(Modal)`
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 const MoreMemberButton = styled.span`
   cursor: pointer;
   display: flex;
@@ -262,7 +294,7 @@ const InvitedUsersModal = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"xl"} centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={"xl"} centered>
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
         {dictionary.userInvitations}
       </ModalHeaderSection>
@@ -360,10 +392,10 @@ const InvitedUsersModal = (props) => {
       )}
       {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalFooter>
-          <Button outline color="secondary" onClick={toggle}>
+          <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {cancelText}
           </Button>
-          <Button color="primary" onClick={handleConfirm}>
+          <Button className="btn btn-primary" color="primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {submitText}
           </Button>{" "}
@@ -375,13 +407,13 @@ const InvitedUsersModal = (props) => {
             <div>{dictionary.availableToAdmin}</div>
           </ModalBody>
           <ModalFooter>
-            <Button outline color="secondary" onClick={toggle}>
+            <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
               {dictionary.closeButton}
             </Button>
           </ModalFooter>
         </>
       )}
-    </Modal>
+    </ModalWrapper>
   );
 };
 

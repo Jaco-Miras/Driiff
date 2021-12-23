@@ -14,7 +14,7 @@ import {
   FileUploadModal,
   InvitedUsersModal,
   MoveFilesModal,
-  PostSnoozeModal,
+  //PostSnoozeModal,
   SingleInputModal,
   TodoReminderModal,
   ReleaseModal,
@@ -78,8 +78,8 @@ const ModalPanel = () => {
             return <CreateWorkspaceFolderModal key={modal.type} data={modal} />;
           case "workspace_create_edit":
             return <CreateEditWorkspaceModal key={modal.type} data={modal} />;
-          case "snooze_post":
-            return <PostSnoozeModal key={modal.type} data={modal} />;
+          // case "snooze_post":
+          //   return <PostSnoozeModal key={modal.type} data={modal} />;
           case "driff_invite_users":
             return <InvitedUsersModal key={modal.type} data={modal} />;
           case "single_input":
