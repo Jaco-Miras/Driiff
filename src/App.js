@@ -64,6 +64,8 @@ const Wrapper = styled.div`
   .channel-list .feather-eye-off,
   .fav-channel .feather-eye,
   .fav-channel .feather-eye-off,
+  .chat-header-icon .feather-eye,
+  .chat-header-icon .feather-eye-off,
   .feather-eye,
   .feather-eye-off {
     color: ${(props) => props.theme.colors.primary};
@@ -108,10 +110,6 @@ const Wrapper = styled.div`
     }
   }
 
-  label.custom-control-label::before {
-    background-color: ${(props) => props.theme.colors.primary};
-  }
-
   .form-control {
     :focus {
       border-color: ${(props) => props.theme.colors.primary} !important;
@@ -146,22 +144,29 @@ const Wrapper = styled.div`
   }
 
   .more-options:hover {
-    color: ${(props) => props.theme.colors.primary};
+    color: ${(props) => props.theme.colors.primary} !important;
     border: 1px solid ${(props) => props.theme.colors.primary} !important;
+    border-color: ${(props) => props.theme.colors.primary} !important;
   }
 
   .more-options svg:hover {
     color: ${(props) => props.theme.colors.primary};
   }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
 
-  .modal & {
-    .btn.btn-primary {
-      background-color: ${({ theme }) => theme.colors.primary}!important;
-      border-color: ${({ theme }) => theme.colors.primary}!important;
-    }
-    input.form-control:focus {
-      border-color: ${({ theme }) => theme.colors.primary};
-    }
+  .chat-right .quote-container {
+    background-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 

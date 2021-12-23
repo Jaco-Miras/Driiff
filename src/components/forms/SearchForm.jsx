@@ -26,6 +26,11 @@ const Wrapper = styled.form`
     height: 1rem;
     width: 1rem;
   }
+  .form-control {
+    :focus {
+      border-color: ${(props) => props.theme.colors.primary};
+    }
+  }
 `;
 
 const SearchForm = forwardRef((props, ref) => {
