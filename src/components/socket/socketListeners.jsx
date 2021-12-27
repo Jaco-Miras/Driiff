@@ -104,6 +104,7 @@ import {
   setNewDriffData,
   incomingZoomCreate,
   incomingZoomUserLeft,
+  incomingZoomEnded,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -271,6 +272,35 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".meeting-ended-notification", (e) => {
+        console.log(e, "meeting ended");
+        // const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingZoomEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
+      })
       .listen(".notification-read", (e) => {
         this.props.incomingReadNotifications(e);
       })
@@ -1644,9 +1674,6 @@ class SocketListeners extends Component {
         };
         this.props.incomingZoomUserLeft({ ...e, chat: chatMessage });
       })
-      .listen(".meeting-ended-notification", (e) => {
-        console.log(e, "meeting ended");
-      })
       .listen(".create-meeting-notification", (e) => {
         if (this.props.user.id !== e.host.id) {
           setTimeout(() => {
@@ -2357,6 +2384,7 @@ function mapDispatchToProps(dispatch) {
     incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
     incomingZoomCreate: bindActionCreators(incomingZoomCreate, dispatch),
     incomingZoomUserLeft: bindActionCreators(incomingZoomUserLeft, dispatch),
+    incomingZoomEnded: bindActionCreators(incomingZoomEnded, dispatch),
   };
 }
 
