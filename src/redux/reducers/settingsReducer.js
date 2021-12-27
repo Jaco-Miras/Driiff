@@ -2,6 +2,15 @@ import momentTZ from "moment-timezone";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
+  origTheme: {
+    colors: {
+      primary: "#7a1b8b",
+      secondary: "#8c3b9b",
+      third: "#3f034a",
+      fourth: "#4d075a",
+      fifth: "#FFC856",
+    },
+  },
   sessionUser: null,
   driff: {
     i18n: 1605864545,
@@ -166,6 +175,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_DRIFF_SETTINGS_SUCCESS": {
       let driff = state.driff;
+      let origTheme = state.origTheme;
 
       for (const index in action.data) {
         if (action.data.hasOwnProperty(index)) {
@@ -222,6 +232,12 @@ export default (state = INITIAL_STATE, action) => {
                   },
                 },
               };
+              origTheme = {
+                colors: {
+                  ...driff.theme.colors,
+                  ...JSON.parse(value),
+                },
+              };
 
               break;
             }
@@ -237,6 +253,7 @@ export default (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
+        origTheme: origTheme,
         driff: {
           ...driff,
           isSettingsLoaded: true,
@@ -446,7 +463,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         driff: {
           ...state.driff,
-          theme: { colors: action.data.colors },
+          theme: { colors: { ...state.driff.theme.colors, ...action.data.colors } },
         },
       };
     }
