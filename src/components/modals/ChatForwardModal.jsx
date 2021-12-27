@@ -21,12 +21,6 @@ const IconButton = styled(SvgIconFeather)`
   padding: 10px;
   border-radius: 8px;
   background: ${({ theme }) => theme.colors.primary};
-
-  // &.feather-send {
-  //     border: 1px solid #7a1b8b;
-  //     background-color: #7a1b8b;
-  //     color: #fff;
-  // }
 `;
 
 const PopUpBody = styled.div`
@@ -60,11 +54,11 @@ const StlyedList = styled.li`
     color: ${({ theme }) => theme.colors.primary};
     font-weight: 600;
     .channel-icon {
-      border: ${(props) => (props.chosen ? "2px solid #972c86" : "1px solid #972c86")};
+      border: ${(props) => (props.chosen ? `2px solid ${props.theme.colors.primary}` : `1px solid ${props.theme.colors.primary}`)};
     }
   }
   .channel-icon {
-    border: ${(props) => (props.chosen ? "2px solid #972c86" : "1px solid #ddd")};
+    border: ${(props) => (props.chosen ? `2px solid ${props.theme.colors.primary}` : "1px solid #ddd")};
   }
 `;
 

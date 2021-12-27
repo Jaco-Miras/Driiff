@@ -49,7 +49,7 @@ const Wrapper = styled.li`
     position: relative;
     padding: 0 1rem;
     color: #868686;
-    border-left: 4px solid #972c86;
+    border-left: 4px solid ${(props) => props.theme.colors.primary};
 
     // &:before {
     //   border: 10px solid #0000;
@@ -345,7 +345,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

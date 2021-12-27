@@ -91,18 +91,6 @@ const ChatInputContainer = styled.div`
       color: ${({ theme }) => theme.colors.primary};
     }
   }
-  .feather-meet {
-    background: transparent;
-    border-color: transparent;
-    transition: color 0.15s ease-in-out;
-    //color: #cacaca;
-    &.active {
-      color: #7a1b8b;
-    }
-    &:hover {
-      color: #7a1b8b;
-    }
-  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -111,7 +99,7 @@ const Icon = styled(SvgIconFeather)`
 
 const Dflex = styled.div`
   .feather-send {
-    ${(props) => props.activeSend && "background: #7a1b8b !important;"}
+    ${(props) => props.activeSend && `background: ${props.theme.colors.primary} !important;`}
     fill: ${(props) => (props.activeSend ? "#fff" : "#cacaca")};
     &:hover {
       cursor: ${(props) => (props.activeSend ? "cursor" : "default")};
@@ -147,7 +135,7 @@ const Dflex = styled.div`
     }
     .channel-action {
       button {
-        background: #7a1b8b;
+        background: ${(props) => props.theme.colors.primary};
         color: #fff;
         border: none;
         padding: 8px 15px;

@@ -96,7 +96,7 @@ const Wrapper = styled.li`
   }
   .feather {
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
   .post-partialBody {

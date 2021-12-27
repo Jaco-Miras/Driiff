@@ -132,7 +132,7 @@ const BackButton = styled.div`
   @media (min-width: 992px) {
     display: none;
   }
-  color: #7a1b8b;
+  color: ${(props) => props.theme.colors.primary};
   cursor: pointer;
   transition: color 0.15s ease-in-out;
   margin-right: 12px;
@@ -141,19 +141,13 @@ const BackButton = styled.div`
   span {
     line-height: 1.7;
   }
-  &:hover {
-    color: #7a1b8bcc;
-  }
 `;
 
 const BackButtonChevron = styled(SvgIconFeather)`
-  color: #7a1b8b;
+  color: ${(props) => props.theme.colors.primary};
   height: 24px;
   width: 24px;
   transition: color 0.15s ease-in-out;
-  &:hover {
-    color: #7a1b8bcc;
-  }
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
@@ -164,7 +158,7 @@ const StyledMoreOptions = styled(MoreOptions)`
   justify-content: center;
   &:hover {
     cursor: pointer;
-    border: 1px solid #972c86 !important;
+    border: ${(props) => `1px solid ${props.theme.colors.primary}`} !important;
   }
   .dark & {
     border: 1px solid #25282c !important;

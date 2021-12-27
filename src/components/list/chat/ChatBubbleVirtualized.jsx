@@ -215,7 +215,7 @@ const ChatMessageFiles = styled(MessageFiles)`
       }
 
       &:hover {
-        color: #972c86;
+        color: ${(props) => props.theme.colors.primary};
 
         img.component-svg-image {
           filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#fff").filter : hexToCSSFilter("#0056b3").filter)};
@@ -496,7 +496,7 @@ const ChatBubbleVirtualized = (props) => {
 
   const handleQuoteContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -505,7 +505,7 @@ const ChatBubbleVirtualized = (props) => {
 
   const handleContentRef = (e) => {
     if (e) {
-      const googleLinks = e.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = e.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

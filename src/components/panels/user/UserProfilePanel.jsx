@@ -64,12 +64,12 @@ const Wrapper = styled.div`
       .input-group-text {
         border: 1px solid #e1e1e1;
         background: #fff;
-        color: #7a1b8b;
+        color: ${(props) => props.theme.colors.primary};
       }
     }
     .input-group-text {
-      border: 1px solid #7a1b8b;
-      background: #7a1b8b;
+      border: 1px solid #${(props) => props.theme.colors.primary};
+      background: ${(props) => props.theme.colors.primary};
       color: #fff;
     }
     svg {

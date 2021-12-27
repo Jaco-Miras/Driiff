@@ -18,7 +18,7 @@ const Wrapper = styled.div`
         content: "";
         width: 3px;
         height: 100%;
-        background: #7a1b8b;
+        background: ${(props) => props.theme.colors.primary};
         display: block;
         position: absolute;
         top: 0;

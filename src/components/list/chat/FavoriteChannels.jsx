@@ -60,7 +60,7 @@ const Wrapper = styled.div`
     right: 0;
     background-color: #fff;
     border: 2px solid #fff;
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
     .dark & {
       background-color: #191c20;
       color: #fff;
@@ -116,7 +116,7 @@ const ChannelWrapper = styled.div`
 `;
 
 const Badge = styled.div`
-  background: #7a1b8b;
+  background: ${(props) => props.theme.colors.primary};
   color: #fff !important;
   min-height: 18px;
   padding: 0;
@@ -131,7 +131,7 @@ const Badge = styled.div`
   height: 18px;
   font-size: 11px;
   &.unread {
-    color: #7a1b8b !important;
+    color: ${(props) => props.theme.colors.primary} !important;
     display: none;
   }
 `;

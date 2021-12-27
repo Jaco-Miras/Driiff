@@ -7,12 +7,6 @@ const MembersListContainer = styled.div`
   .people-list {
     right: 0;
   }
-  // .TEAM > div:first-child {
-  //   background-color: #7a1b8b;
-  //   .feather {
-  //     color: #fff;
-  //   }
-  // }
 `;
 
 const StyledAvatar = styled(Avatar)`

@@ -19,7 +19,7 @@ const Section = styled.section`
   .click-cancel-drop {
     .dark & {
       background: #fff;
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 `;

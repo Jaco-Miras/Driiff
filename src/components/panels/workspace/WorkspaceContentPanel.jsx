@@ -32,7 +32,7 @@ const Wrapper = styled.div`
     height: 45vw;
 
     .spinner-border {
-      color: #5b1a67;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 `;

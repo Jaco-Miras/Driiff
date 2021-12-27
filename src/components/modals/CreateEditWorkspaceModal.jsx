@@ -174,7 +174,6 @@ const SelectPeople = styled(PeopleSelect)`
   flex: 1 0 0;
   width: 1%;
   .react-select__control--menu-is-open {
-    //border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .react-select__option {
@@ -192,7 +191,6 @@ const SelectPeople = styled(PeopleSelect)`
     }
   }
   .react-select__control--is-focused {
-    //border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .has-not-accepted .react-select__multi-value__label {

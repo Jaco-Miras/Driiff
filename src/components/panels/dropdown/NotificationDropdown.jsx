@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   }
 
   .notification-title-wrapper {
-    background: #7a1b8b;
+    background: ${(props) => props.theme.colors.primary};
     color: #fff;
   }
 `;

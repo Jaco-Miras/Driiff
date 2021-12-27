@@ -121,7 +121,7 @@ const FileIcon = styled(SvgIconFeather)`
   transition: color 0.15s ease-in-out;
 
   &:hover {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 const getSlug = () => {

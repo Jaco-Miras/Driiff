@@ -57,7 +57,7 @@ const MultiValueWrapper = styled.div`
       display: none;
     }
     > div:last-child:hover {
-      background-color: ${(props) => (props.isPrivate ? "#1E90FF" : "#7a1b8b")};
+      background-color: ${(props) => (props.isPrivate ? "#1E90FF" : props.theme.colors.primary)};
       color: #fff;
     }
     display: flex;
@@ -70,7 +70,7 @@ const MultiValueWrapper = styled.div`
     :hover {
       // background-color: rgb(255, 189, 173);
       // color: rgb(222, 53, 11);
-      background-color: ${(props) => (props.isPrivate ? "#1E90FF" : "#7a1b8b")};
+      background-color: ${(props) => (props.isPrivate ? "#1E90FF" : props.theme.colors.primary)};
       color: #fff;
     }
   }

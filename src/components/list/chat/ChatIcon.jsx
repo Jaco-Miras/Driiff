@@ -33,7 +33,7 @@ const Badge = styled.span`
   justify-content: center;
   line-height: 0;
   &.unread {
-    color: #7a1b8b !important;
+    color: ${(props) => props.theme.colors.primary} !important;
     display: none;
   }
 `;

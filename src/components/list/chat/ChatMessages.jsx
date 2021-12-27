@@ -169,12 +169,6 @@ const ChatBubbleContainer = styled.div`
             }
         `};
   }
-  // .more-options:hover {
-  //   border: 1px solid #972c86 !important;
-  //   svg {
-  //     color: #972c86;
-  //   }
-  // }
   .dark & {
     &:before {
       display: none;

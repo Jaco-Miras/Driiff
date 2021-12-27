@@ -65,7 +65,7 @@ const ResultItem = styled.li`
   }
   div.chat-search-body span {
     font-weight: 600;
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
     .dark & {
       color: #fff;
     }

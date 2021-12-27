@@ -119,7 +119,7 @@ const Dflex = styled.div`
     }
     .channel-action {
       button {
-        background: #7a1b8b;
+        background: ${(props) => props.theme.colors.primary};
         color: #fff;
         border: none;
         padding: 8px 15px;
@@ -147,7 +147,7 @@ const NoReply = styled.div`
     text-align: center;
   }
   .request-approval {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 

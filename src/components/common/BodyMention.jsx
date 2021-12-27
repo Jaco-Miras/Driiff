@@ -13,7 +13,7 @@ const BodyMentionDiv = styled.div`
     background: #191c20;
   }
   .mention-name {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
   }
   button {
     margin-right: 10px;
