@@ -223,9 +223,9 @@ function StylingSettingsBody() {
             </button>
           )}
         </div>
-        <h4>Styling</h4>
-        <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
-        <p>New theme colors: primary: "#29323F", secondary: "#4E5D72", third: "#192536", fourth: "#29323F", fifth: "#FFC856"</p>
+        <h4 className="mt-3">Styling</h4>
+        {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
+        <p>New theme colors: primary: "#29323F", secondary: "#4E5D72", third: "#192536", fourth: "#29323F", fifth: "#FFC856"</p> */}
         <ColorInputWrapper>
           <span>
             Add your primary color (current:{" "}
@@ -273,7 +273,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your Third color - sidebar logo bg color (current:{" "}
+            Add your third color - sidebar logo bg color (current:{" "}
             <ColorSpan color={theme.colors.third}>
               {theme.colors.third}
               {showColorPicker.third && (
@@ -295,7 +295,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your Fourth color - sidebar color (current:{" "}
+            Add your fourth color - sidebar color (current:{" "}
             <ColorSpan color={theme.colors.fourth}>
               {theme.colors.fourth}
               {showColorPicker.fourth && (
