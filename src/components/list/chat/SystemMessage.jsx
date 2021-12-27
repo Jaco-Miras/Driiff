@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage, useZoomActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -92,6 +94,7 @@ const SystemMessage = (props) => {
   const messageRef = useRef();
   const history = useHistory();
   const params = useParams();
+  const dispatch = useDispatch();
 
   const componentIsMounted = useRef(true);
   const [generatingSignature, setGeneratingSignature] = useState(false);
@@ -115,18 +118,28 @@ const SystemMessage = (props) => {
   const handleZoomLink = (e) => {
     e.preventDefault();
     if (reply.body.startsWith("ZOOM_MEETING::{") && !generatingSignature) {
-      setGeneratingSignature(true);
-      const data = JSON.parse(reply.body.replace("ZOOM_MEETING::", ""));
-      let payload = {
-        meetingNumber: data.meetingNumber,
-        role: 0,
-        password: data.password,
-        channel_id: selectedChannel.id,
-      };
-      const cb = () => {
-        if (componentIsMounted.current) setGeneratingSignature(false);
-      };
-      zoomActions.generateSignature(payload, cb);
+      const meetingSDKELement = document.getElementById("meetingSDKElement");
+      const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+      if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+        let modalPayload = {
+          type: "zoom_inprogress",
+        };
+
+        dispatch(addToModals(modalPayload));
+      } else {
+        setGeneratingSignature(true);
+        const data = JSON.parse(reply.body.replace("ZOOM_MEETING::", ""));
+        let payload = {
+          meetingNumber: data.meetingNumber,
+          role: 0,
+          password: data.password,
+          channel_id: selectedChannel.id,
+        };
+        const cb = () => {
+          if (componentIsMounted.current) setGeneratingSignature(false);
+        };
+        zoomActions.generateSignature(payload, cb);
+      }
     }
 
     return false;

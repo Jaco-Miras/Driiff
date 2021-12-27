@@ -30,3 +30,4 @@ export { default as CreateEditTeamModal } from "./CreateEditTeamModal";
 export { default as AddToTeamModal } from "./AddToTeamModal";
 export { default as ZoomInviteModal } from "./ZoomInviteModal";
 export { default as WIPModal } from "./WIPModal";
+export { default as ZoomMeetingInProgress } from "./ZoomMeetingInProgress";
