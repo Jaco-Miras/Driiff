@@ -95,6 +95,9 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
     } else if (reply.body.startsWith("LEFT_MEETING::")) {
       const data = JSON.parse(reply.body.replace("LEFT_MEETING::", ""));
       parseBody = `<div><b>${data.participant.name}</b> has left the meeting</div>`;
+    } else if (reply.body.startsWith("MEETING_ENDED::")) {
+      const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
+      parseBody = `<div><b>${data.host.name}</b> has ended the meeting</div>`;
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       parseBody = renderToString(channelUpdateMessage);
     }

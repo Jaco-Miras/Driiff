@@ -291,3 +291,7 @@ export function incomingZoomUserLeft(payload, callback) {
 export function incomingZoomCreate(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ZOOM_CREATE", payload, callback);
 }
+
+export function incomingZoomEnded(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ZOOM_ENDED", payload, callback);
+}
