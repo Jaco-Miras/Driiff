@@ -34,7 +34,7 @@ const UserListPopUpContainer = styled.div`
 
     &:hover {
       span {
-        color: #972c86;
+        color: ${(props) => props.theme.colors.primary};
       }
     }
     &:last-child {

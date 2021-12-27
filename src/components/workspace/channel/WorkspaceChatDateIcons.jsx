@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { useTimeFormat } from "../../hooks";
 
 const Wrapper = styled.div`
   display: ${(props) => (props.optionsVisible ? "none" : "initial")};
@@ -25,14 +24,13 @@ const Badge = styled.span`
   color: #fff !important;
 
   &.unread {
-    color: #7a1b8b !important;
+    color: ${(props) => props.theme.colors.primary} !important;
     display: none;
   }
 `;
 
 const WorkspaceChatDateIcons = (props) => {
   const { workspace, optionsVisible } = props;
-  const { channelPreviewDate } = useTimeFormat();
 
   const handleNotificationBadges = () => {
     if (workspace.is_read === 0) {

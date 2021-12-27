@@ -243,7 +243,7 @@ const MoreOption = styled.div`
   cursor: pointer;
   // margin-bottom: 5px;
   &:hover {
-    color: #972c86;
+    color: ${(props) => props.theme.colors.primary};
   }
   @media all and (max-width: 480px) {
     margin-top: 40px;

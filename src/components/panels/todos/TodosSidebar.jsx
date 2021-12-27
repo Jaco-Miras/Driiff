@@ -58,7 +58,7 @@ const TodosSidebar = (props) => {
         <div className="app-sidebar-menu" tabIndex="1">
           <div className="list-group list-group-flush">
             <Filter onClick={setFilter} data-filter="" active={filter === ""} className={"list-group-item d-flex align-items-center"}>
-              <span className="text-secondary fa fa-circle mr-2" />
+              <span className="text-primary fa fa-circle mr-2" />
               {dictionary.statusAll}
               {count && count.all > 0 && <span className="small ml-auto">{count.all}</span>}
             </Filter>

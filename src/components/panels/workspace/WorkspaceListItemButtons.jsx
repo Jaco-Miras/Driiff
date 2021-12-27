@@ -15,7 +15,7 @@ const Icon = styled(SvgIconFeather)`
     fill: rgb(255, 193, 7);
   }
   :hover {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
     cursor: pointer;
     &.favorite {
       color: rgb(255, 193, 7);

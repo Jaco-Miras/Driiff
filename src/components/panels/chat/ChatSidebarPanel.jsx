@@ -24,9 +24,9 @@ const Wrapper = styled.div`
           background-color: #fafafa;
           margin-bottom: 4px;
           &.active {
-            background-color: #7a1b8b;
+            background-color: ${(props) => props.theme.colors.primary};
             color: #ffffff;
-            border-color: #7a1b8b;
+            border-color: ${(props) => props.theme.colors.primary};
           }
         }
       }
@@ -108,8 +108,8 @@ const StyledMoreOptions = styled(MoreOptions)`
   justify-content: center;
   &:hover {
     cursor: pointer;
-    color: #972c86;
-    border: 1px solid #972c86 !important;
+    color: ${(props) => props.theme.colors.primary};
+    border: ${(props) => `1px solid ${props.theme.colors.primary}`} !important;
   }
   .dark & {
     border: 1px solid #25282c;

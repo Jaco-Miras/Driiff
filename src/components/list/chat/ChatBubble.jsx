@@ -191,44 +191,6 @@ const QuoteContent = styled.div`
   }
 `;
 
-// const ChatMessageFiles = styled(MessageFiles)`
-//   img {
-//     cursor: pointer;
-//   }
-//   a {
-//     font-weight: bold;
-//     cursor: pointer;
-//   }
-//   .reply-file-item {
-//     display: block;
-//     font-weight: bold;
-
-//     // &.component-image-text-link {
-//     //   img.component-svg-image {
-//     //     display: inline-block;
-//     //     width: 20px;
-//     //     height: 20px;
-//     //     margin-right: 5px;
-//     //     filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#ffffff").filter : hexToCSSFilter("#8C3B9B").filter)};
-//     //   }
-
-//     //   &:hover {
-//     //     color: #972c86;
-
-//     //     img.component-svg-image {
-//     //       filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#fff").filter : hexToCSSFilter("#0056b3").filter)};
-//     //     }
-//     //   }
-//     // }
-
-//     &.file-only {
-//       img {
-//         width: 52.5px;
-//         height: 52.5px;
-//       }
-//     }
-//   }
-// `;
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
   padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
@@ -241,38 +203,11 @@ const ReplyContent = styled.span`
   a {
     cursor: pointer;
     color: ${(props) => (props.isAuthor ? "#ffffff" : props.theme.colors.primary)};
-    //color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
     text-decoration: underline;
-
-    // &.gdrive-link {
-    //   text-decoration: none;
-
-    //   .link {
-    //     @media (max-width: 1580px) {
-    //       max-width: 20vw;
-    //     }
-    //     @media (max-width: 1480px) {
-    //       max-width: 14vw;
-    //     }
-    //     @media (max-width: 1380px) {
-    //       max-width: 5vw;
-    //     }
-    //     @media (max-width: 991.99px) {
-    //       max-width: 350px;
-    //     }
-    //     @media (max-width: 822px) {
-    //       max-width: 20vw;
-    //     }
-    //   }
-    //   .preview-text {
-    //     font-weight: bold;
-    //     color: ${(props) => (props.isAuthor ? "#FFF" : "#828282")};
-    //   }
-    // }
 
     &:focus,
     &:hover {
-      color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff")};
+      color: ${(props) => (!props.isAuthor ? props.theme.colors.primary : "#ffffff")};
     }
     &.btn {
       border: 1px solid ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};

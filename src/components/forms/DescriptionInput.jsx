@@ -163,15 +163,6 @@ const IconButton = styled(SvgIconFeather)`
     background: ${({ theme }) => theme.colors.primary};
     color: #ffffff;
   }
-  &.feather-send {
-    border: 1px solid #7a1b8b;
-    background-color: #7a1b8b;
-    color: #fff;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    &:hover {
-      background-color: #8c3b9b;
-    }
-  }
 `;
 
 const DescriptionInputWrapper = styled.div`

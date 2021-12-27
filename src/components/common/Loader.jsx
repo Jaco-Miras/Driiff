@@ -6,7 +6,7 @@ const LoaderDiv = styled.div`
   width: 2rem;
   height: 2rem;
   vertical-align: text-bottom;
-  border: 0.25em solid #7a1b8b;
+  border: ${(props) => `0.25em solid ${props.theme.colors.primary}`};
   border-right-color: transparent;
   border-radius: 50%;
   animation: spin 0.75s linear infinite;

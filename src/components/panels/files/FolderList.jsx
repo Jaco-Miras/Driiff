@@ -14,9 +14,9 @@ const Wrapper = styled.li`
   > a {
     position: relative;
     font-weight: ${(props) => (props.selected ? "bold" : "normal")};
-    color: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")};
+    color: ${(props) => (props.selected ? `${props.theme.colors.primary} !important` : "#64625C")};
     :hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 

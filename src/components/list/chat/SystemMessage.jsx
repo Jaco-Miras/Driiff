@@ -29,8 +29,8 @@ const SystemMessageContainer = styled.span`
       top: -7px;
       bottom: 0;
       width: 6px;
-      height: calc(100% - 12px);
-      background: linear-gradient(180deg, rgba(106, 36, 126, 1) 0%, rgba(216, 64, 113, 1) 100%);
+      height: calc(100% - 5px);
+      background: ${(props) => `linear-gradient(180deg, ${props.theme.colors.primary} 0%, ${props.theme.colors.secondary} 100%)`};
       content: "";
       border-radius: 6px 0 0 6px;
     }
