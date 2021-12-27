@@ -1676,13 +1676,19 @@ class SocketListeners extends Component {
       })
       .listen(".create-meeting-notification", (e) => {
         if (this.props.user.id !== e.host.id) {
-          setTimeout(() => {
-            this.props.addToModals({
-              ...e,
-              type: "zoom_invite",
-            });
-            this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
-          }, 2000);
+          const meetingSDKELement = document.getElementById("meetingSDKElement");
+          const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+          if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+            return;
+          } else {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          }
         }
       })
       .listen(".workspace-active", (e) => {

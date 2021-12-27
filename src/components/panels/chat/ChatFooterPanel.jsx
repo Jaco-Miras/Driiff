@@ -12,7 +12,7 @@ import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
-import { replaceChar } from "../../../helpers/stringFormatter";
+//import { replaceChar } from "../../../helpers/stringFormatter";
 import { ChatInputButtons } from "./index";
 //import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 
@@ -367,18 +367,28 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleZoomMeet = () => {
-    let modalPayload = {
-      type: "confirmation",
-      cancelText: dictionary.no,
-      headerText: dictionary.zoomMeeting,
-      submitText: dictionary.yes,
-      bodyText: dictionary.zoomMeetingConfirmation,
-      actions: {
-        onSubmit: handleStartZoomMeeting,
-      },
-    };
+    const meetingSDKELement = document.getElementById("meetingSDKElement");
+    const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+    if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+      let modalPayload = {
+        type: "zoom_inprogress",
+      };
 
-    dispatch(addToModals(modalPayload));
+      dispatch(addToModals(modalPayload));
+    } else {
+      let modalPayload = {
+        type: "confirmation",
+        cancelText: dictionary.no,
+        headerText: dictionary.zoomMeeting,
+        submitText: dictionary.yes,
+        bodyText: dictionary.zoomMeetingConfirmation,
+        actions: {
+          onSubmit: handleStartZoomMeeting,
+        },
+      };
+
+      dispatch(addToModals(modalPayload));
+    }
   };
 
   return (
