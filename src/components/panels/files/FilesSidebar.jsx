@@ -59,6 +59,9 @@ const Filter = styled.span`
           animation: fadeIn 0.15s linear;
           left: 0;
         }
+        .dark & {
+          color: ${props.theme.colors.third};
+        }
     `}
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);

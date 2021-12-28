@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../../common";
-import { CompanyFolderList } from "./index";
+//import { CompanyFolderList } from "./index";
 import { GoogleDrive } from "./../index";
 import { ProgressBar } from "../../common";
 import { useTranslationActions } from "../../../hooks";
@@ -58,6 +58,9 @@ const Filter = styled.span`
           top: 0;
           animation: fadeIn 0.15s linear;
           left: 0;
+        }
+        .dark & {
+          color: ${props.theme.colors.third};
         }
     `}
 
