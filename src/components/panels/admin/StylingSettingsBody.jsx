@@ -73,6 +73,14 @@ function StylingSettingsBody() {
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
     customTranslationInfo: _t("SETTINGS.CUSTOM_TRANSLATION_INFO", "Use custom translation"),
     toasterUpdateLoginError: _t("TOASTER.UPDATE_LOGIN_SETTINGS_ERROR", "Error updating login settings"),
+    toasterStylingSuccess: _t("TOASTER.UPDATE_STYLING_SUCCESS", "Successfully updated styling"),
+    primaryLabel: _t("LABEL.PRIMARY_COLOR", "Primary color"),
+    secondaryLabel: _t("LABEL.SECONDARY_COLOR", "Secondary color"),
+    thirdLabel: _t("LABEL.TERTIARY_COLOR", "Tertiary color"),
+    fourthLabel: _t("LABEL.CTA_COLOR", "CTA color"),
+    fifthLabel: _t("LABEL.FIFTH_COLOR", "Sidebar logo background color"),
+    submitBtn: _t("BTN.SUBMIT", "Submit"),
+    resetPreviewBtn: _t("BTN.RESET_PREVIEW", "Reset preview"),
   };
 
   const iconDropZone = useRef(null);
@@ -169,7 +177,12 @@ function StylingSettingsBody() {
       ...settings,
       themes: JSON.stringify(theme.colors),
     };
-    dispatch(putLoginSettings(payload));
+    dispatch(
+      putLoginSettings(payload, (err, res) => {
+        if (err) return;
+        toast.success(dictionary.toasterStylingSuccess);
+      })
+    );
     dispatch(updateThemeColors({ colors: colors }));
   };
 
@@ -228,7 +241,7 @@ function StylingSettingsBody() {
         <p>New theme colors: primary: "#29323F", secondary: "#4E5D72", third: "#192536", fourth: "#29323F", fifth: "#FFC856"</p> */}
         <ColorInputWrapper>
           <span>
-            Add your primary color (current:{" "}
+            {dictionary.primaryLabel} (current:{" "}
             <ColorSpan color={theme.colors.primary}>
               {theme.colors.primary}
               {showColorPicker.primary && (
@@ -251,7 +264,7 @@ function StylingSettingsBody() {
 
         <ColorInputWrapper>
           <span>
-            Add your secondary color (current:{" "}
+            {dictionary.secondaryLabel} (current:{" "}
             <ColorSpan color={theme.colors.secondary}>
               {theme.colors.secondary}
               {showColorPicker.secondary && (
@@ -273,7 +286,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your third color (current:{" "}
+            {dictionary.thirdLabel} (current:{" "}
             <ColorSpan color={theme.colors.third}>
               {theme.colors.third}
               {showColorPicker.third && (
@@ -295,7 +308,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your fourth color - guest color (current:{" "}
+            {dictionary.fourthLabel} (current:{" "}
             <ColorSpan color={theme.colors.fourth}>
               {theme.colors.fourth}
               {showColorPicker.fourth && (
@@ -317,7 +330,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your fifth color - sidebar logo bg color (current:{" "}
+            {dictionary.fifthLabel} (current:{" "}
             <ColorSpan color={theme.colors.fifth}>
               {theme.colors.fifth}
               {showColorPicker.fifth && (
@@ -340,13 +353,13 @@ function StylingSettingsBody() {
 
         <div className="d-flex align-items-center">
           <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSubmit}>
-            Submit
+            {dictionary.submitBtn}
           </SubmitButton>
           {/* <SubmitButton className="btn btn-primary mr-2" onClick={handlePreviewTheme}>
             Preview
           </SubmitButton> */}
           <SubmitButton className="btn btn-primary" onClick={handleResetPreview}>
-            Reset preview
+            {dictionary.resetPreviewBtn}
           </SubmitButton>
         </div>
       </Wrapper>
