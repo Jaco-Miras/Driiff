@@ -135,6 +135,7 @@ export default (state = INITIAL_STATE, action) => {
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
       let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
       let domains = state.driff.domains;
+      let logo = state.driff.logo;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -143,6 +144,7 @@ export default (state = INITIAL_STATE, action) => {
         if (s.domains) {
           domains = s.domains.split(",");
         }
+        if (s.logo) logo = s.logo;
 
         settings = { ...settings, ...s };
         if (s.custom_translation) {
@@ -170,6 +172,7 @@ export default (state = INITIAL_STATE, action) => {
           ANNOUNCEMENT_AT,
           READ_RELEASE_UPDATES,
           domains: domains,
+          logo: logo,
         },
       };
     }
