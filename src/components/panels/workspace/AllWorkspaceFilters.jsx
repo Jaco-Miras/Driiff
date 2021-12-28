@@ -16,6 +16,9 @@ const Wrapper = styled.ul`
       background-color: #111417 !important;
     }
   }
+  .text-external {
+    color: ${(props) => props.theme.colors.fourth};
+  }
 `;
 
 const AllWorkspaceFilters = (props) => {
