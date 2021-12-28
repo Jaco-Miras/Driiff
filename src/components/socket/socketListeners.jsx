@@ -1679,12 +1679,20 @@ class SocketListeners extends Component {
           const meetingSDKELement = document.getElementById("meetingSDKElement");
           const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
           if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
-            return;
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: true,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
           } else {
             setTimeout(() => {
               this.props.addToModals({
                 ...e,
                 type: "zoom_invite",
+                hideJoin: false,
               });
               this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
             }, 2000);
