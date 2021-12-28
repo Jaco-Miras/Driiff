@@ -91,6 +91,12 @@ const AppWrapper = styled.div`
     :after {
       background-color: ${({ theme }) => theme.colors.secondary}!important;
     }
+    .dark & {
+      color: ${({ theme }) => theme.colors.third}!important;
+      :after {
+        background-color: ${({ theme }) => theme.colors.secondary}!important;
+      }
+    }
   }
 
   .channel-list {
@@ -112,7 +118,7 @@ const AppWrapper = styled.div`
   .chat-date-icons {
     color: ${(props) => props.theme.colors.primary};
     .dark & {
-      color: ${(props) => props.theme.colors.fifth};
+      color: ${(props) => props.theme.colors.third};
     }
   }
 
