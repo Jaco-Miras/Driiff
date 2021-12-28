@@ -84,6 +84,10 @@ const Wrapper = styled.div`
    */
     animation-delay: 0.4s;
   }
+  .icon-driff-logo2 path {
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 const GuestLayout = (props) => {
@@ -193,7 +197,7 @@ const GuestLayout = (props) => {
   return (
     <Wrapper className="form-wrapper fadeIn">
       <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80" />
+        <SvgIcon icon={"driff-logo2"} width="110" height="80" />
       </div>
       {driffSettings.settings.maintenance_mode ? (
         <>

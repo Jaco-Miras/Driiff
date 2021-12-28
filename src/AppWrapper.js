@@ -106,7 +106,7 @@ const AppWrapper = styled.div`
   }
 
   .badge.badge-external {
-    background-color: ${(props) => props.theme.colors.fifth};
+    background-color: ${(props) => props.theme.colors.fourth};
   }
 
   .chat-date-icons {
