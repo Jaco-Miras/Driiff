@@ -273,7 +273,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your third color - sidebar logo bg color (current:{" "}
+            Add your third color (current:{" "}
             <ColorSpan color={theme.colors.third}>
               {theme.colors.third}
               {showColorPicker.third && (
@@ -295,7 +295,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your fourth color - sidebar color (current:{" "}
+            Add your fourth color - guest color (current:{" "}
             <ColorSpan color={theme.colors.fourth}>
               {theme.colors.fourth}
               {showColorPicker.fourth && (
@@ -317,7 +317,7 @@ function StylingSettingsBody() {
         </ColorInputWrapper>
         <ColorInputWrapper>
           <span>
-            Add your fifth color - guest color (current:{" "}
+            Add your fifth color - sidebar logo bg color (current:{" "}
             <ColorSpan color={theme.colors.fifth}>
               {theme.colors.fifth}
               {showColorPicker.fifth && (

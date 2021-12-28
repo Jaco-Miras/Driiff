@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     }
   }
   .text-primary {
-    color: ${(props) => props.theme.colors.third}!important;
+    color: ${(props) => props.theme.colors.primary}!important;
   }
 `;
 

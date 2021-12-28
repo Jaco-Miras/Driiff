@@ -4,11 +4,11 @@ import { $_GET } from "../../helpers/commonFunctions";
 const INITIAL_STATE = {
   origTheme: {
     colors: {
-      primary: "#7a1b8b",
-      secondary: "#8c3b9b",
-      third: "#3f034a",
-      fourth: "#4d075a",
-      fifth: "#FFC856",
+      primary: "#29323F",
+      secondary: "#4E5D72",
+      third: "#F1F2F6",
+      fourth: "#FBB800",
+      fifth: "#192536",
     },
   },
   sessionUser: null,
@@ -21,11 +21,11 @@ const INITIAL_STATE = {
     logo: "",
     theme: {
       colors: {
-        primary: "#7a1b8b",
-        secondary: "#8c3b9b",
-        third: "#3f034a",
-        fourth: "#4d075a",
-        fifth: "#FFC856",
+        primary: "#29323F",
+        secondary: "#4E5D72",
+        third: "#F1F2F6",
+        fourth: "#FBB800",
+        fifth: "#192536",
       },
     },
     settings: {
