@@ -26,6 +26,13 @@ const Wrapper = styled.div`
   }
 `;
 
+const DriffLogo = styled(SvgIcon)`
+  path {
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
+  }
+`;
+
 const DriffRegisterPanel = (props) => {
   const { className = "", setRegisteredDriff } = props;
   const { REACT_APP_localDNSName } = process.env;
@@ -145,7 +152,7 @@ const DriffRegisterPanel = (props) => {
   return (
     <Wrapper className={`driff-register-panel fadeIn form-wrapper ${className}`}>
       <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80" />
+        <DriffLogo icon={"driff-logo2"} width="110" height="80" />
       </div>
       <h5>{dictionary.yourDriff}</h5>
       <Form>

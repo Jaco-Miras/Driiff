@@ -55,10 +55,10 @@ const Wrapper = styled.div`
           font-size: 18px;
           height: 44px;
           font-weight: bold;
-          color: #4d075a;
+          color: ${(props) => props.theme.colors.primary};
           &:hover {
-            background-color: #7a1b8b;
-            border-color: #7a1b8b;
+            background-color: ${(props) => props.theme.colors.primary};
+            border-color: ${(props) => props.theme.colors.primary};
             color: #ffffff;
           }
         }
@@ -70,7 +70,7 @@ const Wrapper = styled.div`
           border-top: 0;
         }
         &.col-set-up {
-          background-color: #4d075a;
+          background-color: ${(props) => props.theme.colors.primary};
           border: 0;
           border-radius: 0;
           border-top-left-radius: 4px;
@@ -113,10 +113,17 @@ const Wrapper = styled.div`
   }
 `;
 
+const DriffLogo = styled(SvgIcon)`
+  path {
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
+  }
+`;
+
 const PrivacyTermsWrapper = styled.div`
   margin-left: -9px;
   a {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 
@@ -141,7 +148,7 @@ const DriffSelectPanel = (props) => {
   return (
     <Wrapper className={`driff-register-panel fadeIn form-wrapper ${className}`}>
       <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80" />
+        <DriffLogo icon={"driff-logo2"} width="110" height="80" />
       </div>
       <Form className="row">
         <div className="col-12 col-sm-6 col-set-up">
