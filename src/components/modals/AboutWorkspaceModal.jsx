@@ -17,7 +17,7 @@ import Tooltip from "react-tooltip-lite";
 
 const ModalWrapper = styled(Modal)`
   .badge.badge-external {
-    background-color: ${(props) => props.theme.colors.fifth};
+    background-color: ${(props) => props.theme.colors.fourth};
   }
 `;
 const ModalHeaderTitle = styled.div`
