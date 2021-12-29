@@ -2938,6 +2938,56 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
       };
     }
+    case "INCOMING_ZOOM_ENDED": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (action.data.channel_id === channel.id) {
+            acc[channel.id] = {
+              ...channel,
+              replies: channel.replies.map((r) => {
+                if (r.id === action.data.chat.id) {
+                  return { ...r, body: action.data.chat.body };
+                } else {
+                  return r;
+                }
+              }),
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.map((r) => {
+                  if (r.id === action.data.chat.id) {
+                    return { ...r, body: action.data.chat.body };
+                  } else {
+                    return r;
+                  }
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
+    case "INCOMING_ZOOM_CREATE":
+    case "INCOMING_ZOOM_USER_LEFT": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (action.data.channel_id === channel.id) {
+            acc[channel.id] = { ...channel, replies: [...channel.replies, action.data.chat] };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? { ...state.selectedChannel, replies: [...state.selectedChannel.replies, action.data.chat] } : state.selectedChannel,
+      };
+    }
     default:
       return state;
   }

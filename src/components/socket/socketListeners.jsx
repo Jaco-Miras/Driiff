@@ -102,6 +102,9 @@ import {
   incomingDeletedAnnouncement,
   incomingZoomData,
   setNewDriffData,
+  incomingZoomCreate,
+  incomingZoomUserLeft,
+  incomingZoomEnded,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -269,6 +272,60 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".create-meeting-notification", (e) => {
+        if (this.props.user.id !== e.host.id) {
+          const meetingSDKELement = document.getElementById("meetingSDKElement");
+          const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+          if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: true,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: false,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          }
+        }
+      })
+      .listen(".meeting-ended-notification", (e) => {
+        console.log(e, "meeting ended");
+        // const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingZoomEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
+      })
       .listen(".notification-read", (e) => {
         this.props.incomingReadNotifications(e);
       })
@@ -1583,16 +1640,88 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".zoom-system-message-notification", (e) => {
+        console.log(e, "zoom meeting message");
+        if (!e.hasOwnProperty("system_message")) return;
+        const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: data.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
+      })
+      .listen(".left-meeting-notification", (e) => {
+        console.log(e, "left meeting");
+
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingZoomUserLeft({ ...e, chat: chatMessage });
+      })
       .listen(".create-meeting-notification", (e) => {
-        //console.log(e, "zoom meeting notif");
         if (this.props.user.id !== e.host.id) {
-          setTimeout(() => {
-            this.props.addToModals({
-              ...e,
-              type: "zoom_invite",
-            });
-            this.props.incomingZoomData({ ...e.zoom_data.data });
-          }, 2000);
+          const meetingSDKELement = document.getElementById("meetingSDKElement");
+          const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+          if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: true,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: false,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          }
         }
       })
       .listen(".workspace-active", (e) => {
@@ -2292,6 +2421,9 @@ function mapDispatchToProps(dispatch) {
     removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
     getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
     incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
+    incomingZoomCreate: bindActionCreators(incomingZoomCreate, dispatch),
+    incomingZoomUserLeft: bindActionCreators(incomingZoomUserLeft, dispatch),
+    incomingZoomEnded: bindActionCreators(incomingZoomEnded, dispatch),
   };
 }
 

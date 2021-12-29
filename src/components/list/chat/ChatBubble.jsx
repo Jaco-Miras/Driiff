@@ -1,11 +1,11 @@
 //import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
-import { useChatReply, useZoomActions } from "../../hooks";
+import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
@@ -484,10 +484,10 @@ const ChatBubble = (props) => {
 
   const history = useHistory();
 
-  const zoomActions = useZoomActions();
+  // const zoomActions = useZoomActions();
 
-  const componentIsMounted = useRef(true);
-  const [generatingSignature, setGeneratingSignature] = useState(false);
+  // const componentIsMounted = useRef(true);
+  // const [generatingSignature, setGeneratingSignature] = useState(false);
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
@@ -530,47 +530,47 @@ const ChatBubble = (props) => {
     return false;
   };
 
-  const handleZoomLink = (e) => {
-    e.preventDefault();
-    if (reply.body.startsWith("ZOOM_MESSAGE::{") && !generatingSignature) {
-      setGeneratingSignature(true);
-      const data = JSON.parse(reply.body.replace("ZOOM_MESSAGE::", ""));
-      let payload = {
-        meetingNumber: data.data.meetingNumber,
-        role: 0,
-        password: data.data.passWord,
-      };
-      const cb = () => {
-        if (componentIsMounted.current) setGeneratingSignature(false);
-      };
-      zoomActions.generateSignature(payload, cb);
-      // eslint-disable-next-line quotes
-      // const zmessage = reply.body.replace('<span class="fancied"></span>', "");
-      // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
-      // let payload = {
-      //   meetingNumber: data.data.meetingNumber,
-      //   role: 0,
-      //   password: data.data.passWord,
-      //   host: false,
-      //   hasJoin: false,
-      // };
-      // localStorage.setItem("zoomConfig", JSON.stringify(payload));
-      // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${payload.meetingNumber}`, "_blank");
-    }
+  // const handleZoomLink = (e) => {
+  //   e.preventDefault();
+  //   if (reply.body.startsWith("ZOOM_MESSAGE::{") && !generatingSignature) {
+  //     setGeneratingSignature(true);
+  //     const data = JSON.parse(reply.body.replace("ZOOM_MESSAGE::", ""));
+  //     let payload = {
+  //       meetingNumber: data.data.meetingNumber,
+  //       role: 0,
+  //       password: data.data.passWord,
+  //     };
+  //     const cb = () => {
+  //       if (componentIsMounted.current) setGeneratingSignature(false);
+  //     };
+  //     zoomActions.generateSignature(payload, cb);
+  //     // eslint-disable-next-line quotes
+  //     // const zmessage = reply.body.replace('<span class="fancied"></span>', "");
+  //     // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+  //     // let payload = {
+  //     //   meetingNumber: data.data.meetingNumber,
+  //     //   role: 0,
+  //     //   password: data.data.passWord,
+  //     //   host: false,
+  //     //   hasJoin: false,
+  //     // };
+  //     // localStorage.setItem("zoomConfig", JSON.stringify(payload));
+  //     // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${payload.meetingNumber}`, "_blank");
+  //   }
 
-    return false;
-  };
+  //   return false;
+  // };
 
   useEffect(() => {
     // const zoomLink = refs.container.current.querySelector("a.zoom-link");
     // if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
 
-    let zLink = null;
+    // let zLink = null;
 
-    if (reply.body.startsWith("ZOOM_MESSAGE::{")) {
-      zLink = refs.replyRef.current.querySelector("strong");
-      if (zLink) zLink.addEventListener("click", handleZoomLink, true);
-    }
+    // if (reply.body.startsWith("ZOOM_MESSAGE::{")) {
+    //   zLink = refs.replyRef.current.querySelector("strong");
+    //   if (zLink) zLink.addEventListener("click", handleZoomLink, true);
+    // }
 
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
 
@@ -578,7 +578,7 @@ const ChatBubble = (props) => {
 
     return () => {
       if (lnkChannelMessage) lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
-      if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
+      //if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
     };
   }, []);
 

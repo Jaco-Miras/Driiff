@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { useInView } from "react-intersection-observer";
-import { useSystemMessage } from "../../hooks";
+import { useSystemMessage, useZoomActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -68,6 +70,9 @@ const SystemMessageContent = styled.span`
   display: block;
   width: 100%;
   cursor: ${(props) => (props.isPostNotification ? "pointer" : "auto")};
+  strong {
+    cursor: ${(props) => (props.isZoomMessage ? "pointer" : "auto")};
+  }
 `;
 const ChatTimeStamp = styled.div`
   color: #a7abc3;
@@ -85,9 +90,14 @@ const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = (props) => {
   const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary } = props;
 
+  const zoomActions = useZoomActions();
+  const messageRef = useRef();
   const history = useHistory();
   const params = useParams();
+  const dispatch = useDispatch();
 
+  const componentIsMounted = useRef(true);
+  const [generatingSignature, setGeneratingSignature] = useState(false);
   const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user });
 
   const [lastChatRef, inView, entry] = useInView({
@@ -104,6 +114,52 @@ const SystemMessage = (props) => {
       }
     }
   }, [isLastChat, entry, inView]);
+
+  const handleZoomLink = (e) => {
+    e.preventDefault();
+    if (reply.body.startsWith("ZOOM_MEETING::{") && !generatingSignature) {
+      const meetingSDKELement = document.getElementById("meetingSDKElement");
+      const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+      if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+        let modalPayload = {
+          type: "zoom_inprogress",
+        };
+
+        dispatch(addToModals(modalPayload));
+      } else {
+        setGeneratingSignature(true);
+        const data = JSON.parse(reply.body.replace("ZOOM_MEETING::", ""));
+        let payload = {
+          meetingNumber: data.meetingNumber,
+          role: 0,
+          password: data.password,
+          channel_id: selectedChannel.id,
+        };
+        const cb = () => {
+          if (componentIsMounted.current) setGeneratingSignature(false);
+        };
+        zoomActions.generateSignature(payload, cb);
+      }
+    }
+
+    return false;
+  };
+
+  useEffect(() => {
+    // const zoomLink = refs.container.current.querySelector("a.zoom-link");
+    // if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
+
+    let zLink = null;
+
+    if (reply.body.startsWith("ZOOM_MEETING::{")) {
+      zLink = messageRef.current.querySelector("strong");
+      if (zLink) zLink.addEventListener("click", handleZoomLink, true);
+    }
+
+    return () => {
+      if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
+    };
+  }, []);
 
   const handleMessageClick = () => {
     if (reply.body.startsWith("UPLOAD_BULK::")) {
@@ -129,7 +185,14 @@ const SystemMessage = (props) => {
   };
   return (
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent id={`bot-${reply.id}`} onClick={handleMessageClick} dangerouslySetInnerHTML={{ __html: parseBody }} isPostNotification={reply.body.includes("POST_CREATE::")} />
+      <SystemMessageContent
+        id={`bot-${reply.id}`}
+        onClick={handleMessageClick}
+        ref={messageRef}
+        dangerouslySetInnerHTML={{ __html: parseBody }}
+        isPostNotification={reply.body.includes("POST_CREATE::")}
+        isZoomMessage={reply.body.includes("ZOOM_MEETING::")}
+      />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useZoomActions, useTranslationActions } from "../hooks";
@@ -12,10 +12,19 @@ const ButtonsContainer = styled.div`
   }
 `;
 
+const AudioStyle = styled.audio`
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+`;
+
 const ZoomInviteModal = (props) => {
-  const { zoom_data, type, title, host } = props.data;
+  const { zoom_data, type, title, host, hideJoin } = props.data;
   const dispatch = useDispatch();
+  const isIdle = useSelector((state) => state.global.isIdle);
+  const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
   const { _t } = useTranslationActions();
+  const audioRef = useRef(null);
   const dictionary = {
     zoomInvite: _t("ZOOM.INVITE_POP_UP", "::host:: has started a new Zoom Meeting for ::title::", { host: host.name, title: title }),
     reject: _t("REJECT", "Reject"),
@@ -36,21 +45,70 @@ const ZoomInviteModal = (props) => {
       meetingNumber: zoom_data.data.id,
       role: 0,
       password: zoom_data.data.password,
+      channel_id: zoom_data.data.channel_id,
     };
     zoomActions.generateSignature(payload);
   };
 
+  const handleSoundPlay = () => {
+    if (audioRef.current && !isIdle && isBrowserActive && !hideJoin) {
+      const promiseAudioPlay = audioRef.current.play();
+      if (promiseAudioPlay !== undefined) {
+        promiseAudioPlay
+          .then(() => {
+            // Start whatever you need to do only after playback
+            // has begun.
+          })
+          .catch((error) => {
+            /**
+             * @todo need a fallback in case autoplay is not allowed
+             **/
+          });
+      }
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleSoundPlay();
+    }, 800);
+    return () => {
+      if (audioRef.current) {
+        const promiseAudioPause = audioRef.current.pause();
+
+        if (promiseAudioPause !== undefined) {
+          promiseAudioPause
+            .then(() => {
+              // Start whatever you need to do only after playback
+              // has begun.
+            })
+            .catch((error) => {
+              /**
+               * @todo need a fallback in case autoplay is not allowed
+               **/
+            });
+        }
+      }
+    };
+  }, []);
+
   return (
     <Modal isOpen={modal} toggle={toggle} centered>
       <ModalBody>
+        <AudioStyle ref={audioRef} controls loop>
+          <source src={require("../../assets/audio/zoomcall.mp3")} type="audio/mp3" />
+          Your browser does not support the audio element.
+        </AudioStyle>
         <h3>{dictionary.zoomInvite}</h3>
         <ButtonsContainer>
           <Button outline color="secondary" onClick={toggle}>
             {dictionary.reject}
           </Button>
-          <Button color="primary" onClick={handleJoin}>
-            {dictionary.join}
-          </Button>
+          {!hideJoin && (
+            <Button color="primary" onClick={handleJoin}>
+              {dictionary.join}
+            </Button>
+          )}
         </ButtonsContainer>
       </ModalBody>
     </Modal>
