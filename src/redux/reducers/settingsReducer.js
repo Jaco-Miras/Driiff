@@ -9,6 +9,7 @@ const INITIAL_STATE = {
       third: "#F1F2F6",
       fourth: "#FBB800",
       fifth: "#192536",
+      sidebarTextColor: "#cbd4db",
     },
   },
   sessionUser: null,
@@ -26,6 +27,7 @@ const INITIAL_STATE = {
         third: "#F1F2F6",
         fourth: "#FBB800",
         fifth: "#192536",
+        sidebarTextColor: "#cbd4db",
       },
     },
     settings: {

@@ -48,7 +48,6 @@ const NavIcon = styled(SvgIconFeather)`
 
 const NavIconContainer = styled(NavLink)`
   display: flex;
-  color: #fff;
   height: 40px;
   justify-content: flex-start;
   align-items: center;

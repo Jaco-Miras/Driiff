@@ -8,7 +8,7 @@ import { useToaster, useOutsideClick } from "../../hooks";
 
 const Wrapper = styled.div`
   padding: 15px 30px 0 30px;
-  color: #cbd4db;
+  color: ${({ theme }) => theme.colors.sidebarTextColor};
   > div {
     margin-bottom: 10px;
     display: flex;

@@ -59,6 +59,7 @@ function StylingSettingsBody() {
   const pickerRefThird = useRef(null);
   const pickerRefFourth = useRef(null);
   const pickerRefFifth = useRef(null);
+  const pickerRefSidebarTextColor = useRef(null);
   const dictionary = {
     companyLogo: _t("ADMIN.COMPANY_LOGO", "Company logo"),
     companyLogoDescription: _t("ADMIN.COMPANY_LOGO_DESCRIPTION", "Upload your company logo."),
@@ -79,8 +80,9 @@ function StylingSettingsBody() {
     thirdLabel: _t("LABEL.TERTIARY_COLOR", "Tertiary color"),
     fourthLabel: _t("LABEL.CTA_COLOR", "CTA color"),
     fifthLabel: _t("LABEL.FIFTH_COLOR", "Sidebar logo background color"),
+    sidebarTextColorLabel: _t("LABEL.SIDEBAR_TEXT_COLOR", "Sidebar text color"),
     submitBtn: _t("BTN.SUBMIT", "Submit"),
-    resetPreviewBtn: _t("BTN.RESET_PREVIEW", "Reset preview"),
+    resetPreviewBtn: _t("BTN.RESET_DEFAULT_COLORS", "Reset default colors"),
   };
 
   const iconDropZone = useRef(null);
@@ -163,6 +165,11 @@ function StylingSettingsBody() {
     dispatch(updateThemeColors({ colors: { fifth: e.target.value } }));
   };
 
+  const handleChangeSidebarTextColor = (e) => {
+    setColors({ ...colors, sidebarTextColor: e.target.value });
+    dispatch(updateThemeColors({ colors: { sidebarTextColor: e.target.value } }));
+  };
+
   // const handlePreviewTheme = () => {
   //   dispatch(updateThemeColors({ colors: colors }));
   // };
@@ -205,6 +212,7 @@ function StylingSettingsBody() {
   useOutsideClick(pickerRefThird, () => setShowColorPicker({ ...showColorPicker, third: !showColorPicker.third }), showColorPicker.third);
   useOutsideClick(pickerRefFourth, () => setShowColorPicker({ ...showColorPicker, fourth: !showColorPicker.fourth }), showColorPicker.fourth);
   useOutsideClick(pickerRefFifth, () => setShowColorPicker({ ...showColorPicker, fifth: !showColorPicker.fifth }), showColorPicker.fifth);
+  useOutsideClick(pickerRefSidebarTextColor, () => setShowColorPicker({ ...showColorPicker, sidebarTextColor: !showColorPicker.sidebarTextColor }), showColorPicker.sidebarTextColor);
 
   return (
     <div>
@@ -349,6 +357,28 @@ function StylingSettingsBody() {
             <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "fifth")} />
           </span>
           <Inputfields className="w-100 form-control mt-2" id="fifthcolor" onChange={handleChangeFifth} value={colors.fifth}></Inputfields>
+        </ColorInputWrapper>
+        <ColorInputWrapper>
+          <span>
+            {dictionary.sidebarTextColorLabel} (current:{" "}
+            <ColorSpan color={theme.colors.sidebarTextColor}>
+              {theme.colors.sidebarTextColor}
+              {showColorPicker.sidebarTextColor && (
+                <PickerWrapper ref={pickerRefSidebarTextColor}>
+                  <BlockPicker
+                    colors={["#cbd4db", "#000"]}
+                    color={colors.sidebarTextColor}
+                    onChange={(color) => {
+                      handleColorChange(color, "sidebarTextColor");
+                    }}
+                  />
+                </PickerWrapper>
+              )}
+            </ColorSpan>
+            )
+            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "sidebarTextColor")} />
+          </span>
+          <Inputfields className="w-100 form-control mt-2" id="sidebarTextColorcolor" onChange={handleChangeSidebarTextColor} value={colors.sidebarTextColor}></Inputfields>
         </ColorInputWrapper>
 
         <div className="d-flex align-items-center">
