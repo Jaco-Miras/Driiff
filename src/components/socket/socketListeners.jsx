@@ -287,6 +287,31 @@ class SocketListeners extends Component {
       .listen(".proposal-subject-notification", (e) => {
         this.props.incomingWIPSubject({ ...e, clap_user_ids: [] });
       })
+      .listen(".create-meeting-notification", (e) => {
+        if (this.props.user.id !== e.host.id) {
+          const meetingSDKELement = document.getElementById("meetingSDKElement");
+          const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+          if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: true,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              this.props.addToModals({
+                ...e,
+                type: "zoom_invite",
+                hideJoin: false,
+              });
+              this.props.incomingZoomData({ ...e.zoom_data.data, channel_id: e.channel_id });
+            }, 2000);
+          }
+        }
+      })
       .listen(".meeting-ended-notification", (e) => {
         console.log(e, "meeting ended");
         // const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
