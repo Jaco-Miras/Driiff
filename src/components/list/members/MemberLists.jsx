@@ -22,7 +22,7 @@ const MembersLists = (props) => {
 
   let memberSize = 5;
   if (winSize.width <= 575) {
-    memberSize = 5;
+    memberSize = 1;
   }
 
   const firstMembers = members ? members.slice(0, memberSize) : [];
