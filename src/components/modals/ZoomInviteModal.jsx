@@ -71,7 +71,7 @@ const ZoomInviteModal = (props) => {
   useEffect(() => {
     setTimeout(() => {
       handleSoundPlay();
-    }, 500);
+    }, 800);
     return () => {
       if (audioRef.current) {
         const promiseAudioPause = audioRef.current.pause();
