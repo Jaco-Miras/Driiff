@@ -152,7 +152,7 @@ const NavNewWorkspace = styled.button`
   height: 40px;
   justify-content: center;
   align-items: center;
-  color: #ffffff !important;
+  color: ${({ theme }) => theme.colors.sidebarTextColor} !important;
 
   div {
     position: relative;
@@ -165,6 +165,7 @@ const NavNewWorkspace = styled.button`
 
 const NewBtnWrapper = styled.div`
   margin: 15px 30px;
+  color: ${({ theme }) => theme.colors.sidebarTextColor}!important;
 `;
 
 const MainNavigationTabPanel = (props) => {
