@@ -63,6 +63,15 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
+  .form-control {
+    :focus {
+      border-color: ${(props) => props.theme.colors.primary};
+    }
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
 `;
 
 const CreateWorkspaceFolderModal = (props) => {

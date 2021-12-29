@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../../common";
-import { CompanyFolderList } from "./index";
+//import { CompanyFolderList } from "./index";
 import { GoogleDrive } from "./../index";
 import { ProgressBar } from "../../common";
 import { useTranslationActions } from "../../../hooks";
@@ -47,8 +47,23 @@ const Filter = styled.span`
     props.active &&
     `
         background: 0 0;
-        color: #7a1b8b;
+        color: ${props.theme.colors.secondary};
+        &:after {
+          content: "";
+          width: 3px;
+          height: 100%;
+          background-color: ${props.theme.colors.secondary};
+          display: block;
+          position: absolute;
+          top: 0;
+          animation: fadeIn 0.15s linear;
+          left: 0;
+        }
+        .dark & {
+          color: ${props.theme.colors.third};
+        }
     `}
+
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     > ul {
@@ -124,7 +139,7 @@ const CompanyFileSidebar = (props) => {
               {dictionary.allFiles}
               <span className="small ml-auto">{fileCount.all > 0 ? fileCount.all : null}</span>
             </Filter>
-            {folders && Object.values(folders).filter((f) => !f.is_archived).length > 0 && (
+            {/* {folders && Object.values(folders).filter((f) => !f.is_archived).length > 0 && (
               <Filter className="d-flex align-items-center folder-list">
                 <ul>
                   {Object.values(folders)
@@ -136,7 +151,7 @@ const CompanyFileSidebar = (props) => {
                     })}
                 </ul>
               </Filter>
-            )}
+            )} */}
             <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} />
             <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"} className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="monitor" />

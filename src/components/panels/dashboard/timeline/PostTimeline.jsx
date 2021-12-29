@@ -50,6 +50,9 @@ const Wrapper = styled.div`
       background-color: #f1f2f712;
     }
   }
+  .mention a {
+    color: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 const toggleTooltip = () => {

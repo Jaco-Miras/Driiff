@@ -11,7 +11,7 @@ const CheckBoxGroup = styled.div`
     font-size: 12.6px;
 
     &:hover {
-      color: #972c86;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
   @media screen and (max-height: 699px) {

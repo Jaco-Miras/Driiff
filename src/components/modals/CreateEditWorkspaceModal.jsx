@@ -141,6 +141,25 @@ const WrapperDiv = styled(InputGroup)`
       margin-right: 1rem;
     }
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .custom-control-label:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -155,7 +174,6 @@ const SelectPeople = styled(PeopleSelect)`
   flex: 1 0 0;
   width: 1%;
   .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .react-select__option {
@@ -163,17 +181,16 @@ const SelectPeople = styled(PeopleSelect)`
   }
   .react-select__menu-list--is-multi > div {
     &:hover {
-      background: #8c3b9b;
+      // background: #8c3b9b;
       color: #ffffff;
       cursor: pointer;
       .react-select__option {
-        background: #8c3b9b;
+        // background: #8c3b9b;
         cursor: pointer;
       }
     }
   }
   .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .has-not-accepted .react-select__multi-value__label {
@@ -222,6 +239,39 @@ const LabelWrapper = styled.div`
   display: flex;
   label {
     min-width: auto;
+  }
+`;
+
+const NestedModalWrapper = styled.div`
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 
@@ -1683,49 +1733,60 @@ const CreateEditWorkspaceModal = (props) => {
         <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
           <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
           <ModalBody>
-            <Label className={"modal-info mb-3"}>{dictionary.newExternalInfo}</Label>
-            <Label className={"modal-label"}>{dictionary.firstName}</Label>
-            <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
-            <Label className={"modal-label"}>{dictionary.middleName}</Label>
-            <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>{dictionary.lastName}</Label>
-            <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>{dictionary.companyName}</Label>
-            <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
-            <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
-            <Select styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme} value={languageOptions.find((o) => o.value === invitedExternal.language)} onChange={handleLanguageChange} options={languageOptions} />
-            <RadioInputWrapper className="mt-3">
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSetSignupLink(e, "myself");
-                }}
-                checked={!invitedExternal.send_by_email}
-                value={"myself"}
-                name={"myself"}
-              >
-                {dictionary.sendMyself}
-              </RadioInput>
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSetSignupLink(e, "driff");
-                }}
-                checked={invitedExternal.send_by_email}
-                value={"driff"}
-                name={"driff"}
-              >
-                {dictionary.sendTruDriff}
-              </RadioInput>
-            </RadioInputWrapper>
+            <NestedModalWrapper>
+              <Label className={"modal-info mb-3"}>{dictionary.newExternalInfo}</Label>
+              <Label className={"modal-label"}>{dictionary.firstName}</Label>
+              <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
+              <Label className={"modal-label"}>{dictionary.middleName}</Label>
+              <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
+              <Label className={"modal-label"}>{dictionary.lastName}</Label>
+              <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
+              <Label className={"modal-label"}>{dictionary.companyName}</Label>
+              <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
+              <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
+              <Select
+                styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme}
+                className={"react-select-container"}
+                classNamePrefix="react-select"
+                value={languageOptions.find((o) => o.value === invitedExternal.language)}
+                onChange={handleLanguageChange}
+                options={languageOptions}
+              />
+              <RadioInputWrapper className="mt-3">
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSetSignupLink(e, "myself");
+                  }}
+                  checked={!invitedExternal.send_by_email}
+                  value={"myself"}
+                  name={"myself"}
+                >
+                  {dictionary.sendMyself}
+                </RadioInput>
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSetSignupLink(e, "driff");
+                  }}
+                  checked={invitedExternal.send_by_email}
+                  value={"driff"}
+                  name={"driff"}
+                >
+                  {dictionary.sendTruDriff}
+                </RadioInput>
+              </RadioInputWrapper>
+            </NestedModalWrapper>
           </ModalBody>
           <ModalFooter>
-            <Button className="btn-outline-secondary" onClick={toggleNested}>
-              {dictionary.cancel}
-            </Button>
-            <Button color="primary" onClick={handleSaveExternalFields}>
-              {dictionary.save}
-            </Button>
+            <NestedModalWrapper>
+              <Button className="btn-outline-secondary" onClick={toggleNested}>
+                {dictionary.cancel}
+              </Button>
+              <Button color="primary" onClick={handleSaveExternalFields}>
+                {dictionary.save}
+              </Button>
+            </NestedModalWrapper>
           </ModalFooter>
         </Modal>
         <DropDocument

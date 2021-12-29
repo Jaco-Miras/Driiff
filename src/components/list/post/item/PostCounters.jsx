@@ -18,8 +18,8 @@ const Counters = styled.div`
     max-height: 250px;
   }
   .clap-true {
-    color: #7a1b8b;
-    fill: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
   }
   .readers-container {
     @media (max-width: 575.99px) {

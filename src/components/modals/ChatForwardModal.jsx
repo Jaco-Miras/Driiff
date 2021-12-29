@@ -20,12 +20,7 @@ const IconButton = styled(SvgIconFeather)`
   width: 40px;
   padding: 10px;
   border-radius: 8px;
-
-  // &.feather-send {
-  //     border: 1px solid #7a1b8b;
-  //     background-color: #7a1b8b;
-  //     color: #fff;
-  // }
+  background: ${({ theme }) => theme.colors.primary};
 `;
 
 const PopUpBody = styled.div`
@@ -49,21 +44,21 @@ const ChannelsContainer = styled.div`
 
 const StlyedList = styled.li`
   padding: 5px 0;
-  color: ${(props) => (props.chosen ? "#972c86" : "#676767")};
+  color: ${(props) => (props.chosen ? props.theme.colors.primary : "#676767")};
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   width: 100%;
   font-weight: ${(props) => (props.chosen ? "600" : "500")};
   :hover {
-    color: #972c86;
+    color: ${({ theme }) => theme.colors.primary};
     font-weight: 600;
     .channel-icon {
-      border: ${(props) => (props.chosen ? "2px solid #972c86" : "1px solid #972c86")};
+      border: ${(props) => (props.chosen ? `2px solid ${props.theme.colors.primary}` : `1px solid ${props.theme.colors.primary}`)};
     }
   }
   .channel-icon {
-    border: ${(props) => (props.chosen ? "2px solid #972c86" : "1px solid #ddd")};
+    border: ${(props) => (props.chosen ? `2px solid ${props.theme.colors.primary}` : "1px solid #ddd")};
   }
 `;
 
@@ -76,7 +71,7 @@ const StyledChannelIcon = styled(ChannelIcon)`
 const StyledModalFooter = styled(ModalFooter)`
   justify-content: space-between;
   .chosen-channel-title {
-    color: #7a1b8b;
+    color: ${({ theme }) => theme.colors.primary};
     font-weight: 600;
   }
 `;
@@ -238,7 +233,7 @@ const ChatForwardModal = (props) => {
       {chosenChannel && (
         <StyledModalFooter>
           <span className="chosen-channel-title">{chosenChannel ? chosenChannel.title : null}</span>
-          <IconButton onClick={handleForwardMessage} icon="send" fill="#fff" className={"bg-primary"} />
+          <IconButton onClick={handleForwardMessage} icon="send" fill="#fff" />
         </StyledModalFooter>
       )}
     </Modal>

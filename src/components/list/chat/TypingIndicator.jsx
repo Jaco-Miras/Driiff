@@ -29,7 +29,7 @@ const PlusUsersDiv = styled.div`
   width: 26px;
   height: 26px;
   background: #fff;
-  color: #972c86;
+  color: ${(props) => props.theme.colors.primary};
   box-shadow: 0 2px 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   z-index: -3;
   text-align: center;

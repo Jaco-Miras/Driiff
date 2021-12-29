@@ -54,7 +54,8 @@ const FavWorkspacesLabel = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${({ theme }) => theme.colors.sidebarTextColor};
+  //color: rgba(255, 255, 255, 0.6);
   border-top: 2px solid;
   padding: 15px 0;
   > span {
@@ -68,7 +69,7 @@ const FavWorkspacesLabel = styled.div`
 const BrowseAll = styled.button`
   //color: rgba(255, 255, 255, 0.6);
   //text-decoration: underline;
-  color: #cbd4db;
+  color: ${({ theme }) => theme.colors.sidebarTextColor};
   border: 1px solid;
   :hover {
     cursor: pointer;
@@ -79,13 +80,16 @@ const BrowseAll = styled.button`
 const WorkspaceListContainer = styled.div`
   padding: 0 30px;
   overflow: auto;
+  .text-truncate {
+    color: ${({ theme }) => theme.colors.sidebarTextColor};
+  }
 `;
 
 const FavEmptyState = styled.div`
   display: flex;
   flex-flow: column;
   margin-top: 1rem;
-  color: #cbd4db;
+  color: ${({ theme }) => theme.colors.sidebarTextColor};
   span:last-child {
     margin-top: 1rem;
   }

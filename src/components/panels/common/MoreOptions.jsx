@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     width: 100%;
 
     &:hover {
-      color: #972c86;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 `;
@@ -52,7 +52,7 @@ const MoreTooltip = styled.div`
   }
 
   button:hover {
-    color: #972c86;
+    color: ${(props) => props.theme.colors.primary};
   }
 
   > div {
@@ -62,8 +62,8 @@ const MoreTooltip = styled.div`
 
     &.active,
     &:hover {
-      background-color: #f0f0f0;
-      color: #7a1b8b;
+      background-color: ${(props) => props.theme.colors.primary};
+      color: #fff;
     }
   }
 

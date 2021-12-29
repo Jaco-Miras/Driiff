@@ -10,6 +10,21 @@ const ButtonsContainer = styled.div`
   button:first-child {
     margin-right: 1rem;
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const AudioStyle = styled.audio`
@@ -101,7 +116,7 @@ const ZoomInviteModal = (props) => {
         </AudioStyle>
         <h3>{dictionary.zoomInvite}</h3>
         <ButtonsContainer>
-          <Button outline color="secondary" onClick={toggle}>
+          <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {dictionary.reject}
           </Button>
           {!hideJoin && (

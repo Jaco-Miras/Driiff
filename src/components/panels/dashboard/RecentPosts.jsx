@@ -52,7 +52,7 @@ const Wrapper = styled.div`
   .feather {
     cursor: pointer;
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
   li .custom-control {

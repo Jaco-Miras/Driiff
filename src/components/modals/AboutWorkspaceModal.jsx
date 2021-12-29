@@ -15,6 +15,11 @@ import RecentPostItem from "../list/post/item/RecentPostItem";
 import { replaceChar } from "../../helpers/stringFormatter";
 import Tooltip from "react-tooltip-lite";
 
+const ModalWrapper = styled(Modal)`
+  .badge.badge-external {
+    background-color: ${(props) => props.theme.colors.fourth};
+  }
+`;
 const ModalHeaderTitle = styled.div`
   display: flex;
   align-items: center;
@@ -64,6 +69,10 @@ const Footer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 0.5rem;
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
 `;
 
 const WorkspaceDescriptionSection = styled.div`
@@ -108,7 +117,7 @@ const QuickLinksSection = styled.div`
       cursor: pointer;
     }
     span:hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
   .feather {
@@ -313,7 +322,7 @@ const AboutWorkspaceModal = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size="xl">
+    <ModalWrapper isOpen={modal} toggle={toggle} centered size="xl">
       <ModalHeaderSection toggle={toggle}>
         <ModalHeaderTitle>
           <Avatar imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null} name={workspace.name} noDefaultClick={true} forceThumbnail={false} />
@@ -326,7 +335,7 @@ const AboutWorkspaceModal = (props) => {
           )}
           {workspace.active === 0 && <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>}
           {workspace.is_shared && !isExternal && (
-            <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+            <div className={"badge badge-external ml-1 d-flex align-items-center"}>
               <Icon icon="eye" /> {dictionary.withClient}
             </div>
           )}
@@ -420,7 +429,7 @@ const AboutWorkspaceModal = (props) => {
           </button>
         </Footer>
       </ModalBody>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

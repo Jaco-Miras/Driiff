@@ -1,13 +1,14 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Route, Switch, useHistory, useLocation, withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIcon } from "../components/common";
+//import { SvgIcon } from "../components/common";
 //import { DriffCreatePanel, ExternalRegisterPanel, LoginPanel, MagicLinkPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel } from "../components/panels";
 import { useUserLogin } from "../components/hooks/useUserLogin";
 import { useSettings, useTranslationActions } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 //import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
 import { $_GET } from "../helpers/commonFunctions";
+import LoginLogo from "../components/panels/main/LoginLogo";
 
 const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
 const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
@@ -192,9 +193,10 @@ const GuestLayout = (props) => {
 
   return (
     <Wrapper className="form-wrapper fadeIn">
-      <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80" />
-      </div>
+      <LoginLogo />
+      {/* <div id="logo">
+        <SvgIcon icon={"driff-logo2"} width="110" height="80" />
+      </div> */}
       {driffSettings.settings.maintenance_mode ? (
         <>
           <h5 className="title">Maintenance Mode</h5>

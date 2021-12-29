@@ -1,10 +1,16 @@
 import React from "react";
+import styled from "styled-components";
 
+const Wrapper = styled.ul`
+  &.nav-pills .nav-link.active {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
 const SearchTabs = (props) => {
   const { activeTab, onSelectTab, tabs, dictionary } = props;
 
   return (
-    <ul className="nav nav-pills mb-4" role="tablist">
+    <Wrapper className="nav nav-pills mb-4" role="tablist">
       {tabs.hasOwnProperty("CHANNEL") && Object.keys(tabs.CHANNEL).length > 0 && (
         <li className="nav-item">
           <a className={`nav-link ${(activeTab === "channel" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="channel" role="tab" aria-controls="clasic" aria-selected="true">
@@ -54,7 +60,7 @@ const SearchTabs = (props) => {
           </a>
         </li>
       )}
-    </ul>
+    </Wrapper>
   );
 };
 

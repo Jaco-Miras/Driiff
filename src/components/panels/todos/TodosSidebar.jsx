@@ -15,7 +15,21 @@ const Filter = styled.span`
     props.active &&
     `
         background: 0 0;
-        color: #7a1b8b;
+        color: ${props.theme.colors.secondary};
+        &:after {
+          content: "";
+          width: 3px;
+          height: 100%;
+          background-color: ${props.theme.colors.secondary};
+          display: block;
+          position: absolute;
+          top: 0;
+          animation: fadeIn 0.15s linear;
+          left: 0;
+        }
+        .dark & {
+          color: ${props.theme.colors.third};
+        }
     `}
 
   &.folder-list {
@@ -47,7 +61,7 @@ const TodosSidebar = (props) => {
         <div className="app-sidebar-menu" tabIndex="1">
           <div className="list-group list-group-flush">
             <Filter onClick={setFilter} data-filter="" active={filter === ""} className={"list-group-item d-flex align-items-center"}>
-              <span className="text-secondary fa fa-circle mr-2" />
+              <span className="text-primary fa fa-circle mr-2" />
               {dictionary.statusAll}
               {count && count.all > 0 && <span className="small ml-auto">{count.all}</span>}
             </Filter>

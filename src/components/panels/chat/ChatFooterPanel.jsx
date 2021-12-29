@@ -71,10 +71,10 @@ const ChatInputContainer = styled.div`
     border-radius: 4px;
     cursor: pointer;
     &.active {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
@@ -84,22 +84,10 @@ const ChatInputContainer = styled.div`
     transition: color 0.15s ease-in-out;
     //color: #cacaca;
     &.active {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
     &:hover {
-      color: #7a1b8b;
-    }
-  }
-  .feather-meet {
-    background: transparent;
-    border-color: transparent;
-    transition: color 0.15s ease-in-out;
-    //color: #cacaca;
-    &.active {
-      color: #7a1b8b;
-    }
-    &:hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 `;
@@ -110,7 +98,7 @@ const Icon = styled(SvgIconFeather)`
 
 const Dflex = styled.div`
   .feather-send {
-    ${(props) => props.activeSend && "background: #7a1b8b !important;"}
+    ${(props) => props.activeSend && `background: ${props.theme.colors.primary} !important;`}
     fill: ${(props) => (props.activeSend ? "#fff" : "#cacaca")};
     &:hover {
       cursor: ${(props) => (props.activeSend ? "cursor" : "default")};
@@ -146,7 +134,7 @@ const Dflex = styled.div`
     }
     .channel-action {
       button {
-        background: #7a1b8b;
+        background: ${(props) => props.theme.colors.primary};
         color: #fff;
         border: none;
         padding: 8px 15px;
@@ -463,7 +451,9 @@ const ChatFooterPanel = (props) => {
             Created by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
-            <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspaceChat}</button>
+            <button className="btn btn-primary" onClick={handleJoinWorkspace}>
+              {dictionary.joinWorkspaceChat}
+            </button>
           </div>
         </Dflex>
       )}

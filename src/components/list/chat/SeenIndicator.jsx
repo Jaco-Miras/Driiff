@@ -3,25 +3,21 @@ import styled from "styled-components";
 import { UserListPopUp } from "../../common";
 
 const SeenIndicatorContainer = styled.div`
-    // position: absolute;
-    // right: ${(props) => (props.isAuthor ? "0" : "unset")};
-    // left: ${(props) => (props.isAuthor ? "unset" : "5px")};
-    //top: 100%;
-    text-align: ${(props) => (props.isAuthor ? "right" : "left")};
-    color: #a7abc3;
-    z-index: 2;
-    font-size: 11px;
-    position: absolute;
-    bottom: -18px;
-    white-space: nowrap;
-    ${(props) => (props.isAuthor ? "right: 0px" : "left: 0px")};
-    span {
-        cursor: pointer;
-        &:hover {
-            color: #7A1B8B;
-            transition: color 0.3s;
-        }
+  text-align: ${(props) => (props.isAuthor ? "right" : "left")};
+  color: #a7abc3;
+  z-index: 2;
+  font-size: 11px;
+  position: absolute;
+  bottom: -18px;
+  white-space: nowrap;
+  ${(props) => (props.isAuthor ? "right: 0px" : "left: 0px")};
+  span {
+    cursor: pointer;
+    &:hover {
+      color: ${(props) => props.theme.colors.primary};
+      transition: color 0.3s;
     }
+  }
 `;
 const StyledUserListPopUp = styled(UserListPopUp)`
   position: absolute;

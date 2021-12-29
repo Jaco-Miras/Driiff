@@ -42,7 +42,7 @@ const CheckBoxWrapper = styled.div`
     height: 1rem;
   }
   a {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 

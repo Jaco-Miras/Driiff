@@ -57,10 +57,10 @@ const ChatInputContainer = styled.div`
     border-radius: 4px;
     cursor: pointer;
     &.active {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
@@ -70,10 +70,10 @@ const ChatInputContainer = styled.div`
     transition: color 0.15s ease-in-out;
     color: #cacaca;
     &.active {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 `;
@@ -115,7 +115,7 @@ const Dflex = styled.div`
     }
     .channel-action {
       button {
-        background: #7a1b8b;
+        background: ${(props) => props.theme.colors.primary};
         color: #fff;
         border: none;
         padding: 8px 15px;
@@ -143,7 +143,7 @@ const NoReply = styled.div`
     text-align: center;
   }
   .request-approval {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 

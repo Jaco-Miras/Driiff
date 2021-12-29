@@ -53,7 +53,7 @@ const MainNavLink = styled(NavLink)`
       width: 100%;
       bottom: 0;
       left: 0;
-      background: #7a1b8b;
+      background: ${(props) => props.theme.colors.primary};
       position: absolute;
     }
   }
@@ -64,7 +64,7 @@ const MainNavLink = styled(NavLink)`
     position: absolute;
     width: 7px;
     height: 7px;
-    background: #7a1b8b;
+    background: ${(props) => props.theme.colors.primary};
     top: 0;
     right: -13px;
   }

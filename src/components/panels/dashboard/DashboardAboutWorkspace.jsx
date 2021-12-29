@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
-  border-left: 5px solid #822492;
+  border-left: ${(props) => `5px solid ${props.theme.colors.primary}`};
   text-align: left;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
   .feather {
     cursor: pointer;
     &:hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
   .card-title {

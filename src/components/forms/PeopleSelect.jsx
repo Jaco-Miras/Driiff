@@ -54,7 +54,7 @@ const Option = (props) => {
             />
             <div>
               {props.children}
-              {props.data.has_accepted && props.data.type === "external" && <div className={"ml-1 badge badge-info"}>{props.data.dictionary && props.data.dictionary.peopleExternal}</div>}
+              {props.data.has_accepted && props.data.type === "external" && <div className={"ml-1 badge badge-info badge-external"}>{props.data.dictionary && props.data.dictionary.peopleExternal}</div>}
               {!props.data.has_accepted && props.data.type === "external" && <div className={"ml-1 badge badge-info"}>{props.data.dictionary && props.data.dictionary.peopleInvited}</div>}
               {props.data.workspaces && props.data.workspaces.length && <span className="workspaces">{props.data.workspaces && props.data.workspaces.join(", ")}</span>}
             </div>

@@ -27,7 +27,7 @@ const ImgLoaderDiv = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  border: 0.25em solid #7a1b8b;
+  border: ${(props) => `0.25em solid ${props.theme.colors.primary}`};
   border-right-color: transparent;
   border-radius: 50%;
   animation: spin 0.75s linear infinite;

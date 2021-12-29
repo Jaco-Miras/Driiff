@@ -91,7 +91,7 @@ const NavBarLeft = styled.div`
     }
   }
   svg.feather-menu {
-    color: #7a1b8b !important;
+    color: ${(props) => props.theme.colors.primary} !important;
   }
   .component-user-list-pop-up-container .profile-slider {
     right: 165px;

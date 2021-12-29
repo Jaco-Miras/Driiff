@@ -47,7 +47,21 @@ const Filter = styled.span`
     props.active &&
     `
         background: 0 0;
-        color: #7a1b8b;
+        color: ${props.theme.colors.secondary};
+        &:after {
+          content: "";
+          width: 3px;
+          height: 100%;
+          background-color: ${props.theme.colors.secondary};
+          display: block;
+          position: absolute;
+          top: 0;
+          animation: fadeIn 0.15s linear;
+          left: 0;
+        }
+        .dark & {
+          color: ${props.theme.colors.third};
+        }
     `}
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
