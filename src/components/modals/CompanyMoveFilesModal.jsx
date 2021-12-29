@@ -9,7 +9,35 @@ import { ModalHeaderSection } from "./index";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { useSettings } from "../hooks";
 
-const Wrapper = styled(Modal)``;
+const Wrapper = styled(Modal)`
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 
 const CompanyMoveFilesModal = (props) => {
   const { className = "", type, file, folder_id, dictionary, actions } = props.data;
@@ -78,15 +106,15 @@ const CompanyMoveFilesModal = (props) => {
       <ModalHeaderSection toggle={toggle}>{dictionary.headerText}</ModalHeaderSection>
       <ModalBody>
         <div>{dictionary.bodyText}</div>
-        <Select styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
+        <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
       </ModalBody>
       <ModalFooter>
+        <button type="button" className="btn btn-outline-secondary" data-dismiss="modal" onClick={handleClose}>
+          {dictionary.cancelText}
+        </button>
         <button type="button" className="btn btn-primary" onClick={handleConfirm}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.submitText}
-        </button>
-        <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
-          {dictionary.cancelText}
         </button>
       </ModalFooter>
     </Wrapper>

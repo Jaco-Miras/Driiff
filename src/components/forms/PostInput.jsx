@@ -36,8 +36,12 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 11px 9px;
-    ${(props) => props.editMode && "> div {width:calc(100% - 15px);}"} .mention {
-      color: #7a1b8b;
+    ${(props) => props.editMode && "> div {width:calc(100% - 15px);}"}
+    .mention {
+      color: ${(props) => props.theme.colors.primary};
+      .dark & {
+        color: #fff;
+      }
     }
     &:focus {
       box-shadow: none;
@@ -74,7 +78,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         padding-left: 1rem;
 
         &.selected {
-          background: #7a1b8b;
+          background: ${(props) => props.theme.colors.primary};
           color: #fff;
           cursor: pointer;
           span.all-pic > img {

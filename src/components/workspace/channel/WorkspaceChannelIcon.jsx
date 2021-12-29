@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 
 const StyledAvatar = styled(Avatar)``;
 const Icon = styled(SvgIconFeather)`
-  color: #7a1b8b !important;
+  color: ${(props) => props.theme.colors.primary} !important;
   height: 30px;
   width: 30px;
 `;

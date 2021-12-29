@@ -16,6 +16,39 @@ import { FolderSelect } from "../forms";
 import _ from "lodash";
 import axios from "axios";
 
+const ModalWrapper = styled(Modal)`
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
 const DescriptionInputWrapper = styled.div`
   flex: 1 0 0;
   width: 100%;
@@ -81,7 +114,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         padding-left: 1rem;
 
         &.selected {
-          background: #7a1b8b;
+          background: ${(props) => props.theme.colors.primary};
           color: #fff;
           span.all-pic > img {
             filter: brightness(0) saturate(100%) invert(1);
@@ -126,7 +159,7 @@ const FilesPreviewContainer = styled.div`
       color: black;
     }
     span:hover {
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
       cursor: pointer;
     }
     .app-file-list {
@@ -186,15 +219,6 @@ const IconButton = styled(SvgIconFeather)`
   &:hover {
     background: #afb8bd;
     color: #ffffff;
-  }
-  &.feather-send {
-    border: 1px solid #7a1b8b;
-    background-color: #7a1b8b;
-    color: #fff;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    &:hover {
-      background-color: #8c3b9b;
-    }
   }
 `;
 
@@ -727,7 +751,7 @@ const FileUploadModal = (props) => {
   const { modules } = useQuillModules({ mode: mode, mentionOrientation: "bottom", quillRef: reactQuillRef, members, setImageLoading, setInlineImages });
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={"lg"} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.fileUpload}</ModalHeaderSection>
       <ModalBody>
         <DescriptionInputWrapper>
@@ -765,7 +789,7 @@ const FileUploadModal = (props) => {
           {dictionary.upload}
         </Button>
       </StyledModalFooter>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

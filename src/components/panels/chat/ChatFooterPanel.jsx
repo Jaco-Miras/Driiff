@@ -12,7 +12,7 @@ import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
-import { replaceChar } from "../../../helpers/stringFormatter";
+//import { replaceChar } from "../../../helpers/stringFormatter";
 import { ChatInputButtons } from "./index";
 //import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 
@@ -71,10 +71,10 @@ const ChatInputContainer = styled.div`
     border-radius: 4px;
     cursor: pointer;
     &.active {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
     &:hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
@@ -84,22 +84,10 @@ const ChatInputContainer = styled.div`
     transition: color 0.15s ease-in-out;
     //color: #cacaca;
     &.active {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
     &:hover {
-      color: #7a1b8b;
-    }
-  }
-  .feather-meet {
-    background: transparent;
-    border-color: transparent;
-    transition: color 0.15s ease-in-out;
-    //color: #cacaca;
-    &.active {
-      color: #7a1b8b;
-    }
-    &:hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 `;
@@ -110,7 +98,7 @@ const Icon = styled(SvgIconFeather)`
 
 const Dflex = styled.div`
   .feather-send {
-    ${(props) => props.activeSend && "background: #7a1b8b !important;"}
+    ${(props) => props.activeSend && `background: ${props.theme.colors.primary} !important;`}
     fill: ${(props) => (props.activeSend ? "#fff" : "#cacaca")};
     &:hover {
       cursor: ${(props) => (props.activeSend ? "cursor" : "default")};
@@ -146,7 +134,7 @@ const Dflex = styled.div`
     }
     .channel-action {
       button {
-        background: #7a1b8b;
+        background: ${(props) => props.theme.colors.primary};
         color: #fff;
         border: none;
         padding: 8px 15px;
@@ -334,14 +322,32 @@ const ChatFooterPanel = (props) => {
           };
 
           dispatch(
-            generateZoomSignature(sigPayload, (e, r) => {
-              if (e) return;
-              if (r) {
-                zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
-                zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
-                //setStartingZoom(false);
+            generateZoomSignature(
+              {
+                ...sigPayload,
+                channel_id: selectedChannel.id,
+                system_message: `ZOOM_MEETING::${JSON.stringify({
+                  author: {
+                    id: user.id,
+                    name: user.name,
+                    first_name: user.first_name,
+                    partial_name: user.partial_name,
+                    profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+                  },
+                  password: res.data.zoom_data.data.password,
+                  meetingNumber: res.data.zoom_data.data.id,
+                  channel_id: selectedChannel.id,
+                })}`,
+              },
+              (e, r) => {
+                if (e) return;
+                if (r) {
+                  //zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+                  zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
+                  //setStartingZoom(false);
+                }
               }
-            })
+            )
           );
         }
       })
@@ -349,18 +355,28 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleZoomMeet = () => {
-    let modalPayload = {
-      type: "confirmation",
-      cancelText: dictionary.no,
-      headerText: dictionary.zoomMeeting,
-      submitText: dictionary.yes,
-      bodyText: dictionary.zoomMeetingConfirmation,
-      actions: {
-        onSubmit: handleStartZoomMeeting,
-      },
-    };
+    const meetingSDKELement = document.getElementById("meetingSDKElement");
+    const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
+    if (meetingSDKELementFirstChild && meetingSDKELementFirstChild.classList.contains("react-draggable")) {
+      let modalPayload = {
+        type: "zoom_inprogress",
+      };
 
-    dispatch(addToModals(modalPayload));
+      dispatch(addToModals(modalPayload));
+    } else {
+      let modalPayload = {
+        type: "confirmation",
+        cancelText: dictionary.no,
+        headerText: dictionary.zoomMeeting,
+        submitText: dictionary.yes,
+        bodyText: dictionary.zoomMeetingConfirmation,
+        actions: {
+          onSubmit: handleStartZoomMeeting,
+        },
+      };
+
+      dispatch(addToModals(modalPayload));
+    }
   };
 
   return (
@@ -435,7 +451,9 @@ const ChatFooterPanel = (props) => {
             Created by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
-            <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspaceChat}</button>
+            <button className="btn btn-primary" onClick={handleJoinWorkspace}>
+              {dictionary.joinWorkspaceChat}
+            </button>
           </div>
         </Dflex>
       )}

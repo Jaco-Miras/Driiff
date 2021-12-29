@@ -2,6 +2,16 @@ import momentTZ from "moment-timezone";
 import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
+  origTheme: {
+    colors: {
+      primary: "#29323F",
+      secondary: "#4E5D72",
+      third: "#F1F2F6",
+      fourth: "#FBB800",
+      fifth: "#192536",
+      sidebarTextColor: "#cbd4db",
+    },
+  },
   sessionUser: null,
   driff: {
     i18n: 1605864545,
@@ -10,6 +20,16 @@ const INITIAL_STATE = {
     company_name: "Driff communication",
     domains: [],
     logo: "",
+    theme: {
+      colors: {
+        primary: "#29323F",
+        secondary: "#4E5D72",
+        third: "#F1F2F6",
+        fourth: "#FBB800",
+        fifth: "#192536",
+        sidebarTextColor: "#cbd4db",
+      },
+    },
     settings: {
       maintenance_mode: false,
       google_login: true,
@@ -117,6 +137,7 @@ export default (state = INITIAL_STATE, action) => {
       let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
       let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
       let domains = state.driff.domains;
+      let logo = state.driff.logo;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -125,6 +146,7 @@ export default (state = INITIAL_STATE, action) => {
         if (s.domains) {
           domains = s.domains.split(",");
         }
+        if (s.logo) logo = s.logo;
 
         settings = { ...settings, ...s };
         if (s.custom_translation) {
@@ -152,11 +174,13 @@ export default (state = INITIAL_STATE, action) => {
           ANNOUNCEMENT_AT,
           READ_RELEASE_UPDATES,
           domains: domains,
+          logo: logo,
         },
       };
     }
     case "GET_DRIFF_SETTINGS_SUCCESS": {
       let driff = state.driff;
+      let origTheme = state.origTheme;
 
       for (const index in action.data) {
         if (action.data.hasOwnProperty(index)) {
@@ -203,6 +227,25 @@ export default (state = INITIAL_STATE, action) => {
 
               break;
             }
+            case "themes": {
+              driff = {
+                ...driff,
+                theme: {
+                  colors: {
+                    ...driff.theme.colors,
+                    ...JSON.parse(value),
+                  },
+                },
+              };
+              origTheme = {
+                colors: {
+                  ...driff.theme.colors,
+                  ...JSON.parse(value),
+                },
+              };
+
+              break;
+            }
             default: {
               driff = {
                 ...driff,
@@ -215,6 +258,7 @@ export default (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
+        origTheme: origTheme,
         driff: {
           ...driff,
           isSettingsLoaded: true,
@@ -416,6 +460,15 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           logo: "",
+        },
+      };
+    }
+    case "UPDATE_THEME_COLORS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          theme: { colors: { ...state.driff.theme.colors, ...action.data.colors } },
         },
       };
     }

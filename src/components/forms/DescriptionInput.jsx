@@ -94,7 +94,7 @@ const WrapperDiv = styled(InputGroup)`
         padding-left: 1rem;
 
         &.selected {
-          background: #7a1b8b;
+          background: ${(props) => props.theme.colors.primary};
           color: #fff;
           cursor: pointer;
           span.all-pic > img {
@@ -105,7 +105,10 @@ const WrapperDiv = styled(InputGroup)`
     }
   }
   .mention {
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
+  }
+  .ql-snow a {
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 
@@ -128,12 +131,12 @@ const StyledQuillEditor = styled(QuillEditor)`
     .ql-formats {
       margin-right: 10px;
       button:hover {
-        color: #7a1b8b !important;
+        color: ${({ theme }) => theme.colors.primary} !important;
         .ql-stroke {
-          stroke: #7a1b8b !important;
+          stroke: ${({ theme }) => theme.colors.primary} !important;
         }
         .ql-fill {
-          fill: #7a1b8b !important;
+          fill: ${({ theme }) => theme.colors.primary} !important;
         }
       }
     }
@@ -157,17 +160,8 @@ const IconButton = styled(SvgIconFeather)`
   border-radius: 8px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   &:hover {
-    background: #7a1b8b;
+    background: ${({ theme }) => theme.colors.primary};
     color: #ffffff;
-  }
-  &.feather-send {
-    border: 1px solid #7a1b8b;
-    background-color: #7a1b8b;
-    color: #fff;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    &:hover {
-      background-color: #8c3b9b;
-    }
   }
 `;
 
@@ -181,7 +175,7 @@ const DescriptionInputWrapper = styled.div`
   }
   resize: vertical;
   overflow: auto;
-  ${(props) => props.hasFocus && "border-color: rgba(122, 27, 139, 0.8);"}
+  ${(props) => props.hasFocus && `border-color: ${props.theme.colors.primary};`}
 `;
 
 const Buttons = styled.div`

@@ -283,3 +283,15 @@ export function setNewDriffData(payload, callback) {
 export function setDontShowIds(payload, callback) {
   return SimpleDispatchActionToReducer("SET_DONT_SHOW_IDS", payload, callback);
 }
+
+export function incomingZoomUserLeft(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ZOOM_USER_LEFT", payload, callback);
+}
+
+export function incomingZoomCreate(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ZOOM_CREATE", payload, callback);
+}
+
+export function incomingZoomEnded(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ZOOM_ENDED", payload, callback);
+}

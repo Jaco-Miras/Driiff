@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 
 const ChannelTitleContainer = styled.h6`
   color: #363636;
-  ${(props) => props.channel.total_unread && "color: #7a1b8b"};
+  ${(props) => props.channel.total_unread && `color: ${props.theme.colors.primary}`};
   flex-grow: 1;
   ${(props) => props.selectedChannel !== null && props.channel.id === props.selectedChannel.id && "font-weight: bold;"};
   overflow: hidden;

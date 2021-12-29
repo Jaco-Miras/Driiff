@@ -90,7 +90,7 @@ const FileList = styled.li`
   ${(props) => props.isDeleted && "text-decoration: line-through;"}
   &:hover {
     cursor: ${(props) => (props.isDeleted ? "inherit" : "pointer")};
-    color: ${(props) => (props.isDeleted ? "inherit" : "#972c86")};
+    color: ${(props) => (props.isDeleted ? "inherit" : props.theme.colors.primary)};
 
     svg.feather-trash-2 {
       color: #505050;
@@ -111,7 +111,7 @@ const FileList = styled.li`
       right: 0;
 
       &:hover {
-        color: ${(props) => (props.isDeleted ? "inherit" : "#972c86")};
+        color: ${(props) => (props.isDeleted ? "inherit" : props.theme.colors.primary)};
       }
     }
   }

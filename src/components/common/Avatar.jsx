@@ -90,11 +90,11 @@ const Wrapper = styled.div`
     justify-content: center;
     border-radius: 50%;
     // background-color: #f1f2f7;
-    background-color: #7a1b8b;
+    background-color: ${(props) => props.theme.colors.primary};
     border-color: transparent;
     .feather {
       color: #fff;
-      background-color: #7a1b8b;
+      background-color: ${(props) => props.theme.colors.primary};
     }
     ${(props) => props.hasTeamIcon && "background: transparent"}
   }

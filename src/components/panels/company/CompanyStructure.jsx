@@ -26,7 +26,7 @@ const StyledNode = styled.div`
     font-weight: 500;
   }
   :hover {
-    border-color: #7a1b8b;
+    border-color: ${(props) => props.theme.colors.primary};
   }
 `;
 

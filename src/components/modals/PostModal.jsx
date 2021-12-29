@@ -218,13 +218,32 @@ const WrapperDiv = styled(InputGroup)`
   &.addressed-to-container {
     margin: 20px 0 10px 0;
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  input.form-control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .custom-control-label:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const MoreOption = styled.div`
   cursor: pointer;
   // margin-bottom: 5px;
   &:hover {
-    color: #972c86;
+    color: ${(props) => props.theme.colors.primary};
   }
   @media all and (max-width: 480px) {
     margin-top: 40px;

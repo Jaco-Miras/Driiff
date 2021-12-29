@@ -1,11 +1,11 @@
 //import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { BlobGifPlayer, SvgIconFeather } from "../../common";
-import { useChatReply, useZoomActions } from "../../hooks";
+import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
@@ -16,7 +16,7 @@ const ChatBubbleContainer = styled.div`
   flex-flow: column;
   padding: ${(props) => (props.hasFiles ? "3px" : "6px 9px 8px 9px")};
   border-radius: 6px;
-  background: ${(props) => (props.isAuthor ? "#7A1B8B" : "#F0F0F0")};
+  background: ${(props) => (props.isAuthor ? props.theme.colors.primary : "#F0F0F0")};
   text-align: left;
   width: 100%;
   color: ${(props) => (props.isAuthor ? "#ffffff" : "#000000")};
@@ -191,44 +191,6 @@ const QuoteContent = styled.div`
   }
 `;
 
-// const ChatMessageFiles = styled(MessageFiles)`
-//   img {
-//     cursor: pointer;
-//   }
-//   a {
-//     font-weight: bold;
-//     cursor: pointer;
-//   }
-//   .reply-file-item {
-//     display: block;
-//     font-weight: bold;
-
-//     // &.component-image-text-link {
-//     //   img.component-svg-image {
-//     //     display: inline-block;
-//     //     width: 20px;
-//     //     height: 20px;
-//     //     margin-right: 5px;
-//     //     filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#ffffff").filter : hexToCSSFilter("#8C3B9B").filter)};
-//     //   }
-
-//     //   &:hover {
-//     //     color: #972c86;
-
-//     //     img.component-svg-image {
-//     //       filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#fff").filter : hexToCSSFilter("#0056b3").filter)};
-//     //     }
-//     //   }
-//     // }
-
-//     &.file-only {
-//       img {
-//         width: 52.5px;
-//         height: 52.5px;
-//       }
-//     }
-//   }
-// `;
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
   padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "0")};
@@ -240,39 +202,12 @@ const ReplyContent = styled.span`
 
   a {
     cursor: pointer;
-    color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
-    color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
+    color: ${(props) => (props.isAuthor ? "#ffffff" : props.theme.colors.primary)};
     text-decoration: underline;
-
-    // &.gdrive-link {
-    //   text-decoration: none;
-
-    //   .link {
-    //     @media (max-width: 1580px) {
-    //       max-width: 20vw;
-    //     }
-    //     @media (max-width: 1480px) {
-    //       max-width: 14vw;
-    //     }
-    //     @media (max-width: 1380px) {
-    //       max-width: 5vw;
-    //     }
-    //     @media (max-width: 991.99px) {
-    //       max-width: 350px;
-    //     }
-    //     @media (max-width: 822px) {
-    //       max-width: 20vw;
-    //     }
-    //   }
-    //   .preview-text {
-    //     font-weight: bold;
-    //     color: ${(props) => (props.isAuthor ? "#FFF" : "#828282")};
-    //   }
-    // }
 
     &:focus,
     &:hover {
-      color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff")};
+      color: ${(props) => (!props.isAuthor ? props.theme.colors.primary : "#ffffff")};
     }
     &.btn {
       border: 1px solid ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
@@ -484,10 +419,10 @@ const ChatBubble = (props) => {
 
   const history = useHistory();
 
-  const zoomActions = useZoomActions();
+  // const zoomActions = useZoomActions();
 
-  const componentIsMounted = useRef(true);
-  const [generatingSignature, setGeneratingSignature] = useState(false);
+  // const componentIsMounted = useRef(true);
+  // const [generatingSignature, setGeneratingSignature] = useState(false);
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
@@ -530,47 +465,47 @@ const ChatBubble = (props) => {
     return false;
   };
 
-  const handleZoomLink = (e) => {
-    e.preventDefault();
-    if (reply.body.startsWith("ZOOM_MESSAGE::{") && !generatingSignature) {
-      setGeneratingSignature(true);
-      const data = JSON.parse(reply.body.replace("ZOOM_MESSAGE::", ""));
-      let payload = {
-        meetingNumber: data.data.meetingNumber,
-        role: 0,
-        password: data.data.passWord,
-      };
-      const cb = () => {
-        if (componentIsMounted.current) setGeneratingSignature(false);
-      };
-      zoomActions.generateSignature(payload, cb);
-      // eslint-disable-next-line quotes
-      // const zmessage = reply.body.replace('<span class="fancied"></span>', "");
-      // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
-      // let payload = {
-      //   meetingNumber: data.data.meetingNumber,
-      //   role: 0,
-      //   password: data.data.passWord,
-      //   host: false,
-      //   hasJoin: false,
-      // };
-      // localStorage.setItem("zoomConfig", JSON.stringify(payload));
-      // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${payload.meetingNumber}`, "_blank");
-    }
+  // const handleZoomLink = (e) => {
+  //   e.preventDefault();
+  //   if (reply.body.startsWith("ZOOM_MESSAGE::{") && !generatingSignature) {
+  //     setGeneratingSignature(true);
+  //     const data = JSON.parse(reply.body.replace("ZOOM_MESSAGE::", ""));
+  //     let payload = {
+  //       meetingNumber: data.data.meetingNumber,
+  //       role: 0,
+  //       password: data.data.passWord,
+  //     };
+  //     const cb = () => {
+  //       if (componentIsMounted.current) setGeneratingSignature(false);
+  //     };
+  //     zoomActions.generateSignature(payload, cb);
+  //     // eslint-disable-next-line quotes
+  //     // const zmessage = reply.body.replace('<span class="fancied"></span>', "");
+  //     // const data = JSON.parse(zmessage.replace("ZOOM_MESSAGE::", ""));
+  //     // let payload = {
+  //     //   meetingNumber: data.data.meetingNumber,
+  //     //   role: 0,
+  //     //   password: data.data.passWord,
+  //     //   host: false,
+  //     //   hasJoin: false,
+  //     // };
+  //     // localStorage.setItem("zoomConfig", JSON.stringify(payload));
+  //     // window.open(`https://demo24.drevv.com/zoom/meeting/${selectedChannel.id}/${payload.meetingNumber}`, "_blank");
+  //   }
 
-    return false;
-  };
+  //   return false;
+  // };
 
   useEffect(() => {
     // const zoomLink = refs.container.current.querySelector("a.zoom-link");
     // if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
 
-    let zLink = null;
+    // let zLink = null;
 
-    if (reply.body.startsWith("ZOOM_MESSAGE::{")) {
-      zLink = refs.replyRef.current.querySelector("strong");
-      if (zLink) zLink.addEventListener("click", handleZoomLink, true);
-    }
+    // if (reply.body.startsWith("ZOOM_MESSAGE::{")) {
+    //   zLink = refs.replyRef.current.querySelector("strong");
+    //   if (zLink) zLink.addEventListener("click", handleZoomLink, true);
+    // }
 
     const lnkChannelMessage = refs.container.current.querySelector("a.push");
 
@@ -578,7 +513,7 @@ const ChatBubble = (props) => {
 
     return () => {
       if (lnkChannelMessage) lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
-      if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
+      //if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
     };
   }, []);
 
@@ -627,6 +562,7 @@ const ChatBubble = (props) => {
   };
 
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
+  //const theme = useTheme()
 
   return (
     <ChatBubbleContainer
@@ -637,7 +573,6 @@ const ChatBubble = (props) => {
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
-      theme={chatSettings.chat_message_theme}
       hasGif={showGifPlayer}
       hasRemoveOnDlFiles={hasRemoveOnDlFiles}
     >
@@ -665,21 +600,12 @@ const ChatBubble = (props) => {
                   showAvatar={showAvatar}
                   isEmoticonOnly={isEmoticonOnly}
                   hasFiles={hasFiles}
-                  theme={chatSettings.chat_message_theme}
                   onClick={handleQuoteClick}
                   //onTouchEnd={handleQuoteClick}
                   isAuthor={isAuthor}
                 >
-                  {reply.quote.user_id === user.id ? (
-                    <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
-                      {"You"}
-                    </QuoteAuthor>
-                  ) : (
-                    <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={reply.quote.user_id === user.id}>
-                      {quoteAuthor}
-                    </QuoteAuthor>
-                  )}
-                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  {reply.quote.user_id === user.id ? <QuoteAuthor isAuthor={true}>{"You"}</QuoteAuthor> : <QuoteAuthor isAuthor={reply.quote.user_id === user.id}>{quoteAuthor}</QuoteAuthor>}
+                  <QuoteContent className={"quote-content"} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {hasMessage && (
@@ -688,16 +614,13 @@ const ChatBubble = (props) => {
                     //ref={handleContentRef}
                     ref={refs.replyRef}
                     hasFiles={hasFiles}
-                    theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""} ${reply.body.startsWith("ZOOM_MESSAGE::{") ? "zoom-msg" : ""}`}
                     dangerouslySetInnerHTML={{ __html: replyBody }}
                   />
                 </span>
               )}
-              {reply.files.length > 0 && !reply.is_deleted && (
-                <MessageFiles dictionary={dictionary} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />
-              )}
+              {reply.files.length > 0 && !reply.is_deleted && <MessageFiles dictionary={dictionary} isAuthor={isAuthor} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />}
               {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
             </ChatContent>
           </ChatContentClap>

@@ -57,17 +57,17 @@ const Wrapper = styled.li`
       }
     }
     h6 {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
   h6 {
-    ${(props) => props.selected && "color: #7A1B8B;"}
+    ${(props) => props.selected && `color: ${props.theme.colors.primary};`}
   }
   &:after {
     ${(props) => props.selected && "content: '';"};
     width: 3px;
     height: 100%;
-    background: #7a1b8b;
+    background: ${(props) => props.theme.colors.primary};
     display: block;
     position: absolute;
     top: 0;

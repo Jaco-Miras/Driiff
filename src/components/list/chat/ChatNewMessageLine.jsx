@@ -11,7 +11,7 @@ const ChatNewMessageLine = styled.div`
   .sepline {
     font-weight: 600;
     font-size: 0.85em;
-    color: #972c86;
+    color: ${(props) => props.theme.colors.primary};
     position: relative;
     display: flex;
     align-items: center;
@@ -23,7 +23,7 @@ const ChatNewMessageLine = styled.div`
     &::after {
       content: "";
       position: absolute;
-      background-color: #972c86;
+      background-color: ${(props) => props.theme.colors.primary};
       width: 100%;
       height: 1px;
       display: block;

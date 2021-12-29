@@ -7,6 +7,13 @@ import { useTranslationActions } from "../hooks";
 
 const Wrapper = styled.div``;
 
+const DriffLogo = styled(SvgIcon)`
+  path {
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
+  }
+`;
+
 const RedirectPanel = (props) => {
   const { redirectTo } = props;
   const [redirectTime, setRedirectTime] = useState(5);
@@ -39,7 +46,7 @@ const RedirectPanel = (props) => {
   return (
     <Wrapper className="redirect-panel form-wrapper">
       <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80" />
+        <DriffLogo icon={"driff-logo2"} width="110" height="80" />
       </div>
 
       <h5>{dictionary.invalidDriffName}</h5>

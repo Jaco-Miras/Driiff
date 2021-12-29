@@ -11,7 +11,7 @@ const BackWrapper = styled.span`
     width: 20px;
     height: 20px;
     :hover {
-      color: #7a1b8b;
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 `;

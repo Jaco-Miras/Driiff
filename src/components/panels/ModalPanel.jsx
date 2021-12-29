@@ -14,7 +14,7 @@ import {
   FileUploadModal,
   InvitedUsersModal,
   MoveFilesModal,
-  PostSnoozeModal,
+  //PostSnoozeModal,
   SingleInputModal,
   TodoReminderModal,
   ReleaseModal,
@@ -30,6 +30,7 @@ import {
   AddToTeamModal,
   ZoomInviteModal,
   WIPModal,
+  ZoomMeetingInProgress,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -79,8 +80,8 @@ const ModalPanel = () => {
             return <CreateWorkspaceFolderModal key={modal.type} data={modal} />;
           case "workspace_create_edit":
             return <CreateEditWorkspaceModal key={modal.type} data={modal} />;
-          case "snooze_post":
-            return <PostSnoozeModal key={modal.type} data={modal} />;
+          // case "snooze_post":
+          //   return <PostSnoozeModal key={modal.type} data={modal} />;
           case "driff_invite_users":
             return <InvitedUsersModal key={modal.type} data={modal} />;
           case "single_input":
@@ -103,6 +104,8 @@ const ModalPanel = () => {
             return <PostModal key={modal.type} data={modal} />;
           case "zoom_invite":
             return <ZoomInviteModal key={modal.type} data={modal} />;
+          case "zoom_inprogress":
+            return <ZoomMeetingInProgress key={modal.type} data={modal} />;
           case "create_bot":
             return <CreateAdminBotModal key={modal.type} />;
           case "update_bot":

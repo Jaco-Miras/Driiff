@@ -31,7 +31,7 @@ const Wrapper = styled.div`
       padding: 0;
       background-color: #fff;
       border: 2px solid #fff;
-      color: #7a1b8b;
+      color: ${(props) => props.theme.colors.primary};
       .dark & {
         background-color: #191c20;
         color: #fff;
@@ -52,7 +52,7 @@ const Icon = styled(SvgIconFeather)`
   height: 2.7rem;
   width: 2.7rem;
   &.feather-home {
-    background: #7a1b8b;
+    background: ${(props) => props.theme.colors.primary};
     padding: 6px 0;
   }
   .chat-header-icon-left & {

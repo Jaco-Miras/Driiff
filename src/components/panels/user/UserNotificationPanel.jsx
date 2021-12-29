@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     h4 {
       margin: 2rem auto;
       text-align: center;
-      color: #972c86;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
   overflow: auto;
@@ -66,7 +66,7 @@ const UserNotificationPanel = (props) => {
           )}
           {!notif.length && (
             <div className="card empty-notification">
-              <h4>{dictionary.noNotificationsToShow}</h4>
+              <h4 className="text-primary">{dictionary.noNotificationsToShow}</h4>
               <div className="card-body d-flex justify-content-center align-items-center">
                 <SvgEmptyState icon={1} height={330} />
               </div>

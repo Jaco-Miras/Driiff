@@ -22,7 +22,7 @@ const Wrapper = styled.div`
       position: absolute;
       cursor: pointer;
       &:hover {
-        color: #7a1b8b;
+        color: ${(props) => props.theme.colors.primary};
       }
     }
   }

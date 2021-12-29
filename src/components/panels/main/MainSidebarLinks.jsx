@@ -48,14 +48,13 @@ const NavIcon = styled(SvgIconFeather)`
 
 const NavIconContainer = styled(NavLink)`
   display: flex;
-  color: #fff;
   height: 40px;
   justify-content: flex-start;
   align-items: center;
   margin: 0 15px;
   border-radius: 8px;
   &.active {
-    background: #ffffff14;
+    background: ${({ theme }) => theme.colors.primary};
   }
   div {
     display: inline-block;

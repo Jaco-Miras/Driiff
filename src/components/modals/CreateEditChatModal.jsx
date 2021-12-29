@@ -52,6 +52,22 @@ const WrapperDiv = styled(InputGroup)`
   .react-select__multi-value__label {
     align-self: center;
   }
+  .react-select__control,
+  .react-select__control:hover,
+  .react-select__control:active,
+  .react-select__control:focus {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+  .react-select__option:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
 `;
 
 const SelectPeople = styled(PeopleSelect)`
@@ -59,7 +75,6 @@ const SelectPeople = styled(PeopleSelect)`
   width: 1%;
   min-width: 550px;
   .react-select__control--menu-is-open {
-    border-color: #7a1b8b !important;
     box-shadow: none;
   }
   .react-select__option {
@@ -67,17 +82,16 @@ const SelectPeople = styled(PeopleSelect)`
   }
   .react-select__menu-list--is-multi > div {
     &:hover {
-      background: #8c3b9b;
+      //background: #8c3b9b;
       color: #ffffff;
       cursor: pointer;
       .react-select__option {
-        background: #8c3b9b;
+        //background: #8c3b9b;
         cursor: pointer;
       }
     }
   }
   .react-select__control--is-focused {
-    border-color: #7a1b8b !important;
     box-shadow: none;
   }
   @media all and (max-width: 480px) {

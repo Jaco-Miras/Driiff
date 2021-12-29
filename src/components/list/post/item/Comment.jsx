@@ -29,7 +29,7 @@ const Wrapper = styled.li`
 
   .mention {
     font-weight: bold;
-    color: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
     &[data-value="All"],
     &[data-id="${(props) => props.userId}"] {
       font-weight: normal;
@@ -49,7 +49,7 @@ const Wrapper = styled.li`
     position: relative;
     padding: 0 1rem;
     color: #868686;
-    border-left: 4px solid #972c86;
+    border-left: 4px solid ${(props) => props.theme.colors.primary};
 
     // &:before {
     //   border: 10px solid #0000;
@@ -159,8 +159,8 @@ const CommentWrapper = styled.div`
     cursor: pointer;
   }
   .clap-true {
-    color: #7a1b8b;
-    fill: #7a1b8b;
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
   }
 `;
 
@@ -345,7 +345,7 @@ const Comment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

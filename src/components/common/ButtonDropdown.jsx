@@ -17,8 +17,8 @@ const Wrapper = styled.div`
     }
 
     &.show {
-      background: #afb8bd;
-      border-color: #afb8bd;
+      //background: ${({ theme }) => theme.colors.primary}!important;
+      border-color: ${({ theme }) => theme.colors.primary}!important;
       box-shadow: 0 0 0 0.2rem rgba(175, 184, 189, 0.4);
     }
     &:focus {
@@ -27,6 +27,9 @@ const Wrapper = styled.div`
   }
   .dropdown-item {
     cursor: pointer;
+    :hover {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 

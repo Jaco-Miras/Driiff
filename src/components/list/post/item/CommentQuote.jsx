@@ -9,7 +9,7 @@ const QuoteWrapper = styled.div`
   text-align: left;
   position: relative;
   width: 100%;
-  border-left: 2px solid #972c86;
+  border-left: 2px solid ${(props) => props.theme.colors.primary};
   margin-left: 30px;
   margin-bottom: 10px;
 

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Tree } from "react-organizational-chart";
@@ -30,7 +30,7 @@ const StyledNode = styled.div`
     font-weight: 500;
   }
   :hover {
-    border-color: #7a1b8b;
+    border-color: ${({ theme }) => theme.colors.primary};
   }
   .TEAM {
     .feather {
@@ -42,6 +42,7 @@ const StyledNode = styled.div`
 
 const AllUsersStructure = (props) => {
   const { dictionary } = props;
+  const theme = useTheme();
   const users = useSelector((state) => state.users.users);
   const internalUsers = Object.values(users).filter((u) => u.type === "internal");
   const externalUsers = Object.values(users).filter((u) => u.type === "external");
@@ -96,7 +97,7 @@ const AllUsersStructure = (props) => {
       {usersLoaded && teamsLoaded && (
         <Tree
           lineWidth={"2px"}
-          lineColor={"#8c3b9b"}
+          lineColor={theme.colors.primary}
           lineBorderRadius={"10px"}
           label={
             <StyledNode>

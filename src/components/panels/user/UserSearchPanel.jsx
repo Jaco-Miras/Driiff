@@ -10,8 +10,11 @@ const Wrapper = styled.div`
     h4 {
       margin: 2rem auto;
       text-align: center;
-      color: #972c86;
+      color: ${(props) => props.theme.colors.primary};
     }
+  }
+  .text-primary {
+    color: ${(props) => props.theme.colors.primary}!important;
   }
 `;
 

@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     margin-bottom: 1rem;
     min-height: 74px;
     max-height: 74px;
-    background-color: #3f034a;
+    background-color: ${({ theme }) => theme.colors.fifth};
     .driff-logo {
       width: 90px;
       height: 90px;
@@ -152,7 +152,7 @@ const NavNewWorkspace = styled.button`
   height: 40px;
   justify-content: center;
   align-items: center;
-  color: #ffffff !important;
+  color: ${({ theme }) => theme.colors.sidebarTextColor} !important;
 
   div {
     position: relative;
@@ -165,6 +165,7 @@ const NavNewWorkspace = styled.button`
 
 const NewBtnWrapper = styled.div`
   margin: 15px 30px;
+  color: ${({ theme }) => theme.colors.sidebarTextColor}!important;
 `;
 
 const MainNavigationTabPanel = (props) => {
