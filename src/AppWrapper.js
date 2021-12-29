@@ -118,7 +118,7 @@ const AppWrapper = styled.div`
   .chat-date-icons {
     color: ${(props) => props.theme.colors.primary};
     .dark & {
-      color: ${(props) => props.theme.colors.third};
+      color: #c7c7c7;
     }
   }
 
