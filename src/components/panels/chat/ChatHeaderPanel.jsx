@@ -185,9 +185,12 @@ const StyledMoreOptions = styled(MoreOptions)`
     }
   }
 
-  // @media (max-width: 480px) {
-  //   margin: 0 0 0.75rem !important;
-  // }
+  @media (max-width: 480px) {
+    .more-options-tooltip {
+      top: 20px;
+      right: -45px;
+    }
+  }
 `;
 
 const StyledBadge = styled.div`
@@ -236,6 +239,11 @@ const StyledTooltip = styled(Tooltip)`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const ChatIconsOptionsContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const toggleTooltip = () => {
@@ -512,44 +520,38 @@ const ChatHeaderPanel = (props) => {
             </StyledBadge>
           )}
         </ChatHeaderBadgeContainer>
-        {channel.type === "TOPIC" && channel.hasOwnProperty("is_active") && (
-          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
-            <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+        <ChatIconsOptionsContainer>
+          {channel.type === "TOPIC" && channel.hasOwnProperty("is_active") && (
+            <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
+              <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
+            </StyledTooltip>
+          )}
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favorite}>
+            <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
           </StyledTooltip>
-        )}
-        <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.favorite}>
-          <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
-        </StyledTooltip>
+          {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
+          {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
 
-        <div>
-          <ul className="nav align-items-center justify-content-end">
-            <li className="ml-2" style={{ height: "21px" }}>
-              <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
-                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
-                {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
-                <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
-                <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
-                <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
-                {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
-                {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
-              </StyledMoreOptions>
-            </li>
-          </ul>
-        </div>
-        {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
-        {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
+          <div>
+            <ul className="nav align-items-center justify-content-end">
+              <li className="ml-2" style={{ height: "21px" }}>
+                <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
+                  {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+                  {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+                  <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+                  <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+                  <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+                  {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+                  {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
+                </StyledMoreOptions>
+              </li>
+            </ul>
+          </div>
+        </ChatIconsOptionsContainer>
+
         <div className="chat-header-folder">{getChannelFolder()}</div>
       </div>
       <ChatHeaderMembers channel={channel} />
-      {/* <div className="chat-header-right">
-        <ul className="nav align-items-center justify-content-end">
-          {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
-            <li>
-              <MemberLists members={channel.members} />
-            </li>
-          )}
-        </ul>
-      </div> */}
     </Wrapper>
   );
 };
