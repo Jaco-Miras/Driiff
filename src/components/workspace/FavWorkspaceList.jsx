@@ -8,6 +8,9 @@ const Wrapper = styled.div`
   padding-top: 5px;
   margin-bottom: 15px;
   cursor: pointer;
+  .feather {
+    color: ${({ theme }) => theme.colors.sidebarTextColor};
+  }
   .feather-star {
     top: -2px;
     right: -2px;

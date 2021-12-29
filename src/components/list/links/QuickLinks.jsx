@@ -60,7 +60,7 @@ const LinkNav = styled.ul`
     width: 100%;
     padding: 0 10px;
     font-weight: 400;
-    color: #cbd4db;
+    color: ${({ theme }) => theme.colors.sidebarTextColor};
     background: #ffffff14;
 
     > div {
@@ -105,9 +105,9 @@ const LinkNav = styled.ul`
   li.shorcut-title-link {
     padding: 0;
 
-    .shorcut-title {
-      background: #ffffff10;
-    }
+    // .shorcut-title {
+    //   background: #ffffff10;
+    // }
   }
 `;
 
