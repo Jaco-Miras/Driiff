@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { SvgIconFeather } from "../../common";
 import { useIsMember } from "../../hooks";
@@ -43,6 +43,7 @@ const EyeIcon = styled(SvgIconFeather)`
 
 const WorkspaceSearchResult = (props) => {
   const { dictionary, onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
+  const theme = useTheme();
   const { topic, workspace } = item;
   const workspaceMembers = item.members
     .map((m) => {
@@ -84,7 +85,7 @@ const WorkspaceSearchResult = (props) => {
           {topic.is_archive && <span className={"badge badge-ultralight ml-1"}>{dictionary.labelArchived}</span>}
           {!topic.is_archive && !topic.is_locked && <span className={"badge badge-ultralight ml-1"}>{dictionary.labelOpen}</span>}
           {topic.is_shared && (
-            <span className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+            <span className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
               <EyeIcon icon="eye" /> {dictionary.externalAccess}
             </span>
           )}

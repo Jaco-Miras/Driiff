@@ -149,7 +149,7 @@ const ChatBubbleContainer = styled.div`
   &:before {
     ${(props) => props.showAvatar && "content: '';"};
     border: 10px solid transparent;
-    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? "#FFDB92" : "#f0f0f0")};
+    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? props.theme.colors.fourth : "#f0f0f0")};
     position: absolute;
     top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
     left: 30px;

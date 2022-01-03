@@ -6,7 +6,7 @@ import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   .client-shared {
-    background: #ffdb92;
+    background: ${(props) => props.theme.colors.fourth};
     color: #212529;
     margin-right: 5px;
     .feather {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, useRouteMatch } from "react-router-dom";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
@@ -310,6 +310,7 @@ const WorspaceHeaderPanel = (props) => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
   //const history = useHistory();
+  const theme = useTheme();
   const folders = useSelector((state) => state.workspaces.folders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
@@ -615,7 +616,7 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
-                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
                             <Icon icon="eye" /> {dictionary.withClient}
                           </div>
                         </li>
@@ -669,7 +670,7 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
-                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: "#FFDB92" }}>
+                          <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
                             <Icon icon="eye" /> {dictionary.withClient}
                           </div>
                         </li>
