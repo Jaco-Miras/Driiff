@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { useWIPFileComments, useTimeFormat } from "../../hooks";
 import { Avatar } from "../../common";
 
 const Wrapper = styled.div`
   &.card-body {
-    padding: 0.5rem;
+    padding: 15px;
     overflow: auto;
     .file-comment-body {
       border-radius: 6px;
@@ -24,11 +24,12 @@ const Wrapper = styled.div`
 `;
 
 const SidebarComments = (props) => {
-  const { wip } = props;
-  const { comments } = useWIPFileComments();
+  //const { wip } = props;
+  const scrollRef = useRef();
+  const { comments } = useWIPFileComments(scrollRef);
   const timeFormat = useTimeFormat();
   return (
-    <Wrapper className="card-body d-flex">
+    <Wrapper className="card-body d-flex" ref={scrollRef}>
       <div className="file-comments-thread">
         {comments.length > 0 &&
           comments.map((c) => {
