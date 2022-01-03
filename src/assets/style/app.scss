@@ -212,13 +212,13 @@ li[data-show_line="true"] {
 }
 .chat-left .chat-bubble {
   background-color: #F0F0F0;
-  &.external-chat {
-    background-color: #FFDB92;
-    &:before {
-      border-right-color: #FFDB92;
-      border-left-color: #FFDB92;
-    }
-  }
+  // &.external-chat {
+  //   background-color: #FFDB92;
+  //   &:before {
+  //     border-right-color: #FFDB92;
+  //     border-left-color: #FFDB92;
+  //   }
+  // }
   &:after {
     border-right-color: #F0F0F0;
     border-left-color: #F0F0F0;
@@ -633,10 +633,10 @@ body.dark {
   }
   .chat-left .chat-bubble {
     background-color: #25282c;
-    &.external-chat {
-      background-color:#FFDB92;
-      color: #25282c;
-    }
+    // &.external-chat {
+    //   background-color:#FFDB92;
+    //   color: #25282c;
+    // }
     &:after {
       border-right-color: #25282c !important;
       border-left-color: #0000 !important;
