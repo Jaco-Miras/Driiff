@@ -9,6 +9,8 @@ import {
   getWIPComments as getWIPCommentsService,
   postFileComment as postFileCommentService,
   getFileComments as getFileCommentsService,
+  postFileApproval as postFileApprovalService,
+  postFileCommentClose as postFileCommentCloseService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -73,4 +75,12 @@ export function addFileComment(payload, callback) {
 
 export function incomingWIPFileComment(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WIP_FILE_COMMENT", payload, callback);
+}
+
+export function postFileApproval(payload, callback) {
+  return dispatchActionToReducer(postFileApprovalService(payload), "POST_FILE_APPROVAL_START", "POST_FILE_APPROVAL_SUCCESS", "POST_FILE_APPROVAL_FAIL", callback);
+}
+
+export function postFileCommentClose(payload, callback) {
+  return dispatchActionToReducer(postFileCommentCloseService(payload), "POST_FILE_COMMENT_CLOSE_START", "POST_FILE_COMMENT_CLOSE_SUCCESS", "POST_FILE_COMMENT_CLOSE_FAIL", callback);
 }

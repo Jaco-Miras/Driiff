@@ -132,3 +132,34 @@ export function getFileComments(payload) {
     url: url,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.file_version_id
+ * @param {boolean} payload.approved
+ * @returns {Promise<*>}
+ */
+
+export function postFileApproval(payload) {
+  let url = "/v2/proposal/file/version/approve";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.file_version_id
+ * @param {boolean} payload.is_close
+ * @returns {Promise<*>}
+ */
+export function postFileCommentClose(payload) {
+  let url = "/v2/proposal/file/version/close";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}

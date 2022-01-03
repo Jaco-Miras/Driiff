@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     //   width: 16px;
     // }
 
-    .file-list {
+    &.app-file-list {
       outline: ${(props) => (props.isApproved ? "2px solid green" : "unset")};
     }
 
@@ -144,11 +144,11 @@ const ProposalItem = (props) => {
   };
 
   return (
-    <Wrapper className={`file-list-item ${className}`} isApproved={item.is_approved} onClick={handleFileView}>
+    <Wrapper className={`file-list-item ${className}`} isApproved={item.status === "done"} onClick={handleFileView}>
       <div className="card app-file-list mb-0">
         <div className="file-header">
           <ProposalVersionLabel />
-          {item.is_approved && (
+          {item.status === "done" && (
             <span className="checked-circle mr-2">
               <SvgIconFeather icon="check" />
             </span>
@@ -161,7 +161,7 @@ const ProposalItem = (props) => {
         </div>
         <div className="p-2 small cursor-pointer" onClick={handleFileView}>
           <ToolTip content={isLink ? item.media_link_title : item.name}>
-            <div className="file-name">{isLink ? item.media_link_title : item.name}</div>
+            <div className="file-name">{isLink ? item.media_link_title : item.file_name}</div>
           </ToolTip>
           {!isLink && (
             <div className="text-muted">

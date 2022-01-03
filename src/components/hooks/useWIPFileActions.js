@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { addFileComment, postFileComment, getFileComments } from "../../redux/actions/wipActions";
+import { addFileComment, postFileComment, getFileComments, postFileApproval, postFileCommentClose } from "../../redux/actions/wipActions";
 
 const useWIPFileActions = () => {
   const dispatch = useDispatch();
@@ -12,10 +12,18 @@ const useWIPFileActions = () => {
   const fetchComments = (payload, callback = () => {}) => {
     dispatch(getFileComments(payload, callback));
   };
+  const approve = (payload, callback = () => {}) => {
+    dispatch(postFileApproval(payload, callback));
+  };
+  const closeComments = (payload, callback = () => {}) => {
+    dispatch(postFileCommentClose(payload, callback));
+  };
   return {
     addComment,
     fetchComments,
     submitComment,
+    approve,
+    closeComments,
   };
 };
 

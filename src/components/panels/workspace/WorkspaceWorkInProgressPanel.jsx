@@ -11,7 +11,7 @@ import WIPDetail from "../wip/WIPDetail";
 import { useWIP } from "../../hooks";
 
 const Wrapper = styled.div`
-  height: ${(props) => (props.showGallery ? "calc(100vh - 115px)" : "100%")};
+  height: ${(props) => (props.showGallery ? "calc(100vh - 90px)" : "100%")};
   overflow-y: auto;
   overflow-x: hidden;
   text-align: left;

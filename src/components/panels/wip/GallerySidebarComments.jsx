@@ -9,19 +9,29 @@ import { QuillEditor } from "../../forms";
 import SidebarComments from "./SidebarComments";
 
 const Wrapper = styled.div`
+  position relative;
+  display: flex;
+  flex-flow: column;
+  .bottom-modal-mobile_inner {
+   flex: 1 1;
+  }
+  .app-sidebar-menu {
+    height: 100%;
+    
+  }
   .card-header {
     height: 70px;
   }
   .card-footer {
     border: none;
     flex-flow: column;
-    .custom-checkbox {
-      margin-bottom: 0.75rem;
+    .close-submit {
+      justify-content: space-between;
     }
     .file-input-wrapper {
       border: 1px solid #ebebeb;
       border-radius: 6px;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       position: relative;
       min-height: 125px;
       background: #f1f2f7;
@@ -131,6 +141,16 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
+const ApprovedByDiv = styled.div`
+  padding: 0.5rem;
+  font-size: 0.7rem;
+`;
+
+const SubmitBtn = styled.button`
+  padding: 10px;
+  width: auto !important;
+`;
+
 const GallerySidebarComments = (props) => {
   const { item } = props;
   const actions = useWIPActions();
@@ -152,11 +172,18 @@ const GallerySidebarComments = (props) => {
     mentionedUserIds: [],
     ignoredMentionedUserIds: [],
   });
+  const [closeCommments, setCloseComments] = useState(false);
+
   const [finalVersion, setFinalVersion] = useState(false);
 
   const toggleCheck = () => {
     setFinalVersion(!finalVersion);
   };
+
+  const toggleClose = () => {
+    setCloseComments(!closeCommments);
+  };
+
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
   };
@@ -233,33 +260,66 @@ const GallerySidebarComments = (props) => {
     members: workspace ? workspace.members : [],
     prioMentionIds: workspace ? workspace.members.map((m) => m.id) : [],
   });
+  const isAuthor = item.author.id === user.id;
+  const isApprover = item.approver_ids.some((id) => id === user.id);
+
+  const handleApproveFile = () => {
+    const payload = {
+      file_version_id: file.file_version_id,
+      approved: true,
+    };
+    fileActions.approve(payload);
+  };
 
   return (
     <Wrapper className="col-md-3 app-sidebar bottom-modal-mobile">
       <MobileOverlayFilter className="mobile-overlay" onClick={closeMobileModal} />
-      <div className="bottom-modal-mobile_inner h-100">
-        <div className="app-sidebar-menu h-100" tabIndex="2">
+      <div className="bottom-modal-mobile_inner">
+        <div className="app-sidebar-menu" tabIndex="2">
           <div className="card card-body create-new-post-wrapper h-100">
             <div className="card-header d-flex align-items-center">
               <span>
                 <SvgIconFeather icon="message-square" className="mr-2" /> Comments
               </span>
             </div>
-            <SidebarComments />
+            <SidebarComments wip={item} />
             <div className="card-footer d-flex">
               <div className="file-input-wrapper">
-                <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} />
+                <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} readOnly={file.is_close === 1} />
               </div>
-              <CheckBox name="final" checked={finalVersion} onClick={toggleCheck}>
-                This is the final version
-              </CheckBox>
-              <button className="btn btn-primary btn-block" onClick={handleShowModal}>
-                Upload new version
-              </button>
+              <div className="d-flex align-items-center mb-2 close-submit">
+                <CheckBox name="close" checked={closeCommments} onClick={toggleClose} disabled={file.is_close === 1}>
+                  Close comments
+                </CheckBox>
+                <SubmitBtn className="btn btn-primary btn-block">Submit</SubmitBtn>
+              </div>
+              {isAuthor && (
+                <>
+                  <CheckBox name="final" checked={finalVersion} onClick={toggleCheck}>
+                    This is the final version
+                  </CheckBox>
+                  <button className="btn btn-primary btn-block" onClick={handleShowModal}>
+                    Upload new version
+                  </button>
+                </>
+              )}
+              {isApprover && file.status !== "done" && (
+                <>
+                  <button className="btn btn-primary btn-block" onClick={handleApproveFile}>
+                    Approve design
+                  </button>
+                </>
+              )}
+              {isApprover && file.status === "done" && (
+                <>
+                  <button className="btn btn-success btn-block">Approved</button>
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
+      <ApprovedByDiv>Only to be approved by: {item.approver_users[0].name}</ApprovedByDiv>
     </Wrapper>
   );
 };

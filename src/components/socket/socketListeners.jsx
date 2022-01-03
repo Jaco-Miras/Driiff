@@ -274,6 +274,9 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".proposal-version-approved-notification", (e) => {
+        console.log(e, "approve file");
+      })
       .listen(".proposal-version-comment-notification", (e) => {
         this.props.incomingWIPFileComment(e);
       })
@@ -2458,13 +2461,13 @@ function mapDispatchToProps(dispatch) {
     removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
     removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
     incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
+    incomingZoomCreate: bindActionCreators(incomingZoomCreate, dispatch),
+    incomingZoomUserLeft: bindActionCreators(incomingZoomUserLeft, dispatch),
+    incomingZoomEnded: bindActionCreators(incomingZoomEnded, dispatch),
     incomingWIP: bindActionCreators(incomingWIP, dispatch),
     incomingWIPSubject: bindActionCreators(incomingWIPSubject, dispatch),
     incomingWIPComment: bindActionCreators(incomingWIPComment, dispatch),
     incomingWIPFileComment: bindActionCreators(incomingWIPFileComment, dispatch),
-    incomingZoomCreate: bindActionCreators(incomingZoomCreate, dispatch),
-    incomingZoomUserLeft: bindActionCreators(incomingZoomUserLeft, dispatch),
-    incomingZoomEnded: bindActionCreators(incomingZoomEnded, dispatch),
   };
 }
 
