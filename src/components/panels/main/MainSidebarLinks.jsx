@@ -5,7 +5,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
 import { QuickLinks } from "../../list/links";
 //import { Badge } from "reactstrap";
-import christmas from "../../../assets/img/christmas.png";
+//import christmas from "../../../assets/img/christmas.png";
 
 const Wrapper = styled.div`
   .badge {
@@ -149,9 +149,9 @@ const MainSidebarLinks = (props) => {
               <NavIconContainer active={["dashboard", "posts", "chat", "files", "people"].includes(params.page)} to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
                 <div style={{ postion: "relative" }}>
                   <NavIcon icon={"home"} />
-                  <Hat>
+                  {/* <Hat>
                     <img src={christmas} alt="christmas hat" />
-                  </Hat>
+                  </Hat> */}
                 </div>
 
                 {driffSettings.company_name}
