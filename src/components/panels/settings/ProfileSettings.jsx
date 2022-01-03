@@ -182,10 +182,10 @@ const ProfileSettings = (props) => {
       value: "appointed",
       label: dictionary.notificationSoundDefault,
     },
-    {
-      value: "jingle-bells",
-      label: dictionary.notificationSoundJingleBells,
-    },
+    // {
+    //   value: "jingle-bells",
+    //   label: dictionary.notificationSoundJingleBells,
+    // },
   ];
 
   const channelSortOptions = [
