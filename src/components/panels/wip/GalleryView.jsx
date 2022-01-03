@@ -7,6 +7,8 @@ import { MoreOptions } from "../common";
 import { useWIPActions } from "../../hooks";
 import FileLinkView from "./FileLinkView";
 import moment from "moment";
+import Select from "react-select";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 
 const Wrapper = styled.div``;
 const WIPDetailWrapper = styled.div`
@@ -69,6 +71,9 @@ const MainHeader = styled.div`
       height: 12px;
     }
   }
+  .react-select-container {
+    min-width: 130px;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -95,7 +100,7 @@ const StyledMoreOptions = styled(MoreOptions)`
   .more-options-tooltip {
     left: auto;
     right: 0;
-    top: 25px;
+    top: 45px;
     width: 250px;
 
     svg {
@@ -111,7 +116,7 @@ const MainBody = styled.div`
   flex-flow: column;
   //   align-items: center;
   //   justify-content: center;
-  height: calc(100% - 200px);
+  height: calc(100% - 180px);
   padding: 15px;
 `;
 
@@ -127,11 +132,12 @@ const ImageWrapper = styled.div`
 `;
 
 const MainFooter = styled.div`
-  min-height: 100px;
+  min-height: 130px;
   border-top: 1px solid #ebebeb;
   display: inline-flex;
   padding: 10px 20px;
   overflow: auto;
+  align-items: flex-end;
   .img-card {
     cursor: pointer;
     max-height: 100px;
@@ -139,26 +145,53 @@ const MainFooter = styled.div`
     min-height: 100px;
     min-width: 100px;
     border-radius: 6px;
-    border: 1px solid #ebebeb;
-    overflow: hidden;
+    // border: 1px solid #ebebeb;
+    // overflow: hidden;
     text-align: center;
     font-size: 2rem;
     justify-content: center;
     align-items: center;
     display: flex;
     img {
-      width: 100%;
-      height: 100%;
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
     }
   }
 `;
 
 const ImgCard = styled.div`
-  outline: ${(props) => (props.selected ? "3px solid green" : "none")};
+  outline: ${(props) => (props.selected ? `3px solid ${props.theme.colors.primary}` : "none")};
   opacity: ${(props) => (props.selected ? "1" : ".5")};
+  position: relative;
   :hover {
     opacity: 1;
   }
+  ${(props) =>
+    props.selected &&
+    `:before {
+        content: "";
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent transparent ${props.theme.colors.primary} transparent;
+        border-image: initial;
+        position: absolute;
+        top: -22px;
+        left: 40px;
+        z-index: 1;
+      }`}
+`;
+
+const DownloadButton = styled.div`
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  cursor: pointer;
 `;
 
 const GalleryView = (props) => {
@@ -167,6 +200,7 @@ const GalleryView = (props) => {
   const history = useHistory();
   const wipActions = useWIPActions();
   const user = useSelector((state) => state.session.user);
+  const dark_mode = useSelector((state) => state.settings.user.GENERAL_SETTINGS.dark_mode);
   const handleGoBack = () => {
     wipActions.goBack();
   };
@@ -187,7 +221,15 @@ const GalleryView = (props) => {
     history.push(history.location.pathname.split("/file/")[0] + `/file/${fid}/${fvid}`);
   };
 
-  console.log(params, file);
+  const versionOptions = mainFile.file_versions.map((f) => {
+    return {
+      ...f,
+      value: f.id,
+      label: f.version_name,
+    };
+  });
+
+  const handleVersionChange = (e) => {};
 
   return (
     <Wrapper className="card card-body app-content-body gallery-page">
@@ -213,9 +255,23 @@ const GalleryView = (props) => {
             </div>
           </div>
           <div>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={versionOptions.find((o) => o.value === file.id)}
+              onChange={handleVersionChange}
+              options={versionOptions}
+            />
+            <DownloadButton>
+              <SvgIconFeather icon="download" />
+            </DownloadButton>
             {item.author.id !== user.id && (
               <div>
-                <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}></StyledMoreOptions>
+                <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}>
+                  <div>Replace current image</div>
+                  <div>Upload new version</div>
+                </StyledMoreOptions>
               </div>
             )}
           </div>

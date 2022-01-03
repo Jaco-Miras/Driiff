@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   flex-flow: column;
   .bottom-modal-mobile_inner {
    flex: 1 1;
+   max-height: calc(100% - 40px);
   }
   .app-sidebar-menu {
     height: 100%;
