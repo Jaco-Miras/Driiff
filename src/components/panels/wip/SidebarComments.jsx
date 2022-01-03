@@ -24,6 +24,7 @@ const Wrapper = styled.div`
 `;
 
 const SidebarComments = (props) => {
+  const { wip } = props;
   const { comments } = useWIPFileComments();
   const timeFormat = useTimeFormat();
   return (
@@ -31,7 +32,6 @@ const SidebarComments = (props) => {
       <div className="file-comments-thread">
         {comments.length > 0 &&
           comments.map((c) => {
-            console.log(c);
             return (
               <div className="file-comment mb-2" key={c.id}>
                 <div className="file-comment-body mb-2" dangerouslySetInnerHTML={{ __html: c.body }} />

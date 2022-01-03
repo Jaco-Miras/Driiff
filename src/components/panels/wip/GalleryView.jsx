@@ -117,12 +117,13 @@ const MainBody = styled.div`
 
 const ImageWrapper = styled.div`
   display: flex;
-  height: 100%;
-  img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
+  //height: 100%;
+  overflow: auto;
+  // img {
+  //   width: 100%;
+  //   height: auto;
+  //   object-fit: contain;
+  // }
 `;
 
 const MainFooter = styled.div`
@@ -152,6 +153,14 @@ const MainFooter = styled.div`
   }
 `;
 
+const ImgCard = styled.div`
+  outline: ${(props) => (props.selected ? "3px solid green" : "none")};
+  opacity: ${(props) => (props.selected ? "1" : ".5")};
+  :hover {
+    opacity: 1;
+  }
+`;
+
 const GalleryView = (props) => {
   const { item } = props;
   const params = useParams();
@@ -177,6 +186,8 @@ const GalleryView = (props) => {
   const handleSelectImage = (fid, fvid) => {
     history.push(history.location.pathname.split("/file/")[0] + `/file/${fid}/${fvid}`);
   };
+
+  console.log(params, file);
 
   return (
     <Wrapper className="card card-body app-content-body gallery-page">
@@ -218,7 +229,7 @@ const GalleryView = (props) => {
         <MainFooter>
           {item.files.map((f) => {
             return (
-              <div className="img-card mr-2" key={f.id}>
+              <ImgCard className="img-card mr-2" key={f.id} selected={f.id === parseInt(params.wipFileId)}>
                 {f.file_versions.length > 0 ? (
                   <img src={f.file_versions[0].view_link} onClick={(e) => handleSelectImage(f.id, f.file_versions[0].id)} />
                 ) : (
@@ -226,7 +237,7 @@ const GalleryView = (props) => {
                     <i class="fa fa-link"></i>
                   </span>
                 )}
-              </div>
+              </ImgCard>
             );
           })}
         </MainFooter>
