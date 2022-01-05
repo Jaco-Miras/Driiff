@@ -25,6 +25,12 @@ const useWIPFileComments = (scrollRef) => {
     );
   }, [params.wipFileVersion]);
 
+  useEffect(() => {
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [comments.length]);
+
   return {
     comments,
   };

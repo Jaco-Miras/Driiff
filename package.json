@@ -49,6 +49,7 @@
     "react-google-docs-viewer": "^1.0.1",
     "react-google-picker": "^0.1.0",
     "react-idle-timer": "^4.5.6",
+    "react-image-annotation-with-zoom": "^0.9.18",
     "react-intersection-observer": "^8.26.2",
     "react-organizational-chart": "^2.1.0",
     "react-paginate": "^6.3.2",

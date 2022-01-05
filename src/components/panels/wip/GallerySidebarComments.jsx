@@ -152,6 +152,21 @@ const SubmitBtn = styled.button`
   width: auto !important;
 `;
 
+const AnnotationNumber = styled.div`
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: 1.2rem;
+  position: absolute;
+  transform: translate3d(-50%, -50%, 0);
+  width: 1.2rem;
+  background: purple;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+`;
+
 const GallerySidebarComments = (props) => {
   const { item } = props;
   const actions = useWIPActions();
@@ -164,6 +179,7 @@ const GallerySidebarComments = (props) => {
   const reactQuillRef = useRef();
   const user = useSelector((state) => state.session.user);
   const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const annotation = useSelector((state) => state.wip.annotation);
   const [quillData, setQuillData] = useState({
     text: "",
     textOnly: "",
@@ -228,7 +244,7 @@ const GallerySidebarComments = (props) => {
       quote: null,
     };
     let timestamp = Math.floor(Date.now() / 1000);
-    const commentObj = {
+    let commentObj = {
       ...payload,
       author: {
         id: user.id,
@@ -237,9 +253,14 @@ const GallerySidebarComments = (props) => {
       },
       id: payload.reference_id,
       created_at: { timestamp: timestamp },
+      annotation: { ...annotation, data: annotation.selection.data },
+      file_id: payload.media_id,
+      workspace_id: workspace.id,
+      annotation_id: annotation.selection.data.id,
     };
-    fileActions.addComment(commentObj);
-    fileActions.submitComment(payload);
+
+    fileActions.addComment(commentObj, () => actions.annotate({}));
+    //fileActions.submitComment(payload);
 
     setQuillData({
       text: "",
@@ -286,13 +307,16 @@ const GallerySidebarComments = (props) => {
             <SidebarComments wip={item} />
             <div className="card-footer d-flex">
               <div className="file-input-wrapper">
+                {annotation.hasOwnProperty("geometry") && <AnnotationNumber>{annotation.selection.data.id}</AnnotationNumber>}
                 <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} readOnly={file.is_close === 1} />
               </div>
               <div className="d-flex align-items-center mb-2 close-submit">
                 <CheckBox name="close" checked={closeCommments} onClick={toggleClose} disabled={file.is_close === 1}>
                   Close comments
                 </CheckBox>
-                <SubmitBtn className="btn btn-primary btn-block">Submit</SubmitBtn>
+                <SubmitBtn className="btn btn-primary btn-block" onClick={handleSubmit}>
+                  Submit
+                </SubmitBtn>
               </div>
               {isAuthor && (
                 <>

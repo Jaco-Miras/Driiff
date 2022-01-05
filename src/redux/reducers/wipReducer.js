@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   activeSubject: null,
   WIPComments: {},
   fileComments: {},
+  annotation: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -89,6 +90,14 @@ export default (state = INITIAL_STATE, action) => {
                   [action.data.id]: {
                     ...action.data,
                     clap_user_ids: [],
+                    files: action.data.files.map((f) => {
+                      return {
+                        ...f,
+                        file_versions: f.file_versions.map((fv) => {
+                          return { ...fv, annotations: [] };
+                        }),
+                      };
+                    }),
                   },
                 }),
               },
@@ -98,6 +107,14 @@ export default (state = INITIAL_STATE, action) => {
                 [action.data.id]: {
                   ...action.data,
                   clap_user_ids: [],
+                  files: action.data.files.map((f) => {
+                    return {
+                      ...f,
+                      file_versions: f.file_versions.map((fv) => {
+                        return { ...fv, annotations: [] };
+                      }),
+                    };
+                  }),
                 },
               },
             }),
@@ -307,6 +324,41 @@ export default (state = INITIAL_STATE, action) => {
               },
             }),
         },
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          if (parseInt(wid) === action.data.workspace_id) {
+            acc[wid] = {
+              ...state.WIPs[wid],
+              items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+                if (parseInt(pid) === action.data.proposal_id) {
+                  icc[pid] = {
+                    ...state.WIPs[wid].items[pid],
+                    files: state.WIPs[wid].items[pid].files.map((f) => {
+                      if (action.data.file_id === f.id) {
+                        return {
+                          ...f,
+                          file_versions: f.file_versions.map((fv) => {
+                            if (fv.id === action.data.file_version_id) {
+                              return { ...fv, annotations: [...fv.annotations, action.data.annotation] };
+                            } else {
+                              return fv;
+                            }
+                          }),
+                        };
+                      } else {
+                        return f;
+                      }
+                    }),
+                  };
+                } else {
+                  icc[pid] = state.WIPs[wid].items[pid];
+                }
+                return icc;
+              }, {}),
+            };
+          } else acc[wid] = state.WIPs[wid];
+
+          return acc;
+        }, {}),
       };
     }
     case "GET_FILE_COMMENTS_SUCCESS": {
@@ -427,6 +479,13 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "SAVE_ANNOTATION": {
+      return {
+        ...state,
+        annotation: action.data,
+      };
+    }
+
     default:
       return state;
   }

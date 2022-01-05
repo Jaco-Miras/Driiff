@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -9,6 +9,8 @@ import FileLinkView from "./FileLinkView";
 import moment from "moment";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
+import Annotation from "react-image-annotation-with-zoom";
+import { PointSelector } from "react-image-annotation-with-zoom/lib/selectors";
 
 const Wrapper = styled.div``;
 const WIPDetailWrapper = styled.div`
@@ -194,6 +196,57 @@ const DownloadButton = styled.div`
   cursor: pointer;
 `;
 
+const Container = styled.div`
+  //border: solid 3px white;
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(0, 0, 0, 0.2), 0 5px 4px rgba(0, 0, 0, 0.4);
+  height: 2rem;
+  position: absolute;
+  transform: translate3d(-50%, -50%, 0);
+  width: 2rem;
+  background: purple;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+`;
+
+const Point = ({ children, geometry, style }) => {
+  if (!geometry) return null;
+
+  return (
+    <Container
+      style={{
+        top: `${geometry.y}%`,
+        left: `${geometry.x}%`,
+      }}
+    >
+      {children}
+    </Container>
+  );
+};
+
+function renderSelector({ annotation, active }) {
+  const { geometry, selection } = annotation;
+  if (!geometry) return null;
+
+  return <Point geometry={geometry}>{selection.data.id}</Point>;
+}
+
+function renderHighlight({ annotation, active }) {
+  const { geometry, data } = annotation;
+  if (!geometry) return null;
+
+  return (
+    <Point geometry={geometry} key={data.id}>
+      {data.id}
+    </Point>
+  );
+}
+
 const GalleryView = (props) => {
   const { item } = props;
   const params = useParams();
@@ -201,6 +254,9 @@ const GalleryView = (props) => {
   const wipActions = useWIPActions();
   const user = useSelector((state) => state.session.user);
   const dark_mode = useSelector((state) => state.settings.user.GENERAL_SETTINGS.dark_mode);
+  const annotation = useSelector((state) => state.wip.annotation);
+  // const [annotation, setAnnotation] = useState({});
+  const [annotations, setAnnotations] = useState([]);
   const handleGoBack = () => {
     wipActions.goBack();
   };
@@ -230,6 +286,30 @@ const GalleryView = (props) => {
   });
 
   const handleVersionChange = (e) => {};
+
+  const annotationChange = (ann) => {
+    // console.log(ann, "ann");
+    //setAnnotation({ ...ann, selection: { ...ann.selection, showEditor: false } });
+    wipActions.annotate({ ...ann, selection: { ...ann.selection, showEditor: false, data: { id: file.annotations.length + 1 } } });
+  };
+
+  const annotationSubmit = (annotation) => {
+    const { geometry, data } = annotation;
+    console.log(data, geometry);
+    //setAnnotation({});
+    wipActions.annotate({});
+    setAnnotations(
+      annotations.concat({
+        geometry,
+        data: {
+          ...data,
+          id: file.annotations.length + 1,
+        },
+      })
+    );
+  };
+
+  console.log(file);
 
   return (
     <Wrapper className="card card-body app-content-body gallery-page">
@@ -279,7 +359,18 @@ const GalleryView = (props) => {
         <MainBody>
           <ImageWrapper className="w-100" isFileLink={file.media_link_title !== null}>
             {file.media_link_title && <FileLinkView file={file} />}
-            {file.type && file.type === "image" && <img src={file.view_link} />}
+            {/* {file.type && file.type === "image" && <img src={file.view_link} />} */}
+            <Annotation
+              src={file.view_link}
+              alt="Two pebbles anthropomorphized holding hands"
+              annotations={file.annotations}
+              type={PointSelector.TYPE}
+              value={annotation}
+              onChange={annotationChange}
+              onSubmit={annotationSubmit}
+              renderSelector={renderSelector}
+              renderHighlight={renderHighlight}
+            />
           </ImageWrapper>
         </MainBody>
         <MainFooter>
