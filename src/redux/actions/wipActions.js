@@ -84,3 +84,7 @@ export function postFileApproval(payload, callback) {
 export function postFileCommentClose(payload, callback) {
   return dispatchActionToReducer(postFileCommentCloseService(payload), "POST_FILE_COMMENT_CLOSE_START", "POST_FILE_COMMENT_CLOSE_SUCCESS", "POST_FILE_COMMENT_CLOSE_FAIL", callback);
 }
+
+export function saveAnnotation(payload, callback) {
+  return SimpleDispatchActionToReducer("SAVE_ANNOTATION", payload, callback);
+}

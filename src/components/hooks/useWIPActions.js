@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useLocation, useHistory, useParams } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { postSubject, getWIPs, getWIPDetail, addWIPs } from "../../redux/actions/wipActions";
+import { postSubject, getWIPs, getWIPDetail, addWIPs, saveAnnotation } from "../../redux/actions/wipActions";
 
 const useWIPActions = () => {
   const dispatch = useDispatch();
@@ -69,6 +69,10 @@ const useWIPActions = () => {
     dispatch(addWIPs(payload, callback));
   };
 
+  const annotate = (payload, callback = () => {}) => {
+    dispatch(saveAnnotation(payload, callback));
+  };
+
   return {
     fetchWIPs,
     fetchWIPDetail,
@@ -77,6 +81,7 @@ const useWIPActions = () => {
     showModal,
     goBack,
     storeWIPs,
+    annotate,
   };
 };
 
