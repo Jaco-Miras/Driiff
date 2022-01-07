@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { CheckBox, FormInput } from "../forms";
 import { usePageLoader, useUserActions } from "../hooks";
@@ -72,10 +73,18 @@ const MagicLinkPanel = (props) => {
   const _validate = () => {
     let valid = {};
     let message = {};
+    const lettersRegExp = /[a-zA-Z]/g;
 
     if (form.email === "") {
       valid.email = false;
       message.email = dictionary.emailRequired;
+    } else if (form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
+      if (!isValidPhoneNumber(form.email)) {
+        valid.email = false;
+        message.email = "Invalid phone number";
+      } else {
+        valid.email = true;
+      }
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
       message.email = dictionary.invalidEmail;
@@ -128,7 +137,7 @@ const MagicLinkPanel = (props) => {
 
   return (
     <Wrapper className="fadeIn">
-      <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder="Email" innerRef={refs.email} type="email" autoFocus />
+      <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
       <div className="form-group d-flex justify-content-between">
         <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
           {dictionary.rememberMe}

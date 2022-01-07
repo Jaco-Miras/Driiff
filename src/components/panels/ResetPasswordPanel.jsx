@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { useUserActions } from "../hooks";
 import { FormInput } from "../forms";
@@ -29,10 +30,18 @@ const ResetPasswordPanel = (props) => {
   const _validateForm = (e) => {
     let valid = {};
     let message = {};
+    const lettersRegExp = /[a-zA-Z]/g;
 
     if (form.email === "") {
       valid.email = false;
       message.email = dictionary.emailRequired;
+    } else if (form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
+      if (!isValidPhoneNumber(form.email)) {
+        valid.email = false;
+        message.email = "Invalid phone number";
+      } else {
+        valid.email = true;
+      }
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
       message.email = dictionary.invalidEmail;
