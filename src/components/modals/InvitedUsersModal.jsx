@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
+import "react-phone-number-input/style.css";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { clearModal } from "../../redux/actions/globalActions";
 import { FormInput, PeopleSelect } from "../forms";
 import { useTranslationActions } from "../hooks";
@@ -40,6 +42,10 @@ const ModalWrapper = styled(Modal)`
   .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
     border-color: ${({ theme }) => theme.colors.secondary};
   }
+  .PhoneInput input {
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+  }
 `;
 const MoreMemberButton = styled.span`
   cursor: pointer;
@@ -63,6 +69,13 @@ const StyledTable = styled.table`
   overflow: unset;
 `;
 
+const InvalidPhoneLabel = styled.label`
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+`;
+
 const InvitedUsersModal = (props) => {
   const { submitText = "Submit", cancelText = "Cancel", onPrimaryAction, hasLastName = false, invitations = [], type, fromRegister } = props.data;
 
@@ -78,6 +91,7 @@ const InvitedUsersModal = (props) => {
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const [binary, setBinary] = useState(false);
+  //const [phoneNumber, setPhoneNumber] = useState();
   const user = useSelector((state) => state.session.user);
   const teams = useSelector((state) => state.users.teams);
 
@@ -164,7 +178,7 @@ const InvitedUsersModal = (props) => {
     let message = {};
     for (let i = 0; i < invitationItems.length; i++) {
       if (hasLastName) {
-        if (invitationItems[i].first_name !== "" || invitationItems[i].last_name !== "" || invitationItems[i].email !== "") {
+        if (invitationItems[i].first_name !== "" || invitationItems[i].last_name !== "" || invitationItems[i].email !== "" || invitationItems[i].phone_number !== undefined) {
           if (typeof valid[i] === "undefined") {
             valid[i] = {};
             message[i] = {};
@@ -186,14 +200,20 @@ const InvitedUsersModal = (props) => {
             valid[i].last_name = true;
           }
 
-          if (invitationItems[i].email === "") {
+          if (invitationItems[i].email === "" && invitationItems[i].phone_number === undefined) {
             valid[i].email = false;
-            message[i].email = "Email is required.";
+            message[i].email = "Please put email or phone number";
             isValid = false;
-          } else if (!EmailRegex.test(invitationItems[i].email)) {
+          } else if (invitationItems[i].email !== "" && !EmailRegex.test(invitationItems[i].email)) {
             valid[i].email = false;
             message[i].email = "Email is invalid format.";
             isValid = false;
+          } else if (invitationItems[i].phone_number !== undefined && !isValidPhoneNumber(invitationItems[i].phone_number)) {
+            valid[i].phone_number = false;
+            message[i].phone_number = "Invalid phone number";
+            isValid = false;
+          } else if (invitationItems[i].phone_number !== undefined && isValidPhoneNumber(invitationItems[i].phone_number)) {
+            valid[i].phone_number = true;
           } else {
             valid[i].email = true;
           }
@@ -241,8 +261,12 @@ const InvitedUsersModal = (props) => {
     setLoading(true);
 
     if (hasLastName) {
+      // console.log(
+      //   "submit",
+      //   invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined))
+      // );
       onPrimaryAction(
-        invitationItems.filter((v, i) => v.first_name !== "" && v.last_name !== "" && v.email !== ""),
+        invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)),
         () => {
           setLoading(false);
         },
@@ -275,6 +299,7 @@ const InvitedUsersModal = (props) => {
           first_name: "",
           last_name: "",
           email: "",
+          phone_number: undefined,
         };
       } else {
         input = {
@@ -289,6 +314,13 @@ const InvitedUsersModal = (props) => {
   const handleSelectTeam = (e, key) => {
     setInvitationItems((prevState) => {
       prevState[key]["teams"] = e === null ? [] : e;
+      return prevState;
+    });
+  };
+
+  const handleChangePhoneNumber = (e, k) => {
+    setInvitationItems((prevState) => {
+      prevState[k]["phone_number"] = e;
       return prevState;
     });
   };
@@ -311,6 +343,7 @@ const InvitedUsersModal = (props) => {
                 <th>{dictionary.name}</th>
               )}
               <th>{dictionary.email}</th>
+              {!fromRegister && <th className="team-th">Phone number</th>}
               {!fromRegister && <th className="team-th">{dictionary.addUserToteams}</th>}
               <th>
                 <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
@@ -368,6 +401,10 @@ const InvitedUsersModal = (props) => {
                       feedback={formResponse.message[key] ? formResponse.message[key].email : null}
                       onChange={handleInputChange}
                     />
+                  </td>
+                  <td>
+                    <PhoneInput placeholder="Enter phone number" value={item.phoneNumber} onChange={(e) => handleChangePhoneNumber(e, key)} />
+                    {formResponse.valid[key] && formResponse.valid[key].phone_number === false && <InvalidPhoneLabel>{formResponse.message[key].phone_number}</InvalidPhoneLabel>}
                   </td>
                   {!fromRegister && (user.role.name === "owner" || user.role.name === "admin") && (
                     <td>

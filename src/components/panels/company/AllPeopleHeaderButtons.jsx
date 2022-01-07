@@ -43,7 +43,7 @@ const AllPeopleHeaderButtons = (props) => {
           if (!Object.values(users).some((user) => user.email === u.email)) {
             userActions.inviteAsInternalUsers(
               {
-                email: u.email,
+                email: u.email === "" && u.phone_number !== undefined ? u.phone_number : u.email,
                 first_name: u.first_name,
                 last_name: u.last_name,
                 team_ids: u.teams ? u.teams.map((t) => t.id) : [],

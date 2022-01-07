@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
@@ -78,10 +79,18 @@ const LoginPanel = (props) => {
   const _validate = () => {
     let valid = {};
     let message = {};
+    const lettersRegExp = /[a-zA-Z]/g;
 
     if (form.email === "") {
       valid.email = false;
       message.email = dictionary.emailRequired;
+    } else if (form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
+      if (!isValidPhoneNumber(form.email)) {
+        valid.email = false;
+        message.email = "Invalid phone number";
+      } else {
+        valid.email = true;
+      }
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
       message.email = dictionary.invalidEmail;
