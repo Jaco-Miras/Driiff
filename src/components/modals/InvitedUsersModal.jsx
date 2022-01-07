@@ -282,21 +282,17 @@ const InvitedUsersModal = (props) => {
     setLoading(true);
 
     if (hasLastName) {
-      // console.log(
-      //   "submit",
-      //   invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined))
-      // );
-      // onPrimaryAction(
-      //   invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)),
-      //   () => {
-      //     setLoading(false);
-      //   },
-      //   {
-      //     closeModal: toggle,
-      //     deleteItemByIndex: deleteItemByIndex,
-      //     invitationItems: invitationItems,
-      //   }
-      // );
+      onPrimaryAction(
+        invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)),
+        () => {
+          setLoading(false);
+        },
+        {
+          closeModal: toggle,
+          deleteItemByIndex: deleteItemByIndex,
+          invitationItems: invitationItems,
+        }
+      );
     } else {
       onPrimaryAction(
         invitationItems.filter((v, i) => v.name !== "" && v.email !== ""),
