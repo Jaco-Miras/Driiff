@@ -88,6 +88,7 @@ const LoginSettingsBody = () => {
   const filters = useSelector((state) => state.admin.filters);
   const domains = useSelector((state) => state.settings.driff.domains);
   const custom_translation = useSelector((state) => state.settings.driff.settings.custom_translation);
+  const themes = useSelector((state) => state.settings.driff.theme);
 
   const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo, resetLogo } = useAdminActions();
 
@@ -223,6 +224,7 @@ const LoginSettingsBody = () => {
       ...settings,
       // custom_translation: custom_translation,
       domains: selectedDomains.map((d) => d.value).toString(),
+      themes: JSON.stringify(themes.colors),
     };
 
     updateLoginSettings(payload, (err, res) => {

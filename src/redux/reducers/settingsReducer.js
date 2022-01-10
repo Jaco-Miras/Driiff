@@ -143,7 +143,7 @@ export default (state = INITIAL_STATE, action) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
         if (s.ANNOUNCEMENT_LINK) ANNOUNCEMENT_LINK = s.ANNOUNCEMENT_LINK;
         if (s.READ_RELEASE_UPDATES) READ_RELEASE_UPDATES = s.READ_RELEASE_UPDATES;
-        if (s.domains) {
+        if (s.domains && s.domains !== "") {
           domains = s.domains.split(",");
         }
         if (s.logo) logo = s.logo;
@@ -220,10 +220,12 @@ export default (state = INITIAL_STATE, action) => {
               break;
             }
             case "domains": {
-              driff = {
-                ...driff,
-                domains: value.split(","),
-              };
+              if (value !== "") {
+                driff = {
+                  ...driff,
+                  domains: value.split(","),
+                };
+              }
 
               break;
             }

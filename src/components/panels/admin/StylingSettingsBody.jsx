@@ -184,6 +184,7 @@ function StylingSettingsBody() {
       ...settings,
       themes: JSON.stringify(theme.colors),
     };
+    if (payload.domains) delete payload.domains;
     dispatch(
       putLoginSettings(payload, (err, res) => {
         if (err) return;
