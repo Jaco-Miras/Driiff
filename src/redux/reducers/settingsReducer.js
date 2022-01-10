@@ -148,7 +148,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (s.logo) logo = s.logo;
 
-        settings = { ...settings, ...s };
+        //settings = { ...settings, ...s };
         if (s.custom_translation) {
           settings.custom_translation = s.custom_translation === "1" ? true : false;
         }
