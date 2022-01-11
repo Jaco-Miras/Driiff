@@ -442,10 +442,13 @@ const useUserActions = () => {
             if (err) {
               toaster.error("User registration failed.");
             }
+            // if (res) {
+            //   toaster.success("Slug request sent. Please wait for admin to cross-check. You'll recieve further notification on your email.", {
+            //     duration: 10000,
+            //   });
+            // }
             if (res) {
-              toaster.success("Slug request sent. Please wait for admin to cross-check. You'll recieve further notification on your email.", {
-                duration: 10000,
-              });
+              login(res.data, "/chat");
             }
             callback(err, res);
           })

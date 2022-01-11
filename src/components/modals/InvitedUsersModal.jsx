@@ -225,11 +225,11 @@ const InvitedUsersModal = (props) => {
             valid[i].email = false;
             message[i].email = "Please put email or phone number";
             isValid = false;
-          } else if (invitationItems[i].email !== "" && !EmailRegex.test(invitationItems[i].email)) {
+          } else if (invitationItems[i].email !== "" && !EmailRegex.test(invitationItems[i].email) && registerMode[i] === "email") {
             valid[i].email = false;
             message[i].email = "Email is invalid format.";
             isValid = false;
-          } else if (invitationItems[i].phone_number !== undefined && !isValidPhoneNumber(invitationItems[i].phone_number)) {
+          } else if (registerMode[i] === "number" && invitationItems[i].phone_number !== undefined && !isValidPhoneNumber(invitationItems[i].phone_number)) {
             valid[i].phone_number = false;
             message[i].phone_number = "Invalid phone number";
             isValid = false;
@@ -272,7 +272,6 @@ const InvitedUsersModal = (props) => {
       valid: valid,
       message: message,
     });
-
     return isValid;
   };
 
@@ -282,6 +281,7 @@ const InvitedUsersModal = (props) => {
     setLoading(true);
 
     if (hasLastName) {
+      console.log(invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)));
       onPrimaryAction(
         invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)),
         () => {
