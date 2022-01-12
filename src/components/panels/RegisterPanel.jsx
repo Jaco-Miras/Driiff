@@ -10,7 +10,8 @@ import { useSelector } from "react-redux";
 const Wrapper = styled.form``;
 
 const RegisterPanel = (props) => {
-  const { dictionary } = props;
+  const { dictionary, countryCode } = props;
+  console.log(countryCode);
   const refs = {
     first_name: useRef(),
   };
@@ -205,6 +206,7 @@ const RegisterPanel = (props) => {
         registerMode={registerMode}
         setRegisterMode={setRegisterMode}
         value={form.email}
+        defaultCountry={countryCode}
       />
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
       <button className="btn btn-primary btn-block" onClick={handleRegister}>

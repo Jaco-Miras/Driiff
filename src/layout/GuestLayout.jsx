@@ -149,8 +149,17 @@ const GuestLayout = (props) => {
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
+  const [countryCode, setCountryCode] = useState(null);
 
   useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((response) => {
+        setCountryCode(response.country);
+      })
+      .catch((data, status) => {
+        //console.log("Request failed");
+      });
     document.querySelector("body").classList.add("form-membership");
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -216,11 +225,11 @@ const GuestLayout = (props) => {
           </h5>
           <Suspense fallback={<div></div>}>
             <Switch>
-              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props} />} />
               <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
               <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props} />} />
-              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
               <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
               <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
