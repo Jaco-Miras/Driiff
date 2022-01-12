@@ -85,6 +85,9 @@ const LoginPanel = (props) => {
     if (form.email === "") {
       valid.email = false;
       message.email = dictionary.emailRequired;
+    } else if (form.email === undefined) {
+      valid.email = false;
+      message.email = "Phone number required";
     } else if (form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
       if (!isValidPhoneNumber(form.email)) {
         valid.email = false;
@@ -206,7 +209,7 @@ const LoginPanel = (props) => {
       });
     } else {
       if (!formResponse.valid.email) {
-        refs.email.current.focus();
+        //refs.email.current.focus();
       } else if (!formResponse.valid.password) {
         refs.password.current.focus();
       }
@@ -253,6 +256,7 @@ const LoginPanel = (props) => {
           value={form.email}
           defaultCountry={countryCode}
           autoFocus={true}
+          innerRef={refs.email}
         />
         {/* <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus /> */}
         <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
