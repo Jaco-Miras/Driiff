@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import styled from "styled-components";
 import { EmailRegex, replaceChar } from "../../../helpers/stringFormatter";
@@ -9,7 +10,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
 import { useToaster, useTranslationActions, useUserActions, useUserChannels, useUsers } from "../../hooks";
-import { FormInput } from "../../forms";
+import { FormInput, EmailPhoneInput } from "../../forms";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -120,6 +121,18 @@ const Wrapper = styled.div`
       width: 66.66%;
     }
   }
+  .email-phone-container {
+    .input-group {
+      flex-wrap: ${(props) => (props.registerMode === "email" ? "unset" : "wrap")};
+    }
+    .dropdown-menu.show {
+      left: unset !important;
+      right: 0;
+    }
+    input {
+      width: 100%;
+    }
+  }
 `;
 
 const UserProfilePanel = (props) => {
@@ -148,6 +161,8 @@ const UserProfilePanel = (props) => {
     feedbackState: {},
     feedbackText: {},
   });
+  const [registerMode, setRegisterMode] = useState("email");
+  const [countryCode, setCountryCode] = useState(null);
 
   const refs = {
     dropZoneRef: useRef(null),
@@ -169,12 +184,16 @@ const UserProfilePanel = (props) => {
     address: _t("PROFILE.ADDRESS", "Address:"),
     zip_code: _t("PROFILE.ZIP_POST_CODE", "ZIP/POST code:"),
     phone: _t("PROFILE.PHONE", "Phone:"),
-    email: _t("PROFILE.EMAIL", "Email:"),
+    // email: _t("PROFILE.EMAIL", "Email:"),
+    email: _t("LOGIN.EMAIL_PHONE", "Email / Phone number"),
     edit: _t("BUTTON.EDIT", "Edit"),
     saveChanges: _t("BUTTON.SAVE_CHANGES", "Save changes"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     clickToChangePassword: _t("PROFILE.CLICK_TO_CHANGE_PASSWORD", "Click to change your password"),
     external: _t("PROFILE.EXTERNAL", "External"),
+    invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
+    invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
+    emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
   };
 
   //const isEditable = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
@@ -252,7 +271,7 @@ const UserProfilePanel = (props) => {
             },
             feedbackText: {
               ...prevState.feedbackText,
-              [name]: "Email is required",
+              [name]: dictionary.emailRequired,
             },
           }));
         } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
@@ -267,7 +286,7 @@ const UserProfilePanel = (props) => {
             },
             feedbackText: {
               ...prevState.feedbackText,
-              [name]: "Invalid email format",
+              [name]: dictionary.invalidEmail,
             },
           }));
         } else {
@@ -334,6 +353,7 @@ const UserProfilePanel = (props) => {
   };
 
   const handleSave = () => {
+    const lettersRegExp = /[a-zA-Z]/g;
     if (Object.values(formUpdate.valid).find((v) => v === false) === false) {
       toaster.error("Some fields require your attention.");
     } else if (Object.values(formUpdate.valid).find((v) => v === true) === true) {
@@ -367,7 +387,7 @@ const UserProfilePanel = (props) => {
         }
       }
     } else {
-      // check for changes in email
+      //check for changes in email
       if (user && form.email && user.email !== form.email) {
         if (requiredFields.includes("email") && form.email.trim() === "") {
           setFormUpdate((prevState) => ({
@@ -381,9 +401,70 @@ const UserProfilePanel = (props) => {
             },
             feedbackText: {
               ...prevState.feedbackText,
-              email: "Email is required",
+              email: dictionary.emailRequired,
             },
           }));
+        } else if (form.email.trim() !== "" && form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
+          if (!isValidPhoneNumber(form.email)) {
+            setFormUpdate((prevState) => ({
+              valid: {
+                ...prevState.valid,
+                email: false,
+              },
+              feedbackState: {
+                ...prevState.feedbackState,
+                email: false,
+              },
+              feedbackText: {
+                ...prevState.feedbackText,
+                email: dictionary.invalidPhoneNumber,
+              },
+            }));
+          } else {
+            //valid phone
+            checkEmail(form.email, (err, res) => {
+              if (res) {
+                if (res.data.status) {
+                  setFormUpdate((prevState) => ({
+                    valid: {
+                      ...prevState.valid,
+                      email: false,
+                    },
+                    feedbackState: {
+                      ...prevState.feedbackState,
+                      email: false,
+                    },
+                    feedbackText: {
+                      ...prevState.feedbackText,
+                      email: "Phone number already taken",
+                    },
+                  }));
+                } else {
+                  if (isEditable) {
+                    if (user.email !== form.email) {
+                      update({ ...form, change_email: 1 }, (err, res) => {
+                        if (res) {
+                          setEditInformation(false);
+                        }
+                      });
+                    } else {
+                      update({ ...form }, (err, res) => {
+                        if (res) {
+                          setEditInformation(false);
+                        }
+                      });
+                    }
+                  } else {
+                    update(form, (err, res) => {
+                      if (res) {
+                        setEditInformation(false);
+                      }
+                    });
+                  }
+                }
+              }
+            });
+          }
         } else if (form.email.trim() !== "" && !EmailRegex.test(form.email.trim())) {
           setFormUpdate((prevState) => ({
             valid: {
@@ -396,7 +477,7 @@ const UserProfilePanel = (props) => {
             },
             feedbackText: {
               ...prevState.feedbackText,
-              email: "Invalid email format",
+              email: dictionary.invalidEmail,
             },
           }));
         } else {
@@ -445,9 +526,8 @@ const UserProfilePanel = (props) => {
         }
       } else {
         toaster.info("Nothing was updated.");
+        setEditInformation(false);
       }
-
-      setEditInformation(false);
     }
   };
 
@@ -517,7 +597,39 @@ const UserProfilePanel = (props) => {
     window.location.href = `mailto:${user.email}`;
   };
 
+  const handleEmailNumberChange = (value) => {
+    setForm((prevState) => ({
+      ...prevState,
+      email: value,
+    }));
+
+    setFormUpdate((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        email: undefined,
+      },
+      feedbackState: {
+        ...prevState.feedbackState,
+        email: undefined,
+      },
+      feedbackText: {
+        ...prevState.feedbackText,
+        email: undefined,
+      },
+    }));
+  };
+
   useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((response) => {
+        setCountryCode(response.country);
+      })
+      .catch((data, status) => {
+        //console.log("Request failed");
+      });
+
     if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
       history.push(`/profile/${loggedUser.id}/${replaceChar(loggedUser.name)}`);
     }
@@ -560,14 +672,24 @@ const UserProfilePanel = (props) => {
     }
   }, [editInformation, refs.first_name]);
 
+  useEffect(() => {
+    handleEmailNumberChange(registerMode === "email" ? "" : undefined);
+    if (user) {
+      setForm((prevState) => ({
+        ...prevState,
+        profile_image_link: user.email,
+      }));
+    }
+  }, [registerMode]);
+
   if (!users[props.match.params.id]) {
     return <></>;
   }
 
   return (
-    <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
+    <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`} registerMode={registerMode}>
       <div className="row row-user-profile-panel">
-        <div className="col-12 col-lg-5 col-xl-6">
+        <div className="col-12 col-lg-6 col-xl-6">
           <div className="card">
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
               {(isLoggedUser || isEditable) && (
@@ -907,15 +1029,27 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
-                <div className="row mb-2">
+                <div className="row mb-2 email-phone-container">
                   <div className="col col-label text-muted">{dictionary.email}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("email") ? (
                       <Label>{user.email}</Label>
                     ) : (
                       <>
-                        <Input type="email" className={getValidClass(formUpdate.valid.email)} name="email" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.email} />
-                        <InputFeedback valid={formUpdate.feedbackState.email}>{formUpdate.feedbackText.email}</InputFeedback>
+                        <EmailPhoneInput
+                          onChange={handleEmailNumberChange}
+                          name="email_phone"
+                          isValid={formUpdate.feedbackState.email}
+                          feedback={formUpdate.feedbackText.email}
+                          placeholder={dictionary.emailOnly}
+                          registerMode={registerMode}
+                          setRegisterMode={setRegisterMode}
+                          value={form.email}
+                          defaultCountry={countryCode}
+                          defaultValue={user.email}
+                        />
+                        {/* <Input type="email" className={getValidClass(formUpdate.valid.email)} name="email" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.email} /> */}
+                        {/* <InputFeedback valid={formUpdate.feedbackState.email}>{formUpdate.feedbackText.email}</InputFeedback> */}
                       </>
                     )}
                   </div>

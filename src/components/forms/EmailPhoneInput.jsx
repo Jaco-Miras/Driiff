@@ -61,7 +61,7 @@ const EmailPhoneInput = (props) => {
   return (
     <Wrapper className={`form-group ${className}`} isValid={isValid}>
       <InputGroup>
-        {registerMode === "number" && <PhoneInput international placeholder="Enter phone number" value={value} onChange={handleNumberChange} defaultCountry={defaultCountry} />}
+        {registerMode === "number" && <PhoneInput international placeholder="Enter phone number" value={value} onChange={handleNumberChange} defaultCountry={defaultCountry} defaultValue={defaultValue} />}
         {registerMode === "email" && <Input name={name} onChange={handleEmailChange} defaultValue={defaultValue} type={type} valid={isValid} invalid={isValid === null ? isValid : !isValid} autoFocus={autoFocus} {...otherProps} />}
         <UncontrolledButtonDropdown>
           <DropdownToggle caret>{registerMode === "email" ? "Email" : "Phone"}</DropdownToggle>
@@ -70,7 +70,7 @@ const EmailPhoneInput = (props) => {
             <DropdownItem onClick={() => handleDropdownSelect("number")}>Phone</DropdownItem>
           </DropdownMenu>
         </UncontrolledButtonDropdown>
-        {!isValid && <InvalidPhoneLabel>{feedback}</InvalidPhoneLabel>}
+        {isValid === false && <InvalidPhoneLabel>{feedback}</InvalidPhoneLabel>}
         {/* <InputFeedback valid={isValid}>{feedback}</InputFeedback> */}
       </InputGroup>
     </Wrapper>
