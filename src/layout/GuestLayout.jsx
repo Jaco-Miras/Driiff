@@ -140,16 +140,28 @@ const GuestLayout = (props) => {
     or: _t("RESET_PASSWORD.OR", "or"),
     createAccount: _t("LOGIN.CREATE_ACCOUNT", "Create account"),
     authentication: _t("LOGIN.AUTHENTICATION", "Authentication"),
-    email: _t("LOGIN.EMAIL", "Email"),
+    emailOnly: _t("LOGIN.EMAIL", "Email"),
+    email: _t("LOGIN.EMAIL_PHONE", "Email / Phone number"),
     invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
     acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
     invalidDomain: _t("FEEDBACK.INVALID_DOMAIN", "Invalid domain"),
     invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
+    invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
+    phoneNumberRequired: _t("FEEDBACK.PHONE_NUMBER_REQUIRED", "Phone number required"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
+  const [countryCode, setCountryCode] = useState(null);
 
   useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((response) => {
+        setCountryCode(response.country);
+      })
+      .catch((data, status) => {
+        //console.log("Request failed");
+      });
     document.querySelector("body").classList.add("form-membership");
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,11 +227,11 @@ const GuestLayout = (props) => {
           </h5>
           <Suspense fallback={<div></div>}>
             <Switch>
-              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props} />} />
-              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
-              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props} />} />
-              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
               <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
               <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
