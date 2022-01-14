@@ -5,7 +5,7 @@ import { UserListPopUp } from "../../../common";
 import useChatMessageActions from "../../../hooks/useChatMessageActions";
 
 const EmojiContainer = styled.div`
-  background: ${(props) => (props.isAuthor ? "rgb(157 57 173 / 93%)" : "rgba(240, 240, 240, 0.8)")};
+  background: ${(props) => (props.isAuthor ? props.theme.colors.secondary : "rgba(240, 240, 240, 0.8)")};
   color: ${(props) => (props.isAuthor ? "#fff" : "#505050")};
   padding: 4px;
   display: flex;
