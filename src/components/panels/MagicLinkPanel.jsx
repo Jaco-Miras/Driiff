@@ -81,7 +81,7 @@ const MagicLinkPanel = (props) => {
     } else if (form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
       if (!isValidPhoneNumber(form.email)) {
         valid.email = false;
-        message.email = "Invalid phone number";
+        message.email = dictionary.invalidPhoneNumber;
       } else {
         valid.email = true;
       }
