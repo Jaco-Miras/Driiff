@@ -48,7 +48,8 @@ const ProfileSlider = (props) => {
     city: _t("PROFILE.CITY", "City:"),
     address: _t("PROFILE.ADDRESS", "Address:"),
     phone: _t("PROFILE.PHONE", "Phone:"),
-    email: _t("PROFILE.EMAIL", "Email:"),
+    //email: _t("PROFILE.EMAIL", "Email:"),
+    email: _t("LOGIN.EMAIL_PHONE", "Email / Phone number"),
     external: _t("PROFILE.EXTERNAL", "External"),
   };
 
@@ -101,13 +102,13 @@ const ProfileSlider = (props) => {
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
             <label>{dictionary.position}</label>
-            {loggedUser.type === "internal" && <label>{dictionary.email}</label>}
+            {loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
           </div>
           <div className="info-details">
             <span>{user?.first_name}</span>
             <span>{user?.last_name}</span>
             <span>{user?.role && user?.role.display_name}</span>
-            {loggedUser.type === "internal" && <span>{user?.email}</span>}
+            {loggedUser.type === "internal" && <span>{user?.email}:</span>}
           </div>
         </div>
       </div>
