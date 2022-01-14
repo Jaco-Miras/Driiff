@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import PhoneInput from "react-phone-number-input";
-import { Input, InputGroup, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from "reactstrap";
-//import { InputFeedback } from "./index";
+import { Input, InputGroup, Button } from "reactstrap";
+import { SvgIconFeather } from "../common";
 
 const Wrapper = styled.div`
   .form-control {
@@ -35,6 +35,12 @@ const Wrapper = styled.div`
   }
   .dropdown-menu.show button {
     color: ${(props) => props.theme.colors.primary};
+  }
+  .feather-chevron-down {
+    margin-left: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 3;
   }
 `;
 
@@ -72,7 +78,9 @@ const EmailPhoneInput = (props) => {
       <InputGroup>
         {registerMode === "number" && <PhoneInput international placeholder="Enter phone number" value={value} onChange={handleNumberChange} defaultCountry={defaultCountry} defaultValue={defaultValue} />}
         {registerMode === "email" && <Input name={name} onChange={handleEmailChange} defaultValue={defaultValue} type={type} valid={isValid} invalid={isValid === null ? isValid : !isValid} autoFocus={autoFocus} {...otherProps} />}
-        <Button onClick={handleSelectRegisterMode}>{registerMode === "email" ? "Email" : "Phone"}</Button>
+        <Button onClick={handleSelectRegisterMode}>
+          {registerMode === "email" ? "Email" : "Phone"} <SvgIconFeather icon="chevron-down" />
+        </Button>
         {/* <UncontrolledButtonDropdown>
           <DropdownToggle caret>{registerMode === "email" ? "Email" : "Phone"}</DropdownToggle>
           <DropdownMenu>
