@@ -106,6 +106,7 @@ const InvitedUsersModal = (props) => {
   const user = useSelector((state) => state.session.user);
   const teams = useSelector((state) => state.users.teams);
   const [registerMode, setRegisterMode] = useState({});
+  const [countryCode, setCountryCode] = useState(null);
 
   const dictionary = {
     closeButton: _t("BUTTON.CLOSE", "Close"),
@@ -281,7 +282,6 @@ const InvitedUsersModal = (props) => {
     setLoading(true);
 
     if (hasLastName) {
-      console.log(invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)));
       onPrimaryAction(
         invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)),
         () => {
@@ -295,7 +295,7 @@ const InvitedUsersModal = (props) => {
       );
     } else {
       onPrimaryAction(
-        invitationItems.filter((v, i) => v.name !== "" && v.email !== ""),
+        invitationItems.filter((v, i) => v.name !== "" && (v.email !== "" || v.phone_number !== undefined)),
         () => {
           setLoading(false);
         },
@@ -326,6 +326,15 @@ const InvitedUsersModal = (props) => {
       }
       setInvitationItems((prevState) => [...prevState, input]);
     }
+
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((response) => {
+        setCountryCode(response.country);
+      })
+      .catch((data, status) => {
+        //console.log("Request failed");
+      });
   }, []);
 
   const handleSelectTeam = (e, key) => {
@@ -426,6 +435,8 @@ const InvitedUsersModal = (props) => {
                       registerMode={registerMode[key] ? registerMode[key] : "email"}
                       setRegisterMode={(mode) => handleSetRegisterMode(mode, key)}
                       value={item.email}
+                      defaultCountry={countryCode}
+                      autoFocus={true}
                       className={`email-phone-input ${registerMode[key] && registerMode[key] === "number" ? "phone-input" : "email-input"}`}
                     />
                     {/* <FormInput

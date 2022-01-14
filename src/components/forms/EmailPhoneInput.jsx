@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PhoneInput from "react-phone-number-input";
-import { Input, InputGroup, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { Input, InputGroup, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from "reactstrap";
 //import { InputFeedback } from "./index";
 
 const Wrapper = styled.div`
@@ -28,6 +28,7 @@ const Wrapper = styled.div`
     background: ${(props) => props.theme.colors.third}!important;
     color: ${(props) => props.theme.colors.primary};
     border-color: transparent !important;
+    border-radius: 0 6px 6px 0;
   }
   button.btn.btn-secondary:not(:disabled):not(.disabled):focus {
     box-shadow: none !important;
@@ -48,7 +49,15 @@ const InvalidPhoneLabel = styled.label`
 const EmailPhoneInput = (props) => {
   const { className = "", type = "text", name, onChange, defaultValue = "", defaultCountry = null, isValid = null, feedback = null, registerMode, setRegisterMode, value, autoFocus = false, ...otherProps } = props;
 
-  const handleDropdownSelect = (mode) => setRegisterMode(mode);
+  // const handleDropdownSelect = (mode) => setRegisterMode(mode);
+
+  const handleSelectRegisterMode = () => {
+    if (registerMode === "email") {
+      setRegisterMode("number");
+    } else {
+      setRegisterMode("email");
+    }
+  };
 
   const handleNumberChange = (e) => {
     onChange(e);
@@ -63,13 +72,14 @@ const EmailPhoneInput = (props) => {
       <InputGroup>
         {registerMode === "number" && <PhoneInput international placeholder="Enter phone number" value={value} onChange={handleNumberChange} defaultCountry={defaultCountry} defaultValue={defaultValue} />}
         {registerMode === "email" && <Input name={name} onChange={handleEmailChange} defaultValue={defaultValue} type={type} valid={isValid} invalid={isValid === null ? isValid : !isValid} autoFocus={autoFocus} {...otherProps} />}
-        <UncontrolledButtonDropdown>
+        <Button onClick={handleSelectRegisterMode}>{registerMode === "email" ? "Email" : "Phone"}</Button>
+        {/* <UncontrolledButtonDropdown>
           <DropdownToggle caret>{registerMode === "email" ? "Email" : "Phone"}</DropdownToggle>
           <DropdownMenu>
             <DropdownItem onClick={() => handleDropdownSelect("email")}>Email</DropdownItem>
             <DropdownItem onClick={() => handleDropdownSelect("number")}>Phone</DropdownItem>
           </DropdownMenu>
-        </UncontrolledButtonDropdown>
+        </UncontrolledButtonDropdown> */}
         {isValid === false && <InvalidPhoneLabel>{feedback}</InvalidPhoneLabel>}
         {/* <InputFeedback valid={isValid}>{feedback}</InputFeedback> */}
       </InputGroup>

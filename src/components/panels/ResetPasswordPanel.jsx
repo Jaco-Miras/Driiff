@@ -4,12 +4,12 @@ import styled from "styled-components";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { useUserActions } from "../hooks";
-import { FormInput } from "../forms";
+import { EmailPhoneInput } from "../forms";
 
 const Wrapper = styled.form``;
 
 const ResetPasswordPanel = (props) => {
-  const { dictionary } = props;
+  const { dictionary, countryCode } = props;
 
   const userActions = useUserActions();
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,8 @@ const ResetPasswordPanel = (props) => {
     valid: {},
     message: {},
   });
+
+  const [registerMode, setRegisterMode] = useState("email");
 
   const _validateForm = (e) => {
     let valid = {};
@@ -88,15 +90,51 @@ const ResetPasswordPanel = (props) => {
     });
   };
 
+  const handleEmailNumberChange = (value) => {
+    setForm((prevState) => ({
+      ...prevState,
+      email: value,
+    }));
+
+    setFormResponse((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        email: undefined,
+      },
+      message: {
+        ...prevState.message,
+        email: undefined,
+      },
+    }));
+  };
+
+  useEffect(() => {
+    handleEmailNumberChange(registerMode === "email" ? "" : undefined);
+  }, [registerMode]);
+
   useEffect(() => {
     refs.email.current.focus();
   }, []);
 
   return (
     <Wrapper>
-      <div className="form-group">
+      <EmailPhoneInput
+        onChange={handleEmailNumberChange}
+        name="email_phone"
+        isValid={formResponse.valid.email}
+        feedback={formResponse.message.email}
+        placeholder={dictionary.emailOnly}
+        registerMode={registerMode}
+        setRegisterMode={setRegisterMode}
+        value={form.email}
+        defaultCountry={countryCode}
+        autoFocus={true}
+        innerRef={refs.email}
+      />
+      {/* <div className="form-group">
         <FormInput innerRef={refs.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} onChange={handleInputChange} name="email" type="email" placeholder={dictionary.email} required autoFocus />
-      </div>
+      </div> */}
       <button className="btn btn-primary btn-block" onClick={handleSubmit}>
         {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.submit}
       </button>

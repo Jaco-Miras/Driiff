@@ -1,9 +1,9 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { EmailRegex } from "../../helpers/stringFormatter";
-import { CheckBox, FormInput } from "../forms";
+import { CheckBox, EmailPhoneInput } from "../forms";
 import { usePageLoader, useUserActions } from "../hooks";
 import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
@@ -18,7 +18,7 @@ const Wrapper = styled.form`
 `;
 
 const MagicLinkPanel = (props) => {
-  const { dictionary } = props;
+  const { dictionary, countryCode } = props;
   const pageLoader = usePageLoader();
   const userActions = useUserActions();
 
@@ -35,6 +35,8 @@ const MagicLinkPanel = (props) => {
     valid: {},
     message: {},
   });
+
+  const [registerMode, setRegisterMode] = useState("email");
 
   const toggleCheck = useCallback(
     (e) => {
@@ -135,9 +137,45 @@ const MagicLinkPanel = (props) => {
     }
   };
 
+  const handleEmailNumberChange = (value) => {
+    setForm((prevState) => ({
+      ...prevState,
+      email: value,
+    }));
+
+    setFormResponse((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        email: undefined,
+      },
+      message: {
+        ...prevState.message,
+        email: undefined,
+      },
+    }));
+  };
+
+  useEffect(() => {
+    handleEmailNumberChange(registerMode === "email" ? "" : undefined);
+  }, [registerMode]);
+
   return (
     <Wrapper className="fadeIn">
-      <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
+      <EmailPhoneInput
+        onChange={handleEmailNumberChange}
+        name="email_phone"
+        isValid={formResponse.valid.email}
+        feedback={formResponse.message.email}
+        placeholder={dictionary.emailOnly}
+        registerMode={registerMode}
+        setRegisterMode={setRegisterMode}
+        value={form.email}
+        defaultCountry={countryCode}
+        autoFocus={true}
+        innerRef={refs.email}
+      />
+      {/* <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus /> */}
       <div className="form-group d-flex justify-content-between">
         <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
           {dictionary.rememberMe}
