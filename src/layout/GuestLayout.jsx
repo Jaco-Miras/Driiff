@@ -228,9 +228,9 @@ const GuestLayout = (props) => {
           <Suspense fallback={<div></div>}>
             <Switch>
               <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
-              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props} />} />
+              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
               <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
               <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
