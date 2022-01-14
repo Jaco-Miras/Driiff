@@ -108,7 +108,7 @@ const ProfileSlider = (props) => {
             <span>{user?.first_name}</span>
             <span>{user?.last_name}</span>
             <span>{user?.role && user?.role.display_name}</span>
-            {loggedUser.type === "internal" && <span>{user?.email}:</span>}
+            {loggedUser.type === "internal" && <span>{user?.email}</span>}
           </div>
         </div>
       </div>
