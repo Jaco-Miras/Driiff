@@ -364,27 +364,40 @@ const UserProfilePanel = (props) => {
           }
         });
       } else {
-        if (isEditable) {
-          if (user.email !== form.email) {
-            update({ ...form, change_email: 1 }, (err, res) => {
-              if (res) {
-                setEditInformation(false);
-              }
-            });
-          } else {
-            update({ ...form }, (err, res) => {
-              if (res) {
-                setEditInformation(false);
-              }
-            });
-          }
+        if (user.email !== form.email) {
+          update({ ...form, change_email: 1 }, (err, res) => {
+            if (res) {
+              setEditInformation(false);
+            }
+          });
         } else {
-          update(form, (err, res) => {
+          update({ ...form }, (err, res) => {
             if (res) {
               setEditInformation(false);
             }
           });
         }
+        // if (isEditable) {
+        //   if (user.email !== form.email) {
+        //     update({ ...form, change_email: 1 }, (err, res) => {
+        //       if (res) {
+        //         setEditInformation(false);
+        //       }
+        //     });
+        //   } else {
+        //     update({ ...form }, (err, res) => {
+        //       if (res) {
+        //         setEditInformation(false);
+        //       }
+        //     });
+        //   }
+        // } else {
+        //   update(form, (err, res) => {
+        //     if (res) {
+        //       setEditInformation(false);
+        //     }
+        //   });
+        // }
       }
     } else {
       //check for changes in email
@@ -440,27 +453,40 @@ const UserProfilePanel = (props) => {
                     },
                   }));
                 } else {
-                  if (isEditable) {
-                    if (user.email !== form.email) {
-                      update({ ...form, change_email: 1 }, (err, res) => {
-                        if (res) {
-                          setEditInformation(false);
-                        }
-                      });
-                    } else {
-                      update({ ...form }, (err, res) => {
-                        if (res) {
-                          setEditInformation(false);
-                        }
-                      });
-                    }
+                  if (user.email !== form.email) {
+                    update({ ...form, change_email: 1 }, (err, res) => {
+                      if (res) {
+                        setEditInformation(false);
+                      }
+                    });
                   } else {
-                    update(form, (err, res) => {
+                    update({ ...form }, (err, res) => {
                       if (res) {
                         setEditInformation(false);
                       }
                     });
                   }
+                  // if (isEditable) {
+                  //   if (user.email !== form.email) {
+                  //     update({ ...form, change_email: 1 }, (err, res) => {
+                  //       if (res) {
+                  //         setEditInformation(false);
+                  //       }
+                  //     });
+                  //   } else {
+                  //     update({ ...form }, (err, res) => {
+                  //       if (res) {
+                  //         setEditInformation(false);
+                  //       }
+                  //     });
+                  //   }
+                  // } else {
+                  //   update(form, (err, res) => {
+                  //     if (res) {
+                  //       setEditInformation(false);
+                  //     }
+                  //   });
+                  // }
                 }
               }
             });
