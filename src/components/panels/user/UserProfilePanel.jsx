@@ -135,6 +135,8 @@ const Wrapper = styled.div`
   }
 `;
 
+const lettersRegExp = /[a-zA-Z]/g;
+
 const UserProfilePanel = (props) => {
   const { className = "" } = props;
 
@@ -353,7 +355,6 @@ const UserProfilePanel = (props) => {
   };
 
   const handleSave = () => {
-    const lettersRegExp = /[a-zA-Z]/g;
     if (Object.values(formUpdate.valid).find((v) => v === false) === false) {
       toaster.error("Some fields require your attention.");
     } else if (Object.values(formUpdate.valid).find((v) => v === true) === true) {
@@ -525,27 +526,40 @@ const UserProfilePanel = (props) => {
                   },
                 }));
               } else {
-                if (isEditable) {
-                  if (user.email !== form.email) {
-                    update({ ...form, change_email: 1 }, (err, res) => {
-                      if (res) {
-                        setEditInformation(false);
-                      }
-                    });
-                  } else {
-                    update({ ...form }, (err, res) => {
-                      if (res) {
-                        setEditInformation(false);
-                      }
-                    });
-                  }
+                if (user.email !== form.email) {
+                  update({ ...form, change_email: 1 }, (err, res) => {
+                    if (res) {
+                      setEditInformation(false);
+                    }
+                  });
                 } else {
-                  update(form, (err, res) => {
+                  update({ ...form }, (err, res) => {
                     if (res) {
                       setEditInformation(false);
                     }
                   });
                 }
+                // if (isEditable) {
+                //   if (user.email !== form.email) {
+                //     update({ ...form, change_email: 1 }, (err, res) => {
+                //       if (res) {
+                //         setEditInformation(false);
+                //       }
+                //     });
+                //   } else {
+                //     update({ ...form }, (err, res) => {
+                //       if (res) {
+                //         setEditInformation(false);
+                //       }
+                //     });
+                //   }
+                // } else {
+                //   update(form, (err, res) => {
+                //     if (res) {
+                //       setEditInformation(false);
+                //     }
+                //   });
+                // }
               }
             }
           });
@@ -659,6 +673,7 @@ const UserProfilePanel = (props) => {
     if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
       history.push(`/profile/${loggedUser.id}/${replaceChar(loggedUser.name)}`);
     }
+    console.log(user);
   }, []);
 
   useEffect(() => {
@@ -695,21 +710,32 @@ const UserProfilePanel = (props) => {
   useEffect(() => {
     if (editInformation && refs.first_name.current) {
       refs.first_name.current.focus();
+      if (user && user.email.charAt(0) === "+" && !lettersRegExp.test(user.email)) {
+        setRegisterMode("number");
+      }
     }
   }, [editInformation, refs.first_name]);
 
   useEffect(() => {
     handleEmailNumberChange(registerMode === "email" ? "" : undefined);
     if (user) {
+      const isPhoneNumber = user.email.charAt(0) === "+" && !lettersRegExp.test(user.email);
       setForm((prevState) => ({
         ...prevState,
-        profile_image_link: user.email,
+        email: isPhoneNumber && registerMode === "email" ? "" : user.email,
       }));
     }
   }, [registerMode]);
 
   if (!users[props.match.params.id]) {
     return <></>;
+  }
+
+  let emailDefaultValue = "";
+
+  if (user) {
+    const isPhoneNumber = user.email.charAt(0) === "+" && !lettersRegExp.test(user.email);
+    emailDefaultValue = isPhoneNumber && registerMode === "email" ? "" : user.email;
   }
 
   return (
@@ -1072,7 +1098,7 @@ const UserProfilePanel = (props) => {
                           setRegisterMode={setRegisterMode}
                           value={form.email}
                           defaultCountry={countryCode}
-                          defaultValue={user.email}
+                          defaultValue={emailDefaultValue}
                         />
                         {/* <Input type="email" className={getValidClass(formUpdate.valid.email)} name="email" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.email} /> */}
                         {/* <InputFeedback valid={formUpdate.feedbackState.email}>{formUpdate.feedbackText.email}</InputFeedback> */}
