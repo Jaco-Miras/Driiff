@@ -22334,13 +22334,17 @@ body > div#transition-popper {
   .react-draggable > div:first-child {
     padding: 0;
     min-width: 350px;
-    > div:first-child {
-      min-width: 350px;
-      padding: 0;
-      // height: 250px;
-    }
+    // > div:first-child {
+    //   min-width: 350px;
+    //   padding: 0;
+    //   // height: 250px;
+    // }
     > div:last-child {
       min-width: 350px;
+    }
+    .MuiToolbar-root.MuiToolbar-regular.drag-video {
+      min-width: 350px;
+      padding: 0;
     }
   }
 }
