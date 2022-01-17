@@ -55,7 +55,8 @@ const AnnotationNumber = styled.div`
 `;
 
 const SidebarComments = (props) => {
-  //const { wip } = props;
+  const { wip, annotations } = props;
+
   const scrollRef = useRef();
   const { comments } = useWIPFileComments(scrollRef);
   const timeFormat = useTimeFormat();
@@ -64,10 +65,12 @@ const SidebarComments = (props) => {
       <div className="file-comments-thread">
         {comments.length > 0 &&
           comments.map((c) => {
+            const annotation = annotations.find((a) => a.comment_id === c.id && a.annotation !== null);
+            // console.log(annotations, annotation);
             return (
               <div className="file-comment mb-2" key={c.id}>
                 <div className="file-comment-body mb-2" dangerouslySetInnerHTML={{ __html: c.body }} />
-                {c.hasOwnProperty("annotation_id") && <AnnotationNumber>{c.annotation_id}</AnnotationNumber>}
+                {annotation && <AnnotationNumber>{annotation.annotation.data.id}</AnnotationNumber>}
                 <div className="d-flex align-items-center">
                   <Avatar className={"avatar-sm mr-1"} id={c.author.id} type="USER" imageLink={c.author.profile_image_thumbnail_link} name={c.author.name} showSlider={false} />
                   <span className="mr-1">{c.author.first_name}</span>

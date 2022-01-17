@@ -11,6 +11,8 @@ import {
   getFileComments as getFileCommentsService,
   postFileApproval as postFileApprovalService,
   postFileCommentClose as postFileCommentCloseService,
+  patchFileVersion as patchFileVersionService,
+  putFileVersion as putFileVersionService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -87,4 +89,24 @@ export function postFileCommentClose(payload, callback) {
 
 export function saveAnnotation(payload, callback) {
   return SimpleDispatchActionToReducer("SAVE_ANNOTATION", payload, callback);
+}
+
+export function patchFileVersion(payload, callback) {
+  return dispatchActionToReducer(patchFileVersionService(payload), "PATCH_FILE_VERSION_START", "PATCH_FILE_VERSION_SUCCESS", "PATCH_FILE_VERSION_FAIL", callback);
+}
+
+export function openFileDialog(payload, callback) {
+  return SimpleDispatchActionToReducer("OPEN_FILE_DIALOG", payload, callback);
+}
+
+export function putFileVersion(payload, callback) {
+  return dispatchActionToReducer(putFileVersionService(payload), "PUT_FILE_VERSION_START", "PUT_FILE_VERSION_SUCCESS", "PUT_FILE_VERSION_FAIL", callback);
+}
+
+export function incomingReplacedWIPFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REPLACED_WIP_FILE", payload, callback);
+}
+
+export function incomingNewFileVersion(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_NEW_WIP_FILE_VERSION", payload, callback);
 }

@@ -31,6 +31,7 @@ import {
   ZoomInviteModal,
   WIPModal,
   ZoomMeetingInProgress,
+  WIPFileModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -124,6 +125,8 @@ const ModalPanel = () => {
             return <AddToTeamModal key={modal.type} data={modal} />;
           case "wip":
             return <WIPModal key={modal.type} data={modal} />;
+          case "wip_file":
+            return <WIPFileModal key={modal.type} data={modal} />;
           default:
             return null;
         }

@@ -186,7 +186,7 @@ import { incomingReminderNotification, getNotifications, incomingSnoozedNotifica
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
-import { incomingWIP, incomingWIPSubject, incomingWIPComment, incomingWIPFileComment } from "../../redux/actions/wipActions";
+import { incomingWIP, incomingWIPSubject, incomingWIPComment, incomingWIPFileComment, incomingReplacedWIPFile, incomingNewFileVersion } from "../../redux/actions/wipActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -273,6 +273,14 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".proposal-version-upload-new-notification", (e) => {
+        console.log(e, "new version");
+        this.props.incomingNewFileVersion(e.data);
+      })
+      .listen(".proposal-version-replace-notification", (e) => {
+        console.log(e, "replace image");
+        this.props.incomingReplacedWIPFile(e.data);
+      })
       .listen(".proposal-version-approved-notification", (e) => {
         console.log(e, "approve file");
       })
@@ -2445,7 +2453,8 @@ function mapDispatchToProps(dispatch) {
     incomingWIPSubject: bindActionCreators(incomingWIPSubject, dispatch),
     incomingWIPComment: bindActionCreators(incomingWIPComment, dispatch),
     incomingWIPFileComment: bindActionCreators(incomingWIPFileComment, dispatch),
-    
+    incomingReplacedWIPFile: bindActionCreators(incomingReplacedWIPFile, dispatch),
+    incomingNewFileVersion: bindActionCreators(incomingNewFileVersion, dispatch),
   };
 }
 

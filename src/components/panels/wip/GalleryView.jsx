@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useParams, useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
-import { useWIPActions } from "../../hooks";
+import { useWIPActions, useWIPFileActions } from "../../hooks";
 import FileLinkView from "./FileLinkView";
 import moment from "moment";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import Annotation from "react-image-annotation-with-zoom";
 import { PointSelector } from "react-image-annotation-with-zoom/lib/selectors";
+import { DropDocument } from "../../dropzone/DropDocument";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div``;
 const WIPDetailWrapper = styled.div`
@@ -104,6 +106,7 @@ const StyledMoreOptions = styled(MoreOptions)`
     right: 0;
     top: 45px;
     width: 250px;
+    height: 45px;
 
     svg {
       width: 14px;
@@ -118,7 +121,7 @@ const MainBody = styled.div`
   flex-flow: column;
   //   align-items: center;
   //   justify-content: center;
-  height: calc(100% - 180px);
+  height: calc(100% - 200px);
   padding: 15px;
 `;
 
@@ -249,17 +252,72 @@ function renderHighlight({ annotation, active }) {
 
 const GalleryView = (props) => {
   const { item } = props;
+  const dropzoneRef = useRef();
+  const dispatch = useDispatch();
   const params = useParams();
   const history = useHistory();
   const wipActions = useWIPActions();
+  const fileActions = useWIPFileActions();
   const user = useSelector((state) => state.session.user);
   const dark_mode = useSelector((state) => state.settings.user.GENERAL_SETTINGS.dark_mode);
   const annotation = useSelector((state) => state.wip.annotation);
-  // const [annotation, setAnnotation] = useState({});
-  const [annotations, setAnnotations] = useState([]);
+  const uploadNewVersion = useSelector((state) => state.wip.uploadNewVersion);
+  //const [annotations, setAnnotations] = useState([]);
+  const [showDropZone, setshowDropZone] = useState(false);
+  const [fileUploadMode, setFileUploadMode] = useState(null);
+
+  const handleOpenFileDialog = () => {
+    if (dropzoneRef.current) {
+      dropzoneRef.current.open();
+    }
+  };
+
+  const handleHideDropzone = () => {
+    setshowDropZone(false);
+  };
+
   const handleGoBack = () => {
     wipActions.goBack();
   };
+
+  const dropAction = (acceptedFiles) => {
+    let attachedFiles = [];
+    acceptedFiles.forEach((file) => {
+      var bodyFormData = new FormData();
+      bodyFormData.append("file", file);
+      let shortFileId = require("shortid").generate();
+      attachedFiles.push({
+        ...file,
+        type: "IMAGE",
+        id: shortFileId,
+        status: false,
+        src: URL.createObjectURL(file),
+        bodyFormData: bodyFormData,
+        name: file.name ? file.name : file.path,
+      });
+    });
+    handleHideDropzone();
+
+    let modal = {
+      type: "wip_file",
+      droppedFiles: attachedFiles,
+      file: file,
+      mode: fileUploadMode,
+    };
+
+    dispatch(addToModals(modal));
+  };
+
+  const handleReplaceImage = () => {
+    handleOpenFileDialog();
+    setFileUploadMode("replace");
+  };
+
+  const handleUploadNewVersion = () => {
+    handleOpenFileDialog();
+    setFileUploadMode("new_version");
+  };
+
   const getPriorityColor = () => {
     if (!item) return null;
     if (item.priority === "medium") {
@@ -271,7 +329,7 @@ const GalleryView = (props) => {
     }
   };
   const mainFile = item.files.find((f) => f.id === parseInt(params.wipFileId));
-  const file = mainFile.file_versions.length ? mainFile.file_versions[mainFile.file_versions.length - 1] : mainFile.link_versions[mainFile.link_versions.length - 1];
+  const file = mainFile.file_versions.length ? mainFile.file_versions.find((f) => f.id === parseInt(params.wipFileVersion)) : mainFile.link_versions[mainFile.link_versions.length - 1];
 
   const handleSelectImage = (fid, fvid) => {
     history.push(history.location.pathname.split("/file/")[0] + `/file/${fid}/${fvid}`);
@@ -285,31 +343,48 @@ const GalleryView = (props) => {
     };
   });
 
-  const handleVersionChange = (e) => {};
+  const handleVersionChange = (e) => {
+    history.push(history.location.pathname.split("/file/")[0] + `/file/${mainFile.id}/${e.id}`);
+  };
 
   const annotationChange = (ann) => {
-    // console.log(ann, "ann");
-    //setAnnotation({ ...ann, selection: { ...ann.selection, showEditor: false } });
     wipActions.annotate({ ...ann, selection: { ...ann.selection, showEditor: false, data: { id: file.annotations.length + 1 } } });
   };
 
   const annotationSubmit = (annotation) => {
-    const { geometry, data } = annotation;
-    console.log(data, geometry);
-    //setAnnotation({});
     wipActions.annotate({});
-    setAnnotations(
-      annotations.concat({
-        geometry,
-        data: {
-          ...data,
-          id: file.annotations.length + 1,
-        },
-      })
-    );
   };
 
-  console.log(file);
+  useEffect(() => {
+    if (uploadNewVersion) {
+      handleUploadNewVersion();
+      fileActions.openDialog({ open: false });
+    }
+  }, [uploadNewVersion]);
+
+  const filteredAnnotations = file.annotations
+    .filter((a) => {
+      if (a.hasOwnProperty("comment_id")) {
+        if (a.annotation) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    })
+    .map((a) => {
+      if (a.hasOwnProperty("comment_id")) {
+        if (a.annotation) {
+          return a.annotation;
+        }
+      } else {
+        return a;
+      }
+    });
+
+  // console.log(filteredAnnotations, file.annotations);
 
   return (
     <Wrapper className="card card-body app-content-body gallery-page">
@@ -346,11 +421,11 @@ const GalleryView = (props) => {
             <DownloadButton>
               <SvgIconFeather icon="download" />
             </DownloadButton>
-            {item.author.id !== user.id && (
+            {item.author.id === user.id && (
               <div>
                 <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}>
-                  <div>Replace current image</div>
-                  <div>Upload new version</div>
+                  {file.is_close === 0 && <div onClick={handleReplaceImage}>Replace current image</div>}
+                  {file.is_close === 1 && <div onClick={handleUploadNewVersion}>Upload new version</div>}
                 </StyledMoreOptions>
               </div>
             )}
@@ -358,18 +433,31 @@ const GalleryView = (props) => {
         </MainHeader>
         <MainBody>
           <ImageWrapper className="w-100" isFileLink={file.media_link_title !== null}>
+            <DropDocument
+              hide={!showDropZone}
+              ref={dropzoneRef}
+              onDragLeave={handleHideDropzone}
+              onDrop={({ acceptedFiles }) => {
+                dropAction(acceptedFiles);
+              }}
+              onCancel={handleHideDropzone}
+              acceptType={"imageOnly"}
+              maxFiles={1}
+              multiple={false}
+            />
             {file.media_link_title && <FileLinkView file={file} />}
             {/* {file.type && file.type === "image" && <img src={file.view_link} />} */}
             <Annotation
               src={file.view_link}
               alt="Two pebbles anthropomorphized holding hands"
-              annotations={file.annotations}
+              annotations={filteredAnnotations}
               type={PointSelector.TYPE}
               value={annotation}
               onChange={annotationChange}
               onSubmit={annotationSubmit}
               renderSelector={renderSelector}
               renderHighlight={renderHighlight}
+              disableZoom={true}
             />
           </ImageWrapper>
         </MainBody>
@@ -378,7 +466,11 @@ const GalleryView = (props) => {
             return (
               <ImgCard className="img-card mr-2" key={f.id} selected={f.id === parseInt(params.wipFileId)}>
                 {f.file_versions.length > 0 ? (
-                  <img src={f.file_versions[0].view_link} onClick={(e) => handleSelectImage(f.id, f.file_versions[0].id)} />
+                  <img
+                    alt="card preview"
+                    src={f.id === parseInt(params.wipFileId) ? f.file_versions.find((f) => f.id === parseInt(params.wipFileVersion)).view_link : f.file_versions[f.file_versions.length - 1].view_link}
+                    onClick={(e) => handleSelectImage(f.id, f.file_versions[f.file_versions.length - 1].id)}
+                  />
                 ) : (
                   <span onClick={(e) => handleSelectImage(f.id, f.link_versions[0].id)}>
                     <i class="fa fa-link"></i>
