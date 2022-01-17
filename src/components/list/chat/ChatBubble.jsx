@@ -111,6 +111,13 @@ const ChatBubbleContainer = styled.div`
   .message-files div:first-child {
     align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   }
+  &.external-chat {
+    background-color: ${(props) => props.theme.colors.fourth}!important;
+    color: #000 !important;
+    .chat-name-not-author-mobile {
+      color: #000 !important;
+    }
+  }
 `;
 
 const QuoteContainer = styled.div`

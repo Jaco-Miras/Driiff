@@ -21,6 +21,7 @@ const useZoomActions = () => {
       zoomAppRoot: meetingSDKElement,
       language: "en-US",
       isSupportChat: false,
+      isSupportNonverbal: true,
       customize: {
         meetingInfo: ["topic", "host", "mn", "pwd", "invite", "participant", "dc"],
         toolbar: {

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
+import "react-phone-number-input/style.css";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { clearModal } from "../../redux/actions/globalActions";
-import { FormInput, PeopleSelect } from "../forms";
+import { FormInput, PeopleSelect, EmailPhoneInput } from "../forms";
 import { useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { SvgIconFeather } from "../common";
@@ -33,12 +35,27 @@ const ModalWrapper = styled(Modal)`
     color: ${({ theme }) => theme.colors.secondary};
     border-color: ${({ theme }) => theme.colors.secondary};
   }
+  .btn.btn-secondary:not(:disabled):not(.disabled):focus,
+  .btn.btn-secondary:not(:disabled):not(.disabled):hover,
   .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
   .btn.btn-outline-secondary:hover {
     background-color: ${({ theme }) => theme.colors.secondary};
   }
+  .btn.btn-secondary:not(:disabled):not(.disabled):focus,
+  .btn.btn-secondary:not(:disabled):not(.disabled):hover,
   .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
     border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .dropdown-toggle,
+  .dropdown-toggle:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  .email-phone-input.phone-input .input-group {
+    flex-wrap: unset;
+  }
+  .PhoneInput input {
+    padding: 0.375rem 0.75rem;
   }
 `;
 const MoreMemberButton = styled.span`
@@ -63,6 +80,13 @@ const StyledTable = styled.table`
   overflow: unset;
 `;
 
+// const InvalidPhoneLabel = styled.label`
+//   width: 100%;
+//   margin-top: 0.25rem;
+//   font-size: 80%;
+//   color: #dc3545;
+// `;
+
 const InvitedUsersModal = (props) => {
   const { submitText = "Submit", cancelText = "Cancel", onPrimaryAction, hasLastName = false, invitations = [], type, fromRegister } = props.data;
 
@@ -78,8 +102,11 @@ const InvitedUsersModal = (props) => {
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
   const [binary, setBinary] = useState(false);
+  //const [phoneNumber, setPhoneNumber] = useState();
   const user = useSelector((state) => state.session.user);
   const teams = useSelector((state) => state.users.teams);
+  const [registerMode, setRegisterMode] = useState({});
+  const [countryCode, setCountryCode] = useState(null);
 
   const dictionary = {
     closeButton: _t("BUTTON.CLOSE", "Close"),
@@ -87,10 +114,11 @@ const InvitedUsersModal = (props) => {
     userInvitations: _t("LABEL.USER_INVITATIONS", "User invitations"),
     firstName: _t("INVITE.FIRST_NAME", "First name"),
     lastName: _t("INVITE.LAST_NAME", "Last name"),
-    email: _t("INVITE.EMAIL", "Email"),
+    emailOnly: _t("INVITE.EMAIL", "Email"),
     name: _t("INVITE.NAME", "Name"),
     addUserToteams: _t("INVITE_USERS.ADD_USER_TO_TEAMS", "Add user to teams"),
     teamLabel: _t("TEAM", "Team"),
+    email: _t("LOGIN.EMAIL_PHONE", "Email / Phone number"),
   };
 
   const teamOptions = !fromRegister
@@ -113,6 +141,14 @@ const InvitedUsersModal = (props) => {
     const name = e.currentTarget.name;
     setInvitationItems((prevState) => {
       prevState[id][name] = e.target.value;
+      return prevState;
+    });
+    setBinary((prevState) => !prevState);
+  };
+
+  const handleEmailNumberChange = (value, key) => {
+    setInvitationItems((prevState) => {
+      prevState[key].email = value;
       return prevState;
     });
     setBinary((prevState) => !prevState);
@@ -164,7 +200,7 @@ const InvitedUsersModal = (props) => {
     let message = {};
     for (let i = 0; i < invitationItems.length; i++) {
       if (hasLastName) {
-        if (invitationItems[i].first_name !== "" || invitationItems[i].last_name !== "" || invitationItems[i].email !== "") {
+        if (invitationItems[i].first_name !== "" || invitationItems[i].last_name !== "" || invitationItems[i].email !== "" || invitationItems[i].phone_number !== undefined) {
           if (typeof valid[i] === "undefined") {
             valid[i] = {};
             message[i] = {};
@@ -186,14 +222,20 @@ const InvitedUsersModal = (props) => {
             valid[i].last_name = true;
           }
 
-          if (invitationItems[i].email === "") {
+          if (invitationItems[i].email === "" && invitationItems[i].phone_number === undefined) {
             valid[i].email = false;
-            message[i].email = "Email is required.";
+            message[i].email = "Please put email or phone number";
             isValid = false;
-          } else if (!EmailRegex.test(invitationItems[i].email)) {
+          } else if (invitationItems[i].email !== "" && !EmailRegex.test(invitationItems[i].email) && registerMode[i] === "email") {
             valid[i].email = false;
             message[i].email = "Email is invalid format.";
             isValid = false;
+          } else if (registerMode[i] === "number" && invitationItems[i].phone_number !== undefined && !isValidPhoneNumber(invitationItems[i].phone_number)) {
+            valid[i].phone_number = false;
+            message[i].phone_number = "Invalid phone number";
+            isValid = false;
+          } else if (invitationItems[i].phone_number !== undefined && isValidPhoneNumber(invitationItems[i].phone_number)) {
+            valid[i].phone_number = true;
           } else {
             valid[i].email = true;
           }
@@ -231,7 +273,6 @@ const InvitedUsersModal = (props) => {
       valid: valid,
       message: message,
     });
-
     return isValid;
   };
 
@@ -242,7 +283,7 @@ const InvitedUsersModal = (props) => {
 
     if (hasLastName) {
       onPrimaryAction(
-        invitationItems.filter((v, i) => v.first_name !== "" && v.last_name !== "" && v.email !== ""),
+        invitationItems.filter((v) => v.first_name !== "" && v.last_name !== "" && (v.email !== "" || v.phone_number !== undefined)),
         () => {
           setLoading(false);
         },
@@ -254,7 +295,7 @@ const InvitedUsersModal = (props) => {
       );
     } else {
       onPrimaryAction(
-        invitationItems.filter((v, i) => v.name !== "" && v.email !== ""),
+        invitationItems.filter((v, i) => v.name !== "" && (v.email !== "" || v.phone_number !== undefined)),
         () => {
           setLoading(false);
         },
@@ -275,6 +316,7 @@ const InvitedUsersModal = (props) => {
           first_name: "",
           last_name: "",
           email: "",
+          phone_number: undefined,
         };
       } else {
         input = {
@@ -284,12 +326,37 @@ const InvitedUsersModal = (props) => {
       }
       setInvitationItems((prevState) => [...prevState, input]);
     }
+
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((response) => {
+        setCountryCode(response.country);
+      })
+      .catch((data, status) => {
+        //console.log("Request failed");
+      });
   }, []);
 
   const handleSelectTeam = (e, key) => {
     setInvitationItems((prevState) => {
       prevState[key]["teams"] = e === null ? [] : e;
       return prevState;
+    });
+  };
+
+  // const handleChangePhoneNumber = (e, k) => {
+  //   setInvitationItems((prevState) => {
+  //     prevState[k]["phone_number"] = e;
+  //     return prevState;
+  //   });
+  // };
+
+  const handleSetRegisterMode = (mode, key) => {
+    setRegisterMode((prevState) => {
+      return {
+        ...prevState,
+        [key]: mode,
+      };
     });
   };
 
@@ -311,6 +378,7 @@ const InvitedUsersModal = (props) => {
                 <th>{dictionary.name}</th>
               )}
               <th>{dictionary.email}</th>
+              {/* {!fromRegister && <th className="team-th">Phone number</th>} */}
               {!fromRegister && <th className="team-th">{dictionary.addUserToteams}</th>}
               <th>
                 <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
@@ -358,7 +426,20 @@ const InvitedUsersModal = (props) => {
                     </td>
                   )}
                   <td>
-                    <FormInput
+                    <EmailPhoneInput
+                      onChange={(value) => handleEmailNumberChange(value, key)}
+                      name="email_phone"
+                      isValid={formResponse.valid.email}
+                      feedback={formResponse.message.email}
+                      placeholder={dictionary.emailOnly}
+                      registerMode={registerMode[key] ? registerMode[key] : "email"}
+                      setRegisterMode={(mode) => handleSetRegisterMode(mode, key)}
+                      value={item.email}
+                      defaultCountry={countryCode}
+                      autoFocus={true}
+                      className={`email-phone-input ${registerMode[key] && registerMode[key] === "number" ? "phone-input" : "email-input"}`}
+                    />
+                    {/* <FormInput
                       data-id={key}
                       placeholder={dictionary.email}
                       name="email"
@@ -367,8 +448,12 @@ const InvitedUsersModal = (props) => {
                       isValid={formResponse.valid[key] ? formResponse.valid[key].email : null}
                       feedback={formResponse.message[key] ? formResponse.message[key].email : null}
                       onChange={handleInputChange}
-                    />
+                    /> */}
                   </td>
+                  {/* <td>
+                    <PhoneInput placeholder="Enter phone number" value={item.phoneNumber} onChange={(e) => handleChangePhoneNumber(e, key)} />
+                    {formResponse.valid[key] && formResponse.valid[key].phone_number === false && <InvalidPhoneLabel>{formResponse.message[key].phone_number}</InvalidPhoneLabel>}
+                  </td> */}
                   {!fromRegister && (user.role.name === "owner" || user.role.name === "admin") && (
                     <td>
                       <SelectPeople options={teamOptions} value={item.teams} onChange={(e) => handleSelectTeam(e, key)} isSearchable isMulti={true} isClearable={true} />

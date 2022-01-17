@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector } from "react-redux";
 import { Tree } from "react-organizational-chart";
 import { MemberLists } from "../../list/members";
@@ -32,13 +32,14 @@ const StyledNode = styled.div`
 
 const CompanyStructure = (props) => {
   const { users } = props;
+  const theme = useTheme();
   const teams = useSelector((state) => state.users.teams);
   const companyName = useSelector((state) => state.settings.driff.company_name);
   return (
     <Wrapper>
       <Tree
         lineWidth={"2px"}
-        lineColor={"#8c3b9b"}
+        lineColor={theme.colors.primary}
         lineBorderRadius={"10px"}
         label={
           <StyledNode>

@@ -1,11 +1,12 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
-import { CheckBox, FormInput, PasswordInput } from "../forms";
+import { CheckBox, PasswordInput, EmailPhoneInput } from "../forms";
 import { useSettings, useUserActions, useToaster } from "../hooks";
 import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
@@ -29,7 +30,7 @@ const Wrapper = styled.form`
 `;
 
 const LoginPanel = (props) => {
-  const { dictionary } = props;
+  const { dictionary, countryCode } = props;
   const history = useHistory();
   const dispatch = useDispatch();
   const { driffSettings } = useSettings();
@@ -52,6 +53,7 @@ const LoginPanel = (props) => {
     valid: {},
     message: {},
   });
+  const [registerMode, setRegisterMode] = useState("email");
 
   const toggleCheck = useCallback(
     (e) => {
@@ -78,10 +80,21 @@ const LoginPanel = (props) => {
   const _validate = () => {
     let valid = {};
     let message = {};
+    const lettersRegExp = /[a-zA-Z]/g;
 
     if (form.email === "") {
       valid.email = false;
       message.email = dictionary.emailRequired;
+    } else if (form.email === undefined) {
+      valid.email = false;
+      message.email = dictionary.phoneNumberRequired;
+    } else if (form.email.charAt(0) === "+" && !lettersRegExp.test(form.email)) {
+      if (!isValidPhoneNumber(form.email)) {
+        valid.email = false;
+        message.email = dictionary.invalidPhoneNumber;
+      } else {
+        valid.email = true;
+      }
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
       message.email = dictionary.invalidEmail;
@@ -146,7 +159,7 @@ const LoginPanel = (props) => {
               password: false,
             },
           }));
-          refs.email.current.focus();
+          //refs.email.current.focus();
         }
 
         if (res) {
@@ -196,12 +209,35 @@ const LoginPanel = (props) => {
       });
     } else {
       if (!formResponse.valid.email) {
-        refs.email.current.focus();
+        //refs.email.current.focus();
       } else if (!formResponse.valid.password) {
         refs.password.current.focus();
       }
     }
   };
+
+  const handleEmailNumberChange = (value) => {
+    setForm((prevState) => ({
+      ...prevState,
+      email: value,
+    }));
+
+    setFormResponse((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        email: undefined,
+      },
+      message: {
+        ...prevState.message,
+        email: undefined,
+      },
+    }));
+  };
+
+  useEffect(() => {
+    handleEmailNumberChange(registerMode === "email" ? "" : undefined);
+  }, [registerMode]);
 
   if ($_GET("code") && $_GET("state")) {
     return <Wrapper className="fadeIn"></Wrapper>;
@@ -209,7 +245,20 @@ const LoginPanel = (props) => {
   return (
     <Wrapper className="fadeIn">
       <>
-        <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus />
+        <EmailPhoneInput
+          onChange={handleEmailNumberChange}
+          name="email_phone"
+          isValid={formResponse.valid.email}
+          feedback={formResponse.message.email}
+          placeholder={dictionary.emailOnly}
+          registerMode={registerMode}
+          setRegisterMode={setRegisterMode}
+          value={form.email}
+          defaultCountry={countryCode}
+          autoFocus={true}
+          innerRef={refs.email}
+        />
+        {/* <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus /> */}
         <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
         <div className="form-group d-flex justify-content-between">
           <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>

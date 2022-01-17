@@ -85,6 +85,9 @@ const AppWrapper = styled.div`
   .badge.badge-pill {
     background-color: ${({ theme }) => theme.colors.primary};
   }
+  .badge.badge-warning.badge-pill {
+    background-color: #fb3;
+  }
 
   .app-block .app-sidebar .app-sidebar-menu .list-group .list-group-item.active {
     color: ${({ theme }) => theme.colors.secondary}!important;

@@ -8,7 +8,8 @@ const LogoWrapper = styled.div`
   ${(props) =>
     props.hasCompanyLogo &&
     `height: 100%;
-    width: 70%;`}
+    width: 70%;
+    background-color: ${props.theme.colors.fifth}`}
 
   :hover {
     .feather-pencil {
@@ -46,6 +47,17 @@ const CompanyLogoWrapper = styled.div`
     max-height: 100px;
     max-width: 100px;
   }
+  ${(props) =>
+    props.hasCompanyLogo &&
+    `background-color: ${props.theme.colors.fifth}; 
+      border-radius: 6px;
+      .feather-heart {
+        color: #fff;
+      }
+      .icon-driff-logo2 path {
+        fill: #fff;
+      }
+  `}
 `;
 
 const DriffLogo = styled(SvgIcon)`
@@ -76,7 +88,7 @@ const LoginLogo = (props) => {
   return (
     <LogoWrapper hasCompanyLogo={companyLogo.trim() !== ""} className="mb-3">
       {companyLogo.trim() !== "" && (
-        <CompanyLogoWrapper data-link="/">
+        <CompanyLogoWrapper hasCompanyLogo={companyLogo.trim() !== ""}>
           <img className="company-logo" src={companyLogo} alt="company logo" />
           <SvgIconFeather icon="heart" />
           <div style={{ position: "relative" }}>

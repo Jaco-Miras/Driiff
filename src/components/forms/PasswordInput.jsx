@@ -16,6 +16,7 @@ const Wrapper = styled.div`
     border-color: ${(props) => (props.isValid === null ? "#e9ecef" : props.isValid ? "#28a745" : "#dc3545")};
     border-left: none;
     border-radius: 0 6px 6px 0 !important;
+    background-color: ${(props) => props.theme.colors.third};
   }
 
   .invalid-feedback {
