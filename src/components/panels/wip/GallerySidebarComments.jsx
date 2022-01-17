@@ -199,13 +199,16 @@ const GallerySidebarComments = (props) => {
 
   const toggleClose = () => {
     setCloseComments(!closeCommments);
+    fileActions.closeComments({ file_version_id: file.file_version_id, is_close: !closeCommments });
   };
 
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
   };
 
-  const handleShowModal = () => actions.showModal();
+  const handleUploadNewVersion = () => {
+    fileActions.openDialog({ open: true });
+  };
 
   const handleQuillChange = (content, delta, source, editor) => {
     if (workspace === null) return;
@@ -242,6 +245,7 @@ const GallerySidebarComments = (props) => {
         mention_ids: [],
       },
       quote: null,
+      annotation: annotation.hasOwnProperty("selection") ? JSON.stringify({ ...annotation, data: annotation.selection.data }) : null,
     };
     let timestamp = Math.floor(Date.now() / 1000);
     let commentObj = {
@@ -253,14 +257,13 @@ const GallerySidebarComments = (props) => {
       },
       id: payload.reference_id,
       created_at: { timestamp: timestamp },
-      annotation: { ...annotation, data: annotation.selection.data },
+      annotation: annotation.hasOwnProperty("selection") ? { ...annotation, data: annotation.selection.data } : null,
       file_id: payload.media_id,
       workspace_id: workspace.id,
-      annotation_id: annotation.selection.data.id,
     };
 
     fileActions.addComment(commentObj, () => actions.annotate({}));
-    //fileActions.submitComment(payload);
+    fileActions.submitComment(payload);
 
     setQuillData({
       text: "",
@@ -304,7 +307,7 @@ const GallerySidebarComments = (props) => {
                 <SvgIconFeather icon="message-square" className="mr-2" /> Comments
               </span>
             </div>
-            <SidebarComments wip={item} />
+            <SidebarComments wip={item} annotations={file.annotations} />
             <div className="card-footer d-flex">
               <div className="file-input-wrapper">
                 {annotation.hasOwnProperty("geometry") && <AnnotationNumber>{annotation.selection.data.id}</AnnotationNumber>}
@@ -320,10 +323,10 @@ const GallerySidebarComments = (props) => {
               </div>
               {isAuthor && (
                 <>
-                  <CheckBox name="final" checked={finalVersion} onClick={toggleCheck}>
+                  <CheckBox name="final" checked={finalVersion} onClick={toggleCheck} disabled={file.is_close === 0}>
                     This is the final version
                   </CheckBox>
-                  <button className="btn btn-primary btn-block" onClick={handleShowModal}>
+                  <button className="btn btn-primary btn-block" onClick={handleUploadNewVersion} disabled={file.is_close === 0}>
                     Upload new version
                   </button>
                 </>

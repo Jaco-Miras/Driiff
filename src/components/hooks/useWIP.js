@@ -38,14 +38,6 @@ const useWIP = () => {
             return {
               ...d,
               clap_user_ids: [],
-              files: d.files.map((f) => {
-                return {
-                  ...f,
-                  file_versions: f.file_versions.map((fv) => {
-                    return { ...fv, annotations: [] };
-                  }),
-                };
-              }),
             };
           }),
           topic_id: parseInt(params.workspaceId),

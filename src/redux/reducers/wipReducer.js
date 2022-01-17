@@ -7,6 +7,8 @@ const INITIAL_STATE = {
   WIPComments: {},
   fileComments: {},
   annotation: {},
+  uploadNewVersion: false,
+  replaceCurrentImage: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -90,14 +92,6 @@ export default (state = INITIAL_STATE, action) => {
                   [action.data.id]: {
                     ...action.data,
                     clap_user_ids: [],
-                    files: action.data.files.map((f) => {
-                      return {
-                        ...f,
-                        file_versions: f.file_versions.map((fv) => {
-                          return { ...fv, annotations: [] };
-                        }),
-                      };
-                    }),
                   },
                 }),
               },
@@ -107,14 +101,6 @@ export default (state = INITIAL_STATE, action) => {
                 [action.data.id]: {
                   ...action.data,
                   clap_user_ids: [],
-                  files: action.data.files.map((f) => {
-                    return {
-                      ...f,
-                      file_versions: f.file_versions.map((fv) => {
-                        return { ...fv, annotations: [] };
-                      }),
-                    };
-                  }),
                 },
               },
             }),
@@ -338,7 +324,7 @@ export default (state = INITIAL_STATE, action) => {
                           ...f,
                           file_versions: f.file_versions.map((fv) => {
                             if (fv.id === action.data.file_version_id) {
-                              return { ...fv, annotations: [...fv.annotations, action.data.annotation] };
+                              return { ...fv, annotations: action.data.annotation ? [...fv.annotations, action.data.annotation] : fv.annotations };
                             } else {
                               return fv;
                             }
@@ -477,6 +463,45 @@ export default (state = INITIAL_STATE, action) => {
             },
           }),
         },
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          if (parseInt(wid) === action.data.topic_id) {
+            console.log("same ws id");
+            acc[wid] = {
+              ...state.WIPs[wid],
+              items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+                if (parseInt(pid) === action.data.proposal_id) {
+                  console.log("same prop id");
+                  icc[pid] = {
+                    ...state.WIPs[wid].items[pid],
+                    files: state.WIPs[wid].items[pid].files.map((f) => {
+                      if (action.data.media_id === f.id) {
+                        console.log("same file id");
+                        return {
+                          ...f,
+                          file_versions: f.file_versions.map((fv) => {
+                            if (fv.file_version_id === action.data.file_version_id) {
+                              console.log("insert annotation");
+                              return { ...fv, annotations: action.data.annotation ? [...fv.annotations, { annotation: action.data.annotation, comment_id: action.data.id }] : fv.annotations };
+                            } else {
+                              return fv;
+                            }
+                          }),
+                        };
+                      } else {
+                        return f;
+                      }
+                    }),
+                  };
+                } else {
+                  icc[pid] = state.WIPs[wid].items[pid];
+                }
+                return icc;
+              }, {}),
+            };
+          } else acc[wid] = state.WIPs[wid];
+
+          return acc;
+        }, {}),
       };
     }
     case "SAVE_ANNOTATION": {
@@ -485,7 +510,72 @@ export default (state = INITIAL_STATE, action) => {
         annotation: action.data,
       };
     }
-
+    case "OPEN_FILE_DIALOG": {
+      return {
+        ...state,
+        uploadNewVersion: action.data.open,
+      };
+    }
+    case "INCOMING_REPLACED_WIP_FILE": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              icc[pid] = {
+                ...state.WIPs[wid].items[pid],
+                files: state.WIPs[wid].items[pid].files.map((f) => {
+                  if (action.data.media_id === f.id) {
+                    return {
+                      ...f,
+                      file_versions: f.file_versions.map((fv) => {
+                        if (fv.id === action.data.file_version_id) {
+                          return action.data;
+                        } else {
+                          return fv;
+                        }
+                      }),
+                    };
+                  } else {
+                    return f;
+                  }
+                }),
+              };
+              return icc;
+            }, {}),
+          };
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_NEW_WIP_FILE_VERSION": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              icc[pid] = {
+                ...state.WIPs[wid].items[pid],
+                files: state.WIPs[wid].items[pid].files.map((f) => {
+                  if (action.data.media_id === f.id) {
+                    return {
+                      ...f,
+                      file_versions: [...f.file_versions, action.data],
+                    };
+                  } else {
+                    return f;
+                  }
+                }),
+              };
+              return icc;
+            }, {}),
+          };
+          return acc;
+        }, {}),
+      };
+    }
     default:
       return state;
   }

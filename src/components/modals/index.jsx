@@ -31,3 +31,4 @@ export { default as AddToTeamModal } from "./AddToTeamModal";
 export { default as ZoomInviteModal } from "./ZoomInviteModal";
 export { default as ZoomMeetingInProgress } from "./ZoomMeetingInProgress";
 export { default as WIPModal } from "./WIPModal";
+export { default as WIPFileModal } from "./WIPFileModal";

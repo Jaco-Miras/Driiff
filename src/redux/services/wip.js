@@ -163,3 +163,35 @@ export function postFileCommentClose(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.file_version_id
+ * @param {number} payload.file_id
+ * @returns {Promise<*>}
+ */
+export function patchFileVersion(payload) {
+  let url = "/v2/proposal/file/version/replace";
+  return apiCall({
+    method: "PATCH",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.media_id
+ * @param {number} payload.file_id
+ * @param {number} payload.current_version_id
+ * @param {string} payload.version_name
+ * @returns {Promise<*>}
+ */
+export function putFileVersion(payload) {
+  let url = "/v2/proposal/file/version/upload-new";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
