@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { addFileComment, postFileComment, getFileComments, postFileApproval, postFileCommentClose, openFileDialog, putFileVersion } from "../../redux/actions/wipActions";
+import { addFileComment, postFileComment, getFileComments, postFileApproval, postFileCommentClose, openFileDialog, putFileVersion, putFileComment } from "../../redux/actions/wipActions";
 
 const useWIPFileActions = () => {
   const dispatch = useDispatch();
@@ -8,6 +8,9 @@ const useWIPFileActions = () => {
   };
   const submitComment = (payload, callback = () => {}) => {
     dispatch(postFileComment(payload, callback));
+  };
+  const updateComment = (payload, callback = () => {}) => {
+    dispatch(putFileComment(payload, callback));
   };
   const fetchComments = (payload, callback = () => {}) => {
     dispatch(getFileComments(payload, callback));
@@ -33,6 +36,7 @@ const useWIPFileActions = () => {
     closeComments,
     openDialog,
     uploadNewVersion,
+    updateComment,
   };
 };
 

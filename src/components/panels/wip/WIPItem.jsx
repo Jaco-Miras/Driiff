@@ -255,7 +255,7 @@ const WIPItem = (props) => {
       <PostContent>
         <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(item.id)} disabled={false} />
         <Author className="d-flex ml-2 mr-2">
-          <Avatar title={user.name} className="author-avatar mr-2" id={user.id} name={user.name} imageLink={user.profile_image_link} />
+          <Avatar title={user.name} className="author-avatar mr-2" id={item.author.id} name={item.author.name} imageLink={item.author.profile_image_link} />
         </Author>
         <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
           <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>

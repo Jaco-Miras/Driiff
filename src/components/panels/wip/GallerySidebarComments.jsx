@@ -1,12 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { CheckBox } from "../../forms";
 import { useWIPActions, useQuillModules, useWIPFileActions } from "../../hooks";
 import { QuillEditor } from "../../forms";
 import SidebarComments from "./SidebarComments";
+import { setEditFileComment } from "../../../redux/actions/wipActions";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   position relative;
@@ -167,8 +169,26 @@ const AnnotationNumber = styled.div`
   color: #fff;
 `;
 
+const EditFileCommentPreview = styled.div`
+  padding: 10px 0px;
+  display: inline-flex;
+  width: 100%;
+  overflow: hidden;
+  .edit-body {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    > div {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+`;
+
 const GallerySidebarComments = (props) => {
   const { item } = props;
+  const dispatch = useDispatch();
   const actions = useWIPActions();
   const fileActions = useWIPFileActions();
 
@@ -180,6 +200,7 @@ const GallerySidebarComments = (props) => {
   const user = useSelector((state) => state.session.user);
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const annotation = useSelector((state) => state.wip.annotation);
+  const editFileComment = useSelector((state) => state.wip.editFileComment);
   const [quillData, setQuillData] = useState({
     text: "",
     textOnly: "",
@@ -198,8 +219,23 @@ const GallerySidebarComments = (props) => {
   };
 
   const toggleClose = () => {
-    setCloseComments(!closeCommments);
-    fileActions.closeComments({ file_version_id: file.file_version_id, is_close: !closeCommments });
+    const handleCloseComments = () => {
+      fileActions.closeComments({ file_version_id: file.file_version_id, is_close: !file.is_close });
+    };
+    let payload = {
+      type: "confirmation",
+      headerText: file.is_close ? "Open comments" : "Close comments",
+      submitText: "Ok",
+      cancelText: "Cancel",
+      bodyText: file.is_close ? "Are you sure you want to open the comments for this file?" : "Are you sure you want to close the comments for this file?",
+      actions: {
+        onSubmit: handleCloseComments,
+      },
+    };
+
+    dispatch(addToModals(payload));
+    // setCloseComments(!closeCommments);
+    // fileActions.closeComments({ file_version_id: file.file_version_id, is_close: !closeCommments });
   };
 
   const closeMobileModal = () => {
@@ -228,6 +264,10 @@ const GallerySidebarComments = (props) => {
     // }
   };
 
+  const handleEditComment = () => {
+    dispatch(setEditFileComment(null));
+  };
+
   const handleSubmit = () => {
     let payload = {
       proposal_id: item.id,
@@ -238,12 +278,12 @@ const GallerySidebarComments = (props) => {
       file_ids: [],
       reference_id: require("shortid").generate(),
       parent_id: null,
-      code_data: {
-        push_title: "John Paul Sargento replied in create required post to john paul - 11",
-        proposal_id: item.id,
-        proposal_title: "create required post to john paul - 11",
-        mention_ids: [],
-      },
+      // code_data: {
+      //   push_title: "John Paul Sargento replied in create required post to john paul - 11",
+      //   proposal_id: item.id,
+      //   proposal_title: "create required post to john paul - 11",
+      //   mention_ids: [],
+      // },
       quote: null,
       annotation: annotation.hasOwnProperty("selection") ? JSON.stringify({ ...annotation, data: annotation.selection.data }) : null,
     };
@@ -261,9 +301,19 @@ const GallerySidebarComments = (props) => {
       file_id: payload.media_id,
       workspace_id: workspace.id,
     };
-
-    fileActions.addComment(commentObj, () => actions.annotate({}));
-    fileActions.submitComment(payload);
+    if (editFileComment) {
+      payload = {
+        ...payload,
+        id: editFileComment.id,
+        annotation: null,
+        parent_id: editFileComment.parent_id,
+      };
+      fileActions.updateComment(payload);
+      handleEditComment();
+    } else {
+      fileActions.addComment(commentObj, () => actions.annotate({}));
+      fileActions.submitComment(payload);
+    }
 
     setQuillData({
       text: "",
@@ -277,23 +327,49 @@ const GallerySidebarComments = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (editFileComment) {
+      reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, editFileComment.body);
+      setQuillData({
+        text: editFileComment.body,
+        textOnly: editFileComment.body,
+        quillContents: [],
+      });
+    }
+  }, [editFileComment]);
+
   const { modules } = useQuillModules({
-    mode: "chat",
+    mode: "post_comment",
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: workspace ? workspace.members : [],
     prioMentionIds: workspace ? workspace.members.map((m) => m.id) : [],
   });
+
   const isAuthor = item.author.id === user.id;
   const isApprover = item.approver_ids.some((id) => id === user.id);
 
   const handleApproveFile = () => {
-    const payload = {
-      file_version_id: file.file_version_id,
-      approved: true,
+    const handleApprove = () => {
+      const payload = {
+        file_version_id: file.file_version_id,
+        approved: true,
+      };
+      fileActions.approve(payload);
     };
-    fileActions.approve(payload);
+    let payload = {
+      type: "confirmation",
+      headerText: "Approve file",
+      submitText: "Ok",
+      cancelText: "Cancel",
+      bodyText: "Are you sure you want to approve this file?",
+      actions: {
+        onSubmit: handleApprove,
+      },
+    };
+
+    dispatch(addToModals(payload));
   };
 
   return (
@@ -307,21 +383,39 @@ const GallerySidebarComments = (props) => {
                 <SvgIconFeather icon="message-square" className="mr-2" /> Comments
               </span>
             </div>
-            <SidebarComments wip={item} annotations={file.annotations} />
+            <SidebarComments annotations={file.annotations} isClosed={file.is_close === 1} />
             <div className="card-footer d-flex">
               <div className="file-input-wrapper">
                 {annotation.hasOwnProperty("geometry") && <AnnotationNumber>{annotation.selection.data.id}</AnnotationNumber>}
-                <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} readOnly={file.is_close === 1} />
+                {editFileComment && (
+                  <EditFileCommentPreview>
+                    <div className="mr-2">
+                      <SvgIconFeather icon="x" width={16} height={16} onClick={handleEditComment} />
+                    </div>
+                    <div className="overflow-hidden">
+                      <span>Edit comment</span>
+                      <span className="text-muted edit-body" dangerouslySetInnerHTML={{ __html: editFileComment.body }} />
+                    </div>
+                  </EditFileCommentPreview>
+                )}
+                <StyledQuillEditor
+                  className={"chat-input"}
+                  modules={modules}
+                  ref={reactQuillRef}
+                  onChange={handleQuillChange}
+                  readOnly={file.is_close === 1}
+                  placeholder={file.is_close ? "Comments for this file is closed" : "Your comment..."}
+                />
               </div>
               <div className="d-flex align-items-center mb-2 close-submit">
-                <CheckBox name="close" checked={closeCommments} onClick={toggleClose} disabled={file.is_close === 1}>
+                <CheckBox name="close" checked={file.is_close === 1} onClick={toggleClose} disabled={file.is_close === 1}>
                   Close comments
                 </CheckBox>
                 <SubmitBtn className="btn btn-primary btn-block" onClick={handleSubmit}>
                   Submit
                 </SubmitBtn>
               </div>
-              {isAuthor && (
+              {isAuthor && file.status !== "done" && (
                 <>
                   <CheckBox name="final" checked={finalVersion} onClick={toggleCheck} disabled={file.is_close === 0}>
                     This is the final version
@@ -338,7 +432,7 @@ const GallerySidebarComments = (props) => {
                   </button>
                 </>
               )}
-              {isApprover && file.status === "done" && (
+              {file.status === "done" && (
                 <>
                   <button className="btn btn-success btn-block">Approved</button>
                 </>

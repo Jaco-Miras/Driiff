@@ -187,7 +187,17 @@ import { incomingReminderNotification, getNotifications, incomingSnoozedNotifica
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
 import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
-import { incomingWIP, incomingWIPSubject, incomingWIPComment, incomingWIPFileComment, incomingReplacedWIPFile, incomingNewFileVersion } from "../../redux/actions/wipActions";
+import {
+  incomingWIP,
+  incomingWIPSubject,
+  incomingWIPComment,
+  incomingWIPFileComment,
+  incomingReplacedWIPFile,
+  incomingNewFileVersion,
+  incomingUpdatedWIPFileComment,
+  incomingClosedFileComments,
+  incomingApprovedFileVersion,
+} from "../../redux/actions/wipActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -284,9 +294,18 @@ class SocketListeners extends Component {
       })
       .listen(".proposal-version-approved-notification", (e) => {
         console.log(e, "approve file");
+        this.props.incomingApprovedFileVersion(e);
+      })
+      .listen(".proposal-version-comment-closed-notification", (e) => {
+        console.log(e, "closed file comment");
+        this.props.incomingClosedFileComments(e);
       })
       .listen(".proposal-version-comment-notification", (e) => {
         this.props.incomingWIPFileComment(e);
+      })
+      .listen(".proposal-version-comment-updated", (e) => {
+        console.log(e, "updated file comment");
+        this.props.incomingUpdatedWIPFileComment(e);
       })
       .listen(".proposal-comment-notification", (e) => {
         this.props.incomingWIPComment(e);
@@ -2478,6 +2497,9 @@ function mapDispatchToProps(dispatch) {
     incomingWIPFileComment: bindActionCreators(incomingWIPFileComment, dispatch),
     incomingReplacedWIPFile: bindActionCreators(incomingReplacedWIPFile, dispatch),
     incomingNewFileVersion: bindActionCreators(incomingNewFileVersion, dispatch),
+    incomingUpdatedWIPFileComment: bindActionCreators(incomingUpdatedWIPFileComment, dispatch),
+    incomingClosedFileComments: bindActionCreators(incomingClosedFileComments, dispatch),
+    incomingApprovedFileVersion: bindActionCreators(incomingApprovedFileVersion, dispatch),
   };
 }
 

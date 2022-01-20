@@ -11,7 +11,7 @@ const useWIPFileComments = (scrollRef) => {
   let comments = [];
 
   if (params.wipId && fileComments[params.wipFileVersion]) {
-    comments = Object.values(fileComments[params.wipFileVersion].comments);
+    comments = Object.values(fileComments[params.wipFileVersion].comments).filter((c) => c.parent_id === null);
   }
 
   useEffect(() => {
