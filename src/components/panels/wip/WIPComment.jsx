@@ -322,7 +322,7 @@ const WIPComment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll('[data-google-link-retrieve="0"]');
+      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });

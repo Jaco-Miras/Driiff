@@ -13,6 +13,7 @@ import {
   postFileCommentClose as postFileCommentCloseService,
   patchFileVersion as patchFileVersionService,
   putFileVersion as putFileVersionService,
+  putFileComment as putFileCommentService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -109,4 +110,24 @@ export function incomingReplacedWIPFile(payload, callback) {
 
 export function incomingNewFileVersion(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_NEW_WIP_FILE_VERSION", payload, callback);
+}
+
+export function setEditFileComment(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_EDIT_FILE_COMMENT", payload, callback);
+}
+
+export function putFileComment(payload, callback) {
+  return dispatchActionToReducer(putFileCommentService(payload), "UPDATE_FILE_COMMENT_START", "UPDATE_FILE_COMMENT_SUCCESS", "UPDATE_FILE_COMMENT_FAIL", callback);
+}
+
+export function incomingUpdatedWIPFileComment(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_WIP_FILE_COMMENT", payload, callback);
+}
+
+export function incomingClosedFileComments(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_CLOSED_FILE_COMMENTS", payload, callback);
+}
+
+export function incomingApprovedFileVersion(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_APPROVED_FILE_VERSION", payload, callback);
 }

@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { useWIPFileComments, useTimeFormat } from "../../hooks";
-import { Avatar } from "../../common";
+import { useWIPFileComments } from "../../hooks";
+import SidebarComment from "./SidebarComment";
 
 const Wrapper = styled.div`
   &.card-body {
     padding: 15px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     .file-comment-body {
       border-radius: 6px;
       padding: 0.5rem;
@@ -26,58 +27,18 @@ const Wrapper = styled.div`
   }
 `;
 
-const AnnotationNumber = styled.div`
-  border-radius: 50%;
-  box-sizing: border-box;
-  height: 1rem;
-  position: absolute;
-  -webkit-transform: translate3d(-50%, -50%, 0);
-  -ms-transform: translate3d(-50%, -50%, 0);
-  transform: translate3d(-50%, -50%, 0);
-  width: 1rem;
-  background: purple;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  color: #fff;
-  top: 2px;
-  font-size: 0.6rem;
-  left: 2px;
-`;
-
 const SidebarComments = (props) => {
-  const { wip, annotations } = props;
+  const { annotations, isClosed } = props;
 
   const scrollRef = useRef();
   const { comments } = useWIPFileComments(scrollRef);
-  const timeFormat = useTimeFormat();
   return (
     <Wrapper className="card-body d-flex" ref={scrollRef}>
       <div className="file-comments-thread">
         {comments.length > 0 &&
           comments.map((c) => {
             const annotation = annotations.find((a) => a.comment_id === c.id && a.annotation !== null);
-            // console.log(annotations, annotation);
-            return (
-              <div className="file-comment mb-2" key={c.id}>
-                <div className="file-comment-body mb-2" dangerouslySetInnerHTML={{ __html: c.body }} />
-                {annotation && <AnnotationNumber>{annotation.annotation.data.id}</AnnotationNumber>}
-                <div className="d-flex align-items-center">
-                  <Avatar className={"avatar-sm mr-1"} id={c.author.id} type="USER" imageLink={c.author.profile_image_thumbnail_link} name={c.author.name} showSlider={false} />
-                  <span className="mr-1">{c.author.first_name}</span>
-                  <span className="text-muted">{timeFormat.fromNow(c.created_at.timestamp)}</span>
-                </div>
-              </div>
-            );
+            return <SidebarComment key={c.id} comment={c} annotation={annotation} isClosed={isClosed} />;
           })}
       </div>
     </Wrapper>

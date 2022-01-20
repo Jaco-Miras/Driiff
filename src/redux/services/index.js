@@ -302,4 +302,4 @@ export { deleteNotification, deleteAllNotification, getNotifications, patchNotif
 
 export { globalSearch } from "./search";
 
-export { postSubject, postWIP, getSubjects, getWIPs, getWIPDetail, postWIPComment, getWIPComments, postFileComment, getFileComments, postFileApproval, postFileCommentClose, patchFileVersion, putFileVersion } from "./wip";
+export { postSubject, postWIP, getSubjects, getWIPs, getWIPDetail, postWIPComment, getWIPComments, postFileComment, getFileComments, postFileApproval, postFileCommentClose, patchFileVersion, putFileVersion, putFileComment } from "./wip";

@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   annotation: {},
   uploadNewVersion: false,
   replaceCurrentImage: false,
+  editFileComment: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -299,16 +300,15 @@ export default (state = INITIAL_STATE, action) => {
                 },
               },
             }),
-          ...(state.fileComments[action.data.file_version_id] &&
-            action.data.parent_id === null && {
-              [action.data.file_version_id]: {
-                ...state.fileComments[action.data.file_version_id],
-                comments: {
-                  ...state.fileComments[action.data.file_version_id].comments,
-                  [action.data.reference_id]: action.data,
-                },
+          ...(state.fileComments[action.data.file_version_id] && {
+            [action.data.file_version_id]: {
+              ...state.fileComments[action.data.file_version_id],
+              comments: {
+                ...state.fileComments[action.data.file_version_id].comments,
+                [action.data.reference_id]: action.data,
               },
-            }),
+            },
+          }),
         },
         WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
           if (parseInt(wid) === action.data.workspace_id) {
@@ -324,7 +324,7 @@ export default (state = INITIAL_STATE, action) => {
                           ...f,
                           file_versions: f.file_versions.map((fv) => {
                             if (fv.id === action.data.file_version_id) {
-                              return { ...fv, annotations: action.data.annotation ? [...fv.annotations, action.data.annotation] : fv.annotations };
+                              return { ...fv, annotations: action.data.annotation ? [...fv.annotations, { comment_id: action.data.id, annotation: action.data.annotation }] : fv.annotations };
                             } else {
                               return fv;
                             }
@@ -387,69 +387,80 @@ export default (state = INITIAL_STATE, action) => {
               ...state.fileComments[action.data.file_version_id],
               comments: {
                 ...Object.keys(state.fileComments[action.data.file_version_id].comments).reduce((res, key) => {
-                  if (action.data.parent_id) {
-                    res[key] = {
-                      ...state.fileComments[action.data.file_version_id].comments[key],
-                      replies: {
-                        ...Object.keys(state.fileComments[action.data.file_version_id].comments[key].replies).reduce((rep, k) => {
-                          if (action.data.reference_id && k === action.data.reference_id) {
-                            rep[action.data.id] = {
-                              ...action.data,
-                              clap_user_ids: [],
-                            };
-                          } else {
-                            if (parseInt(k) === action.data.id) {
-                              rep[k] = { ...state.fileComments[action.data.file_version_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
-                            } else {
-                              rep[k] = state.fileComments[action.data.file_version_id].comments[key].replies[k];
-                            }
-                          }
-                          return rep;
-                        }, {}),
-                      },
-                    };
+                  if (action.data.reference_id && key === action.data.reference_id) {
+                    res[action.data.id] = { ...action.data, clap_user_ids: [] };
                   } else {
-                    if (action.data.reference_id && key === action.data.reference_id) {
-                      res[action.data.id] = { ...action.data, clap_user_ids: [] };
+                    if (parseInt(key) === action.data.id) {
+                      res[key] = { ...state.fileComments[action.data.file_version_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
                     } else {
-                      if (parseInt(key) === action.data.id) {
-                        res[key] = { ...state.fileComments[action.data.file_version_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
-                      } else {
-                        res[key] = state.fileComments[action.data.file_version_id].comments[key];
-                      }
+                      res[key] = state.fileComments[action.data.file_version_id].comments[key];
                     }
                   }
+                  // if (action.data.parent_id) {
+                  //   res[key] = {
+                  //     ...state.fileComments[action.data.file_version_id].comments[key],
+                  //     replies: {
+                  //       ...Object.keys(state.fileComments[action.data.file_version_id].comments[key].replies).reduce((rep, k) => {
+                  //         if (action.data.reference_id && k === action.data.reference_id) {
+                  //           rep[action.data.id] = {
+                  //             ...action.data,
+                  //             clap_user_ids: [],
+                  //           };
+                  //         } else {
+                  //           if (parseInt(k) === action.data.id) {
+                  //             rep[k] = { ...state.fileComments[action.data.file_version_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                  //           } else {
+                  //             rep[k] = state.fileComments[action.data.file_version_id].comments[key].replies[k];
+                  //           }
+                  //         }
+                  //         return rep;
+                  //       }, {}),
+                  //     },
+                  //   };
+                  // } else {
+                  //   if (action.data.reference_id && key === action.data.reference_id) {
+                  //     res[action.data.id] = { ...action.data, clap_user_ids: [] };
+                  //   } else {
+                  //     if (parseInt(key) === action.data.id) {
+                  //       res[key] = { ...state.fileComments[action.data.file_version_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                  //     } else {
+                  //       res[key] = state.fileComments[action.data.file_version_id].comments[key];
+                  //     }
+                  //   }
+                  // }
                   return res;
                 }, {}),
                 ...(state.user.id !== action.data.author.id && {
-                  ...(action.data.parent_id &&
-                    state.fileComments[action.data.file_version_id].comments[action.data.parent_id] && {
-                      [action.data.parent_id]: {
-                        ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id],
-                        replies: {
-                          ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id].replies,
-                          [action.data.id]: action.data,
-                        },
-                      },
-                    }),
-                  ...(!action.data.parent_id && {
-                    [action.data.id]: action.data,
-                  }),
+                  [action.data.id]: action.data,
+                  // ...(action.data.parent_id &&
+                  //   state.fileComments[action.data.file_version_id].comments[action.data.parent_id] && {
+                  //     [action.data.parent_id]: {
+                  //       ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id],
+                  //       replies: {
+                  //         ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id].replies,
+                  //         [action.data.id]: action.data,
+                  //       },
+                  //     },
+                  //   }),
+                  // ...(!action.data.parent_id && {
+                  //   [action.data.id]: action.data,
+                  // }),
                 }),
                 ...(!action.data.hasOwnProperty("reference_id") && {
-                  ...(action.data.parent_id &&
-                    state.fileComments[action.data.file_version_id].comments[action.data.parent_id] && {
-                      [action.data.parent_id]: {
-                        ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id],
-                        replies: {
-                          ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id].replies,
-                          [action.data.id]: action.data,
-                        },
-                      },
-                    }),
-                  ...(!action.data.parent_id && {
-                    [action.data.id]: action.data,
-                  }),
+                  [action.data.id]: action.data,
+                  // ...(action.data.parent_id &&
+                  //   state.fileComments[action.data.file_version_id].comments[action.data.parent_id] && {
+                  //     [action.data.parent_id]: {
+                  //       ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id],
+                  //       replies: {
+                  //         ...state.fileComments[action.data.file_version_id].comments[action.data.parent_id].replies,
+                  //         [action.data.id]: action.data,
+                  //       },
+                  //     },
+                  //   }),
+                  // ...(!action.data.parent_id && {
+                  //   [action.data.id]: action.data,
+                  // }),
                 }),
               },
             },
@@ -465,23 +476,31 @@ export default (state = INITIAL_STATE, action) => {
         },
         WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
           if (parseInt(wid) === action.data.topic_id) {
-            console.log("same ws id");
             acc[wid] = {
               ...state.WIPs[wid],
               items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
                 if (parseInt(pid) === action.data.proposal_id) {
-                  console.log("same prop id");
                   icc[pid] = {
                     ...state.WIPs[wid].items[pid],
                     files: state.WIPs[wid].items[pid].files.map((f) => {
                       if (action.data.media_id === f.id) {
-                        console.log("same file id");
                         return {
                           ...f,
                           file_versions: f.file_versions.map((fv) => {
                             if (fv.file_version_id === action.data.file_version_id) {
-                              console.log("insert annotation");
-                              return { ...fv, annotations: action.data.annotation ? [...fv.annotations, { annotation: action.data.annotation, comment_id: action.data.id }] : fv.annotations };
+                              return {
+                                ...fv,
+                                annotations:
+                                  action.data.annotation && fv.annotations.some((an) => an.comment_id === action.data.reference_id || an.comment_id === action.data.id)
+                                    ? fv.annotations.map((an) => {
+                                        if (an.comment_id === action.data.reference_id || an.comment_id === action.data.id) {
+                                          return { ...an, comment_id: action.data.id };
+                                        } else return an;
+                                      })
+                                    : action.data.annotation && !fv.annotations.some((an) => an.comment_id === action.data.reference_id)
+                                    ? [...fv.annotations, { comment_id: action.data.id, annotation: action.data.annotation }]
+                                    : fv.annotations,
+                              };
                             } else {
                               return fv;
                             }
@@ -572,6 +591,117 @@ export default (state = INITIAL_STATE, action) => {
               return icc;
             }, {}),
           };
+          return acc;
+        }, {}),
+      };
+    }
+    case "SET_EDIT_FILE_COMMENT": {
+      return {
+        ...state,
+        editFileComment: action.data,
+      };
+    }
+    case "INCOMING_UPDATED_WIP_FILE_COMMENT": {
+      return {
+        ...state,
+        fileComments: {
+          ...state.fileComments,
+          ...(state.fileComments[action.data.file_version_id] && {
+            [action.data.file_version_id]: {
+              ...state.fileComments[action.data.file_version_id],
+              comments: {
+                ...Object.keys(state.fileComments[action.data.file_version_id].comments).reduce((res, key) => {
+                  if (parseInt(key) === action.data.id) {
+                    res[key] = { ...state.fileComments[action.data.file_version_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                  } else {
+                    res[key] = state.fileComments[action.data.file_version_id].comments[key];
+                  }
+                  return res;
+                }, {}),
+              },
+            },
+          }),
+        },
+      };
+    }
+    case "INCOMING_CLOSED_FILE_COMMENTS": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              if (parseInt(pid) === action.data.proposal_id) {
+                icc[pid] = {
+                  ...state.WIPs[wid].items[pid],
+                  files: state.WIPs[wid].items[pid].files.map((f) => {
+                    if (action.data.media_id === f.id) {
+                      return {
+                        ...f,
+                        file_versions: f.file_versions.map((fv) => {
+                          if (fv.file_version_id === action.data.file_version_id) {
+                            return {
+                              ...fv,
+                              is_close: action.data.is_close,
+                            };
+                          } else {
+                            return fv;
+                          }
+                        }),
+                      };
+                    } else {
+                      return f;
+                    }
+                  }),
+                };
+              } else {
+                icc[pid] = state.WIPs[wid].items[pid];
+              }
+              return icc;
+            }, {}),
+          };
+
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_APPROVED_FILE_VERSION": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              if (parseInt(pid) === action.data.proposal_id) {
+                icc[pid] = {
+                  ...state.WIPs[wid].items[pid],
+                  files: state.WIPs[wid].items[pid].files.map((f) => {
+                    if (action.data.media_id === f.id) {
+                      return {
+                        ...f,
+                        file_versions: f.file_versions.map((fv) => {
+                          if (fv.file_version_id === action.data.file_version_id) {
+                            return {
+                              ...fv,
+                              ...action.data,
+                            };
+                          } else {
+                            return fv;
+                          }
+                        }),
+                      };
+                    } else {
+                      return f;
+                    }
+                  }),
+                };
+              } else {
+                icc[pid] = state.WIPs[wid].items[pid];
+              }
+              return icc;
+            }, {}),
+          };
+
           return acc;
         }, {}),
       };

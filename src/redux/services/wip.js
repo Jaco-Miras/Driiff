@@ -122,6 +122,20 @@ export function postFileComment(payload) {
 
 /**
  * @param {Object} payload
+ * @param {number} payload.id
+ * @returns {Promise<*>}
+ */
+export function putFileComment(payload) {
+  let url = `/v2/proposal/file/comment/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
  * @param {number} payload.file_version_id
  * @returns {Promise<*>}
  */

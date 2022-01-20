@@ -309,8 +309,22 @@ const GalleryView = (props) => {
   };
 
   const handleReplaceImage = () => {
-    handleOpenFileDialog();
-    setFileUploadMode("replace");
+    const handleChooseFile = () => {
+      handleOpenFileDialog();
+      setFileUploadMode("replace");
+    };
+    let payload = {
+      type: "confirmation",
+      headerText: "Replace current image",
+      submitText: "Ok",
+      cancelText: "Cancel",
+      bodyText: "Are you sure you want to replace this image? Replacing the image will remove the comments and annotations for this image.",
+      actions: {
+        onSubmit: handleChooseFile,
+      },
+    };
+
+    dispatch(addToModals(payload));
   };
 
   const handleUploadNewVersion = () => {
@@ -348,7 +362,8 @@ const GalleryView = (props) => {
   };
 
   const annotationChange = (ann) => {
-    wipActions.annotate({ ...ann, selection: { ...ann.selection, showEditor: false, data: { id: file.annotations.length + 1 } } });
+    const nextAnnotationId = file.annotations.filter((an) => an.annotation).length;
+    wipActions.annotate({ ...ann, selection: { ...ann.selection, showEditor: false, data: { id: nextAnnotationId + 1 } } });
   };
 
   const annotationSubmit = (annotation) => {
@@ -458,6 +473,7 @@ const GalleryView = (props) => {
               renderSelector={renderSelector}
               renderHighlight={renderHighlight}
               disableZoom={true}
+              disableAnnotation={file.is_close === 1}
             />
           </ImageWrapper>
         </MainBody>
