@@ -281,7 +281,7 @@ const WIPItem = (props) => {
             <span className="checked-circle mr-1">
               <SvgIconFeather icon="check" />
             </span>
-            {item.files.filter((file) => file.file_versions.every((f) => f.status === "done")).length}
+            {item.files.filter((file) => file.file_versions.some((f) => f.status === "done")).length}
             {"/"}
             {item.files.length}
           </span>

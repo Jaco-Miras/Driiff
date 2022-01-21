@@ -43,6 +43,29 @@ export function postWIP(payload) {
 /**
  * @param {Object} payload
  * @param {number} payload.group_id
+ * @param {string} payload.title
+ * @param {string} payload.description
+ * @param {array} payload.approver_ids
+ * @param {string} payload.deadline
+ * @param {string} payload.priority
+ * @param {number} payload.subject
+ * @param {array} payload.file_ids
+ * @param {array} payload.file_links
+ * @param {array} payload.mention_ids
+ * @returns {Promise<*>}
+ */
+export function putWIP(payload) {
+  let url = `/v2/proposal/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.group_id
  * @returns {Promise<*>}
  */
 export function getSubjects(payload) {

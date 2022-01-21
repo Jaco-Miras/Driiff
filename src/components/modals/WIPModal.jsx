@@ -14,7 +14,7 @@ import moment from "moment";
 import { useWIPActions, useToaster } from "../hooks";
 import { uploadBulkDocument } from "../../redux/services/global";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { postWIP } from "../../redux/actions/wipActions";
+import { postWIP, putWIP } from "../../redux/actions/wipActions";
 //import { validURL } from "../../helpers/urlContentHelper";
 
 const WrapperDiv = styled(InputGroup)`
@@ -95,6 +95,24 @@ const URLInputWrapper = styled.div`
   }
 `;
 
+const prioOptions = [
+  {
+    label: "High",
+    value: "high",
+    color: "#f44",
+  },
+  {
+    label: "Medium",
+    value: "medium",
+    color: "#fb3",
+  },
+  {
+    label: "Low",
+    value: "low",
+    color: "#55acee",
+  },
+];
+
 const WIPModal = (props) => {
   const { type, mode, wip = {} } = props.data;
   const dispatch = useDispatch();
@@ -119,7 +137,7 @@ const WIPModal = (props) => {
   const [modal, setModal] = useState(true);
   const [showNestedModal, setShowNestedModal] = useState(false);
   const [showDropzone, setShowDropzone] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState([]);
+  const [attachedFiles, setAttachedFiles] = useState(mode === "edit" && wip ? wip.files : []);
   const [URLs, setURLs] = useState([
     {
       title: "",
@@ -135,9 +153,9 @@ const WIPModal = (props) => {
     },
   ]);
   const [fileLinks, setFileLinks] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [title, setTitle] = useState("");
-  const [subject, setSubject] = useState(null);
+  //const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [title, setTitle] = useState(mode === "edit" && wip ? wip.title : "");
+  const [subject, setSubject] = useState(mode === "edit" && wip ? { ...wip.subject, value: wip.subject.id, label: wip.subject.name } : null);
   const [subjectOptions, setSubjectOptions] = useState(
     allSubjects
       .filter((s) => s.topic_id === activeTopic.id)
@@ -152,20 +170,23 @@ const WIPModal = (props) => {
   const [subjectInput, setSubjectInput] = useState("");
   const [creatingSubject, setCreatingSubject] = useState(false);
   const [description, setDesription] = useState({
-    textOnly: "",
-    description: "",
+    textOnly: mode === "edit" && wip ? wip.description : "",
+    description: mode === "edit" && wip ? wip.description : "",
   });
-  const [approver, setApprover] = useState(null);
+  const [approver, setApprover] = useState(mode === "edit" && wip ? { ...wip.approver_users[0], label: wip.approver_users[0].name, value: wip.approver_users[0].id } : null);
   const [inlineImages, setInlineImages] = useState([]);
   const [addAnother, setAddAnother] = useState(false);
-  const [proposals, setProposals] = useState([]);
-  const [deadline, setDeadline] = useState(wip && wip.deadline ? moment.unix(wip.deadline).toDate() : moment().add(20, "m").toDate());
-  const [priority, setPriority] = useState({
-    label: "Medium",
-    value: "medium",
-    color: "#fb3",
-  });
-
+  //const [proposals, setProposals] = useState([]);
+  const [deadline, setDeadline] = useState(wip && wip.deadline ? moment(wip.deadline.timestamp, "X").toDate() : moment().add(20, "m").toDate());
+  const [priority, setPriority] = useState(
+    mode === "edit" && wip
+      ? prioOptions.find((o) => o.value === wip.priority)
+      : {
+          label: "Medium",
+          value: "medium",
+          color: "#fb3",
+        }
+  );
   const toggleAll = (saveDraft = false, showDeleteToaster = false) => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
@@ -204,7 +225,8 @@ const WIPModal = (props) => {
     acceptedFiles.forEach((file) => {
       var bodyFormData = new FormData();
       bodyFormData.append("file", file);
-      let timestamp = Math.floor(Date.now());
+      //let timestamp = Math.floor(Date.now());
+      let timestamp = require("shortid").generate();
       if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
         selectedFiles.push({
           id: timestamp,
@@ -215,9 +237,11 @@ const WIPModal = (props) => {
               bodyFormData: bodyFormData,
               type: "IMAGE",
               id: timestamp,
+              file_id: timestamp,
               status: false,
               src: URL.createObjectURL(file),
               name: file.name ? file.name : file.path,
+              file_name: file.name ? file.name : file.path,
               size: file.size,
               uploader: user,
               mime_type: file.type,
@@ -235,9 +259,11 @@ const WIPModal = (props) => {
               bodyFormData: bodyFormData,
               type: "VIDEO",
               id: timestamp,
+              file_id: timestamp,
               status: false,
               src: URL.createObjectURL(file),
               name: file.name ? file.name : file.path,
+              file_name: file.name ? file.name : file.path,
               size: file.size,
               uploader: user,
               mime_type: file.type,
@@ -255,9 +281,11 @@ const WIPModal = (props) => {
               bodyFormData: bodyFormData,
               type: "DOC",
               id: timestamp,
+              file_id: timestamp,
               status: false,
               src: URL.createObjectURL(file),
               name: file.name ? file.name : file.path,
+              file_name: file.name ? file.name : file.path,
               size: file.size,
               uploader: user,
               mime_type: file.type,
@@ -314,7 +342,7 @@ const WIPModal = (props) => {
   };
 
   const approverOptions = Object.values(users)
-    .filter((u) => activeTopic.member_ids.some((mid) => mid === u.id))
+    .filter((u) => activeTopic.member_ids.some((mid) => mid === u.id) && user.id !== u.id)
     .map((m) => {
       return {
         ...m,
@@ -327,24 +355,6 @@ const WIPModal = (props) => {
     setApprover(e);
   };
 
-  const prioOptions = [
-    {
-      label: "High",
-      value: "high",
-      color: "#f44",
-    },
-    {
-      label: "Medium",
-      value: "medium",
-      color: "#fb3",
-    },
-    {
-      label: "Low",
-      value: "low",
-      color: "#55acee",
-    },
-  ];
-
   const dot = (color = "transparent") => ({
     alignItems: "center",
     display: "flex",
@@ -352,7 +362,7 @@ const WIPModal = (props) => {
     ":before": {
       backgroundColor: color,
       borderRadius: 10,
-      content: '" "',
+      content: "\" \"",
       display: "block",
       marginRight: 8,
       height: 10,
@@ -438,23 +448,33 @@ const WIPModal = (props) => {
         },
       },
     };
-    attachedFiles.map((file, index) => formData.append(`files[${index}]`, file.file_versions[file.file_versions.length - 1].bodyFormData.get("file")));
+    if (type === "edit") {
+      const newAttachedFiles = attachedFiles.filter((a) => isNaN(a.id));
+      newAttachedFiles.map((file, index) => formData.append(`files[${index}]`, file.file_versions[file.file_versions.length - 1].bodyFormData.get("file")));
+    } else {
+      attachedFiles.map((file, index) => formData.append(`files[${index}]`, file.file_versions[file.file_versions.length - 1].bodyFormData.get("file")));
+    }
+
     uploadData["files"] = formData;
 
     await new Promise((resolve, reject) => resolve(uploadBulkDocument(uploadData)))
       .then((result) => {
         if (type === "edit") {
-          // payload = {
-          //   ...payload,
-          //   file_ids: [...result.data.map((res) => res.id), ...payload.file_ids],
-          // };
-          // dispatch(
-          //   putPost(payload, () => {
-          //     if (toasterRef.current) toaster.dismiss(toasterRef.current);
-          //     setLoading(false);
-          //     handleDeleteDraft();
-          //   })
-          // );
+          payload = {
+            ...payload,
+            new_file_ids: [...result.data.map((res) => res.id)],
+          };
+          dispatch(
+            putWIP(payload, (err, res) => {
+              if (toasterRef.current) toaster.dismiss(toasterRef.current);
+              if (err) return;
+              if (activeTopic.folder_id) {
+                history.push(`/workspace/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+              } else {
+                history.push(`/workspace/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+              }
+            })
+          );
         } else {
           payload = {
             ...payload,
@@ -497,6 +517,45 @@ const WIPModal = (props) => {
       else {
         dispatch(
           postWIP(payload, (err, res) => {
+            if (toasterRef.current) toaster.dismiss(toasterRef.current);
+            if (err) return;
+            if (activeTopic.folder_id) {
+              history.push(`/workspace/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+            } else {
+              history.push(`/workspace/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+            }
+          })
+        );
+      }
+      toggleAll();
+      if (addAnother)
+        setTimeout(() => {
+          wipActions.showModal();
+        }, 2000);
+    } else {
+      // update
+      const deadlineDate = new Date(deadline);
+      const payload = {
+        title: title,
+        description: description.description,
+        approver_ids: [approver.id],
+        group_id: activeTopic.id,
+        deadline: moment.utc(deadlineDate).format("MM-DD-YYYY"),
+        priority: priority.value,
+        subject: subject.id,
+        new_file_ids: [],
+        new_file_version: [],
+        new_file_links: fileLinks,
+        replace_file_version: [],
+        remove_file_ids: [],
+        mention_ids: [],
+        id: wip.id,
+      };
+      const newAttachedFiles = attachedFiles.filter((a) => isNaN(a.id));
+      if (newAttachedFiles.length) uploadFiles(payload, "edit");
+      else {
+        dispatch(
+          putWIP(payload, (err, res) => {
             if (toasterRef.current) toaster.dismiss(toasterRef.current);
             if (err) return;
             if (activeTopic.folder_id) {
@@ -602,6 +661,10 @@ const WIPModal = (props) => {
         validURL: null,
       },
     ]);
+  };
+
+  const handleRemoveProposalItem = (file, parentId) => {
+    console.log(file);
   };
 
   return (
@@ -720,13 +783,13 @@ const WIPModal = (props) => {
             <Label className={"modal-label"} for="wip-title">
               Approval deadline
             </Label>
-            <StyledDateTimePicker minDate={minDate} onChange={handlePickDateTime} value={deadline} locale={language} format={`${date_format}`} disableClock={true} />
+            <StyledDateTimePicker minDate={mode === "edit" ? null : minDate} onChange={handlePickDateTime} value={deadline} locale={language} format={`${date_format}`} disableClock={true} />
           </div>
           <div className="w-100 ml-2">
             <Label className={"modal-label"} for="wip-title">
               Priority
             </Label>
-            <Select defaultValue={prioOptions[1]} options={prioOptions} styles={prioStyles} onChange={handleSelectPriority} />
+            <Select defaultValue={prioOptions[1]} value={priority} options={prioOptions} styles={prioStyles} onChange={handleSelectPriority} />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input mt-0 inline-block"}>
@@ -740,12 +803,16 @@ const WIPModal = (props) => {
         {(attachedFiles.length > 0 || fileLinks.length > 0) && (
           <WrapperDiv className={"modal-input mt-0"}>
             <Proposals
+              showOptions={false}
               fromModal={true}
               items={[
-                ...attachedFiles,
+                ...attachedFiles.map((a) => {
+                  return { ...a, removeItem: handleRemoveProposalItem };
+                }),
                 ...fileLinks.map((link) => {
                   return {
                     ...link,
+                    removeItem: handleRemoveProposalItem,
                     id: require("shortid").generate(),
                     link_versions: [{ ...link, id: require("shortid").generate(), media_link_title: link.title, media_link: link.url }],
                   };

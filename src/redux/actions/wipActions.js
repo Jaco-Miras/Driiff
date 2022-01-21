@@ -14,6 +14,7 @@ import {
   patchFileVersion as patchFileVersionService,
   putFileVersion as putFileVersionService,
   putFileComment as putFileCommentService,
+  putWIP as putWIPService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -22,6 +23,10 @@ export function postSubject(payload, callback) {
 
 export function postWIP(payload, callback) {
   return dispatchActionToReducer(postWIPService(payload), "CREATE_WIP_START", "CREATE_WIP_SUCCESS", "CREATE_WIP_FAIL", callback);
+}
+
+export function putWIP(payload, callback) {
+  return dispatchActionToReducer(putWIPService(payload), "UPDATE_WIP_START", "UPDATE_WIP_SUCCESS", "UPDATE_WIP_FAIL", callback);
 }
 
 export function incomingWIP(payload, callback) {

@@ -267,6 +267,9 @@ const WIPDetail = (props) => {
       return "badge-twitter";
     }
   };
+  const handleEditWIP = () => {
+    wipActions.showModal("edit", item);
+  };
   return (
     <>
       <Wrapper className="card card-body app-content-body mb-4">
@@ -295,14 +298,14 @@ const WIPDetail = (props) => {
               {item.author.id === user.id && (
                 <ul>
                   <li>
-                    <span data-toggle="modal" data-target="#editTaskModal">
-                      <a className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
+                    <span data-toggle="modal" data-target="#editTaskModal" onClick={handleEditWIP}>
+                      <a className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit WIP">
                         <Icon icon="edit-3" />
                       </a>
                     </span>
                   </li>
                   <li>
-                    <a className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
+                    <a className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete WIP">
                       <Icon icon="trash" />
                     </a>
                   </li>
@@ -311,11 +314,11 @@ const WIPDetail = (props) => {
                   </li>
                 </ul>
               )}
-              {item.author.id !== user.id && (
+              {/* {item.author.id !== user.id && (
                 <div>
                   <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}></StyledMoreOptions>
                 </div>
-              )}
+              )} */}
             </div>
           </MainHeader>
           <MainBody>
@@ -332,50 +335,6 @@ const WIPDetail = (props) => {
               dropAction(acceptedFiles);
             }}
             onCancel={handleHideDropzone}
-          /> */}
-            {/* <PostBody
-            post={post}
-            user={user}
-            postActions={postActions}
-            isAuthor={post.author && post.author.id === user.id}
-            dictionary={dictionary}
-            disableOptions={disableOptions}
-            workspaceId={workspace.id}
-            disableMarkAsRead={disableMarkAsRead}
-          /> */}
-            {/* {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
-          <hr className="m-0" />
-          <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
-          {comments && Object.keys(comments).length > 0 && (
-            <>
-              <PostComments
-                comments={comments}
-                post={post}
-                user={user}
-                commentActions={commentActions}
-                onShowFileDialog={handleOpenFileDialog}
-                dropAction={dropAction}
-                workspace={workspace}
-                isMember={isMember}
-                dictionary={dictionary}
-                disableOptions={disableOptions}
-                postActions={postActions}
-              />
-              <hr className="m-0" />
-            </>
-          )}
-          <PostDetailFooter
-            post={post}
-            posts={posts}
-            filter={filter}
-            commentActions={commentActions}
-            postActions={postActions}
-            onShowFileDialog={handleOpenFileDialog}
-            dropAction={dropAction}
-            workspace={workspace}
-            isMember={isMember}
-            disableOptions={disableOptions}
-            mainInput={true}
           /> */}
           </MainBody>
         </WIPDetailWrapper>
