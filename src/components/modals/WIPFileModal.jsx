@@ -129,8 +129,7 @@ const StyledModalFooter = styled(ModalFooter)`
 const WIPFileModal = (props) => {
   const { type, droppedFiles, file, mode } = props.data;
 
-  const history = useHistory()
-  console.log(history.location.pathname, history.location.pathname.split("/"), history.location.pathname.split("/").join("/"))
+  const history = useHistory();
   const progressBar = useRef(0);
   const toaster = useToaster();
   const fileActions = useWIPFileActions();
@@ -252,15 +251,15 @@ const WIPFileModal = (props) => {
       };
       dispatch(patchFileVersion(payload));
     } else {
-      const cb = (err,res) => {
-        if (err) return
+      const cb = (err, res) => {
+        if (err) return;
         if (res.data) {
-          let splitUrl = history.location.pathname.split("/")
-          splitUrl.pop()
-          const redirectUrl = splitUrl.join("/") + `/${res.data.data.id}`
-          history.push(redirectUrl)
+          let splitUrl = history.location.pathname.split("/");
+          splitUrl.pop();
+          const redirectUrl = splitUrl.join("/") + `/${res.data.data.id}`;
+          history.push(redirectUrl);
         }
-      }
+      };
       const payload = {
         media_id: file.media_id,
         version_name: versionName,
@@ -291,7 +290,7 @@ const WIPFileModal = (props) => {
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
-        <Button color="primary" onClick={handleUpload}>
+        <Button color="primary" onClick={handleUpload} disabled={mode === "new_version" && versionName.trim() === ""}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.upload}
         </Button>

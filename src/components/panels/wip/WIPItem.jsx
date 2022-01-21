@@ -289,7 +289,7 @@ const WIPItem = (props) => {
             <span className="edit-circle mr-1">
               <SvgIconFeather icon="pencil" />
             </span>
-            {item.files.filter((file) => file.file_versions.every((f) => f.status === "todo")).length}
+            {item.files.filter((file) => file.file_versions.some((f) => f.status === "todo")).length}
             {"/"}
             {item.files.length}
           </span>
