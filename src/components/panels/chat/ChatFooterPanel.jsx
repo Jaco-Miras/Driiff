@@ -253,6 +253,8 @@ const ChatFooterPanel = (props) => {
       number: selectedChannel ? selectedChannel.members.length : "",
       online: selectedChannel ? selectedChannel.members.filter((m) => user.id !== m.id && onlineUsers.some((o) => o.user_id === m.id)).length + 1 : 1,
     }),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    meetingInProgress: _t("TOASTER.MEETING_IN_PROGRESS", "Meeting for this channel is still in progress. When that's ended you can start a new meeting."),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -309,8 +311,18 @@ const ChatFooterPanel = (props) => {
 
     dispatch(
       createZoomMeeting(payload, (err, res) => {
-        if (err) return;
-        if (res.data) {
+        if (err) {
+          if (err.response && err.response.data && err.response.data.errors) {
+            if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "MEETING_ALREADY_CREATED")) {
+              toaster.error(dictionary.meetingInProgress, { autoClose: 5000 });
+            } else {
+              toaster.error(dictionary.toasterGeneraError);
+            }
+          } else {
+            toaster.error(dictionary.toasterGeneraError);
+          }
+        }
+        if (res && res.data) {
           let sigPayload = {
             meetingNumber: res.data.zoom_data.data.id,
             role: 1,
