@@ -88,7 +88,7 @@ export default (state = INITIAL_STATE, action) => {
             ...(state.WIPs[action.data.topic_id] && {
               ...state.WIPs[action.data.topic_id],
               items: {
-                ...state.WIPs[action.data.topic_id].wips,
+                ...state.WIPs[action.data.topic_id].items,
                 ...(!state.WIPs[action.data.topic_id].items[action.data.id] && {
                   [action.data.id]: {
                     ...action.data,

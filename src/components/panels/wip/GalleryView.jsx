@@ -263,8 +263,43 @@ const GalleryView = (props) => {
   const annotation = useSelector((state) => state.wip.annotation);
   const uploadNewVersion = useSelector((state) => state.wip.uploadNewVersion);
   //const [annotations, setAnnotations] = useState([]);
+
+  const mainFile = item.files.find((f) => f.id === parseInt(params.wipFileId));
+  const file = mainFile.file_versions.length ? mainFile.file_versions.find((f) => f.id === parseInt(params.wipFileVersion)) : mainFile.link_versions[mainFile.link_versions.length - 1];
+  const allVersionNames = item.files.reduce((acc, f) => {
+    const versions = f.file_versions.map((fv) => fv.version_name);
+    acc = [...acc, ...versions];
+    return acc;
+  }, []);
+
+  const versionOptions = [...new Set(allVersionNames)].map((f) => {
+    return {
+      value: f,
+      label: f,
+    };
+  });
+
+  // const versionOptions = mainFile.file_versions.map((f) => {
+  //   return {
+  //     ...f,
+  //     value: f.version_name,
+  //     label: f.version_name,
+  //   };
+  // });
+
   const [showDropZone, setshowDropZone] = useState(false);
   const [fileUploadMode, setFileUploadMode] = useState(null);
+  const [selectedVersion, setSelectedVersion] = useState(file ? versionOptions.find((o) => o.value === file.version_name) : null);
+
+  const filesByVersion = item.files
+    .map((mf) => {
+      return {
+        ...mf,
+        file_versions: mf.file_versions.filter((fv) => fv.version_name === selectedVersion.value),
+        link_versions: mf.link_versions.filter((fv) => fv.version_name === selectedVersion.value),
+      };
+    })
+    .filter((f) => f.link_versions.length > 0 || f.file_versions.length > 0);
 
   const handleOpenFileDialog = () => {
     if (dropzoneRef.current) {
@@ -342,23 +377,38 @@ const GalleryView = (props) => {
       return "badge-twitter";
     }
   };
-  const mainFile = item.files.find((f) => f.id === parseInt(params.wipFileId));
-  const file = mainFile.file_versions.length ? mainFile.file_versions.find((f) => f.id === parseInt(params.wipFileVersion)) : mainFile.link_versions[mainFile.link_versions.length - 1];
 
   const handleSelectImage = (fid, fvid) => {
     history.push(history.location.pathname.split("/file/")[0] + `/file/${fid}/${fvid}`);
   };
 
-  const versionOptions = mainFile.file_versions.map((f) => {
-    return {
-      ...f,
-      value: f.id,
-      label: f.version_name,
-    };
-  });
-
   const handleVersionChange = (e) => {
-    history.push(history.location.pathname.split("/file/")[0] + `/file/${mainFile.id}/${e.id}`);
+    setSelectedVersion(e);
+    //check if current file has same version then update url else check for first file with matching version
+    if (mainFile.file_versions.some((fv) => fv.version_name === e.value) || mainFile.link_versions.some((fv) => fv.version_name === e.value)) {
+      if (mainFile.file_versions.length) {
+        const files = mainFile.file_versions.filter((fv) => fv.version_name === e.value);
+        history.push(history.location.pathname.split("/file/")[0] + `/file/${mainFile.id}/${files[files.length - 1].id}`);
+      } else {
+        const files = mainFile.link_versions.filter((fv) => fv.version_name === e.value);
+        history.push(history.location.pathname.split("/file/")[0] + `/file/${mainFile.id}/${files[files.length - 1].id}`);
+      }
+    } else {
+      //find the first file with matching version
+      const matchingFiles = item.files
+        .map((mf) => {
+          return {
+            ...mf,
+            file_versions: mf.file_versions.filter((fv) => fv.version_name === e.value),
+            link_versions: mf.link_versions.filter((fv) => fv.version_name === e.value),
+          };
+        })
+        .filter((f) => f.link_versions.length > 0 || f.file_versions.length > 0);
+      history.push(
+        history.location.pathname.split("/file/")[0] +
+          `/file/${matchingFiles[0].id}/${matchingFiles[0].file_versions.length ? matchingFiles[0].file_versions[matchingFiles[0].file_versions.length - 1].id : matchingFiles[0].link_versions[matchingFiles[0].link_versions.length - 1].id}`
+      );
+    }
   };
 
   const annotationChange = (ann) => {
@@ -376,6 +426,10 @@ const GalleryView = (props) => {
       fileActions.openDialog({ open: false });
     }
   }, [uploadNewVersion]);
+
+  useEffect(() => {
+    setSelectedVersion({ value: file.version_name, label: file.version_name });
+  }, [file.id]);
 
   const filteredAnnotations = file.annotations
     .filter((a) => {
@@ -429,7 +483,8 @@ const GalleryView = (props) => {
               className={"react-select-container"}
               classNamePrefix="react-select"
               styles={dark_mode === "0" ? lightTheme : darkTheme}
-              value={versionOptions.find((o) => o.value === file.id)}
+              //value={versionOptions.find((o) => o.value === file.id)}
+              value={selectedVersion}
               onChange={handleVersionChange}
               options={versionOptions}
             />
@@ -462,29 +517,32 @@ const GalleryView = (props) => {
             />
             {file.media_link_title && <FileLinkView file={file} />}
             {/* {file.type && file.type === "image" && <img src={file.view_link} />} */}
-            <Annotation
-              src={file.view_link}
-              alt="Two pebbles anthropomorphized holding hands"
-              annotations={filteredAnnotations}
-              type={PointSelector.TYPE}
-              value={annotation}
-              onChange={annotationChange}
-              onSubmit={annotationSubmit}
-              renderSelector={renderSelector}
-              renderHighlight={renderHighlight}
-              disableZoom={true}
-              disableAnnotation={file.is_close === 1}
-            />
+            {file.view_link && (
+              <Annotation
+                src={file.view_link}
+                alt={file.file_name}
+                annotations={filteredAnnotations}
+                type={PointSelector.TYPE}
+                value={annotation}
+                onChange={annotationChange}
+                onSubmit={annotationSubmit}
+                renderSelector={renderSelector}
+                renderHighlight={renderHighlight}
+                disableZoom={true}
+                disableAnnotation={file.is_close === 1}
+              />
+            )}
           </ImageWrapper>
         </MainBody>
         <MainFooter>
-          {item.files.map((f) => {
+          {filesByVersion.map((f) => {
             return (
               <ImgCard className="img-card mr-2" key={f.id} selected={f.id === parseInt(params.wipFileId)}>
                 {f.file_versions.length > 0 ? (
                   <img
                     alt="card preview"
-                    src={f.id === parseInt(params.wipFileId) ? f.file_versions.find((f) => f.id === parseInt(params.wipFileVersion)).view_link : f.file_versions[f.file_versions.length - 1].view_link}
+                    //src={f.id === parseInt(params.wipFileId) ? f.file_versions.find((f) => f.id === parseInt(params.wipFileVersion)).view_link : f.file_versions[f.file_versions.length - 1].view_link}
+                    src={f.file_versions[f.file_versions.length - 1].view_link}
                     onClick={(e) => handleSelectImage(f.id, f.file_versions[f.file_versions.length - 1].id)}
                   />
                 ) : (
