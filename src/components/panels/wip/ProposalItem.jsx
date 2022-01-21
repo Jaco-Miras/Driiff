@@ -70,7 +70,7 @@ const Wrapper = styled.div`
 `;
 
 const ProposalItem = (props) => {
-  const { className = "", item, isLink = false, fromModal, parentId } = props;
+  const { className = "", item, isLink = false, fromModal, parentId, showOptions } = props;
   const history = useHistory();
 
   const getFileSizeUnit = (size) => {
@@ -153,7 +153,7 @@ const ProposalItem = (props) => {
               <SvgIconFeather icon="check" />
             </span>
           )}
-          <ProposalOptions item={item} fromModal={fromModal} />
+          {showOptions && <ProposalOptions item={item} fromModal={fromModal} parentId={parentId} />}
         </div>
         <div className="app-file-icon cursor-pointer" onClick={handleFileView}>
           {!isLink && getFileIcon(item.mime_type)}

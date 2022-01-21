@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const ProposalOptions = (props) => {
-  const { className = "", item } = props;
+  const { className = "", item, fromModal, parentId } = props;
 
   const { _t } = useTranslationActions();
 
@@ -46,10 +46,17 @@ const ProposalOptions = (props) => {
     notMemberOfWs: _t("TOASTER.NOT_MEMBER_OF_WS", "You are not a member of this workspace."),
   };
 
+  const handleRemoveFile = () => {
+    if (item.removeItem) {
+      item.removeItem(item, parentId);
+    }
+  };
+
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-horizontal">
-      <div>Replace current image</div>
-      <div>Upload new version</div>
+      {fromModal && item.file_id && <div onClick={handleRemoveFile}>Remove file</div>}
+      {/* <div>Replace current image</div>
+      <div>Upload new version</div> */}
     </Wrapper>
   );
 };

@@ -8,6 +8,15 @@ import FileCommentOptions from "./FileCommentOptions";
 import { QuillEditor } from "../../forms";
 import SidebarSubComments from "./SidebarSubComments";
 
+const Wrapper = styled.div`
+  .comment-author {
+    font-size: 0.75rem;
+  }
+  .comment-time {
+    font-size: 0.6rem;
+  }
+`;
+
 const AnnotationNumber = styled.div`
   border-radius: 50%;
   box-sizing: border-box;
@@ -203,7 +212,7 @@ const SidebarComment = (props) => {
   }, [showCommentInput]);
 
   return (
-    <div className="file-comment mb-2" key={comment.id}>
+    <Wrapper className="file-comment mb-2" key={comment.id}>
       <div className="d-flex align-items-center">
         <div className="file-comment-body" dangerouslySetInnerHTML={{ __html: comment.body }} />
       </div>
@@ -216,11 +225,11 @@ const SidebarComment = (props) => {
       {annotation && <AnnotationNumber>{annotation.annotation.data.id}</AnnotationNumber>}
       <div className="d-flex align-items-center mt-1">
         <Avatar className={"avatar-sm mr-1"} id={comment.author.id} type="USER" imageLink={comment.author.profile_image_thumbnail_link} name={comment.author.name} showSlider={false} />
-        <span className="mr-1">{comment.author.first_name}</span>
-        <span className="text-muted">{timeFormat.fromNow(comment.created_at.timestamp)}</span>
+        <span className="mr-1 comment-author">{comment.author.first_name}</span>
+        <span className="text-muted comment-time">{timeFormat.fromNow(comment.created_at.timestamp)}</span>
       </div>
       <SidebarSubComments commentId={comment.id} isClosed={isClosed} />
-    </div>
+    </Wrapper>
   );
 };
 

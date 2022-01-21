@@ -16,6 +16,12 @@ const Wrapper = styled.div`
   .avatar-wrapper {
     justify-content: flex-end;
   }
+  .comment-author {
+    font-size: 0.75rem;
+  }
+  .comment-time {
+    font-size: 0.6rem;
+  }
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -197,8 +203,8 @@ const SidebarSubComment = (props) => {
       )}
       <div className="d-flex align-items-center avatar-wrapper">
         <Avatar className={"avatar-sm mr-1"} id={comment.author.id} type="USER" imageLink={comment.author.profile_image_thumbnail_link} name={comment.author.name} showSlider={false} />
-        <span className="mr-1">{comment.author.first_name}</span>
-        <span className="text-muted">{timeFormat.fromNow(comment.created_at.timestamp)}</span>
+        <span className="mr-1 comment-author">{comment.author.first_name}</span>
+        <span className="text-muted comment-time">{timeFormat.fromNow(comment.created_at.timestamp)}</span>
       </div>
       <SidebarSubComments commentId={comment.id} />
     </Wrapper>

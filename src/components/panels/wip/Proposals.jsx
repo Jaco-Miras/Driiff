@@ -12,13 +12,14 @@ const Wrapper = styled.div`
 `;
 
 const Proposals = (props) => {
-  const { items, fromModal = false } = props;
+  const { items, fromModal = false, showOptions = false } = props;
   return (
     <Wrapper>
       <div className="row">
         {items.map((item) => {
           return (
             <ProposalItem
+              showOptions={showOptions}
               fromModal={fromModal}
               isLink={item.link_versions.length > 0}
               item={item.link_versions.length ? item.link_versions[item.link_versions.length - 1] : item.file_versions[item.file_versions.length - 1]}

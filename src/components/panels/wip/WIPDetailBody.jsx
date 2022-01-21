@@ -115,7 +115,7 @@ const WIPDetailBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content ql-editor" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(item.description) }} />
       </div>
-      <Proposals items={Object.values(files)} />
+      <Proposals items={Object.values(files)} showOptions={false} />
     </Wrapper>
   );
 };
