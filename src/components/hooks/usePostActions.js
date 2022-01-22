@@ -293,6 +293,7 @@ const usePostActions = () => {
             }
 
             if (res) {
+              dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -436,6 +437,7 @@ const usePostActions = () => {
               is_followed: false,
             })
           );
+          dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
         })
       );
     } else {

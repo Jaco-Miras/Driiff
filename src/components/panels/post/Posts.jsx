@@ -93,7 +93,7 @@ const Posts = (props) => {
   const [inDexer, setInDexer] = useState(Math.floor(Math.random() * emptyStatesHeader.length));
 
   const readPosts = posts.filter((p) => p.is_unread === 0);
-  const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1);
+  const unreadPosts = posts.filter((p) => p.is_archived !== 1 && p.is_unread === 1 && p.is_followed);
 
   const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
