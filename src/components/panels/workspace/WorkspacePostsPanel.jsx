@@ -525,7 +525,7 @@ const WorkspacePostsPanel = (props) => {
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com", "bram@zuid.com", "stef@zuid.com", "esther@zuid.com"].includes(user.email) && (
+      {["doods@makedevelopment.com", "anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com", "bram@zuid.com", "stef@zuid.com", "esther@zuid.com"].includes(user.email) && (
         <div className="row app-block">
           <PostSidebar
             disableOptions={disableOptions}
