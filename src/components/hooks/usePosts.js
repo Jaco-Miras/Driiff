@@ -285,11 +285,11 @@ const usePosts = () => {
       const allParticipantIds = p.recipients
         .map((r) => {
           if (r.type === "USER") {
-            return [r.id];
+            return [r.type_id];
           } else return r.participant_ids;
         })
         .flat();
-      return allParticipantIds.some((id) => id === user.id);
+      return allParticipantIds.some((id) => id === user.id) || p.author.id === user.id;
     }),
     filter: activeFilter,
     tag: activeTag,
