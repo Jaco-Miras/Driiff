@@ -270,12 +270,16 @@ const PostDetail = (props) => {
   const [showDropZone, setShowDropZone] = useState(false);
   const [isPostParticipant, setIsPostParticipant] = useState(false);
   useEffect(() => {
-    dispatch(
-      checkPostAccess({ id: post.id }, (err, res) => {
-        if (err) return;
-        setIsPostParticipant(true);
-      })
-    );
+    if (user.id !== post.author.id) {
+      dispatch(
+        checkPostAccess({ id: post.id }, (err, res) => {
+          if (err) return;
+          setIsPostParticipant(true);
+        })
+      );
+    } else {
+      setIsPostParticipant(true);
+    }
   }, []);
 
   const { comments } = useComments(post);
