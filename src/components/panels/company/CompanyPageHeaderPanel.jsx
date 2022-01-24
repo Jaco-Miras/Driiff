@@ -94,11 +94,11 @@ const CompanyPageHeaderPanel = (props) => {
               {dictionary.pageTitleChat} <div className="ml-2 badge badge-pill badge badge-danger">{unreadCounter.chat_message > 0 ? unreadCounter.chat_message : null}</div>
             </MainNavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <MainNavLink to="/posts">
               {dictionary.pageTitlePosts} <div className="ml-2 badge badge-pill badge badge-danger">{unreadCounter.general_post > 0 ? unreadCounter.general_post : null}</div>
             </MainNavLink>
-          </li>
+          </li> */}
           <li className="nav-item">
             <MainNavLink to="/todos">
               {dictionary.pageTitleTodos} <div className="ml-2 badge badge-pill badge badge-danger">{todosCount.todo_with_date > 0 ? todosCount.todo_with_date : null}</div>
