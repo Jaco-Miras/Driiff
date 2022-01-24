@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload, incomingLastVisitPost } from "../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
@@ -268,6 +268,15 @@ const PostDetail = (props) => {
   //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
+  const [isPostParticipant, setIsPostParticipant] = useState(false);
+  useEffect(() => {
+    dispatch(
+      checkPostAccess({ id: post.id }, (err, res) => {
+        if (err) return;
+        setIsPostParticipant(true);
+      })
+    );
+  }, []);
 
   const { comments } = useComments(post);
 
@@ -459,6 +468,7 @@ const PostDetail = (props) => {
     return r.type === "TOPIC" && r.private === 1;
   });
 
+  if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}

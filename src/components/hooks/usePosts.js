@@ -281,7 +281,16 @@ const usePosts = () => {
   return {
     flipper,
     actions,
-    posts: filteredPosts,
+    posts: filteredPosts.filter((p) => {
+      const allParticipantIds = p.recipients
+        .map((r) => {
+          if (r.type === "USER") {
+            return [r.id];
+          } else return r.participant_ids;
+        })
+        .flat();
+      return allParticipantIds.some((id) => id === user.id);
+    }),
     filter: activeFilter,
     tag: activeTag,
     postListTag: activePostListTag,
