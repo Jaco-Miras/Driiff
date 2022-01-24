@@ -10,6 +10,9 @@ const INITIAL_STATE = {
   uploadNewVersion: false,
   replaceCurrentImage: false,
   editFileComment: null,
+  editWIPComment: null,
+  commentQuotes: {},
+  parentId: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -252,6 +255,74 @@ export default (state = INITIAL_STATE, action) => {
             },
           }),
         },
+      };
+    }
+    case "INCOMING_UPDATED_WIP_COMMENT": {
+      return {
+        ...state,
+        WIPComments: {
+          ...state.WIPComments,
+          ...(state.WIPComments[action.data.proposal_id] && {
+            [action.data.proposal_id]: {
+              ...state.WIPComments[action.data.proposal_id],
+              comments: {
+                ...Object.keys(state.WIPComments[action.data.proposal_id].comments).reduce((res, key) => {
+                  if (action.data.parent_id) {
+                    res[key] = {
+                      ...state.WIPComments[action.data.proposal_id].comments[key],
+                      replies: {
+                        ...Object.keys(state.WIPComments[action.data.proposal_id].comments[key].replies).reduce((rep, k) => {
+                          if (parseInt(k) === action.data.id) {
+                            rep[k] = { ...state.WIPComments[action.data.proposal_id].comments[key].replies[k], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                          } else {
+                            rep[k] = state.WIPComments[action.data.proposal_id].comments[key].replies[k];
+                          }
+                          return rep;
+                        }, {}),
+                      },
+                    };
+                  } else {
+                    if (parseInt(key) === action.data.id) {
+                      res[key] = { ...state.WIPComments[action.data.proposal_id].comments[key], body: action.data.body, updated_at: action.data.updated_at, quote: action.data.quote };
+                    } else {
+                      res[key] = state.WIPComments[action.data.proposal_id].comments[key];
+                    }
+                  }
+                  return res;
+                }, {}),
+              },
+            },
+          }),
+        },
+      };
+    }
+    case "SET_WIP_COMMENT_QUOTE": {
+      let updatedQuotes = { ...state.commentQuotes };
+      if (Object.keys(state.commentQuotes).length > 0 && state.commentQuotes.hasOwnProperty(action.data.id)) {
+        updatedQuotes = { ...state.commentQuotes };
+        delete updatedQuotes[action.data.id];
+        updatedQuotes = {
+          ...updatedQuotes,
+          [action.data.id]: action.data,
+        };
+      } else {
+        updatedQuotes = {
+          ...state.commentQuotes,
+          [action.data.id]: action.data,
+        };
+      }
+      return {
+        ...state,
+        commentQuotes: updatedQuotes,
+      };
+    }
+    case "CLEAR_WIP_COMMENT_QUOTE": {
+      let updatedQuotes = { ...state.commentQuotes };
+      delete updatedQuotes[action.data];
+
+      return {
+        ...state,
+        commentQuotes: updatedQuotes,
       };
     }
     case "GET_WIP_COMMENTS_SUCCESS": {
@@ -694,6 +765,191 @@ export default (state = INITIAL_STATE, action) => {
                       return f;
                     }
                   }),
+                };
+              } else {
+                icc[pid] = state.WIPs[wid].items[pid];
+              }
+              return icc;
+            }, {}),
+          };
+
+          return acc;
+        }, {}),
+      };
+    }
+    case "SET_EDIT_WIP_COMMENT": {
+      let updatedQuotes = { ...state.commentQuotes };
+      if (Object.keys(state.commentQuotes).length > 0 && state.editWIPComment && action.data === null) {
+        updatedQuotes = { ...state.commentQuotes };
+        delete updatedQuotes[state.editWIPComment.id];
+      }
+      return {
+        ...state,
+        editWIPComment: action.data,
+        commentQuotes: updatedQuotes,
+      };
+    }
+    case "SET_PARENT_ID_FOR_UPLOAD": {
+      return {
+        ...state,
+        parentId: action.data,
+      };
+    }
+    case "ADD_WIP_COMMENT_REACT": {
+      return {
+        ...state,
+        WIPComments: {
+          ...state.WIPComments,
+          [action.data.proposal_id]: {
+            ...state.WIPComments[action.data.proposal_id],
+            ...(action.data.parent_id
+              ? {
+                  comments: {
+                    ...state.WIPComments[action.data.proposal_id].comments,
+                    [action.data.parent_id]: {
+                      ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id],
+                      replies: {
+                        ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies,
+                        [action.data.id]: {
+                          ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies[action.data.id],
+                          clap_user_ids: [...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids, state.user.id],
+                          clap_count: state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
+                          user_clap_count: 1,
+                        },
+                      },
+                    },
+                  },
+                }
+              : {
+                  ...(state.WIPComments[action.data.proposal_id] && {
+                    comments: {
+                      ...state.WIPComments[action.data.proposal_id].comments,
+                      [action.data.id]: {
+                        ...state.WIPComments[action.data.proposal_id].comments[action.data.id],
+                        clap_user_ids: [...state.WIPComments[action.data.proposal_id].comments[action.data.id].clap_user_ids, state.user.id],
+                        clap_count: state.WIPComments[action.data.proposal_id].comments[action.data.id].clap_count + 1,
+                        user_clap_count: 1,
+                      },
+                    },
+                  }),
+                }),
+          },
+        },
+      };
+    }
+    case "REMOVE_WIP_COMMENT_REACT": {
+      return {
+        ...state,
+        WIPComments: {
+          ...state.WIPComments,
+          [action.data.proposal_id]: {
+            ...state.WIPComments[action.data.proposal_id],
+            ...(action.data.parent_id && state.WIPComments[action.data.proposal_id]
+              ? {
+                  comments: {
+                    ...state.WIPComments[action.data.proposal_id].comments,
+                    [action.data.parent_id]: {
+                      ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id],
+                      replies: {
+                        ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies,
+                        [action.data.id]: {
+                          ...state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies[action.data.id],
+                          clap_user_ids: state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids.filter((id) => id !== state.user.id),
+                          clap_count: state.WIPComments[action.data.proposal_id].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
+                          user_clap_count: 0,
+                        },
+                      },
+                    },
+                  },
+                }
+              : {
+                  ...(state.WIPComments[action.data.proposal_id] && {
+                    comments: {
+                      ...state.WIPComments[action.data.proposal_id].comments,
+                      [action.data.id]: {
+                        ...state.WIPComments[action.data.proposal_id].comments[action.data.id],
+                        clap_user_ids: state.WIPComments[action.data.proposal_id].comments[action.data.id].clap_user_ids.filter((id) => id !== state.user.id),
+                        clap_count: state.WIPComments[action.data.proposal_id].comments[action.data.id].clap_count - 1,
+                        user_clap_count: 0,
+                      },
+                    },
+                  }),
+                }),
+          },
+        },
+      };
+    }
+    case "ADD_WIP_REACT": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              if (parseInt(pid) === action.data.proposal_id) {
+                icc[pid] = {
+                  ...state.WIPs[wid].items[pid],
+                  clap_user_ids: [...state.WIPs[wid].items[pid].clap_user_ids, state.user.id],
+                  clap_count: state.WIPs[wid].items[pid].clap_count + 1,
+                  user_clap_count: 1,
+                };
+              } else {
+                icc[pid] = state.WIPs[wid].items[pid];
+              }
+              return icc;
+            }, {}),
+          };
+
+          return acc;
+        }, {}),
+      };
+    }
+    case "REMOVE_WIP_REACT": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              if (parseInt(pid) === action.data.proposal_id) {
+                icc[pid] = {
+                  ...state.WIPs[wid].items[pid],
+                  clap_user_ids: state.WIPs[wid].items[pid].clap_user_ids.filter((id) => id !== state.user.id),
+                  clap_count: state.WIPs[wid].items[pid].clap_count - 1,
+                  user_clap_count: 0,
+                };
+              } else {
+                icc[pid] = state.WIPs[wid].items[pid];
+              }
+              return icc;
+            }, {}),
+          };
+
+          return acc;
+        }, {}),
+      };
+    }
+    case "INCOMING_PROPOSAL_CLAP": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              if (parseInt(pid) === action.data.proposal_id) {
+                icc[pid] = {
+                  ...state.WIPs[wid].items[pid],
+                  ...(action.data.clap_count === 1
+                    ? {
+                        clap_count: action.data.author.id === state.user.id ? state.WIPs[wid].items[pid].clap_count : state.WIPs[wid].items[pid].clap_count + 1,
+                        clap_user_ids: [...state.WIPs[wid].items[pid].clap_user_ids.filter((id) => id !== action.data.author.id), action.data.author.id],
+                        user_clap_count: action.data.author.id === state.user.id ? 1 : state.WIPs[wid].items[pid].user_clap_count,
+                      }
+                    : {
+                        clap_count: action.data.author.id === state.user.id ? state.WIPs[wid].items[pid].clap_count : state.WIPs[wid].items[pid].clap_count - 1,
+                        clap_user_ids: state.WIPs[wid].items[pid].clap_user_ids.filter((id) => id !== action.data.author.id),
+                        user_clap_count: action.data.author.id === state.user.id ? 0 : state.WIPs[wid].items[pid].user_clap_count,
+                      }),
                 };
               } else {
                 icc[pid] = state.WIPs[wid].items[pid];

@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const WIPDetailComments = (props) => {
-  const { className = "", item, comments, user, commentActions, onShowFileDialog, dropAction, workspace, isMember, disableOptions, postActions } = props;
+  const { className = "", item, comments, onShowFileDialog, dropAction, isMember, disableOptions } = props;
 
   const { _t } = useTranslationActions();
 
@@ -112,7 +112,7 @@ const WIPDetailComments = (props) => {
       {comments && (
         <ul>
           {Object.values(comments).map((c) => {
-            return <WIPComment key={c.id} comment={c} wip={item} dictionary={dictionary} parentId={null} />;
+            return <WIPComment key={c.id} comment={c} wip={item} dictionary={dictionary} parentId={null} onShowFileDialog={onShowFileDialog} />;
           })}
         </ul>
       )}

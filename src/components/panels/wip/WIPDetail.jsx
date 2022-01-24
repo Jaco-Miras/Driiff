@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import moment from "moment";
+import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
+import { DropDocument } from "../../dropzone/DropDocument";
 import WIPDetailBody from "./WIPDetailBody";
 import WIPDetailCounters from "./WIPDetailCounters";
 import WIPDetailFooter from "./WIPDetailFooter";
 import WIPDetailComments from "./WIPDetailComments";
 import { useWIPActions, useWIPComments } from "../../hooks";
-import moment from "moment";
+import { setParentIdForUpload } from "../../../redux/actions/wipActions";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   min-height: auto;
@@ -252,12 +255,86 @@ const MainBody = styled.div`
 
 const WIPDetail = (props) => {
   const { item } = props;
+  const refs = {
+    dropZoneRef: useRef(null),
+  };
+  const dispatch = useDispatch();
   const wipActions = useWIPActions();
   const { comments } = useWIPComments();
   const user = useSelector((state) => state.session.user);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const [showDropZone, setShowDropZone] = useState(false);
+
+  const handleOpenFileDialog = (parentId) => {
+    dispatch(setParentIdForUpload(parentId));
+    if (refs.dropZoneRef.current) {
+      refs.dropZoneRef.current.open();
+    }
+  };
+
+  const handleHideDropzone = () => {
+    setShowDropZone(false);
+  };
+
+  // const handleshowDropZone = () => {
+  //   setShowDropZone(true);
+  // };
+
+  const dropAction = (acceptedFiles) => {
+    let attachedFiles = [];
+    acceptedFiles.forEach((file) => {
+      var bodyFormData = new FormData();
+      bodyFormData.append("file", file);
+      let shortFileId = require("shortid").generate();
+      if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+        attachedFiles.push({
+          ...file,
+          type: "IMAGE",
+          id: shortFileId,
+          status: false,
+          src: URL.createObjectURL(file),
+          bodyFormData: bodyFormData,
+          name: file.name ? file.name : file.path,
+        });
+      } else if (file.type === "video/mp4") {
+        attachedFiles.push({
+          ...file,
+          type: "VIDEO",
+          id: shortFileId,
+          status: false,
+          src: URL.createObjectURL(file),
+          bodyFormData: bodyFormData,
+          name: file.name ? file.name : file.path,
+        });
+      } else {
+        attachedFiles.push({
+          ...file,
+          type: "DOC",
+          id: shortFileId,
+          status: false,
+          src: "#",
+          bodyFormData: bodyFormData,
+          name: file.name ? file.name : file.path,
+        });
+      }
+    });
+    handleHideDropzone();
+
+    let modal = {
+      type: "file_upload",
+      droppedFiles: attachedFiles,
+      mode: "wip",
+      wip: item,
+      members: workspace ? workspace.members : [],
+    };
+
+    dispatch(addToModals(modal));
+  };
+
   const handleGoBack = () => {
     wipActions.goBack();
   };
+
   const getPriorityColor = () => {
     if (item.priority === "medium") {
       return "badge-warning";
@@ -267,9 +344,11 @@ const WIPDetail = (props) => {
       return "badge-twitter";
     }
   };
+
   const handleEditWIP = () => {
     wipActions.showModal("edit", item);
   };
+
   return (
     <>
       <Wrapper className="card card-body app-content-body mb-4">
@@ -325,17 +404,17 @@ const WIPDetail = (props) => {
             <WIPDetailBody item={item} />
             <hr className="m-0" />
             <WIPDetailCounters item={item} />
-            <WIPDetailComments item={item} comments={comments} />
-            <WIPDetailFooter wip={item} />
-            {/* <DropDocument
-            hide={!showDropZone}
-            ref={refs.dropZoneRef}
-            onDragLeave={handleHideDropzone}
-            onDrop={({ acceptedFiles }) => {
-              dropAction(acceptedFiles);
-            }}
-            onCancel={handleHideDropzone}
-          /> */}
+            <WIPDetailComments item={item} comments={comments} onShowFileDialog={handleOpenFileDialog} />
+            <WIPDetailFooter wip={item} mainInput={true} onShowFileDialog={handleOpenFileDialog} />
+            <DropDocument
+              hide={!showDropZone}
+              ref={refs.dropZoneRef}
+              onDragLeave={handleHideDropzone}
+              onDrop={({ acceptedFiles }) => {
+                dropAction(acceptedFiles);
+              }}
+              onCancel={handleHideDropzone}
+            />
           </MainBody>
         </WIPDetailWrapper>
       </Wrapper>

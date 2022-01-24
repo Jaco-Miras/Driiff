@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
-import { setEditComment } from "../../../redux/actions/postActions";
+import { setEditComment } from "../../../redux/actions/wipActions";
 
 const IconWrapper = styled.div`
   width: 40px;
@@ -51,11 +51,12 @@ const Wrapper = styled.div`
 `;
 
 const WIPDetailInputButtons = (props) => {
-  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, mainInput } = props;
+  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, handleQuillImage, mainInput } = props;
   const dispatch = useDispatch();
+  const editWIPComment = useSelector((state) => state.wip.editWIPComment);
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
-    if (editPostComment !== null) {
+    if (editWIPComment !== null) {
       dispatch(setEditComment(null));
     }
   };
@@ -70,8 +71,8 @@ const WIPDetailInputButtons = (props) => {
   };
 
   return (
-    <Wrapper editMode={editPostComment !== null} showButtons={showButtons}>
-      {editPostComment && mainInput && (
+    <Wrapper editMode={editWIPComment !== null} showButtons={showButtons}>
+      {editWIPComment && mainInput && (
         <IconWrapper>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
             <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />

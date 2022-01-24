@@ -11,6 +11,7 @@ import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { postComment, putComment, setEditComment, setParentIdForUpload, addComment, setPostCommentType } from "../../redux/actions/postActions";
+import { setEditComment as setEditWIPComment, putWIPComment, addWIPComment, postWIPComment, setParentIdForUpload as setWIPParentIdForUpload } from "../../redux/actions/wipActions";
 import { osName } from "react-device-detect";
 import { FolderSelect } from "../forms";
 import _ from "lodash";
@@ -266,7 +267,7 @@ const fileOptions = [
 ];
 
 const FileUploadModal = (props) => {
-  const { type, mode, droppedFiles, post = null, members = [], team_channel } = props.data;
+  const { type, mode, droppedFiles, post = null, wip = null, members = [] } = props.data;
 
   const progressBar = useRef(0);
   const toaster = useToaster();
@@ -275,13 +276,17 @@ const FileUploadModal = (props) => {
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const [mounted, setMounted] = useState(false);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const toasterRef = useRef(null);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const savedInput = useSelector((state) => state.global.dataFromInput);
   const commentType = useSelector((state) => state.posts.commentType);
-  const { parentId, editPostComment } = useSelector((state) => state.posts);
+  const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const parentId = useSelector((state) => state.posts.parentId);
+  const editWIPComment = useSelector((state) => state.wip.editWIPComment);
+  const wipParentId = useSelector((state) => state.wip.parentId);
 
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -669,54 +674,73 @@ const FileUploadModal = (props) => {
         dispatch(postComment(payload));
         toaster.dismiss(toasterRef.current);
       }
+    } else if (mode === "wip") {
+      let reference_id = require("shortid").generate();
+      let payload = {
+        proposal_id: wip.id,
+        body: body,
+        mention_ids: mention_ids,
+        reference_id: reference_id,
+        parent_id: wipParentId,
+        file_ids: [...uFiles.map((f) => f.id), ...inlineImages.map((i) => i.id)],
+        attachment_ids: [...uFiles.map((f) => f.id), ...inlineImages.map((i) => i.id)],
+        proposal_attachment_ids: [],
+        quote: null,
+      };
+      //setUploadedFiles([]);
+      dispatch(setWIPParentIdForUpload(null));
+      dispatch(saveInputData({ sent: true }));
+      if (editWIPComment) {
+        payload = {
+          ...payload,
+          id: editWIPComment.id,
+          attachment_ids: [...uFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string"), ...inlineImages.map((i) => i.id)],
+          parent_id: editWIPComment.parent_id,
+          reference_id: null,
+        };
+        dispatch(putWIPComment(payload));
+        dispatch(setEditWIPComment(null));
+        toaster.dismiss(toasterRef.current);
+      } else {
+        let timestamp = Math.floor(Date.now() / 1000);
+        let commentObj = {
+          author: user,
+          body: body,
+          clap_count: 0,
+          code: timestamp,
+          created_at: { timestamp: timestamp },
+          file_version_id: null,
+          files: [],
+          files_trashed: [],
+          id: reference_id,
+          is_archive: false,
+          is_editable: true,
+          is_edited: 0,
+          is_favourite: false,
+          is_important: false,
+          media_id: null,
+          parent_id: wipParentId,
+          proposal_id: wip.id,
+          quote: null,
+          ref_quote: null,
+          reference_id: reference_id,
+          replies: {},
+          todo_reminder: null,
+          topic_id: workspace.id,
+          total_replies: 0,
+          total_unread_replies: 0,
+          updated_at: { timestamp: timestamp },
+          user_clap_count: 0,
+          workspace_id: workspace.folder_id,
+          clap_user_ids: [],
+        };
+
+        dispatch(addWIPComment(commentObj));
+        dispatch(postWIPComment(payload));
+        toaster.dismiss(toasterRef.current);
+      }
     }
   };
-
-  // useEffect(() => {
-  //   if (uploadedFiles.length) {
-  //     if (uploadedFiles.length === files.length) {
-  //       let mention_ids = [];
-  //       let body = comment;
-  //       let haveGif = false;
-  //       if (quillContents.ops && quillContents.ops.length > 0) {
-  //         let mentionIds = quillContents.ops
-  //           .filter((id) => {
-  //             return id.insert.mention ? id : null;
-  //           })
-  //           .map((mid) => Number(mid.insert.mention.id));
-  //         mention_ids = [...new Set(mentionIds)];
-  //         if (mention_ids.includes(NaN)) {
-  //           mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...selectedChannel.members.map((m) => m.id)])];
-  //         } else {
-  //           //remove the nan in mention ids
-  //           mention_ids = mention_ids.filter((id) => !isNaN(id));
-  //         }
-
-  //         quillContents.ops.forEach((op) => {
-  //           if (op.insert.image) {
-  //             haveGif = true;
-  //           }
-  //         });
-  //       }
-
-  //       if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
-  //         body = "<span></span>";
-  //       }
-
-  //       if (uploadedFiles.filter((f) => isNaN(f.id)).length) {
-  //       } else {
-  //         if (!sending) {
-  //           handleSubmit(body, mention_ids);
-  //           setSending(true);
-  //         }
-  //         // if (modalData.quote) {
-  //         //     modalData.onClearQuote();
-  //         // }
-  //         // modalData.onClearContent();
-  //       }
-  //     }
-  //   }
-  // });
 
   const handleQuillChange = (content, delta, source, editor) => {
     setComment(content);

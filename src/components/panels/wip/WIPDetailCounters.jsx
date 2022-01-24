@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import Viewers from "../../list/post/item/Viewers";
-import { useTranslationActions } from "../../hooks";
 import { useSelector } from "react-redux";
+import { useWIPActions } from "../../hooks";
 
 const Counters = styled.div`
   width: 100%;
@@ -93,13 +93,31 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const WIPDetailCounters = (props) => {
-  const { dictionary, item, handleReaction } = props;
-  const user = useSelector((state) => state.session.user);
+  const { item } = props;
+  //const user = useSelector((state) => state.session.user);
+  const actions = useWIPActions();
   const users = useSelector((state) => state.users.users);
-  const { _t } = useTranslationActions();
   const viewerIds = [...new Set(item.view_user_ids)];
   const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
   const likers = Object.values(users).filter((u) => item.clap_user_ids.some((id) => id === u.id));
+
+  const handleReaction = () => {
+    let payload = {
+      proposal_id: item.id,
+      clap: item.user_clap_count === 0 ? 1 : 0,
+    };
+    actions.react(payload, (err, res) => {
+      if (err) {
+        if (payload.clap === 1) actions.unlike(payload);
+        else actions.like(payload);
+      }
+    });
+    if (item.user_clap_count === 0) {
+      actions.like(payload);
+    } else {
+      actions.unlike(payload);
+    }
+  };
 
   return (
     <Counters className="d-flex align-items-center">

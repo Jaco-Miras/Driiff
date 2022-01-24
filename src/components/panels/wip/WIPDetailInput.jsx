@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useWIPCommentActions } from "../../hooks";
+import { useWIPCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useWIPCommentActions } from "../../hooks";
 import QuillEditor from "../../forms/QuillEditor";
-import { postWIPComment } from "../../../redux/actions/wipActions";
+import { setEditComment } from "../../../redux/actions/wipActions";
 
 const Wrapper = styled.div``;
 
@@ -103,31 +103,24 @@ const WIPDetailInput = forwardRef((props, ref) => {
     handleClearSent,
     post,
     parentId,
-    commentActions,
     userMention,
     handleClearUserMention,
     commentId,
-    workspace,
     onActive,
-    onClearApprovers,
-    onSubmitCallback = () => {},
     mainInput,
     imageLoading = null,
     setImageLoading = null,
     wip,
   } = props;
 
-  const actions = useWIPCommentActions();
-
-  const prioMentionIds = [];
+  const commentActions = useWIPCommentActions();
 
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const recipients = useSelector((state) => state.global.recipients);
+  const editWIPComment = useSelector((state) => state.wip.editWIPComment);
   const users = useSelector((state) => state.users.users);
 
   const [text, setText] = useState("");
@@ -139,7 +132,7 @@ const WIPDetailInput = forwardRef((props, ref) => {
   const [editMessage, setEditMessage] = useState(null);
   const [draftId, setDraftId] = useState(null);
   const [inlineImages, setInlineImages] = useState([]);
-  const [quote] = useCommentQuote(editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId);
+  const [quote] = useWIPCommentQuote(editWIPComment && post && editWIPComment.proposal_id === wip.id && editWIPComment.quote ? editWIPComment.quote.id : commentId);
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
   const [quillMentions, setQuillMentions] = useState([]);
@@ -150,6 +143,16 @@ const WIPDetailInput = forwardRef((props, ref) => {
     savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),
     draftSavedLabel: _t("DRAFT.SAVED", "Draft saved"),
   };
+
+  const workspaceMembers = activeTopic
+    ? activeTopic.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
 
   const loadDraftCallback = (draft) => {
     if (draft) {
@@ -169,43 +172,34 @@ const WIPDetailInput = forwardRef((props, ref) => {
     let mention_ids = [];
     let haveGif = false;
     let reference_id = require("shortid").generate();
-    // let allIds = post.recipients
-    //   .map((ad) => {
-    //     if (ad.type === "USER") {
-    //       return ad.type_id;
-    //     } else {
-    //       return ad.participant_ids;
-    //     }
-    //   })
-    //   .flat();
     let hasMention = false;
 
-    // if (quillContents.ops && quillContents.ops.length > 0) {
-    //   hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
-    //   let mentionIds = quillContents.ops
-    //     .filter((m) => m.insert.mention)
-    //     .filter((m) => {
-    //       if (m.insert.mention.type === "internal" || m.insert.mention.type === "external") return true;
-    //       else return false;
-    //     })
-    //     .map((m) => Number(m.insert.mention.type_id));
+    if (quillContents.ops && quillContents.ops.length > 0) {
+      hasMention = quillContents.ops.filter((m) => m.insert.mention).length > 0;
+      let mentionIds = quillContents.ops
+        .filter((m) => m.insert.mention)
+        .filter((m) => {
+          if (m.insert.mention.type === "internal" || m.insert.mention.type === "external") return true;
+          else return false;
+        })
+        .map((m) => Number(m.insert.mention.type_id));
 
-    //   mention_ids = [...new Set(mentionIds)];
+      mention_ids = [...new Set(mentionIds)];
 
-    //   if (mention_ids.includes(NaN)) {
-    //     if (allIds.length) {
-    //       mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...allIds])];
-    //     } else {
-    //       //remove the nan in mention ids
-    //       mention_ids = mention_ids.filter((id) => !isNaN(id));
-    //     }
-    //   }
-    //   quillContents.ops.forEach((op) => {
-    //     if (op.insert.image) {
-    //       haveGif = true;
-    //     }
-    //   });
-    // }
+      if (mention_ids.includes(NaN)) {
+        if (workspaceMembers.length) {
+          mention_ids = [...new Set([...mention_ids.filter((id) => !isNaN(id)), ...workspaceMembers])];
+        } else {
+          //remove the nan in mention ids
+          mention_ids = mention_ids.filter((id) => !isNaN(id));
+        }
+      }
+      quillContents.ops.forEach((op) => {
+        if (op.insert.image) {
+          haveGif = true;
+        }
+      });
+    }
 
     if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif && !hasMention) return;
 
@@ -271,7 +265,7 @@ const WIPDetailInput = forwardRef((props, ref) => {
         workspace_id: activeTopic.folder_id,
         clap_user_ids: [],
       };
-      actions.addComment(commentObj);
+      commentActions.addComment(commentObj);
     }
 
     if (editMode) {
@@ -281,11 +275,11 @@ const WIPDetailInput = forwardRef((props, ref) => {
         parent_id: editMessage.parent_id,
         reference_id: null,
       };
-      commentActions.edit(payload);
+      commentActions.updateComment(payload);
       setEditMode(false);
       setEditMessage(null);
     } else {
-      actions.submitComment(payload);
+      commentActions.submitComment(payload);
     }
 
     if (quote) {
@@ -295,7 +289,6 @@ const WIPDetailInput = forwardRef((props, ref) => {
       //removeDraft(draftId);
       setDraftId(null);
     }
-    // onClearApprovers();
     handleClearQuillInput();
     // onClosePicker();
   };
@@ -310,8 +303,8 @@ const WIPDetailInput = forwardRef((props, ref) => {
         reactQuillRef.current.getEditor().setContents([]);
       }
     }
-    if (editPostComment !== null) {
-      //dispatch(setEditComment(null));
+    if (editWIPComment !== null) {
+      dispatch(setEditComment(null));
     }
   };
 
@@ -328,8 +321,8 @@ const WIPDetailInput = forwardRef((props, ref) => {
       setEditMessage(null);
       setMentionUsersPayload({});
       //edit message in redux
-      if (editPostComment !== null) {
-        //dispatch(setEditComment(null));
+      if (editWIPComment !== null) {
+        dispatch(setEditComment(null));
       }
     }
     if (textOnly.trim() === "" && draftId) {
@@ -362,16 +355,6 @@ const WIPDetailInput = forwardRef((props, ref) => {
     }
     textOnly.trim() === "" && !hasMention && !hasImage ? onActive(false) : onActive(true);
   };
-
-  const workspaceMembers = workspace
-    ? workspace.members
-        .map((m) => {
-          if (m.member_ids) {
-            return m.member_ids;
-          } else return m.id;
-        })
-        .flat()
-    : [];
 
   const handleSetEditMessageStates = (reply) => {
     reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, reply.body);
@@ -432,13 +415,13 @@ const WIPDetailInput = forwardRef((props, ref) => {
 
   //to be converted into hooks
   useEffect(() => {
-    if (editPostComment && !editMode && editMessage === null && mainInput && editPostComment.post_id === post.id) {
-      handleSetEditMessageStates(editPostComment);
+    if (editWIPComment && !editMode && editMessage === null && mainInput && editWIPComment.proposal_id === wip.id) {
+      handleSetEditMessageStates(editWIPComment);
     }
-    if (editPostComment === null && editMode && editMessage) {
+    if (editWIPComment === null && editMode && editMessage) {
       handleEditReplyClose();
     }
-  }, [editPostComment]);
+  }, [editWIPComment]);
 
   //to be converted into hooks
   useEffect(() => {
@@ -474,24 +457,19 @@ const WIPDetailInput = forwardRef((props, ref) => {
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
-    onClearApprovers();
   };
 
-  useSaveInput(
-    handleClearQuillInput,
-    text,
-    textOnly,
-    quillContents
-    //approvers.map((a) => a.value).filter((id) => post.author.id !== id)
-  );
+  useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
 
-  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
+  const wsMembers = Object.values(users).filter((u) => workspaceMembers.some((id) => id === u.id));
+
+  let prioIds = [...new Set(workspaceMembers)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: workspaceMembers,
+    members: wsMembers,
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,

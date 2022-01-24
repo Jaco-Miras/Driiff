@@ -118,6 +118,47 @@ export function postWIPComment(payload) {
 
 /**
  * @param {Object} payload
+ * @param {number} payload.wip_id
+ * @returns {Promise<*>}
+ */
+export function putWIPComment(payload) {
+  let url = `/v2/proposal/messages/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.id
+ * @returns {Promise<*>}
+ */
+export function deleteWIPComment(payload) {
+  let url = `/v2/proposal/messages/${payload.id}`;
+  return apiCall({
+    method: "DELETE",
+    url: url,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.message_id
+ * @param {number} payload.is_important
+ * @returns {Promise<*>}
+ */
+export function putWIPCommentImportant(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/set-important-comment",
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
  * @param {number} payload.proposal_id
  * @returns {Promise<*>}
  */
@@ -228,6 +269,36 @@ export function putFileVersion(payload) {
   let url = "/v2/proposal/file/version/upload-new";
   return apiCall({
     method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.proposal_id
+ * @param {number} payload.clap
+ * @returns {Promise<*>}
+ */
+export function postWIPCommentClap(payload) {
+  let url = `/messages/${payload.id}/reactions`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.proposal_id
+ * @param {number} payload.clap
+ * @returns {Promise<*>}
+ */
+export function postWIPClap(payload) {
+  let url = "/v2/proposal-clap";
+  return apiCall({
+    method: "POST",
     url: url,
     data: payload,
   });

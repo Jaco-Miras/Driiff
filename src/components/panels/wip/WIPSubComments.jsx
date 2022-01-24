@@ -12,7 +12,7 @@ const WIPSubComments = (props) => {
     Object.values(comments).length > 0 && (
       <Wrapper className={`sub-comments ${className}`}>
         {Object.values(comments).map((c) => {
-          return <WIPComment key={c.id} type="sub" comment={c} wip={wip} dictionary={dictionary} parentId={parentId} />;
+          return <WIPComment key={c.id} type="sub" comment={c} wip={wip} dictionary={dictionary} parentId={parentId} onShowFileDialog={onShowFileDialog} />;
         })}
       </Wrapper>
     )

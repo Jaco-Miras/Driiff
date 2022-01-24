@@ -1,20 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import { joinWorkspace, updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
-import PostInput from "../../forms/PostInput";
-import { CommentQuote } from "../../list/post/item";
-import { useToaster, useTranslationActions, usePostActions } from "../../hooks";
+import { useToaster, useTranslationActions } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
-import { FolderSelect } from "../../forms";
-import { replaceChar } from "../../../helpers/stringFormatter";
-//import PostInputButtons from "./PostInputButtons";
 import WIPDetailInput from "./WIPDetailInput";
 import WIPDetailInputButtons from "./WIPDetailInputButtons";
+import WIPCommentQuote from "./WIPCommentQuote";
 
 const Wrapper = styled.div`
   position: relative;
@@ -197,18 +193,7 @@ const Icon = styled(SvgIconFeather)`
   width: 20px;
 `;
 
-const ApproverSelectWrapper = styled.div`
-  padding-right: 55px;
-  display: flex;
-  padding-bottom: 10px;
-  margin-left: auto;
-  flex-direction: column;
-  > div.react-select-container {
-    width: 300px;
-  }
-`;
-
-const PostDetailFooter = (props) => {
+const WIPDetailFooter = (props) => {
   const {
     className = "",
     onShowFileDialog,
@@ -228,11 +213,13 @@ const PostDetailFooter = (props) => {
     mainInput,
     wip,
   } = props;
+  //console.log(parentId);
   const history = useHistory();
   const dispatch = useDispatch();
   const ref = {
     picker: useRef(),
     postInput: useRef(null),
+    inputRef: useRef(null),
   };
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -246,8 +233,7 @@ const PostDetailFooter = (props) => {
 
   //const topic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
-  const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
+  const editWIPComment = useSelector((state) => state.wip.editWIPComment);
   const users = useSelector((state) => state.users.users);
 
   const handleSend = () => {
@@ -383,8 +369,8 @@ const PostDetailFooter = (props) => {
   };
 
   const handleQuillImage = () => {
-    if (ref.postInput) {
-      const imgBtn = ref.postInput.current.parentNode.querySelector("button.ql-image");
+    if (ref.inputRef) {
+      const imgBtn = ref.inputRef.current.parentNode.querySelector("button.ql-image");
       if (imgBtn) imgBtn.click();
     }
   };
@@ -402,10 +388,10 @@ const PostDetailFooter = (props) => {
       )}
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote
+          <WIPCommentQuote
             commentActions={commentActions}
-            commentId={editPostComment && post && editPostComment.post_id === post.id && editPostComment.quote ? editPostComment.quote.id : commentId}
-            editPostComment={editPostComment}
+            commentId={editWIPComment && post && editWIPComment.proposal_id === wip.id && editWIPComment.quote ? editWIPComment.quote.id : commentId}
+            editWIPComment={editWIPComment}
             mainInput={mainInput}
           />
         </Dflex>
@@ -414,8 +400,33 @@ const PostDetailFooter = (props) => {
       <>
         <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
           <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
-            <WIPDetailInput onActive={onActive} wip={wip} parentId={parentId} commentId={commentId} />
-            <WIPDetailInputButtons parentId={parentId} handleQuillImage={handleQuillImage} handleShowEmojiPicker={handleShowEmojiPicker} onShowFileDialog={onShowFileDialog} editPostComment={editPostComment} mainInput={mainInput} />
+            <WIPDetailInput
+              onActive={onActive}
+              wip={wip}
+              parentId={parentId}
+              commentId={commentId}
+              mainInput={mainInput}
+              selectedGif={selectedGif}
+              onClearGif={onClearGif}
+              selectedEmoji={selectedEmoji}
+              onClearEmoji={onClearEmoji}
+              handleClearSent={handleClearSent}
+              sent={sent}
+              ref={ref.inputRef}
+              imageLoading={imageLoading}
+              setImageLoading={setImageLoading}
+              userMention={userMention}
+              handleClearUserMention={handleClearUserMention}
+            />
+            <WIPDetailInputButtons
+              parentId={parentId}
+              handleQuillImage={handleQuillImage}
+              handleShowEmojiPicker={handleShowEmojiPicker}
+              onShowFileDialog={onShowFileDialog}
+              mainInput={mainInput}
+              imageLoading={imageLoading}
+              setImageLoading={setImageLoading}
+            />
             {/* <PostInput
                 handleClearSent={handleClearSent}
                 sent={sent}
@@ -469,4 +480,4 @@ const PostDetailFooter = (props) => {
   );
 };
 
-export default React.memo(PostDetailFooter);
+export default React.memo(WIPDetailFooter);

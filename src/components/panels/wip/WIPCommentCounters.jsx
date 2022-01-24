@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { Avatar, SvgIconFeather } from "../../common";
+import { useWIPCommentActions } from "../../hooks";
 import Viewers from "../../list/post/item/Viewers";
 
 const Wrapper = styled.div`
@@ -47,7 +49,12 @@ const Reply = styled.span`
 `;
 
 const WIPCommentCounters = (props) => {
-  const { comment, dictionary, wip, disableOptions, likers, handleReaction, handleShowInput } = props;
+  const { comment, dictionary, wip, handleShowInput } = props;
+
+  const commentActions = useWIPCommentActions();
+  const users = useSelector((state) => state.users.users);
+
+  const likers = Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id));
 
   const userReadPost = () => {
     let filter_post_read = [];
@@ -55,6 +62,24 @@ const WIPCommentCounters = (props) => {
       return wip.post_reads.filter((u) => u.last_read_timestamp >= comment.updated_at.timestamp);
     }
     return filter_post_read;
+  };
+
+  const handleReaction = () => {
+    //if (disableOptions) return;
+
+    let payload = {
+      id: comment.id,
+      reaction: "clap",
+      counter: comment.user_clap_count === 0 ? 1 : 0,
+      proposal_id: comment.proposal_id,
+      parent_id: comment.parent_id,
+    };
+    commentActions.react(payload);
+    if (comment.user_clap_count === 0) {
+      commentActions.like(payload);
+    } else {
+      commentActions.unlike(payload);
+    }
   };
 
   return (
