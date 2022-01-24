@@ -237,7 +237,7 @@ const WIPItem = (props) => {
   const handleEditPost = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // showModal("edit", post);
+    wipActions.showModal("edit", item);
   };
 
   const handleOpenWIP = () => {
@@ -262,7 +262,7 @@ const WIPItem = (props) => {
             <div className="text-truncate d-flex">
               <span className="text-truncate">{item.title}</span>
               <HoverButtons className="hover-btns ml-1">
-                {item.type !== "draft_post" && !disableOptions && item.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}
+                {!disableOptions && item.author.id === user.id && <Icon icon="pencil" onClick={handleEditPost} />}
                 {!disableOptions && <Icon icon="clock" onClick={handleArchivePost} />}
               </HoverButtons>
             </div>

@@ -2,10 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote } from "../../common";
-import { MoreOptions } from "../common";
 import { PostVideos } from "../post";
 import { Quote } from "../../list/post/item";
-import { useGoogleApis, useTimeFormat, useFiles } from "../../hooks";
+import { useTimeFormat, useFiles, useWIPCommentActions } from "../../hooks";
 import quillHelper from "../../../helpers/quillHelper";
 import { useDispatch, useSelector } from "react-redux";
 import { setViewFiles } from "../../../redux/actions/fileActions";
@@ -13,6 +12,7 @@ import { sessionService } from "redux-react-session";
 import WIPDetailFooter from "./WIPDetailFooter";
 import WIPCommentCounters from "./WIPCommentCounters";
 import WIPSubComments from "./WIPSubComments";
+import WIPCommentOptions from "./WIPCommentOptions";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -49,16 +49,6 @@ const Wrapper = styled.li`
     padding: 0 1rem;
     color: #868686;
     border-left: 4px solid #972c86;
-
-    // &:before {
-    //   border: 10px solid #0000;
-    //   border-right-color: #36393d;
-    // }
-
-    // &.border-side {
-    //   border-left: 5px solid #822492;
-    //   border-radius: 0 !important;
-    // }
 
     > * {
       margin-bottom: 0;
@@ -205,9 +195,10 @@ const CommentFilesTrashedContainer = styled.div`
 `;
 
 const WIPComment = (props) => {
-  const { className = "", comment, wip, post, type = "main", commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false, postActions } = props;
+  const { className = "", comment, wip, type = "main", parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions } = props;
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const refs = {
     input: useRef(null),
@@ -216,21 +207,17 @@ const WIPComment = (props) => {
     content: useRef(null),
   };
 
+  const commentActions = useWIPCommentActions();
   const {
     fileBlobs,
     actions: { setFileSrc },
   } = useFiles();
-  const history = useHistory();
-  const googleApis = useGoogleApis();
 
-  const users = useSelector((state) => state.users.users);
   const user = useSelector((state) => state.session.user);
 
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
-  const [showGifPlayer, setShowGifPlayer] = useState(null);
-
-  const likers = Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id));
+  //const [showGifPlayer, setShowGifPlayer] = useState(null);
 
   const handleShowInput = (commentId = null) => {
     if (parentShowInput) {
@@ -241,7 +228,7 @@ const WIPComment = (props) => {
     inputFocus();
   };
 
-  const handleMentionUser = () => {
+  const handleMention = () => {
     setUserMention(`<p class="mention-data"><span class="mention" data-index="0" data-denotation-char="@" data-id="${comment.author.id}" data-value="${comment.author.name}">
         <span contenteditable="false"><span class="ql-mention-denotation-char">@</span>${comment.author.name}</span></span></p> `);
     setShowInput(true);
@@ -272,38 +259,6 @@ const WIPComment = (props) => {
     }
   };
 
-  const handleReaction = () => {
-    if (disableOptions) return;
-
-    // setReact((prevState) => ({
-    //   user_clap_count: !!prevState.user_clap_count ? 0 : 1,
-    //   clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
-    // }));
-
-    // setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
-    //   prevState.filter(r => r.type_id !== user.id) :
-    //   prevState.concat(recipients.find(r => r.type_id === user.id)));
-
-    let payload = {
-      id: comment.id,
-      reaction: "clap",
-      counter: comment.user_clap_count === 0 ? 1 : 0,
-      post_id: post.id,
-      parent_id: type === "main" ? null : parentId,
-    };
-    commentActions.clap(payload, (err, res) => {
-      if (err) {
-        if (payload.counter === 1) commentActions.unlike(payload);
-        else commentActions.like(payload);
-      }
-    });
-    if (comment.user_clap_count === 0) {
-      commentActions.like(payload);
-    } else {
-      commentActions.unlike(payload);
-    }
-  };
-
   const { fromNow } = useTimeFormat();
 
   const handleInlineImageClick = (e) => {
@@ -322,10 +277,6 @@ const WIPComment = (props) => {
 
   useEffect(() => {
     if (refs.content.current) {
-      const googleLinks = refs.content.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
-      googleLinks.forEach((gl) => {
-        googleApis.init(gl);
-      });
       const images = refs.content.current.querySelectorAll("img");
       images.forEach((img) => {
         const imgSrc = img.getAttribute("src");
@@ -373,15 +324,15 @@ const WIPComment = (props) => {
                   id: file.id,
                   src: imgObj,
                 });
-                commentActions.updateCommentImages({
-                  post_id: post.id,
-                  id: comment.id,
-                  parent_id: type === "main" ? null : parentId,
-                  file: {
-                    ...file,
-                    blobUrl: imgObj,
-                  },
-                });
+                // commentActions.updateCommentImages({
+                //   post_id: post.id,
+                //   id: comment.id,
+                //   parent_id: type === "main" ? null : parentId,
+                //   file: {
+                //     ...file,
+                //     blobUrl: imgObj,
+                //   },
+                // });
               })
               .catch((error) => {
                 console.log(error, "error fetching image");
@@ -397,22 +348,9 @@ const WIPComment = (props) => {
   }, [inputFocus]);
 
   useEffect(() => {
-    if (typeof history.location.state === "object") {
-      if (history.location.state && history.location.state.focusOnMessage === comment.id && refs.body.current) {
-        refs.body.current.scrollIntoView();
-        refs.main.current.classList.add("bounceIn");
-        history.push(history.location.pathname, null);
-      }
-    }
-  }, [history.location.state]);
-
-  useEffect(() => {
-    if (comment.body.match(/\.(gif)/g) !== null) {
-      setShowGifPlayer(true);
-    }
-    if (comment.clap_count > 0 && comment.clap_user_ids.length !== comment.clap_count) {
-      commentActions.fetchPostReplyHover(comment.id);
-    }
+    // if (comment.body.match(/\.(gif)/g) !== null) {
+    //   setShowGifPlayer(true);
+    // }
     return () => {
       history.push(history.location.pathname, null);
     };
@@ -439,16 +377,7 @@ const WIPComment = (props) => {
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
               {wip.last_visited_at && comment.updated_at.timestamp > wip.last_visited_at.timestamp && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
-            {!disableOptions && (
-              <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
-                {comment.todo_reminder === null && <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
-                <div onClick={handleQuote}>{dictionary.quote}</div>
-                {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.important(comment)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
-              </MoreOptions>
-            )}
+            {!disableOptions && <WIPCommentOptions commentActions={commentActions} onMentionUser={handleMention} onQuote={handleQuote} dictionary={dictionary} scrollRef={refs.body.current} comment={comment} user={user} />}
           </CommentHeader>
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3 ql-editor" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
@@ -468,7 +397,7 @@ const WIPComment = (props) => {
               </CommentFilesTrashedContainer>
             </>
           )}
-          <WIPCommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} likers={likers} wip={wip} handleReaction={handleReaction} handleShowInput={handleShowInput} />
+          <WIPCommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} wip={wip} handleShowInput={handleShowInput} />
         </CommentWrapper>
       </Wrapper>
 
@@ -479,7 +408,7 @@ const WIPComment = (props) => {
           wip={wip}
           user={user}
           commentActions={commentActions}
-          parentId={type === "main" ? comment.id : null}
+          parentId={type === "main" ? comment.id : parentId}
           onShowFileDialog={onShowFileDialog}
           dropAction={dropAction}
           workspace={workspace}
@@ -490,7 +419,7 @@ const WIPComment = (props) => {
       )}
       {showInput !== null && (
         <InputWrapper className="card">
-          <WIPDetailFooter wip={wip} parentId={type === "main" ? comment.id : null} />
+          <WIPDetailFooter wip={wip} parentId={type === "main" ? comment.id : parentId} onShowFileDialog={onShowFileDialog} commentId={showInput} userMention={userMention} handleClearUserMention={handleClearUserMention} />
         </InputWrapper>
       )}
     </>

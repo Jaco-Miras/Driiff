@@ -15,6 +15,11 @@ import {
   putFileVersion as putFileVersionService,
   putFileComment as putFileCommentService,
   putWIP as putWIPService,
+  putWIPComment as putWIPCommentService,
+  deleteWIPComment as deleteWIPCommentService,
+  putWIPCommentImportant as putWIPCommentImportantService,
+  postWIPCommentClap as postWIPCommentClapService,
+  postWIPClap as postWIPClapService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -135,4 +140,64 @@ export function incomingClosedFileComments(payload, callback) {
 
 export function incomingApprovedFileVersion(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_APPROVED_FILE_VERSION", payload, callback);
+}
+
+export function deleteWIPComment(payload, callback) {
+  return dispatchActionToReducer(deleteWIPCommentService(payload), "DELETE_WIP_COMMENT_START", "DELETE_WIP_COMMENT_SUCCESS", "DELETE_WIP_COMMENT_FAIL", callback);
+}
+
+export function putWIPComment(payload, callback) {
+  return dispatchActionToReducer(putWIPCommentService(payload), "PUT_WIP_COMMENT_START", "PUT_WIP_COMMENT_SUCCESS", "PUT_WIP_COMMENT_FAIL", callback);
+}
+
+export function setEditComment(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_EDIT_WIP_COMMENT", payload, callback);
+}
+
+export function incomingUpdatedWIPComment(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_WIP_COMMENT", payload, callback);
+}
+
+export function setParentIdForUpload(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_PARENT_ID_FOR_UPLOAD", payload, callback);
+}
+
+export function setWIPCommentQuote(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_WIP_COMMENT_QUOTE", payload, callback);
+}
+
+export function clearWIPCommentQuote(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_WIP_COMMENT_QUOTE", payload, callback);
+}
+
+export function putWIPCommentImportant(payload, callback) {
+  return dispatchActionToReducer(putWIPCommentImportantService(payload), "PUT_WIP_COMMENT_IMPORTANT_START", "PUT_WIP_COMMENT_IMPORTANT_SUCCESS", "PUT_WIP_COMMENT_IMPORTANT_FAIL", callback);
+}
+
+export function postWIPCommentClap(payload, callback) {
+  return dispatchActionToReducer(postWIPCommentClapService(payload), "PUT_WIP_COMMENT_CLAP_START", "PUT_WIP_COMMENT_CLAP_SUCCESS", "PUT_WIP_COMMENT_CLAP_FAIL", callback);
+}
+
+export function addWIPCommentReact(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_WIP_COMMENT_REACT", payload, callback);
+}
+
+export function removeWIPCommentReact(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WIP_COMMENT_REACT", payload, callback);
+}
+
+export function postWIPClap(payload, callback) {
+  return dispatchActionToReducer(postWIPClapService(payload), "POST_WIP_CLAP_START", "POST_WIP_CLAP_SUCCESS", "POST_WIP_CLAP_FAIL", callback);
+}
+
+export function addWIPReact(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_WIP_REACT", payload, callback);
+}
+
+export function removeWIPReact(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WIP_REACT", payload, callback);
+}
+
+export function incomingProposalClap(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_PROPOSAL_CLAP", payload, callback);
 }

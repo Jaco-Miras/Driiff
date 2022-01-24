@@ -318,4 +318,9 @@ export {
   putFileVersion,
   putFileComment,
   putWIP,
+  putWIPComment,
+  deleteWIPComment,
+  putWIPCommentImportant,
+  postWIPCommentClap,
+  postWIPClap,
 } from "./wip";

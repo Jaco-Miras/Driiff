@@ -196,6 +196,8 @@ import {
   incomingUpdatedWIPFileComment,
   incomingClosedFileComments,
   incomingApprovedFileVersion,
+  incomingUpdatedWIPComment,
+  incomingProposalClap,
 } from "../../redux/actions/wipActions";
 
 class SocketListeners extends Component {
@@ -309,9 +311,23 @@ class SocketListeners extends Component {
       .listen(".proposal-comment-notification", (e) => {
         this.props.incomingWIPComment(e);
       })
+      .listen(".proposal-comment-updated", (e) => {
+        this.props.incomingUpdatedWIPComment(e);
+      })
       .listen(".proposal-notification", (e) => {
         console.log(e);
-        this.props.incomingWIP({ ...e, clap_user_ids: [] });
+        switch (e.SOCKET_TYPE) {
+          case "PROPOSAL_CLAP_TOGGLE": {
+            this.props.incomingProposalClap(e);
+            break;
+          }
+          case "PROPOSAL_CREATED": {
+            this.props.incomingWIP({ ...e, clap_user_ids: [] });
+            break;
+          }
+          default:
+            return null;
+        }
       })
       .listen(".proposal-subject-notification", (e) => {
         this.props.incomingWIPSubject({ ...e, clap_user_ids: [] });
@@ -2477,6 +2493,8 @@ function mapDispatchToProps(dispatch) {
     incomingUpdatedWIPFileComment: bindActionCreators(incomingUpdatedWIPFileComment, dispatch),
     incomingClosedFileComments: bindActionCreators(incomingClosedFileComments, dispatch),
     incomingApprovedFileVersion: bindActionCreators(incomingApprovedFileVersion, dispatch),
+    incomingUpdatedWIPComment: bindActionCreators(incomingUpdatedWIPComment, dispatch),
+    incomingProposalClap: bindActionCreators(incomingProposalClap, dispatch),
   };
 }
 

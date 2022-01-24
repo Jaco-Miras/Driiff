@@ -84,3 +84,4 @@ export { default as useWIPComments } from "./useWIPComments";
 export { default as useWIPFileActions } from "./useWIPFileActions";
 export { default as useWIPFileComments } from "./useWIPFileComments";
 export { default as useWIPFileSubComments } from "./useWIPFileSubComments";
+export { default as useWIPCommentQuote } from "./useWIPCommentQuote";
