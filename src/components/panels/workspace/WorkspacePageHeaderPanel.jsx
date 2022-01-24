@@ -164,12 +164,12 @@ const WorkspacePageHeaderPanel = (props) => {
               {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
             </MainNavLink>
           </li>
-          {/* <li className="nav-item">
+          <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
               {dictionary.pageTitlePosts}
               {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
             </MainNavLink>
-          </li> */}
+          </li>
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
               {dictionary.pageTitleReminders}
