@@ -47,6 +47,7 @@ import {
   postListDisconnect as postListDisconnectService,
   postRequired as postRequiredService,
   readNotification as readNotificationService,
+  checkPostAccess as checkPostAccessService,
 } from "../services";
 
 export function getPostList(payload, callback) {
@@ -487,4 +488,8 @@ export function fetchCommentsOnVisit(payload, callback) {
 
 export function incomingLastVisitPost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_LAST_VISIT_POST", payload, callback);
+}
+
+export function checkPostAccess(payload, callback) {
+  return dispatchActionToReducer(checkPostAccessService(payload), "CHECK_POST_ACCESS_START", "RCHECK_POST_ACCESSSUCCESS", "CHECK_POST_ACCESS_FAIL", callback);
 }

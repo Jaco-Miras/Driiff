@@ -715,3 +715,11 @@ export function readNotification(payload) {
     data: payload,
   });
 }
+
+export function checkPostAccess(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/check-post-participant?post_id=${payload.id}`,
+    data: payload,
+  });
+}
