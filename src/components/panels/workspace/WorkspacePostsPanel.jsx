@@ -102,6 +102,18 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
+const MaintenanceWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-flow: column;
+  > div {
+    width: 100%;
+  }
+`;
+
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -236,6 +248,8 @@ const WorkspacePostsPanel = (props) => {
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
     teamLabel: _t("TEAM", "Team"),
     new: _t("POST.NEW", "New"),
+    featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
+    contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
   };
 
   useEffect(() => {
@@ -487,7 +501,7 @@ const WorkspacePostsPanel = (props) => {
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
+      {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
         <div className="row app-block">
           <PostSidebar
             disableOptions={disableOptions}
@@ -555,7 +569,16 @@ const WorkspacePostsPanel = (props) => {
             <div className="mt-3 post-btm">&nbsp;</div>
           </div>
         </div>
-      )}
+      ) : postAccess.loaded ? (
+        <MaintenanceWrapper>
+          <div>
+            <h4 className="title">{dictionary.featureNotAvailable}</h4>
+          </div>
+          <div>
+            <h5>{dictionary.contactAdministrator}</h5>
+          </div>
+        </MaintenanceWrapper>
+      ) : null}
     </Wrapper>
   );
 };

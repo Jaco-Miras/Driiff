@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { FolderSelect } from "../../forms";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
-import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
-import { Loader, SvgIconFeather } from "../../common";
-import Tooltip from "react-tooltip-lite";
+import { useTranslationActions, useToaster } from "../../hooks";
+import { Loader } from "../../common";
+//import Tooltip from "react-tooltip-lite";
 import { putPostAccess } from "../../../redux/actions/adminActions";
 
 const Wrapper = styled.div`
@@ -74,7 +74,7 @@ const PageSettingsBody = () => {
     toasterUpdateLoginError: _t("TOASTER.UPDATE_LOGIN_SETTINGS_ERROR", "Error updating login settings"),
   };
 
-  const componentIsMounted = useRef(true);
+  //const componentIsMounted = useRef(true);
 
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
@@ -199,12 +199,12 @@ const PageSettingsBody = () => {
     );
   };
 
-  const toggleTooltip = () => {
-    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
-    tooltips.forEach((tooltip) => {
-      tooltip.parentElement.classList.toggle("tooltip-active");
-    });
-  };
+  // const toggleTooltip = () => {
+  //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  //   tooltips.forEach((tooltip) => {
+  //     tooltip.parentElement.classList.toggle("tooltip-active");
+  //   });
+  // };
 
   return (
     <Wrapper>
@@ -231,7 +231,7 @@ const PageSettingsBody = () => {
               value={postOptions.find((o) => o.value === settings.post)}
               onChange={handlePostSelect}
               options={postOptions}
-              isClearable={true}
+              //isClearable={true}
             />
           </div>
 
