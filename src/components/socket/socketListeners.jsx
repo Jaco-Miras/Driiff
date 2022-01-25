@@ -186,7 +186,6 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo } from "../../redux/actions/adminActions";
 import {
   incomingWIP,
   incomingWIPSubject,
@@ -200,6 +199,7 @@ import {
   incomingUpdatedWIPComment,
   incomingProposalClap,
 } from "../../redux/actions/wipActions";
+import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -226,6 +226,7 @@ class SocketListeners extends Component {
 
   refetch = () => {
     this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+    this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
     }
@@ -1182,6 +1183,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".post-access-notification", (e) => {
+        this.props.incomingPostAccess(e);
+      })
       .listen(".create-team", (e) => {
         this.props.incomingTeam(e);
       })
@@ -2518,6 +2522,8 @@ function mapDispatchToProps(dispatch) {
     incomingApprovedFileVersion: bindActionCreators(incomingApprovedFileVersion, dispatch),
     incomingUpdatedWIPComment: bindActionCreators(incomingUpdatedWIPComment, dispatch),
     incomingProposalClap: bindActionCreators(incomingProposalClap, dispatch),
+    incomingPostAccess: bindActionCreators(incomingPostAccess, dispatch),
+    getPostAccess: bindActionCreators(getPostAccess, dispatch),
   };
 }
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
@@ -104,6 +105,9 @@ const CompanyPostsPanel = (props) => {
   const isExternalUser = user.type === "external";
 
   const componentIsMounted = useRef(true);
+
+  const postAccess = useSelector((state) => state.admin.postAccess);
+  //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
@@ -294,46 +298,48 @@ const CompanyPostsPanel = (props) => {
   if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      <div className="row app-block">
-        <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
-        <div className="col-md-9 app-content">
-          <div className="app-content-overlay" />
-          {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
-          {!!postListTag && (
-            <PostsBtnWrapper>
-              <span>Filter:</span>
-              <PostListWrapper className="ml-2 recipients">
-                <span className="receiver">
-                  <span onClick={handleEditArchivePostList}>
-                    <StyledIcon icon="x" className="mr-1" />
+      {postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
+        <div className="row app-block">
+          <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+          <div className="col-md-9 app-content">
+            <div className="app-content-overlay" />
+            {!post && <CompanyPostFilterSearchPanel activeSort={sort} search={search} dictionary={dictionary} className={"mb-3"} />}
+            {!!postListTag && (
+              <PostsBtnWrapper>
+                <span>Filter:</span>
+                <PostListWrapper className="ml-2 recipients">
+                  <span className="receiver">
+                    <span onClick={handleEditArchivePostList}>
+                      <StyledIcon icon="x" className="mr-1" />
+                    </span>
+                    {activePostListName.name}
                   </span>
-                  {activePostListName.name}
-                </span>
-              </PostListWrapper>
-            </PostsBtnWrapper>
-          )}
-          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
-            <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
-          ) : (
-            <>
-              {post && params.hasOwnProperty("postId") ? (
-                <div className="card card-body app-content-body">
-                  <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
-                  </PostDetailWrapper>
-                </div>
-              ) : !post && params.hasOwnProperty("postId") ? (
-                <LoaderContainer className={"card initial-load"}>
-                  <Loader />
-                </LoaderContainer>
-              ) : (
-                <CompanyPosts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} />
-              )}
-            </>
-          )}
-          <div className="mt-3 post-btm">&nbsp;</div>
+                </PostListWrapper>
+              </PostsBtnWrapper>
+            )}
+            {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
+              <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
+            ) : (
+              <>
+                {post && params.hasOwnProperty("postId") ? (
+                  <div className="card card-body app-content-body">
+                    <PostDetailWrapper className="fadeBottom">
+                      <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
+                    </PostDetailWrapper>
+                  </div>
+                ) : !post && params.hasOwnProperty("postId") ? (
+                  <LoaderContainer className={"card initial-load"}>
+                    <Loader />
+                  </LoaderContainer>
+                ) : (
+                  <CompanyPosts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} />
+                )}
+              </>
+            )}
+            <div className="mt-3 post-btm">&nbsp;</div>
+          </div>
         </div>
-      </div>
+      )}
     </Wrapper>
   );
 };

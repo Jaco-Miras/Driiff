@@ -202,14 +202,19 @@ const useCompanyPosts = () => {
     actions,
     fetchMore,
     posts: filteredPosts.filter((p) => {
-      const allParticipantIds = p.recipients
-        .map((r) => {
-          if (r.type === "USER") {
-            return [r.type_id];
-          } else return r.participant_ids;
-        })
-        .flat();
-      return allParticipantIds.some((id) => id === user.id) || p.author.id === user.id;
+      const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
+      if (hasCompanyAsRecipient) {
+        return true;
+      } else {
+        const allParticipantIds = p.recipients
+          .map((r) => {
+            if (r.type === "USER") {
+              return [r.type_id];
+            } else return r.participant_ids;
+          })
+          .flat();
+        return allParticipantIds.some((id) => id === user.id) || p.author.id === user.id;
+      }
     }),
     filter: filter,
     tag: tag,
