@@ -77,13 +77,13 @@ const EyeIcon = styled(SvgIconFeather)`
 const StyledBadge = styled.div`
   display: inline-flex;
   align-items: center;
-  ${(props) => props.isTeam && "background:#D1EEFF !important;"}
-  height:18px;
+  height: 18px;
   padding: 5px !important;
   color: #363636;
   font-size: 10px;
   letter-spacing: 0;
   line-height: 12px;
+  ${(props) => props.isTeam && "background:#D1EEFF !important;"}
 `;
 
 const ReplyPreview = (props) => {
@@ -107,7 +107,7 @@ const ReplyPreview = (props) => {
       {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
         <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
       )}
-      {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
+      {channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && (
         <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
           <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} />
           {channel.team ? dictionary.withTeam : dictionary.withClient}
@@ -118,7 +118,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       let lastReplyBodyHtml = channel.is_translate && channel.last_reply.translated_body ? channel.last_reply.translated_body : channel.last_reply.body;
 
@@ -187,23 +187,23 @@ const ReplyPreview = (props) => {
 
       //system message
     } else {
-      previewText = "System message update...";
+      previewText = chatHeaderBadgeContainer + "System message update...";
 
       if (channel.last_reply.body.includes("POST_CREATE::")) {
         // console.log(channel.last_reply.body, channel.last_reply);
         let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
         if (parsedData.trim() !== "") {
           let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
-          previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+          previewText = chatHeaderBadgeContainer + `${item.author.first_name} has created the post ${item.post.title}`;
         }
       }
     }
 
     if (typeof drafts[channel.id] !== "undefined") {
       if (drafts[channel.id].text && drafts[channel.id].text !== "<div><br></div>") {
-        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
+        previewText = chatHeaderBadgeContainer + `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
       } else if (drafts[channel.id].reply_quote) {
-        previewText = `QUOTE:&nbsp;${drafts[channel.id].reply_quote.body}&nbsp;~${drafts[channel.id].reply_quote.user.name}`;
+        previewText = chatHeaderBadgeContainer + `QUOTE:&nbsp;${drafts[channel.id].reply_quote.body}&nbsp;~${drafts[channel.id].reply_quote.user.name}`;
       }
     }
   } else {
@@ -246,4 +246,4 @@ const ReplyPreview = (props) => {
   );
 };
 
-export default React.memo(ReplyPreview);
+export default ReplyPreview;
