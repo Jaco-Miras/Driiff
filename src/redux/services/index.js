@@ -23,6 +23,8 @@ export {
   getStripeProducts,
   cancelStripeSubscription,
   resetCompanyLogo,
+  putPostAccess,
+  getPostAccess,
 } from "./admin";
 export {
   getGlobalRecipients,

@@ -157,3 +157,18 @@ export function resetCompanyLogo(payload) {
     url: "/v1/file-logo-reset",
   });
 }
+
+export function putPostAccess(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/post-access-users",
+    data: payload,
+  });
+}
+
+export function getPostAccess(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/post-access-users",
+  });
+}
