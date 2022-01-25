@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
@@ -118,6 +119,9 @@ const WorkspacePostsPanel = (props) => {
 
   const [loadPosts, setLoadPosts] = useState(false);
   const [activePostListName, setActivePostListName] = useState({});
+
+  const postAccess = useSelector((state) => state.admin.postAccess);
+  //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const componentIsMounted = useRef(true);
 
@@ -483,8 +487,7 @@ const WorkspacePostsPanel = (props) => {
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {
-        //["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com", "bram@zuid.com", "stef@zuid.com", "esther@zuid.com"].includes(user.email) && (
+      {postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
         <div className="row app-block">
           <PostSidebar
             disableOptions={disableOptions}
@@ -552,7 +555,7 @@ const WorkspacePostsPanel = (props) => {
             <div className="mt-3 post-btm">&nbsp;</div>
           </div>
         </div>
-      }
+      )}
     </Wrapper>
   );
 };

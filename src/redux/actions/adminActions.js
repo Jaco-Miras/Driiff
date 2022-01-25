@@ -20,6 +20,8 @@ import {
   getStripeProducts as getStripeProductsService,
   cancelStripeSubscription as cancelStripeSubscriptionService,
   resetCompanyLogo as resetCompanyLogoService,
+  getPostAccess as getPostAccessService,
+  putPostAccess as putPostAccessService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -116,4 +118,16 @@ export function incomingUpdatedCompanyLogo(payload, callback) {
 
 export function resetCompanyLogo(payload, callback) {
   return dispatchActionToReducer(resetCompanyLogoService(payload), "RESET_COMPANY_LOGO_START", "RESET_COMPANY_LOGO_SUCCESS", "RESET_COMPANY_LOGO_FAILURE", callback);
+}
+
+export function getPostAccess(payload, callback) {
+  return dispatchActionToReducer(getPostAccessService(payload), "GET_POST_ACCESS_START", "GET_POST_ACCESS_SUCCESS", "GET_POST_ACCESS_FAILURE", callback);
+}
+
+export function putPostAccess(payload, callback) {
+  return dispatchActionToReducer(putPostAccessService(payload), "PUT_POST_ACCESS_START", "PUT_POST_ACCESS_SUCCESS", "PUT_POST_ACCESS_FAILURE", callback);
+}
+
+export function incomingPostAccess(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_ACCESS", payload, callback);
 }

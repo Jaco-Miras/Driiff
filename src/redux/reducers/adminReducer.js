@@ -15,6 +15,11 @@ const INITIAL_STATE = {
     sign_up: true,
     password_login: true,
   },
+  postAccess: {
+    post: null,
+    post_user_ids: [],
+    loaded: false,
+  },
   automation: {
     bots: [],
     channels: [],
@@ -228,6 +233,26 @@ export default (state = INITIAL_STATE, action) => {
           ...state.stripe,
           products: action.data.products,
           productsFetched: true,
+        },
+      };
+    }
+    case "GET_POST_ACCESS_SUCCESS": {
+      return {
+        ...state,
+        postAccess: {
+          post: action.data.post_access,
+          post_user_ids: action.data.post_user_access,
+          loaded: true,
+        },
+      };
+    }
+    case "INCOMING_POST_ACCESS": {
+      return {
+        ...state,
+        postAccess: {
+          post: action.data.post_access,
+          post_user_ids: action.data.post_user_access,
+          loaded: true,
         },
       };
     }

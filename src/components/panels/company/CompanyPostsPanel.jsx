@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
@@ -114,6 +115,9 @@ const CompanyPostsPanel = (props) => {
   const isExternalUser = user.type === "external";
 
   const componentIsMounted = useRef(true);
+
+  const postAccess = useSelector((state) => state.admin.postAccess);
+  //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const handleGoback = () => {
     if (params.hasOwnProperty("postId")) {
@@ -302,7 +306,7 @@ const CompanyPostsPanel = (props) => {
   if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {
+      {postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
         //["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com", "bram@zuid.com", "stef@zuid.com", "esther@zuid.com"].includes(user.email) && (
         <div className="row app-block">
           <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
@@ -344,7 +348,7 @@ const CompanyPostsPanel = (props) => {
             <div className="mt-3 post-btm">&nbsp;</div>
           </div>
         </div>
-      }
+      )}
     </Wrapper>
   );
 };

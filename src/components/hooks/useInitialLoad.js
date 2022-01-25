@@ -5,6 +5,7 @@ import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../re
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel } from "../../redux/actions/chatActions";
 import { getAllWorkspaceFolders } from "../../redux/actions/workspaceActions";
+import { getPostAccess } from "../../redux/actions/adminActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -37,6 +38,7 @@ const useInitialLoad = () => {
           })
         );
       }
+      dispatch(getPostAccess());
       dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
