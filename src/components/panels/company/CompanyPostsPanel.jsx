@@ -298,7 +298,8 @@ const CompanyPostsPanel = (props) => {
   if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
+      {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
+        //["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com", "bram@zuid.com", "stef@zuid.com", "esther@zuid.com"].includes(user.email) && (
         <div className="row app-block">
           <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
           <div className="col-md-9 app-content">

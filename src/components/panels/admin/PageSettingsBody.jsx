@@ -159,7 +159,7 @@ const PageSettingsBody = () => {
   const handlePostSelect = (e) => {
     setSettings({
       ...settings,
-      post: e.value,
+      post: e ? e.value : null,
     });
   };
 
@@ -231,6 +231,7 @@ const PageSettingsBody = () => {
               value={postOptions.find((o) => o.value === settings.post)}
               onChange={handlePostSelect}
               options={postOptions}
+              isClearable={true}
             />
           </div>
 
