@@ -262,9 +262,7 @@ const CompanyPostsPanel = (props) => {
   }, [loadPosts]);
 
   useEffect(() => {
-    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     return () => {
-      actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
       componentIsMounted.current = null;
     };
   }, []);
@@ -347,7 +345,7 @@ const CompanyPostsPanel = (props) => {
                 {post && params.hasOwnProperty("postId") ? (
                   <div className="card card-body app-content-body">
                     <PostDetailWrapper className="fadeBottom">
-                      <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} history={history} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
+                      <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
                     </PostDetailWrapper>
                   </div>
                 ) : !post && params.hasOwnProperty("postId") ? (

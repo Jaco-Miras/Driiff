@@ -295,3 +295,7 @@ export function incomingZoomCreate(payload, callback) {
 export function incomingZoomEnded(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ZOOM_ENDED", payload, callback);
 }
+
+export function updateUnreadCounter(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_UNREAD_COUNTER", payload, callback);
+}
