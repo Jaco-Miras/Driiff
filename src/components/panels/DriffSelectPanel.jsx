@@ -124,6 +124,19 @@ const PrivacyTermsWrapper = styled.div`
   margin-left: -9px;
   a {
     color: ${(props) => props.theme.colors.primary};
+    :hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const ReadMoreWrapper = styled.div`
+  color: ${(props) => props.theme.colors.primary};
+  a {
+    color: ${(props) => props.theme.colors.primary};
+    :hover {
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -139,6 +152,7 @@ const DriffSelectPanel = (props) => {
     signInDriffHeader: _t("DRIFF.SIGIN_DRIFF_HEADER", "Is your team already using Driff?"),
     signInDriffBody: _t("DRIFF.SIGIN_DRIFF_BODY", "Find and sign in to your team's Driff and start collaborating."),
     signInDriffButton: _t("DRIFF.SIGIN_DRIFF_BUTTON", "Sign in to Driff"),
+    readMore: _t("DRIFF.READ_MORE", "Interested what Driff is? Read more about Driff on"),
   };
 
   useEffect(() => {
@@ -166,6 +180,14 @@ const DriffSelectPanel = (props) => {
           </Link>
         </div>
       </Form>
+      <ReadMoreWrapper className="mt-2">
+        <span>
+          {dictionary.readMore}{" "}
+          <a href="https://getdriff.com" target="_blank" rel="noopener noreferrer">
+            Getdriff.com
+          </a>
+        </span>
+      </ReadMoreWrapper>
       <PrivacyTermsWrapper className="mt-2">
         <span>
           <a href="https://getdriff.com/privacy-policy/" target="_blank" rel="noopener noreferrer">
