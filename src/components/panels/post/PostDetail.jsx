@@ -284,17 +284,9 @@ const PostDetail = (props) => {
 
   const { comments } = useComments(post);
 
-  // const [react, setReact] = useState({
-  //   user_clap_count: post.user_clap_count,
-  //   clap_count: post.clap_count,
-  // });
-
-  // const [usersReacted, setUsersReacted] = useState(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
-
   const viewerIds = [...new Set(post.view_user_ids)];
 
   const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
-  const likers = Object.values(users).filter((u) => post.clap_user_ids.some((id) => id === u.id));
 
   const handleClosePost = () => {
     onGoBack();
@@ -438,7 +430,7 @@ const PostDetail = (props) => {
       if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
 
-    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+    postActions.fetchPostReadAndClap({ post_id: post.id });
     postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
 
     return () => {
@@ -463,7 +455,6 @@ const PostDetail = (props) => {
       if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
 
-    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
     postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
     return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
   }, [post.id]);
@@ -573,7 +564,7 @@ const PostDetail = (props) => {
         </div>
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} likers={likers} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
