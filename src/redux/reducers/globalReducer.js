@@ -896,6 +896,17 @@ export default (state = INITIAL_STATE, action) => {
         dontShowIds: [action.data],
       };
     }
+    case "UPDATE_UNREAD_COUNTER": {
+      return {
+        ...state,
+        unreadCounter: {
+          ...state.unreadCounter,
+          ...(action.data.hasOwnProperty("general_post") && {
+            general_post: (action.data.general_post === -1 && state.unreadCounter.general_post > 0) || action.data.general_post === 1 ? state.unreadCounter.general_post + action.data.general_post : state.unreadCounter.general_post,
+          }),
+        },
+      };
+    }
     default:
       return state;
   }

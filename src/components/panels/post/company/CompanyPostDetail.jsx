@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../../redux/actions/postActions";
@@ -265,6 +266,7 @@ const CompanyPostDetail = (props) => {
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
+  const params = useParams();
   const commentActions = useCommentActions();
 
   const users = useSelector((state) => state.users.users);
@@ -439,36 +441,32 @@ const CompanyPostDetail = (props) => {
 
     if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
 
-    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
         if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
-
-      postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     };
-    // postActions.getUnreadPostsCount();
   }, []);
 
-  useEffect(() => {
-    const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
-      postActions.visit({
-        post_id: post.id,
-        personalized_for_id: null,
-      });
-    }
+  // const handleChangePostId = () => {
+  //   const viewed = post.view_user_ids.some((id) => id === user.id);
+  //   if (!viewed) {
+  //     postActions.visit({
+  //       post_id: post.id,
+  //       personalized_for_id: null,
+  //     });
+  //   }
 
-    if (post.is_unread === 1 || post.unread_count > 0) {
-      if (!disableMarkAsRead()) postActions.markAsRead(post);
-    }
+  //   if (post.is_unread === 1 || post.unread_count > 0) {
+  //     if (!disableMarkAsRead()) postActions.markAsRead(post);
+  //   }
 
-    if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+  //   if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+  // };
 
-    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    // postActions.getUnreadPostsCount();
-  }, [post.id]);
+  // useEffect(() => {
+  //   console.log("trigger", post.id, params);
+  // }, [params.postId]);
 
   if (!isPostParticipant) return null;
   return (
