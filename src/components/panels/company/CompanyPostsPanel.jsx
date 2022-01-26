@@ -89,6 +89,18 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
+const MaintenanceWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-flow: column;
+  > div {
+    width: 100%;
+  }
+`;
+
 //let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
@@ -206,6 +218,8 @@ const CompanyPostsPanel = (props) => {
     inProgress: _t("POST.IN_PROGRESS", "In progress"),
     teamLabel: _t("TEAM", "Team"),
     new: _t("POST.NEW", "New"),
+    featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
+    contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
   };
 
   const handleLoadMore = () => {
@@ -298,7 +312,7 @@ const CompanyPostsPanel = (props) => {
   if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) && (
+      {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
         //["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com", "bram@zuid.com", "stef@zuid.com", "esther@zuid.com"].includes(user.email) && (
         <div className="row app-block">
           <CompanyPostSidebar filter={filter} tag={tag} postListTag={postListTag} postActions={actions} count={count} postLists={postLists} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
@@ -340,7 +354,16 @@ const CompanyPostsPanel = (props) => {
             <div className="mt-3 post-btm">&nbsp;</div>
           </div>
         </div>
-      )}
+      ) : postAccess.loaded ? (
+        <MaintenanceWrapper>
+          <div>
+            <h4 className="title">{dictionary.featureNotAvailable}</h4>
+          </div>
+          <div>
+            <h5>{dictionary.contactAdministrator}</h5>
+          </div>
+        </MaintenanceWrapper>
+      ) : null}
     </Wrapper>
   );
 };
