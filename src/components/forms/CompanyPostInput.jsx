@@ -270,6 +270,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
         author: user,
         body: text,
         clap_count: 0,
+        claps: [],
         code: timestamp,
         created_at: { timestamp: timestamp },
         files: [],
@@ -294,7 +295,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
         updated_at: { timestamp: timestamp },
         unfurls: [],
         user_clap_count: 0,
-        clap_user_ids: [],
         users_approval: [],
       };
 

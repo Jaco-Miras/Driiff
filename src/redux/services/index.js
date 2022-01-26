@@ -265,6 +265,7 @@ export {
   postRequired,
   readNotification,
   checkPostAccess,
+  getPostReadAndClap,
 } from "./post";
 
 export {

@@ -93,12 +93,13 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostCounters = (props) => {
-  const { dictionary, likers, post, viewerIds, viewers, handleReaction } = props;
+  const { dictionary, post, viewerIds, viewers, handleReaction } = props;
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const { _t } = useTranslationActions();
   const readByUsers = post && post.is_must_read && post.must_read_users.length > 0 ? post.must_read_users.filter((u) => u.must_read) : [];
   const hasRead = readByUsers.some((u) => u.id === user.id);
+  const likers = Object.values(users).filter((u) => post.claps.some((c) => c.user_id === u.id));
   return (
     <Counters className="d-flex align-items-center">
       <div className="clap-count-wrapper d-none d-sm-flex">

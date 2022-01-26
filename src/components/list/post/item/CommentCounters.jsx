@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { Avatar, SvgIconFeather } from "../../../common";
 import Viewers from "./Viewers";
 
@@ -47,7 +48,10 @@ const Reply = styled.span`
 `;
 
 const CommentCounters = (props) => {
-  const { comment, dictionary, disableOptions, likers, post, handleReaction, handleShowInput } = props;
+  const { comment, dictionary, disableOptions, post, handleReaction, handleShowInput } = props;
+
+  const users = useSelector((state) => state.users.users);
+  const likers = Object.values(users).filter((u) => comment.claps.some((c) => c.user_id === u.id));
 
   const userReadPost = () => {
     let filter_post_read = [];

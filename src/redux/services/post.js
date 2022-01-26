@@ -723,3 +723,11 @@ export function checkPostAccess(payload) {
     data: payload,
   });
 }
+
+export function getPostReadAndClap(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/get-post-read-and-clap/?post_id=${payload.post_id} `,
+    data: payload,
+  });
+}

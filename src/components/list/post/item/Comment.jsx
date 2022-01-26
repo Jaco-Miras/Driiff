@@ -229,22 +229,12 @@ const Comment = (props) => {
   const history = useHistory();
   const googleApis = useGoogleApis();
 
-  const users = useSelector((state) => state.users.users);
   const clearApprovingState = useSelector((state) => state.posts.clearApprovingState);
-  //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
 
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
   const [approving, setApproving] = useState({ approve: false, change: false });
-  // const [react, setReact] = useState({
-  //   user_clap_count: comment.user_clap_count,
-  //   clap_count: comment.clap_count,
-  // });
-
-  // const [usersReacted, setUsersReacted] = useState(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
-
-  const likers = Object.values(users).filter((u) => comment.clap_user_ids.some((id) => id === u.id));
 
   const handleShowInput = (commentId = null) => {
     if (parentShowInput) {
@@ -433,14 +423,6 @@ const Comment = (props) => {
     if (comment.body.match(/\.(gif)/g) !== null) {
       setShowGifPlayer(true);
     }
-    // if (comment.reference_id && comment.id !== comment.reference_id) commentActions.fetchPostReplyHover(comment.id);
-    // commentActions.fetchPostReplyHover(comment.id, (err, res) => {
-    //   const clap_user_ids = res.data.claps.map(c => c.user_id);
-    //   setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
-    // });
-    if (comment.clap_count > 0 && comment.clap_user_ids.length !== comment.clap_count) {
-      commentActions.fetchPostReplyHover(comment.id);
-    }
     return () => {
       history.push(history.location.pathname, null);
     };
@@ -520,10 +502,6 @@ const Comment = (props) => {
   const handleApprove = () => {
     postActions.showModal("confirmation", post, comment, rewardRef);
   };
-
-  // useEffect(() => {
-  //   setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
-  // }, [comment.clap_user_ids]);
 
   useEffect(() => {
     if (clearApprovingState && clearApprovingState === comment.id) {
@@ -616,7 +594,7 @@ const Comment = (props) => {
               </CommentFilesTrashedContainer>
             </>
           )}
-          <CommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} likers={likers} post={post} handleReaction={handleReaction} handleShowInput={handleShowInput} />
+          <CommentCounters comment={comment} dictionary={dictionary} disableOptions={disableOptions} post={post} handleReaction={handleReaction} handleShowInput={handleShowInput} />
         </CommentWrapper>
       </Wrapper>
       {type === "main" && Object.values(comment.replies).length > 0 && (
