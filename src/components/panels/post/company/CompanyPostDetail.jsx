@@ -271,20 +271,20 @@ const CompanyPostDetail = (props) => {
 
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
-  const [isPostParticipant, setIsPostParticipant] = useState(false);
+  //const [isPostParticipant, setIsPostParticipant] = useState(false);
 
-  useEffect(() => {
-    if (user.id !== post.author.id) {
-      dispatch(
-        checkPostAccess({ id: post.id }, (err, res) => {
-          if (err) return;
-          setIsPostParticipant(true);
-        })
-      );
-    } else {
-      setIsPostParticipant(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (user.id !== post.author.id) {
+  //     dispatch(
+  //       checkPostAccess({ id: post.id }, (err, res) => {
+  //         if (err) return;
+  //         setIsPostParticipant(true);
+  //       })
+  //     );
+  //   } else {
+  //     setIsPostParticipant(true);
+  //   }
+  // }, []);
 
   const { comments } = useComments(post);
 
@@ -464,7 +464,7 @@ const CompanyPostDetail = (props) => {
   //   console.log("trigger", post.id, params);
   // }, [params.postId]);
 
-  if (!isPostParticipant) return null;
+  //if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
