@@ -7,7 +7,7 @@ import SearchForm from "../../forms/SearchForm";
 import { useToaster } from "../../hooks";
 
 const Search = styled(SearchForm)`
-  width: 50%;
+  //width: 50%;
   //margin-bottom: 1rem;
   min-width: 250px;
 `;
@@ -145,12 +145,12 @@ const AllPeople = (props) => {
             //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
             label={
               <span>
-                {dictionary.showInvited} {allUsers.filter((u) => u.hasOwnProperty("has_accepted") && !u.has_accepted && u.active).length}
+                {dictionary.showInvited} {showInvited && allUsers.filter((u) => u.hasOwnProperty("has_accepted") && !u.has_accepted && u.active).length}
               </span>
             }
           />
 
-          <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div>
+          {/* <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div> */}
           <div className="mr-3 text-muted">Total accounts: {allUsers.filter((u) => u.active).length}</div>
         </PeopleSearch>
       </div>
