@@ -8,8 +8,22 @@ import { useToaster } from "../../hooks";
 
 const Search = styled(SearchForm)`
   width: 50%;
-  margin-bottom: 1rem;
+  //margin-bottom: 1rem;
   min-width: 250px;
+`;
+
+const PeopleSearch = styled.div`
+  .custom-switch {
+    margin-bottom: 0 !important;
+  }
+  div.text-muted {
+    font-weight: 500;
+  }
+  form {
+    display: flex;
+    flex-grow: 1;
+    width: auto;
+  }
 `;
 
 const AllPeople = (props) => {
@@ -108,11 +122,11 @@ const AllPeople = (props) => {
   return (
     <>
       <div className="people-header">
-        <div className="d-flex align-items-center people-search">
+        <PeopleSearch className="d-flex align-items-center people-search">
           <Search value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
 
           <CustomInput
-            className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
+            className="ml-2 mr-2 cursor-pointer text-muted cursor-pointer"
             checked={showInactive}
             id="show_inactive"
             name="show_inactive"
@@ -122,16 +136,23 @@ const AllPeople = (props) => {
             label={<span>{dictionary.showInactiveMembers}</span>}
           />
           <CustomInput
-            className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
+            className="mr-3 cursor-pointer text-muted cursor-pointer"
             checked={showInvited}
             id="show_invited"
             name="show_invited"
             type="switch"
             onChange={handleShowInvitedToggle}
             //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
-            label={<span>{dictionary.showInvited}</span>}
+            label={
+              <span>
+                {dictionary.showInvited} {allUsers.filter((u) => u.hasOwnProperty("has_accepted") && !u.has_accepted && u.active).length}
+              </span>
+            }
           />
-        </div>
+
+          <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div>
+          <div className="mr-3 text-muted">Total accounts: {allUsers.filter((u) => u.active).length}</div>
+        </PeopleSearch>
       </div>
       <div className="row">
         {userSort.map((user) => {
