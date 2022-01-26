@@ -113,6 +113,7 @@ const SystemPeoplePanel = (props) => {
     team: _t("TEAM", "Team"),
     internalAccounts: _t("CHART.INTERNAL_ACCOUNTS", "Accounts"),
     guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
+    totalAccounts: _t("LABEL.TOTAL_ACCOUNTS", "Total accounts"),
   };
 
   const toaster = useToaster();

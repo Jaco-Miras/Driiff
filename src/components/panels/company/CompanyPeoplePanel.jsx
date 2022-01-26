@@ -123,6 +123,7 @@ const CompanyPeoplePanel = (props) => {
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     structureView: _t("PEOPLE.STRUCTURE_VIEW_TOGGLE", "Structure view"),
     peopleView: _t("PEOPLE.PEOPLE_VIEW_TOGGLE", "People view"),
+    employeeAccounts: _t("LABEL.EMPLOYEE_ACCOUNTS", "Employee accounts"),
   };
 
   // const handlePeopleViewToggle = () => {
@@ -164,7 +165,9 @@ const CompanyPeoplePanel = (props) => {
                 //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
                 label={<span>{dictionary.structureView}</span>}
               />
-              <div className="mr-3 text-muted">Total accounts: {userSort.length}</div>
+              <div className="mr-3 text-muted">
+                {dictionary.employeeAccounts}: {userSort.length}
+              </div>
             </PeopleSearch>
           </div>
           {structureView && <CompanyStructure users={userSort} />}

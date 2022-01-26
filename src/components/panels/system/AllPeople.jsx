@@ -151,7 +151,9 @@ const AllPeople = (props) => {
           />
 
           {/* <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div> */}
-          <div className="mr-3 text-muted">Total accounts: {allUsers.filter((u) => u.active).length}</div>
+          <div className="mr-3 text-muted">
+            {dictionary.totalAccounts}: {allUsers.filter((u) => u.active).length}
+          </div>
         </PeopleSearch>
       </div>
       <div className="row">
