@@ -303,3 +303,27 @@ export function postWIPClap(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.type_id
+ * @param {string} payload.type
+ * @returns {Promise<*>}
+ */
+export function postWIPFavorite(payload) {
+  let url = "/v1/favourites";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+export function deleteWIP(payload) {
+  let url = `/v2/proposal/${payload.id}`;
+  return apiCall({
+    method: "DELETE",
+    url: url,
+    data: payload,
+  });
+}

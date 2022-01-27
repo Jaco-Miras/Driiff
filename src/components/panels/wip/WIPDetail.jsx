@@ -12,11 +12,34 @@ import WIPDetailComments from "./WIPDetailComments";
 import { useWIPActions, useWIPComments } from "../../hooks";
 import { setParentIdForUpload } from "../../../redux/actions/wipActions";
 import { addToModals } from "../../../redux/actions/globalActions";
+import WIPItemOptions from "./WIPItemOptions";
 
 const Wrapper = styled.div`
   min-height: auto;
   overflow: visible !important;
   height: auto !important;
+  .more-options {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    height: 36px;
+    width: 40px;
+    align-items: center;
+    justify-content: center;
+    .feather-more-horizontal {
+      width: 25px;
+      height: 24px;
+    }
+    .more-options-tooltip {
+      left: auto;
+      right: 0;
+      top: 40px;
+      width: 250px;
+
+      svg {
+        width: 14px;
+      }
+    }
+  }
 `;
 
 const WIPDetailWrapper = styled.div`
@@ -91,29 +114,6 @@ const Icon = styled(SvgIconFeather)`
     cursor: pointer;
     width: 24px;
     height: 24px;
-  }
-`;
-
-const StyledMoreOptions = styled(MoreOptions)`
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  height: 36px;
-  width: 40px;
-  align-items: center;
-  justify-content: center;
-  .feather-more-horizontal {
-    width: 25px;
-    height: 24px;
-  }
-  .more-options-tooltip {
-    left: auto;
-    right: 0;
-    top: 25px;
-    width: 250px;
-
-    svg {
-      width: 14px;
-    }
   }
 `;
 
@@ -349,6 +349,10 @@ const WIPDetail = (props) => {
     wipActions.showModal("edit", item);
   };
 
+  const handleDeleteWIP = () => {
+    wipActions.trashWIP(item);
+  };
+
   return (
     <>
       <Wrapper className="card card-body app-content-body mb-4">
@@ -377,27 +381,24 @@ const WIPDetail = (props) => {
               {item.author.id === user.id && (
                 <ul>
                   <li>
-                    <span data-toggle="modal" data-target="#editTaskModal" onClick={handleEditWIP}>
+                    <span data-toggle="modal" onClick={handleEditWIP}>
                       <a className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit WIP">
                         <Icon icon="edit-3" />
                       </a>
                     </span>
                   </li>
                   <li>
-                    <a className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete WIP">
-                      <Icon icon="trash" />
-                    </a>
+                    <span data-toggle="modal" onClick={handleDeleteWIP}>
+                      <a className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete WIP">
+                        <Icon icon="trash" />
+                      </a>
+                    </span>
                   </li>
                   <li>
-                    <StyledMoreOptions className="ml-2" width={220} moreButton={"more-horizontal"}></StyledMoreOptions>
+                    <WIPItemOptions wip={item}></WIPItemOptions>
                   </li>
                 </ul>
               )}
-              {/* {item.author.id !== user.id && (
-                <div>
-                  <StyledMoreOptions className="ml-2" width={170} moreButton={"more-horizontal"}></StyledMoreOptions>
-                </div>
-              )} */}
             </div>
           </MainHeader>
           <MainBody>

@@ -20,6 +20,8 @@ import {
   putWIPCommentImportant as putWIPCommentImportantService,
   postWIPCommentClap as postWIPCommentClapService,
   postWIPClap as postWIPClapService,
+  postWIPFavorite as postWIPFavoriteService,
+  deleteWIP as deleteWIPService,
 } from "../services";
 
 export function postSubject(payload, callback) {
@@ -200,4 +202,16 @@ export function removeWIPReact(payload, callback) {
 
 export function incomingProposalClap(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_PROPOSAL_CLAP", payload, callback);
+}
+
+export function postWIPFavorite(payload, callback) {
+  return dispatchActionToReducer(postWIPFavoriteService(payload), "POST_WIP_FAVORITE_START", "POST_WIP_FAVORITE_SUCCESS", "POST_WIP_FAVORITE_FAIL", callback);
+}
+
+export function favoriteWIP(payload, callback) {
+  return SimpleDispatchActionToReducer("FAVORITE_WIP", payload, callback);
+}
+
+export function deleteWIP(payload, callback) {
+  return dispatchActionToReducer(deleteWIPService(payload), "DELETE_WIP_START", "DELETE_WIP_SUCCESS", "DELETE_WIP_FAIL", callback);
 }

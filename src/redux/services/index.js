@@ -323,4 +323,6 @@ export {
   putWIPCommentImportant,
   postWIPCommentClap,
   postWIPClap,
+  postWIPFavorite,
+  deleteWIP,
 } from "./wip";
