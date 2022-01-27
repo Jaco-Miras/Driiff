@@ -962,6 +962,29 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    case "FAVORITE_WIP": {
+      return {
+        ...state,
+        WIPs: Object.keys(state.WIPs).reduce((acc, wid) => {
+          acc[wid] = {
+            ...state.WIPs[wid],
+            items: Object.keys(state.WIPs[wid].items).reduce((icc, pid) => {
+              if (parseInt(pid) === action.data.proposal_id) {
+                icc[pid] = {
+                  ...state.WIPs[wid].items[pid],
+                  is_pinned: !state.WIPs[wid].items[pid].is_pinned,
+                };
+              } else {
+                icc[pid] = state.WIPs[wid].items[pid];
+              }
+              return icc;
+            }, {}),
+          };
+
+          return acc;
+        }, {}),
+      };
+    }
     default:
       return state;
   }

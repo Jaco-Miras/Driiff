@@ -5,6 +5,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { useTimeFormat, useWIPActions } from "../../hooks";
 import { TodoCheckBox } from "../../forms";
+import WIPItemOptions from "./WIPItemOptions";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -303,7 +304,7 @@ const WIPItem = (props) => {
           </span>
         </WIPCounts>
         <div className="d-flex">
-          <MoreOptions className={"d-flex ml-2"} width={220} moreButton={"more-horizontal"}></MoreOptions>
+          <WIPItemOptions wip={item} />
         </div>
       </PostContent>
     </Wrapper>
