@@ -61,6 +61,8 @@ const UserOptions = (props) => {
     internalAccounts: _t("CHART.INTERNAL_ACCOUNTS", "Accounts"),
     guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
     totalAccounts: _t("LABEL.TOTAL_ACCOUNTS", "Total accounts"),
+    moveToInternalConfirmation: _t("PEOPLE.MOVE_TO_INTERNAL_CONFIRMATION", "Are you sure you want to change user to internal account"),
+    moveToExternalConfirmation: _t("PEOPLE.MOVE_TO_EXTERNAL_CONFIRMATION", "Are you sure you want to change user to guest account"),
   };
 
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
@@ -86,27 +88,54 @@ const UserOptions = (props) => {
   };
 
   const handleChangeToInternal = () => {
-    const payload = {
-      id: user.id,
-      type: "internal",
+    const handleSubmit = () => {
+      const payload = {
+        id: user.id,
+        type: "internal",
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: "internal" })}`);
+      };
+      actions.updateType(payload, cb);
     };
-    const cb = (err, res) => {
-      if (err) return;
-      toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: "internal" })}`);
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.moveToInternal,
+      submitText: dictionary.moveToInternal,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.moveToInternalConfirmation,
+      actions: {
+        onSubmit: handleSubmit,
+      },
     };
-    actions.updateType(payload, cb);
+    actions.showModal(confirmModal);
   };
 
   const handleChangeToExternal = () => {
-    const payload = {
-      id: user.id,
-      type: "external",
+    const handleSubmit = () => {
+      const payload = {
+        id: user.id,
+        type: "external",
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: "external" })}`);
+      };
+      actions.updateType(payload, cb);
     };
-    const cb = (err, res) => {
-      if (err) return;
-      toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: "external" })}`);
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.moveToExternal,
+      submitText: dictionary.moveToExternal,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.moveToExternalConfirmation,
+      actions: {
+        onSubmit: handleSubmit,
+      },
     };
-    actions.updateType(payload, cb);
+    actions.showModal(confirmModal);
   };
 
   const handleArchiveUser = () => {
