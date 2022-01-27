@@ -20,6 +20,13 @@ const Wrapper = styled.div`
   }
 `;
 
+const RoleName = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+`;
+
 const UserProfileDropdown = (props) => {
   const { className = "", user, closeDropdown } = props;
 
@@ -64,6 +71,8 @@ const UserProfileDropdown = (props) => {
 
   useOutsideClick(refs.container, closeDropdown, true);
 
+  console.log(user);
+
   return (
     <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`} x-placement="bottom-end">
       <div className="p-3 text-center">
@@ -74,6 +83,7 @@ const UserProfileDropdown = (props) => {
             <SvgIconFeather icon="edit-2" />
           </span>
         </h6>
+        <RoleName>{user.role.display_name}</RoleName>
       </div>
       <div className="dropdown-menu-body">
         <div className="list-group list-group-flush">
