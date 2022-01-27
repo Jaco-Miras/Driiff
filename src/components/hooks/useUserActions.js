@@ -29,6 +29,7 @@ import {
   updateUserType,
   resendInvitation,
   deleteInvitedUser,
+  getUsersWithoutActivity,
 } from "../../redux/actions/userAction";
 import { useDriffActions, useSettings, useToaster, useTranslationActions } from "./index";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -209,7 +210,7 @@ const useUserActions = () => {
       "middle_name",
       "name",
       "password",
-      "role_id",
+      "role_ids",
       "company",
       "company_name",
       "designation",
@@ -553,6 +554,10 @@ const useUserActions = () => {
     dispatch(deleteInvitedUser(payload, callback));
   };
 
+  const fetchUsersWithoutActivity = (payload, callback) => {
+    dispatch(getUsersWithoutActivity(payload, callback));
+  };
+
   return {
     checkCredentials,
     login,
@@ -589,6 +594,7 @@ const useUserActions = () => {
     deleteUserAccount,
     resendInvitationEmail,
     deleteInvitedInternalUser,
+    fetchUsersWithoutActivity,
   };
 };
 
