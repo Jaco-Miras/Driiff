@@ -48,7 +48,7 @@ const useInitialLoad = () => {
           })
         );
       }
-      dispatch(getPostAccess());
+      //dispatch(getPostAccess());
       dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
