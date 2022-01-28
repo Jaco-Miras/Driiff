@@ -85,6 +85,12 @@ const Wrapper = styled.div`
    */
     animation-delay: 0.4s;
   }
+  ${(props) =>
+    props.isOnDriffRegister &&
+    `
+  h5 {
+    margin-bottom: .5rem !important;
+  }`}
 `;
 
 const GuestLayout = (props) => {
@@ -95,6 +101,8 @@ const GuestLayout = (props) => {
   const { driffSettings } = useSettings();
   const driffActions = useDriffActions();
   const { _t } = useTranslationActions();
+
+  console.log(location);
 
   const { setRegisteredDriff } = props;
 
@@ -148,6 +156,7 @@ const GuestLayout = (props) => {
     invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
     invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
     phoneNumberRequired: _t("FEEDBACK.PHONE_NUMBER_REQUIRED", "Phone number required"),
+    noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
@@ -204,7 +213,7 @@ const GuestLayout = (props) => {
   }, [location]);
 
   return (
-    <Wrapper className="form-wrapper fadeIn">
+    <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"}>
       <LoginLogo />
       {/* <div id="logo">
         <SvgIcon icon={"driff-logo2"} width="110" height="80" />
@@ -225,6 +234,7 @@ const GuestLayout = (props) => {
               </>
             )}
           </h5>
+          {location.pathname === "/driff-register" && <div className="mb-3">{dictionary.noCreditCard}</div>}
           <Suspense fallback={<div></div>}>
             <Switch>
               <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
