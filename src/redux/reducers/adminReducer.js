@@ -15,6 +15,11 @@ const INITIAL_STATE = {
     sign_up: true,
     password_login: true,
   },
+  security: {
+    password_policy: 0,
+    invite_users: 0,
+    invite_guests: 0,
+  },
   postAccess: {
     post: null,
     post_user_ids: [],

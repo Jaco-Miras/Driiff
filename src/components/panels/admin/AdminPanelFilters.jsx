@@ -31,6 +31,7 @@ const AdminPanelFilters = (props) => {
     contact: _t("ADMIN.FILTER_CONTACT", "Contact"),
     support: _t("ADMIN.FILTER_SUPPORT", "Support desk"),
     company: _t("ADMIN.FILTER_COMPANYSETTINGS", "Company Settings"),
+    securitySettings: _t("ADMIN.SECURITY_SETTINGS", "Security settings"),
   };
   const { setAdminFilter } = useAdminActions();
   const history = useHistory();
@@ -76,7 +77,10 @@ const AdminPanelFilters = (props) => {
       </li>
       {/* <li className={`list-group-item d-flex align-items-center ${filters["page-settings"] ? "active" : ""}`} data-value="page-settings" onClick={handleClickFilter}>
         Page settings
-      </li> */}
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
+        {dictionary.securitySettings}
+      </li>
     </Wrapper>
   );
 };
