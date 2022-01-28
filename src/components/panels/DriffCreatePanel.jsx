@@ -22,6 +22,13 @@ const Wrapper = styled.form`
       left: 0.5rem;
     }
   }
+  a {
+    color: ${(props) => props.theme.colors.primary}!important;
+    cursor: pointer;
+    :hover {
+      text-decoration: underline !important;
+    }
+  }
 `;
 
 const StyledFormGroup = styled(FormGroup)`
@@ -175,10 +182,10 @@ const DriffCreatePanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const handleDriff = useCallback((e) => {
-    e.persist();
+  const handleDriff = (e) => {
+    e.preventDefault();
     history.push("/login");
-  }, []);
+  };
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -329,9 +336,10 @@ const DriffCreatePanel = (props) => {
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.register}
           </button>
           <hr />
-          <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>
+          <a onClick={handleDriff}>{dictionary.login}</a>
+          {/* <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>
             {dictionary.login}
-          </button>
+          </button> */}
         </>
       )}
     </Wrapper>
