@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 //import ReactConfetti from "react-confetti";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { TodoCheckBox } from "../forms";
+import ReCAPTCHA from "react-google-recaptcha";
 const ReactConfetti = lazy(() => import("../lazy/ReactConfetti"));
 
 const Wrapper = styled.form`
@@ -55,6 +56,7 @@ const DriffCreatePanel = (props) => {
   const [registered, setRegistered] = useState(false);
   const [loginLink, setLoginLink] = useState("/login");
   const [agreed, setAgreed] = useState(false);
+  const [captcha, setCaptcha] = useState(null);
 
   const { REACT_APP_localDNSName, REACT_APP_apiProtocol } = process.env;
 
@@ -178,44 +180,40 @@ const DriffCreatePanel = (props) => {
     history.push("/login");
   }, []);
 
-  const handleRegister = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (loading) return;
-
-      if (_validate()) {
-        setLoading(true);
-        driffActions.check(form.slug, (err, res) => {
-          if (res.data.status) {
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (loading) return;
+    if (_validate()) {
+      setLoading(true);
+      driffActions.check(form.slug, (err, res) => {
+        if (res.data.status) {
+          setLoading(false);
+          setFormResponse({
+            valid: {
+              slug: false,
+            },
+            message: {
+              slug: dictionary.driffTaken,
+            },
+          });
+        } else {
+          driffActions.create({ ...form, token: captcha }, (err, res) => {
             setLoading(false);
-            setFormResponse({
-              valid: {
-                slug: false,
-              },
-              message: {
-                slug: dictionary.driffTaken,
-              },
-            });
-          } else {
-            driffActions.create(form, (err, res) => {
-              setLoading(false);
-              if (res) {
-                setRegistered(true);
+            if (res) {
+              setRegistered(true);
 
-                if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
-                  driffActions.storeName(form.slug, true);
-                  setRegisteredDriff(form.slug);
-                } else {
-                  setLoginLink(`${REACT_APP_apiProtocol}${form.slug}.${REACT_APP_localDNSName}/login`);
-                }
+              if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
+                driffActions.storeName(form.slug, true);
+                setRegisteredDriff(form.slug);
+              } else {
+                setLoginLink(`${REACT_APP_apiProtocol}${form.slug}.${REACT_APP_localDNSName}/login`);
               }
-            });
-          }
-        });
-      }
-    },
-    [form]
-  );
+            }
+          });
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     if (refs.company_name.current) refs.company_name.current.focus();
@@ -236,6 +234,10 @@ const DriffCreatePanel = (props) => {
 
   const toggleCheck = () => {
     setAgreed(!agreed);
+  };
+
+  const onCaptchaChange = (value) => {
+    setCaptcha(value);
   };
 
   return (
@@ -320,7 +322,10 @@ const DriffCreatePanel = (props) => {
               </a>{" "}
             </span>
           </CheckBoxWrapper>
-          <button className="btn btn-primary btn-block" onClick={handleRegister} disabled={!agreed}>
+          <div className="d-flex align-items-center mb-3 justify-content-center">
+            <ReCAPTCHA sitekey={"6Ld8FD8eAAAAAHCZgZslDOsoyKV7OUHRhiG78QSa"} onChange={onCaptchaChange} />
+          </div>
+          <button className="btn btn-primary btn-block" onClick={handleRegister} disabled={!agreed || !captcha}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.register}
           </button>
           <hr />
