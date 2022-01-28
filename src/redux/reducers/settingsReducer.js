@@ -147,8 +147,10 @@ export default (state = INITIAL_STATE, action) => {
           domains = s.domains.split(",");
         }
         if (s.logo) logo = s.logo;
+        if (s.hasOwnProperty("maintenance_mode") || s.hasOwnProperty("google_login") || s.hasOwnProperty("magic_link") || s.hasOwnProperty("password_login") || s.hasOwnProperty("sign_up") || s.hasOwnProperty("custom_translation")) {
+          settings = { ...settings, ...s };
+        }
 
-        //settings = { ...settings, ...s };
         if (s.custom_translation) {
           settings.custom_translation = s.custom_translation === "1" ? true : false;
         }
