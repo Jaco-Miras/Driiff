@@ -81,6 +81,9 @@ const AdminPanelFilters = (props) => {
       <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
         {dictionary.securitySettings}
       </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
+        {dictionary.securitySettings}
+      </li>
     </Wrapper>
   );
 };
