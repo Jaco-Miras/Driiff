@@ -289,11 +289,20 @@ export function getCompanyPosts(payload) {
       url += `&filter[${i}]=${f}`;
     });
   }
-  return apiCall({
-    method: "GET",
-    url: url,
-    data: payload,
-  });
+  if (payload.cancelToken) {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+      cancelToken: payload.cancelToken,
+    });
+  } else {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+    });
+  }
 }
 
 /**
