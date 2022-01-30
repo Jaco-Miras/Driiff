@@ -20,6 +20,12 @@ const INITIAL_STATE = {
     post_user_ids: [],
     loaded: false,
   },
+  notifications: {
+    email: true,
+    webpush: true,
+    apn: true,
+  },
+  notoficationsLoaded: false,
   automation: {
     bots: [],
     channels: [],
@@ -254,6 +260,19 @@ export default (state = INITIAL_STATE, action) => {
           post_user_ids: action.data.post_user_access,
           loaded: true,
         },
+      };
+    }
+    case "PUT_NOTIFICATIONS_SETTINGS_SUCCESS": {
+      return {
+        ...state,
+        notifications: action.data,
+      };
+    }
+    case "GET_NOTIFICATION_SETTINGS_SUCCESS": {
+      return {
+        ...state,
+        notifications: action.data,
+        notoficationsLoaded: true,
       };
     }
     default:

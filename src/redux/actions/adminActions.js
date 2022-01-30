@@ -22,6 +22,8 @@ import {
   resetCompanyLogo as resetCompanyLogoService,
   getPostAccess as getPostAccessService,
   putPostAccess as putPostAccessService,
+  getNotificationSettings as getNotificationSettingsService,
+  putNotificationSettings as putNotificationSettingsService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -130,4 +132,12 @@ export function putPostAccess(payload, callback) {
 
 export function incomingPostAccess(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_ACCESS", payload, callback);
+}
+
+export function getNotificationSettings(payload, callback) {
+  return dispatchActionToReducer(getNotificationSettingsService(payload), "GET_NOTIFICATIONS_SETTINGS_START", "GET_NOTIFICATIONS_SETTINGS_SUCCESS", "GET_NOTIFICATIONS_SETTINGS_FAILURE", callback);
+}
+
+export function putNotificationSettings(payload, callback) {
+  return dispatchActionToReducer(putNotificationSettingsService(payload), "PUT_NOTIFICATIONS_SETTINGS_START", "PUT_NOTIFICATIONS_SETTINGS_SUCCESS", "PUT_NOTIFICATIONS_SETTINGS_FAILURE", callback);
 }
