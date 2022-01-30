@@ -1,11 +1,11 @@
 import momentTZ from "moment-timezone";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+//import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
 import { useSettings, useTimeFormat, useToaster, useTranslationActions } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
@@ -14,8 +14,8 @@ import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from 
 import { driffData } from "../../../config/environment.json";
 import reduxPersist from "../../../redux/store/configStore";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
-import { putLoginSettings } from "../../../redux/actions/adminActions";
-import { updateCustomTranslationSettings } from "../../../redux/actions/settingsActions";
+//import { putLoginSettings } from "../../../redux/actions/adminActions";
+//import { updateCustomTranslationSettings } from "../../../redux/actions/settingsActions";
 
 const Wrapper = styled.div`
   .card {
