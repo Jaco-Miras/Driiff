@@ -25,6 +25,8 @@ export {
   resetCompanyLogo,
   putPostAccess,
   getPostAccess,
+  getNotificationSettings,
+  putNotificationSettings,
 } from "./admin";
 export {
   getGlobalRecipients,
