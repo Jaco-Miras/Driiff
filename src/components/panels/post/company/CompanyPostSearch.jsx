@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { addCompanyPostSearchResult, searchCompanyPosts } from "../../../../redux/actions/postActions";
 import { SvgIconFeather, Loader } from "../../../common";
-import { debounce } from "lodash";
+import axios from "axios";
 
 const Wrapper = styled.div`
   .btn-cross {
@@ -33,26 +33,34 @@ const CompanyPostSearch = (props) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(search);
   const [searching, setSearching] = useState(false);
-
+  const cancelToken = useRef(null);
   const handleSearch = () => {
     if (searchValue.trim() !== "" && searchValue.trim().length >= 3) {
+      //Check if there are any previous pending requests
+      console.log(cancelToken);
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Operation canceled due to new request.");
+        cancelToken.current = null;
+      }
+
+      //Save the cancel token for the current request
+      cancelToken.current = axios.CancelToken.source();
       setSearching(true);
+      const payload = {
+        search: searchValue,
+        cancelToken: cancelToken.current.token,
+      };
       dispatch(
-        searchCompanyPosts(
-          {
-            search: searchValue,
-          },
-          (err, res) => {
-            setSearching(false);
-            if (err) return;
-            dispatch(
-              addCompanyPostSearchResult({
-                search: searchValue,
-                search_result: res.data.posts,
-              })
-            );
-          }
-        )
+        searchCompanyPosts(payload, (err, res) => {
+          setSearching(false);
+          if (err) return;
+          dispatch(
+            addCompanyPostSearchResult({
+              search: searchValue,
+              search_result: res.data.posts,
+            })
+          );
+        })
       );
     }
   };
@@ -73,9 +81,10 @@ const CompanyPostSearch = (props) => {
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
-      //handleSearch(searchValue);
+      handleSearch();
     }
   };
+
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       if (searchValue === "") return;
