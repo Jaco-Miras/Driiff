@@ -159,6 +159,7 @@ function StylingSettingsBody() {
       dispatch(
         getNotificationSettings({}, (err, res) => {
           if (err) return;
+          console.log(res.data);
           setNotifications(res.data);
         })
       );
@@ -309,6 +310,7 @@ function StylingSettingsBody() {
       })
     );
   };
+
   return (
     <div>
       <Wrapper theme={theme}>
@@ -522,7 +524,7 @@ function StylingSettingsBody() {
           disabled={notificationsLoaded === false}
         />
         <div className="d-flex align-items-center mt-2">
-          <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSaveNotificationSettings} disabled={savingNotifications || notificationsLoaded}>
+          <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSaveNotificationSettings} disabled={savingNotifications || !notificationsLoaded}>
             Save notification
           </SubmitButton>
         </div>

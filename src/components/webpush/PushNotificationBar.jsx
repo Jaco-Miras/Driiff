@@ -10,26 +10,28 @@ const NotificationBar = styled.div`
   height: 40px;
   display: flex;
   justify-content: space-between;
+  background-color: ${(props) => props.theme.colors.primary};
   .feather {
-      cursor: pointer;
+    cursor: pointer;
   }
 `;
 
 const NotificationButton = styled.span`
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 `;
 
 const PushNotificationBar = (props) => {
+  const { onClickAskUserPermission, onClickRemindLater } = props;
 
-    const {onClickAskUserPermission, onClickRemindLater} = props;
-
-    return (
-        <NotificationBar>
-          <p>Please enable notification to get real-time updates. <NotificationButton onClick={onClickAskUserPermission}>Enable notification</NotificationButton></p>
-          <SvgIconFeather icon="x" onClick={onClickRemindLater}/>
-        </NotificationBar>
-    )
+  return (
+    <NotificationBar>
+      <p>
+        Please enable notification to get real-time updates. <NotificationButton onClick={onClickAskUserPermission}>Enable notification</NotificationButton>
+      </p>
+      <SvgIconFeather icon="x" onClick={onClickRemindLater} />
+    </NotificationBar>
+  );
 };
 
 export default PushNotificationBar;
