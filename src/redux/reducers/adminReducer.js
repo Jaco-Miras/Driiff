@@ -30,7 +30,7 @@ const INITIAL_STATE = {
     webpush: true,
     apn: true,
   },
-  notoficationsLoaded: false,
+  notificationsLoaded: false,
   automation: {
     bots: [],
     channels: [],
@@ -273,11 +273,11 @@ export default (state = INITIAL_STATE, action) => {
         notifications: action.data,
       };
     }
-    case "GET_NOTIFICATION_SETTINGS_SUCCESS": {
+    case "GET_NOTIFICATIONS_SETTINGS_SUCCESS": {
       return {
         ...state,
-        notifications: action.data,
-        notoficationsLoaded: true,
+        notifications: { ...action.data },
+        notificationsLoaded: true,
       };
     }
     default:

@@ -16,7 +16,7 @@ const MainNavigationPanel = (props) => {
   const { className = "", showNotificationBar } = props;
   const theme = useTheme();
   return (
-    <Wrapper theme={theme} className={`navigation ${className} ${showNotificationBar && "notification-bar"}`}>
+    <Wrapper theme={theme} className={`navigation ${className} ${showNotificationBar && "notification-bar"}`} id={"main-sidebar"}>
       <Route
         exact={true}
         render={() => <MainNavigationTabPanel {...props} />}

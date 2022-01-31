@@ -5,7 +5,7 @@ import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../re
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, adjustHuddleDate, getUnpublishedAnswers, getSkippedAnswers, addHasUnpublishedAnswers } from "../../redux/actions/chatActions";
 import { getAllWorkspaceFolders } from "../../redux/actions/workspaceActions";
-import { getPostAccess } from "../../redux/actions/adminActions";
+import { getNotificationSettings } from "../../redux/actions/adminActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -53,6 +53,8 @@ const useInitialLoad = () => {
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
+      //dispatch(getDrafts());
+      dispatch(getNotificationSettings());
     };
     dispatch(getAllRecipients());
     if (user && user.type === "internal") dispatch(getCompanyChannel());
