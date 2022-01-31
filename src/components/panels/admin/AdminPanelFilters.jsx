@@ -43,6 +43,11 @@ const AdminPanelFilters = (props) => {
     document.body.classList.remove("mobile-modal-open");
   };
 
+  const handleRedirectToSupport = (e) => {
+    e.preventDefault();
+    window.open("https://support.getdriff.com", "_blank");
+  };
+
   return (
     <Wrapper className={"list-group list-group-flush"}>
       <li className={`list-group-item d-flex align-items-center ${filters["automation"] ? "active" : ""}`} data-value="automation" onClick={handleClickFilter}>
@@ -60,18 +65,18 @@ const AdminPanelFilters = (props) => {
       <li className={`list-group-item d-flex align-items-center ${filters["subscription"] ? "active" : ""}`} data-value="subscription" onClick={handleClickFilter}>
         {dictionary.subscription}
       </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["contact"] ? "active" : ""}`} data-value="contact" onClick={handleClickFilter}>
+      {/* <li className={`list-group-item d-flex align-items-center ${filters["contact"] ? "active" : ""}`} data-value="contact" onClick={handleClickFilter}>
         {dictionary.contact}
-      </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["support"] ? "active" : ""}`} data-value="support" onClick={handleClickFilter}>
+      </li> */}
+      <li className={`list-group-item d-flex align-items-center ${filters["support"] ? "active" : ""}`} data-value="support" onClick={handleRedirectToSupport}>
         {dictionary.support}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["company-settings"] ? "active" : ""}`} data-value="company-settings" onClick={handleClickFilter}>
         {dictionary.company}
       </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["page-settings"] ? "active" : ""}`} data-value="page-settings" onClick={handleClickFilter}>
+      {/* <li className={`list-group-item d-flex align-items-center ${filters["page-settings"] ? "active" : ""}`} data-value="page-settings" onClick={handleClickFilter}>
         Page settings
-      </li>
+      </li> */}
     </Wrapper>
   );
 };
