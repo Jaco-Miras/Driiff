@@ -71,8 +71,6 @@ const UserProfileDropdown = (props) => {
 
   useOutsideClick(refs.container, closeDropdown, true);
 
-  console.log(user);
-
   return (
     <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`} x-placement="bottom-end">
       <div className="p-3 text-center">
