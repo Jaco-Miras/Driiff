@@ -3354,10 +3354,12 @@ export default (state = INITIAL_STATE, action) => {
           ...state.workspaces,
           ...(action.data.length > 0 && {
             ...action.data.reduce((res, obj) => {
-              res[obj.topic_id] = {
-                ...state.workspaces[obj.topic_id],
-                workspace_counter_entries: obj.workspace_counter_entries,
-              };
+              if (state.workspaces[obj.topic_id]) {
+                res[obj.topic_id] = {
+                  ...state.workspaces[obj.topic_id],
+                  workspace_counter_entries: obj.workspace_counter_entries,
+                };
+              }
               return res;
             }, {}),
           }),
