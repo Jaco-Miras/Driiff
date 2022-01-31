@@ -11,8 +11,13 @@ import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
 import { useIdleTimer } from "react-idle-timer";
 import { setIdleStatus } from "../redux/actions/globalActions";
+import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 
-const MainContent = styled.div``;
+const MainContent = styled.div`
+  &.top-40 .main-content {
+    margin-top: 40px;
+  }
+`;
 
 const AudioStyle = styled.audio`
   display: none;
@@ -137,6 +142,7 @@ const MainLayout = (props) => {
         Your browser does not support the audio element.
       </AudioStyle>
       {showNotificationBar && mounted && <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater} />}
+      <NotificationTopBar />
       {mounted && <MainHeaderPanel isExternal={isExternal} />}
       {mounted && (
         <MainContent id="main">
