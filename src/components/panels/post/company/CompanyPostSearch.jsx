@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { addCompanyPostSearchResult, searchCompanyPosts } from "../../../../redux/actions/postActions";
-import { SvgIconFeather } from "../../../common";
-import { debounce } from "lodash";
+import { SvgIconFeather, Loader } from "../../../common";
+import axios from "axios";
 
 const Wrapper = styled.div`
   .btn-cross {
@@ -22,48 +22,51 @@ const Wrapper = styled.div`
       color: #495057;
     }
   }
+  .loading {
+    width: 1rem;
+    height: 1rem;
+  }
 `;
 
 const CompanyPostSearch = (props) => {
   const { search, placeholder } = props;
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState(search);
+  const [searching, setSearching] = useState(false);
+  const cancelToken = useRef(null);
+  const handleSearch = () => {
+    if (searchValue.trim() !== "" && searchValue.trim().length >= 3) {
+      //Check if there are any previous pending requests
+      console.log(cancelToken);
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Operation canceled due to new request.");
+        cancelToken.current = null;
+      }
 
-  const handleSearch = debounce((value) => {
-    dispatch(
-      addCompanyPostSearchResult({
-        search: value,
-        search_result: [],
-      })
-    );
-    if (value === "") return;
-    dispatch(
-      searchCompanyPosts(
-        {
-          search: value,
-        },
-        (err, res) => {
+      //Save the cancel token for the current request
+      cancelToken.current = axios.CancelToken.source();
+      setSearching(true);
+      const payload = {
+        search: searchValue,
+        cancelToken: cancelToken.current.token,
+      };
+      dispatch(
+        searchCompanyPosts(payload, (err, res) => {
+          setSearching(false);
           if (err) return;
           dispatch(
             addCompanyPostSearchResult({
-              search: value,
+              search: searchValue,
               search_result: res.data.posts,
             })
           );
-        }
-      )
-    );
-  }, 500);
+        })
+      );
+    }
+  };
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
-    // dispatch(
-    //   addCompanyPostSearchResult({
-    //     search: e.target.value,
-    //     search_result: [],
-    //   })
-    // );
-    handleSearch(e.target.value.trim());
   };
 
   const handleClearSearchPosts = () => {
@@ -78,14 +81,35 @@ const CompanyPostSearch = (props) => {
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
-      handleSearch(searchValue);
+      handleSearch();
     }
   };
 
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      if (searchValue === "") return;
+      handleSearch();
+    }, 1000);
+    return () => {
+      clearTimeout(timeOutId);
+      dispatch(
+        addCompanyPostSearchResult({
+          search: "",
+          search_result: [],
+        })
+      );
+    };
+  }, [searchValue]);
+
   return (
     <Wrapper className="input-group">
-      <input type="text" className="form-control" placeholder={placeholder} value={searchValue} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleInputChange} />
-      {search.trim() !== "" && (
+      <input type="text" className="form-control" placeholder={placeholder} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleInputChange} />
+      {searching && (
+        <button className="btn-cross" type="button">
+          <Loader />
+        </button>
+      )}
+      {!searching && search.trim() !== "" && (
         <button onClick={handleClearSearchPosts} className="btn-cross" type="button">
           <SvgIconFeather icon="x" />
         </button>

@@ -128,7 +128,7 @@ const CompanyPostsPanel = (props) => {
 
   const componentIsMounted = useRef(true);
 
-  const postAccess = useSelector((state) => state.admin.postAccess);
+  //const postAccess = useSelector((state) => state.admin.postAccess);
   //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const handleGoback = () => {
