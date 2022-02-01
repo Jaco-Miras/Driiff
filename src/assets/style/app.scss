@@ -22395,14 +22395,15 @@ body > div#transition-popper {
 // }
 
 ul#menu-list-icon-more {
-  li:nth-child(2):nth-last-child(4) {
+  //chat option
+  li:nth-child(2):nth-last-child(3) {
     color: red;
     display:none;
   }
-  li:first-child:nth-last-child(3) {
-    color:blue;
-    display:none;
-  }
+  // li:first-child:nth-last-child(3) {
+  //   color:blue;
+  //   //display:none;
+  // }
 }
 
 ul#menu-list-icon-security {
