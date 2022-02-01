@@ -724,7 +724,7 @@ export default (state = INITIAL_STATE, action) => {
     case "ADD_TO_WORKSPACE_POSTS": {
       let convertedPosts = convertArrayToObject(
         action.data.posts.map((p) => {
-          return Object.assign({}, p, { clap_user_ids: [] });
+          return Object.assign({}, p, { claps: [] });
         }),
         "id"
       );
@@ -950,13 +950,7 @@ export default (state = INITIAL_STATE, action) => {
         action.data.messages.forEach((c) => {
           comments[c.id] = {
             ...c,
-            clap_user_ids: [],
-            replies: convertArrayToObject(
-              c.replies.map((r) => {
-                return { ...r, clap_user_ids: [] };
-              }),
-              "id"
-            ),
+            replies: convertArrayToObject(c.replies, "id"),
             skip: c.replies.length,
             hasMore: c.replies.length === 10,
             limit: 10,
@@ -981,13 +975,7 @@ export default (state = INITIAL_STATE, action) => {
         action.data.messages.forEach((c) => {
           comments[c.id] = {
             ...c,
-            clap_user_ids: [],
-            replies: convertArrayToObject(
-              c.replies.map((r) => {
-                return { ...r, clap_user_ids: [] };
-              }),
-              "id"
-            ),
+            replies: convertArrayToObject(c.replies, "id"),
             skip: c.replies.length,
             hasMore: c.replies.length === 10,
             limit: 10,
@@ -1022,7 +1010,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
                         [action.data.id]: {
                           ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
-                          clap_user_ids: [...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids, state.user.id],
+                          claps: [...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: state.user.id }],
                           clap_count: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
                           user_clap_count: 1,
                         },
@@ -1036,7 +1024,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[action.data.post_id].comments,
                       [action.data.id]: {
                         ...state.postComments[action.data.post_id].comments[action.data.id],
-                        clap_user_ids: [...state.postComments[action.data.post_id].comments[action.data.id].clap_user_ids, state.user.id],
+                        claps: [...state.postComments[action.data.post_id].comments[action.data.id].claps, { user_id: state.user.id }],
                         clap_count: state.postComments[action.data.post_id].comments[action.data.id].clap_count + 1,
                         user_clap_count: 1,
                       },
@@ -1064,7 +1052,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
                         [action.data.id]: {
                           ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
-                          clap_user_ids: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids.filter((id) => id !== state.user.id),
+                          claps: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
                           clap_count: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
                           user_clap_count: 0,
                         },
@@ -1078,7 +1066,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[action.data.post_id].comments,
                       [action.data.id]: {
                         ...state.postComments[action.data.post_id].comments[action.data.id],
-                        clap_user_ids: state.postComments[action.data.post_id].comments[action.data.id].clap_user_ids.filter((id) => id !== state.user.id),
+                        claps: state.postComments[action.data.post_id].comments[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
                         clap_count: state.postComments[action.data.post_id].comments[action.data.id].clap_count - 1,
                         user_clap_count: 0,
                       },
@@ -1106,7 +1094,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
                         [action.data.message_id]: {
                           ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id],
-                          clap_user_ids: action.data.claps.map((c) => c.user_id),
+                          //clap_user_ids: action.data.claps.map((c) => c.user_id),
                           fetchedReact: true,
                         },
                       },
@@ -1119,7 +1107,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[action.data.post_id].comments,
                       [action.data.message_id]: {
                         ...state.postComments[action.data.post_id].comments[action.data.message_id],
-                        clap_user_ids: action.data.claps.map((c) => c.user_id),
+                        //clap_user_ids: action.data.claps.map((c) => c.user_id),
                         fetchedReact: true,
                       },
                     },
@@ -1144,7 +1132,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      clap_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].clap_user_ids, state.user.id],
+                      claps: [...state.workspacePosts[wsId].posts[action.data.post_id].claps, { user_id: state.user.id }],
                       clap_count: state.workspacePosts[wsId].posts[action.data.post_id].clap_count + 1,
                       user_clap_count: 1,
                     },
@@ -1173,7 +1161,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      clap_user_ids: state.workspacePosts[wsId].posts[action.data.post_id].clap_user_ids.filter((id) => id !== state.user.id),
+                      claps: state.workspacePosts[wsId].posts[action.data.post_id].claps.filter((c) => c.user_id !== state.user.id),
                       clap_count: state.workspacePosts[wsId].posts[action.data.post_id].clap_count - 1,
                       user_clap_count: 0,
                     },
@@ -1204,7 +1192,7 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
                       fetchedReact: true,
-                      clap_user_ids: user_ids,
+                      //clap_user_ids: user_ids,
                     },
                   },
                 },
@@ -1500,9 +1488,9 @@ export default (state = INITIAL_STATE, action) => {
             delete newWorkspacePosts[id].posts[action.data.id];
           } else {
             if (newWorkspacePosts[id].posts.hasOwnProperty(action.data.id)) {
-              newWorkspacePosts[id].posts[action.data.id] = { ...action.data, clap_user_ids: newWorkspacePosts[id].posts[action.data.id].clap_user_ids };
+              newWorkspacePosts[id].posts[action.data.id] = { ...action.data, claps: newWorkspacePosts[id].posts[action.data.id].claps };
             } else {
-              newWorkspacePosts[id].posts[action.data.id] = { ...action.data, clap_user_ids: [] };
+              newWorkspacePosts[id].posts[action.data.id] = { ...action.data, claps: [] };
             }
           }
         }
@@ -1584,8 +1572,7 @@ export default (state = INITIAL_STATE, action) => {
                           if (action.data.reference_id && k === action.data.reference_id) {
                             rep[action.data.id] = {
                               ...action.data,
-                              clap_user_ids: [],
-                              // clap_user_ids: state.postComments[action.data.post_id].comments[key].replies[action.data.reference_id].clap_user_ids,
+                              claps: state.postComments[action.data.post_id].comments[key].replies[action.data.reference_id].claps,
                             };
                           } else {
                             if (parseInt(k) === action.data.id) {
@@ -1777,12 +1764,12 @@ export default (state = INITIAL_STATE, action) => {
                             ...(action.data.clap_count === 1
                               ? {
                                   clap_count: state.workspacePosts[channelId].posts[action.data.post_id].clap_count + 1,
-                                  clap_user_ids: [...state.workspacePosts[channelId].posts[action.data.post_id].clap_user_ids.filter((id) => id !== action.data.author.id), action.data.author.id],
+                                  claps: [...state.workspacePosts[channelId].posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
                                   user_clap_count: action.data.author.id === state.user.id ? 1 : state.workspacePosts[channelId].posts[action.data.post_id].user_clap_count,
                                 }
                               : {
                                   clap_count: state.workspacePosts[channelId].posts[action.data.post_id].clap_count - 1,
-                                  clap_user_ids: state.workspacePosts[channelId].posts[action.data.post_id].clap_user_ids.filter((id) => id !== action.data.author.id),
+                                  claps: state.workspacePosts[channelId].posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id),
                                   user_clap_count: action.data.author.id === state.user.id ? 0 : state.workspacePosts[channelId].posts[action.data.post_id].user_clap_count,
                                 }),
                           },
@@ -1819,10 +1806,10 @@ export default (state = INITIAL_STATE, action) => {
                               ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id],
                               user_clap_count: action.data.clap_count,
                               clap_count: state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + (action.data.clap_count === 1 ? 1 : -1),
-                              clap_user_ids:
+                              claps:
                                 action.data.clap_count === 1
-                                  ? [...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_user_ids, action.data.author.id]
-                                  : state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_user_ids.filter((id) => id !== action.data.author.id),
+                                  ? [...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].claps, { user_id: action.data.author.id }]
+                                  : state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].claps.filter((c) => c.user_id !== action.data.author.id),
                             },
                           },
                         },
@@ -1835,10 +1822,10 @@ export default (state = INITIAL_STATE, action) => {
                           ...state.postComments[action.data.post_id].comments[action.data.message_id],
                           user_clap_count: action.data.clap_count,
                           clap_count: state.postComments[action.data.post_id].comments[action.data.message_id].clap_count + (action.data.clap_count === 1 ? 1 : -1),
-                          clap_user_ids:
+                          claps:
                             action.data.clap_count === 1
-                              ? [...state.postComments[action.data.post_id].comments[action.data.message_id].clap_user_ids, action.data.author.id]
-                              : state.postComments[action.data.post_id].comments[action.data.message_id].clap_user_ids.filter((id) => id !== action.data.author.id),
+                              ? [...state.postComments[action.data.post_id].comments[action.data.message_id].claps, { user_id: action.data.author.id }]
+                              : state.postComments[action.data.post_id].comments[action.data.message_id].claps.filter((c) => c.user_id !== action.data.author.id),
                         },
                       },
                     }),
@@ -2503,11 +2490,11 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       let newWorkspacePosts = { ...state.workspacePosts };
-      let post = { ...action.data, clap_user_ids: [], last_visited_at: { timestamp: null } };
+      let post = { ...action.data, claps: [], last_visited_at: { timestamp: null } };
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
           if (newWorkspacePosts[ws.topic_id].posts[post.id]) {
-            newWorkspacePosts[ws.topic_id].posts[post.id] = { ...post, clap_user_ids: newWorkspacePosts[ws.topic_id].posts[post.id].clap_user_ids, last_visited_at: newWorkspacePosts[ws.topic_id].posts[post.id].last_visited_at };
+            newWorkspacePosts[ws.topic_id].posts[post.id] = { ...post, claps: newWorkspacePosts[ws.topic_id].posts[post.id].claps, last_visited_at: newWorkspacePosts[ws.topic_id].posts[post.id].last_visited_at };
           } else newWorkspacePosts[ws.topic_id].posts[post.id] = post;
         } else {
           newWorkspacePosts[ws.topic_id] = {
@@ -3996,13 +3983,8 @@ export default (state = INITIAL_STATE, action) => {
         const comments = action.data.messages.reduce((acc, c) => {
           acc[c.id] = {
             ...c,
-            clap_user_ids: [],
-            replies: convertArrayToObject(
-              c.replies.map((r) => {
-                return { ...r, clap_user_ids: [] };
-              }),
-              "id"
-            ),
+            claps: [],
+            replies: convertArrayToObject(c.replies, "id"),
             skip: c.replies.length,
             hasMore: c.replies.length === 10,
             limit: 10,
@@ -4094,6 +4076,41 @@ export default (state = INITIAL_STATE, action) => {
               return res;
             }, {}),
           }),
+        },
+      };
+    }
+    case "GET_POST_READ_CLAP_SUCCESS": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts)
+            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.id))
+            .map((wsId) => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.id]: {
+                      ...state.workspacePosts[wsId].posts[action.data.id],
+                      claps: action.data.claps,
+                      post_reads: action.data.reads.map((r) => {
+                        return {
+                          id: r.user.id,
+                          last_read_timestamp: r.last_read_timestamp,
+                          profile_image_link: r.user.profile_image_link,
+                          type: r.user.type,
+                        };
+                      }),
+                    },
+                  },
+                },
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {}),
         },
       };
     }

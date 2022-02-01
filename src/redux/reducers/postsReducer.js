@@ -128,13 +128,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -155,13 +155,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -182,7 +182,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                clap_user_ids: [...state.companyPosts.posts[action.data.post_id].clap_user_ids, state.user.id],
+                claps: [...state.companyPosts.posts[action.data.post_id].claps, { user_id: state.user.id }],
                 clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
                 user_clap_count: 1,
               },
@@ -201,7 +201,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                clap_user_ids: state.companyPosts.posts[action.data.post_id].clap_user_ids.filter((id) => id !== state.user.id),
+                claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== state.user.id),
                 clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
                 user_clap_count: 0,
               },
@@ -210,25 +210,25 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
-    case "GET_POST_CLAP_HOVER_SUCCESS": {
-      const user_ids = action.data.claps.map((c) => c.user_id);
-      return {
-        ...state,
-        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                clap_user_ids: [...user_ids],
-                fetchedReact: true,
-              },
-            },
-          },
-        }),
-      };
-    }
+    // case "GET_POST_CLAP_HOVER_SUCCESS": {
+    //   const user_ids = action.data.claps.map((c) => c.user_id);
+    //   return {
+    //     ...state,
+    //     ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+    //       companyPosts: {
+    //         ...state.companyPosts,
+    //         posts: {
+    //           ...state.companyPosts.posts,
+    //           [action.data.post_id]: {
+    //             ...state.companyPosts.posts[action.data.post_id],
+    //             //clap_user_ids: [...user_ids],
+    //             fetchedReact: true,
+    //           },
+    //         },
+    //       },
+    //     }),
+    //   };
+    // }
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -295,9 +295,9 @@ export default (state = INITIAL_STATE, action) => {
         delete posts[action.data.id];
       } else {
         if (posts.hasOwnProperty(action.data.id)) {
-          posts[action.data.id] = { ...action.data, clap_user_ids: posts[action.data.id].clap_user_ids };
+          posts[action.data.id] = { ...action.data, claps: posts[action.data.id].claps };
         } else {
-          posts[action.data.id] = { ...action.data, clap_user_ids: [] };
+          posts[action.data.id] = { ...action.data, claps: [] };
         }
       }
       return {
@@ -344,12 +344,12 @@ export default (state = INITIAL_STATE, action) => {
                 ...(action.data.clap_count === 1
                   ? {
                       clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
-                      clap_user_ids: [...state.companyPosts.posts[action.data.post_id].clap_user_ids.filter((id) => id !== action.data.author.id), action.data.author.id],
+                      claps: [...state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
                       user_clap_count: action.data.author.id === state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].user_clap_count,
                     }
                   : {
                       clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
-                      clap_user_ids: state.companyPosts.posts[action.data.post_id].clap_user_ids.filter((id) => id !== action.data.author.id),
+                      claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id),
                       user_clap_count: action.data.author.id === state.user.id ? 0 : state.companyPosts.posts[action.data.post_id].user_clap_count,
                     }),
               },
@@ -769,13 +769,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -795,7 +795,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             [action.data.id]: {
               ...action.data,
-              clap_user_ids: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].clap_user_ids : [],
+              claps: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].claps : [],
               last_visited_at: state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
             },
           },
@@ -996,13 +996,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -1023,13 +1023,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -1055,13 +1055,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -1237,13 +1237,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -1269,13 +1269,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -1301,13 +1301,13 @@ export default (state = INITIAL_STATE, action) => {
             ...action.data.posts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
                 };
               } else {
                 res[obj.id] = {
-                  clap_user_ids: [],
+                  claps: [],
                   ...obj,
                 };
               }
@@ -1509,6 +1509,33 @@ export default (state = INITIAL_STATE, action) => {
               acc[post.id] = {
                 ...post,
                 last_visited_at: { timestamp: action.data.last_visit },
+              };
+            } else {
+              acc[post.id] = post;
+            }
+            return acc;
+          }, {}),
+        },
+      };
+    }
+    case "GET_POST_READ_CLAP_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            if (post.id === action.data.id) {
+              acc[post.id] = {
+                ...post,
+                claps: action.data.claps,
+                post_reads: action.data.reads.map((r) => {
+                  return {
+                    id: r.user.id,
+                    last_read_timestamp: r.last_read_timestamp,
+                    profile_image_link: r.user.profile_image_link,
+                    type: r.user.type,
+                  };
+                }),
               };
             } else {
               acc[post.id] = post;

@@ -48,6 +48,7 @@ import {
   postRequired as postRequiredService,
   readNotification as readNotificationService,
   checkPostAccess as checkPostAccessService,
+  getPostReadAndClap as getPostReadAndClapService,
 } from "../services";
 
 export function getPostList(payload, callback) {
@@ -484,4 +485,8 @@ export function incomingLastVisitPost(payload, callback) {
 
 export function checkPostAccess(payload, callback) {
   return dispatchActionToReducer(checkPostAccessService(payload), "CHECK_POST_ACCESS_START", "CHECK_POST_ACCESS_SUCCESS", "CHECK_POST_ACCESS_FAIL", callback);
+}
+
+export function getPostReadAndClap(payload, callback) {
+  return dispatchActionToReducer(getPostReadAndClapService(payload), "GET_POST_READ_CLAP_START", "GET_POST_READ_CLAP_SUCCESS", "GET_POST_READ_CLAP_FAIL", callback);
 }
