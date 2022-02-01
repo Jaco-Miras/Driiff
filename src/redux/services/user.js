@@ -669,3 +669,12 @@ export function createTeamChannel(payload) {
     data: payload,
   });
 }
+
+export function searchUsers(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/search-user?search=${payload.search}`,
+    data: payload,
+    cancelToken: payload.cancelToken,
+  });
+}
