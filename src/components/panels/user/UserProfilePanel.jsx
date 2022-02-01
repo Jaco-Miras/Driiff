@@ -728,7 +728,7 @@ const UserProfilePanel = (props) => {
       <div className="row row-user-profile-panel">
         <div className="col-12 col-lg-6 col-xl-6">
           <div className="card">
-            {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && <UserOptions user={user} />}
+            {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && loggedUser.id !== user.id && <UserOptions user={user} />}
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
               {(isLoggedUser || isEditable) && (
                 <DropDocument
@@ -1084,7 +1084,7 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
-                {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user.type === "internal" && (
+                {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && loggedUser.id !== user.id && user.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.accountType}</div>
                     <div className="col col-form">
