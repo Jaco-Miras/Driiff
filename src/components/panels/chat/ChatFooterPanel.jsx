@@ -1,20 +1,17 @@
 import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
-//import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, addChatMessage, postChatMessage, createZoomMeeting, generateZoomSignature } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useZoomActions } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
-//import { replaceChar } from "../../../helpers/stringFormatter";
 import { ChatInputButtons } from "./index";
-//import ZoomMtgEmbedded from "@zoomus/websdk/embedded";
 
 const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 
@@ -163,8 +160,8 @@ const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
 
   //const history = useHistory();
-  const zoomActions = useZoomActions();
-  const { localizeChatDate, localizeDate } = useTimeFormat();
+  //const zoomActions = useZoomActions();
+  const { localizeChatDate } = useTimeFormat();
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -176,7 +173,7 @@ const ChatFooterPanel = (props) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
-  const [startingZoom, setStartingZoom] = useState(false);
+  //const [startingZoom, setStartingZoom] = useState(false);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -303,69 +300,6 @@ const ChatFooterPanel = (props) => {
     });
   };
 
-  const handleStartZoomMeeting = () => {
-    //setStartingZoom(true);
-    let payload = {
-      channel_id: selectedChannel.id,
-    };
-
-    dispatch(
-      createZoomMeeting(payload, (err, res) => {
-        if (err) {
-          if (err.response && err.response.data && err.response.data.errors) {
-            if (err.response.data.errors.error_message.length && err.response.data.errors.error_message.find((e) => e === "MEETING_ALREADY_CREATED")) {
-              toaster.error(dictionary.meetingInProgress, { autoClose: 5000 });
-            } else {
-              toaster.error(dictionary.toasterGeneraError);
-            }
-          } else {
-            toaster.error(dictionary.toasterGeneraError);
-          }
-        }
-        if (res && res.data) {
-          let sigPayload = {
-            meetingNumber: res.data.zoom_data.data.id,
-            role: 1,
-          };
-          const zoomCreateConfig = {
-            password: res.data.zoom_data.data.password,
-            meetingNumber: res.data.zoom_data.data.id,
-            role: 1,
-          };
-
-          dispatch(
-            generateZoomSignature(
-              {
-                ...sigPayload,
-                channel_id: selectedChannel.id,
-                system_message: `ZOOM_MEETING::${JSON.stringify({
-                  author: {
-                    id: user.id,
-                    name: user.name,
-                    first_name: user.first_name,
-                    partial_name: user.partial_name,
-                    profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-                  },
-                  password: res.data.zoom_data.data.password,
-                  meetingNumber: res.data.zoom_data.data.id,
-                  channel_id: selectedChannel.id,
-                })}`,
-              },
-              (e, r) => {
-                if (e) return;
-                if (r) {
-                  //zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
-                  zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
-                  //setStartingZoom(false);
-                }
-              }
-            )
-          );
-        }
-      })
-    );
-  };
-
   const handleZoomMeet = () => {
     const meetingSDKELement = document.getElementById("meetingSDKElement");
     const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
@@ -377,14 +311,7 @@ const ChatFooterPanel = (props) => {
       dispatch(addToModals(modalPayload));
     } else {
       let modalPayload = {
-        type: "confirmation",
-        cancelText: dictionary.no,
-        headerText: dictionary.zoomMeeting,
-        submitText: dictionary.yes,
-        bodyText: dictionary.zoomMeetingConfirmation,
-        actions: {
-          onSubmit: handleStartZoomMeeting,
-        },
+        type: "zoom_confirmation",
       };
 
       dispatch(addToModals(modalPayload));
@@ -432,7 +359,6 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
-                    startingZoom={startingZoom}
                   />
                 </Dflex>
               </ChatInputContainer>

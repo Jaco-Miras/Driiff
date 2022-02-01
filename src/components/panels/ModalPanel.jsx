@@ -30,6 +30,7 @@ import {
   AddToTeamModal,
   ZoomInviteModal,
   ZoomMeetingInProgress,
+  ZoomConfirmationModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -105,6 +106,8 @@ const ModalPanel = () => {
             return <ZoomInviteModal key={modal.type} data={modal} />;
           case "zoom_inprogress":
             return <ZoomMeetingInProgress key={modal.type} data={modal} />;
+          case "zoom_confirmation":
+            return <ZoomConfirmationModal key={modal.type} data={modal} />;
           case "create_bot":
             return <CreateAdminBotModal key={modal.type} />;
           case "update_bot":
