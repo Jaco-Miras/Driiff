@@ -1084,7 +1084,7 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
-                {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user.type === "internal" && (
+                {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && loggedUser.id !== user.id && user.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.accountType}</div>
                     <div className="col col-form">
