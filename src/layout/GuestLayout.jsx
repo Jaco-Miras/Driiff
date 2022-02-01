@@ -1,12 +1,9 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Route, Switch, useHistory, useLocation, withRouter } from "react-router-dom";
 import styled from "styled-components";
-//import { SvgIcon } from "../components/common";
-//import { DriffCreatePanel, ExternalRegisterPanel, LoginPanel, MagicLinkPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel } from "../components/panels";
 import { useUserLogin } from "../components/hooks/useUserLogin";
 import { useSettings, useTranslationActions } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
-//import ForceLogoutPanel from "../components/panels/ForceLogoutPanel";
 import { $_GET } from "../helpers/commonFunctions";
 import LoginLogo from "../components/panels/main/LoginLogo";
 
