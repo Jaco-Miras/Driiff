@@ -102,8 +102,6 @@ const GuestLayout = (props) => {
   const driffActions = useDriffActions();
   const { _t } = useTranslationActions();
 
-  console.log(location);
-
   const { setRegisteredDriff } = props;
 
   const dictionary = {
