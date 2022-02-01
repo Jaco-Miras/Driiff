@@ -129,6 +129,12 @@ function StylingSettingsBody() {
     sidebarTextColorLabel: _t("LABEL.SIDEBAR_TEXT_COLOR", "Sidebar text color"),
     submitBtn: _t("BTN.SUBMIT", "Submit"),
     resetPreviewBtn: _t("BTN.RESET_DEFAULT_COLORS", "Reset default colors"),
+    email: _t("EMAIL", "Email"),
+    webPush: _t("WEBPUSH", "Web push"),
+    apn: _t("APN_IOS", "Apple push notification"),
+    saveNotification: _t("BUTTON.SAVE_NOTIFICATION", "Save notification"),
+    notifications: _t("NOTIFICATIONS", "Notifications"),
+    styling: _t("STYLING", "Styling"),
   };
 
   const iconDropZone = useRef(null);
@@ -341,7 +347,7 @@ function StylingSettingsBody() {
             </button>
           )}
         </div>
-        <h4 className="mt-3">Styling</h4>
+        <h4 className="mt-3">{dictionary.styling}</h4>
         {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
         <p>New theme colors: primary: "#29323F", secondary: "#4E5D72", third: "#192536", fourth: "#29323F", fifth: "#FFC856"</p> */}
         <ColorInputWrapper>
@@ -489,7 +495,7 @@ function StylingSettingsBody() {
             {dictionary.resetPreviewBtn}
           </SubmitButton>
         </div>
-        <h4 className="mt-3">Notifications</h4>
+        <h4 className="mt-3">{dictionary.notifications}</h4>
         <CustomInput
           className="cursor-pointer text-muted"
           checked={notifications.email}
@@ -498,7 +504,7 @@ function StylingSettingsBody() {
           name="email"
           data-success-message={`${notifications.email ? "Email notifications are now enabled" : "Email notifications are now disabled"}`}
           onChange={handleToggleEmailNotification}
-          label={<span>Email</span>}
+          label={<span>{dictionary.email}</span>}
           disabled={notificationsLoaded === false}
         />
         <CustomInput
@@ -509,7 +515,7 @@ function StylingSettingsBody() {
           name="webpush"
           //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
           onChange={handleToggleWebpushNotification}
-          label={<span>Web push</span>}
+          label={<span>{dictionary.webPush}</span>}
           disabled={notificationsLoaded === false}
         />
         <CustomInput
@@ -520,12 +526,12 @@ function StylingSettingsBody() {
           name="apn"
           //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
           onChange={handleToggleApnNotification}
-          label={<span>APN</span>}
+          label={<span>{dictionary.apn}</span>}
           disabled={notificationsLoaded === false}
         />
         <div className="d-flex align-items-center mt-2">
           <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSaveNotificationSettings} disabled={savingNotifications || !notificationsLoaded}>
-            Save notification
+            {dictionary.saveNotification}
           </SubmitButton>
         </div>
       </Wrapper>

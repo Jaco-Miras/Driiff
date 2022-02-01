@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { sessionService } from "redux-react-session";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   padding: 10px;
@@ -26,6 +27,15 @@ const NotificationTopBar = (props) => {
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
   const notifications = useSelector((state) => state.admin.notifications);
   const user = useSelector((state) => state.session.user);
+
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    email: _t("EMAIL", "Email"),
+    webPush: _t("WEBPUSH", "Web push"),
+    apn: _t("APN_IOS", "Apple push notification"),
+    notificationsOff: _t("NOTIFICATIONS_ARE_OFF", "notifications are off"),
+  };
 
   const handleCloseBar = () => {
     sessionService.saveUser({ ...user, showNotificationSettingsBar: false });
@@ -55,13 +65,15 @@ const NotificationTopBar = (props) => {
         return notifications[n] === false;
       })
       .map((n) => {
-        if (n === "email") return "Email";
-        else if (n === "webpush") return "Web push";
-        else if (n === "apn") return "APN - Apple push notification";
+        if (n === "email") return dictionary.email;
+        else if (n === "webpush") return dictionary.webPush;
+        else if (n === "apn") return dictionary.apn;
       });
     return (
       <Wrapper>
-        <p>{offNotifications.join(", ")} notifications are off</p>
+        <p>
+          {offNotifications.join(", ")} {dictionary.notificationsOff}
+        </p>
         <SvgIconFeather icon="x" className={"ml-3"} onClick={handleCloseBar} />
       </Wrapper>
     );
