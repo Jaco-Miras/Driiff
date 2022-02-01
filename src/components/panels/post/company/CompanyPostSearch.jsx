@@ -37,7 +37,6 @@ const CompanyPostSearch = (props) => {
   const handleSearch = () => {
     if (searchValue.trim() !== "" && searchValue.trim().length >= 3) {
       //Check if there are any previous pending requests
-      console.log(cancelToken);
       if (cancelToken.current) {
         cancelToken.current.cancel("Operation canceled due to new request.");
         cancelToken.current = null;

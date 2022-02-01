@@ -93,7 +93,7 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleZoomMeet, onShowFileDialog, editChatMessage, quote, dictionary, startingZoom } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, handleZoomMeet, onShowFileDialog, editChatMessage, quote, dictionary } = props;
 
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -132,8 +132,6 @@ const ChatInputButtons = (props) => {
       </IconWrapper>
       <IconWrapper className="btn-zoom">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-          {startingZoom && <Loader />}
-          {/* {!startingZoom && <img className="zoom-icon" src={zoomIcon} onClick={handleGoogleMeet} alt="zoom btn" />} */}
           <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
         </Tooltip>
       </IconWrapper>

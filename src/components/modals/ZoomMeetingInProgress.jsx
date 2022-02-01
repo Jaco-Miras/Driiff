@@ -1,9 +1,28 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
+
+const ModalWrapper = styled(Modal)`
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 
 const ZoomMeetingInProgress = (props) => {
   const { type, size = "m" } = props.data;
@@ -28,7 +47,7 @@ const ZoomMeetingInProgress = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={size} centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.meetingInProgressHeader}</ModalHeaderSection>
       <ModalBody>{dictionary.meetingInProgressBody}</ModalBody>
       <ModalFooter>
@@ -36,7 +55,7 @@ const ZoomMeetingInProgress = (props) => {
           {dictionary.closeButton}
         </Button>
       </ModalFooter>
-    </Modal>
+    </ModalWrapper>
   );
 };
 

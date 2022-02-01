@@ -32,3 +32,4 @@ export { default as ZoomInviteModal } from "./ZoomInviteModal";
 export { default as ZoomMeetingInProgress } from "./ZoomMeetingInProgress";
 export { default as WIPModal } from "./WIPModal";
 export { default as WIPFileModal } from "./WIPFileModal";
+export { default as ZoomConfirmationModal } from "./ZoomConfirmationModal";
