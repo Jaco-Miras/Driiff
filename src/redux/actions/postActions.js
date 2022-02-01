@@ -484,7 +484,7 @@ export function incomingLastVisitPost(payload, callback) {
 }
 
 export function checkPostAccess(payload, callback) {
-  return dispatchActionToReducer(checkPostAccessService(payload), "CHECK_POST_ACCESS_START", "RCHECK_POST_ACCESSSUCCESS", "CHECK_POST_ACCESS_FAIL", callback);
+  return dispatchActionToReducer(checkPostAccessService(payload), "CHECK_POST_ACCESS_START", "CHECK_POST_ACCESS_SUCCESS", "CHECK_POST_ACCESS_FAIL", callback);
 }
 
 export function getPostReadAndClap(payload, callback) {

@@ -77,3 +77,4 @@ export { default as useDriveLinkActions } from "./useDriveLinkActions";
 export { default as useTeamActions } from "./useTeamActions";
 export { default as useChannelUpdateMessage } from "./useChannelUpdateMessage";
 export { default as useZoomActions } from "./useZoomActions";
+export { default as useUserOptions } from "./useUserOptions";

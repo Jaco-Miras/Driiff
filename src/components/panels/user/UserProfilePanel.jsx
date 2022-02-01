@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import Select from "react-select";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import styled from "styled-components";
@@ -11,6 +12,8 @@ import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
 import { useToaster, useTranslationActions, useUserActions, useUserChannels, useUsers } from "../../hooks";
 import { FormInput, EmailPhoneInput } from "../../forms";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
+import UserOptions from "./UserOptions";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -133,6 +136,11 @@ const Wrapper = styled.div`
       width: 100%;
     }
   }
+  .more-options {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
 `;
 
 const lettersRegExp = /[a-zA-Z]/g;
@@ -145,8 +153,11 @@ const UserProfilePanel = (props) => {
 
   const toaster = useToaster();
   const { users, loggedUser } = useUsers();
-  const { checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage } = useUserActions();
+  const { checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage, fetchRoles, fetchUsersWithoutActivity } = useUserActions();
   const { selectUserChannel } = useUserChannels();
+  const roles = useSelector((state) => state.users.roles);
+  const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { dark_mode } = generalSettings;
 
   const user = users[props.match.params.id];
   const isLoggedUser = user && loggedUser.id === user.id;
@@ -165,12 +176,24 @@ const UserProfilePanel = (props) => {
   });
   const [registerMode, setRegisterMode] = useState("email");
   const [countryCode, setCountryCode] = useState(null);
+  const [accountType, setAccountType] = useState(users[props.match.params.id] ? users[props.match.params.id].role.name : null);
 
   const refs = {
     dropZoneRef: useRef(null),
     first_name: useRef(null),
     password: useRef(null),
   };
+
+  const accountOptions = [
+    {
+      value: "admin",
+      label: "Administrator",
+    },
+    {
+      value: "employee",
+      label: "Employee",
+    },
+  ];
 
   const { _t } = useTranslationActions();
 
@@ -196,6 +219,7 @@ const UserProfilePanel = (props) => {
     invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
     emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
+    accountType: _t("PROFILE.ACCOUNT_TYPE", "Account type"),
   };
 
   //const isEditable = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
@@ -378,27 +402,6 @@ const UserProfilePanel = (props) => {
             }
           });
         }
-        // if (isEditable) {
-        //   if (user.email !== form.email) {
-        //     update({ ...form, change_email: 1 }, (err, res) => {
-        //       if (res) {
-        //         setEditInformation(false);
-        //       }
-        //     });
-        //   } else {
-        //     update({ ...form }, (err, res) => {
-        //       if (res) {
-        //         setEditInformation(false);
-        //       }
-        //     });
-        //   }
-        // } else {
-        //   update(form, (err, res) => {
-        //     if (res) {
-        //       setEditInformation(false);
-        //     }
-        //   });
-        // }
       }
     } else {
       //check for changes in email
@@ -467,27 +470,6 @@ const UserProfilePanel = (props) => {
                       }
                     });
                   }
-                  // if (isEditable) {
-                  //   if (user.email !== form.email) {
-                  //     update({ ...form, change_email: 1 }, (err, res) => {
-                  //       if (res) {
-                  //         setEditInformation(false);
-                  //       }
-                  //     });
-                  //   } else {
-                  //     update({ ...form }, (err, res) => {
-                  //       if (res) {
-                  //         setEditInformation(false);
-                  //       }
-                  //     });
-                  //   }
-                  // } else {
-                  //   update(form, (err, res) => {
-                  //     if (res) {
-                  //       setEditInformation(false);
-                  //     }
-                  //   });
-                  // }
                 }
               }
             });
@@ -539,31 +521,16 @@ const UserProfilePanel = (props) => {
                     }
                   });
                 }
-                // if (isEditable) {
-                //   if (user.email !== form.email) {
-                //     update({ ...form, change_email: 1 }, (err, res) => {
-                //       if (res) {
-                //         setEditInformation(false);
-                //       }
-                //     });
-                //   } else {
-                //     update({ ...form }, (err, res) => {
-                //       if (res) {
-                //         setEditInformation(false);
-                //       }
-                //     });
-                //   }
-                // } else {
-                //   update(form, (err, res) => {
-                //     if (res) {
-                //       setEditInformation(false);
-                //     }
-                //   });
-                // }
               }
             }
           });
         }
+      } else if (user && accountType !== user.role.name) {
+        update({ ...form }, (err, res) => {
+          if (res) {
+            setEditInformation(false);
+          }
+        });
       } else {
         toaster.info("Nothing was updated.");
         setEditInformation(false);
@@ -660,6 +627,14 @@ const UserProfilePanel = (props) => {
     }));
   };
 
+  const handleSelectAccountType = (e) => {
+    setAccountType(e.value);
+    setForm({
+      ...form,
+      role_ids: [roles[e.value]],
+    });
+  };
+
   useEffect(() => {
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
@@ -673,7 +648,11 @@ const UserProfilePanel = (props) => {
     if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
       history.push(`/profile/${loggedUser.id}/${replaceChar(loggedUser.name)}`);
     }
-    console.log(user);
+    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") fetchUsersWithoutActivity();
+    // check if roles has an object
+    if (Object.keys(roles).length === 0) {
+      fetchRoles();
+    }
   }, []);
 
   useEffect(() => {
@@ -727,6 +706,12 @@ const UserProfilePanel = (props) => {
     }
   }, [registerMode]);
 
+  useEffect(() => {
+    if (accountType === null && users[props.match.params.id]) {
+      setAccountType(users[props.match.params.id].role.name);
+    }
+  }, [accountType, users]);
+
   if (!users[props.match.params.id]) {
     return <></>;
   }
@@ -743,6 +728,7 @@ const UserProfilePanel = (props) => {
       <div className="row row-user-profile-panel">
         <div className="col-12 col-lg-6 col-xl-6">
           <div className="card">
+            {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && <UserOptions user={user} />}
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
               {(isLoggedUser || isEditable) && (
                 <DropDocument
@@ -756,14 +742,6 @@ const UserProfilePanel = (props) => {
                   onCancel={handleHideDropzone}
                 />
               )}
-              {/*{user.import_from === "gripp" && <SvgIcon className={editInformation ? "mb-2" : "mb-4"} width={500} height={40} icon="gripp-logo" />}*/}
-              {/*{editInformation && ["driff", "gripp"].includes(user.import_from) && (
-                <ImportWarning className="text-primary mb-3">
-                  The profile data is synchronized from an external source.
-                  <br/>
-                  Some fields cannot be edited.
-                </ImportWarning>
-              )}*/}
               <div className="avatar-container">
                 {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} forceThumbnail={false} />}
                 {(isLoggedUser || isEditable) && (
@@ -877,12 +855,6 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.external_company_name && user.external_company_name}</div>
                   </div>
                 )}
-                {user.role && (
-                  <div className="row mb-2">
-                    <div className="col col-label text-muted">{dictionary.position}</div>
-                    <div className="col col-form">{user.type === "external" ? dictionary.external : user.role.name}</div>
-                  </div>
-                )}
                 {user.place && loggedUser.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.city}</div>
@@ -913,6 +885,12 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form cursor-pointer" onClick={handleEmailClick}>
                       {user.email}
                     </div>
+                  </div>
+                )}
+                {user.role && (
+                  <div className="row mb-2">
+                    <div className="col col-label text-muted">{dictionary.accountType}</div>
+                    <div className="col col-form">{user.type === "external" ? dictionary.external : user.role.display_name}</div>
                   </div>
                 )}
               </div>
@@ -1106,6 +1084,21 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
+                {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user.type === "internal" && (
+                  <div className="row mb-2">
+                    <div className="col col-label text-muted">{dictionary.accountType}</div>
+                    <div className="col col-form">
+                      <Select
+                        className={"react-select-container"}
+                        classNamePrefix="react-select"
+                        styles={dark_mode === "0" ? lightTheme : darkTheme}
+                        value={accountOptions.find((o) => o.value === accountType)}
+                        onChange={handleSelectAccountType}
+                        options={accountOptions}
+                      />
+                    </div>
+                  </div>
+                )}
                 <hr />
                 <div className="d-flex justify-content-between align-items-center mt-0">
                   <div>&nbsp;</div>

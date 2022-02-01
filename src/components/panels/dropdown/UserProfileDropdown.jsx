@@ -20,6 +20,13 @@ const Wrapper = styled.div`
   }
 `;
 
+const RoleName = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+`;
+
 const UserProfileDropdown = (props) => {
   const { className = "", user, closeDropdown } = props;
 
@@ -74,6 +81,9 @@ const UserProfileDropdown = (props) => {
             <SvgIconFeather icon="edit-2" />
           </span>
         </h6>
+        <RoleName>
+          <span className="badge badge-primary">{user.role.display_name}</span>
+        </RoleName>
       </div>
       <div className="dropdown-menu-body">
         <div className="list-group list-group-flush">

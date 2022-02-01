@@ -38,7 +38,14 @@ const useChatFancyLink = (props) => {
 
   useEffect(() => {
     let result = messageBody;
-    if ((messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy) result = getMessage(message);
+    const links = messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g);
+
+    let filteredLinks = [];
+    if (links) {
+      const { REACT_APP_localDNSName } = process.env;
+      filteredLinks = links.filter((l) => !l.includes(`${REACT_APP_localDNSName}/profile/`));
+    }
+    if (filteredLinks.length > 0 && !message.is_fancy) result = getMessage(message);
 
     if (fancyContent !== null) {
       let body = convertFavis(result);
@@ -46,5 +53,15 @@ const useChatFancyLink = (props) => {
       actions.saveFancyContent({ ...message, body: body, is_fancy: true });
     }
   }, [fancyContent]);
+  // useEffect(() => {
+  //   let result = messageBody;
+  //   if ((messageBody.match(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)([^<]+)(<\/a>)/g) || []).length > 0 && !message.is_fancy) result = getMessage(message);
+
+  //   if (fancyContent !== null) {
+  //     let body = convertFavis(result);
+  //     //console.log({body, result});
+  //     actions.saveFancyContent({ ...message, body: body, is_fancy: true });
+  //   }
+  // }, [fancyContent]);
 };
 export default useChatFancyLink;

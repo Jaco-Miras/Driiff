@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../../redux/actions/postActions";
@@ -265,24 +266,25 @@ const CompanyPostDetail = (props) => {
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
+  const params = useParams();
   const commentActions = useCommentActions();
 
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
-  const [isPostParticipant, setIsPostParticipant] = useState(false);
+  //const [isPostParticipant, setIsPostParticipant] = useState(false);
 
-  useEffect(() => {
-    if (user.id !== post.author.id) {
-      dispatch(
-        checkPostAccess({ id: post.id }, (err, res) => {
-          if (err) return;
-          setIsPostParticipant(true);
-        })
-      );
-    } else {
-      setIsPostParticipant(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (user.id !== post.author.id) {
+  //     dispatch(
+  //       checkPostAccess({ id: post.id }, (err, res) => {
+  //         if (err) return;
+  //         setIsPostParticipant(true);
+  //       })
+  //     );
+  //   } else {
+  //     setIsPostParticipant(true);
+  //   }
+  // }, []);
 
   const { comments } = useComments(post);
 
@@ -433,36 +435,34 @@ const CompanyPostDetail = (props) => {
 
     postActions.fetchPostReadAndClap({ post_id: post.id });
 
-    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
         if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
-
-      postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
     };
-    // postActions.getUnreadPostsCount();
   }, []);
 
-  useEffect(() => {
-    const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
-      postActions.visit({
-        post_id: post.id,
-        personalized_for_id: null,
-      });
-    }
+  // const handleChangePostId = () => {
+  //   const viewed = post.view_user_ids.some((id) => id === user.id);
+  //   if (!viewed) {
+  //     postActions.visit({
+  //       post_id: post.id,
+  //       personalized_for_id: null,
+  //     });
+  //   }
 
-    if (post.is_unread === 1 || post.unread_count > 0) {
-      if (!disableMarkAsRead()) postActions.markAsRead(post);
-    }
+  //   if (post.is_unread === 1 || post.unread_count > 0) {
+  //     if (!disableMarkAsRead()) postActions.markAsRead(post);
+  //   }
 
-    postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    return () => postActions.getUnreadNotificationEntries({ add_unread_comment: 1 });
-    // postActions.getUnreadPostsCount();
-  }, [post.id]);
+  //   if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
+  // };
 
-  if (!isPostParticipant) return null;
+  // useEffect(() => {
+  //   console.log("trigger", post.id, params);
+  // }, [params.postId]);
+
+  //if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}

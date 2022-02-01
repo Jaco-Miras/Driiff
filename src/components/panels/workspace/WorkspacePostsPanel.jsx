@@ -501,7 +501,7 @@ const WorkspacePostsPanel = (props) => {
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
+      {/* {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
         <div className="row app-block">
           <PostSidebar
             disableOptions={disableOptions}
@@ -578,7 +578,74 @@ const WorkspacePostsPanel = (props) => {
             <h5>{dictionary.contactAdministrator}</h5>
           </div>
         </MaintenanceWrapper>
-      ) : null}
+      ) : null} */}
+      <div className="row app-block">
+        <PostSidebar
+          disableOptions={disableOptions}
+          isMember={isMember}
+          workspace={workspace}
+          filter={filter}
+          filters={filters}
+          tag={tag}
+          postListTag={postListTag}
+          postActions={actions}
+          count={count}
+          postLists={postLists}
+          counters={counters}
+          onGoBack={handleGoback}
+          dictionary={dictionary}
+        />
+        <div className="col-md-9 app-content">
+          <div className="app-content-overlay" />
+          {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
+          {!!postListTag && (
+            <PostsBtnWrapper>
+              <span>Filter:</span>
+              <PostListWrapper className="ml-2 recipients">
+                <span className="receiver">
+                  <span onClick={handleEditArchivePostList}>
+                    <StyledIcon icon="x" className="mr-1" />
+                  </span>
+                  {activePostListName.name}
+                </span>
+              </PostListWrapper>
+            </PostsBtnWrapper>
+          )}
+          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
+            <PostsEmptyState actions={actions} dictionary={dictionary} disableOptions={disableOptions} isMember={isMember} />
+          ) : (
+            <>
+              {post !== null ? (
+                <div className="card card-body app-content-body mb-4">
+                  <PostDetailWrapper className="fadeBottom">
+                    <PostDetail
+                      post={post}
+                      posts={posts}
+                      filter={filter}
+                      postActions={actions}
+                      user={user}
+                      history={history}
+                      onGoBack={handleGoback}
+                      dictionary={dictionary}
+                      workspace={workspace}
+                      isMember={isMember}
+                      disableOptions={disableOptions}
+                      isExternalUser={isExternalUser}
+                    />
+                  </PostDetailWrapper>
+                </div>
+              ) : !post && params.hasOwnProperty("postId") ? (
+                <LoaderContainer className={"card initial-load"}>
+                  <Loader />
+                </LoaderContainer>
+              ) : (
+                <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
+              )}
+            </>
+          )}
+          <div className="mt-3 post-btm">&nbsp;</div>
+        </div>
+      </div>
     </Wrapper>
   );
 };

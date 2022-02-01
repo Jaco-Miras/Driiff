@@ -1,65 +1,12 @@
-import React, { useEffect } from "react";
-import { useHistory, Route, Switch } from "react-router-dom";
-import styled from "styled-components";
-import { useToaster, useTranslationActions, useUserChannels } from "../../hooks";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { useDispatch, useSelector } from "react-redux";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { getUsersWithoutActivity } from "../../../redux/actions/userAction";
-import AllUsersStructure from "./AllUsersStructure";
-import TeamBody from "./TeamBody";
-import AllPeople from "./AllPeople";
-import AllTeams from "./AllTeams";
+import React from "react";
+import { useSelector } from "react-redux";
+import { MoreOptions } from "../common";
+import { useTranslationActions, useToaster, useUserOptions } from "../../hooks";
+import { copyTextToClipboard } from "../../../helpers/commonFunctions";
 
-const Wrapper = styled.div`
-  overflow: auto;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  .people-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    flex-flow: row wrap;
-  }
-
-  .people-search {
-    flex: 0 0 100%;
-    justify-content: flex-start;
-    padding-left: 0;
-    flex-flow: row wrap;
-  }
-  .card {
-    min-height: calc(100% - 40px);
-  }
-  .card-body.structure {
-    overflow: auto;
-    margin: 1.5rem;
-    padding: 0;
-  }
-`;
-
-const SystemPeoplePanel = (props) => {
-  const { className = "" } = props;
-
-  const { userActions, loggedUser, selectUserChannel } = useUserChannels();
-  const roles = useSelector((state) => state.users.roles);
-  const inactiveUsers = useSelector((state) => state.users.archivedUsers);
-  //const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
-  const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
-
-  const history = useHistory();
-  const dispatch = useDispatch();
-
-  const handleUserNameClick = (user) => {
-    history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
-  };
-
-  const handleUserChat = (user) => selectUserChannel(user);
-
+const UserOptions = (props) => {
+  const { user } = props;
+  const toaster = useToaster();
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -114,30 +61,92 @@ const SystemPeoplePanel = (props) => {
     internalAccounts: _t("CHART.INTERNAL_ACCOUNTS", "Accounts"),
     guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
     totalAccounts: _t("LABEL.TOTAL_ACCOUNTS", "Total accounts"),
+    moveToInternalConfirmation: _t("PEOPLE.MOVE_TO_INTERNAL_CONFIRMATION", "Are you sure you want to change user to internal account"),
+    moveToExternalConfirmation: _t("PEOPLE.MOVE_TO_EXTERNAL_CONFIRMATION", "Are you sure you want to change user to guest account"),
   };
 
-  const toaster = useToaster();
+  const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
+  const roles = useSelector((state) => state.users.roles);
 
-  useEffect(() => {
-    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
-    // check if roles has an object
-    if (Object.keys(roles).length === 0) {
-      userActions.fetchRoles();
-    }
-    if (inactiveUsers.length === 0) {
-      userActions.fetchArchivedUsers();
-    }
-  }, []);
+  const actions = useUserOptions();
 
-  const handleArchiveUser = (user) => {
+  const handleUpdateToAdmin = () => {
+    let payload = {
+      user_id: user.id,
+      role_id: roles["admin"],
+    };
+
+    actions.updateUserRole(payload);
+  };
+
+  const handleUpdateToEmployee = () => {
+    let payload = {
+      user_id: user.id,
+      role_id: roles["employee"],
+    };
+    actions.updateUserRole(payload);
+  };
+
+  const handleChangeToInternal = () => {
+    const handleSubmit = () => {
+      const payload = {
+        id: user.id,
+        type: "internal",
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: "internal" })}`);
+      };
+      actions.updateType(payload, cb);
+    };
+
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.moveToInternal,
+      submitText: dictionary.moveToInternal,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.moveToInternalConfirmation,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    actions.showModal(confirmModal);
+  };
+
+  const handleChangeToExternal = () => {
+    const handleSubmit = () => {
+      const payload = {
+        id: user.id,
+        type: "external",
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        toaster.success(`${_t("TOASTER.CHANGE_USER_TYPE", "Change user type to ::type::", { type: "external" })}`);
+      };
+      actions.updateType(payload, cb);
+    };
+    let confirmModal = {
+      type: "confirmation",
+      headerText: dictionary.moveToExternal,
+      submitText: dictionary.moveToExternal,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.moveToExternalConfirmation,
+      actions: {
+        onSubmit: handleSubmit,
+      },
+    };
+    actions.showModal(confirmModal);
+  };
+
+  const handleArchiveUser = () => {
     const handleSubmit = () => {
       if (user.active) {
-        userActions.archive({ user_id: user.id }, (err, res) => {
+        actions.archive({ user_id: user.id }, (err, res) => {
           if (err) return;
           toaster.success(`${user.name} archived.`);
         });
       } else {
-        userActions.unarchive({ user_id: user.id }, (err, res) => {
+        actions.unarchive({ user_id: user.id }, (err, res) => {
           if (err) return;
           toaster.success(`${user.name} unarchived.`);
         });
@@ -154,18 +163,18 @@ const SystemPeoplePanel = (props) => {
         onSubmit: handleSubmit,
       },
     };
-    dispatch(addToModals(confirmModal));
+    actions.showModal(confirmModal);
   };
 
-  const handleActivateUser = (user) => {
+  const handleActivateDeactivateUser = () => {
     const handleSubmit = () => {
       if (user.active && !user.deactivate) {
-        userActions.deactivate({ user_id: user.id }, (err, res) => {
+        actions.deactivate({ user_id: user.id }, (err, res) => {
           if (err) return;
           toaster.success(`${user.name} deactivated.`);
         });
       } else if (user.active === 0 && user.deactivate) {
-        userActions.activate({ user_id: user.id }, (err, res) => {
+        actions.activate({ user_id: user.id }, (err, res) => {
           if (err) return;
           toaster.success(`${user.name} activated.`);
         });
@@ -182,12 +191,12 @@ const SystemPeoplePanel = (props) => {
         onSubmit: handleSubmit,
       },
     };
-    dispatch(addToModals(confirmModal));
+    actions.showModal(confirmModal);
   };
 
   const handleDeleteUser = (user) => {
     const handleSubmit = () => {
-      userActions.deleteUserAccount({ user_id: user.id }, (err, res) => {
+      actions.deleteUserAccount({ user_id: user.id }, (err, res) => {
         if (err) return;
         toaster.success(`${user.name} deleted.`);
       });
@@ -203,10 +212,10 @@ const SystemPeoplePanel = (props) => {
         onSubmit: handleSubmit,
       },
     };
-    dispatch(addToModals(confirmModal));
+    actions.showModal(confirmModal);
   };
 
-  const handleResendInvite = (user) => {
+  const handleReinvite = () => {
     let payload = {
       user_id: user.id,
       email: user.email,
@@ -219,12 +228,12 @@ const SystemPeoplePanel = (props) => {
         toaster.success(_t("TOASTER.RESEND_INVITATION_SUCCESS", "Invitation sent to ::email::", { email: user.email }));
       }
     };
-    userActions.resendInvitationEmail(payload, callback);
+    actions.resendInvitationEmail(payload, callback);
   };
 
-  const handleDeleteInvitedInternalUser = (user) => {
+  const handleDeleteInvitedInternalUser = () => {
     const handleSubmit = () => {
-      userActions.deleteInvitedInternalUser({ user_id: user.id }, (err, res) => {
+      actions.deleteInvitedInternalUser({ user_id: user.id }, (err, res) => {
         if (err) return;
         toaster.success(`${dictionary.toasterRemoveInvited}`);
       });
@@ -240,87 +249,40 @@ const SystemPeoplePanel = (props) => {
         onSubmit: handleSubmit,
       },
     };
-    dispatch(addToModals(confirmModal));
+    actions.showModal(confirmModal);
   };
 
-  const handleAddUserToTeam = (user) => {
+  const handleSendInviteManually = () => {
+    copyTextToClipboard(toaster, user.invite_link);
+  };
+
+  const handleAddUserToTeam = () => {
     const modal = {
       type: "add-to-team",
       user: user,
     };
-    dispatch(addToModals(modal));
+    actions.showModal(modal);
   };
 
-  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
-
   return (
-    <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
-      <div className="card">
-        <Switch>
-          <Route
-            render={() => (
-              <div className="card-body">
-                <TeamBody
-                  loggedUser={loggedUser}
-                  onNameClick={handleUserNameClick}
-                  onChatClick={handleUserChat}
-                  dictionary={dictionary}
-                  onUpdateRole={userActions.updateUserRole}
-                  showOptions={isAdmin && usersWithoutActivityLoaded}
-                  onArchiveUser={handleArchiveUser}
-                  onActivateUser={handleActivateUser}
-                  onChangeUserType={userActions.updateType}
-                  onDeleteUser={handleDeleteUser}
-                  onResendInvite={handleResendInvite}
-                  onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
-                  onAddUserToTeam={handleAddUserToTeam}
-                />
-              </div>
-            )}
-            path={["/system/people/teams/:teamId/:teamName"]}
-          />
-          <Route
-            render={() => (
-              <div className="card-body structure">
-                <AllUsersStructure loggedUser={loggedUser} dictionary={dictionary} />
-              </div>
-            )}
-            path={["/system/people/organization"]}
-          />
-          <Route
-            render={() => (
-              <div className="card-body">
-                <AllTeams loggedUser={loggedUser} dictionary={dictionary} _t={_t} showOptions={isAdmin} />
-              </div>
-            )}
-            path={["/system/people/teams"]}
-          />
-          <Route
-            render={() => (
-              <div className="card-body">
-                <AllPeople
-                  loggedUser={loggedUser}
-                  onNameClick={handleUserNameClick}
-                  onChatClick={handleUserChat}
-                  dictionary={dictionary}
-                  onUpdateRole={userActions.updateUserRole}
-                  showOptions={isAdmin && usersWithoutActivityLoaded}
-                  onArchiveUser={handleArchiveUser}
-                  onActivateUser={handleActivateUser}
-                  onChangeUserType={userActions.updateType}
-                  onDeleteUser={handleDeleteUser}
-                  onResendInvite={handleResendInvite}
-                  onDeleteInvitedInternalUser={handleDeleteInvitedInternalUser}
-                  onAddUserToTeam={handleAddUserToTeam}
-                />
-              </div>
-            )}
-            path={["/system/people"]}
-          />
-        </Switch>
-      </div>
-    </Wrapper>
+    <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"}>
+      {user.active && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToAdmin}>{dictionary.assignAsAdmin}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.name === "admin" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToEmployee}>{dictionary.assignAsEmployee}</div>}
+      {user.active && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
+      {user.active && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
+      {user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}
+      {user.active && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleArchiveUser}>{dictionary.archiveUser}</div> : null}
+      {!user.deactivate && user.active && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleActivateDeactivateUser}>{dictionary.deactivateUser}</div> : null}
+      {user.active === 0 && user.deactivate && user.active === 0 && user.hasOwnProperty("has_accepted") && user.has_accepted ? <div onClick={handleActivateDeactivateUser}>{dictionary.activateUser}</div> : null}
+      {(user.active && user.hasOwnProperty("has_accepted") && user.has_accepted && usersWithoutActivity.some((u) => u.user_id === user.id)) || (user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external") ? (
+        <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>
+      ) : null}
+      {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
+      {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
+      {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
+      {user.active && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
+    </MoreOptions>
   );
 };
 
-export default React.memo(SystemPeoplePanel);
+export default UserOptions;

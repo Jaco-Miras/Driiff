@@ -105,6 +105,7 @@ import {
   incomingZoomCreate,
   incomingZoomUserLeft,
   incomingZoomEnded,
+  updateUnreadCounter,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -212,7 +213,7 @@ class SocketListeners extends Component {
 
   refetch = () => {
     this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
-    this.props.getPostAccess();
+    //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
     }
@@ -675,11 +676,10 @@ class SocketListeners extends Component {
       })
       .listen(".unread-post", (e) => {
         this.props.incomingReadUnreadReducer(e);
-        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+        //this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
         this.props.getFavoriteWorkspaceCounters();
-        this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost(e);
@@ -749,6 +749,7 @@ class SocketListeners extends Component {
             const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply || post.workspaces.length === 0;
             post = { ...post, show_post: showPost };
             if (this.props.user.id !== post.author.id) {
+              this.props.updateUnreadCounter({ general_post: 1 });
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   // chech the topic recipients if active
@@ -875,7 +876,6 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
             this.props.incomingComment(e);
-            this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -889,6 +889,7 @@ class SocketListeners extends Component {
               }
             }
             if (e.author.id !== this.props.user.id) {
+              this.props.updateUnreadCounter({ general_post: 1 });
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
@@ -2430,6 +2431,7 @@ function mapDispatchToProps(dispatch) {
     incomingZoomEnded: bindActionCreators(incomingZoomEnded, dispatch),
     incomingPostAccess: bindActionCreators(incomingPostAccess, dispatch),
     getPostAccess: bindActionCreators(getPostAccess, dispatch),
+    updateUnreadCounter: bindActionCreators(updateUnreadCounter, dispatch),
   };
 }
 
