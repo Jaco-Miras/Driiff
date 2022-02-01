@@ -393,11 +393,20 @@ export function fetchPosts(payload) {
       url += `&filter[${i}]=${payload.filters[i]}`;
     }
   }
-  return apiCall({
-    method: "GET",
-    url: url,
-    data: payload,
-  });
+  if (payload.cancelToken) {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+      cancelToken: payload.cancelToken,
+    });
+  } else {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+    });
+  }
 }
 
 /**
