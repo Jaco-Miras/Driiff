@@ -31,7 +31,7 @@ const NotificationTopBar = (props) => {
   const { _t } = useTranslationActions();
 
   const dictionary = {
-    email: _t("EMAIL", "Email"),
+    email: _t("EMAIL_TEXT", "E-mail / text"),
     webPush: _t("WEBPUSH", "Web push"),
     apn: _t("APN_IOS", "Apple push notification"),
     notificationsOff: _t("NOTIFICATIONS_ARE_OFF", "notifications are off"),
