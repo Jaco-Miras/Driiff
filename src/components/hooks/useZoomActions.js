@@ -78,6 +78,13 @@ const useZoomActions = () => {
         })
         .then((e) => {
           //console.log("join success", e);
+          const microphoneBtn = document.querySelector("button[title=Audio]");
+          if (microphoneBtn) {
+            microphoneBtn.setAttribute("data-toggle", "tooltip");
+            microphoneBtn.setAttribute("data-placement", "bottom");
+            microphoneBtn.setAttribute("title", "Click on icon to unmute your microphone");
+            microphoneBtn.setAttribute("aria-label", "Click on icon to unmute your microphone");
+          }
         })
         .catch((e) => {
           //console.log("join error", e);

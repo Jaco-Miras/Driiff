@@ -361,7 +361,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".meeting-ended-notification", (e) => {
-        console.log(e, "meeting ended");
         // const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
         let timestamp = Math.floor(Date.now() / 1000);
         const chatMessage = {
@@ -1728,7 +1727,6 @@ class SocketListeners extends Component {
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
       .listen(".zoom-system-message-notification", (e) => {
-        console.log(e, "zoom meeting message");
         if (!e.hasOwnProperty("system_message")) return;
         const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
         let timestamp = Math.floor(Date.now() / 1000);
@@ -1758,8 +1756,6 @@ class SocketListeners extends Component {
         this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
       })
       .listen(".left-meeting-notification", (e) => {
-        console.log(e, "left meeting");
-
         let timestamp = Math.floor(Date.now() / 1000);
         const chatMessage = {
           message: e.system_message,
