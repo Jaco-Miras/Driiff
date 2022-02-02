@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
@@ -121,6 +122,9 @@ const PeopleListItem = (props) => {
     cardBody: useRef(null),
     content: useRef(null),
   };
+
+  const notificationSettings = useSelector((state) => state.admin.notifications);
+  const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
 
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
@@ -330,9 +334,11 @@ const PeopleListItem = (props) => {
                       (user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external") ? (
                         <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>
                       ) : null}
-                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && notificationsLoaded && notificationSettings.email && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
-                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && notificationsLoaded && notificationSettings.email && (
+                        <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>
+                      )}
                       {!showInactive && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
                       {onDeleteTeamMember && <div onClick={handleRemoveTeamMember}>{dictionary.removeTeamMember}</div>}
                     </MoreOptions>
