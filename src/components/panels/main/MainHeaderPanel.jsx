@@ -4,7 +4,11 @@ import styled from "styled-components";
 import { CompanyHeaderPanel } from "../company";
 import { WorkspaceHeaderPanel } from "../workspace";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  @media (max-width: 560px) {
+    height: 110px;
+  }
+`;
 
 const MainHeaderPanel = (props) => {
   const { className = "", isExternal } = props;

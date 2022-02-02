@@ -4,7 +4,7 @@ import { Route, useRouteMatch } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
-import { HeaderProfileNavigation } from "../common";
+import { HeaderProfileNavigation, MoreOptions } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
 import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } from "../../hooks";
@@ -12,6 +12,8 @@ import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 import MainBackButton from "../main/MainBackButton";
 import Tooltip from "react-tooltip-lite";
+import { useWindowSize } from "../../hooks";
+import { useMemo } from "react";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -296,6 +298,9 @@ const StyledTooltip = styled(Tooltip)`
   align-items: center;
   justify-content: center;
 `;
+const StyledDivider = styled.hr`
+  margin: 0 1rem;
+`;
 
 const toggleTooltip = () => {
   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -323,7 +328,9 @@ const WorspaceHeaderPanel = (props) => {
   const user = useSelector((state) => state.session.user);
 
   const [bellClicked, setBellClicked] = useState(false);
+  const winSize = useWindowSize();
 
+  const isMobile = useMemo(() => winSize.width < 1440, [winSize]);
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -573,7 +580,7 @@ const WorspaceHeaderPanel = (props) => {
           ) : activeTopic ? (
             <>
               <div className="navbar-wrap">
-                <div className="navbar-top">
+                <div className="navbar-top d-flex flex-wrap">
                   <li className="nav-item navigation-toggler mobile-toggler">
                     <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
                       <SvgIconFeather icon="menu" />
@@ -684,6 +691,35 @@ const WorspaceHeaderPanel = (props) => {
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                     </>
                   )}
+                  {!isMobile && <div style={{ flexGrow: 1 }}></div>}
+                  <li className="nav-item">
+                    {isMobile && (
+                      <MoreOptions className="ml-2">
+                        <MemberLists members={activeTopic.members} size={3} />
+                        <StyledDivider />
+                        <div style={{ display: "flex", padding: "8px", gap: 8 }}>
+                          {isMember && !isExternal ? (
+                            <>
+                              <button style={{ margin: 0 }} onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                                <SvgIconFeather icon="user-plus" />
+                                {dictionary.actionWorkspaceInvite}
+                              </button>
+                              <button style={{ margin: 0 }} onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
+                                {dictionary.buttonLeave}
+                              </button>
+                            </>
+                          ) : !isExternal ? (
+                            <>
+                              <button style={{ margin: 0 }} onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                                <SvgIconFeather icon="user-plus" />
+                                {dictionary.actionWorkspaceJoin}
+                              </button>
+                            </>
+                          ) : null}
+                        </div>
+                      </MoreOptions>
+                    )}
+                  </li>
                 </div>
                 <div className="navbar-bottom">
                   {/* <WorkspacePageHeaderPanel {...props} workspace={activeTopic} /> */}
@@ -704,28 +740,29 @@ const WorspaceHeaderPanel = (props) => {
                   />
                 </div>
               </div>
-
-              <li className="nav-item-last">
-                <div className="nav-item-avatars-wrap">
-                  <MemberLists members={activeTopic.members} />
-                </div>
-                {isMember && !isExternal ? (
-                  <>
-                    <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+              {!isMobile && (
+                <>
+                  <div className="nav-item-avatars-wrap">
+                    <MemberLists members={activeTopic.members} />
+                  </div>
+                  {isMember && !isExternal ? (
+                    <>
+                      <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                        <SvgIconFeather icon="user-plus" />
+                        {dictionary.actionWorkspaceInvite}
+                      </button>
+                      <button onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
+                        {dictionary.buttonLeave}
+                      </button>
+                    </>
+                  ) : !isExternal ? (
+                    <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                       <SvgIconFeather icon="user-plus" />
-                      {dictionary.actionWorkspaceInvite}
+                      {dictionary.actionWorkspaceJoin}
                     </button>
-                    <button onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
-                      {dictionary.buttonLeave}
-                    </button>
-                  </>
-                ) : !isExternal ? (
-                  <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                    <SvgIconFeather icon="user-plus" />
-                    {dictionary.actionWorkspaceJoin}
-                  </button>
-                ) : null}
-              </li>
+                  ) : null}
+                </>
+              )}
             </>
           ) : (
             <>

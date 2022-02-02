@@ -16,18 +16,25 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 const MembersLists = (props) => {
-  const { members, classNames = "" } = props;
+  const { members, classNames = "", size } = props;
 
   const winSize = useWindowSize();
 
   let memberSize = 5;
+  if (winSize.width <= 1600) {
+    memberSize = 2;
+  }
   if (winSize.width <= 575) {
     memberSize = 1;
   }
 
+  if (size) {
+    memberSize = size;
+  }
+
   const firstMembers = members ? members.slice(0, memberSize) : [];
   const afterMembers = members ? members.slice(memberSize) : [];
-
+  // debugger;
   return (
     <MembersListContainer className={`d-flex ${classNames}`}>
       {firstMembers.map((m, i) => {
