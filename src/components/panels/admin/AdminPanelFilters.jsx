@@ -77,7 +77,7 @@ const AdminPanelFilters = (props) => {
       </li>
       {/* <li className={`list-group-item d-flex align-items-center ${filters["page-settings"] ? "active" : ""}`} data-value="page-settings" onClick={handleClickFilter}>
         Page settings
-      </li>
+      </li> */}
       <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
         {dictionary.securitySettings}
       </li>
