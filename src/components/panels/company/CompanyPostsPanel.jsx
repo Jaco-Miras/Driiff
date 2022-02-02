@@ -99,17 +99,17 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-const MaintenanceWrapper = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-flow: column;
-  > div {
-    width: 100%;
-  }
-`;
+// const MaintenanceWrapper = styled.div`
+//   height: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   text-align: center;
+//   flex-flow: column;
+//   > div {
+//     width: 100%;
+//   }
+// `;
 
 //let fetching = false;
 const CompanyPostsPanel = (props) => {
@@ -128,7 +128,7 @@ const CompanyPostsPanel = (props) => {
 
   const componentIsMounted = useRef(true);
 
-  const postAccess = useSelector((state) => state.admin.postAccess);
+  //const postAccess = useSelector((state) => state.admin.postAccess);
   //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const handleGoback = () => {

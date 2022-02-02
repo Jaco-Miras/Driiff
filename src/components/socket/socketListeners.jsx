@@ -354,7 +354,7 @@ class SocketListeners extends Component {
             if (err) return;
             let post = {
               ...res.data,
-              clap_user_ids: [],
+              claps: [],
               is_unread: 1,
             };
             this.props.incomingPost(post);
@@ -733,14 +733,14 @@ class SocketListeners extends Component {
               if (err) return;
               let post = {
                 ...res.data,
-                clap_user_ids: [],
+                claps: [],
               };
               this.props.incomingPost(post);
             });
             break;
           }
           case "POST_CREATE": {
-            let post = { ...e, clap_user_ids: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [] };
+            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [] };
             const isApprover = post.users_approval.some((ua) => ua.id === this.props.user.id);
             const hasActiveWorkspace = post.workspaces.length > 0 && post.workspaces.some((ws) => this.props.workspaces[ws.topic_id] && this.props.workspaces[ws.topic_id].is_active);
             const hasMentioned = post.mention_ids.some((id) => this.props.user.id === id);
@@ -800,7 +800,7 @@ class SocketListeners extends Component {
                 this.props.incomingDeletedPost(e);
               } else if (!e.post_participant_data.from_company && e.post_participant_data.all_participant_ids.some((p) => p === this.props.user.id)) {
                 // from private to public post
-                e.clap_user_ids = [];
+                e.claps = [];
                 this.props.incomingPost(e);
                 e.channel_messages &&
                   e.channel_messages.forEach((m) => {
@@ -875,7 +875,7 @@ class SocketListeners extends Component {
       .listen(".post-comment-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
-            this.props.incomingComment({ ...e, clap_user_ids: [] });
+            this.props.incomingComment(e);
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -896,7 +896,7 @@ class SocketListeners extends Component {
                   if (err) return;
                   let post = {
                     ...res.data,
-                    clap_user_ids: [],
+                    claps: [],
                     is_unread: 1,
                   };
                   this.props.incomingPost(post);
@@ -939,7 +939,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment({ ...e, clap_user_ids: [] });
+            this.props.incomingComment(e);
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {

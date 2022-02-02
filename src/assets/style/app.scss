@@ -13634,7 +13634,7 @@ table .dropdown {
 }
 
 .badge.badge-primary {
-  background: #7a1b8bcc;
+  background: #29323F;
 }
 
 .badge.badge-light {
@@ -22391,14 +22391,15 @@ body > div#transition-popper {
 // }
 
 ul#menu-list-icon-more {
-  li:nth-child(2):nth-last-child(4) {
+  //chat option
+  li:nth-child(2):nth-last-child(3) {
     color: red;
     display:none;
   }
-  li:first-child:nth-last-child(3) {
-    color:blue;
-    display:none;
-  }
+  // li:first-child:nth-last-child(3) {
+  //   color:blue;
+  //   //display:none;
+  // }
 }
 
 ul#menu-list-icon-security {

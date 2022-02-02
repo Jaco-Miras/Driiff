@@ -288,11 +288,20 @@ export function getCompanyPosts(payload) {
       url += `&filter[${i}]=${f}`;
     });
   }
-  return apiCall({
-    method: "GET",
-    url: url,
-    data: payload,
-  });
+  if (payload.cancelToken) {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+      cancelToken: payload.cancelToken,
+    });
+  } else {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+    });
+  }
 }
 
 /**
@@ -384,11 +393,20 @@ export function fetchPosts(payload) {
       url += `&filter[${i}]=${payload.filters[i]}`;
     }
   }
-  return apiCall({
-    method: "GET",
-    url: url,
-    data: payload,
-  });
+  if (payload.cancelToken) {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+      cancelToken: payload.cancelToken,
+    });
+  } else {
+    return apiCall({
+      method: "GET",
+      url: url,
+      data: payload,
+    });
+  }
 }
 
 /**
@@ -719,6 +737,14 @@ export function checkPostAccess(payload) {
   return apiCall({
     method: "GET",
     url: `/v2/check-post-participant?post_id=${payload.id}`,
+    data: payload,
+  });
+}
+
+export function getPostReadAndClap(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/get-post-read-and-clap/?post_id=${payload.post_id} `,
     data: payload,
   });
 }

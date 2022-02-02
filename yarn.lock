@@ -2182,10 +2182,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zoomus/websdk@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@zoomus/websdk/-/websdk-2.1.0.tgz#bbd6f9f2f36287ba30299918be95497e7a10ced5"
-  integrity sha512-E7QxbSTz3bJszEnXU8n4VsMoKxte313NUucIxFWDb8x/stTyalH6RQFbY9YymHrjzvHgSVVcHmPh1o1jCeWMoQ==
+"@zoomus/websdk@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@zoomus/websdk/-/websdk-2.2.0.tgz#a2506fda522df58679f8ce93ca6edb7ad0ecbf3c"
+  integrity sha512-KNNzv/A4ogjXpDpo1J75K7WzEu5XDfaoFhKERmvmN8CeUli4YWHeLXE2jTFJOL3Lu6gemJP7o4DOnD75uai5JQ==
   dependencies:
     lodash "^4.17.21"
     react "16.8.6"
@@ -10028,6 +10028,15 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.4"
 
+prop-types@^15.5.0:
+  version "15.8.1"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
+  integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
+  dependencies:
+    loose-envify "^1.4.0"
+    object-assign "^4.1.1"
+    react-is "^16.13.1"
+
 prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
@@ -10251,6 +10260,14 @@ react-app-polyfill@^1.0.6:
     raf "^3.4.1"
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
+
+react-async-script@^1.1.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-async-script/-/react-async-script-1.2.0.tgz#ab9412a26f0b83f5e2e00de1d2befc9400834b21"
+  integrity sha512-bCpkbm9JiAuMGhkqoAiC0lLkb40DJ0HOEJIku+9JDjxX3Rcs+ztEOG13wbrOskt3n2DTrjshhaQ/iay+SnGg5Q==
+  dependencies:
+    hoist-non-react-statics "^3.3.0"
+    prop-types "^15.5.0"
 
 react-calendar@^3.0.0:
   version "3.1.0"
@@ -10481,6 +10498,14 @@ react-google-picker@^0.1.0:
   integrity sha512-0y3TtinsdNwEx77Upsmh7Q4bXuBt/d/KntQDNxLOIf2v77UQQi0FBYAtAkjrkP28IOX7gfcXhdY5XXZRGHSODw==
   dependencies:
     load-script "^1.0.0"
+
+react-google-recaptcha@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-google-recaptcha/-/react-google-recaptcha-2.1.0.tgz#9f6f4954ce49c1dedabc2c532347321d892d0a16"
+  integrity sha512-K9jr7e0CWFigi8KxC3WPvNqZZ47df2RrMAta6KmRoE4RUi7Ys6NmNjytpXpg4HI/svmQJLKR+PncEPaNJ98DqQ==
+  dependencies:
+    prop-types "^15.5.0"
+    react-async-script "^1.1.1"
 
 react-idle-timer@^4.5.6:
   version "4.6.4"

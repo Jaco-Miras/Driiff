@@ -29,7 +29,7 @@ const usePostDraft = (props) => {
         updated_at: { timestamp: initTimestamp },
         title: form.title,
         partial_body: form.body,
-        clap_user_ids: [],
+        claps: [],
         author: user,
         user_reads: [],
         is_archived: 0,
