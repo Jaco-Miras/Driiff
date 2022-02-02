@@ -142,17 +142,15 @@ const InvitedUsersModal = (props) => {
   };
 
   const teamOptions = !fromRegister
-    ? Object.values(teams)
-        .filter((t) => !t.member_ids.some((id) => id === user.id))
-        .map((u) => {
-          return {
-            ...u,
-            value: u.id,
-            label: `${dictionary.teamLabel} ${u.name}`,
-            useLabel: true,
-            type: "TEAM",
-          };
-        })
+    ? Object.values(teams).map((u) => {
+        return {
+          ...u,
+          value: u.id,
+          label: `${dictionary.teamLabel} ${u.name}`,
+          useLabel: true,
+          type: "TEAM",
+        };
+      })
     : [];
 
   const handleInputChange = (e) => {
