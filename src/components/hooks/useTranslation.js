@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getHttpStatus } from "../../helpers/commonFunctions";
 import { getTranslationObject } from "../../redux/actions/globalActions";
-import { useDriff, useSettings } from "./index";
+import { useDriff, useSettings, useToaster } from "./index";
 import { isTranslationLogged } from "../../helpers/slugHelper";
 
 let cookieName = {
@@ -21,6 +21,7 @@ export const useTranslation = () => {
     setGeneralSetting,
   } = useSettings();
 
+  const toaster = useToaster();
   const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
   const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
 
@@ -63,6 +64,7 @@ export const useTranslation = () => {
         },
         (err, res) => {
           if (err) {
+            toaster.error("Error loading translations");
             //console.log(err, dictFile, "error loading dictionary file");
           }
 
