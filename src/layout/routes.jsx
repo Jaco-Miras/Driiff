@@ -19,7 +19,7 @@ export const AppRoute = ({ children, ...props }) => {
   // const push = usePushNotification();
   const history = useHistory();
   const session = useSelector((state) => state.session);
-  const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
+  //const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
 
   useEffect(() => {
     if (session.checked) {
@@ -45,8 +45,8 @@ export const AppRoute = ({ children, ...props }) => {
   }, [session.user]);
 
   // if (!session.checked || !i18nLoaded || push.loading)
-  if (!session.checked || !i18nLoaded) return null;
-
+  //if (!session.checked || !i18nLoaded) return null;
+  if (!session.checked) return null;
   if (session.authenticated && !userSettings.isLoaded) return null;
 
   return session.authenticated ? (
