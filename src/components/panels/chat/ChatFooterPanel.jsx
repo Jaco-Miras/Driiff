@@ -6,7 +6,7 @@ import { onClickSendButton, putChannel } from "../../../redux/actions/chatAction
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useZoomActions } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
@@ -179,6 +179,7 @@ const ChatFooterPanel = (props) => {
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const user = useSelector((state) => state.session.user);
 
+  const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
 
   const handleSend = () => {
