@@ -32,19 +32,37 @@ export function generateUnfurl(payload) {
 }
 
 export function saveDraft(payload) {
-  return apiCall({
-    method: "POST",
-    url: `/v1/drafts?draft_type=${payload.type}`,
-    data: payload,
-  });
+  if (payload.cancelToken) {
+    return apiCall({
+      method: "POST",
+      url: `/v1/drafts?draft_type=${payload.type}`,
+      data: payload,
+      cancelToken: payload.cancelToken,
+    });
+  } else {
+    return apiCall({
+      method: "POST",
+      url: `/v1/drafts?draft_type=${payload.type}`,
+      data: payload,
+    });
+  }
 }
 
 export function updateDraft(payload) {
-  return apiCall({
-    method: "PUT",
-    url: `/v1/drafts/${payload.draft_id}?draft_type=${payload.type}`,
-    data: payload,
-  });
+  if (payload.cancelToken) {
+    return apiCall({
+      method: "PUT",
+      url: `/v1/drafts/${payload.draft_id}?draft_type=${payload.type}`,
+      data: payload,
+      cancelToken: payload.cancelToken,
+    });
+  } else {
+    return apiCall({
+      method: "PUT",
+      url: `/v1/drafts/${payload.draft_id}?draft_type=${payload.type}`,
+      data: payload,
+    });
+  }
 }
 
 export function deleteDraft(payload) {
