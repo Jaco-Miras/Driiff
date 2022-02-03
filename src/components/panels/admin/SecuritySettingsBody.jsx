@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
 import { Loader, SvgIconFeather } from "../../common";
 import Tooltip from "react-tooltip-lite";
+import { updateSecuritySettings } from "../../../redux/actions/adminActions";
 
 const Wrapper = styled.div`
   padding: 1rem;
@@ -39,6 +40,7 @@ const SecuritySettingsBody = () => {
   const { _t } = useTranslationActions();
   const toast = useToaster();
 
+  const dispatch = useDispatch();
   const dictionary = {
     securitySettings: _t("ADMIN.SECURITY_SETTINGS", "Security settings"),
     securitySettingsDescription: _t("ADMIN.SECURITY_SETTINGS_DESCRIPTION", "Security settings description"),
@@ -56,17 +58,13 @@ const SecuritySettingsBody = () => {
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
 
-  const loginSettings = useSelector((state) => state.admin.login);
   const loginFetched = useSelector((state) => state.admin.loginFetched);
   const filters = useSelector((state) => state.admin.filters);
+  const securitySettings = useSelector((state) => state.admin.security);
 
   const { fetchLoginSettings, setAdminFilter } = useAdminActions();
 
-  const [settings, setSettings] = useState({
-    password_policy: 0,
-    invite_users: 0,
-    invite_guests: 0,
-  });
+  const [settings, setSettings] = useState(securitySettings);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -76,10 +74,6 @@ const SecuritySettingsBody = () => {
       componentIsMounted.current = false;
     };
   }, []);
-
-  useEffect(() => {
-    setSettings(loginSettings);
-  }, [loginSettings]);
 
   const passwordPolicyOptions = [
     {
@@ -116,27 +110,27 @@ const SecuritySettingsBody = () => {
   ];
 
   const handleSelectPasswordPolicy = (e) => {};
-  const handleSelectInviteUsers = (e) => {};
-  const handleSelectInviteGuests = (e) => {};
+  const handleSelectInviteUsers = (e) => {
+    setSettings({
+      ...settings,
+      invite_users: e.value,
+    });
+  };
+  const handleSelectInviteGuests = (e) => {
+    setSettings({
+      ...settings,
+      invite_guests: e.value,
+    });
+  };
 
   const handleSubmit = () => {
     setSaving(true);
-    // const payload = {
-    //   ...settings,
-    //   // custom_translation: custom_translation,
-    //   domains: selectedDomains.map((d) => d.value).toString(),
-    //   themes: JSON.stringify(themes.colors),
-    // };
-
-    // updateLoginSettings(payload, (err, res) => {
-    //   if (componentIsMounted.current) setSaving(false);
-    //   if (err) {
-    //     toast.error(dictionary.toasterUpdateLoginError);
-    //     return;
-    //   }
-    //   updateDomains(selectedDomains.map((d) => d.value));
-    //   toast.success(dictionary.loginSettingsUpdated);
-    // });
+    dispatch(
+      updateSecuritySettings(settings, () => {
+        toast.success("Security settings updated");
+        setSaving(false);
+      })
+    );
   };
 
   const toggleTooltip = () => {

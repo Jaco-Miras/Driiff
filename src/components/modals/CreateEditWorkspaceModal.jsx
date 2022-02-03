@@ -293,6 +293,7 @@ const CreateEditWorkspaceModal = (props) => {
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.allFolders);
+  const securitySettings = useSelector((state) => state.admin.security);
 
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
@@ -403,6 +404,8 @@ const CreateEditWorkspaceModal = (props) => {
       ),
     },
   ];
+
+  const hasGuestAccess = securitySettings.invite_guests === 3 ? true : user.role.id <= securitySettings.invite_guests;
 
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
@@ -544,6 +547,7 @@ const CreateEditWorkspaceModal = (props) => {
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
     const checked = !form[name];
+    if (name === "has_externals" && !hasGuestAccess) return;
     if (name === "has_externals" && !checked && (form.selectedExternals.length || invitedExternals.length)) {
       //show confirmation modal
       handleShowRemoveExternalsConfirmation();
@@ -1845,7 +1849,7 @@ const CreateEditWorkspaceModal = (props) => {
             </CheckBox>
           </div>
           <div>
-            <CheckBox type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck}>
+            <CheckBox type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
               {dictionary.workspaceWithExternals}
             </CheckBox>
           </div>

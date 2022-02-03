@@ -117,6 +117,7 @@ const InvitedUsersModal = (props) => {
   //const [phoneNumber, setPhoneNumber] = useState();
   const user = useSelector((state) => state.session.user);
   const teams = useSelector((state) => state.users.teams);
+  const securitySettings = useSelector((state) => state.admin.security);
   const [registerMode, setRegisterMode] = useState({});
   const [countryCode, setCountryCode] = useState(null);
   const [selectType, setSelectType] = useState(null);
@@ -124,6 +125,7 @@ const InvitedUsersModal = (props) => {
   const dictionary = {
     closeButton: _t("BUTTON.CLOSE", "Close"),
     availableToAdmin: _t("TOOLTIP.AVAILABLE_TO_ADMIN", "This option is only available for administrators"),
+    availableToManager: _t("TOOLTIP.AVAILABLE_TO_MANAGER", "This option is only available for managers"),
     userInvitations: _t("LABEL.USER_INVITATIONS", "User invitations"),
     firstName: _t("INVITE.FIRST_NAME", "First name"),
     lastName: _t("INVITE.LAST_NAME", "Last name"),
@@ -382,11 +384,11 @@ const InvitedUsersModal = (props) => {
   const handleSelectGuest = () => setSelectType("guest");
 
   return (
-    <ModalWrapper isOpen={modal} toggle={toggle} size={!fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin") ? "md" : "xl"} centered>
+    <ModalWrapper isOpen={modal} toggle={toggle} size={!fromRegister && !selectType && user.role.id <= securitySettings.invite_users ? "md" : "xl"} centered>
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
-        {!fromRegister && selectType === "guest" ? dictionary.guestInvitations : !fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin") ? dictionary.selectUserType : dictionary.userInvitations}
+        {!fromRegister && selectType === "guest" ? dictionary.guestInvitations : !fromRegister && !selectType && user.role.id <= securitySettings.invite_users ? dictionary.selectUserType : dictionary.userInvitations}
       </ModalHeaderSection>
-      {!fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin") && (
+      {!fromRegister && !selectType && user.role.id <= securitySettings.invite_users && (
         <ModalBody>
           <SelectUserBody className="row">
             <div className="col-md-6 d-flex justify-content-center">
@@ -414,7 +416,7 @@ const InvitedUsersModal = (props) => {
           </ModalFooter>
         </>
       )}
-      {(fromRegister || (!fromRegister && selectType === "employee" && (user.role.name === "owner" || user.role.name === "admin"))) && (
+      {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_users)) && (
         <ModalBody>
           <StyledTable className="table table-responsive">
             <tr>
@@ -503,7 +505,7 @@ const InvitedUsersModal = (props) => {
                     <PhoneInput placeholder="Enter phone number" value={item.phoneNumber} onChange={(e) => handleChangePhoneNumber(e, key)} />
                     {formResponse.valid[key] && formResponse.valid[key].phone_number === false && <InvalidPhoneLabel>{formResponse.message[key].phone_number}</InvalidPhoneLabel>}
                   </td> */}
-                  {!fromRegister && (user.role.name === "owner" || user.role.name === "admin") && (
+                  {!fromRegister && user.role.id <= securitySettings.invite_users && (
                     <td>
                       <SelectPeople options={teamOptions} value={item.teams} onChange={(e) => handleSelectTeam(e, key)} isSearchable isMulti={true} isClearable={true} />
                     </td>
@@ -524,7 +526,7 @@ const InvitedUsersModal = (props) => {
           </StyledTable>
         </ModalBody>
       )}
-      {(fromRegister || (!fromRegister && selectType === "employee" && (user.role.name === "owner" || user.role.name === "admin"))) && (
+      {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_users)) && (
         <ModalFooter>
           <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {cancelText}
@@ -535,10 +537,10 @@ const InvitedUsersModal = (props) => {
           </Button>{" "}
         </ModalFooter>
       )}
-      {!fromRegister && !(user.role.name === "owner" || user.role.name === "admin") && (
+      {!fromRegister && user.role.id > securitySettings.invite_users && (
         <>
           <ModalBody>
-            <div>{dictionary.availableToAdmin}</div>
+            <div>{securitySettings.invite_users === 1 ? dictionary.availableToAdmin : dictionary.availableToManager}</div>
           </ModalBody>
           <ModalFooter>
             <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
