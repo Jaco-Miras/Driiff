@@ -17,8 +17,8 @@ const INITIAL_STATE = {
   },
   security: {
     password_policy: 0,
-    invite_users: 0,
-    invite_guests: 0,
+    invite_users: 2,
+    invite_guests: 3,
   },
   postAccess: {
     post: null,
@@ -278,6 +278,12 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         notifications: { ...action.data },
         notificationsLoaded: true,
+      };
+    }
+    case "UPDATE_SECURITY_SETTINGS": {
+      return {
+        ...state,
+        security: action.data,
       };
     }
     default:
