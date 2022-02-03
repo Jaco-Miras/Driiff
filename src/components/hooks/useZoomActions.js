@@ -66,32 +66,31 @@ const useZoomActions = () => {
       role: zoomCreateConfig.role,
       host: true,
     };
-    client.leaveMeeting().then(() => {
-      client
-        .join({
-          apiKey: apiKeys.apiKey,
-          signature: signature,
-          meetingNumber: config.meetingNumber,
-          password: config.passWord,
-          userName: config.userName,
-          userEmail: config.userEmail,
-        })
-        .then((e) => {
-          //console.log("join success", e);
-          const microphoneBtn = document.querySelector("button[title=Audio]");
-          if (microphoneBtn) {
-            microphoneBtn.setAttribute("data-toggle", "tooltip");
-            microphoneBtn.setAttribute("data-placement", "bottom");
-            microphoneBtn.setAttribute("title", "Click on icon to unmute your microphone");
-            microphoneBtn.setAttribute("aria-label", "Click on icon to unmute your microphone");
-          }
-        })
-        .catch((e) => {
-          //console.log("join error", e);
-          if (e.reason) toaster.error(e.reason);
-          client.leaveMeeting();
-        });
-    });
+
+    client
+      .join({
+        apiKey: apiKeys.apiKey,
+        signature: signature,
+        meetingNumber: config.meetingNumber,
+        password: config.passWord,
+        userName: config.userName,
+        userEmail: config.userEmail,
+      })
+      .then((e) => {
+        //console.log("join success", e);
+        const microphoneBtn = document.querySelector("button[title=Audio]");
+        if (microphoneBtn) {
+          microphoneBtn.setAttribute("data-toggle", "tooltip");
+          microphoneBtn.setAttribute("data-placement", "bottom");
+          microphoneBtn.setAttribute("title", "Click on icon to unmute your microphone");
+          microphoneBtn.setAttribute("aria-label", "Click on icon to unmute your microphone");
+        }
+      })
+      .catch((e) => {
+        //console.log("join error", e);
+        if (e.reason) toaster.error(e.reason);
+        client.leaveMeeting();
+      });
   };
 
   const generateSignature = (config, callback) => {
