@@ -300,6 +300,7 @@ const PostModal = (props) => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const componentIsMounted = useRef(true);
+  const cancelToken = useRef(null);
 
   const user = useSelector((state) => state.session.user);
   const isExternalUser = user.type === "external";
@@ -355,18 +356,7 @@ const PostModal = (props) => {
     mustReplyUsers: [],
   });
 
-  const {
-    options: addressToOptions,
-    getDefaultAddressTo,
-    getAddressTo,
-    responsible_ids,
-    recipient_ids,
-    is_personal,
-    workspace_ids,
-    userOptions,
-    addressIds,
-    actualUsers,
-  } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -385,6 +375,7 @@ const PostModal = (props) => {
     setDraftId: setDraftId,
     savingDraft: savingDraft,
     setSavingDraft: setSavingDraft,
+    cancelToken,
   });
 
   const { dictionary } = usePostModalDictionary({
@@ -440,7 +431,10 @@ const PostModal = (props) => {
 
   const handleConfirm = () => {
     if (loading || imageLoading) return;
-
+    if (cancelToken.current) {
+      cancelToken.current.cancel("Operation canceled due to new request.");
+      cancelToken.current = null;
+    }
     setLoading(true);
     const hasExternal = form.selectedAddressTo.some((r) => {
       return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
