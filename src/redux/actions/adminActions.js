@@ -141,3 +141,7 @@ export function getNotificationSettings(payload, callback) {
 export function putNotificationSettings(payload, callback) {
   return dispatchActionToReducer(putNotificationSettingsService(payload), "PUT_NOTIFICATIONS_SETTINGS_START", "PUT_NOTIFICATIONS_SETTINGS_SUCCESS", "PUT_NOTIFICATIONS_SETTINGS_FAILURE", callback);
 }
+
+export function updateSecuritySettings(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_SECURITY_SETTINGS", payload, callback);
+}
