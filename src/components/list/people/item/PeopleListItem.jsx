@@ -336,9 +336,7 @@ const PeopleListItem = (props) => {
                       ) : null}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && notificationsLoaded && notificationSettings.email && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
-                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && notificationsLoaded && notificationSettings.email && (
-                        <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>
-                      )}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
                       {!showInactive && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
                       {onDeleteTeamMember && <div onClick={handleRemoveTeamMember}>{dictionary.removeTeamMember}</div>}
                     </MoreOptions>

@@ -7,6 +7,7 @@ import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
 import { TodoCheckBox } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import PostApprovalLabels from "./PostApprovalLabels";
 //import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
@@ -350,6 +351,7 @@ const PostItemPanel = (props) => {
             </PostReplyCounter>
           </div>
         </div>
+        {post.users_approval.length > 0 && post.author.id === user.id && <PostApprovalLabels post={post} />}
         <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
         <div className="d-flex">
           {post.type !== "draft_post" && !disableOptions && (

@@ -67,6 +67,8 @@ const UserOptions = (props) => {
 
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
   const roles = useSelector((state) => state.users.roles);
+  const notificationSettings = useSelector((state) => state.admin.notifications);
+  const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
 
   const actions = useUserOptions();
 
@@ -277,7 +279,7 @@ const UserOptions = (props) => {
       {(user.active && user.hasOwnProperty("has_accepted") && user.has_accepted && usersWithoutActivity.some((u) => u.user_id === user.id)) || (user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external") ? (
         <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>
       ) : null}
-      {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
+      {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && notificationsLoaded && notificationSettings.email && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
       {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
       {user.active && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
       {user.active && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
