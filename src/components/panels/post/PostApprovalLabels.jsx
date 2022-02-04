@@ -22,10 +22,14 @@ const Wrapper = styled.div`
       overflow: auto;
       opacity: 0;
       max-height: 0;
+      max-width: 200px;
+      text-align: left;
 
       &:hover {
         opacity: 1;
         max-height: 175px;
+        max-width: 200px;
+        text-align: left;
       }
 
       .dark & {
@@ -61,6 +65,8 @@ const Wrapper = styled.div`
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
       max-height: 175px;
+      max-width: 200px;
+      text-align: left;
     }
   }
 `;
