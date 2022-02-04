@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   showAboutModal: false,
   flipper: true,
   user: {},
+  allFoldersLoaded: false,
   allFolders: {},
   workspaces: {},
   activeTopic: null,
@@ -3623,6 +3624,7 @@ export default (state = INITIAL_STATE, action) => {
           };
           return acc;
         }, {}),
+        allFoldersLoaded: true,
       };
     }
     case "INCOMING_UPDATED_TEAM":

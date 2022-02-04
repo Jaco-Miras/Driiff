@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   user: null,
   i18nLoaded: false,
   recipients: [],
+  recipientsLoaded: false,
   isLoading: false,
   isBrowserActive: true,
   modals: {},
@@ -114,6 +115,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_ALL_RECIPIENTS_SUCCESS": {
       return {
         ...state,
+        recipientsLoaded: true,
         recipients: action.data.recipients.filter((r) => {
           if (typeof r.name === "string" || r.name instanceof String) {
             return true;
