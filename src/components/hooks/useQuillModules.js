@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { osName } from "react-device-detect";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import workspaceIcon from "../../assets/icon/people_group/l/active.svg";
@@ -9,6 +9,7 @@ import { uploadDocument } from "../../redux/services/global";
 import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
+import { getAllRecipients } from "../../redux/actions/globalActions";
 
 const useQuillModules = ({
   mode,
@@ -24,10 +25,12 @@ const useQuillModules = ({
   post = null,
   setImageLoading = null,
 }) => {
+  const dispatch = useDispatch();
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
   const recipients = useSelector((state) => state.global.recipients);
+  const recipientsLoaded = useSelector((state) => state.global.recipientsLoaded);
   const userMentions = useSelector((state) => state.users.users);
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -348,6 +351,9 @@ const useQuillModules = ({
 
   useEffect(() => {
     handleSetModule();
+    if (!recipientsLoaded) {
+      dispatch(getAllRecipients());
+    }
   }, []);
 
   useEffect(() => {
