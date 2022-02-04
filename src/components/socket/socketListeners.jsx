@@ -215,10 +215,6 @@ class SocketListeners extends Component {
     this.publishChannelId = React.createRef(null);
   }
 
-  refetchPosts = () => {
-    this.props.refetchPosts({ skip: 0, limit: 10 });
-  };
-
   refetchPostComments = () => {
     Object.keys(this.props.postComments).forEach((post_id) => {
       this.props.refetchPostComments({ post_id: post_id });
@@ -226,7 +222,15 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
-    this.props.getUnreadNotificationCounterEntries();
+    this.props.getUnreadNotificationCounterEntries({}, (err, res) => {
+      if (err) return;
+      if (res) {
+        const generalPost = res.data.find((d) => d.entity_type === "GENERAL_POST");
+        if (generalPost && generalPost.count > 0) {
+          this.props.refetchPosts({ skip: 0, limit: generalPost.count });
+        }
+      }
+    });
     //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
@@ -274,7 +278,7 @@ class SocketListeners extends Component {
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
       this.refetchOtherMessages();
-      this.refetchPosts();
+      //this.refetchPosts();
       this.refetchPostComments();
       this.props.getFavoriteWorkspaceCounters();
     });
