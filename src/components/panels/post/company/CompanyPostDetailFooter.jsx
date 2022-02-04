@@ -145,6 +145,11 @@ const NoReply = styled.div`
   .request-approval {
     color: ${(props) => props.theme.colors.primary};
   }
+  .alert-primary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const ClosedLabel = styled.div`

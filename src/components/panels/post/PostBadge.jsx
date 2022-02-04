@@ -85,7 +85,7 @@ const PostBadge = (props) => {
       )}
       {post.post_approval_label && !post.is_close && (
         <div className={`${className} mr-3 d-sm-inline`}>
-          <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} ${isBadgePill ? "badge-pill" : ""}`}>{renderApprovalLabel(post.post_approval_label)}</div>
+          <div className={`badge ${post.post_approval_label === "ACCEPTED" ? "badge-success" : "badge-primary"} badge-pill`}>{renderApprovalLabel(post.post_approval_label)}</div>
         </div>
       )}
       {post.is_close && (
