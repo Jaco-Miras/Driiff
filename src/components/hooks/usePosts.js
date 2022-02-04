@@ -62,39 +62,39 @@ const usePosts = () => {
         actions.getPosts(payload, cb);
         actions.fetchPostList();
 
-        // let filterCb = (err, res) => {
-        //   if (componentIsMounted.current) {
-        //     setFetchingPost(false);
-        //   }
-        //   if (err) return;
-        //   let files = res.data.posts.map((p) => p.files);
-        //   if (files.length) {
-        //     files = files.flat();
-        //   }
-        //   dispatch(
-        //     addToWorkspacePosts({
-        //       topic_id: parseInt(params.workspaceId),
-        //       posts: res.data.posts,
-        //       filter: res.data.posts,
-        //       files,
-        //       filters: {
-        //         archived: {
-        //           active: false,
-        //           skip: res.data.next_skip,
-        //           hasMore: res.data.total_take === 25,
-        //         },
-        //       },
-        //     })
-        //   );
-        // };
+        let filterCb = (err, res) => {
+          if (componentIsMounted.current) {
+            setFetchingPost(false);
+          }
+          if (err) return;
+          let files = res.data.posts.map((p) => p.files);
+          if (files.length) {
+            files = files.flat();
+          }
+          dispatch(
+            addToWorkspacePosts({
+              topic_id: parseInt(params.workspaceId),
+              posts: res.data.posts,
+              filter: res.data.posts,
+              files,
+              filters: {
+                archived: {
+                  active: false,
+                  skip: res.data.next_skip,
+                  hasMore: res.data.total_take === 15,
+                },
+              },
+            })
+          );
+        };
 
-        // actions.getPosts(
-        //   {
-        //     filters: ["post", "archived"],
-        //     topic_id: parseInt(params.workspaceId),
-        //   },
-        //   filterCb
-        // );
+        actions.getPosts(
+          {
+            filters: ["post", "archived"],
+            topic_id: parseInt(params.workspaceId),
+          },
+          filterCb
+        );
 
         let unreadCb = (err, res) => {
           if (componentIsMounted.current) {
@@ -204,8 +204,8 @@ const usePosts = () => {
           if (activeFilter === "all") {
             return !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "inbox") {
-            const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
             if (activeTopic && !activeTopic.is_active) {
+              const unreadPostIds = wsPosts[params.workspaceId].unreadPostIds ? wsPosts[params.workspaceId].unreadPostIds : [];
               // return only post with action
               // const isApprover = p.users_approval.some((ua) => ua.id === user.id);
               // const hasMentioned = p.mention_ids && p.mention_ids.some((id) => user.id === id);
@@ -214,7 +214,7 @@ const usePosts = () => {
               // const showPost = hasMentioned || mustRead || mustReply || isApprover;
               return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
             } else {
-              return !p.hasOwnProperty("draft_type") && unreadPostIds.some((id) => id === p.id) && !p.is_close;
+              return !p.hasOwnProperty("draft_type") && !p.is_close;
             }
 
             // if (search !== "") {
