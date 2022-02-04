@@ -81,7 +81,7 @@ const usePosts = () => {
                 archived: {
                   active: false,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               },
             })
@@ -116,7 +116,7 @@ const usePosts = () => {
                 filters: {
                   unreadPosts: {
                     skip: res.data.next_skip,
-                    hasMore: res.data.total_take === 25,
+                    hasMore: res.data.total_take === 15,
                   },
                 },
               },
@@ -132,7 +132,7 @@ const usePosts = () => {
             filters: ["green_dot"],
             topic_id: parseInt(params.workspaceId),
             skip: 0,
-            limit: 25,
+            limit: 15,
           },
           unreadCb
         );
@@ -308,6 +308,7 @@ const usePosts = () => {
     counters: counters,
     filters: activeFilters,
     postLists: postsLists,
+    showLoader: !wsPosts.hasOwnProperty(params.workspaceId),
   };
 };
 
