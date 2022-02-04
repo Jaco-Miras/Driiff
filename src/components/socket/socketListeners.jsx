@@ -956,7 +956,6 @@ class SocketListeners extends Component {
       .listen(".post-comment-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
-            this.props.incomingComment(e);
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -979,9 +978,6 @@ class SocketListeners extends Component {
                     claps: [],
                     is_unread: 1,
                   };
-                  if (post.unread_count === 0 || post.is_unread === 0) {
-                    this.props.updateUnreadCounter({ general_post: 1 });
-                  }
                   this.props.incomingPost(post);
                 });
               } else {
@@ -1022,6 +1018,7 @@ class SocketListeners extends Component {
                 });
               });
             }
+            this.props.incomingComment(e);
             break;
           }
           case "POST_COMMENT_DELETE": {
