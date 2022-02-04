@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
-import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPostsEmptyState, CompanyPosts } from "../post/company";
+import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
 
 const Wrapper = styled.div`
@@ -109,7 +108,7 @@ const CompanyPostsPanel = (props) => {
   const history = useHistory();
   const toaster = useToaster();
 
-  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters, showLoader } = useCompanyPosts();
   //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -307,7 +306,7 @@ const CompanyPostsPanel = (props) => {
     actions.setCompanyFilterPosts(payload);
   };
 
-  if (posts === null) return <></>;
+  //if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       {/* {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
@@ -380,8 +379,10 @@ const CompanyPostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
-            <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
+          {showLoader ? (
+            <LoaderContainer className={"card initial-load"}>
+              <Loader />
+            </LoaderContainer>
           ) : (
             <>
               {post && params.hasOwnProperty("postId") ? (
