@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
-import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
+import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace, getAllWorkspaceFolders } from "../../redux/actions/workspaceActions";
 import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
@@ -303,6 +303,7 @@ const CreateEditWorkspaceModal = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.allFolders);
   const securitySettings = useSelector((state) => state.admin.security);
+  const allFoldersLoaded = useSelector((state) => state.workspaces.allFoldersLoaded);
 
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
@@ -1462,6 +1463,9 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   useEffect(() => {
+    if (!allFoldersLoaded) {
+      dispatch(getAllWorkspaceFolders());
+    }
     let currentUser = null;
     if (Object.values(users).length) {
       currentUser = {
