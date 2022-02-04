@@ -226,7 +226,7 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
-    this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+    this.props.getUnreadNotificationCounterEntries();
     //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
@@ -970,7 +970,6 @@ class SocketListeners extends Component {
               }
             }
             if (e.author.id !== this.props.user.id) {
-              this.props.updateUnreadCounter({ general_post: 1 });
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
@@ -980,8 +979,18 @@ class SocketListeners extends Component {
                     claps: [],
                     is_unread: 1,
                   };
+                  if (post.unread_count === 0 || post.is_unread === 0) {
+                    this.props.updateUnreadCounter({ general_post: 1 });
+                  }
                   this.props.incomingPost(post);
                 });
+              } else {
+                const post = this.props.posts[e.post_id];
+                if (post) {
+                  if (post.unread_count === 0 || post.is_unread === 0) {
+                    this.props.updateUnreadCounter({ general_post: 1 });
+                  }
+                }
               }
               if (isSafari) {
                 if (this.props.notificationsOn) {

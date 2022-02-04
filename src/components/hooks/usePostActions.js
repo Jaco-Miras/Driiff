@@ -295,7 +295,6 @@ const usePostActions = () => {
 
             if (res) {
               dispatch(updateUnreadCounter({ general_post: -1 }));
-              //dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -441,7 +440,6 @@ const usePostActions = () => {
             })
           );
           dispatch(updateUnreadCounter({ general_post: -1 }));
-          //dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
         })
       );
     } else {

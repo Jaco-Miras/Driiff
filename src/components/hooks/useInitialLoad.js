@@ -47,7 +47,7 @@ const useInitialLoad = () => {
           })
         );
       }
-      dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
+      dispatch(getUnreadNotificationCounterEntries());
       dispatch(getQuickLinks());
       dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());

@@ -112,7 +112,7 @@ const Posts = (props) => {
       topic_id: workspace.id,
     });
     setCheckedPosts([]);
-    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    actions.getUnreadNotificationEntries();
   };
 
   const handleArchiveAll = () => {

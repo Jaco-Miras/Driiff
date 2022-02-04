@@ -110,7 +110,7 @@ const CompanyPosts = (props) => {
       selected_post_ids: checkedPosts,
     });
     setCheckedPosts([]);
-    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    actions.getUnreadNotificationEntries();
   };
 
   const handleArchiveAll = () => {
