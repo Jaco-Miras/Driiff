@@ -38,6 +38,16 @@ const Wrapper = styled.div`
       scrollbar-width: none;
     }
   }
+
+  .all-action-button {
+    background: none;
+    color: #828282;
+    padding: 10px 5px 5px 5px;
+    font-weight: 500;
+    .dark & {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
   .unset-flex {
     flex: unset !important;
   }
@@ -208,13 +218,11 @@ const CompanyPostsPanel = (props) => {
     allOthers: _t("POST.ALL_OTHERS", "All others"),
     sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
-    internalComment: _t("COMMENT.INTERNAL_COMMENT", "Internal comment"),
-    fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
-    filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
     selectAll: _t("BUTTON.SELECT_ALL", "Select all"),
     remove: _t("BUTTON.REMOVE", "Remove"),
+    fileAutomaticallyRemoved: _t("FILE.FILE_AUTOMATICALLY_REMOVED_LABEL", "File automatically removed by owner request"),
+    filesAutomaticallyRemoved: _t("FILE.FILES_AUTOMATICALLY_REMOVED_LABEL", "Files automatically removed by owner request"),
     errorLoadingPost: _t("TOASTER.ERROR_LOADING_POST", "Error loading post"),
-    inProgress: _t("POST.IN_PROGRESS", "In progress"),
     teamLabel: _t("TEAM", "Team"),
     new: _t("POST.NEW", "New"),
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
