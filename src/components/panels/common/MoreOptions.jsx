@@ -55,6 +55,10 @@ const MoreTooltip = styled.div`
     color: ${(props) => (props.disableHoverEffect ? "#fff" : props.theme.colors.primary)};
   }
 
+  button.btn > svg:hover {
+    color: ${(props) => (props.disableHoverEffect ? "#fff" : props.theme.colors.primary)};
+  }
+
   > div {
     text-align: left;
     padding: 4px 24px;
