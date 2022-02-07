@@ -24,10 +24,11 @@ const useInitialLoad = () => {
         getUsers({}, () => {
           dispatch(getArchivedUsers());
           dispatch(getTeams());
+          dispatch(getQuickLinks());
+          dispatch(getToDoDetail());
         })
       );
       dispatch(getExternalUsers());
-      //dispatch(getAllWorkspaceFolders());
       dispatch(getDrafts());
       if (Object.keys(notifications).length === 0) {
         dispatch(
@@ -38,8 +39,6 @@ const useInitialLoad = () => {
         );
       }
       dispatch(getUnreadNotificationCounterEntries());
-      dispatch(getQuickLinks());
-      dispatch(getToDoDetail());
       dispatch(getGlobalRecipients());
       dispatch(getNotificationSettings());
       dispatch(getSecuritySettings());

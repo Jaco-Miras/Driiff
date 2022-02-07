@@ -62,39 +62,39 @@ const usePosts = () => {
         actions.getPosts(payload, cb);
         actions.fetchPostList();
 
-        let filterCb = (err, res) => {
-          if (componentIsMounted.current) {
-            setFetchingPost(false);
-          }
-          if (err) return;
-          let files = res.data.posts.map((p) => p.files);
-          if (files.length) {
-            files = files.flat();
-          }
-          dispatch(
-            addToWorkspacePosts({
-              topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts,
-              filter: res.data.posts,
-              files,
-              filters: {
-                archived: {
-                  active: false,
-                  skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 15,
-                },
-              },
-            })
-          );
-        };
+        // let filterCb = (err, res) => {
+        //   if (componentIsMounted.current) {
+        //     setFetchingPost(false);
+        //   }
+        //   if (err) return;
+        //   let files = res.data.posts.map((p) => p.files);
+        //   if (files.length) {
+        //     files = files.flat();
+        //   }
+        //   dispatch(
+        //     addToWorkspacePosts({
+        //       topic_id: parseInt(params.workspaceId),
+        //       posts: res.data.posts,
+        //       filter: res.data.posts,
+        //       files,
+        //       filters: {
+        //         archived: {
+        //           active: false,
+        //           skip: res.data.next_skip,
+        //           hasMore: res.data.total_take === 15,
+        //         },
+        //       },
+        //     })
+        //   );
+        // };
 
-        actions.getPosts(
-          {
-            filters: ["post", "archived"],
-            topic_id: parseInt(params.workspaceId),
-          },
-          filterCb
-        );
+        // actions.getPosts(
+        //   {
+        //     filters: ["post", "archived"],
+        //     topic_id: parseInt(params.workspaceId),
+        //   },
+        //   filterCb
+        // );
 
         let unreadCb = (err, res) => {
           if (componentIsMounted.current) {
