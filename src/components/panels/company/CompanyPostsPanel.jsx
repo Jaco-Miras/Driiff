@@ -387,7 +387,7 @@ const CompanyPostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {showLoader ? (
+          {showLoader && !post ? (
             <LoaderContainer className={"card initial-load"}>
               <Loader />
             </LoaderContainer>

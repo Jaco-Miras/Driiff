@@ -403,8 +403,6 @@ const PostDetail = (props) => {
     return false;
   };
 
-  //const isMember = post.users_responsible.some((u) => u.id === user.id);
-
   useEffect(() => {
     readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);

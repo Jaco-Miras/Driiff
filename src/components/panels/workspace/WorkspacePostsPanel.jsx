@@ -101,18 +101,6 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-// const MaintenanceWrapper = styled.div`
-//   height: 100%;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   text-align: center;
-//   flex-flow: column;
-//   > div {
-//     width: 100%;
-//   }
-// `;
-
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -125,14 +113,10 @@ const WorkspacePostsPanel = (props) => {
   useFetchWsCount();
 
   const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag, showLoader } = usePosts();
-  //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
 
   const [loadPosts, setLoadPosts] = useState(false);
   const [activePostListName, setActivePostListName] = useState({});
-
-  //const postAccess = useSelector((state) => state.admin.postAccess);
-  //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const componentIsMounted = useRef(true);
 
@@ -153,6 +137,30 @@ const WorkspacePostsPanel = (props) => {
       componentIsMounted.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "inbox",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            if (params.folderId) {
+              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            } else {
+              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            }
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
@@ -250,30 +258,6 @@ const WorkspacePostsPanel = (props) => {
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
   };
-
-  useEffect(() => {
-    if (params.postId && !post) {
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
-        if (componentIsMounted.current) {
-          if (err) {
-            // set to all
-            let payload = {
-              topic_id: workspace.id,
-              filter: "inbox",
-              tag: null,
-            };
-            dispatch(updateWorkspacePostFilterSort(payload));
-            if (params.folderId) {
-              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            } else {
-              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            }
-            toaster.error(dictionary.errorLoadingPost);
-          }
-        }
-      });
-    }
-  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
@@ -496,7 +480,7 @@ const WorkspacePostsPanel = (props) => {
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
-  if (posts === null) return <></>;
+  // if (posts === null) return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
@@ -610,7 +594,7 @@ const WorkspacePostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {showLoader ? (
+          {showLoader && !post ? (
             <LoaderContainer className={"card initial-load"}>
               <Loader />
             </LoaderContainer>
