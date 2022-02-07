@@ -66,6 +66,7 @@ const useZoomActions = () => {
       role: zoomCreateConfig.role,
       host: true,
     };
+
     client.leaveMeeting().then(() => {
       client
         .join({
