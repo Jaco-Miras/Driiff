@@ -82,7 +82,7 @@ const StyledTable = styled.table`
 
 const SelectUserBody = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
   .col-md-6 {
     flex-flow: column;
