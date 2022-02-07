@@ -387,23 +387,13 @@ const InvitedUsersModal = (props) => {
     <ModalWrapper
       isOpen={modal}
       toggle={toggle}
-      size={(!fromRegister && !selectType && user.role.id <= securitySettings.invite_users) || (!fromRegister && user.role.id > securitySettings.invite_users) || (!fromRegister && selectType === "guest") ? "md" : "xl"}
+      size={(!fromRegister && !selectType && user.role.id <= securitySettings.invite_internal) || (!fromRegister && user.role.id > securitySettings.invite_internal) || (!fromRegister && selectType === "guest") ? "md" : "xl"}
       centered
     >
-      {/* <ModalWrapper
-      isOpen={modal}
-      toggle={toggle}
-      size={
-        (!fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin")) || (!fromRegister && !(user.role.name === "owner" || user.role.name === "admin")) || (!fromRegister && selectType === "guest")
-          ? "md"
-          : "xl"
-      }
-      centered
-    > */}
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
-        {!fromRegister && selectType === "guest" ? dictionary.guestInvitations : !fromRegister && !selectType && user.role.id <= securitySettings.invite_users ? dictionary.selectUserType : dictionary.userInvitations}
+        {!fromRegister && selectType === "guest" ? dictionary.guestInvitations : !fromRegister && !selectType && user.role.id <= securitySettings.invite_internal ? dictionary.selectUserType : dictionary.userInvitations}
       </ModalHeaderSection>
-      {!fromRegister && !selectType && user.role.id <= securitySettings.invite_users && (
+      {!fromRegister && !selectType && user.role.id <= securitySettings.invite_internal && (
         <ModalBody>
           <SelectUserBody className="row">
             <div className="col-md-6 d-flex justify-content-center">
@@ -431,7 +421,7 @@ const InvitedUsersModal = (props) => {
           </ModalFooter>
         </>
       )}
-      {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_users)) && (
+      {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_internal)) && (
         <ModalBody>
           <StyledTable className="table table-responsive">
             <tr>
@@ -520,7 +510,7 @@ const InvitedUsersModal = (props) => {
                     <PhoneInput placeholder="Enter phone number" value={item.phoneNumber} onChange={(e) => handleChangePhoneNumber(e, key)} />
                     {formResponse.valid[key] && formResponse.valid[key].phone_number === false && <InvalidPhoneLabel>{formResponse.message[key].phone_number}</InvalidPhoneLabel>}
                   </td> */}
-                  {!fromRegister && user.role.id <= securitySettings.invite_users && (
+                  {!fromRegister && user.role.id <= securitySettings.invite_internal && (
                     <td>
                       <SelectPeople options={teamOptions} value={item.teams} onChange={(e) => handleSelectTeam(e, key)} isSearchable isMulti={true} isClearable={true} />
                     </td>
@@ -541,7 +531,7 @@ const InvitedUsersModal = (props) => {
           </StyledTable>
         </ModalBody>
       )}
-      {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_users)) && (
+      {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_internal)) && (
         <ModalFooter>
           <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {cancelText}
@@ -552,10 +542,10 @@ const InvitedUsersModal = (props) => {
           </Button>{" "}
         </ModalFooter>
       )}
-      {!fromRegister && user.role.id > securitySettings.invite_users && (
+      {!fromRegister && user.role.id > securitySettings.invite_internal && (
         <>
           <ModalBody>
-            <div>{securitySettings.invite_users === 1 ? dictionary.availableToAdmin : dictionary.availableToManager}</div>
+            <div>{securitySettings.invite_internal === 1 ? dictionary.availableToAdmin : dictionary.availableToManager}</div>
           </ModalBody>
           <ModalFooter>
             <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>

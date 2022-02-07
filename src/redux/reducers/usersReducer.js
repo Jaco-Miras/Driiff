@@ -454,7 +454,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         users: {
           ...state.users,
-          ...Object.values(action.data.result).reduce((acc, user) => {
+          ...Object.values(action.data.users).reduce((acc, user) => {
             if (!state.users[user.id]) {
               acc[user.id] = user;
             }

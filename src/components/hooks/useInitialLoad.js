@@ -4,7 +4,7 @@ import { getNotifications, getAllSnoozedNotification } from "../../redux/actions
 import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../redux/actions/userAction";
 import { getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, adjustHuddleDate, getUnpublishedAnswers, getSkippedAnswers, addHasUnpublishedAnswers } from "../../redux/actions/chatActions";
-import { getNotificationSettings } from "../../redux/actions/adminActions";
+import { getNotificationSettings, getSecuritySettings } from "../../redux/actions/adminActions";
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
@@ -50,7 +50,7 @@ const useInitialLoad = () => {
       dispatch(getUnreadNotificationCounterEntries());
       dispatch(getGlobalRecipients());
       dispatch(getNotificationSettings());
-      if (user && user.type === "internal") dispatch(getCompanyChannel());
+      dispatch(getSecuritySettings());
     };
 
     if (user && user.type === "internal") dispatch(getCompanyChannel());

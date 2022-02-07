@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
-import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
+import { useTranslationActions, useToaster } from "../../hooks";
 import { Loader, SvgIconFeather } from "../../common";
 import Tooltip from "react-tooltip-lite";
-import { updateSecuritySettings } from "../../../redux/actions/adminActions";
+import { putSecuritySettings } from "../../../redux/actions/adminActions";
 
 const Wrapper = styled.div`
   padding: 1rem;
@@ -48,32 +48,33 @@ const SecuritySettingsBody = () => {
     passwordRefreshPolicyTooltip: _t("TOOLTIP.PASSWORD_POLICY", "Password refresh policy"),
     whoCanInviteUsers: _t("ADMIN.WHO_CAN_INVITE_USERS", "Who can invite users?"),
     whoCanInviteUsersTooltip: _t("TOOLTIP.WHO_CAN_INVITE_USERS", "Who can invite users?"),
-    whoCanInviteGuests: _t("ADMIN.WHO_CAN_INVITE_USERS", "Who can invite guests?"),
+    whoCanInviteGuests: _t("ADMIN.WHO_CAN_INVITE_GUESTS", "Who can invite guests?"),
     whoCanInviteGuestsTooltip: _t("TOOLTIP.WHO_CAN_INVITE_GUESTS", "Who can invite guests?"),
     saveLogin: _t("ADMIN.SAVE_LOGIN", "Save login"),
   };
 
-  const componentIsMounted = useRef(true);
+  //const componentIsMounted = useRef(true);
 
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
 
-  const loginFetched = useSelector((state) => state.admin.loginFetched);
-  const filters = useSelector((state) => state.admin.filters);
+  const securityLoaded = useSelector((state) => state.admin.securityLoaded);
+  //const filters = useSelector((state) => state.admin.filters);
   const securitySettings = useSelector((state) => state.admin.security);
 
-  const { fetchLoginSettings, setAdminFilter } = useAdminActions();
+  //const { fetchLoginSettings, setAdminFilter } = useAdminActions();
 
-  const [settings, setSettings] = useState(securitySettings);
-  const [saving, setSaving] = useState(false);
+  const [settings, setSettings] = useState({
+    password_policy: null,
+    invite_internal: null,
+    invite_guest: null,
+  });
 
   useEffect(() => {
-    setAdminFilter({ filters: { ...filters, settings: true } });
-    if (!loginFetched) fetchLoginSettings({});
-    return () => {
-      componentIsMounted.current = false;
-    };
-  }, []);
+    if (securityLoaded) setSettings(securitySettings);
+  }, [securityLoaded, securitySettings]);
+
+  const [saving, setSaving] = useState(false);
 
   const passwordPolicyOptions = [
     {
@@ -109,24 +110,30 @@ const SecuritySettingsBody = () => {
     },
   ];
 
-  const handleSelectPasswordPolicy = (e) => {};
+  const handleSelectPasswordPolicy = (e) => {
+    setSettings({
+      ...settings,
+      password_policy: e.value,
+    });
+  };
+
   const handleSelectInviteUsers = (e) => {
     setSettings({
       ...settings,
-      invite_users: e.value,
+      invite_internal: e.value,
     });
   };
   const handleSelectInviteGuests = (e) => {
     setSettings({
       ...settings,
-      invite_guests: e.value,
+      invite_guest: e.value,
     });
   };
 
   const handleSubmit = () => {
     setSaving(true);
     dispatch(
-      updateSecuritySettings(settings, () => {
+      putSecuritySettings(settings, () => {
         toast.success("Security settings updated");
         setSaving(false);
       })
@@ -144,70 +151,69 @@ const SecuritySettingsBody = () => {
     <Wrapper>
       <h4>{dictionary.securitySettings}</h4>
       <h6 className="mb-3">{dictionary.securitySettingsDescription}</h6>
-      {/* {!loginFetched && (
+      {!securityLoaded && (
         <LoaderContainer className={"initial-load"}>
           <Loader />
         </LoaderContainer>
-      )} */}
+      )}
+      {securityLoaded && (
+        <>
+          <div>
+            <LabelInfoWrapper>
+              <label>{dictionary.passwordRefreshPolicy}</label>{" "}
+              <Tooltip onToggle={toggleTooltip} content={dictionary.passwordRefreshPolicyTooltip}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={passwordPolicyOptions.find((o) => o.value === settings.password_policy)}
+              onChange={handleSelectPasswordPolicy}
+              options={passwordPolicyOptions}
+            />
+          </div>
+          <div>
+            <LabelInfoWrapper>
+              <label>{dictionary.whoCanInviteUsers}</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.whoCanInviteUsersTooltip}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={roleOptions.find((o) => o.value === settings.invite_internal)}
+              onChange={handleSelectInviteUsers}
+              options={roleOptions}
+            />
+          </div>
+          <div>
+            <LabelInfoWrapper>
+              <label>{dictionary.whoCanInviteGuests}</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.whoCanInviteGuestsTooltip}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={roleOptions.find((o) => o.value === settings.invite_guest)}
+              onChange={handleSelectInviteGuests}
+              options={roleOptions}
+            />
+          </div>
 
-      <>
-        <div>
-          <LabelInfoWrapper>
-            <label>{dictionary.passwordRefreshPolicy}</label>{" "}
-            <Tooltip onToggle={toggleTooltip} content={dictionary.passwordRefreshPolicyTooltip}>
-              <SvgIconFeather icon="info" />
-            </Tooltip>
-          </LabelInfoWrapper>
-          <Select
-            className={"react-select-container"}
-            classNamePrefix="react-select"
-            styles={dark_mode === "0" ? lightTheme : darkTheme}
-            value={passwordPolicyOptions.find((o) => o.value === settings.password_policy)}
-            onChange={handleSelectPasswordPolicy}
-            options={passwordPolicyOptions}
-          />
-        </div>
-        <div>
-          <LabelInfoWrapper>
-            <label>{dictionary.whoCanInviteUsers}</label>
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.whoCanInviteUsersTooltip}>
-              <SvgIconFeather icon="info" />
-            </Tooltip>
-          </LabelInfoWrapper>
-          <Select
-            className={"react-select-container"}
-            classNamePrefix="react-select"
-            styles={dark_mode === "0" ? lightTheme : darkTheme}
-            value={roleOptions.find((o) => o.value === settings.invite_users)}
-            onChange={handleSelectInviteUsers}
-            options={roleOptions}
-          />
-        </div>
-        <div>
-          <LabelInfoWrapper>
-            <label>{dictionary.whoCanInviteGuests}</label>
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.whoCanInviteGuestsTooltip}>
-              <SvgIconFeather icon="info" />
-            </Tooltip>
-          </LabelInfoWrapper>
-          <Select
-            className={"react-select-container"}
-            classNamePrefix="react-select"
-            styles={dark_mode === "0" ? lightTheme : darkTheme}
-            value={roleOptions.find((o) => o.value === settings.invite_guests)}
-            onChange={handleSelectInviteGuests}
-            options={roleOptions}
-          />
-        </div>
-
-        <div className="mt-2">
-          <button className="btn btn-primary" onClick={handleSubmit} disabled={saving || !loginFetched}>
-            {dictionary.saveLogin}
-          </button>
-        </div>
-      </>
-
-      <div></div>
+          <div className="mt-2">
+            <button className="btn btn-primary" onClick={handleSubmit} disabled={saving || !securityLoaded}>
+              {dictionary.saveLogin}
+            </button>
+          </div>
+        </>
+      )}
     </Wrapper>
   );
 };

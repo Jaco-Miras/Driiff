@@ -187,3 +187,18 @@ export function putNotificationSettings(payload) {
     data: payload,
   });
 }
+
+export function getSecuritySettings(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/security-settings",
+  });
+}
+
+export function putSecuritySettings(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/security-settings",
+    data: payload,
+  });
+}
