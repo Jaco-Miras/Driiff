@@ -405,7 +405,7 @@ const CreateEditWorkspaceModal = (props) => {
     },
   ];
 
-  const hasGuestAccess = securitySettings.invite_guests === 3 ? true : user.role.id <= securitySettings.invite_guests;
+  const hasGuestAccess = securitySettings.invite_guest === 3 ? true : user.role.id <= securitySettings.invite_guest;
 
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
@@ -473,6 +473,7 @@ const CreateEditWorkspaceModal = (props) => {
     guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
     workspaceIsUnarchived: _t("TOASTER.WORKSPACE_IS_UNARCHIVED", "workpace is un-archived"),
     workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
+    disabledWorkspaceExternalsInfo: _t("WORKSPACE.NOT_ALLOWED_INVITE_INFO", "Your account is not allowed to invite people. Contact your administrator."),
   };
 
   const _validateName = useCallback(() => {
@@ -1856,11 +1857,15 @@ const CreateEditWorkspaceModal = (props) => {
           <div style={{ position: "relative" }}>
             <ToolTip
               content={
-                <div>
-                  {dictionary.workspaceWithExternalsInfo1}
-                  <br />
-                  {dictionary.workspaceWithExternalsInfo2}
-                </div>
+                hasGuestAccess ? (
+                  <div>
+                    {dictionary.workspaceWithExternalsInfo1}
+                    <br />
+                    {dictionary.workspaceWithExternalsInfo2}
+                  </div>
+                ) : (
+                  dictionary.disabledWorkspaceExternalsInfo
+                )
               }
             >
               <SvgIconFeather icon="info" width="16" height="16" />
