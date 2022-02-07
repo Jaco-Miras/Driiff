@@ -39,6 +39,7 @@ import {
   addTeamMember as addTeamMemberService,
   removeTeamMember as removeTeamMemberService,
   createTeamChannel as createTeamChannelService,
+  searchUsers as searchUsersService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -259,4 +260,8 @@ export function createTeamChannel(payload, callback) {
 
 export function incomingRemovedTeamMember(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMOVED_TEAM_MEMBER", payload, callback);
+}
+
+export function searchUsers(payload, callback) {
+  return dispatchActionToReducer(searchUsersService(payload), "SEARCH_USERS_START", "SEARCH_USERS_SUCCESS", "SEARCH_USERS_FAILURE", callback);
 }

@@ -117,6 +117,7 @@ export {
   addTeamMember,
   removeTeamMember,
   createTeamChannel,
+  searchUsers,
 } from "./user";
 
 export {

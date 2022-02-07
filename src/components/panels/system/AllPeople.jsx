@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { PeopleListItem } from "../../list/people/item";
 import { CustomInput } from "reactstrap";
 import SearchForm from "../../forms/SearchForm";
 import { useToaster } from "../../hooks";
+import axios from "axios";
+import { searchUsers } from "../../../redux/actions/userAction";
 
 const Search = styled(SearchForm)`
   //width: 50%;
@@ -29,11 +31,13 @@ const PeopleSearch = styled.div`
 const AllPeople = (props) => {
   const { loggedUser, onNameClick, onChatClick, dictionary, onUpdateRole, showOptions, onArchiveUser, onActivateUser, onChangeUserType, onDeleteUser, onResendInvite, onDeleteInvitedInternalUser, onAddUserToTeam } = props;
 
+  const dispatch = useDispatch();
   const toaster = useToaster();
 
   const [showInactive, setShowInactive] = useState(false);
   const [showInvited, setShowInvited] = useState(false);
   const [search, setSearch] = useState("");
+  const [searching, setSearching] = useState(false);
 
   const users = useSelector((state) => state.users.users);
   const roles = useSelector((state) => state.users.roles);
@@ -119,11 +123,45 @@ const AllPeople = (props) => {
       return a.name.localeCompare(b.name);
     });
 
+  const cancelToken = useRef(null);
+  const handleSearchUsers = () => {
+    if (search.trim() !== "" && search.trim().length >= 3) {
+      //Check if there are any previous pending requests
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Operation canceled due to new request.");
+        cancelToken.current = null;
+      }
+
+      //Save the cancel token for the current request
+      cancelToken.current = axios.CancelToken.source();
+      setSearching(true);
+      const payload = {
+        search: search,
+        cancelToken: cancelToken.current.token,
+      };
+      dispatch(
+        searchUsers(payload, (err, res) => {
+          setSearching(false);
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      if (search === "") return;
+      handleSearchUsers();
+    }, 1000);
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [search]);
+
   return (
     <>
       <div className="people-header">
         <PeopleSearch className="d-flex align-items-center people-search">
-          <Search value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
+          <Search value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus searching={searching} />
 
           <CustomInput
             className="ml-2 mr-2 cursor-pointer text-muted cursor-pointer"
