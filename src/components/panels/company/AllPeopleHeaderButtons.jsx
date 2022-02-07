@@ -117,7 +117,7 @@ const AllPeopleHeaderButtons = (props) => {
 
   return (
     <Wrapper className="nav-item-last ml-auto">
-      {isAdmin && (
+      {isAdmin && history.location.pathname !== "/people" && (
         <button className="btn btn-primary mr-2" onClick={handleAddTeam}>
           <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnTeam}
         </button>
@@ -127,7 +127,7 @@ const AllPeopleHeaderButtons = (props) => {
           <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.updateTeam}
         </button>
       )}
-      {history.location.pathname === "/system/people" && (
+      {(history.location.pathname === "/system/people" || history.location.pathname === "/people") && (
         <button className="btn btn-primary" onClick={handleInviteUsers}>
           <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.btnInviteUsers}
         </button>

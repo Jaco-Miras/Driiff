@@ -331,7 +331,7 @@ const CompanyHeaderPanel = () => {
             )}
           </div>
         </div>
-        {["system"].includes(match.params.page) && <AllPeopleHeaderButtons dictionary={dictionary} />}
+        {["system", "people"].includes(match.params.page) && <AllPeopleHeaderButtons dictionary={dictionary} />}
       </div>
 
       <div>
