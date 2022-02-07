@@ -699,7 +699,7 @@ const WorspaceHeaderPanel = (props) => {
                   {!isMobile && <div style={{ flexGrow: 1 }}></div>}
                   <li className="nav-item">
                     {isMobile && (
-                      <MoreOptions className="ml-2">
+                      <MoreOptions className="ml-2" disableHoverEffect>
                         <MemberLists members={activeTopic.members} size={3} />
                         <StyledDivider />
                         <div style={{ display: "flex", padding: "8px", gap: 8 }}>

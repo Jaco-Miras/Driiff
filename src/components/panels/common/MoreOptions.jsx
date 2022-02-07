@@ -52,7 +52,7 @@ const MoreTooltip = styled.div`
   }
 
   button:hover {
-    color: ${(props) => props.theme.colors.primary};
+    color: ${(props) => (props.disableHoverEffect ? "#fff" : props.theme.colors.primary)};
   }
 
   > div {
@@ -62,8 +62,8 @@ const MoreTooltip = styled.div`
 
     &.active,
     &:hover {
-      background-color: ${(props) => props.theme.colors.primary};
-      color: #fff;
+      background-color: ${(props) => (props.disableHoverEffect ? "#fff" : props.theme.colors.primary)};
+      color: #999999;
     }
   }
 
@@ -73,7 +73,7 @@ const MoreTooltip = styled.div`
 `;
 
 const MoreOptions = (props) => {
-  const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, strokeWidth = 2, fill = "none", svgHeight = "20", scrollRef = null, onClick, ...rest } = props;
+  const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, strokeWidth = 2, fill = "none", svgHeight = "20", scrollRef = null, onClick, disableHoverEffect, ...rest } = props;
 
   const refs = {
     options: useRef(),
@@ -115,6 +115,7 @@ const MoreOptions = (props) => {
           className={`more-options-tooltip orientation-${orientation.vertical} orientation-${orientation.horizontal}`}
           onMouseLeave={handleMouseLeave}
           onMouseEnter={handleMouseEnter}
+          disableHoverEffect={disableHoverEffect}
         >
           {children}
         </MoreTooltip>
