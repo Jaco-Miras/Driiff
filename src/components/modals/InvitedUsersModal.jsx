@@ -384,7 +384,22 @@ const InvitedUsersModal = (props) => {
   const handleSelectGuest = () => setSelectType("guest");
 
   return (
-    <ModalWrapper isOpen={modal} toggle={toggle} size={!fromRegister && !selectType && user.role.id <= securitySettings.invite_users ? "md" : "xl"} centered>
+    <ModalWrapper
+      isOpen={modal}
+      toggle={toggle}
+      size={(!fromRegister && !selectType && user.role.id <= securitySettings.invite_users) || (!fromRegister && user.role.id > securitySettings.invite_users) || (!fromRegister && selectType === "guest") ? "md" : "xl"}
+      centered
+    >
+      {/* <ModalWrapper
+      isOpen={modal}
+      toggle={toggle}
+      size={
+        (!fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin")) || (!fromRegister && !(user.role.name === "owner" || user.role.name === "admin")) || (!fromRegister && selectType === "guest")
+          ? "md"
+          : "xl"
+      }
+      centered
+    > */}
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
         {!fromRegister && selectType === "guest" ? dictionary.guestInvitations : !fromRegister && !selectType && user.role.id <= securitySettings.invite_users ? dictionary.selectUserType : dictionary.userInvitations}
       </ModalHeaderSection>
