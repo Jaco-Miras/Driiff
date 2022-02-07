@@ -384,8 +384,6 @@ const CompanyPostDetail = (props) => {
     }
   };
 
-  const isMember = post.users_responsible.some((u) => u.id === user.id);
-
   const disableMarkAsRead = () => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     if (post.is_must_read && post.author.id !== user.id) {
@@ -531,7 +529,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

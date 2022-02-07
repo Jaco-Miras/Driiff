@@ -653,8 +653,6 @@ export default (state = INITIAL_STATE, action) => {
               ...(state.companyPosts.posts[action.data.post_id] && {
                 [action.data.post_id]: {
                   ...state.companyPosts.posts[action.data.post_id],
-                  // is_archived: 0,
-                  //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
                   is_unread: action.data.author.id !== state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].is_unread,
                   updated_at: action.data.updated_at,

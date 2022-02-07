@@ -355,18 +355,7 @@ const PostModal = (props) => {
     mustReplyUsers: [],
   });
 
-  const {
-    options: addressToOptions,
-    getDefaultAddressTo,
-    getAddressTo,
-    responsible_ids,
-    recipient_ids,
-    is_personal,
-    workspace_ids,
-    userOptions,
-    addressIds,
-    actualUsers,
-  } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
