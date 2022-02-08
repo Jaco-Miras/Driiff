@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { FormGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
@@ -10,6 +10,7 @@ import { replaceChar } from "../../helpers/stringFormatter";
 import { putCompanyFolders, postCompanyFolders, addFolder, putFolder } from "../../redux/actions/fileActions";
 import { BlockPicker } from "react-color";
 import colorWheel from "../../assets/img/svgs/RGB_color_wheel_12.svg";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled(Modal)`
   ${(props) =>
@@ -54,10 +55,11 @@ const ColorWheelIcon = styled.img`
   width: 1rem;
   cursor: pointer;
 `;
+const defaultColors = ["#D9E3F0", "#F47373", "#697689", "#37D67A", "#2CCCE4", "#555555", "#dce775", "#ff8a65", "#ba68c8"];
 
 const CreateFilesFolderModal = (props) => {
   const { type, folder = null, mode = "create", params, topic_id = null, parentFolder = null } = props.data;
-
+  const theme = useSelector((state) => state.settings.driff.theme);
   const folderName = parentFolder ? parentFolder.search : "";
   const history = useHistory();
   const { _t } = useTranslationActions();
@@ -84,6 +86,8 @@ const CreateFilesFolderModal = (props) => {
   const [color, setColor] = useState(folder ? folder.bg_color : "");
 
   const [inputValue, setInputValue] = useState(folder ? folder.search : "");
+
+  const colors = useMemo(() => [...Object.values(theme.colors), ...defaultColors], [theme.colors]);
 
   const toggle = () => {
     dispatch(clearModal({ type: type }));
@@ -201,7 +205,7 @@ const CreateFilesFolderModal = (props) => {
         </WrapperDiv>
         {showColorPicker && (
           <PickerWrapper ref={pickerRef}>
-            <BlockPicker color={color} onChange={handleColorChange} />
+            <BlockPicker width={202} color={color} colors={colors} onChange={handleColorChange} />
           </PickerWrapper>
         )}
       </ModalBody>
