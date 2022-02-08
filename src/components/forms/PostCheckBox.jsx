@@ -5,6 +5,8 @@ const Wrapper = styled.div`
   position: relative;
   min-height: 1rem;
   background-color: "red";
+  pointer-events: ${(props) => (props.disabled ? "none" : null)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   input {
     cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   }

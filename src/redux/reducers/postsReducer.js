@@ -1545,6 +1545,23 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+
+    case "SET_SELECTED_COMPANY_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.companyPostId]: {
+              ...state.companyPosts.posts[action.data.companyPostId],
+              is_selected: action.data.isSelected,
+            },
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
