@@ -54,7 +54,6 @@ const CommentCounters = (props) => {
   const likers = Object.values(users).filter((u) => comment.claps.some((c) => c.user_id === u.id));
 
   const userReadPost = () => {
-    let filter_post_read = [];
     if (post.post_reads) {
       return post.post_reads.filter((u) => {
         if (!comment.shared_with_client) {
@@ -63,8 +62,9 @@ const CommentCounters = (props) => {
           return u.last_read_timestamp >= comment.updated_at.timestamp;
         }
       });
+    } else {
+      return [];
     }
-    return filter_post_read;
   };
 
   return (
