@@ -16,20 +16,26 @@ const useCompanyPosts = () => {
   const myPosts = useSelector((state) => state.posts.myPosts);
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
-  const fetchMore = (callback) => {
+  const fetchMore = (callback = () => {}) => {
     if (unreadPosts.has_more) {
-      actions.fetchUnreadCompanyPosts({
-        skip: unreadPosts.skip,
-        limit: 15,
-        filters: ["green_dot"],
-      });
+      actions.fetchUnreadCompanyPosts(
+        {
+          skip: unreadPosts.skip,
+          limit: 15,
+          filters: ["green_dot"],
+        },
+        callback
+      );
     }
     if (readPosts.has_more) {
-      actions.fetchReadCompanyPosts({
-        skip: readPosts.skip,
-        limit: 15,
-        filters: ["read_post"],
-      });
+      actions.fetchReadCompanyPosts(
+        {
+          skip: readPosts.skip,
+          limit: 15,
+          filters: ["read_post"],
+        },
+        callback
+      );
     }
     if (filter === "archive") {
       let payload = {
