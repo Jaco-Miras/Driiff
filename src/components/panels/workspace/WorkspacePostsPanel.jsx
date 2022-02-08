@@ -333,6 +333,7 @@ const WorkspacePostsPanel = (props) => {
         skip: filters.unreadPosts.skip,
       };
       let cb = (err, res) => {
+        setLoadPosts(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
