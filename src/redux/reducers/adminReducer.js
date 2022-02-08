@@ -281,8 +281,8 @@ export default (state = INITIAL_STATE, action) => {
         notificationsLoaded: true,
       };
     }
+    case "UPDATE_SECURITY_SETTINGS":
     case "PUT_SECURITY_SETTINGS_SUCCESS": {
-      console.log(action.data);
       return {
         ...state,
         security: action.data,
