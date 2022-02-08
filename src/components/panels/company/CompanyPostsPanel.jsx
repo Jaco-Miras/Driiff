@@ -230,7 +230,7 @@ const CompanyPostsPanel = (props) => {
   };
 
   const handleLoadMore = () => {
-    if (search === "" && !post) {
+    if (search === "" && !post && !loading) {
       setLoading(true);
 
       fetchMore((err, res) => {
