@@ -4103,6 +4103,7 @@ export default (state = INITIAL_STATE, action) => {
                           last_read_timestamp: r.last_read_timestamp,
                           profile_image_link: r.user.profile_image_link,
                           type: r.user.type,
+                          name: r.user.name,
                         };
                       }),
                     },
