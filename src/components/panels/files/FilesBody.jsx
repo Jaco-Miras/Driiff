@@ -294,8 +294,8 @@ const FilesBody = (props) => {
                     } else return null;
                   })}
                 </div>
-                {wsFiles.popular_files.length > 0 && <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
-                {wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
+                {wsFiles.popular_files.length > 0 && <PopularFiles search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
+                {wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
               </>
             )}
             {fileIds.length === 0 && wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0 && (
@@ -352,7 +352,7 @@ const FilesBody = (props) => {
         )}
         {filter === "recent" && (
           <>
-            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />
+            <RecentEditedFile search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />
             {!(wsFiles && wsFiles.recently_edited.length > 0) && (
               <EmptyState>
                 <SvgEmptyState icon={4} height={282} />
@@ -362,7 +362,7 @@ const FilesBody = (props) => {
         )}
         {filter === "important" && (
           <>
-            <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} folders={folders} actions={actions} />
+            <ImportantFiles search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} folders={folders} actions={actions} />
             {!(wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0) && (
               <EmptyState>
                 <SvgEmptyState icon={4} height={282} />

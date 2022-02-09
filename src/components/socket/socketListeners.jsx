@@ -200,7 +200,7 @@ import {
   incomingUpdatedWIPComment,
   incomingProposalClap,
 } from "../../redux/actions/wipActions";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, updateSecuritySettings } from "../../redux/actions/adminActions";
+import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, incomingCompanyDescription, incomingCompanyDashboardBackground, updateSecuritySettings } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1200,6 +1200,9 @@ class SocketListeners extends Component {
           invite_guest: e.invite_guest,
         });
       })
+      .listen(".upload-company-background", (e) => {
+        this.props.incomingCompanyDashboardBackground(e.files.image_link);
+      })
       .listen(".post-access-notification", (e) => {
         this.props.incomingPostAccess(e);
       })
@@ -1743,6 +1746,9 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".update-company-workspace", (e) => {
+        this.props.incomingCompanyDescription(e);
+      })
       .listen(".zoom-system-message-notification", (e) => {
         if (!e.hasOwnProperty("system_message")) return;
         const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
@@ -2540,6 +2546,8 @@ function mapDispatchToProps(dispatch) {
     getPostAccess: bindActionCreators(getPostAccess, dispatch),
     updateUnreadCounter: bindActionCreators(updateUnreadCounter, dispatch),
     updateSecuritySettings: bindActionCreators(updateSecuritySettings, dispatch),
+    incomingCompanyDescription: bindActionCreators(incomingCompanyDescription, dispatch),
+    incomingCompanyDashboardBackground: bindActionCreators(incomingCompanyDashboardBackground, dispatch),
   };
 }
 

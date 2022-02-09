@@ -22,6 +22,7 @@ import {
   getStripeProducts,
   cancelStripeSubscription,
   resetCompanyLogo,
+  uploadDashboardBg,
 } from "../../redux/actions/adminActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { uploadDriffLogo } from "../../redux/actions/settingsActions";
@@ -267,6 +268,14 @@ const useAdminActions = () => {
     dispatch(addToModals(modal));
   };
 
+  const uploadDashboardBackground = (payload, callback) => {
+    dispatch(
+      uploadDashboardBg(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
+
   return {
     fetchLoginSettings,
     updateLoginSettings,
@@ -291,6 +300,7 @@ const useAdminActions = () => {
     cancelSubscription,
     uploadLogo,
     resetLogo,
+    uploadDashboardBackground,
   };
 };
 

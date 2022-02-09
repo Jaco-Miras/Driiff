@@ -29,6 +29,8 @@ export {
   putNotificationSettings,
   getSecuritySettings,
   putSecuritySettings,
+  uploadDashboardBg,
+  putCompanyDescription,
 } from "./admin";
 export {
   getGlobalRecipients,

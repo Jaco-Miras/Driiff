@@ -139,8 +139,10 @@ function StylingSettingsBody() {
 
   const iconDropZone = useRef(null);
   const [showIconDropzone, setShowIconDropzone] = useState(false);
+  const bgDropZone = useRef(null);
+  const [showBgDropzone, setShowBgDropzone] = useState(false);
   const toast = useToaster();
-  const { uploadLogo, resetLogo } = useAdminActions();
+  const { uploadLogo, resetLogo, uploadDashboardBackground } = useAdminActions();
   const logo = useSelector((state) => state.settings.driff.logo);
   const theme = useSelector((state) => state.settings.driff.theme);
   const origTheme = useSelector((state) => state.settings.origTheme);
@@ -200,6 +202,35 @@ function StylingSettingsBody() {
 
   const handleHideIconDropzone = () => {
     setShowIconDropzone(false);
+  };
+
+  const handleUploadDashboardBg = (file) => {
+    let payload = {
+      file: file,
+      code: "code",
+    };
+    let cb = (err, res) => {
+      if (err) return;
+      toast.success(dictionary.uploadSuccess);
+    };
+    uploadDashboardBackground(payload, cb);
+  };
+
+  const dropBgAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toast.error(dictionary.fileTypeError);
+    } else if (uploadedFiles.length > 1) {
+      toast.warning(dictionary.multipleFileError);
+    }
+    handleUploadDashboardBg(uploadedFiles[0]);
+  };
+
+  const handleOpenBgDropzone = () => {
+    if (bgDropZone.current) bgDropZone.current.open();
+  };
+
+  const handleHideBgDropzone = () => {
+    setShowBgDropzone(false);
   };
 
   const handleRemoveLogo = () => {
@@ -346,6 +377,22 @@ function StylingSettingsBody() {
               {dictionary.resetButton}
             </button>
           )}
+        </div>
+        <h4 className="mt-3">Dashboard background</h4>
+        <div>
+          <DropDocument
+            acceptType="imageOnly"
+            hide={!showBgDropzone}
+            ref={bgDropZone}
+            onDragLeave={handleHideBgDropzone}
+            onDrop={({ acceptedFiles }) => {
+              dropBgAction(acceptedFiles);
+            }}
+            onCancel={handleHideBgDropzone}
+          />
+          <button className="btn btn-primary" onClick={handleOpenBgDropzone}>
+            Upload background
+          </button>
         </div>
         <h4 className="mt-3">{dictionary.styling}</h4>
         {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>

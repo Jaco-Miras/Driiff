@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
 import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../redux/actions/userAction";
-import { getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts } from "../../redux/actions/globalActions";
+import { getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts, getAllRecipients } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, adjustHuddleDate, getUnpublishedAnswers, getSkippedAnswers, addHasUnpublishedAnswers } from "../../redux/actions/chatActions";
 import { getNotificationSettings, getSecuritySettings } from "../../redux/actions/adminActions";
 import { useChannelActions } from "../hooks";
@@ -29,6 +29,7 @@ const useInitialLoad = () => {
   useEffect(() => {
     document.body.classList.remove("form-membership");
     const fetchChannelCb = () => {
+      dispatch(getAllRecipients());
       dispatch(
         getUsers({}, () => {
           dispatch(getArchivedUsers());

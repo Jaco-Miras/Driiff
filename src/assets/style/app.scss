@@ -21943,7 +21943,8 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 
 .trial-end,
 .workspace-chat,
-.company-chat {
+.company-chat,
+.dashboard-panel {
   height: calc(100vh - 75px);
   height: calc(var(--vh, 1vh) * 100 - 75px);
   margin: 0;

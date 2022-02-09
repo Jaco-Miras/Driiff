@@ -5,19 +5,7 @@ import { FileListItem } from "../../list/file/item";
 const Wrapper = styled.div``;
 
 const RecentEditedFile = (props) => {
-  const { className = "", folders, wsFiles, actions, disableOptions } = props;
-
-  // const files = [{
-  //     id: 1,
-  //     name: "file name",
-  //     size: "20Mb",
-  //     mimeType: "image",
-  // }, {
-  //     id: 2,
-  //     name: "file name 2",
-  //     size: "10Mb",
-  //     mimeType: "video",
-  // }];
+  const { className = "", folders, wsFiles, actions, disableOptions, isMember } = props;
 
   return (
     <Wrapper className={`recent-edited-files ${className}`}>
@@ -27,7 +15,7 @@ const RecentEditedFile = (props) => {
           wsFiles.recently_edited.length > 0 &&
           wsFiles.recently_edited.map((id) => {
             if (wsFiles.files.hasOwnProperty(id)) {
-              return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} folders={folders} disableOptions={disableOptions} />;
+              return <FileListItem key={id} isMember={isMember} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} folders={folders} disableOptions={disableOptions} />;
             } else {
               return null;
             }

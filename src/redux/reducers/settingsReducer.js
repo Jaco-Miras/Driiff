@@ -20,6 +20,7 @@ const INITIAL_STATE = {
     company_name: "Driff communication",
     domains: [],
     logo: "",
+    background: null,
     theme: {
       colors: {
         primary: "#29323F",
@@ -138,6 +139,7 @@ export default (state = INITIAL_STATE, action) => {
       let READ_RELEASE_UPDATES = state.driff.READ_RELEASE_UPDATES;
       let domains = state.driff.domains;
       let logo = state.driff.logo;
+      let background = state.driff.background;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -147,6 +149,7 @@ export default (state = INITIAL_STATE, action) => {
           domains = s.domains.split(",");
         }
         if (s.logo) logo = s.logo;
+        if (s.background) background = s.background;
         if (s.hasOwnProperty("maintenance_mode") || s.hasOwnProperty("google_login") || s.hasOwnProperty("magic_link") || s.hasOwnProperty("password_login") || s.hasOwnProperty("sign_up") || s.hasOwnProperty("custom_translation")) {
           settings = { ...settings, ...s };
         }
@@ -177,6 +180,7 @@ export default (state = INITIAL_STATE, action) => {
           READ_RELEASE_UPDATES,
           domains: domains,
           logo: logo,
+          background: background,
         },
       };
     }
@@ -473,6 +477,15 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           theme: { colors: { ...state.driff.theme.colors, ...action.data.colors } },
+        },
+      };
+    }
+    case "INCOMING_COMPANY_DASHBOARD_BACKGROUND": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          background: action.data,
         },
       };
     }
