@@ -224,15 +224,21 @@ const HomeProfileNavigation = (props) => {
     }));
   };
 
+  const renderGifIcon = () => {
+    if (loggedUser.type === "external") return null;
+    return (
+      <li className="nav-item dropdown">
+        <a href="/" className={"nav-link"} onClick={handleGiftClick}>
+          <SvgIconFeather icon="gift" />
+        </a>
+      </li>
+    );
+  };
+
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
-      {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) && (
-        <li className="nav-item dropdown">
-          <a href="/" className={"nav-link"} onClick={handleGiftClick}>
-            <SvgIconFeather icon="gift" />
-          </a>
-        </li>
-      )}
+      {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) &&
+        renderGifIcon()}
       <li className="nav-item dropdown">
         <a href="/" className="nav-link" data-toggle="search" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalSearch}>
