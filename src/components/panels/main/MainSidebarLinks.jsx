@@ -183,7 +183,9 @@ const MainSidebarLinks = (props) => {
             </NavIconContainer>
           </li>
         )}
-        <QuickLinks user={user} dictionary={dictionary} />
+
+        {user.type !== "external" ? <QuickLinks user={user} dictionary={dictionary} /> : null}
+
         {/* {user.role && ["owner"].includes(user.role.name) && (
           <li>
             <NavIconContainer to={"/bot"} active={["/bot"].includes(location.pathname)}>

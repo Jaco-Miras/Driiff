@@ -560,6 +560,16 @@ const WorspaceHeaderPanel = (props) => {
     });
   };
 
+  const renderPrivateLabel = () => {
+    if (user.type === "external") return null;
+    return (
+      <li className="nav-item">
+        <Icon icon="lock" className="mobile-private ml-1" />
+        <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
+      </li>
+    );
+  };
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -605,12 +615,7 @@ const WorspaceHeaderPanel = (props) => {
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
-                      {activeTopic.is_lock === 1 && (
-                        <li className="nav-item">
-                          <Icon icon="lock" className="mobile-private ml-1" />
-                          <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
-                        </li>
-                      )}
+                      {activeTopic.is_lock === 1 && renderPrivateLabel()}
                       {activeTopic.active === 0 && (
                         <li className="nav-item">
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
