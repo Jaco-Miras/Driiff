@@ -254,6 +254,17 @@ const PeopleListItem = (props) => {
     if (onDeleteTeamMember) onDeleteTeamMember(user);
   };
 
+  const renderUserName = ({ user }) => {
+    if (loggedUser.type === "external") {
+      return <span className="mr-2">{user.name !== "" ? user.name : user.email}</span>;
+    }
+    return (
+      <ToolTip content={user.email}>
+        <span className="mr-2">{user.name !== "" ? user.name : user.email}</span>
+      </ToolTip>
+    );
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-lg-4 col-md-6 ${className}`}>
       <div className="col-12">
@@ -274,18 +285,14 @@ const PeopleListItem = (props) => {
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
                     <h6 className="user-name mb-0">
-                      <ToolTip content={user.email}>
-                        <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
-                      </ToolTip>
+                      {renderUserName({ user })}
                       <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
                       <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info badge-external text-white" />
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
-                        <ToolTip content={user.email}>
-                          <span className="mr-2">{user.name}</span>
-                        </ToolTip>
+                        {renderUserName({ user })}
                         {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
                         {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
                           <ToolTip content={"This is an administrator account"}>
