@@ -187,3 +187,21 @@ export function putNotificationSettings(payload) {
     data: payload,
   });
 }
+
+export function uploadDashboardBg(payload) {
+  let url = "/v2/company-settings/file-background";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+    hasFile: true,
+  });
+}
+
+export function putCompanyDescription(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/workspace/company/${payload.id}`,
+    data: payload,
+  });
+}

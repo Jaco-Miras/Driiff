@@ -24,6 +24,8 @@ import {
   putPostAccess as putPostAccessService,
   getNotificationSettings as getNotificationSettingsService,
   putNotificationSettings as putNotificationSettingsService,
+  uploadDashboardBg as uploadDashboardBgService,
+  putCompanyDescription as putCompanyDescriptionService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -140,4 +142,20 @@ export function getNotificationSettings(payload, callback) {
 
 export function putNotificationSettings(payload, callback) {
   return dispatchActionToReducer(putNotificationSettingsService(payload), "PUT_NOTIFICATIONS_SETTINGS_START", "PUT_NOTIFICATIONS_SETTINGS_SUCCESS", "PUT_NOTIFICATIONS_SETTINGS_FAILURE", callback);
+}
+
+export function uploadDashboardBg(payload, callback) {
+  return dispatchActionToReducer(uploadDashboardBgService(payload), "UPLOAD_DASHBOARD_BACKGROUND_START", "UPLOAD_DASHBOARD_BACKGROUND_SUCCESS", "UPLOAD_DASHBOARD_BACKGROUND_FAILURE", callback);
+}
+
+export function putCompanyDescription(payload, callback) {
+  return dispatchActionToReducer(putCompanyDescriptionService(payload), "PUT_COMPANY_DESCRIPTION_START", "PUT_COMPANY_DESCRIPTION_SUCCESS", "PUT_COMPANY_DESCRIPTION_FAILURE", callback);
+}
+
+export function incomingCompanyDescription(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DESCRIPTION", payload, callback);
+}
+
+export function incomingCompanyDashboardBackground(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DASHBOARD_BACKGROUND", payload, callback);
 }

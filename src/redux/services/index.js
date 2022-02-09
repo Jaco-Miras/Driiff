@@ -27,6 +27,8 @@ export {
   getPostAccess,
   getNotificationSettings,
   putNotificationSettings,
+  uploadDashboardBg,
+  putCompanyDescription,
 } from "./admin";
 export {
   getGlobalRecipients,

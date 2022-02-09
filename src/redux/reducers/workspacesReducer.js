@@ -4114,6 +4114,19 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_COMPANY_DESCRIPTION": {
+      return {
+        ...state,
+        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+          if (ws.id === action.data.id) {
+            acc[ws.id] = { ...ws, description: action.data.description };
+          } else {
+            acc[ws.id] = ws;
+          }
+          return acc;
+        }, {}),
+      };
+    }
     default:
       return state;
   }

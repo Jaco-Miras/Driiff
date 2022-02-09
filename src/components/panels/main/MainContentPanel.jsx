@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import RedirectPanel from "../redirect/RedirectPanel";
 import MaintenancePanel from "./MaintenancePanel";
+import DashboardPanel from "../dashboard/DashboardPanel";
 const CompanyChatPanel = lazy(() => import("../company/CompanyChatPanel"));
 const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
 const CompanyFilesPanel = lazy(() => import("../company/CompanyFilesPanel"));
@@ -37,7 +38,7 @@ const MainContentPanel = (props) => {
           <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile", "/profile/:id"]} exact={true} />
           <Route {...props} component={UserNotificationPanel} path={["/notifications"]} />
           <Route {...props} component={UserSearchPanel} path={["/search"]} />
-          {!isExternal && <Route {...props} component={MaintenancePanel} path={["/dashboard"]} />}
+          {!isExternal && <Route {...props} component={DashboardPanel} path={["/dashboard"]} />}
           {!isExternal && <Route {...props} component={CompanyPostsPanel} path={["/posts/:postId/:postTitle/:postCommentCode?", "/posts"]} />}
           {!isExternal && <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code", "/chat"]} />}
           <Route {...props} render={(props) => <CompanyFilesPanel {...props} />} path={["/files/folder/:folderId/:folderName", "/files"]} />

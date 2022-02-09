@@ -19,7 +19,7 @@ const useInitialLoad = () => {
   useEffect(() => {
     document.body.classList.remove("form-membership");
     const fetchChannelCb = () => {
-      // dispatch(getAllRecipients());
+      dispatch(getAllRecipients());
       dispatch(
         getUsers({}, () => {
           dispatch(getArchivedUsers());
