@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { copyTextToClipboard } from "../../../../helpers/commonFunctions";
-import { useToaster, useUsers } from "../../../hooks";
+import { useToaster } from "../../../hooks";
 
 const Wrapper = styled.div`
   .avatar {
