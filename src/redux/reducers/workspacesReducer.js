@@ -4097,7 +4097,12 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.id]: {
                       ...state.workspacePosts[wsId].posts[action.data.id],
                       claps: action.data.claps,
-                      post_reads: action.data.reads,
+                      post_reads: action.data.reads.map((r) => {
+                        return {
+                          ...r.user,
+                          last_read_timestamp: r.last_read_timestamp,
+                        };
+                      }),
                     },
                   },
                 },

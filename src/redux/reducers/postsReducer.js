@@ -1596,7 +1596,12 @@ export default (state = INITIAL_STATE, action) => {
               acc[post.id] = {
                 ...post,
                 claps: action.data.claps,
-                post_reads: action.data.reads,
+                post_reads: action.data.reads.map((r) => {
+                  return {
+                    ...r.user,
+                    last_read_timestamp: r.last_read_timestamp,
+                  };
+                }),
               };
             } else {
               acc[post.id] = post;
