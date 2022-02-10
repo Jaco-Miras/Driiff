@@ -1,8 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { SvgIconFeather } from "../../common";
+import { FancyLink } from "../../common";
 
 const Wrapper = styled.div`
+  > span {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+  .feather {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+  }
   ul {
     list-style: none;
     padding: 0;
@@ -14,6 +26,9 @@ const Wrapper = styled.div`
       border-bottom: 1px solid #f1f2f7;
     }
   }
+  a {
+    box-shadow: none !important;
+  }
 `;
 
 const ShortcutsCard = (props) => {
@@ -21,15 +36,13 @@ const ShortcutsCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <strong>Company shortcuts</strong>
+        <SvgIconFeather icon="link" /> Company shortcuts
       </span>
       <ul className="mt-2">
         {links.map((l) => {
           return (
             <li key={l.id}>
-              <a href={l.link} target="_blank" rel="noopener noreferrer">
-                {l.menu_name}
-              </a>
+              <FancyLink link={l.link} title={l.menu_name} />
             </li>
           );
         })}

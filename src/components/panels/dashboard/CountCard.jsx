@@ -9,11 +9,15 @@ const Wrapper = styled.div`
   h2 {
     margin: 0;
   }
+  .text-label {
+    width: 65%;
+    border-right: 1px solid rgba(0, 0, 0, 0.125);
+  }
   span:last-child {
-    min-width: 55px;
-    text-align: right;
+    width: 35%;
+    text-align: center;
     color: ${(props) => (props.count === 0 ? "green" : "inherit")};
-    border-left: 1px solid #8b8b8b;
+    // border-left: 1px solid #f1f2f7;
   }
 `;
 

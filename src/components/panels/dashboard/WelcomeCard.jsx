@@ -7,6 +7,12 @@ const Wrapper = styled.div`
   span {
     display: block;
   }
+  span:first-child {
+    font-weight: bold;
+  }
+  span:last-child {
+    font-weight: 500;
+  }
 `;
 
 const WelcomeCard = (props) => {

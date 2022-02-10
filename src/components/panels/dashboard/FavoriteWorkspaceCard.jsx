@@ -3,10 +3,21 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FavWorkspaceList } from "../../workspace";
-import { useWorkspaceActions } from "../../hooks";
+import { useWorkspaceActions, useTranslationActions } from "../../hooks";
 import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
+  > span {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+  .feather {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+  }
   ul {
     list-style: none;
     padding: 0;
@@ -20,6 +31,22 @@ const Wrapper = styled.div`
       padding: 10px;
       margin-bottom: 0;
     }
+  }
+`;
+
+const FavEmptyState = styled.div`
+  display: flex;
+  flex-flow: column;
+  margin-top: 1rem;
+  span:last-child {
+    margin-top: 1rem;
+  }
+`;
+
+const BrowseAll = styled.button`
+  border: 1px solid;
+  :hover {
+    cursor: pointer;
   }
 `;
 
@@ -38,6 +65,12 @@ const FavoriteWorkspaceCard = (props) => {
   const channelIds = useSelector((state) => Object.keys(state.chat.channels));
   const virtualization = useSelector((state) => state.settings.user.CHAT_SETTINGS.virtualization);
   const actions = useWorkspaceActions();
+
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
+    addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
+  };
 
   const sortWorkspace = () => {
     return Object.values(workspaces).sort((a, b) => {
@@ -78,12 +111,27 @@ const FavoriteWorkspaceCard = (props) => {
     }
   };
 
+  const handleBrowseAll = () => {
+    history.push("/workspace/search");
+  };
+
   return (
     <Wrapper>
       <span>
-        <strong>Favorite workspaces</strong>
+        <SvgIconFeather icon="star" /> Favorite workspaces
       </span>
       <ul>
+        {favoriteWorkspaces.length === 0 && (
+          <FavEmptyState>
+            <span role="img" aria-label="star">
+              ✨
+            </span>
+            <span dangerouslySetInnerHTML={{ __html: dictionary.addYourFavWs }} />
+            <BrowseAll className="btn" onClick={handleBrowseAll}>
+              {dictionary.startBrowsing}
+            </BrowseAll>
+          </FavEmptyState>
+        )}
         {favoriteWorkspaces.slice(0, 5).map((ws) => {
           return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
         })}
