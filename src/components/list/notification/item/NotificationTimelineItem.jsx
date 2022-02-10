@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
+import { useTimeFormat, useTranslationActions, useRedirect, useNotificationActions } from "../../../hooks";
 import NotificationBadge from "./NotificationBadge";
 
 const Icon = styled(SvgIconFeather)`
@@ -67,9 +69,15 @@ const Wrapper = styled.div`
 `;
 
 export const NotificationTimelineItem = (props) => {
-  const { notification, actions, history, redirect, user, _t, darkMode } = props;
+  const { notification, showToggle = true } = props;
 
+  const history = useHistory();
   const { fromNow } = useTimeFormat();
+  const redirect = useRedirect();
+  const { _t } = useTranslationActions();
+  const user = useSelector((state) => state.session.user);
+  const darkMode = useSelector((state) => state.settings.user.GENERAL_SETTINGS.dark_mode);
+  const actions = useNotificationActions();
 
   const handleRedirect = (e) => {
     e.preventDefault();
@@ -320,17 +328,19 @@ export const NotificationTimelineItem = (props) => {
             </div>
             <div style={{ textAlign: "right" }}>
               <span className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
-              <p style={{ textAlign: "right", lineHeight: "1" }}>
-                {notification.is_read === 0 ? (
-                  <span title={dictionary.markAsRead} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
-                    ...
-                  </span>
-                ) : (
-                  <span title={dictionary.markAsUnread} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
-                    ...
-                  </span>
-                )}
-              </p>
+              {showToggle && (
+                <p style={{ textAlign: "right", lineHeight: "1" }}>
+                  {notification.is_read === 0 ? (
+                    <span title={dictionary.markAsRead} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                      ...
+                    </span>
+                  ) : (
+                    <span title={dictionary.markAsUnread} data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer">
+                      ...
+                    </span>
+                  )}
+                </p>
+              )}
               <NotificationBadge notification={notification} dictionary={dictionary} user={user} />
             </div>
           </h6>

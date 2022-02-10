@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, ToolTip } from "../../common";
 import { FancyLink } from "../../common";
 
 const Wrapper = styled.div`
@@ -13,7 +13,12 @@ const Wrapper = styled.div`
   .feather {
     width: 1rem;
     height: 1rem;
+  }
+  .feather-link {
     margin-right: 0.5rem;
+  }
+  .feather-info {
+    margin-left: 0.5rem;
   }
   ul {
     list-style: none;
@@ -37,7 +42,10 @@ const ShortcutsCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="link" /> {dictionary.shortcuts}
+        <SvgIconFeather icon="link" /> {dictionary.shortcuts}{" "}
+        <ToolTip content={dictionary.shorcutsTooltip}>
+          <SvgIconFeather icon="info" />
+        </ToolTip>
       </span>
       <ul className="mt-2">
         {links.map((l) => {

@@ -9,7 +9,8 @@ import ShortcutsCard from "./ShortcutsCard";
 import FavoriteWorkspaceCard from "./FavoriteWorkspaceCard";
 import SearchCard from "./SearchCard";
 import FavoriteChannelsCard from "./FavoriteChannelsCard";
-import NewUsersCard from "./NewUsersCard";
+//import NewUsersCard from "./NewUsersCard";
+import PostMentionCard from "./PostMentionCard";
 import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
@@ -21,17 +22,6 @@ const Wrapper = styled.div`
     props.bg &&
     `
   background-image: url("${props.bg}")`};
-  .second-column {
-    @media (min-width: 768px) {
-      padding-left: 0;
-      .row > div:first-child {
-        padding-right: 7px;
-      }
-      .row > div:last-child {
-        padding-left: 7px;
-      }
-    }
-  }
   .card.overflow-unset {
     overflow: unset;
   }
@@ -48,6 +38,41 @@ const Wrapper = styled.div`
       }
       .maxh-50 {
         flex: 1 1 50%;
+      }
+    }
+  }
+  .search-container {
+    min-height: 74px;
+    .card-body {
+      padding: 19px 1rem;
+    }
+  }
+  .second-column {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    @media (min-width: 768px) {
+      padding-left: 0;
+      .row {
+        height: calc(100% - 74px);
+      }
+      .row > div:first-child {
+        padding-right: 7px;
+      }
+      .row > div:last-child {
+        padding-left: 7px;
+      }
+      .quicklinks-postmention {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+        > div:first-child {
+          //flex: 1 2 10%;
+          min-height: 15%;
+        }
+        > div:last-child {
+          //flex: 2 1 20%;
+        }
       }
     }
   }
@@ -68,46 +93,49 @@ const DashboardPanel = (props) => {
     unreadChats: _t("LABEL.UNREAD_CHATS", "Unread chats"),
     unreadPosts: _t("LABEL.UNREAD_POSTS", "Unread posts"),
     newUsers: _t("WORKSPACE.NEW_USERS", "New users"),
+    postMentionsActions: _t("LABEL.POST_MENTIONS_ACTIONS", "Post mentions and actions"),
+    shorcutsTooltip: _t("TOOLTIP.SHORCUTS_DASHBOARD", "These quicklinks make it easy to find company info back quickly"),
+    postMentionsTooltip: _t("TOOLTIP.POST_MENTIONS_ACTIONS", "People who mentioned you or post where people need your input"),
   };
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
       <div className={"row h-100"}>
         <div className={"col-md-4 first-column"}>
-          <Card className="mb-3 maxh-10">
+          <Card className="mb-2">
             <WelcomeCard dictionary={dictionary} />
           </Card>
-          <Card className="mb-3 maxh-50">
+          <Card className="mb-2">
+            <CountCard text={dictionary.remindersDue} type={"reminders"} />
+          </Card>
+          <Card className="mb-2">
+            <CountCard text={dictionary.unreadChats} type={"chat"} />
+          </Card>
+          <Card className="mb-2">
+            <CountCard text={dictionary.unreadPosts} type={"posts"} />
+          </Card>
+          <Card className="mb-2 maxh-50">
             <AboutCard dictionary={dictionary} />
           </Card>
-          <Card className="mb-3  maxh-40">
-            <FavoriteChannelsCard dictionary={dictionary} />
-          </Card>
         </div>
-        <div className={"col-md-6 mh-100 second-column"}>
-          <Card className="mb-3">
+        <div className={"col-md-6 second-column"}>
+          <Card className="mb-2 search-container">
             <SearchCard dictionary={dictionary} />
           </Card>
           <div className={"row"}>
             <div className={"col-md-6"}>
-              <Card className="mb-3">
-                <CountCard text={dictionary.remindersDue} type={"reminders"} />
+              <Card className="mb-2  maxh-40">
+                <FavoriteChannelsCard dictionary={dictionary} />
               </Card>
-              <Card className="mb-3">
-                <CountCard text={dictionary.unreadChats} type={"chat"} />
-              </Card>
-              <Card className="mb-3">
-                <CountCard text={dictionary.unreadPosts} type={"posts"} />
-              </Card>
-              <Card className="mb-3 overflow-unset">
-                <NewUsersCard dictionary={dictionary} />
+              <Card className="mb-2">
+                <FavoriteWorkspaceCard dictionary={dictionary} />
               </Card>
             </div>
-            <div className={"col-md-6"}>
-              <Card className="mb-3">
+            <div className={"col-md-6 quicklinks-postmention"}>
+              <Card className="mb-2">
                 <ShortcutsCard dictionary={dictionary} />
               </Card>
-              <Card className="mb-3">
-                <FavoriteWorkspaceCard dictionary={dictionary} />
+              <Card className="mb-2">
+                <PostMentionCard dictionary={dictionary} />
               </Card>
             </div>
           </div>
