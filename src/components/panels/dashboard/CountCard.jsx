@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     width: 35%;
     text-align: center;
     color: ${(props) => (props.count === 0 ? "green" : "inherit")};
-    font-size: 2rem;
+    font-size: 1.75rem;
     border-left: 1px solid rgba(0, 0, 0, 0.125);
     cursor: pointer;
   }

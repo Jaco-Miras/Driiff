@@ -54,7 +54,7 @@ const Wrapper = styled.div`
     @media (min-width: 768px) {
       padding-left: 0;
       .row {
-        height: calc(100% - 74px);
+        height: calc(100% - 82px);
       }
       .row > div:first-child {
         padding-right: 7px;
@@ -62,10 +62,12 @@ const Wrapper = styled.div`
       .row > div:last-child {
         padding-left: 7px;
       }
-      .quicklinks-postmention {
+      .col-md-6 {
         height: 100%;
         display: flex;
         flex-flow: column;
+      }
+      .quicklinks-postmention {
         > div:first-child {
           //flex: 1 2 10%;
           min-height: 15%;
