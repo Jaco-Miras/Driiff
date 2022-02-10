@@ -47,9 +47,8 @@ const AboutCard = (props) => {
   return (
     <Wrapper>
       <div className="card-title">
-        <span>
-          <strong>{dictionary.aboutThisCompany}</strong>
-        </span>{" "}
+        <h5 className="card-title mb-0">{dictionary.aboutThisCompany}</h5>
+
         {companyWs && user.role.id <= 2 && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
       </div>
       <DashboardDescriptionContainer>{companyWs && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: companyWs.description }} />}</DashboardDescriptionContainer>

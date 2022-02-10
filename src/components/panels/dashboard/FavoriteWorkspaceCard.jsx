@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   > span {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    //font-weight: 600;
   }
   .feather {
     width: 1rem;
@@ -125,12 +125,12 @@ const FavoriteWorkspaceCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> {dictionary.favoriteWorkspaces}{" "}
+        <SvgIconFeather icon="star" /> <h5 className="card-title mb-0">{dictionary.favoriteWorkspaces}</h5>{" "}
         <ToolTip content={dictionary.clickOnStarWs}>
           <SvgIconFeather icon="info" />
         </ToolTip>
       </span>
-      <ul>
+      <ul className="mt-3">
         {favoriteWorkspaces.length === 0 && (
           <FavEmptyState>
             <span role="img" aria-label="star">

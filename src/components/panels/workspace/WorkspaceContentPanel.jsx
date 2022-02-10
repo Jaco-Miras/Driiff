@@ -110,7 +110,7 @@ const WorkspaceContentPanel = (props) => {
                   <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/workspace/search"]} />
                   {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} /> */}
                   <Route
-                    render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline} />}
+                    render={() => <MaintenancePanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline} />}
                     path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
                   />
                   <Route
