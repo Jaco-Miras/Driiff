@@ -240,6 +240,20 @@ const ChatIconsOptionsContainer = styled.div`
   align-items: center;
 `;
 
+const StyledChannelIcon = styled(ChannelIcon)`
+  width: 3rem !important;
+  height: 3rem !important;
+  margin-right: 1rem;
+
+  img {
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+  &.chat-header-icon > div:before {
+    right -10px;
+  }
+`;
+
 const toggleTooltip = () => {
   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
   tooltips.forEach((tooltip) => {
@@ -499,7 +513,7 @@ const ChatHeaderPanel = (props) => {
           <BackButtonChevron icon={"chevron-left"} />
           {unreadCounter.chat_message > 0 && <span>{unreadCounter.chat_message.toString()}</span>}
         </BackButton>
-        <ChannelIcon className="chat-header-icon" channel={channel} width="33px" />
+        <StyledChannelIcon className="chat-header-icon" channel={channel} width="33px" />
       </div>
       <div className="channel-title-wrapper">
         <div className="chat-header-title">{getChannelTitle()}</div>
