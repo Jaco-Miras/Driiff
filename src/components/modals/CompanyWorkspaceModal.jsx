@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { DescriptionInput } from "../forms";
 import { ModalHeaderSection } from "./index";
 import { clearModal } from "../../redux/actions/globalActions";
-import { updateWorkspace } from "../../redux/actions/workspaceActions";
 import { putCompanyDescription } from "../../redux/actions/adminActions";
+import { useTranslationActions } from "../hooks";
 
 const WrapperDiv = styled.div`
   display: flex;
@@ -62,10 +62,13 @@ const StyledDescriptionInput = styled(DescriptionInput)`
     bottom: 0;
     top: auto;
   }
+  button.ql-image {
+    display: none;
+  }
 `;
 
 const CompanyWorkspaceModal = (props) => {
-  const { type, mode, item = null } = props.data;
+  const { type, mode } = props.data;
 
   const dispatch = useDispatch();
 
@@ -90,6 +93,8 @@ const CompanyWorkspaceModal = (props) => {
 
   const [loading, setLoading] = useState(false);
 
+  const { _t } = useTranslationActions();
+
   const refs = {
     container: useRef(null),
     workspace_name: useRef(null),
@@ -98,7 +103,11 @@ const CompanyWorkspaceModal = (props) => {
     first_name: useRef(null),
   };
 
-  const dictionary = {};
+  const dictionary = {
+    save: _t("MODAL.SAVE", "Save"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    editCompanyDescription: _t("MODAL.EDIT_COMPANY_DESCRIPTION", "Edit company description"),
+  };
 
   const toggle = () => {
     dispatch(clearModal({ type: type }));
@@ -147,7 +156,7 @@ const CompanyWorkspaceModal = (props) => {
 
   return (
     <Modal isOpen={true} toggle={toggle} centered size="lg" onOpened={onOpened}>
-      <ModalHeaderSection toggle={toggle}>Edit company description</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{dictionary.editCompanyDescription}</ModalHeaderSection>
       <ModalBody>
         <StyledDescriptionInput
           className="modal-description"
@@ -168,11 +177,11 @@ const CompanyWorkspaceModal = (props) => {
 
         <WrapperDiv>
           <button className="btn btn-outline-secondary mr-2" outline color="secondary" onClick={toggle}>
-            Cancel
+            {dictionary.cancel}
           </button>
           <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            Save
+            {dictionary.save}
           </button>
         </WrapperDiv>
       </ModalBody>
