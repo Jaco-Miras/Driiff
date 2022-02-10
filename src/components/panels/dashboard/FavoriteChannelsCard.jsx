@@ -6,8 +6,19 @@ import { useSortChannels } from "../../hooks";
 import { isMobile } from "react-device-detect";
 import { useChannelActions } from "../../hooks";
 import FavChannel from "./FavChannel";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
+  > span:first-child {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+  .feather {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+  }
   ul {
     list-style: none;
     padding: 0;
@@ -49,8 +60,9 @@ const FavoriteChannelsCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <strong>Favorite channels</strong>
+        <SvgIconFeather icon="star" /> Favorite channels
       </span>
+      {favoriteChannels.length === 0 && <div className="mt-2">Click on the ⭐ in a chat to mark it as favorites </div>}
       <ul>
         {favoriteChannels.slice(0, 5).map((channel) => {
           return <FavChannel key={channel.id} channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} onSelectChannel={onSelectChannel} />;

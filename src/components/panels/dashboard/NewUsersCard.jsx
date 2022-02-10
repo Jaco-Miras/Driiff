@@ -4,6 +4,11 @@ import { useSelector } from "react-redux";
 import { Avatar } from "../../common";
 
 const Wrapper = styled.div`
+  > span {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
   ul {
     list-style: none;
     padding: 0;
@@ -33,9 +38,7 @@ const NewUsersCard = (props) => {
   const lastFiveUsers = allUsers.slice(-5);
   return (
     <Wrapper>
-      <span>
-        <strong>New users</strong>
-      </span>
+      <span>New users</span>
       <ul className="mt-2">
         {usersLoaded &&
           lastFiveUsers
