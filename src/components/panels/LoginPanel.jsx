@@ -183,7 +183,26 @@ const LoginPanel = (props) => {
             // };
             //openModalAction(cb);
           } else {
-            // if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+              dispatch(toggleLoading(false));
+              toaster.info("Please login via your Google account.", { autoClose: false });
+            } else {
+              const returnUrl =
+                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
+                  ? props.location.state.from.pathname + props.location.state.from.search
+                  : "/dashboard";
+              userActions.login(res.data, returnUrl);
+            }
+
+            //stripe code
+            // if (subscriptions && subscriptions.status === "canceled") {
+            //   if (res.data.user_auth.role && (res.data.user_auth.role.name === "owner" || res.data.user_auth.role.name === "admin")) {
+            //     userActions.login(res.data, "/admin-settings/subscription/subscribe");
+            //   } else {
+            //     dispatch(toggleLoading(false));
+            //     toaster.info("Driff trial subscription has ended. Please contact your administrator.", { autoClose: false });
+            //   }
+            // } else if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
             //   dispatch(toggleLoading(false));
             //   toaster.info("Please login via your Google account.", { autoClose: false });
             // } else {
