@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   > span:first-child {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    //font-weight: 600;
   }
   .feather {
     width: 1rem;
@@ -74,13 +74,13 @@ const FavoriteChannelsCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> {dictionary.favoriteChannels}{" "}
+        <SvgIconFeather icon="star" /> <h5 className="card-title mb-0">{dictionary.favoriteChannels}</h5>{" "}
         <ToolTip content={dictionary.clickOnStarChat}>
           <SvgIconFeather icon="info" />
         </ToolTip>
       </span>
-      {favoriteChannels.length === 0 && <div className="mt-2">{dictionary.clickOnStarChat}</div>}
-      <ul>
+      {favoriteChannels.length === 0 && <div className="mt-3">{dictionary.clickOnStarChat}</div>}
+      <ul className="mt-3">
         {favoriteChannels.slice(0, 4).map((channel) => {
           return <FavChannel key={channel.id} channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} onSelectChannel={onSelectChannel} />;
         })}

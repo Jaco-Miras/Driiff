@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   > span {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    //font-weight: 600;
   }
   .feather {
     width: 1rem;
@@ -42,12 +42,12 @@ const ShortcutsCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="link" /> {dictionary.shortcuts}{" "}
+        <SvgIconFeather icon="link" /> <h5 className="card-title mb-0">{dictionary.shortcuts}</h5>{" "}
         <ToolTip content={dictionary.shorcutsTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
       </span>
-      <ul className="mt-2">
+      <ul className="mt-3">
         {links.map((l) => {
           return (
             <li key={l.id}>

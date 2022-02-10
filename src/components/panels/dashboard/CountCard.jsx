@@ -51,7 +51,7 @@ const CountCard = (props) => {
   return (
     <Wrapper count={count}>
       <span className="text-label">
-        <strong>{text}</strong>
+        <h5 className="card-title mb-0">{text}</h5>
       </span>
       <span onClick={handleRedirect}>{count}</span>
     </Wrapper>

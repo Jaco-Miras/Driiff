@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   > span:first-child {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    // font-weight: 600;
   }
   .feather {
     margin-left: 0.5rem;
@@ -42,12 +42,13 @@ const PostMentionCard = (props) => {
   return (
     <Wrapper>
       <span>
-        {dictionary.postMentionsActions}
+        <h5 className="card-title mb-0">{dictionary.postMentionsActions}</h5>
+
         <ToolTip content={dictionary.postMentionsTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
       </span>
-      <ul className="mt-2">
+      <ul className="mt-3">
         {sortedNotifications.length > 0 &&
           sortedNotifications.map((n) => {
             return <NotificationTimelineItem key={n.id} notification={n} showToggle={false} />;
