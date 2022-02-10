@@ -32,11 +32,12 @@ const Wrapper = styled.div`
 `;
 
 const ShortcutsCard = (props) => {
+  const { dictionary } = props;
   const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="link" /> Company shortcuts
+        <SvgIconFeather icon="link" /> {dictionary.shortcuts}
       </span>
       <ul className="mt-2">
         {links.map((l) => {

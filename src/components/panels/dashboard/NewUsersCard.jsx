@@ -25,6 +25,7 @@ const Wrapper = styled.div`
 `;
 
 const NewUsersCard = (props) => {
+  const { dictionary } = props;
   const users = useSelector((state) => state.users.users);
   const usersLoaded = useSelector((state) => state.users.usersLoaded);
   const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
@@ -38,7 +39,7 @@ const NewUsersCard = (props) => {
   const lastFiveUsers = allUsers.slice(-5);
   return (
     <Wrapper>
-      <span>New users</span>
+      <span>{dictionary.newUsers}</span>
       <ul className="mt-2">
         {usersLoaded &&
           lastFiveUsers

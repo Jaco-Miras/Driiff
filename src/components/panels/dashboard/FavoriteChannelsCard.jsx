@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSortChannels } from "../../hooks";
 import { isMobile } from "react-device-detect";
-import { useChannelActions } from "../../hooks";
+import { useChannelActions, useTranslationActions } from "../../hooks";
 import FavChannel from "./FavChannel";
 import { SvgIconFeather } from "../../common";
 
@@ -37,7 +37,7 @@ const FavoriteChannelsCard = (props) => {
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const actions = useChannelActions();
-
+  const { _t } = useTranslationActions();
   const onSelectChannel = (channel) => {
     document.body.classList.add("m-chat-channel-closed");
     const snoozeContainer = document.getElementById("toastS");
@@ -56,13 +56,22 @@ const FavoriteChannelsCard = (props) => {
       history.push(`/chat/${channel.code}`);
     }
   };
-  const dictionary = {};
+  const dictionary = {
+    favoriteChannels: _t("FAVORITE_CHANNELS", "Favorite channels"),
+    clickOnStarChat: _t("LABEL.CLICK_ON_START_CHAT", "Click on the ⭐ in a chat to mark it as favorites"),
+    team: _t("TEAM", "Team"),
+    workspace: _t("CHAT.WORKSPACE", "Workspace"),
+    withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
+    messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed."),
+    you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
+  };
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> Favorite channels
+        <SvgIconFeather icon="star" /> {dictionary.favoriteChannels}
       </span>
-      {favoriteChannels.length === 0 && <div className="mt-2">Click on the ⭐ in a chat to mark it as favorites </div>}
+      {favoriteChannels.length === 0 && <div className="mt-2">{dictionary.clickOnStarChat}</div>}
       <ul>
         {favoriteChannels.slice(0, 5).map((channel) => {
           return <FavChannel key={channel.id} channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} onSelectChannel={onSelectChannel} />;
