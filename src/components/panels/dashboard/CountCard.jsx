@@ -6,18 +6,18 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  h2 {
+  h1 {
     margin: 0;
   }
   .text-label {
     width: 65%;
-    border-right: 1px solid rgba(0, 0, 0, 0.125);
   }
   span:last-child {
     width: 35%;
     text-align: center;
     color: ${(props) => (props.count === 0 ? "green" : "inherit")};
-    // border-left: 1px solid #f1f2f7;
+    font-size: 2.25rem;
+    border-left: 1px solid rgba(0, 0, 0, 0.125);
   }
 `;
 
@@ -38,9 +38,7 @@ const CountCard = (props) => {
       <span className="text-label">
         <strong>{text}</strong>
       </span>
-      <span>
-        <h2>{count}</h2>
-      </span>
+      <span>{count}</span>
     </Wrapper>
   );
 };

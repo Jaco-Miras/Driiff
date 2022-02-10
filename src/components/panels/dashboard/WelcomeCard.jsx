@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   display: block;
@@ -16,11 +15,11 @@ const Wrapper = styled.div`
 `;
 
 const WelcomeCard = (props) => {
-  const user = useSelector((state) => state.session.user);
+  const { dictionary } = props;
   return (
     <Wrapper>
-      <span>Hi {user.first_name} 👋</span>
-      <span>Here's your Driff daily digest</span>
+      <span>{dictionary.hiUser} 👋</span>
+      <span>{dictionary.dailyDigest}</span>
     </Wrapper>
   );
 };

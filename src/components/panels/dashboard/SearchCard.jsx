@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { SvgIconFeather, Loader } from "../../common";
 import { useSearchActions, useSearch } from "../../hooks";
 
 const Wrapper = styled.div``;
 
 const SearchCard = (props) => {
+  const { dictionary } = props;
+  const companyName = useSelector((state) => state.settings.driff.company_name);
   const history = useHistory();
   const { searching, value } = useSearch();
   const actions = useSearchActions();
@@ -56,7 +59,7 @@ const SearchCard = (props) => {
 
   return (
     <Wrapper className="input-group">
-      <input type="text" className="form-control" placeholder={"Search"} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleSearchChange} />
+      <input type="text" className="form-control" placeholder={dictionary.search + " " + companyName} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleSearchChange} />
       {searching && (
         <button className="btn-cross" type="button">
           <Loader />

@@ -68,6 +68,7 @@ const FavoriteWorkspaceCard = (props) => {
 
   const { _t } = useTranslationActions();
   const dictionary = {
+    favoriteWorkspaces: _t("SIDEBAR.FAVORITE_WORKSPACES", "Favorite workspaces"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
   };
@@ -118,7 +119,7 @@ const FavoriteWorkspaceCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> Favorite workspaces
+        <SvgIconFeather icon="star" /> {dictionary.favoriteWorkspaces}
       </span>
       <ul>
         {favoriteWorkspaces.length === 0 && (
