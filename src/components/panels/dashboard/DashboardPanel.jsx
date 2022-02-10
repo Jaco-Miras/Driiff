@@ -21,7 +21,10 @@ const Wrapper = styled.div`
   ${(props) =>
     props.bg &&
     `
-  background-image: url("${props.bg}")`};
+  background-image: url("${props.bg}");
+  background-repeat: no-repeat;
+  background-size: auto;
+  `};
   .card.overflow-unset {
     overflow: unset;
   }
