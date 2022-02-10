@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,15 +17,28 @@ const Wrapper = styled.div`
     width: 35%;
     text-align: center;
     color: ${(props) => (props.count === 0 ? "green" : "inherit")};
-    font-size: 2.25rem;
+    font-size: 2rem;
     border-left: 1px solid rgba(0, 0, 0, 0.125);
+    cursor: pointer;
   }
 `;
 
 const CountCard = (props) => {
   const { type, text } = props;
+  const history = useHistory();
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const todosCount = useSelector((state) => state.global.todos.count);
+
+  const handleRedirect = () => {
+    if (type === "chat") {
+      history.push("/chat");
+    } else if (type === "posts") {
+      history.push("/posts");
+    } else {
+      history.push("/todos");
+    }
+  };
+
   let count = 0;
   if (type === "chat") {
     count = unreadCounter.chat_message;
@@ -33,12 +47,13 @@ const CountCard = (props) => {
   } else {
     count = todosCount.todo_with_date;
   }
+
   return (
     <Wrapper count={count}>
       <span className="text-label">
         <strong>{text}</strong>
       </span>
-      <span>{count}</span>
+      <span onClick={handleRedirect}>{count}</span>
     </Wrapper>
   );
 };

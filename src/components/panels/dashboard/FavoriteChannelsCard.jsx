@@ -6,7 +6,7 @@ import { useSortChannels } from "../../hooks";
 import { isMobile } from "react-device-detect";
 import { useChannelActions, useTranslationActions } from "../../hooks";
 import FavChannel from "./FavChannel";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
   > span:first-child {
@@ -17,7 +17,12 @@ const Wrapper = styled.div`
   .feather {
     width: 1rem;
     height: 1rem;
+  }
+  .feather-star {
     margin-right: 0.5rem;
+  }
+  .feather-info {
+    margin-info: 0.5rem;
   }
   ul {
     list-style: none;
@@ -58,7 +63,7 @@ const FavoriteChannelsCard = (props) => {
   };
   const dictionary = {
     favoriteChannels: _t("FAVORITE_CHANNELS", "Favorite channels"),
-    clickOnStarChat: _t("LABEL.CLICK_ON_START_CHAT", "Click on the ⭐ in a chat to mark it as favorites"),
+    clickOnStarChat: _t("LABEL.CLICK_ON_START_CHAT", "Click on the ⭐ to mark a chat channel as favorite"),
     team: _t("TEAM", "Team"),
     workspace: _t("CHAT.WORKSPACE", "Workspace"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
@@ -69,7 +74,10 @@ const FavoriteChannelsCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> {dictionary.favoriteChannels}
+        <SvgIconFeather icon="star" /> {dictionary.favoriteChannels}{" "}
+        <ToolTip content={dictionary.clickOnStarChat}>
+          <SvgIconFeather icon="info" />
+        </ToolTip>
       </span>
       {favoriteChannels.length === 0 && <div className="mt-2">{dictionary.clickOnStarChat}</div>}
       <ul>

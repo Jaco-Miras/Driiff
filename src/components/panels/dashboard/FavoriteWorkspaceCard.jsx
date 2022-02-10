@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { FavWorkspaceList } from "../../workspace";
 import { useWorkspaceActions, useTranslationActions } from "../../hooks";
 import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
   > span {
@@ -16,7 +16,12 @@ const Wrapper = styled.div`
   .feather {
     width: 1rem;
     height: 1rem;
+  }
+  .feather-star {
     margin-right: 0.5rem;
+  }
+  .feather-info {
+    margin-info: 0.5rem;
   }
   ul {
     list-style: none;
@@ -71,6 +76,7 @@ const FavoriteWorkspaceCard = (props) => {
     favoriteWorkspaces: _t("SIDEBAR.FAVORITE_WORKSPACES", "Favorite workspaces"),
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
+    clickOnStarWs: _t("LABEL.CLICK_ON_START_WS", "Click on the ⭐ to mark a workspace as favorite"),
   };
 
   const sortWorkspace = () => {
@@ -119,7 +125,10 @@ const FavoriteWorkspaceCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> {dictionary.favoriteWorkspaces}
+        <SvgIconFeather icon="star" /> {dictionary.favoriteWorkspaces}{" "}
+        <ToolTip content={dictionary.clickOnStarWs}>
+          <SvgIconFeather icon="info" />
+        </ToolTip>
       </span>
       <ul>
         {favoriteWorkspaces.length === 0 && (
