@@ -23,7 +23,7 @@ const Wrapper = styled.div`
     `
   background-image: url("${props.bg}");
   background-repeat: no-repeat;
-  background-size: auto;
+  background-size: cover;
   `};
   .card.overflow-unset {
     overflow: unset;
