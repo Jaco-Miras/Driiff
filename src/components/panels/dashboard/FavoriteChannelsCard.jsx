@@ -22,7 +22,7 @@ const Wrapper = styled.div`
     margin-right: 0.5rem;
   }
   .feather-info {
-    margin-info: 0.5rem;
+    margin-left: 0.5rem;
   }
   ul {
     list-style: none;
@@ -81,7 +81,7 @@ const FavoriteChannelsCard = (props) => {
       </span>
       {favoriteChannels.length === 0 && <div className="mt-2">{dictionary.clickOnStarChat}</div>}
       <ul>
-        {favoriteChannels.slice(0, 5).map((channel) => {
+        {favoriteChannels.slice(0, 4).map((channel) => {
           return <FavChannel key={channel.id} channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} onSelectChannel={onSelectChannel} />;
         })}
       </ul>

@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     margin-right: 0.5rem;
   }
   .feather-info {
-    margin-info: 0.5rem;
+    margin-left: 0.5rem;
   }
   ul {
     list-style: none;
@@ -142,7 +142,7 @@ const FavoriteWorkspaceCard = (props) => {
             </BrowseAll>
           </FavEmptyState>
         )}
-        {favoriteWorkspaces.slice(0, 5).map((ws) => {
+        {favoriteWorkspaces.slice(0, 4).map((ws) => {
           return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
         })}
       </ul>
