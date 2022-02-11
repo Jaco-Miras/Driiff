@@ -82,6 +82,9 @@ const Wrapper = styled.div`
           //flex: 2 1 20%;
         }
       }
+      .count-card {
+        min-height: 74px;
+      }
     }
   }
 `;
@@ -115,15 +118,6 @@ const DashboardPanel = (props) => {
           <Card className="mb-2">
             <WelcomeCard dictionary={dictionary} />
           </Card>
-          <Card className="mb-2">
-            <CountCard text={dictionary.remindersDue} type={"reminders"} />
-          </Card>
-          <Card className="mb-2">
-            <CountCard text={dictionary.unreadChats} type={"chat"} />
-          </Card>
-          <Card className="mb-2">
-            <CountCard text={dictionary.unreadPosts} type={"posts"} />
-          </Card>
           <Card className="mb-2 maxh-50">
             <AboutCard dictionary={dictionary} />
           </Card>
@@ -134,6 +128,15 @@ const DashboardPanel = (props) => {
           </Card>
           <div className={"row"}>
             <div className={"col-md-6"}>
+              <Card className="mb-2 count-card">
+                <CountCard text={dictionary.remindersDue} type={"reminders"} />
+              </Card>
+              <Card className="mb-2 count-card">
+                <CountCard text={dictionary.unreadChats} type={"chat"} />
+              </Card>
+              <Card className="mb-2 count-card">
+                <CountCard text={dictionary.unreadPosts} type={"posts"} />
+              </Card>
               <Card className="mb-2  maxh-40">
                 <FavoriteChannelsCard dictionary={dictionary} />
               </Card>
