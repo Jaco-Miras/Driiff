@@ -28,6 +28,7 @@ import {
   putSecuritySettings as putSecuritySettingsService,
   uploadDashboardBg as uploadDashboardBgService,
   putCompanyDescription as putCompanyDescriptionService,
+  sendRequestPassword as sendRequestPasswordService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -172,4 +173,8 @@ export function incomingCompanyDescription(payload, callback) {
 
 export function incomingCompanyDashboardBackground(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_DASHBOARD_BACKGROUND", payload, callback);
+}
+
+export function sendRequestPassword(payload, callback) {
+  return dispatchActionToReducer(sendRequestPasswordService(payload), "SEND_REQUEST_PASSWORD_START", "SEND_REQUEST_PASSWORD_SUCCESS", "SEND_REQUEST_PASSWORD_FAILURE", callback);
 }

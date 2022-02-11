@@ -220,3 +220,11 @@ export function putCompanyDescription(payload) {
     data: payload,
   });
 }
+
+export function sendRequestPassword(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/security-settings/send-refresh-password",
+    data: payload,
+  });
+}

@@ -31,6 +31,7 @@ export {
   putSecuritySettings,
   uploadDashboardBg,
   putCompanyDescription,
+  sendRequestPassword,
 } from "./admin";
 export {
   getGlobalRecipients,
