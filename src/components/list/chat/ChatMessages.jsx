@@ -134,7 +134,7 @@ const ChatBubbleContainer = styled.div`
   justify-content: flex-end;
   flex-flow: column;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-  margin-left: ${(props) => (!props.isAuthor && !props.showAvatar ? "22px" : "0")};
+  margin-left: ${(props) => (!props.isAuthor && !props.showAvatar ? "32px" : "0")};
   ${(props) => props.isAuthor === true && "position: relative; right: 15px;"};
   margin-top: ${(props) => props.showAvatar && "36px"};
   margin-top: ${(props) => props.showAvatar && props.isAuthor && "20px"};
@@ -150,8 +150,8 @@ const ChatBubbleContainer = styled.div`
     border: 10px solid transparent;
     border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? props.theme.colors.fourth : "#f0f0f0")};
     position: absolute;
-    top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};
-    left: 30px;
+    top: ${(props) => (props.showAvatar && !props.isAuthor ? "45px" : "8px")};
+    left: 40px;
     z-index: 1;
     @media all and (max-width: 620px) {
       display: none;
@@ -305,14 +305,8 @@ const InfiniteScroll = styled.div`
 
 const StyledAvatar = styled(Avatar)`
   align-self: flex-start;
-  width: 2rem !important;
-  height: 2rem !important;
   margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "0")};
 
-  img {
-    width: 2rem !important;
-    height: 2rem !important;
-  }
   @media (max-width: 620px) {
     display: none;
   }
