@@ -104,6 +104,9 @@ const DashboardPanel = (props) => {
     postMentionsActions: _t("LABEL.POST_MENTIONS_ACTIONS", "Post mentions and actions"),
     shorcutsTooltip: _t("TOOLTIP.SHORCUTS_DASHBOARD", "These quicklinks make it easy to find company info back quickly"),
     postMentionsTooltip: _t("TOOLTIP.POST_MENTIONS_ACTIONS", "People who mentioned you or post where people need your input"),
+    createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
+    startWritingPost: _t("LABEL.START_WRITING_POST", "Start writing a new post,"),
+    noQuickLinks: _t("LABEL.NO_QUICK_LINKS", "No quick links yet, wait for your admin to add quick links"),
   };
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
