@@ -27,6 +27,9 @@ export {
   getPostAccess,
   getNotificationSettings,
   putNotificationSettings,
+  getSecuritySettings,
+  putSecuritySettings,
+  sendRequestPassword,
 } from "./admin";
 export {
   getGlobalRecipients,

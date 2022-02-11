@@ -186,7 +186,7 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess } from "../../redux/actions/adminActions";
+import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, updateSecuritySettings } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1101,6 +1101,13 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-security-option-notification", (e) => {
+        this.props.updateSecuritySettings({
+          password_policy: e.password_policy,
+          invite_internal: e.invite_internal,
+          invite_guest: e.invite_guest,
+        });
+      })
       .listen(".post-access-notification", (e) => {
         this.props.incomingPostAccess(e);
       })
@@ -2428,6 +2435,7 @@ function mapDispatchToProps(dispatch) {
     incomingPostAccess: bindActionCreators(incomingPostAccess, dispatch),
     getPostAccess: bindActionCreators(getPostAccess, dispatch),
     updateUnreadCounter: bindActionCreators(updateUnreadCounter, dispatch),
+    updateSecuritySettings: bindActionCreators(updateSecuritySettings, dispatch),
   };
 }
 

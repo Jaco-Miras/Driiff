@@ -24,6 +24,9 @@ import {
   putPostAccess as putPostAccessService,
   getNotificationSettings as getNotificationSettingsService,
   putNotificationSettings as putNotificationSettingsService,
+  getSecuritySettings as getSecuritySettingsService,
+  putSecuritySettings as putSecuritySettingsService,
+  sendRequestPassword as sendRequestPasswordService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -140,4 +143,20 @@ export function getNotificationSettings(payload, callback) {
 
 export function putNotificationSettings(payload, callback) {
   return dispatchActionToReducer(putNotificationSettingsService(payload), "PUT_NOTIFICATIONS_SETTINGS_START", "PUT_NOTIFICATIONS_SETTINGS_SUCCESS", "PUT_NOTIFICATIONS_SETTINGS_FAILURE", callback);
+}
+
+export function updateSecuritySettings(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_SECURITY_SETTINGS", payload, callback);
+}
+
+export function getSecuritySettings(payload, callback) {
+  return dispatchActionToReducer(getSecuritySettingsService(payload), "GET_SECURITY_SETTINGS_START", "GET_SECURITY_SETTINGS_SUCCESS", "GET_SECURITY_SETTINGS_FAILURE", callback);
+}
+
+export function putSecuritySettings(payload, callback) {
+  return dispatchActionToReducer(putSecuritySettingsService(payload), "PUT_SECURITY_SETTINGS_START", "PUT_SECURITY_SETTINGS_SUCCESS", "PUT_SECURITY_SETTINGS_FAILURE", callback);
+}
+
+export function sendRequestPassword(payload, callback) {
+  return dispatchActionToReducer(sendRequestPasswordService(payload), "SEND_REQUEST_PASSWORD_START", "SEND_REQUEST_PASSWORD_SUCCESS", "SEND_REQUEST_PASSWORD_FAILURE", callback);
 }

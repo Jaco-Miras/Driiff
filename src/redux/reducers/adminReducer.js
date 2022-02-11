@@ -15,6 +15,12 @@ const INITIAL_STATE = {
     sign_up: true,
     password_login: true,
   },
+  security: {
+    password_policy: 0,
+    invite_internal: 2,
+    invite_guest: 3,
+  },
+  securityLoaded: false,
   postAccess: {
     post: null,
     post_user_ids: [],
@@ -273,6 +279,20 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         notifications: { ...action.data },
         notificationsLoaded: true,
+      };
+    }
+    case "UPDATE_SECURITY_SETTINGS":
+    case "PUT_SECURITY_SETTINGS_SUCCESS": {
+      return {
+        ...state,
+        security: action.data,
+      };
+    }
+    case "GET_SECURITY_SETTINGS_SUCCESS": {
+      return {
+        ...state,
+        security: action.data,
+        securityLoaded: true,
       };
     }
     default:
