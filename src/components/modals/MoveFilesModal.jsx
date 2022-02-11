@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { moveFile } from "../../redux/actions/fileActions";
+import { moveFile, putDriveLink } from "../../redux/actions/fileActions";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
@@ -41,7 +41,7 @@ const Wrapper = styled(Modal)`
 `;
 
 const MoveFilesModal = (props) => {
-  const { className = "", type, file, topic_id, folder_id, ...otherProps } = props;
+  const { className = "", type, file, topic_id, folder_id, isLink = false, ...otherProps } = props;
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -99,16 +99,28 @@ const MoveFilesModal = (props) => {
         );
       };
 
-      dispatch(
-        moveFile(
-          {
-            file_id: file.id,
-            topic_id: topic_id,
-            folder_id: selectedFolder.id,
-          },
-          cb
-        )
-      );
+      if (isLink) {
+        let payload = {
+          id: file.id,
+          type: file.type,
+          name: file.name,
+          link: file.link,
+          topic_id: topic_id,
+          folder_id: selectedFolder.id,
+        };
+        dispatch(putDriveLink(payload, cb));
+      } else {
+        dispatch(
+          moveFile(
+            {
+              file_id: file.id,
+              topic_id: topic_id,
+              folder_id: selectedFolder.id,
+            },
+            cb
+          )
+        );
+      }
     }
     toggle();
   };

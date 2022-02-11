@@ -260,6 +260,7 @@ const FilesBody = (props) => {
                   <>
                     <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
                     <div className="row">
+                      <DriveLinks disableOptions={disableOptions} />
                       {wsFiles &&
                         fileIds.map((f) => {
                           if (wsFiles.files.hasOwnProperty(f)) {
@@ -287,7 +288,7 @@ const FilesBody = (props) => {
             ) : (
               <>
                 <div className="row">
-                  <DriveLinks disableOptions={disableOptions} params={params} />
+                  <DriveLinks disableOptions={disableOptions} />
                   {fileIds.map((f) => {
                     if (wsFiles.files.hasOwnProperty(f)) {
                       return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} folders={folders} disableOptions={disableOptions} />;

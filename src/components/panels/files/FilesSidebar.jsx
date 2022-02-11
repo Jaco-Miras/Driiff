@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { ProgressBar } from "../common";
-import { FolderList, GoogleDrive } from "./index";
+import { FolderList } from "./index";
 import { useTranslationActions } from "../../hooks";
 import { useSelector } from "react-redux";
 
@@ -99,13 +99,13 @@ const FileSidebar = (props) => {
   const fileSizeUnit = actions.getFileSizeUnit(wsFiles.storage);
   const storageAmount = wsFiles.storage === 0 ? 0 : wsFiles.storage < 1e9 / 10 ? 1e9 / 10 : wsFiles.storage;
 
-  const handleGoogleDriveSelect = (data) => {
-    if (data.action === "picked") {
-      data.docs.forEach((doc) => {
-        actions.uploadWorkspaceGoogleDriveFile(params.workspaceId, doc);
-      });
-    }
-  };
+  // const handleGoogleDriveSelect = (data) => {
+  //   if (data.action === "picked") {
+  //     data.docs.forEach((doc) => {
+  //       actions.uploadWorkspaceGoogleDriveFile(params.workspaceId, doc);
+  //     });
+  //   }
+  // };
 
   let dictionary = {
     uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
@@ -160,7 +160,7 @@ const FileSidebar = (props) => {
                 </ul>
               </Filter>
             )}
-            <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} />
+            {/* <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} /> */}
             {!isExternal && workspace && workspace.team_channel && workspace.team_channel.code && (
               <>
                 <Filter onClick={filterFile} data-filter="team" active={filter === "team"} className="list-group-item d-flex align-items-center">
