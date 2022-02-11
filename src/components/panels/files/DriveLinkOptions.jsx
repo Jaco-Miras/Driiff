@@ -6,7 +6,7 @@ import { useToaster, useTranslationActions } from "../../hooks";
 import { copyTextToClipboard } from "../../../helpers/commonFunctions";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { useParams } from "react-router-dom";
-import { deleteDriveLink } from "../../../redux/actions/fileActions";
+import { deleteDriveLink, putCompanyFileMove, putDriveLink } from "../../../redux/actions/fileActions";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -54,6 +54,7 @@ const DriveLinkOptions = (props) => {
     removeLink: _t("BUTTON.REMOVE_LINK", "Remove link"),
     modalBody: _t("MODAL.BODY_REMOVE_LINK", "Are you sure you want to remove this drive link?"),
     removedLink: _t("TOASTER.REMOVED_DRIVE_LINK", "::linkName:: removed from drive", { linkName: link.name }),
+    moveTo: _t("FILES.MOVE_TO", "Move to"),
   };
 
   const handleViewDetail = () => {
@@ -107,10 +108,89 @@ const DriveLinkOptions = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const handleMoveTo = () => {
+    if (params.workspaceId) {
+      let payload = {
+        type: "move_files",
+        file: { ...link, search: link.name },
+        topic_id: params.workspaceId,
+        folder_id: null,
+        isLink: true,
+      };
+      if (params.hasOwnProperty("fileFolderId")) {
+        payload = {
+          ...payload,
+          folder_id: params.fileFolderId,
+        };
+      }
+      dispatch(addToModals(payload));
+    } else {
+      const handleMoveFile = (payload, callback = () => {}, options = {}) => {
+        let linkPayload = {
+          id: link.id,
+          type: link.type,
+          name: link.name,
+          link: link.link,
+          folder_id: payload.folder_id,
+        };
+        if (params.workspaceId) {
+          linkPayload = {
+            ...linkPayload,
+            topic_id: parseInt(params.workspaceId),
+          };
+        }
+        dispatch(
+          putDriveLink(linkPayload, (err, res) => {
+            if (err) {
+              toaster.error(
+                <div>
+                  Failed to move <b>{link.search}</b> to folder <strong>{options.selectedFolder}</strong>
+                </div>
+              );
+            }
+            if (res) {
+              toaster.success(
+                <div>
+                  <strong>{link.search}</strong> has been moved to folder <strong>{options.selectedFolder}</strong>
+                </div>
+              );
+            }
+            callback(err, res);
+          })
+        );
+      };
+
+      let payload = {
+        type: "move_company_files",
+        dictionary: {
+          headerText: "Move files",
+          submitText: "Move",
+          cancelText: "Cancel",
+          bodyText: link.name,
+        },
+        file: { ...link, search: link.name },
+        folder_id: null,
+        actions: {
+          onSubmit: handleMoveFile,
+        },
+      };
+
+      if (params.hasOwnProperty("folderId")) {
+        payload = {
+          ...payload,
+          folder_id: params.folderId,
+        };
+      }
+
+      dispatch(addToModals(payload));
+    }
+  };
+
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" scrollRef={scrollRef}>
       <div onClick={handleViewDetail}>{dictionary.viewDetails}</div>
       <div onClick={handleShare}>{dictionary.share}</div>
+      <div onClick={handleMoveTo}>{dictionary.moveTo}</div>
       <div onClick={handleRename}>{dictionary.rename}</div>
       <div onClick={handleDelete}>{dictionary.remove}</div>
     </Wrapper>

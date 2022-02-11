@@ -185,11 +185,17 @@ const CreateExternalFileFolder = (props) => {
       type: linkType.id,
       name: nameValue,
       link: linkValue,
+      folder_id: null,
     };
-    if (params.fileFolderId) {
+    if (params.workspaceId) {
       payload = {
         ...payload,
-        folder_id: params.fileFolderId,
+        folder_id: parseInt(params.fileFolderId),
+      };
+    } else {
+      payload = {
+        ...payload,
+        folder_id: parseInt(params.folderId),
       };
     }
     if (topic_id) {
