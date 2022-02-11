@@ -39,9 +39,9 @@ const CompanyLogoWrapper = styled.div`
     margin: 0 5px;
   }
   .company-logo {
-    height: 70%;
-    max-height: 40px;
-    max-width: 100px;
+    height: 100%;
+    max-height: 115px;
+    max-width: 140px;
   }
 `;
 
