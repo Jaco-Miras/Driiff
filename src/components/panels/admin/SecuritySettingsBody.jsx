@@ -6,7 +6,9 @@ import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { useTranslationActions, useToaster } from "../../hooks";
 import { Loader, SvgIconFeather } from "../../common";
 import Tooltip from "react-tooltip-lite";
-import { putSecuritySettings } from "../../../redux/actions/adminActions";
+import { putSecuritySettings, sendRequestPassword } from "../../../redux/actions/adminActions";
+import { addToModals } from "../../../redux/actions/globalActions";
+import _ from "lodash";
 
 const Wrapper = styled.div`
   padding: 1rem;
@@ -51,6 +53,12 @@ const SecuritySettingsBody = () => {
     whoCanInviteGuests: _t("ADMIN.WHO_CAN_INVITE_GUESTS", "Who can invite guests?"),
     whoCanInviteGuestsTooltip: _t("TOOLTIP.WHO_CAN_INVITE_GUESTS", "Who can invite guests?"),
     saveLogin: _t("ADMIN.SAVE_LOGIN", "Save login"),
+    closeButton: _t("BUTTON.CLOSE", "Close"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    sendRequest: _t("BUTTON.SEND_REQUEST_MANUALLY", "Send request now"),
+    sendRequestHeaderText: _t("MODAL.HEADER_PASSWORD_REQUEST_MANUALLY", "Send password reset"),
+    sendRequestBodyText: _t("MODAL.BODY_PASSWORD_REQUEST_MANUALLY", "Are you sure you want to send password reset manually?"),
+    sendRequestSuccess: _t("TOASTER.PASSWORD_REQUEST_SUCCESS", "Successfully sent password reset request."),
   };
 
   //const componentIsMounted = useRef(true);
@@ -140,6 +148,29 @@ const SecuritySettingsBody = () => {
     );
   };
 
+  const handleSendManually = () => {
+    const onConfirm = () => {
+      dispatch(
+        sendRequestPassword({}, (err, res) => {
+          if (err) return;
+          toast.success(dictionary.sendRequestSuccess);
+        })
+      );
+    };
+    let modal = {
+      type: "confirmation",
+      headerText: dictionary.sendRequestHeaderText,
+      submitText: dictionary.sendRequest,
+      cancelText: dictionary.closeButton,
+      bodyText: dictionary.sendRequestBodyText,
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
+
+    dispatch(addToModals(modal));
+  };
+
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
@@ -173,6 +204,11 @@ const SecuritySettingsBody = () => {
               onChange={handleSelectPasswordPolicy}
               options={passwordPolicyOptions}
             />
+            <div className="mt-2">
+              <button className="btn btn-primary" onClick={handleSendManually}>
+                {dictionary.sendRequest}
+              </button>
+            </div>
           </div>
           <div>
             <LabelInfoWrapper>
