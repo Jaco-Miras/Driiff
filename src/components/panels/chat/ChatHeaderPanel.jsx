@@ -252,6 +252,9 @@ const StyledChannelIcon = styled(ChannelIcon)`
   &.chat-header-icon > div:before {
     right -10px;
   }
+  &.chat-header-icon > svg {
+    right: -5px;
+  }
 `;
 
 const toggleTooltip = () => {
