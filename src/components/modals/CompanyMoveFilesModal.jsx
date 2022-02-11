@@ -95,7 +95,8 @@ const CompanyMoveFilesModal = (props) => {
         id: f.id,
         label: f.search,
       };
-    });
+    })
+    .sort((a, b) => a.search.localeCompare(b.search));
 
   const {
     generalSettings: { dark_mode },

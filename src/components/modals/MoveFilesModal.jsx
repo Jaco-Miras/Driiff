@@ -64,7 +64,8 @@ const MoveFilesModal = (props) => {
         id: f.id,
         label: f.search,
       };
-    });
+    })
+    .sort((a, b) => a.search.localeCompare(b.search));
 
   const toggle = () => {
     dispatch(clearModal({ type: type }));
@@ -139,7 +140,7 @@ const MoveFilesModal = (props) => {
       <ModalBody>
         <div className="d-flex align-items-center">
           <span className="pr-1 mb-3">Move</span>
-          <div className="folder-name mb-3">{file.search}</div>
+          <div className="folder-name mb-3">{isLink ? file.name : file.search}</div>
           <span className="pl-1 mb-3">to:</span>
         </div>
         <Label className={"folder-name"}>Select a folder</Label>
