@@ -160,6 +160,15 @@ const WrapperDiv = styled(InputGroup)`
   .custom-control-label:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
+  .add-guest-checkbox {
+    label {
+      cursor: ${(props) => (props.hasGuestAccess ? "pointer" : "not-allowed")};
+      color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,90%)")} !important;
+      :hover {
+        color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,90%)")} !important;
+      }
+    }
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -1843,14 +1852,14 @@ const CreateEditWorkspaceModal = (props) => {
             </div>
           </div>
         </WrapperDiv>
-        <WrapperDiv className={"modal-input checkboxes"}>
+        <WrapperDiv className={"modal-input checkboxes"} hasGuestAccess={hasGuestAccess}>
           <div>
             <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
               {dictionary.addToFolder}
             </CheckBox>
           </div>
           <div>
-            <CheckBox type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
+            <CheckBox className="add-guest-checkbox" type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
               {dictionary.workspaceWithExternals}
             </CheckBox>
           </div>
@@ -1912,7 +1921,7 @@ const CreateEditWorkspaceModal = (props) => {
           <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
             <LabelWrapper className="mb-1">
               <Label for="people">{dictionary.externalGuest}</Label>
-              <ToolTip content={dictionary.guestTooltip}>
+              <ToolTip content={hasGuestAccess ? dictionary.guestTooltip : dictionary.disabledWorkspaceExternalsInfo}>
                 <SvgIconFeather icon="info" width="16" height="16" />
               </ToolTip>
             </LabelWrapper>
@@ -1931,6 +1940,7 @@ const CreateEditWorkspaceModal = (props) => {
               isSearchable
               onMenuClose={handleMenuClose}
               onEmailClick={handleEmailClick}
+              isDisabled={!hasGuestAccess}
             />
           </WrapperDiv>
         )}
