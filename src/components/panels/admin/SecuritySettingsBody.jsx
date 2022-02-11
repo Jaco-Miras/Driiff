@@ -8,7 +8,6 @@ import { Loader, SvgIconFeather } from "../../common";
 import Tooltip from "react-tooltip-lite";
 import { putSecuritySettings, sendRequestPassword } from "../../../redux/actions/adminActions";
 import { addToModals } from "../../../redux/actions/globalActions";
-import _ from "lodash";
 
 const Wrapper = styled.div`
   padding: 1rem;
@@ -59,6 +58,14 @@ const SecuritySettingsBody = () => {
     sendRequestHeaderText: _t("MODAL.HEADER_PASSWORD_REQUEST_MANUALLY", "Send password reset"),
     sendRequestBodyText: _t("MODAL.BODY_PASSWORD_REQUEST_MANUALLY", "Are you sure you want to send password reset manually?"),
     sendRequestSuccess: _t("TOASTER.PASSWORD_REQUEST_SUCCESS", "Successfully sent password reset request."),
+    never: _t("OPTIONS.NEVER", "Never"),
+    thirtyDays: _t("OPTIONS.THIRTY_DAYS", "30 days"),
+    sixtyDays: _t("OPTIONS.SIXTY_DAYS", "60 days"),
+    ninetyDays: _t("OPTIONS.NINETYY_DAYS", "90 days"),
+    adminOnly: _t("OPTIONS.ADMIN_ONLY", "Admin only"),
+    managerHigher: _t("OPTIONS.MANAGER_HIGHER", "Manager + higher"),
+    employeesHigher: _t("OPTIONS.EMPLOYEES_HIGHER", "Employees higher"),
+    securitySettingsUpdated: _t("TOASTER.SECURITY_SETTINGS_UPDATED", "Security settings updated"),
   };
 
   //const componentIsMounted = useRef(true);
@@ -87,34 +94,34 @@ const SecuritySettingsBody = () => {
   const passwordPolicyOptions = [
     {
       value: 0,
-      label: "Never",
+      label: dictionary.never,
     },
     {
       value: 30,
-      label: "30 days",
+      label: dictionary.thirtyDays,
     },
     {
       value: 60,
-      label: "60 days",
+      label: dictionary.sixtyDays,
     },
     {
       value: 90,
-      label: "90 days",
+      label: dictionary.ninetyDays,
     },
   ];
 
   const roleOptions = [
     {
       value: 1,
-      label: "Admin (only)",
+      label: dictionary.adminOnly,
     },
     {
       value: 2,
-      label: "Manager + higher",
+      label: dictionary.managerHigher,
     },
     {
       value: 3,
-      label: "Employees + higher",
+      label: dictionary.employeesHigher,
     },
   ];
 
@@ -142,7 +149,7 @@ const SecuritySettingsBody = () => {
     setSaving(true);
     dispatch(
       putSecuritySettings(settings, () => {
-        toast.success("Security settings updated");
+        toast.success(dictionary.securitySettingsUpdated);
         setSaving(false);
       })
     );
